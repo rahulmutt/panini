@@ -10,3 +10,6 @@ panini-lipi = { path = "../panini-lipi" }
 panini-data = { path = "../panini-data" }
 panini-analyze = { path = "../panini-analyze" }
 panini-prakriya = { path = "../panini-prakriya" }
+
+[dev-dependencies]
+proptest = { workspace = true }
