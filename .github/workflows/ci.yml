@@ -12,6 +12,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: jdx/mise-action@v2
+      - name: Ensure clippy component
+        run: rustup component add clippy --toolchain 1.83.0-x86_64-unknown-linux-gnu
       - name: Build
         run: mise run build
       - name: Test
