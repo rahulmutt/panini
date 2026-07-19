@@ -4,11 +4,13 @@ pub mod it_samjna;
 pub mod prakriya;
 pub mod rule;
 pub mod term;
+pub mod tinanta;
 
 pub use controller::run_pipeline;
 pub use prakriya::{Prakriya, RuleStep};
 pub use rule::{Rule, RuleKind};
 pub use term::{Tag, Term};
+pub use tinanta::derive;
 
 #[cfg(test)]
 mod tests {
