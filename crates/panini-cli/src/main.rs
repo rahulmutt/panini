@@ -51,18 +51,42 @@ fn out_scheme(o: OutScheme) -> Scheme {
     }
 }
 
+/// Map an explicit `--in` choice to a `panini_lipi::Scheme`. Returns `None`
+/// for `Auto`, whose caller should keep relying on `Panini::check`'s
+/// built-in auto-detection instead of forcing a scheme.
+fn in_scheme(i: InScheme) -> Option<Scheme> {
+    match i {
+        InScheme::Auto => None,
+        InScheme::Slp1 => Some(Scheme::Slp1),
+        InScheme::Iast => Some(Scheme::Iast),
+        InScheme::Hk => Some(Scheme::Hk),
+        InScheme::Deva => Some(Scheme::Devanagari),
+    }
+}
+
 fn main() {
     let cli = Cli::parse();
     match cli.cmd {
         Cmd::Check {
             word,
-            r#in: _,
+            r#in,
             out,
             trace,
             json,
         } => {
             let engine = Panini::new();
-            let result = engine.check(&word);
+            // When the caller declares an explicit input scheme, that scheme
+            // is authoritative: transliterate to SLP1 ourselves before
+            // checking, rather than trusting auto-detection (which `--in`
+            // exists to override). `--in auto` (the default) keeps the
+            // original behavior of letting `check` auto-detect/normalize.
+            let result = match in_scheme(r#in) {
+                Some(scheme) => {
+                    let slp1_word = panini_lipi::to_slp1(&word, scheme);
+                    engine.check(&slp1_word)
+                }
+                None => engine.check(&word),
+            };
             let scheme = out_scheme(out);
             if json {
                 let obj = serde_json::json!({

@@ -21,15 +21,18 @@
 
 ## Rules of the codebase
 - SLP1 is the only internal representation; transliterate only in `panini-lipi`.
-- `#![forbid(unsafe_code)]` in every crate.
+- `#![forbid(unsafe_code)]` in every non-fuzz crate (the `panini-lipi` fuzz
+  target under `crates/panini-lipi/fuzz` legitimately omits it, since it uses
+  `#![no_main]` plus the libfuzzer harness macro).
 - Grammar changes are gated by the golden paradigm test
   (`crates/panini/tests/paradigm.rs`). Surface forms there are the source of
   truth; sūtra ids/names in traces must match the cited reference
   (ashtadhyayi.com).
 - The `panini-cli` binary has a single subcommand, `check` (flags `--trace`,
-  `--json`, `--out`). There is no `derive` subcommand in v1. The `--in` flag
-  is currently inert — the CLI always auto-detects the input transliteration
-  scheme; `--in` does not select it.
+  `--json`, `--out`, `--in`). There is no `derive` subcommand in v1. `--in auto`
+  (the default) auto-detects the input transliteration scheme; passing an
+  explicit `--in` scheme (`slp1`/`iast`/`hk`/`deva`) makes that scheme
+  authoritative, overriding auto-detection.
 
 ## Where things live
 See `docs/ARCHITECTURE.md`.
