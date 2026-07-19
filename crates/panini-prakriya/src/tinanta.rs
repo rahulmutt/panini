@@ -190,6 +190,44 @@ mod tests {
         assert_eq!(form("BU", Purusha::Prathama, Vacana::Bahu), "Bavanti");
     }
     #[test]
+    fn guna_of_ik_vowels_all_arms() {
+        // 1.1.2 aden guNaH: pin every arm of the ik -> guNa substitution table,
+        // not just the ones a v1 golden root happens to touch.
+        assert_eq!(guna_of('i'), Some("e"));
+        assert_eq!(guna_of('I'), Some("e"));
+        assert_eq!(guna_of('u'), Some("o"));
+        assert_eq!(guna_of('U'), Some("o"));
+        assert_eq!(guna_of('f'), Some("ar"));
+        assert_eq!(guna_of('F'), Some("ar"));
+        assert_eq!(guna_of('x'), Some("al"));
+        assert_eq!(guna_of('X'), Some("al"));
+        // Non-ik letters (consonants, and non-ik vowels like `a`) have no guNa
+        // substitute.
+        assert_eq!(guna_of('a'), None);
+        assert_eq!(guna_of('t'), None);
+    }
+
+    #[test]
+    fn is_vowel_distinguishes_vowels_from_consonants() {
+        for c in [
+            'a', 'A', 'i', 'I', 'u', 'U', 'f', 'F', 'x', 'X', 'e', 'E', 'o', 'O',
+        ] {
+            assert!(is_vowel(c), "{c} should be a vowel");
+        }
+        for c in ['t', 'k', 'p', 's', 'm'] {
+            assert!(!is_vowel(c), "{c} should not be a vowel");
+        }
+    }
+
+    #[test]
+    fn ji_3sg_is_jayati() {
+        // "ji" ends in `i`; 7.3.84 guNa gives "je", then 6.1.78 eco'yavAyAvaH
+        // (the `e` arm, distinct from the `o` arm already exercised by BU)
+        // turns je+a into jaya, yielding "jayati".
+        assert_eq!(form("ji", Purusha::Prathama, Vacana::Eka), "jayati");
+    }
+
+    #[test]
     fn trace_is_recorded() {
         let d = dhatus().iter().find(|d| d.code == "BU").unwrap();
         let p = derive(
