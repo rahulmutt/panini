@@ -1,0 +1,20 @@
+[tools]
+rust = "1.83.0"
+
+[tasks.build]
+run = "cargo build --workspace"
+
+[tasks.test]
+run = "cargo test --workspace"
+
+[tasks.lint]
+run = "cargo clippy --workspace --all-targets -- -D warnings"
+
+[tasks.fmt]
+run = "cargo fmt --all"
+
+[tasks.mutants]
+run = "cargo mutants --package panini-prakriya"
+
+[tasks.audit]
+run = "cargo audit && cargo deny check"

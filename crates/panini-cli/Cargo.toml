@@ -1,0 +1,16 @@
+[package]
+name = "panini-cli"
+edition.workspace = true
+version.workspace = true
+license.workspace = true
+rust-version.workspace = true
+
+[[bin]]
+name = "panini"
+path = "src/main.rs"
+
+[dependencies]
+panini = { path = "../panini" }
+panini-lipi = { path = "../panini-lipi" }
+clap = { workspace = true }
+serde_json = { workspace = true }

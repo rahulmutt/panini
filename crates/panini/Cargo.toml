@@ -1,0 +1,15 @@
+[package]
+name = "panini"
+edition.workspace = true
+version.workspace = true
+license.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+panini-lipi = { path = "../panini-lipi" }
+panini-data = { path = "../panini-data" }
+panini-analyze = { path = "../panini-analyze" }
+panini-prakriya = { path = "../panini-prakriya" }
+
+[dev-dependencies]
+proptest = { workspace = true }
