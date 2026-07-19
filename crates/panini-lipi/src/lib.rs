@@ -112,4 +112,29 @@ mod tests {
             }
         }
     }
+
+    #[test]
+    fn hk_long_vowel_digraphs_parse_correctly() {
+        // Regression test: the detect() heuristic flags any ASCII containing "aa" as HK.
+        // This test ensures that HK strings with long-vowel digraphs parse correctly
+        // instead of being mis-tokenized into two single vowels.
+
+        // Test the main "aa" case via detect() + normalize()
+        let (slp1, scheme) = normalize("kaa");
+        assert_eq!(
+            scheme,
+            Scheme::Hk,
+            "expected 'kaa' to be detected as HK (contains 'aa')"
+        );
+        assert_eq!(slp1, "kA", "HK 'aa' digraph should parse to SLP1 'A'");
+
+        // Test "ii" and "uu" with explicit HK parsing
+        // (they wouldn't be detected as HK by the heuristic, but should parse correctly
+        // if explicitly routed to HK scheme)
+        let slp1 = to_slp1("pii", Scheme::Hk);
+        assert_eq!(slp1, "pI", "explicit HK 'ii' should parse to SLP1 'I'");
+
+        let slp1 = to_slp1("tuu", Scheme::Hk);
+        assert_eq!(slp1, "tU", "explicit HK 'uu' should parse to SLP1 'U'");
+    }
 }

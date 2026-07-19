@@ -119,6 +119,14 @@ pub const HK: &[(&str, &str)] = &[
     ("H", "H"),
 ];
 
+/// Parse-only HK digraph aliases for long vowels (aa→A, ii→I, uu→U).
+/// These are consulted during HK → SLP1 parsing only, not during SLP1 → HK emission.
+/// This allows the `detect()` heuristic (which flags any ASCII containing "aa" as HK)
+/// to work correctly: strings like "kanyaa" are detected as HK and then parsed with
+/// these aliases to produce the correct SLP1 "kanyA" instead of two separate "a" chars.
+/// Format: (slp1_token, hk_token) to match the HK table format.
+const HK_PARSE_ALIASES: &[(&str, &str)] = &[("A", "aa"), ("I", "ii"), ("U", "uu")];
+
 /// (slp1_token, independent_vowel_glyph, dependent_matra_sign) triples for the
 /// 14 SLP1 vowels. `a`'s matra is empty (bare consonant carries inherent `a`).
 pub const DEVANAGARI_VOWELS: &[(&str, &str, &str)] = &[
@@ -186,7 +194,7 @@ pub fn to_slp1(input: &str, from: Scheme) -> String {
     match from {
         Scheme::Slp1 => input.to_string(),
         Scheme::Iast => parse_simple(input, IAST),
-        Scheme::Hk => parse_simple(input, HK),
+        Scheme::Hk => parse_hk_with_aliases(input),
         Scheme::Devanagari => devanagari_to_slp1(input),
     }
 }
@@ -222,6 +230,39 @@ fn emit_simple(input: &str, table: &[(&str, &str)]) -> String {
 fn parse_simple(input: &str, table: &[(&str, &str)]) -> String {
     let mut sorted: Vec<(&str, &str)> = table.iter().map(|&(slp1, other)| (other, slp1)).collect();
     sorted.sort_by(|a, b| b.0.chars().count().cmp(&a.0.chars().count()));
+
+    let mut out = String::new();
+    let mut rest = input;
+    'outer: while !rest.is_empty() {
+        for &(other_tok, slp1_tok) in &sorted {
+            if rest.starts_with(other_tok) {
+                out.push_str(slp1_tok);
+                rest = &rest[other_tok.len()..];
+                continue 'outer;
+            }
+        }
+        // No known token matches here: passthrough one char unchanged.
+        let mut chars = rest.chars();
+        let c = chars.next().expect("rest is non-empty");
+        out.push(c);
+        rest = chars.as_str();
+    }
+    out
+}
+
+/// Parse HK input with long-vowel digraph aliases (aa→A, ii→I, uu→U).
+/// This is needed because the `detect()` heuristic flags any ASCII containing "aa"
+/// as HK, but the standard HK table only has single-char tokens ("A", "I", "U").
+/// By including the digraph aliases in the parse phase, we ensure that strings
+/// like "kanyaa" parse correctly to "kanyA" instead of mis-tokenizing as two "a"s.
+fn parse_hk_with_aliases(input: &str) -> String {
+    let mut sorted: Vec<(&str, &str)> = HK
+        .iter()
+        .chain(HK_PARSE_ALIASES.iter())
+        .map(|&(slp1, other)| (other, slp1))
+        .collect();
+    sorted.sort_by(|a, b| b.0.chars().count().cmp(&a.0.chars().count()));
+    sorted.dedup_by(|a, b| a.0 == b.0); // Aliases take precedence (they're later in the chain)
 
     let mut out = String::new();
     let mut rest = input;
