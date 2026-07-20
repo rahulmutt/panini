@@ -5,8 +5,8 @@
 //! suite only checks that particular sūtras are *present* in a trace; that
 //! would still pass if a `record()` call were dropped or reordered. This
 //! file pins the FULL ORDERED sequence for representative forms so a
-//! regression like that fails loudly, across all three lakāras this crate
-//! covers (laṭ, laṅ, loṭ) — **nine** tests in total below.
+//! regression like that fails loudly, across all four lakāras this crate
+//! covers (laṭ, laṅ, loṭ, vidhiliṅ) — **twelve** tests in total below.
 //!
 //! For the authoritative rule order itself, do not rely on a diagram here:
 //! read `TINANTA_RULES` in `crates/panini-prakriya/src/tinanta.rs` top to
@@ -129,4 +129,45 @@ fn bhavani_trace_shows_aat_not_dirgha() {
     assert!(trace.contains(&"3.4.92".to_string()), "got {trace:?}");
     assert!(trace.contains(&"6.1.101".to_string()), "got {trace:?}");
     assert!(!trace.contains(&"7.3.101".to_string()), "got {trace:?}");
+}
+
+#[test]
+fn bhavet_trace_is_exactly_the_vidhilin_vali_lopa_path() {
+    // BU vidhiliṅ prathama eka: tip -> ti (1.3.9) -> t (3.4.100, now
+    // ṅit-wide), yāsuṭ (3.4.103), salopa (7.2.79), yA -> iy (7.2.80),
+    // a+i -> e (6.1.87), y dropped before t (6.1.66).
+    assert_eq!(
+        trace_for("Bavet"),
+        vec![
+            "3.4.78", "1.3.9", "3.4.100", "3.4.103", "3.1.68", "1.3.9", "7.2.79", "7.2.80",
+            "7.3.84", "6.1.78", "6.1.87", "6.1.66"
+        ]
+    );
+}
+
+#[test]
+fn bhaveyuh_trace_is_exactly_the_jus_path() {
+    // BU vidhiliṅ prathama bahu: Ji -> jus (3.4.108) -> us (1.3.9), then the
+    // yāsuṭ chain; the y of `yus` SURVIVES 6.1.66 (u is not a val consonant),
+    // and word-final s becomes visarga (8.3.15).
+    assert_eq!(
+        trace_for("BaveyuH"),
+        vec![
+            "3.4.78", "3.4.108", "1.3.9", "3.4.103", "3.1.68", "1.3.9", "7.2.79", "7.2.80",
+            "7.3.84", "6.1.78", "6.1.87", "8.3.15"
+        ]
+    );
+}
+
+#[test]
+fn bhaveyam_trace_is_exactly_the_widened_mip_path() {
+    // BU vidhiliṅ uttama eka: mip -> mi (1.3.9) -> am (3.4.101, mip arm now
+    // fires outside laṅ), then the yāsuṭ chain; no 6.1.66 (a is a vowel).
+    assert_eq!(
+        trace_for("Baveyam"),
+        vec![
+            "3.4.78", "1.3.9", "3.4.101", "3.4.103", "3.1.68", "1.3.9", "7.2.79", "7.2.80",
+            "7.3.84", "6.1.78", "6.1.87"
+        ]
+    );
 }
