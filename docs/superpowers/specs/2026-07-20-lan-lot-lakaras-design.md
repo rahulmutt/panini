@@ -82,36 +82,52 @@ Ordered as they appear in `TINANTA_RULES`. **Bold** = new in this slice.
 | #  | Sūtra                              | Effect                              | Guard        |
 |----|------------------------------------|-------------------------------------|--------------|
 | 1  | 3.4.78 tiptasjhi…                  | lakāra → base tiṅ ending            | all          |
-| 2  | **3.4.85 loṭo laṅvat**             | set `is_ngit_like`                  | loṭ          |
-| 3  | **3.4.99 nityaṃ ṅitaḥ**            | vas→va, mas→ma                      | ṅit-like     |
-| 4  | **3.4.86 er uḥ**                   | final i→u (tip→tu, Ji→Ju)           | loṭ          |
-| 5  | **3.4.100 itaś ca**                | elide final i (tip→t, sip→s, Ji→J)  | laṅ          |
-| 6  | **3.4.101 tas-thas-tha-mipām**     | tas→tAm, Tas→tam, Ta→ta, mip→am     | ṅit-like     |
-| 7  | **3.4.87 ser hyapic ca**           | sip→hi                              | loṭ          |
-| 8  | **3.4.89 mer niḥ**                 | mip→ni                              | loṭ          |
-| 9  | **3.4.92 āḍ uttamasya pic ca**     | prefix ā to uttama ending           | loṭ          |
-| 10 | 1.3.3 halantyam + 1.3.9 tasya lopaḥ | elide the ending's anubandhas, with 1.3.4 na vibhaktau tusmāḥ suppressing it for a vibhakti's final t/T/d/D/n/s/m | all |
+| 2  | 1.3.3 halantyam + 1.3.9 tasya lopaḥ | elide the ending's anubandhas, with 1.3.4 na vibhaktau tusmāḥ suppressing it for a vibhakti's final t/T/d/D/n/s/m | all |
+| 3  | **3.4.85 loṭo laṅvat**             | set `is_ngit_like`                  | loṭ          |
+| 4  | **3.4.99 nityaṃ ṅitaḥ**            | vas→va, mas→ma                      | ṅit-like     |
+| 5  | **3.4.101 tas-thas-tha-mipām**     | tas→tAm, Tas→tam, Ta→ta (ṅit-like); mip→am (laṅ only) | see effect |
+| 6  | **3.4.87 ser hyapic ca**           | si→hi                               | loṭ          |
+| 7  | **3.4.89 mer niḥ**                 | mi→ni                               | loṭ          |
+| 8  | **3.4.86 er uḥ**                   | final i→u (ti→tu, Ji→Ju)            | loṭ          |
+| 9  | **3.4.100 itaś ca**                | elide final i (ti→t, si→s, Ji→J)    | laṅ          |
+| 10 | **3.4.92 āḍ uttamasya pic ca**     | prefix `A` to uttama ending         | loṭ          |
 | 11 | 3.1.68 kartari śap                 | insert śap; it-samjña; mark aṅga    | all          |
 | 12 | **6.4.71 luṅ-laṅ-lṛṅkṣv aḍ-udāttaḥ** | prefix `a` to the aṅga            | laṅ          |
-| 13 | 7.1.3 jho'ntaḥ                     | J→ant                               | all          |
+| 13 | 7.1.3 jho'ntaḥ                     | leading J → ant                     | all          |
 | 14 | 7.3.84 sārvadhātukārdhadhātukayoḥ  | aṅga-final ik → guṇa                | all          |
 | 15 | 6.1.78 eco'yavāyāvaḥ               | e/o/E/O → ay/av/Ay/Av               | all          |
-| 16 | 6.1.97 ato guṇe                    | śap `a` + `a` → single `a`          | all          |
+| 16 | 7.3.101 ato dīrgho yañi            | śap `a` → `A` before m/v            | laṭ, laṅ     |
 | 17 | **6.1.101 akaḥ savarṇe dīrghaḥ**   | śap `a` + `A` → `A`                 | loṭ uttama   |
-| 18 | 7.3.101 ato dīrgho yañi            | aṅga-final `a` → `A` before m/v     | laṭ, laṅ     |
+| 18 | 6.1.97 ato guṇe                    | śap `a` + `a` → single `a`          | all          |
 | 19 | **6.4.105 ato heḥ**                | elide `hi` after `a`                | loṭ          |
-| 20 | **8.2.23 saṃyogāntasya lopaḥ**     | drop final of a conjunct            | all          |
+| 20 | **8.2.23 saṃyogāntasya lopaḥ**     | drop final of a word-final conjunct | all          |
 | 21 | 8.3.15 kharavasānayoḥ              | word-final s → visarga              | all          |
 
 ### Ordering decisions that carry weight
 
-- **#4 before #5.** loṭ replaces the ending's final `i` with `u`; laṅ elides it.
-  Only the guards keep them apart, and only this ordering makes loṭ win for loṭ.
-- **#8 vs #6's mip arm.** loṭ *uttama-eka* is `ni` (3.4.89 mer niḥ), not `am`.
-  3.4.101's mip→am arm must therefore guard on laṅ specifically, not on
+Each of these was derived by hand-working the 18 new forms; getting any of them
+backwards produces a wrong surface form.
+
+- **#2 before #3–#9.** The lakāra substitutions operate on the *it*-stripped
+  ending. 3.4.100 *itaś ca* elides the `i` of `tip`, but that `i` is only
+  exposed after 1.3.3 *halantyam* removes the anubandha `p`. Run the
+  substitutions first and laṅ 3sg derives `tp` instead of `t`.
+- **#6 and #7 before #8.** *ser hyapic ca* and *mer niḥ* are *apavāda* to
+  *er uḥ*: `hi` and `ni` both end in `i`, so er uḥ would corrupt them to
+  `hu`/`nu` if it ran first. #8 additionally guards on the ending being exactly
+  `ti` or `Ji`, making the preemption explicit rather than order-dependent.
+- **#8 vs #9.** loṭ replaces the ending's final `i` with `u`; laṅ elides it.
+  Only the lakāra guards keep them apart.
+- **#7 vs #5's mip arm.** loṭ *uttama-eka* is `ni` (3.4.89 mer niḥ), not `am`.
+  3.4.101's mip→am arm therefore guards on laṅ specifically, not on
   `is_ngit_like`.
-- **#9 + #17 replace #18 for loṭ uttama.** `BavAni` / `BavAva` / `BavAma` come
-  from the āḍ augment plus savarṇa-dīrgha, not from *ato dīrgho yañi*. #18 must
+- **#16 before #18.** Laṅ *uttama-eka*'s ending is `am`, which begins with a
+  vowel, so *ato dīrgho yañi* must not fire on it. But once #18 strips the
+  leading `a`, the ending looks like `m` and #16 would wrongly lengthen,
+  giving `aBavAm` for `aBavam`. No v1 form fires both rules, so this ordering
+  is behavior-preserving for laṭ.
+- **#10 + #17 replace #16 for loṭ uttama.** `BavAni` / `BavAva` / `BavAma` come
+  from the āḍ augment plus savarṇa-dīrgha, not from *ato dīrgho yañi*. #16 must
   exclude loṭ or it will double-lengthen.
 
 ### Reference verification
