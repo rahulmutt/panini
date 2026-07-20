@@ -53,8 +53,8 @@ ta → sIyta → Iyta ;  laBa + Iyta → laBe + yta → laBeta
 
 ## Architecture
 
-Unchanged in shape. Ātmanepada is fourteen new self-guarding `Rule`s in
-`TINANTA_RULES` plus six guard/shape widenings; `derive`, `run_pipeline`,
+Unchanged in shape. Ātmanepada is fifteen new self-guarding `Rule`s in
+`TINANTA_RULES` plus seven guard/shape widenings; `derive`, `run_pipeline`,
 `Prakriya`, and `Term` are untouched except for one new term tag.
 
 **Data.** `Pada` gains `Atmanepada`. `tin.tsv` gains the nine raw ātmanepada
@@ -81,7 +81,10 @@ a different fact: the *ending* is ṅit — true in laṭ/loṭ ātmanepada only
 the ending term. It is guarded to ātmanepada endings in this slice: parasmaipada
 apit endings (tas, Ji, …) are equally ṅid-vat in principle, but no implemented
 rule consumes the fact, and firing it would perturb the 216 pinned parasmaipada
-traces. Widening later is additive; the rule comment records this.
+traces. Widening later is additive; the rule comment records this. One genuine
+exclusion inside ātmanepada: loṭ uttama endings are pit by 3.4.92's own *pic
+ca*, hence not apit, hence outside 1.2.4 — which is exactly what stops 7.2.81
+from eating the āṭ-initial `AvahE`/`AmahE` (they belong to 6.1.101 instead).
 
 **Sīyuṭ** is a text prefix on the ending term, exactly like yāsuṭ/āṭ/aṭ, so
 the ANGA/SHAP/ENDING indices stay stable.
@@ -96,7 +99,7 @@ Ordered as they appear in `TINANTA_RULES`. **Bold** = new in this slice.
 | 0  | **1.3.12 anudāttaṅita ātmanepadam / 1.3.78 śeṣāt kartari parasmaipadam** | sanction the requested pada against the root's pada tag; mismatch fails the derivation | all |
 | 1  | 3.4.78 tiptasjhi…                      | lakāra → base tiṅ ending (now keyed by pada)                | all |
 | 2  | 1.3.3 + 1.3.9 it-saṃjñā                | iw→i, mahiN→mahi; 1.3.4 protects TAs/AtAm/Dvam finals       | all |
-| 3  | **1.2.4 sārvadhātukam apit**           | mark the ending term ṅid-vat (atideśa)                      | ātmanepada |
+| 3  | **1.2.4 sārvadhātukam apit**           | mark the ending term ṅid-vat (atideśa)                      | ātmanepada, except loṭ uttama (pit via 3.4.92 pic ca) |
 | 4  | 3.4.85 loṭo laṅvat                     | set `is_ngit_like`                                          | loṭ |
 | 5  | 3.4.108 jher jus                       | Ji → jus → us                                               | vidhiliṅ (P by text) |
 | 6  | **3.4.105 jhasya ran**                 | Ja → ran (apavāda to 7.1.3 for liṅ)                         | vidhiliṅ Ā |
@@ -112,7 +115,7 @@ Ordered as they appear in `TINANTA_RULES`. **Bold** = new in this slice.
 | 16 | **3.4.91 savābhyāṃ vāmau**             | se→sva, Dve→Dvam (apavāda to 3.4.90)                        | loṭ |
 | 17 | **3.4.93 eta ai**                      | uttama e → E (apavāda to 3.4.90)                            | loṭ, Ā |
 | 18 | **3.4.90 ām etaḥ**                     | final e → Am: te→tAm, Ate→AtAm, Je→JAm, ATe→ATAm            | loṭ, Ā |
-| 19 | 3.4.92 āḍ uttamasya pic ca             | prefix `A` to uttama ending                                 | loṭ (both padas) |
+| 19 | 3.4.92 āḍ uttamasya pic ca *(widened)* | prefix `A` to uttama ending                                 | loṭ, both padas; arm set gains E/vahE/mahE (the post-3.4.93 Ā shapes) |
 | 20 | 3.4.103 yāsuṭ … *(widened)*            | prefix `yAs`                                                | + parasmaipada (the sūtra's own *parasmaipadeṣu*; the `tinanta.rs:317` revisit) |
 | 21 | **3.4.102 liṅaḥ sīyuṭ**                | prefix `sIy` to the (already substituted) ending            | vidhiliṅ, Ā |
 | 22 | 3.1.68 kartari śap                     | insert śap; mark aṅga — the index boundary                  | all |
@@ -123,16 +126,17 @@ Ordered as they appear in `TINANTA_RULES`. **Bold** = new in this slice.
 | 27 | 7.2.80 ato yeyaḥ                       | yA → iy (never fires for Ā: sīyuṭ yields Iy, not yA)        | vidhiliṅ |
 | 28 | **7.2.81 āto ṅitaḥ**                   | ending-initial `A` → `iy` after a-final aṅga, ending ṅid-vat: Ate→iyte, AtAm→iytAm, ATe→iyTe | shape + ṅid-vat |
 | 29 | 7.3.84 sārvadhātukārdhadhātukayoḥ      | aṅga-final ik → guṇa                                        | all |
-| 30 | 6.1.78 eco'yavāyāvaḥ                   | e/o/E/O → ay/av/Ay/Av                                       | all |
-| 31 | **6.1.90 āṭaś ca**                     | āṭ + ac → vṛddhi ekādeśa: A+eDa→EDa, A+Ikza→Ekza (laṅ); A+E→E (loṭ uttama eka) | āṭ present |
+| 30 | **7.3.86 pugantalaghūpadhasya ca**     | guṇa of the aṅga's light penultimate ik before the sārvadhātuka: vft → vart | shape (vft is the only curated root with an ik upadhā) |
+| 31 | 6.1.78 eco'yavāyāvaḥ                   | e/o/E/O → ay/av/Ay/Av                                       | all |
 | 32 | 7.3.101 ato dīrgho yañi                | śap a → A before m/v (now also Ā vahi/mahi)                 | laṭ, laṅ |
 | 33 | 6.1.101 akaḥ savarṇe dīrghaḥ           | a + A → A (āṭ of 3.4.92, both padas)                        | loṭ uttama |
-| 34 | 6.1.97 ato guṇe *(widened)*            | a + guṇa vowel → pararūpa: a+a (anta) **and a+e (laṭ Ā 1sg: Bava+e→Bave)** | shape |
-| 35 | 6.1.87 ād guṇaḥ *(widened)*            | a + i/**I** → e: aBava+i→aBave; laBa+Iyta→laBe+yta; laBa+iyte→laBe+yte | shape |
-| 36 | 6.1.66 lopo vyor vali                  | ending-initial y before val is dropped: yta, yTAs, yTe, yvahi, yran drop it; yAtAm, yATAm, ya keep it | shape |
-| 37 | 6.4.105 ato heḥ                        | elide hi after a                                            | loṭ (P by text) |
-| 38 | 8.2.23 saṃyogāntasya lopaḥ             | drop final of word-final conjunct                           | all |
-| 39 | 8.3.15 kharavasānayoḥ                  | word-final s → visarga (TAs→TAH)                            | all |
+| 34 | **6.1.90 āṭaś ca**                     | āṭ + ac → vṛddhi ekādeśa. Aṅga arm (laṅ): A+eD→ED, A+Ikz→Ekz. Ending arm (loṭ uttama eka, after 6.1.101 has made śap `A`): A+E→E | āṭ shape |
+| 35 | 6.1.97 ato guṇe *(widened)*            | a + guṇa vowel → pararūpa: a+a (anta) **and a+e (laṭ Ā 1sg: Bava+e→Bave)** | shape |
+| 36 | 6.1.87 ād guṇaḥ *(widened)*            | a + i/**I** → e: aBava+i→aBave; laBa+Iyta→laBe+yta; laBa+iyte→laBe+yte | shape |
+| 37 | 6.1.66 lopo vyor vali                  | ending-initial y before val is dropped: yta, yTAs, yTe, yvahi, yran drop it; yAtAm, yATAm, ya keep it | shape |
+| 38 | 6.4.105 ato heḥ                        | elide hi after a                                            | loṭ (P by text) |
+| 39 | 8.2.23 saṃyogāntasya lopaḥ             | drop final of word-final conjunct                           | all |
+| 40 | 8.3.15 kharavasānayoḥ                  | word-final s → visarga (TAs→TAH)                            | all |
 
 ### Guard widenings on existing rules
 
@@ -146,6 +150,10 @@ Ordered as they appear in `TINANTA_RULES`. **Bold** = new in this slice.
   deferred this until ātmanepada arrived.
 - **6.4.71 aṭ** cedes vowel-initial aṅgas to its apavāda **6.4.72 āṭ**
   (ordered adjacent; guard by aṅga-initial phoneme class).
+- **3.4.92 āḍ uttamasya pic ca** widens its exact-text arm set from
+  `ni|va|ma` (the parasmaipada shapes left by 3.4.89/3.4.99) to also accept
+  `E|vahE|mahE` (the ātmanepada shapes left by 3.4.93). Same explicit-set
+  style as today; MUST stay ordered after 3.4.93.
 - **6.1.97 ato guṇe** widens from `a + a` to `a + guṇa vowel` (adds the `a + e`
   pararūpa for laṭ ātmanepada 1sg `Bave`); **6.1.87 ād guṇaḥ** widens its
   ending-initial match from `i` to `i/I` (sīyuṭ survives salopa as long-I `Iy`,
@@ -172,20 +180,30 @@ Each was derived by hand-working all 72 ātmanepada cells.
 - **#28 after #18.** loṭ's 3du/2du loop textually (AtAm →#15 Ate →#18 AtAm)
   before 7.2.81 rewrites the initial A — the net effect (BavetAm ≠ laṭ's
   Bavete) comes from the ṭit/loṭ rule pair, not from skipping either.
-- **#35 before #36** (unchanged from slice 2): 6.1.66 needs the ending to
+- **#28 before #33.** Both 7.2.81 and 6.1.101 match "śap `a` + ending-initial
+  `A`". The ṅid-vat tag disambiguates (7.2.81 requires it, and loṭ uttama's
+  āṭ-carrying endings never get it, per the 1.2.4 pic-ca exclusion), but the
+  order still matters for the tagged cells: 6.1.101 first would merge laṭ 3du
+  into `laBAte` (wrong) before 7.2.81 could fire. Pinned by `laBete`.
+- **#34 after #33.** 6.1.90's ending arm consumes "śap `A` + ending `E`",
+  a shape that exists only after 6.1.101 has coalesced the āṭ into the śap.
+  At the spec's earlier draft position (before 7.3.101) the arm could never
+  fire and loṭ uttama eka would surface as `laBAE`.
+- **#36 before #37** (unchanged from slice 2): 6.1.66 needs the ending to
   start with `y`, which only happens after ād guṇaḥ absorbs the `i`/`I`.
 
 ### Reference verification
 
 Per AGENTS.md, sūtra ids and names in traces must match ashtadhyayi.com
-(via the `sanskrit/ashtadhyayi` data mirror, as in slice 2). The fourteen new
+(via the `sanskrit/ashtadhyayi` data mirror, as in slice 2). The fifteen new
 sūtras must each be verified for id, SLP1 name, and effect before their trace
 literals are pinned. Draft SLP1 names, to be confirmed verbatim:
 `anudAttaNita Atmanepadam` (1.3.12), `SezAt kartari parasmEpadam` (1.3.78),
 `sArvaDAtukam apit` (1.2.4), `TAsaH se` (3.4.80), `wita AtmanepadAnAM wer e`
 (3.4.79), `savAByAM vAmO` (3.4.91), `eta E` (3.4.93), `Am etaH` (3.4.90),
 `Jasya ran` (3.4.105), `iwo 't` (3.4.106), `liNaH sIyuw` (3.4.102),
-`Aq ajAdInAm` (6.4.72), `AwaS ca` (6.1.90), `Ato NitaH` (7.2.81).
+`Aq ajAdInAm` (6.4.72), `AwaS ca` (6.1.90), `Ato NitaH` (7.2.81),
+`pugantalaGUpaDasya ca` (7.3.86).
 
 One attribution needs explicit confirmation: loṭ uttama eka (`laBE`) merges
 `A + E` — this spec assigns it to **6.1.90 āṭaś ca** (the merging A *is* the
@@ -210,9 +228,13 @@ the JSON output adds a `pada` field. No new flags or subcommands.
 
 - **Golden paradigm** extends to 432 forms. The 216 new forms are verified
   against ashtadhyayi.com before being committed. The 216 existing
-  parasmaipada forms — and their pinned traces — must remain byte-identical;
-  run them before adding the new forms, not only after (the five widenings and
-  the 1.2.4 guard are designed for exactly this).
+  parasmaipada surface forms must remain byte-identical; run them before
+  adding the new forms, not only after (the seven widenings and the 1.2.4
+  guard are designed for exactly this). Their pinned traces change in exactly
+  one way: every parasmaipada derivation now begins with the 1.3.78 pada
+  sanction step (matching the reference prakriyā, which records it), so the
+  twelve sequences in `trace.rs` each gain a leading `"1.3.78"` — a one-time
+  mechanical update, and any other trace difference is a bug.
 - **Negative forms.** Wrong-pada: `laBati`, `Bavate`, `eDati`, `alaBat` must
   be INVALID (pada sanction failure). Cross-lakāra: `laBatAm` as laṭ, `laBeta`
   as laṭ are INVALID cells (they are valid only as loṭ/vidhiliṅ). No
@@ -220,13 +242,13 @@ the JSON output adds a `pada` field. No new flags or subcommands.
 - **Trace test** pins the full ordered sūtra sequence for one exemplar per new
   chain: `laBete` (1.2.4 + 7.2.81 path), `laBasva` (3.4.80 + 3.4.91), `laBE`
   (3.4.93 + 3.4.92 + the A+E merge), `laBeran` (3.4.105 + 3.4.102 + 7.2.79),
-  `laBeya` (3.4.106), `EData` (6.4.72 + 6.1.90), and `laBate` (the minimal
-  1.3.12 + 3.4.79 path).
+  `laBeya` (3.4.106), `EData` (6.4.72 + 6.1.90), `vartate` (7.3.86), and
+  `laBate` (the minimal 1.3.12 + 3.4.79 path).
 - **Roundtrip** extends over the pada axis automatically.
 - **Unit tests** in `tinanta.rs`: name-gate and digraph tests cover the new
   rules; targeted tests for 3.4.100's new pada guard (vahi keeps its i), 7.2.81
   (fires on ṅid-vat `Ate`, not on parasmaipada shapes), and 6.1.87's long-I arm.
-- **Mutation testing** (`mise run mutants`) remains the real gate: with ~41
+- **Mutation testing** (`mise run mutants`) remains the real gate: with 42
   guarded rules the likely defect class is a dropped or inverted guard,
   especially the new pada guards.
 
@@ -247,7 +269,8 @@ the JSON output adds a `pada` field. No new flags or subcommands.
 
 - All 432 golden forms validate as VALID with a correct, ordered sūtra trace.
 - Every sūtra id and name in a trace matches ashtadhyayi.com.
-- The 216 pre-existing forms and their pinned traces are byte-identical.
+- The 216 pre-existing surface forms are byte-identical; their traces differ
+  only by the new leading 1.3.78 pada-sanction step.
 - Wrong-pada forms return INVALID via pada-sanction failure in the derivation.
 - Mutation testing shows the new guards (especially the pada guards) pinned.
 - Single-word `check` remains interactive-fast at 432 candidates.
