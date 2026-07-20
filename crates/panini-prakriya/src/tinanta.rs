@@ -1026,6 +1026,50 @@ mod tests {
         assert_eq!(p.terms[ENDING].text, "iyt");
     }
 
+    #[test]
+    fn ato_yeyah_requires_vidhilin_lakara() {
+        // shap == "a" and ending starts_with "yA" are both satisfied, but the
+        // lakara isn't vidhilin: the guard's first `||` must still short-
+        // circuit to false. Kills the `||` -> `&&` mutant at the first
+        // operator, which would otherwise let this fire whenever the other
+        // two conditions hold regardless of lakara.
+        let mut p = Prakriya {
+            terms: vec![Term::new("Bav"), Term::new("a"), Term::new("yAt")],
+            log: vec![],
+            ctx: Context::new(
+                Lakara::Lan,
+                Pada::Parasmaipada,
+                Purusha::Prathama,
+                Vacana::Eka,
+            ),
+        };
+        let rule = TINANTA_RULES.iter().find(|r| r.id == "7.2.80").unwrap();
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[ENDING].text, "yAt");
+    }
+
+    #[test]
+    fn ato_yeyah_requires_shap_a() {
+        // lakara is vidhilin and ending starts_with "yA", but shap isn't
+        // "a": the guard's second `||` must still short-circuit to false.
+        // Kills the `||` -> `&&` mutant at the second operator, which would
+        // otherwise let this fire whenever lakara is vidhilin regardless of
+        // shap.
+        let mut p = Prakriya {
+            terms: vec![Term::new("i"), Term::new("i"), Term::new("yAt")],
+            log: vec![],
+            ctx: Context::new(
+                Lakara::VidhiLin,
+                Pada::Parasmaipada,
+                Purusha::Prathama,
+                Vacana::Eka,
+            ),
+        };
+        let rule = TINANTA_RULES.iter().find(|r| r.id == "7.2.80").unwrap();
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[ENDING].text, "yAt");
+    }
+
     fn lin_form(code: &str, pu: Purusha, va: Vacana) -> String {
         let d = dhatus().iter().find(|d| d.code == code).unwrap();
         derive(d, Lakara::VidhiLin, Pada::Parasmaipada, pu, va).text()
