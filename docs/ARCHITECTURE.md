@@ -23,9 +23,9 @@ ordered `&[Rule]` covering all four lakāras. Each rule self-guards on
 Reading the list top to bottom IS reading the grammar this crate implements.
 
 Rule order is load-bearing and several orderings are non-obvious; the
-constraints and their justifications are documented in
-`docs/superpowers/specs/2026-07-20-lan-lot-lakaras-design.md`. The exact
-ordered traces in `crates/panini/tests/trace.rs` are what pin them.
+constraints and their justifications are documented in the design specs
+under `docs/superpowers/specs/`. The exact ordered traces in
+`crates/panini/tests/trace.rs` are what pin them.
 
 ## Rule trace
 Every applied sūtra is logged as a `RuleStep { sutra, name, before, after }`.
