@@ -46,6 +46,7 @@ mod tests {
         let mut p = Prakriya {
             terms: vec![Term::new("Sap")],
             log: vec![],
+            ..Default::default()
         };
         let mut t = p.terms[0].clone();
         run_it_samjna(&mut t, &mut p, 0);
@@ -59,6 +60,7 @@ mod tests {
         let mut p = Prakriya {
             terms: vec![Term::new("tip")],
             log: vec![],
+            ..Default::default()
         };
         let mut t = p.terms[0].clone();
         run_it_samjna(&mut t, &mut p, 0);

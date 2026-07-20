@@ -1,3 +1,4 @@
+use crate::context::Context;
 use crate::term::Term;
 
 #[derive(Debug, Clone)]
@@ -12,6 +13,7 @@ pub struct RuleStep {
 pub struct Prakriya {
     pub terms: Vec<Term>,
     pub log: Vec<RuleStep>,
+    pub ctx: Context,
 }
 
 impl Prakriya {

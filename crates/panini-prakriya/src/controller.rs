@@ -23,6 +23,7 @@ mod tests {
         let mut p = Prakriya {
             terms: vec![Term::new("Bo"), Term::new("a")],
             log: vec![],
+            ..Default::default()
         };
         let rules = [Rule {
             id: "6.1.78",
