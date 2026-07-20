@@ -1,5 +1,5 @@
 use panini::Panini;
-use panini_data::{Lakara, Pada, Purusha, Vacana, dhatus};
+use panini_data::{Pada, Purusha, Vacana, dhatus};
 
 const CELLS: &[(Purusha, Vacana)] = &[
     (Purusha::Prathama, Vacana::Eka),
@@ -17,19 +17,20 @@ const CELLS: &[(Purusha, Vacana)] = &[
 fn generate_then_check_recovers_inputs() {
     let engine = Panini::new();
     for d in dhatus() {
-        for &(pu, va) in CELLS {
-            let form = engine
-                .derive(d, Lakara::Lat, Pada::Parasmaipada, pu, va)
-                .text();
-            let r = engine.check(&form);
-            assert!(
-                r.analyses
-                    .iter()
-                    .any(|a| a.dhatu == d.code && a.form_slp1 == form),
-                "roundtrip failed: {} -> {}",
-                d.code,
-                form
-            );
+        for &lakara in panini_analyze::LAKARAS {
+            for &(pu, va) in CELLS {
+                let form = engine.derive(d, lakara, Pada::Parasmaipada, pu, va).text();
+                let r = engine.check(&form);
+                assert!(
+                    r.analyses
+                        .iter()
+                        .any(|a| a.dhatu == d.code && a.form_slp1 == form && a.lakara == lakara),
+                    "roundtrip failed: {} {} -> {}",
+                    d.code,
+                    panini::lakara_name(lakara),
+                    form
+                );
+            }
         }
     }
 }

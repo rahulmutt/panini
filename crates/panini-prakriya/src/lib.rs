@@ -1,4 +1,5 @@
 #![forbid(unsafe_code)]
+pub mod context;
 pub mod controller;
 pub mod it_samjna;
 pub mod prakriya;
@@ -6,6 +7,7 @@ pub mod rule;
 pub mod term;
 pub mod tinanta;
 
+pub use context::Context;
 pub use controller::run_pipeline;
 pub use prakriya::{Prakriya, RuleStep};
 pub use rule::{Rule, RuleKind};
@@ -21,6 +23,7 @@ mod tests {
         let mut p = Prakriya {
             terms: vec![Term::new("BU"), Term::new("a"), Term::new("ti")],
             log: vec![],
+            ..Default::default()
         };
         assert_eq!(p.text(), "BUati");
         let before = p.snapshot();

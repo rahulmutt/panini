@@ -1,9 +1,10 @@
 use panini::{Panini, Verdict};
 
-/// (root_code, [P.E, P.D, P.B, M.E, M.D, M.B, U.E, U.D, U.B]) in SLP1.
-const PARADIGM: &[(&str, [&str; 9])] = &[
+/// (root_code, lakara_label, [P.E, P.D, P.B, M.E, M.D, M.B, U.E, U.D, U.B]) in SLP1.
+const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "BU",
+        "laT",
         [
             "Bavati", "BavataH", "Bavanti", "Bavasi", "BavaTaH", "BavaTa", "BavAmi", "BavAvaH",
             "BavAmaH",
@@ -11,6 +12,7 @@ const PARADIGM: &[(&str, [&str; 9])] = &[
     ),
     (
         "nI",
+        "laT",
         [
             "nayati", "nayataH", "nayanti", "nayasi", "nayaTaH", "nayaTa", "nayAmi", "nayAvaH",
             "nayAmaH",
@@ -18,6 +20,7 @@ const PARADIGM: &[(&str, [&str; 9])] = &[
     ),
     (
         "ji",
+        "laT",
         [
             "jayati", "jayataH", "jayanti", "jayasi", "jayaTaH", "jayaTa", "jayAmi", "jayAvaH",
             "jayAmaH",
@@ -25,6 +28,7 @@ const PARADIGM: &[(&str, [&str; 9])] = &[
     ),
     (
         "smf",
+        "laT",
         [
             "smarati", "smarataH", "smaranti", "smarasi", "smaraTaH", "smaraTa", "smarAmi",
             "smarAvaH", "smarAmaH",
@@ -32,6 +36,7 @@ const PARADIGM: &[(&str, [&str; 9])] = &[
     ),
     (
         "paW",
+        "laT",
         [
             "paWati", "paWataH", "paWanti", "paWasi", "paWaTaH", "paWaTa", "paWAmi", "paWAvaH",
             "paWAmaH",
@@ -39,9 +44,113 @@ const PARADIGM: &[(&str, [&str; 9])] = &[
     ),
     (
         "vad",
+        "laT",
         [
             "vadati", "vadataH", "vadanti", "vadasi", "vadaTaH", "vadaTa", "vadAmi", "vadAvaH",
             "vadAmaH",
+        ],
+    ),
+    (
+        "BU",
+        "laN",
+        [
+            "aBavat", "aBavatAm", "aBavan", "aBavaH", "aBavatam", "aBavata", "aBavam", "aBavAva",
+            "aBavAma",
+        ],
+    ),
+    (
+        "nI",
+        "laN",
+        [
+            "anayat", "anayatAm", "anayan", "anayaH", "anayatam", "anayata", "anayam", "anayAva",
+            "anayAma",
+        ],
+    ),
+    (
+        "ji",
+        "laN",
+        [
+            "ajayat", "ajayatAm", "ajayan", "ajayaH", "ajayatam", "ajayata", "ajayam", "ajayAva",
+            "ajayAma",
+        ],
+    ),
+    (
+        "smf",
+        "laN",
+        [
+            "asmarat",
+            "asmaratAm",
+            "asmaran",
+            "asmaraH",
+            "asmaratam",
+            "asmarata",
+            "asmaram",
+            "asmarAva",
+            "asmarAma",
+        ],
+    ),
+    (
+        "paW",
+        "laN",
+        [
+            "apaWat", "apaWatAm", "apaWan", "apaWaH", "apaWatam", "apaWata", "apaWam", "apaWAva",
+            "apaWAma",
+        ],
+    ),
+    (
+        "vad",
+        "laN",
+        [
+            "avadat", "avadatAm", "avadan", "avadaH", "avadatam", "avadata", "avadam", "avadAva",
+            "avadAma",
+        ],
+    ),
+    (
+        "BU",
+        "loT",
+        [
+            "Bavatu", "BavatAm", "Bavantu", "Bava", "Bavatam", "Bavata", "BavAni", "BavAva",
+            "BavAma",
+        ],
+    ),
+    (
+        "nI",
+        "loT",
+        [
+            "nayatu", "nayatAm", "nayantu", "naya", "nayatam", "nayata", "nayAni", "nayAva",
+            "nayAma",
+        ],
+    ),
+    (
+        "ji",
+        "loT",
+        [
+            "jayatu", "jayatAm", "jayantu", "jaya", "jayatam", "jayata", "jayAni", "jayAva",
+            "jayAma",
+        ],
+    ),
+    (
+        "smf",
+        "loT",
+        [
+            "smaratu", "smaratAm", "smarantu", "smara", "smaratam", "smarata", "smarAni",
+            "smarAva", "smarAma",
+        ],
+    ),
+    (
+        "paW",
+        "loT",
+        [
+            "paWatu", "paWatAm", "paWantu", "paWa", "paWatam", "paWata", "paWAni", "paWAva",
+            "paWAma",
+        ],
+    ),
+    (
+        "vad",
+        "loT",
+        [
+            "vadatu", "vadatAm", "vadantu", "vada", "vadatam", "vadata", "vadAni", "vadAva",
+            "vadAma",
         ],
     ),
 ];
@@ -49,16 +158,18 @@ const PARADIGM: &[(&str, [&str; 9])] = &[
 #[test]
 fn every_form_validates_and_matches() {
     let engine = Panini::new();
-    for (_root, forms) in PARADIGM {
+    for (root, lakara, forms) in PARADIGM {
         for expected in forms {
             let r = engine.check(expected);
             assert!(
                 matches!(r.verdict, Verdict::Valid),
-                "expected VALID for {expected}"
+                "expected VALID for {expected} ({root} {lakara})"
             );
             assert!(
-                r.analyses.iter().any(|a| a.form_slp1 == *expected),
-                "no analysis produced {expected}"
+                r.analyses.iter().any(|a| a.form_slp1 == *expected
+                    && a.dhatu == *root
+                    && panini::lakara_name(a.lakara) == *lakara),
+                "no {lakara} analysis of {root} produced {expected}"
             );
         }
     }
@@ -67,8 +178,17 @@ fn every_form_validates_and_matches() {
 #[test]
 fn known_nonforms_are_invalid() {
     let engine = Panini::new();
-    for bad in ["Bavatu", "Bavati123", "gacCati", "tiRRati"] {
-        // Bavatu (loT) and gacCati (irregular gam) are out of v1 scope -> Invalid.
+    for bad in [
+        // Real cross-lakāra confusions, not junk: laṅ endings require the
+        // aṭ-āgama (6.4.71), and laṭ endings forbid it.
+        "Bavat",    // laṅ 3sg ending without the augment
+        "aBavanti", // augment on a laṭ form
+        "aBavatu",  // augment on a loṭ form
+        // Still out of scope entirely.
+        "gacCati",
+        "Bavati123",
+        "tiRRati",
+    ] {
         assert!(
             matches!(engine.check(bad).verdict, Verdict::Invalid),
             "expected INVALID for {bad}"

@@ -1,6 +1,6 @@
 #![forbid(unsafe_code)]
 use clap::{Parser, Subcommand, ValueEnum};
-use panini::{Panini, Verdict, render};
+use panini::{Panini, Verdict, lakara_name, render};
 use panini_lipi::Scheme;
 
 #[derive(Parser)]
@@ -94,6 +94,7 @@ fn main() {
                     "input_slp1": result.input_slp1,
                     "analyses": result.analyses.iter().map(|a| serde_json::json!({
                         "dhatu": a.dhatu,
+                        "lakara": lakara_name(a.lakara),
                         "form": render(&a.form_slp1, scheme),
                         "trace": a.trace.iter().map(|s| serde_json::json!({"sutra": s.sutra, "name": s.name, "after": s.after})).collect::<Vec<_>>(),
                     })).collect::<Vec<_>>(),
@@ -102,9 +103,10 @@ fn main() {
             } else if matches!(result.verdict, Verdict::Valid) {
                 let a = &result.analyses[0];
                 println!(
-                    "VALID \u{2713}  {} ({})",
+                    "VALID \u{2713}  {} ({}, {})",
                     render(&a.form_slp1, scheme),
-                    a.dhatu
+                    a.dhatu,
+                    lakara_name(a.lakara)
                 );
                 if trace {
                     for step in &a.trace {
@@ -112,7 +114,7 @@ fn main() {
                     }
                 }
             } else {
-                println!("INVALID (not derivable within the covered v1 grammar)");
+                println!("INVALID (not derivable within the covered grammar)");
             }
             std::process::exit(if matches!(result.verdict, Verdict::Valid) {
                 0

@@ -23,6 +23,7 @@ mod tests {
         let mut p = Prakriya {
             terms: vec![Term::new("Bo"), Term::new("a")],
             log: vec![],
+            ..Default::default()
         };
         let rules = [Rule {
             id: "6.1.78",
@@ -42,5 +43,8 @@ mod tests {
         run_pipeline(&mut p, &rules);
         assert_eq!(p.text(), "Bava");
         assert_eq!(p.log.last().unwrap().sutra, "6.1.78");
+        // The logged `before` snapshot must be the pre-mutation text, not a
+        // placeholder (pins `Prakriya::snapshot`).
+        assert_eq!(p.log.last().unwrap().before, "Boa");
     }
 }
