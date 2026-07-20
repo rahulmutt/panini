@@ -17,7 +17,11 @@ run = "cargo fmt --all"
 run = "cargo fmt --all --check"
 
 [tasks.mutants]
-run = "cargo mutants --package panini-prakriya"
+# --test-workspace=true is required: cargo-mutants otherwise defaults to
+# running only the mutated package's own tests, which misses the
+# `panini` crate's golden paradigm/trace/roundtrip tests that are the
+# actual gate on the guarded rules in panini-prakriya.
+run = "cargo mutants --package panini-prakriya --test-workspace=true"
 
 [tasks.audit]
 run = "cargo audit && cargo deny check"

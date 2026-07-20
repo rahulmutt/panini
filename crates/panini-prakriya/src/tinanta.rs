@@ -568,4 +568,22 @@ mod tests {
         assert!(p.log.iter().any(|s| s.sutra == "7.3.84"));
         assert!(!p.log.is_empty());
     }
+
+    #[test]
+    fn it_samjna_rule_reports_when_ending_is_reduced() {
+        // 1.3.9 tasya lopaH's `apply` returns whether it actually elided the
+        // ending's it; pin that return value directly, since `run_pipeline`
+        // discards it and no golden form exercises it in isolation.
+        let mut p = Prakriya {
+            terms: vec![Term::new("BU"), Term::new("tip")],
+            log: vec![],
+            ..Default::default()
+        };
+        let rule = TINANTA_RULES.iter().find(|r| r.id == "1.3.9").unwrap();
+        assert!(
+            (rule.apply)(&mut p),
+            "1.3.9 should report firing when tip loses its final p"
+        );
+        assert_eq!(p.terms[ENDING_PRE_SHAP].text, "ti");
+    }
 }

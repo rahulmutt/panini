@@ -7,7 +7,10 @@
 - Optional dev/audit tooling is pinned in `mise.dev.toml`. Install it on demand:
   `MISE_ENV=dev mise install`. This provides:
   - `cargo-mutants` (mutation testing) — `mise run mutants` runs
-    `cargo mutants --package panini-prakriya`.
+    `cargo mutants --package panini-prakriya --test-workspace=true` (the
+    `--test-workspace` flag is required so the mutation run exercises the
+    `panini` crate's golden paradigm/trace/roundtrip tests, not just
+    `panini-prakriya`'s own unit tests).
   - `cargo-deny` + `cargo-audit` (supply-chain checks) — `mise run audit` runs
     `cargo audit && cargo deny check` and is expected to pass, including
     `cargo deny check advisories`.
@@ -21,9 +24,12 @@
   target under `crates/panini-lipi/fuzz` legitimately omits it, since it uses
   `#![no_main]` plus the libfuzzer harness macro).
 - Grammar changes are gated by the golden paradigm test
-  (`crates/panini/tests/paradigm.rs`). Surface forms there are the source of
-  truth; sūtra ids/names in traces must match the cited reference
-  (ashtadhyayi.com).
+  (`crates/panini/tests/paradigm.rs`, 162 forms across laṭ/laṅ/loṭ) and by the
+  ordered-trace test (`crates/panini/tests/trace.rs`), which pins rule order.
+  Surface forms and trace order there are the source of truth; sūtra ids/names
+  in traces must match the cited reference (ashtadhyayi.com).
+- New grammar goes in `TINANTA_RULES` as a self-guarding `Rule`, not as a
+  branch inside `derive`.
 - The `panini-cli` binary has a single subcommand, `check` (flags `--trace`,
   `--json`, `--out`, `--in`). There is no `derive` subcommand in v1. `--in auto`
   (the default) auto-detects the input transliteration scheme; passing an

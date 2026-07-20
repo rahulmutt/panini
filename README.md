@@ -11,12 +11,12 @@ mise run test          # runs the workspace test suite
 cargo run -p panini-cli -- check 'bhavati' --trace
 ```
 
-## v1 scope
+## Scope
 
-Finite verbs (*tiṅanta*), present tense (*laṭ*), gaṇa 1 (*bhvādi*),
-*parasmaipada*, over a curated 6-root set. `INVALID` means "not derivable within
-this covered grammar," not "ungrammatical in Sanskrit." See `docs/ARCHITECTURE.md`
-and `docs/superpowers/plans/2026-07-19-panini-astadhyayi-v1.md`.
+Finite verbs (*tiṅanta*), *bhvādi* (gaṇa 1), *parasmaipada*, over a curated
+6-root set, in three lakāras: *laṭ* (present), *laṅ* (imperfect), and *loṭ*
+(imperative). `INVALID` means "not derivable within this covered grammar," not
+"ungrammatical in Sanskrit." See `docs/ARCHITECTURE.md`.
 
 ## Layout
 
