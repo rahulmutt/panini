@@ -137,4 +137,14 @@ mod tests {
     fn vidhilin_has_an_slp1_name() {
         assert_eq!(lakara_name(Lakara::VidhiLin), "viDiliN");
     }
+
+    #[test]
+    fn vidhilin_form_checks_valid() {
+        let engine = Panini::new();
+        let r = engine.check("Bavet");
+        assert!(matches!(r.verdict, Verdict::Valid));
+        let a = r.analyses.iter().find(|a| a.form_slp1 == "Bavet").unwrap();
+        assert_eq!(a.dhatu, "BU");
+        assert!(matches!(a.lakara, Lakara::VidhiLin));
+    }
 }
