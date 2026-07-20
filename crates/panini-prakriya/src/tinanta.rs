@@ -957,6 +957,29 @@ mod tests {
     }
 
     #[test]
+    fn aduttamasya_requires_uttama_purusha() {
+        // loT, madhyama, ending "va": the ending is in the {ni, va, ma} set
+        // and lakara is loT, but puruSa is madhyama, not uttama. The guard's
+        // second `||` must still short-circuit to false. Kills the `||` ->
+        // `&&` mutant at the second operator, which would otherwise let
+        // this fire whenever loT holds and the ending matches, regardless
+        // of puruSa.
+        let mut p = Prakriya {
+            terms: vec![Term::new("BU"), Term::new("va")],
+            log: vec![],
+            ctx: Context::new(
+                Lakara::Lot,
+                Pada::Parasmaipada,
+                Purusha::Madhyama,
+                Vacana::Bahu,
+            ),
+        };
+        let rule = TINANTA_RULES.iter().find(|r| r.id == "3.4.92").unwrap();
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[ENDING_PRE_SHAP].text, "va");
+    }
+
+    #[test]
     fn yasut_prefixes_the_substituted_ending() {
         let mut p = Prakriya {
             terms: vec![Term::new("BU"), Term::new("t")],
