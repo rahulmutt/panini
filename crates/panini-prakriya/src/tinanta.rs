@@ -310,6 +310,29 @@ pub static TINANTA_RULES: &[Rule] = &[
             true
         },
     },
+    // 3.4.103 yāsuṭ parasmaipadeṣūdātto ṅic ca: the yāsuṭ-āgama is prefixed
+    // to liṅ's parasmaipada endings. Modelled as a text prefix on the ending
+    // term (the āṭ 3.4.92 / aṭ 6.4.71 precedent) so the term indices stay
+    // stable. "parasmaipadeṣu" is trivially satisfied — Pada has one variant;
+    // revisit the guard when ātmanepada arrives (its liṅ takes sīyuṭ, 3.4.102).
+    //
+    // MUST follow the 3.4.9x/10x ending substitutions above: their guards
+    // match the ending text exactly ("mi", "vas", …), so prefixing yAs first
+    // would make every one of them miss.
+    Rule {
+        id: "3.4.103",
+        name: "yAsuw parasmEpadezUdAtto Nic ca",
+        kind: RuleKind::Vidhi,
+        apply: |p| {
+            if !matches!(p.ctx.lakara, Lakara::VidhiLin) {
+                return false;
+            }
+            let before = p.snapshot();
+            p.terms[ENDING_PRE_SHAP].text = format!("yAs{}", p.terms[ENDING_PRE_SHAP].text);
+            p.record("3.4.103", "yAsuw parasmEpadezUdAtto Nic ca", before);
+            true
+        },
+    },
     // ============================================================
     // BOUNDARY: 3.1.68 kartari śap inserts śap and shifts the ending from
     // index 1 to index 2 (see the ANGA/ENDING_PRE_SHAP/SHAP/ENDING doc
@@ -834,5 +857,39 @@ mod tests {
         let rule = TINANTA_RULES.iter().find(|r| r.id == "3.4.101").unwrap();
         assert!((rule.apply)(&mut p));
         assert_eq!(p.terms[ENDING_PRE_SHAP].text, "am");
+    }
+
+    #[test]
+    fn yasut_prefixes_the_substituted_ending() {
+        let mut p = Prakriya {
+            terms: vec![Term::new("BU"), Term::new("t")],
+            log: vec![],
+            ctx: Context::new(
+                Lakara::VidhiLin,
+                Pada::Parasmaipada,
+                Purusha::Prathama,
+                Vacana::Eka,
+            ),
+        };
+        let rule = TINANTA_RULES.iter().find(|r| r.id == "3.4.103").unwrap();
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.terms[ENDING_PRE_SHAP].text, "yAst");
+    }
+
+    #[test]
+    fn yasut_is_vidhilin_only() {
+        let mut p = Prakriya {
+            terms: vec![Term::new("BU"), Term::new("t")],
+            log: vec![],
+            ctx: Context::new(
+                Lakara::Lan,
+                Pada::Parasmaipada,
+                Purusha::Prathama,
+                Vacana::Eka,
+            ),
+        };
+        let rule = TINANTA_RULES.iter().find(|r| r.id == "3.4.103").unwrap();
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[ENDING_PRE_SHAP].text, "t");
     }
 }
