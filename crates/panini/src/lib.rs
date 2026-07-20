@@ -91,6 +91,7 @@ pub fn lakara_name(lakara: Lakara) -> &'static str {
         Lakara::Lat => "laT",
         Lakara::Lan => "laN",
         Lakara::Lot => "loT",
+        Lakara::VidhiLin => "viDiliN",
     }
 }
 
@@ -130,5 +131,10 @@ mod tests {
         let a = r.analyses.iter().find(|a| a.form_slp1 == "Bavati").unwrap();
         assert!(matches!(a.lakara, Lakara::Lat));
         assert_eq!(lakara_name(a.lakara), "laT");
+    }
+
+    #[test]
+    fn vidhilin_has_an_slp1_name() {
+        assert_eq!(lakara_name(Lakara::VidhiLin), "viDiliN");
     }
 }
