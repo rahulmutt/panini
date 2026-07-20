@@ -12,6 +12,7 @@ pub enum Verdict {
 
 pub struct Analysis {
     pub dhatu: String,
+    pub lakara: Lakara,
     pub purusha: Purusha,
     pub vacana: Vacana,
     pub form_slp1: String,
@@ -40,6 +41,7 @@ impl Panini {
             if p.text() == slp1 {
                 analyses.push(Analysis {
                     dhatu: c.dhatu.code.to_string(),
+                    lakara: c.lakara,
                     purusha: c.purusha,
                     vacana: c.vacana,
                     form_slp1: p.text(),
@@ -83,6 +85,13 @@ pub fn render(slp1: &str, scheme: Scheme) -> String {
     from_slp1(slp1, scheme)
 }
 
+/// SLP1 name of a lakāra, for display in traces and CLI output.
+pub fn lakara_name(lakara: Lakara) -> &'static str {
+    match lakara {
+        Lakara::Lat => "laT",
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -110,5 +119,14 @@ mod tests {
         let r = engine.check("xyzq");
         assert!(matches!(r.verdict, Verdict::Invalid));
         assert!(r.analyses.is_empty());
+    }
+
+    #[test]
+    fn analysis_reports_its_lakara() {
+        let engine = Panini::new();
+        let r = engine.check("Bavati");
+        let a = r.analyses.iter().find(|a| a.form_slp1 == "Bavati").unwrap();
+        assert!(matches!(a.lakara, Lakara::Lat));
+        assert_eq!(lakara_name(a.lakara), "laT");
     }
 }
