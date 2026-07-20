@@ -395,6 +395,55 @@ pub static TINANTA_RULES: &[Rule] = &[
             true
         },
     },
+    // 7.2.79 liṅaḥ salopo 'nantyasya: the non-final s of sārvadhātuka liṅ's
+    // ending is elided. yAst → yAt, yAss → yAs (madhyama-eka: only the first
+    // s is non-final!), yAsus → yAus. MUST precede 7.2.80: only after the s
+    // goes does the ending start with the `yA` shape 7.2.80 rewrites.
+    Rule {
+        id: "7.2.79",
+        name: "liNaH salopo'nantyasya",
+        kind: RuleKind::Vidhi,
+        apply: |p| {
+            if !matches!(p.ctx.lakara, Lakara::VidhiLin) {
+                return false;
+            }
+            let text = &p.terms[ENDING].text;
+            let n = text.chars().count();
+            let reduced: String = text
+                .chars()
+                .enumerate()
+                .filter(|&(i, c)| c != 's' || i + 1 == n)
+                .map(|(_, c)| c)
+                .collect();
+            if reduced == *text {
+                return false;
+            }
+            let before = p.snapshot();
+            p.terms[ENDING].text = reduced;
+            p.record("7.2.79", "liNaH salopo'nantyasya", before);
+            true
+        },
+    },
+    // 7.2.80 ato yeyaḥ: after an a-final aṅga (here: the śap), the yA of the
+    // yāsuṭ is replaced by iy. yAt → iyt, yAus → iyus.
+    Rule {
+        id: "7.2.80",
+        name: "ato yeyaH",
+        kind: RuleKind::Vidhi,
+        apply: |p| {
+            if !matches!(p.ctx.lakara, Lakara::VidhiLin)
+                || p.terms[SHAP].text != "a"
+                || !p.terms[ENDING].text.starts_with("yA")
+            {
+                return false;
+            }
+            let before = p.snapshot();
+            let rest: String = p.terms[ENDING].text.chars().skip(2).collect();
+            p.terms[ENDING].text = format!("iy{rest}");
+            p.record("7.2.80", "ato yeyaH", before);
+            true
+        },
+    },
     // 7.3.84 sārvadhātukārdhadhātukayoḥ: guṇa of the aṅga's final ik.
     Rule {
         id: "7.3.84",
@@ -891,5 +940,43 @@ mod tests {
         let rule = TINANTA_RULES.iter().find(|r| r.id == "3.4.103").unwrap();
         assert!(!(rule.apply)(&mut p));
         assert_eq!(p.terms[ENDING_PRE_SHAP].text, "t");
+    }
+
+    #[test]
+    fn salopa_elides_only_the_non_final_s() {
+        // Madhyama-eka is the trap: yAs + s = yAss, and only the FIRST s is
+        // non-final. Eliding both would derive *Bave for BaveH.
+        for (ending, want) in [("yAst", "yAt"), ("yAss", "yAs"), ("yAsus", "yAus")] {
+            let mut p = Prakriya {
+                terms: vec![Term::new("Bav"), Term::new("a"), Term::new(ending)],
+                log: vec![],
+                ctx: Context::new(
+                    Lakara::VidhiLin,
+                    Pada::Parasmaipada,
+                    Purusha::Prathama,
+                    Vacana::Eka,
+                ),
+            };
+            let rule = TINANTA_RULES.iter().find(|r| r.id == "7.2.79").unwrap();
+            assert!((rule.apply)(&mut p), "{ending}");
+            assert_eq!(p.terms[ENDING].text, want, "{ending}");
+        }
+    }
+
+    #[test]
+    fn ato_yeyah_rewrites_the_ya_prefix_after_shap_a() {
+        let mut p = Prakriya {
+            terms: vec![Term::new("Bav"), Term::new("a"), Term::new("yAt")],
+            log: vec![],
+            ctx: Context::new(
+                Lakara::VidhiLin,
+                Pada::Parasmaipada,
+                Purusha::Prathama,
+                Vacana::Eka,
+            ),
+        };
+        let rule = TINANTA_RULES.iter().find(|r| r.id == "7.2.80").unwrap();
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.terms[ENDING].text, "iyt");
     }
 }
