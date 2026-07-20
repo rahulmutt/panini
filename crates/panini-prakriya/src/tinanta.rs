@@ -119,6 +119,33 @@ pub static TINANTA_RULES: &[Rule] = &[
             true
         },
     },
+    // 3.4.108 jher jus: in liṅ, the ending Ji is replaced by jus. Apavāda to
+    // 3.4.100 itaś ca (Ji is i-final), hence ordered before it — the same
+    // preemption pattern as 3.4.87/3.4.89 before 3.4.86.
+    //
+    // The initial j of jus is an anubandha (1.3.7 cuṭū), elided here and
+    // recorded as 1.3.9 per the existing convention that saṃjñā rules
+    // (1.3.3/1.3.7/1.3.8) are silent and only the elision is traced. It is
+    // NOT folded into run_it_samjna: a general cuṭū arm there would also eat
+    // the J of laṭ/loṭ's Ji, which is not an anubandha but a coded segment
+    // that must survive for 7.1.3 jho'ntaḥ.
+    Rule {
+        id: "3.4.108",
+        name: "Jer jus",
+        kind: RuleKind::Vidhi,
+        apply: |p| {
+            if !matches!(p.ctx.lakara, Lakara::VidhiLin) || p.terms[ENDING_PRE_SHAP].text != "Ji" {
+                return false;
+            }
+            let before = p.snapshot();
+            p.terms[ENDING_PRE_SHAP].text = "jus".into();
+            p.record("3.4.108", "Jer jus", before);
+            let before = p.snapshot();
+            p.terms[ENDING_PRE_SHAP].text = "us".into();
+            p.record("1.3.9", "tasya lopaH", before);
+            true
+        },
+    },
     // 3.4.101 tasthasthamipāṃ tāṃtaṃtāmaḥ: tas→tAm, Tas→tam, Ta→ta, mip→am.
     //
     // The mip→am arm is laṅ-only: loṭ's uttama-eka is `ni` by the more specific
@@ -619,6 +646,42 @@ mod tests {
             "1.3.9 should report firing when tip loses its final p"
         );
         assert_eq!(p.terms[ENDING_PRE_SHAP].text, "ti");
+    }
+
+    #[test]
+    fn jher_jus_replaces_ji_and_elides_the_j_marker() {
+        let mut p = Prakriya {
+            terms: vec![Term::new("BU"), Term::new("Ji")],
+            log: vec![],
+            ctx: Context::new(
+                Lakara::VidhiLin,
+                Pada::Parasmaipada,
+                Purusha::Prathama,
+                Vacana::Bahu,
+            ),
+        };
+        let rule = TINANTA_RULES.iter().find(|r| r.id == "3.4.108").unwrap();
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.terms[ENDING_PRE_SHAP].text, "us");
+        // Both the substitution and the marker elision must be traced.
+        assert!(p.log.iter().any(|s| s.sutra == "3.4.108"));
+        assert!(p.log.iter().any(|s| s.sutra == "1.3.9"));
+    }
+
+    #[test]
+    fn jher_jus_leaves_lat_and_lot_ji_alone() {
+        // laṭ's Ji must survive to 7.1.3 jho'ntaḥ (Bavanti), loṭ's to
+        // 3.4.86 er uḥ (Bavantu).
+        for lakara in [Lakara::Lat, Lakara::Lot] {
+            let mut p = Prakriya {
+                terms: vec![Term::new("BU"), Term::new("Ji")],
+                log: vec![],
+                ctx: Context::new(lakara, Pada::Parasmaipada, Purusha::Prathama, Vacana::Bahu),
+            };
+            let rule = TINANTA_RULES.iter().find(|r| r.id == "3.4.108").unwrap();
+            assert!(!(rule.apply)(&mut p), "{lakara:?}");
+            assert_eq!(p.terms[ENDING_PRE_SHAP].text, "Ji");
+        }
     }
 
     // --- Fix 2: the sutra-name hard gate --------------------------------
