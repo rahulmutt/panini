@@ -20,10 +20,10 @@ pub fn run_it_samjna(term: &mut Term, p: &mut Prakriya, idx: usize) {
         s.remove(0);
     }
     // 1.3.3 halantyam: final consonant is it.
-    if let Some(&last) = s.last() {
-        if is_hal(last) {
-            s.pop();
-        }
+    if let Some(&last) = s.last()
+        && is_hal(last)
+    {
+        s.pop();
     }
     let reduced: String = s.into_iter().collect();
     if reduced != original {

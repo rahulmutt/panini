@@ -1,7 +1,7 @@
 use crate::it_samjna::run_it_samjna;
 use crate::prakriya::Prakriya;
 use crate::term::{Tag, Term};
-use panini_data::{tin_ending, Dhatu, Lakara, Pada, Purusha, Vacana};
+use panini_data::{Dhatu, Lakara, Pada, Purusha, Vacana, tin_ending};
 
 /// Guṇa substitute of an ik vowel (1.1.2 aden guṇaḥ, applied by 7.3.84).
 fn guna_of(v: char) -> Option<&'static str> {
@@ -162,7 +162,7 @@ pub fn derive(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use panini_data::{dhatus, Lakara, Pada, Purusha, Vacana};
+    use panini_data::{Lakara, Pada, Purusha, Vacana, dhatus};
 
     fn form(code: &str, pu: Purusha, va: Vacana) -> String {
         let d = dhatus().iter().find(|d| d.code == code).unwrap();

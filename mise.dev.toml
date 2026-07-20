@@ -1,0 +1,7 @@
+# Optional dev/audit tooling, pinned. Activate on demand:
+#   MISE_ENV=dev mise install
+[tools]
+"cargo:cargo-deny"    = "0.20.2"
+"cargo:cargo-audit"   = "0.22.2"
+"cargo:cargo-mutants" = "27.1.0"
+"cargo:cargo-fuzz"    = "0.13.2"

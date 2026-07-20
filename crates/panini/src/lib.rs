@@ -1,8 +1,8 @@
 #![forbid(unsafe_code)]
 use panini_analyze::candidates;
 use panini_data::{Lakara, Pada, Purusha, Vacana};
-use panini_lipi::{from_slp1, normalize, Scheme};
-use panini_prakriya::{derive as derive_prakriya, Prakriya, RuleStep};
+use panini_lipi::{Scheme, from_slp1, normalize};
+use panini_prakriya::{Prakriya, RuleStep, derive as derive_prakriya};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Verdict {
