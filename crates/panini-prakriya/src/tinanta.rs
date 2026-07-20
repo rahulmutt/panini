@@ -399,8 +399,9 @@ pub static TINANTA_RULES: &[Rule] = &[
     // ending is elided. yAst → yAt, yAss → yAs (madhyama-eka: only the first
     // s is non-final!), yAsus → yAus. MUST precede 7.2.80: only after the s
     // goes does the ending start with the `yA` shape 7.2.80 rewrites.
-    // Every s reaching this rule is yāsuṭ-derived, because 3.4.103 fires
-    // unconditionally for vidhiliṅ and no rule between them introduces an s.
+    // Every non-final s reaching this rule is yāsuṭ-derived, because 3.4.103
+    // fires unconditionally for vidhiliṅ and no rule between them introduces
+    // an s.
     Rule {
         id: "7.2.79",
         name: "liNaH salopo'nantyasya",
