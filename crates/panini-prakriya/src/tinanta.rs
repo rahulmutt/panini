@@ -124,7 +124,9 @@ pub static TINANTA_RULES: &[Rule] = &[
         name: "nityaM NitaH",
         kind: RuleKind::Vidhi,
         apply: |p| {
-            if !p.ctx.is_ngit_like || !p.terms[ENDING_PRE_SHAP].text.ends_with('s') {
+            if !p.ctx.is_ngit_like
+                || !matches!(p.terms[ENDING_PRE_SHAP].text.as_str(), "vas" | "mas")
+            {
                 return false;
             }
             let before = p.snapshot();
@@ -135,7 +137,8 @@ pub static TINANTA_RULES: &[Rule] = &[
             true
         },
     },
-    // 3.4.100 itaś ca: the final `i` of a ṅit-lakāra's tiṅ is elided.
+    // 3.4.100 itaś ca: laṅ-only. The final `i` of laṅ's tiṅ is elided.
+    // loṭ's final `i` is handled by 3.4.86 er uḥ (apavāda).
     // ti → t, si → s, Ji → J.
     Rule {
         id: "3.4.100",
