@@ -1,5 +1,5 @@
 [tools]
-rust = "1.83.0"
+rust = { version = "1.97.1", components = "clippy,rustfmt" }
 
 [tasks.build]
 run = "cargo build --workspace"
@@ -12,6 +12,9 @@ run = "cargo clippy --workspace --all-targets -- -D warnings"
 
 [tasks.fmt]
 run = "cargo fmt --all"
+
+[tasks.fmt-check]
+run = "cargo fmt --all --check"
 
 [tasks.mutants]
 run = "cargo mutants --package panini-prakriya"
