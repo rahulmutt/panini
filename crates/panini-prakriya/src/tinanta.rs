@@ -86,6 +86,74 @@ pub static TINANTA_RULES: &[Rule] = &[
             p.terms[ENDING_PRE_SHAP].text != original
         },
     },
+    // 3.4.101 tasthasthamipāṃ tāṃtaṃtāmaḥ: tas→tAm, Tas→tam, Ta→ta, mip→am.
+    //
+    // The mip→am arm is laṅ-only: loṭ's uttama-eka is `ni` by the more specific
+    // 3.4.89 mer niḥ, so it must not be captured here.
+    //
+    // MUST precede 3.4.99: `tas`/`Tas` also end in `s`, and 3.4.99's guard
+    // does not distinguish them from `vas`/`mas`. Ordering 3.4.101 first
+    // substitutes tas/Tas/Ta/mi away before 3.4.99 can wrongly strip their
+    // final `s` (verified by hand-tracing `aBavatAm`, which the reversed
+    // order corrupts into a spurious `aBavata`).
+    Rule {
+        id: "3.4.101",
+        name: "tasTasTamipAM tAMtaMtAmaH",
+        kind: RuleKind::Vidhi,
+        apply: |p| {
+            if !p.ctx.is_ngit_like {
+                return false;
+            }
+            let sub = match p.terms[ENDING_PRE_SHAP].text.as_str() {
+                "tas" => "tAm",
+                "Tas" => "tam",
+                "Ta" => "ta",
+                "mi" if matches!(p.ctx.lakara, Lakara::Lan) => "am",
+                _ => return false,
+            };
+            let before = p.snapshot();
+            p.terms[ENDING_PRE_SHAP].text = sub.into();
+            p.record("3.4.101", "tasTasTamipAM tAMtaMtAmaH", before);
+            true
+        },
+    },
+    // 3.4.99 nityaṃ ṅitaḥ: the final `s` of a ṅit-lakāra's tiṅ is elided.
+    // vas → va, mas → ma.
+    Rule {
+        id: "3.4.99",
+        name: "nityaM NitaH",
+        kind: RuleKind::Vidhi,
+        apply: |p| {
+            if !p.ctx.is_ngit_like || !p.terms[ENDING_PRE_SHAP].text.ends_with('s') {
+                return false;
+            }
+            let before = p.snapshot();
+            let mut s: Vec<char> = p.terms[ENDING_PRE_SHAP].text.chars().collect();
+            s.pop();
+            p.terms[ENDING_PRE_SHAP].text = s.into_iter().collect();
+            p.record("3.4.99", "nityaM NitaH", before);
+            true
+        },
+    },
+    // 3.4.100 itaś ca: the final `i` of a ṅit-lakāra's tiṅ is elided.
+    // ti → t, si → s, Ji → J.
+    Rule {
+        id: "3.4.100",
+        name: "itaS ca",
+        kind: RuleKind::Vidhi,
+        apply: |p| {
+            if !matches!(p.ctx.lakara, Lakara::Lan) || !p.terms[ENDING_PRE_SHAP].text.ends_with('i')
+            {
+                return false;
+            }
+            let before = p.snapshot();
+            let mut s: Vec<char> = p.terms[ENDING_PRE_SHAP].text.chars().collect();
+            s.pop();
+            p.terms[ENDING_PRE_SHAP].text = s.into_iter().collect();
+            p.record("3.4.100", "itaS ca", before);
+            true
+        },
+    },
     // 3.1.68 kartari śap: insert śap between dhātu and ending, run it-samjña
     // on it (Sap → a), and mark the dhātu an aṅga.
     Rule {
@@ -103,6 +171,25 @@ pub static TINANTA_RULES: &[Rule] = &[
             run_it_samjna(&mut s, p, SHAP);
             p.terms[SHAP] = s;
             p.terms[ANGA].add(Tag::Anga);
+            true
+        },
+    },
+    // 6.4.71 luṅlaṅlṛṅkṣvaḍudāttaḥ: the aṭ-āgama is prefixed to the aṅga in laṅ.
+    //
+    // Modelled as a prefix on the aṅga's text rather than as a separate term,
+    // so the ANGA/SHAP/ENDING indices stay stable for every later rule. The
+    // trace still cites 6.4.71, which is what the reader checks.
+    Rule {
+        id: "6.4.71",
+        name: "luNlaNlfNkzvaqudAttaH",
+        kind: RuleKind::Vidhi,
+        apply: |p| {
+            if !matches!(p.ctx.lakara, Lakara::Lan) {
+                return false;
+            }
+            let before = p.snapshot();
+            p.terms[ANGA].text = format!("a{}", p.terms[ANGA].text);
+            p.record("6.4.71", "luNlaNlfNkzvaqudAttaH", before);
             true
         },
     },
@@ -200,6 +287,30 @@ pub static TINANTA_RULES: &[Rule] = &[
             let before = p.snapshot();
             p.terms[ENDING].text = p.terms[ENDING].text.chars().skip(1).collect();
             p.record("6.1.97", "ato guRe", before);
+            true
+        },
+    },
+    // 8.2.23 saṃyogāntasya lopaḥ: the final consonant of a word-final conjunct
+    // is elided. aBavant → aBavan.
+    Rule {
+        id: "8.2.23",
+        name: "saMyogAntasya lopaH",
+        kind: RuleKind::Vidhi,
+        apply: |p| {
+            let word = p.text();
+            let mut tail = word.chars().rev();
+            let (Some(last), Some(prev)) = (tail.next(), tail.next()) else {
+                return false;
+            };
+            if is_vowel(last) || is_vowel(prev) {
+                return false;
+            }
+            let before = p.snapshot();
+            let idx = p.terms.len() - 1;
+            let mut s: Vec<char> = p.terms[idx].text.chars().collect();
+            s.pop();
+            p.terms[idx].text = s.into_iter().collect();
+            p.record("8.2.23", "saMyogAntasya lopaH", before);
             true
         },
     },

@@ -27,10 +27,8 @@ impl Context {
             pada,
             purusha,
             vacana,
-            // Task 3 changes this to `matches!(lakara, Lakara::Lan)` once that
-            // variant exists — laṅ is ṅit inherently. loṭ acquires it at
-            // derivation time via rule 3.4.85 (Task 4).
-            is_ngit_like: false,
+            // laṅ is ṅit inherently; loṭ acquires it via rule 3.4.85.
+            is_ngit_like: matches!(lakara, Lakara::Lan),
         }
     }
 }

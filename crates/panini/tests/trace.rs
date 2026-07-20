@@ -62,3 +62,37 @@ fn bhavamah_trace_is_exactly_the_dirgha_visarga_path() {
         ]
     );
 }
+
+#[test]
+fn abhavat_trace_is_exactly_the_lan_augment_path() {
+    // BU laṅ prathama eka: tip -> ti (1.3.9) -> t (3.4.100), aṭ-āgama (6.4.71).
+    assert_eq!(
+        trace_for("aBavat"),
+        vec![
+            "3.4.78", "1.3.9", "3.4.100", "3.1.68", "1.3.9", "6.4.71", "7.3.84", "6.1.78"
+        ]
+    );
+}
+
+#[test]
+fn abhavan_trace_is_exactly_the_samyoganta_path() {
+    // BU laṅ prathama bahu: Ji -> J (3.4.100) -> ant (7.1.3), then 6.1.97
+    // coalescence and 8.2.23 conjunct-final elision: aBavant -> aBavan.
+    assert_eq!(
+        trace_for("aBavan"),
+        vec![
+            "3.4.78", "3.4.100", "3.1.68", "1.3.9", "6.4.71", "7.1.3", "7.3.84", "6.1.78",
+            "6.1.97", "8.2.23"
+        ]
+    );
+}
+
+#[test]
+fn abhavam_trace_shows_dirgha_does_not_fire() {
+    // BU laṅ uttama eka: mip -> mi (1.3.9) -> am (3.4.101). The ending begins
+    // with a vowel, so 7.3.101 ato dIrgho yaYi must NOT fire — this is why
+    // 7.3.101 is ordered before 6.1.97, which strips that leading `a`.
+    let trace = trace_for("aBavam");
+    assert!(!trace.contains(&"7.3.101".to_string()), "got {trace:?}");
+    assert!(trace.contains(&"6.1.97".to_string()), "got {trace:?}");
+}

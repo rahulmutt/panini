@@ -89,6 +89,7 @@ pub fn render(slp1: &str, scheme: Scheme) -> String {
 pub fn lakara_name(lakara: Lakara) -> &'static str {
     match lakara {
         Lakara::Lat => "laT",
+        Lakara::Lan => "laN",
     }
 }
 

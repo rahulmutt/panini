@@ -11,6 +11,7 @@ pub enum Pada {
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Lakara {
     Lat,
+    Lan,
 }
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Purusha {
