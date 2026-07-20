@@ -90,7 +90,7 @@ fn abhavan_trace_is_exactly_the_samyoganta_path() {
 #[test]
 fn abhavam_trace_shows_dirgha_does_not_fire() {
     // BU laṅ uttama eka: mip -> mi (1.3.9) -> am (3.4.101). The ending begins
-    // with a vowel, so 7.3.101 ato dIrgho yaYi must NOT fire — this is why
+    // with a vowel, so 7.3.101 ato dIrGo yaYi must NOT fire — this is why
     // 7.3.101 is ordered before 6.1.97, which strips that leading `a`.
     let trace = trace_for("aBavam");
     assert!(!trace.contains(&"7.3.101".to_string()), "got {trace:?}");

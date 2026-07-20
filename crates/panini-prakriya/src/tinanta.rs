@@ -49,7 +49,7 @@ pub static TINANTA_RULES: &[Rule] = &[
     // 3.4.113 tiṅ-śit sārvadhātukam makes it sārvadhātuka.
     Rule {
         id: "3.4.78",
-        name: "tiptasjhisipthasthamipvasmas",
+        name: "tiptasJisipTasTamibvasmas",
         kind: RuleKind::Vidhi,
         apply: |p| {
             let before = p.snapshot();
@@ -58,7 +58,7 @@ pub static TINANTA_RULES: &[Rule] = &[
             e.add(Tag::Tin);
             e.add(Tag::Sarvadhatuka);
             p.terms.push(e);
-            p.record("3.4.78", "tiptasjhisipthasthamipvasmas", before);
+            p.record("3.4.78", "tiptasJisipTasTamibvasmas", before);
             true
         },
     },
@@ -290,7 +290,7 @@ pub static TINANTA_RULES: &[Rule] = &[
     // 7.1.3 jho'ntaḥ: a leading `J` of the ending → `ant`.
     Rule {
         id: "7.1.3",
-        name: "jho'ntaH",
+        name: "Jo'ntaH",
         kind: RuleKind::Vidhi,
         apply: |p| {
             if !p.terms[ENDING].text.starts_with('J') {
@@ -299,14 +299,14 @@ pub static TINANTA_RULES: &[Rule] = &[
             let before = p.snapshot();
             let rest: String = p.terms[ENDING].text.chars().skip(1).collect();
             p.terms[ENDING].text = format!("ant{rest}");
-            p.record("7.1.3", "jho'ntaH", before);
+            p.record("7.1.3", "Jo'ntaH", before);
             true
         },
     },
     // 7.3.84 sārvadhātukārdhadhātukayoḥ: guṇa of the aṅga's final ik.
     Rule {
         id: "7.3.84",
-        name: "sArvadhAtukArdhadhAtukayoH",
+        name: "sArvaDAtukArDaDAtukayoH",
         kind: RuleKind::Vidhi,
         apply: |p| {
             let last = p.terms[ANGA].text.chars().last().unwrap();
@@ -317,7 +317,7 @@ pub static TINANTA_RULES: &[Rule] = &[
             let mut s: Vec<char> = p.terms[ANGA].text.chars().collect();
             s.pop();
             p.terms[ANGA].text = s.into_iter().collect::<String>() + g;
-            p.record("7.3.84", "sArvadhAtukArdhadhAtukayoH", before);
+            p.record("7.3.84", "sArvaDAtukArDaDAtukayoH", before);
             true
         },
     },
@@ -448,7 +448,7 @@ pub static TINANTA_RULES: &[Rule] = &[
     // 8.2.66 sasajuṣo ruḥ + 8.3.15 kharavasānayoḥ: word-final `s` → visarga.
     Rule {
         id: "8.3.15",
-        name: "kharavasAnayoH visarjanIyaH",
+        name: "KaravasAnayor visarjanIyaH",
         kind: RuleKind::Vidhi,
         apply: |p| {
             if !p.text().ends_with('s') {
@@ -460,7 +460,7 @@ pub static TINANTA_RULES: &[Rule] = &[
             s.pop();
             s.push('H');
             p.terms[idx].text = s.into_iter().collect();
-            p.record("8.3.15", "kharavasAnayoH visarjanIyaH", before);
+            p.record("8.3.15", "KaravasAnayor visarjanIyaH", before);
             true
         },
     },
