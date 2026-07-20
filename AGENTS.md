@@ -24,10 +24,10 @@
   target under `crates/panini-lipi/fuzz` legitimately omits it, since it uses
   `#![no_main]` plus the libfuzzer harness macro).
 - Grammar changes are gated by the golden paradigm test
-  (`crates/panini/tests/paradigm.rs`, 162 forms across laṭ/laṅ/loṭ) and by the
-  ordered-trace test (`crates/panini/tests/trace.rs`), which pins rule order.
-  Surface forms and trace order there are the source of truth; sūtra ids/names
-  in traces must match the cited reference (ashtadhyayi.com).
+  (`crates/panini/tests/paradigm.rs`, 216 forms across laṭ/laṅ/loṭ/vidhiliṅ)
+  and by the ordered-trace test (`crates/panini/tests/trace.rs`), which pins
+  rule order. Surface forms and trace order there are the source of truth;
+  sūtra ids/names in traces must match the cited reference (ashtadhyayi.com).
 - New grammar goes in `TINANTA_RULES` as a self-guarding `Rule`, not as a
   branch inside `derive`.
 - The `panini-cli` binary has a single subcommand, `check` (flags `--trace`,

@@ -18,7 +18,7 @@ Data flow for `check`:
 ## The rule pipeline
 
 `TINANTA_RULES` (in `crates/panini-prakriya/src/tinanta.rs`) is a single
-ordered `&[Rule]` covering all three lakāras. Each rule self-guards on
+ordered `&[Rule]` covering all four lakāras. Each rule self-guards on
 `Prakriya.ctx` (lakāra, pada, puruṣa, vacana) and returns whether it fired.
 Reading the list top to bottom IS reading the grammar this crate implements.
 
