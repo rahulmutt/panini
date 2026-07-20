@@ -136,11 +136,24 @@ backwards produces a wrong surface form.
 ### Reference verification
 
 Per AGENTS.md, sūtra ids and names in traces must match ashtadhyayi.com. The
-table above is a reconstruction and **must be verified against the reference
-during implementation**, before the golden test is written. The most likely
-errors: the exact SLP1 rendering of 3.4.103's long name (yAsuṭ …), and the
-attribution split between 7.2.79/7.2.80 (which s-elisions and which
-yA-replacements each rule owns).
+six new/bolded sūtras (3.4.108, 3.4.103, 7.2.79, 7.2.80, 6.1.87, 6.1.66) were
+verified against the reference (via the `ashtadhyayi.github.io` mirror and its
+underlying `sanskrit/ashtadhyayi` data source, since ashtadhyayi.com itself is
+a JS SPA that plain fetch cannot render — see task-1-report.md for the
+per-sūtra sourcing). All six ids do what this table's Effect column claims.
+Five of the six draft SLP1 names were exact; one needed a correction: 3.4.103's
+name is a **four-word** name with a space after the yāsuṭ āgama word, not
+fused to the following word —
+
+```
+yAsuw parasmEpadezUdAtto Nic ca
+```
+
+(not `yAsuwparasmEpadezUdAtto Nic ca` — the reference text
+यासुट् परस्मैपदेषूदात्तो ङिच्च shows a space between यासुट् and परस्मैपदेषूदात्तो).
+This is the literal to use verbatim for rule #12 in Tasks 3–7. The other five
+confirmed literals: `Jer jus` (3.4.108), `liNaH salopo'nantyasya` (7.2.79),
+`ato yeyaH` (7.2.80), `Ad guRaH` (6.1.87), `lopo vyor vali` (6.1.66).
 
 New names must satisfy the existing SLP1 digraph gate and the
 trace-name-matches-`TINANTA_RULES` gate; every recorded id needs a rule entry.
