@@ -1,6 +1,6 @@
 #![forbid(unsafe_code)]
 use clap::{Parser, Subcommand, ValueEnum};
-use panini::{render, Panini, Verdict};
+use panini::{Panini, Verdict, render};
 use panini_lipi::Scheme;
 
 #[derive(Parser)]

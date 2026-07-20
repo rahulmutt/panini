@@ -46,7 +46,9 @@ fn bhavanti_trace_is_exactly_the_ji_coalescence_path() {
     // BU prathama bahu: Ji -> anti (7.1.3) + 6.1.97 para-rupa coalescence path.
     assert_eq!(
         trace_for("Bavanti"),
-        vec!["3.4.78", "3.1.68", "1.3.9", "7.1.3", "7.3.84", "6.1.78", "6.1.97"]
+        vec![
+            "3.4.78", "3.1.68", "1.3.9", "7.1.3", "7.3.84", "6.1.78", "6.1.97"
+        ]
     );
 }
 
@@ -55,6 +57,8 @@ fn bhavamah_trace_is_exactly_the_dirgha_visarga_path() {
     // BU uttama bahu: 7.3.101 dirgha before `mas` + 8.3.15 visarga path.
     assert_eq!(
         trace_for("BavAmaH"),
-        vec!["3.4.78", "3.1.68", "1.3.9", "7.3.84", "6.1.78", "7.3.101", "8.3.15"]
+        vec![
+            "3.4.78", "3.1.68", "1.3.9", "7.3.84", "6.1.78", "7.3.101", "8.3.15"
+        ]
     );
 }

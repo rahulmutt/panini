@@ -1,5 +1,5 @@
 use panini::Panini;
-use panini_data::{dhatus, Lakara, Pada, Purusha, Vacana};
+use panini_data::{Lakara, Pada, Purusha, Vacana, dhatus};
 
 const CELLS: &[(Purusha, Vacana)] = &[
     (Purusha::Prathama, Vacana::Eka),

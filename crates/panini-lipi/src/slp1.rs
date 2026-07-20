@@ -229,7 +229,7 @@ fn emit_simple(input: &str, table: &[(&str, &str)]) -> String {
 /// first, falling back to passthrough of a single char if nothing matches.
 fn parse_simple(input: &str, table: &[(&str, &str)]) -> String {
     let mut sorted: Vec<(&str, &str)> = table.iter().map(|&(slp1, other)| (other, slp1)).collect();
-    sorted.sort_by(|a, b| b.0.chars().count().cmp(&a.0.chars().count()));
+    sorted.sort_by_key(|a| std::cmp::Reverse(a.0.chars().count()));
 
     let mut out = String::new();
     let mut rest = input;
@@ -261,7 +261,7 @@ fn parse_hk_with_aliases(input: &str) -> String {
         .chain(HK_PARSE_ALIASES.iter())
         .map(|&(slp1, other)| (other, slp1))
         .collect();
-    sorted.sort_by(|a, b| b.0.chars().count().cmp(&a.0.chars().count()));
+    sorted.sort_by_key(|a| std::cmp::Reverse(a.0.chars().count()));
     sorted.dedup_by(|a, b| a.0 == b.0); // Aliases take precedence (they're later in the chain)
 
     let mut out = String::new();

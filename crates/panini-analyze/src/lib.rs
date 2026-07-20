@@ -1,5 +1,5 @@
 #![forbid(unsafe_code)]
-use panini_data::{dhatus, Dhatu, Lakara, Pada, Purusha, Vacana};
+use panini_data::{Dhatu, Lakara, Pada, Purusha, Vacana, dhatus};
 
 pub struct Candidate {
     pub dhatu: &'static Dhatu,
