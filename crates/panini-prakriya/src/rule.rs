@@ -6,6 +6,7 @@ pub enum RuleKind {
     Samjna,
     Adhikara,
     Paribhasha,
+    Atidesha,
 }
 
 #[derive(Clone, Copy)]

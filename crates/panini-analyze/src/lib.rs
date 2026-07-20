@@ -11,7 +11,7 @@ pub struct Candidate {
 
 /// The lakāras this build can derive. The analyzer proposes every
 /// (root × lakāra × cell); the engine confirms by exact surface match.
-pub const LAKARAS: &[Lakara] = &[Lakara::Lat, Lakara::Lan];
+pub const LAKARAS: &[Lakara] = &[Lakara::Lat, Lakara::Lan, Lakara::Lot];
 
 const CELLS: &[(Purusha, Vacana)] = &[
     (Purusha::Prathama, Vacana::Eka),

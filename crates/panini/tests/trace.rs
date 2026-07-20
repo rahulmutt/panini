@@ -96,3 +96,34 @@ fn abhavam_trace_shows_dirgha_does_not_fire() {
     assert!(!trace.contains(&"7.3.101".to_string()), "got {trace:?}");
     assert!(trace.contains(&"6.1.97".to_string()), "got {trace:?}");
 }
+
+#[test]
+fn bhavatu_trace_is_exactly_the_lot_er_uh_path() {
+    // BU loṭ prathama eka: tip -> ti (1.3.9) -> tu (3.4.86), via 3.4.85.
+    assert_eq!(
+        trace_for("Bavatu"),
+        vec![
+            "3.4.78", "1.3.9", "3.4.85", "3.4.86", "3.1.68", "1.3.9", "7.3.84", "6.1.78"
+        ]
+    );
+}
+
+#[test]
+fn bhava_trace_shows_hi_elision() {
+    // BU loṭ madhyama eka: sip -> si -> hi (3.4.87), elided by 6.4.105.
+    let trace = trace_for("Bava");
+    assert!(trace.contains(&"3.4.87".to_string()), "got {trace:?}");
+    assert!(trace.contains(&"6.4.105".to_string()), "got {trace:?}");
+}
+
+#[test]
+fn bhavani_trace_shows_aat_not_dirgha() {
+    // BU loṭ uttama eka: mip -> mi -> ni (3.4.89) -> Ani (3.4.92), then
+    // 6.1.101 savarṇa-dīrgha. 7.3.101 must NOT fire, or the vowel would be
+    // lengthened twice.
+    let trace = trace_for("BavAni");
+    assert!(trace.contains(&"3.4.89".to_string()), "got {trace:?}");
+    assert!(trace.contains(&"3.4.92".to_string()), "got {trace:?}");
+    assert!(trace.contains(&"6.1.101".to_string()), "got {trace:?}");
+    assert!(!trace.contains(&"7.3.101".to_string()), "got {trace:?}");
+}

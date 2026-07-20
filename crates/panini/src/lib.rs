@@ -90,6 +90,7 @@ pub fn lakara_name(lakara: Lakara) -> &'static str {
     match lakara {
         Lakara::Lat => "laT",
         Lakara::Lan => "laN",
+        Lakara::Lot => "loT",
     }
 }
 

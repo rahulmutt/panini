@@ -86,6 +86,23 @@ pub static TINANTA_RULES: &[Rule] = &[
             p.terms[ENDING_PRE_SHAP].text != original
         },
     },
+    // 3.4.85 loṭo laṅvat: loṭ behaves as laṅ, so the ṅit-conditioned rules
+    // (3.4.99, 3.4.101) apply to it. An atideśa, so it is a rule and appears
+    // in the trace rather than being folded into Context::new.
+    Rule {
+        id: "3.4.85",
+        name: "loTo laNvat",
+        kind: RuleKind::Atidesha,
+        apply: |p| {
+            if !matches!(p.ctx.lakara, Lakara::Lot) || p.ctx.is_ngit_like {
+                return false;
+            }
+            let before = p.snapshot();
+            p.ctx.is_ngit_like = true;
+            p.record("3.4.85", "loTo laNvat", before);
+            true
+        },
+    },
     // 3.4.101 tasthasthamipāṃ tāṃtaṃtāmaḥ: tas→tAm, Tas→tam, Ta→ta, mip→am.
     //
     // The mip→am arm is laṅ-only: loṭ's uttama-eka is `ni` by the more specific
@@ -137,6 +154,64 @@ pub static TINANTA_RULES: &[Rule] = &[
             true
         },
     },
+    // 3.4.87 ser hyapic ca: loṭ madhyama-eka `si` → `hi`.
+    // Apavāda to 3.4.86 er uḥ, hence ordered before it.
+    Rule {
+        id: "3.4.87",
+        name: "ser hyapic ca",
+        kind: RuleKind::Vidhi,
+        apply: |p| {
+            if !matches!(p.ctx.lakara, Lakara::Lot) || p.terms[ENDING_PRE_SHAP].text != "si" {
+                return false;
+            }
+            let before = p.snapshot();
+            p.terms[ENDING_PRE_SHAP].text = "hi".into();
+            p.record("3.4.87", "ser hyapic ca", before);
+            true
+        },
+    },
+    // 3.4.89 mer niḥ: loṭ uttama-eka `mi` → `ni`.
+    // Apavāda to 3.4.86 er uḥ, hence ordered before it.
+    Rule {
+        id: "3.4.89",
+        name: "mer niH",
+        kind: RuleKind::Vidhi,
+        apply: |p| {
+            if !matches!(p.ctx.lakara, Lakara::Lot) || p.terms[ENDING_PRE_SHAP].text != "mi" {
+                return false;
+            }
+            let before = p.snapshot();
+            p.terms[ENDING_PRE_SHAP].text = "ni".into();
+            p.record("3.4.89", "mer niH", before);
+            true
+        },
+    },
+    // 3.4.86 er uḥ: the final `i` of the tiṅ → `u`. ti → tu, Ji → Ju.
+    //
+    // Guarded to exactly `ti`/`Ji` rather than "any i-final ending": `si` and
+    // `mi` are preempted by the apavādas above, and by this point they have
+    // already become `hi`/`ni`, which are also i-final. The explicit set makes
+    // the preemption independent of ordering accidents.
+    Rule {
+        id: "3.4.86",
+        name: "er uH",
+        kind: RuleKind::Vidhi,
+        apply: |p| {
+            if !matches!(p.ctx.lakara, Lakara::Lot) {
+                return false;
+            }
+            if !matches!(p.terms[ENDING_PRE_SHAP].text.as_str(), "ti" | "Ji") {
+                return false;
+            }
+            let before = p.snapshot();
+            let mut s: Vec<char> = p.terms[ENDING_PRE_SHAP].text.chars().collect();
+            s.pop();
+            s.push('u');
+            p.terms[ENDING_PRE_SHAP].text = s.into_iter().collect();
+            p.record("3.4.86", "er uH", before);
+            true
+        },
+    },
     // 3.4.100 itaś ca: laṅ-only. The final `i` of laṅ's tiṅ is elided.
     // loṭ's final `i` is handled by 3.4.86 er uḥ (apavāda).
     // ti → t, si → s, Ji → J.
@@ -154,6 +229,22 @@ pub static TINANTA_RULES: &[Rule] = &[
             s.pop();
             p.terms[ENDING_PRE_SHAP].text = s.into_iter().collect();
             p.record("3.4.100", "itaS ca", before);
+            true
+        },
+    },
+    // 3.4.92 āḍ uttamasya pic ca: the āṭ-āgama is prefixed to loṭ's uttama
+    // endings. ni → Ani, va → Ava, ma → Ama.
+    Rule {
+        id: "3.4.92",
+        name: "Aq uttamasya pic ca",
+        kind: RuleKind::Vidhi,
+        apply: |p| {
+            if !matches!(p.ctx.lakara, Lakara::Lot) || !matches!(p.ctx.purusha, Purusha::Uttama) {
+                return false;
+            }
+            let before = p.snapshot();
+            p.terms[ENDING_PRE_SHAP].text = format!("A{}", p.terms[ENDING_PRE_SHAP].text);
+            p.record("3.4.92", "Aq uttamasya pic ca", before);
             true
         },
     },
@@ -260,16 +351,37 @@ pub static TINANTA_RULES: &[Rule] = &[
     // sārvadhātuka ending (here: mi/vas/mas).
     Rule {
         id: "7.3.101",
-        name: "ato dIrgho yaYi",
+        name: "ato dIrGo yaYi",
         kind: RuleKind::Vidhi,
         apply: |p| {
+            // loṭ uttama gets its dīrgha from 3.4.92 āḍ + 6.1.101 instead.
+            if matches!(p.ctx.lakara, Lakara::Lot) {
+                return false;
+            }
             let ending_first = p.terms[ENDING].text.chars().next().unwrap();
             if !matches!(ending_first, 'm' | 'v') || p.terms[SHAP].text != "a" {
                 return false;
             }
             let before = p.snapshot();
             p.terms[SHAP].text = "A".into();
-            p.record("7.3.101", "ato dIrgho yaYi", before);
+            p.record("7.3.101", "ato dIrGo yaYi", before);
+            true
+        },
+    },
+    // 6.1.101 akaḥ savarṇe dīrghaḥ: śap `a` + the ending's initial `A`
+    // (from 3.4.92 āḍ) coalesce to a single `A`. Bav + a + Ani → BavAni.
+    Rule {
+        id: "6.1.101",
+        name: "akaH savarRe dIrGaH",
+        kind: RuleKind::Vidhi,
+        apply: |p| {
+            if p.terms[SHAP].text != "a" || !p.terms[ENDING].text.starts_with('A') {
+                return false;
+            }
+            let before = p.snapshot();
+            p.terms[SHAP].text = "A".into();
+            p.terms[ENDING].text = p.terms[ENDING].text.chars().skip(1).collect();
+            p.record("6.1.101", "akaH savarRe dIrGaH", before);
             true
         },
     },
@@ -290,6 +402,22 @@ pub static TINANTA_RULES: &[Rule] = &[
             let before = p.snapshot();
             p.terms[ENDING].text = p.terms[ENDING].text.chars().skip(1).collect();
             p.record("6.1.97", "ato guRe", before);
+            true
+        },
+    },
+    // 6.4.105 ato heḥ: `hi` is elided after a short `a` (the śap).
+    // Bav + a + hi → Bava.
+    Rule {
+        id: "6.4.105",
+        name: "ato heH",
+        kind: RuleKind::Vidhi,
+        apply: |p| {
+            if p.terms[SHAP].text != "a" || p.terms[ENDING].text != "hi" {
+                return false;
+            }
+            let before = p.snapshot();
+            p.terms[ENDING].text = String::new();
+            p.record("6.4.105", "ato heH", before);
             true
         },
     },

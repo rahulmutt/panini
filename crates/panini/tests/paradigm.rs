@@ -105,6 +105,54 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
             "avadAma",
         ],
     ),
+    (
+        "BU",
+        "loT",
+        [
+            "Bavatu", "BavatAm", "Bavantu", "Bava", "Bavatam", "Bavata", "BavAni", "BavAva",
+            "BavAma",
+        ],
+    ),
+    (
+        "nI",
+        "loT",
+        [
+            "nayatu", "nayatAm", "nayantu", "naya", "nayatam", "nayata", "nayAni", "nayAva",
+            "nayAma",
+        ],
+    ),
+    (
+        "ji",
+        "loT",
+        [
+            "jayatu", "jayatAm", "jayantu", "jaya", "jayatam", "jayata", "jayAni", "jayAva",
+            "jayAma",
+        ],
+    ),
+    (
+        "smf",
+        "loT",
+        [
+            "smaratu", "smaratAm", "smarantu", "smara", "smaratam", "smarata", "smarAni",
+            "smarAva", "smarAma",
+        ],
+    ),
+    (
+        "paW",
+        "loT",
+        [
+            "paWatu", "paWatAm", "paWantu", "paWa", "paWatam", "paWata", "paWAni", "paWAva",
+            "paWAma",
+        ],
+    ),
+    (
+        "vad",
+        "loT",
+        [
+            "vadatu", "vadatAm", "vadantu", "vada", "vadatam", "vadata", "vadAni", "vadAva",
+            "vadAma",
+        ],
+    ),
 ];
 
 #[test]
@@ -135,6 +183,7 @@ fn known_nonforms_are_invalid() {
         // aṭ-āgama (6.4.71), and laṭ endings forbid it.
         "Bavat",    // laṅ 3sg ending without the augment
         "aBavanti", // augment on a laṭ form
+        "aBavatu",  // augment on a loṭ form
         // Still out of scope entirely.
         "gacCati",
         "Bavati123",
