@@ -546,6 +546,52 @@ pub static TINANTA_RULES: &[Rule] = &[
             true
         },
     },
+    // 6.1.87 ād guṇaḥ: śap `a` + ending-initial `i` coalesce to guṇa `e`.
+    // Bava + iyt → Bave + yt. Same mechanical shape as 6.1.101 above: the
+    // śap stands in for the coalesced vowel, the ending loses its initial.
+    // MUST precede 6.1.66: only after the `i` is absorbed does the ending
+    // start with the `y` that 6.1.66 tests.
+    Rule {
+        id: "6.1.87",
+        name: "Ad guRaH",
+        kind: RuleKind::Vidhi,
+        apply: |p| {
+            if p.terms[SHAP].text != "a" || !p.terms[ENDING].text.starts_with('i') {
+                return false;
+            }
+            let before = p.snapshot();
+            p.terms[SHAP].text = "e".into();
+            p.terms[ENDING].text = p.terms[ENDING].text.chars().skip(1).collect();
+            p.record("6.1.87", "Ad guRaH", before);
+            true
+        },
+    },
+    // 6.1.66 lopo vyor vali: v or y is elided before a val consonant. Here
+    // only the ending-initial y from the yāsuṭ chain ever matches: yt → t,
+    // yva → va; yus survives (u is a vowel, not in val). The val pratyāhāra
+    // is every consonant except y, and no `yy` sequence arises in this
+    // engine, so "any consonant" is an exact guard here.
+    Rule {
+        id: "6.1.66",
+        name: "lopo vyor vali",
+        kind: RuleKind::Vidhi,
+        apply: |p| {
+            let mut chars = p.terms[ENDING].text.chars();
+            if chars.next() != Some('y') {
+                return false;
+            }
+            let Some(second) = chars.next() else {
+                return false;
+            };
+            if is_vowel(second) {
+                return false;
+            }
+            let before = p.snapshot();
+            p.terms[ENDING].text = p.terms[ENDING].text.chars().skip(1).collect();
+            p.record("6.1.66", "lopo vyor vali", before);
+            true
+        },
+    },
     // 6.4.105 ato heḥ: `hi` is elided after a short `a` (the śap).
     // Bav + a + hi → Bava.
     Rule {
@@ -780,11 +826,11 @@ mod tests {
     // special-case which call site fired.
 
     /// Drive every (root, lakara, purusha, vacana) cell over the curated
-    /// roots and all three lakaras/nine cells, and assert every recorded
+    /// roots and all four lakaras/nine cells, and assert every recorded
     /// `RuleStep.name` matches the `TINANTA_RULES` entry for its `sutra` id.
     #[test]
     fn recorded_step_names_match_tinanta_rules_for_every_id() {
-        let lakaras = [Lakara::Lat, Lakara::Lan, Lakara::Lot];
+        let lakaras = [Lakara::Lat, Lakara::Lan, Lakara::Lot, Lakara::VidhiLin];
         let purushas = [Purusha::Prathama, Purusha::Madhyama, Purusha::Uttama];
         let vacanas = [Vacana::Eka, Vacana::Dvi, Vacana::Bahu];
 
@@ -978,5 +1024,48 @@ mod tests {
         let rule = TINANTA_RULES.iter().find(|r| r.id == "7.2.80").unwrap();
         assert!((rule.apply)(&mut p));
         assert_eq!(p.terms[ENDING].text, "iyt");
+    }
+
+    fn lin_form(code: &str, pu: Purusha, va: Vacana) -> String {
+        let d = dhatus().iter().find(|d| d.code == code).unwrap();
+        derive(d, Lakara::VidhiLin, Pada::Parasmaipada, pu, va).text()
+    }
+
+    #[test]
+    fn bhu_vidhilin_all_nine_cells() {
+        for (pu, va, want) in [
+            (Purusha::Prathama, Vacana::Eka, "Bavet"),
+            (Purusha::Prathama, Vacana::Dvi, "BavetAm"),
+            (Purusha::Prathama, Vacana::Bahu, "BaveyuH"),
+            (Purusha::Madhyama, Vacana::Eka, "BaveH"),
+            (Purusha::Madhyama, Vacana::Dvi, "Bavetam"),
+            (Purusha::Madhyama, Vacana::Bahu, "Baveta"),
+            (Purusha::Uttama, Vacana::Eka, "Baveyam"),
+            (Purusha::Uttama, Vacana::Dvi, "Baveva"),
+            (Purusha::Uttama, Vacana::Bahu, "Bavema"),
+        ] {
+            assert_eq!(lin_form("BU", pu, va), want, "{pu:?} {va:?}");
+        }
+    }
+
+    #[test]
+    fn vali_lopa_spares_a_following_vowel() {
+        // BaveyuH keeps its y because `u` is not a val consonant; Baveva
+        // loses it because `v` is. Pin the guard at the rule level.
+        for (ending, fires, want) in [("yva", true, "va"), ("yus", false, "yus")] {
+            let mut p = Prakriya {
+                terms: vec![Term::new("Bav"), Term::new("e"), Term::new(ending)],
+                log: vec![],
+                ctx: Context::new(
+                    Lakara::VidhiLin,
+                    Pada::Parasmaipada,
+                    Purusha::Uttama,
+                    Vacana::Dvi,
+                ),
+            };
+            let rule = TINANTA_RULES.iter().find(|r| r.id == "6.1.66").unwrap();
+            assert_eq!((rule.apply)(&mut p), fires, "{ending}");
+            assert_eq!(p.terms[ENDING].text, want, "{ending}");
+        }
     }
 }
