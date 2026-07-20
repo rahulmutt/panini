@@ -148,7 +148,7 @@ pub static TINANTA_RULES: &[Rule] = &[
     },
     // 3.4.101 tasthasthamipāṃ tāṃtaṃtāmaḥ: tas→tAm, Tas→tam, Ta→ta, mip→am.
     //
-    // The mip→am arm is laṅ-only: loṭ's uttama-eka is `ni` by the more specific
+    // The mip→am arm excludes loṭ: loṭ's uttama-eka is `ni` by the more specific
     // 3.4.89 mer niḥ, so it must not be captured here.
     //
     // MUST precede 3.4.99: 3.4.101 is the apavAda (the specific rule) for
@@ -170,7 +170,9 @@ pub static TINANTA_RULES: &[Rule] = &[
                 "tas" => "tAm",
                 "Tas" => "tam",
                 "Ta" => "ta",
-                "mi" if matches!(p.ctx.lakara, Lakara::Lan) => "am",
+                // loṭ keeps its apavāda 3.4.89 mer niḥ (mi → ni); every
+                // other ṅit-like lakāra takes am.
+                "mi" if !matches!(p.ctx.lakara, Lakara::Lot) => "am",
                 _ => return false,
             };
             let before = p.snapshot();
@@ -257,15 +259,21 @@ pub static TINANTA_RULES: &[Rule] = &[
             true
         },
     },
-    // 3.4.100 itaś ca: laṅ-only. The final `i` of laṅ's tiṅ is elided.
-    // loṭ's final `i` is handled by 3.4.86 er uḥ (apavāda).
-    // ti → t, si → s, Ji → J.
+    // 3.4.100 itaś ca: the final `i` of a ṅit-lakāra's tiṅ is elided.
+    // laṅ/vidhiliṅ: ti → t, si → s, Ji → J (laṅ; liṅ's Ji is gone by
+    // 3.4.108). loṭ is excluded: its final `i` is handled by the apavāda
+    // 3.4.86 er uḥ.
     Rule {
         id: "3.4.100",
         name: "itaS ca",
         kind: RuleKind::Vidhi,
         apply: |p| {
-            if !matches!(p.ctx.lakara, Lakara::Lan) || !p.terms[ENDING_PRE_SHAP].text.ends_with('i')
+            // ṅit lakāras generally — but NOT loṭ, whose i-finals belong to
+            // the apavāda set 3.4.86/87/89 (and 3.4.87's output `hi` is
+            // itself i-final, so a bare ṅit guard would corrupt it to `h`).
+            if !p.ctx.is_ngit_like
+                || matches!(p.ctx.lakara, Lakara::Lot)
+                || !p.terms[ENDING_PRE_SHAP].text.ends_with('i')
             {
                 return false;
             }
@@ -771,5 +779,60 @@ mod tests {
                 );
             }
         }
+    }
+
+    #[test]
+    fn itash_ca_fires_for_vidhilin() {
+        let mut p = Prakriya {
+            terms: vec![Term::new("BU"), Term::new("ti")],
+            log: vec![],
+            ctx: Context::new(
+                Lakara::VidhiLin,
+                Pada::Parasmaipada,
+                Purusha::Prathama,
+                Vacana::Eka,
+            ),
+        };
+        let rule = TINANTA_RULES.iter().find(|r| r.id == "3.4.100").unwrap();
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.terms[ENDING_PRE_SHAP].text, "t");
+    }
+
+    #[test]
+    fn itash_ca_never_touches_lot_even_when_ngit_like() {
+        // After 3.4.85 loṭ is ṅit-like, and after 3.4.87 its madhyama-eka
+        // ending is `hi` — which is i-final. A bare ṅit guard would corrupt
+        // it to `h`; the guard must exclude loṭ explicitly.
+        let mut p = Prakriya {
+            terms: vec![Term::new("BU"), Term::new("hi")],
+            log: vec![],
+            ctx: Context::new(
+                Lakara::Lot,
+                Pada::Parasmaipada,
+                Purusha::Madhyama,
+                Vacana::Eka,
+            ),
+        };
+        p.ctx.is_ngit_like = true; // as 3.4.85 would have set it
+        let rule = TINANTA_RULES.iter().find(|r| r.id == "3.4.100").unwrap();
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[ENDING_PRE_SHAP].text, "hi");
+    }
+
+    #[test]
+    fn mip_becomes_am_in_vidhilin() {
+        let mut p = Prakriya {
+            terms: vec![Term::new("BU"), Term::new("mi")],
+            log: vec![],
+            ctx: Context::new(
+                Lakara::VidhiLin,
+                Pada::Parasmaipada,
+                Purusha::Uttama,
+                Vacana::Eka,
+            ),
+        };
+        let rule = TINANTA_RULES.iter().find(|r| r.id == "3.4.101").unwrap();
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.terms[ENDING_PRE_SHAP].text, "am");
     }
 }
