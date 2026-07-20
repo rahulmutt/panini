@@ -1,5 +1,8 @@
+use crate::context::Context;
+use crate::controller::run_pipeline;
 use crate::it_samjna::run_it_samjna;
 use crate::prakriya::Prakriya;
+use crate::rule::{Rule, RuleKind};
 use crate::term::{Tag, Term};
 use panini_data::{Dhatu, Lakara, Pada, Purusha, Vacana, tin_ending};
 
@@ -28,134 +31,216 @@ fn is_vibhakti_protected_final(c: char) -> bool {
     matches!(c, 't' | 'T' | 'd' | 'D' | 'n' | 's' | 'm')
 }
 
-pub fn derive(
-    dhatu: &Dhatu,
-    _lakara: Lakara,
-    pada: Pada,
-    purusha: Purusha,
-    vacana: Vacana,
-) -> Prakriya {
-    let mut p = Prakriya::default();
-    p.terms.push({
-        let mut t = Term::new(dhatu.code);
-        t.add(Tag::Dhatu);
-        t
-    });
+/// Index of the aṅga (the dhātu) in `terms`. Stable across the pipeline.
+const ANGA: usize = 0;
 
-    // 3.4.78 tiptasjhi...: replace laṭ by the tiṅ ending.
+/// Index of the tiṅ ending *before* śap is inserted (3.1.68).
+const ENDING_PRE_SHAP: usize = 1;
+
+/// Index of śap once inserted, and of the ending thereafter.
+const SHAP: usize = 1;
+const ENDING: usize = 2;
+
+/// The ordered rule list. Read it top to bottom against the Aṣṭādhyāyī: this
+/// sequence IS the grammar this crate implements. Every rule self-guards and
+/// returns whether it fired.
+pub static TINANTA_RULES: &[Rule] = &[
+    // 3.4.78 tiptasjhi...: replace the lakāra by the tiṅ ending.
     // 3.4.113 tiṅ-śit sārvadhātukam makes it sārvadhātuka.
-    let ending = tin_ending(pada, purusha, vacana);
-    {
-        let before = p.snapshot();
-        let mut e = Term::new(ending);
-        e.add(Tag::Tin);
-        e.add(Tag::Sarvadhatuka);
-        p.terms.push(e);
-        p.record("3.4.78", "tiptasjhisipthasthamipvasmas", before);
-    }
-
-    // it-samjna on the tiṅ ending (elide anubandhas), respecting 1.3.4:
-    // the final s/t/m of a vibhakti is protected, so only endings whose final
-    // is a genuine anubandha (tip/sip/mip → the pit marker `p`) are reduced.
-    {
-        let last = p.terms[1].text.chars().last();
-        let protected = last.map(is_vibhakti_protected_final).unwrap_or(false);
-        if !protected {
-            let mut e = p.terms[1].clone();
-            run_it_samjna(&mut e, &mut p, 1);
-            p.terms[1] = e;
-        }
-    }
-
-    // 3.1.68 kartari śap: insert śap between dhātu and ending.
-    {
-        let before = p.snapshot();
-        let mut s = Term::new("Sap");
-        s.add(Tag::Vikarana);
-        s.add(Tag::Sarvadhatuka);
-        p.terms.insert(1, s);
-        p.record("3.1.68", "kartari Sap", before);
-    }
-    // it-samjna on śap (→ `a`); mark the dhātu an aṅga.
-    {
-        let mut s = p.terms[1].clone();
-        run_it_samjna(&mut s, &mut p, 1);
-        p.terms[1] = s;
-    }
-    p.terms[0].add(Tag::Anga);
-
-    // 7.1.3 jho'ntaḥ: the `J` of `Ji` (prathama-bahu) → `ant`, yielding `anti`.
-    if p.terms[2].text == "Ji" {
-        let before = p.snapshot();
-        p.terms[2].text = "anti".into();
-        p.record("7.1.3", "jho'ntaH", before);
-    }
-
+    Rule {
+        id: "3.4.78",
+        name: "tiptasjhisipthasthamipvasmas",
+        kind: RuleKind::Vidhi,
+        apply: |p| {
+            let before = p.snapshot();
+            let ending = tin_ending(p.ctx.pada, p.ctx.purusha, p.ctx.vacana);
+            let mut e = Term::new(ending);
+            e.add(Tag::Tin);
+            e.add(Tag::Sarvadhatuka);
+            p.terms.push(e);
+            p.record("3.4.78", "tiptasjhisipthasthamipvasmas", before);
+            true
+        },
+    },
+    // it-samjña on the tiṅ ending (1.3.3 halantyam / 1.3.9 tasya lopaḥ),
+    // respecting 1.3.4: the final s/t/m of a vibhakti is protected, so only
+    // endings whose final is a genuine anubandha (tip/sip/mip → the pit marker
+    // `p`) are reduced.
+    //
+    // This MUST precede the lakāra-specific substitutions below: 3.4.100
+    // itaś ca elides the `i` of `tip`, and that `i` is only exposed once
+    // halantyam has stripped the `p`.
+    Rule {
+        id: "1.3.9",
+        name: "tasya lopaH",
+        kind: RuleKind::Vidhi,
+        apply: |p| {
+            let last = p.terms[ENDING_PRE_SHAP].text.chars().last();
+            if last.map(is_vibhakti_protected_final).unwrap_or(false) {
+                return false;
+            }
+            let mut e = p.terms[ENDING_PRE_SHAP].clone();
+            let original = e.text.clone();
+            run_it_samjna(&mut e, p, ENDING_PRE_SHAP);
+            p.terms[ENDING_PRE_SHAP] = e;
+            p.terms[ENDING_PRE_SHAP].text != original
+        },
+    },
+    // 3.1.68 kartari śap: insert śap between dhātu and ending, run it-samjña
+    // on it (Sap → a), and mark the dhātu an aṅga.
+    Rule {
+        id: "3.1.68",
+        name: "kartari Sap",
+        kind: RuleKind::Vidhi,
+        apply: |p| {
+            let before = p.snapshot();
+            let mut s = Term::new("Sap");
+            s.add(Tag::Vikarana);
+            s.add(Tag::Sarvadhatuka);
+            p.terms.insert(SHAP, s);
+            p.record("3.1.68", "kartari Sap", before);
+            let mut s = p.terms[SHAP].clone();
+            run_it_samjna(&mut s, p, SHAP);
+            p.terms[SHAP] = s;
+            p.terms[ANGA].add(Tag::Anga);
+            true
+        },
+    },
+    // 7.1.3 jho'ntaḥ: a leading `J` of the ending → `ant`.
+    Rule {
+        id: "7.1.3",
+        name: "jho'ntaH",
+        kind: RuleKind::Vidhi,
+        apply: |p| {
+            if !p.terms[ENDING].text.starts_with('J') {
+                return false;
+            }
+            let before = p.snapshot();
+            let rest: String = p.terms[ENDING].text.chars().skip(1).collect();
+            p.terms[ENDING].text = format!("ant{rest}");
+            p.record("7.1.3", "jho'ntaH", before);
+            true
+        },
+    },
     // 7.3.84 sārvadhātukārdhadhātukayoḥ: guṇa of the aṅga's final ik.
-    {
-        let last = p.terms[0].text.chars().last().unwrap();
-        if let Some(g) = guna_of(last) {
+    Rule {
+        id: "7.3.84",
+        name: "sArvadhAtukArdhadhAtukayoH",
+        kind: RuleKind::Vidhi,
+        apply: |p| {
+            let last = p.terms[ANGA].text.chars().last().unwrap();
+            let Some(g) = guna_of(last) else {
+                return false;
+            };
             let before = p.snapshot();
-            let mut s: Vec<char> = p.terms[0].text.chars().collect();
+            let mut s: Vec<char> = p.terms[ANGA].text.chars().collect();
             s.pop();
-            p.terms[0].text = s.into_iter().collect::<String>() + g;
+            p.terms[ANGA].text = s.into_iter().collect::<String>() + g;
             p.record("7.3.84", "sArvadhAtukArdhadhAtukayoH", before);
-        }
-    }
-
+            true
+        },
+    },
     // 6.1.78 eco'yavāyāvaḥ: e/o/E/O before a vowel → ay/av/Ay/Av.
-    {
-        let anga_last = p.terms[0].text.chars().last().unwrap();
-        let next_first = p.terms[1].text.chars().next().unwrap();
-        let sub = match anga_last {
-            'e' => Some("ay"),
-            'o' => Some("av"),
-            'E' => Some("Ay"),
-            'O' => Some("Av"),
-            _ => None,
-        };
-        if let (Some(sub), true) = (sub, is_vowel(next_first)) {
+    Rule {
+        id: "6.1.78",
+        name: "eco'yavAyAvaH",
+        kind: RuleKind::Vidhi,
+        apply: |p| {
+            let anga_last = p.terms[ANGA].text.chars().last().unwrap();
+            let next_first = p.terms[SHAP].text.chars().next().unwrap();
+            let sub = match anga_last {
+                'e' => "ay",
+                'o' => "av",
+                'E' => "Ay",
+                'O' => "Av",
+                _ => return false,
+            };
+            if !is_vowel(next_first) {
+                return false;
+            }
             let before = p.snapshot();
-            let mut s: Vec<char> = p.terms[0].text.chars().collect();
+            let mut s: Vec<char> = p.terms[ANGA].text.chars().collect();
             s.pop();
-            p.terms[0].text = s.into_iter().collect::<String>() + sub;
+            p.terms[ANGA].text = s.into_iter().collect::<String>() + sub;
             p.record("6.1.78", "eco'yavAyAvaH", before);
-        }
-    }
-
+            true
+        },
+    },
+    // 7.3.101 ato dīrgho yañi: aṅga-final `a` (śap) → `A` before a yañ-initial
+    // sārvadhātuka ending (here: mi/vas/mas).
+    Rule {
+        id: "7.3.101",
+        name: "ato dIrgho yaYi",
+        kind: RuleKind::Vidhi,
+        apply: |p| {
+            let ending_first = p.terms[ENDING].text.chars().next().unwrap();
+            if !matches!(ending_first, 'm' | 'v') || p.terms[SHAP].text != "a" {
+                return false;
+            }
+            let before = p.snapshot();
+            p.terms[SHAP].text = "A".into();
+            p.record("7.3.101", "ato dIrgho yaYi", before);
+            true
+        },
+    },
     // 6.1.97 ato guṇe: a short `a` (the śap) followed by a guṇa vowel yields
     // para-rūpa — a single vowel identical to the following one. For the `anti`
     // ending (Ji → anti), śap `a` + initial `a` of `anti` → a single short `a`
     // (NOT savarṇa-dīrgha `A`), so `Bav`+`a`+`nti` = `Bavanti`. Drop the
     // ending's leading `a`; the surviving śap `a` stands in for the coalesced
     // vowel and the term vector stays consistent for `.text()`.
-    if p.terms[1].text == "a" && p.terms[2].text.starts_with('a') {
-        let before = p.snapshot();
-        p.terms[2].text = p.terms[2].text.chars().skip(1).collect();
-        p.record("6.1.97", "ato guRe", before);
-    }
-
-    // 7.3.101 ato dīrgho yañi: aṅga-final `a` (śap) → `A` before mi/vas/mas.
-    {
-        let ending_first = p.terms[2].text.chars().next().unwrap();
-        if (ending_first == 'm' || ending_first == 'v') && p.terms[1].text == "a" {
+    Rule {
+        id: "6.1.97",
+        name: "ato guRe",
+        kind: RuleKind::Vidhi,
+        apply: |p| {
+            if p.terms[SHAP].text != "a" || !p.terms[ENDING].text.starts_with('a') {
+                return false;
+            }
             let before = p.snapshot();
-            p.terms[1].text = "A".into();
-            p.record("7.3.101", "ato dIrgho yaYi", before);
-        }
-    }
+            p.terms[ENDING].text = p.terms[ENDING].text.chars().skip(1).collect();
+            p.record("6.1.97", "ato guRe", before);
+            true
+        },
+    },
+    // 8.2.66 sasajuṣo ruḥ + 8.3.15 kharavasānayoḥ: word-final `s` → visarga.
+    Rule {
+        id: "8.3.15",
+        name: "kharavasAnayoH visarjanIyaH",
+        kind: RuleKind::Vidhi,
+        apply: |p| {
+            if !p.text().ends_with('s') {
+                return false;
+            }
+            let before = p.snapshot();
+            let idx = p.terms.len() - 1;
+            let mut s: Vec<char> = p.terms[idx].text.chars().collect();
+            s.pop();
+            s.push('H');
+            p.terms[idx].text = s.into_iter().collect();
+            p.record("8.3.15", "kharavasAnayoH visarjanIyaH", before);
+            true
+        },
+    },
+];
 
-    // 8.2.66 sasajuṣo ruḥ + 8.3.15 kharavasānayoḥ: word-final `s` → visarga `H`.
-    if p.terms.last().unwrap().text.ends_with('s') {
-        let before = p.snapshot();
-        let idx = p.terms.len() - 1;
-        let mut s: Vec<char> = p.terms[idx].text.chars().collect();
-        s.pop();
-        s.push('H');
-        p.terms[idx].text = s.into_iter().collect();
-        p.record("8.3.15", "kharavasAnayoH visarjanIyaH", before);
-    }
-
+pub fn derive(
+    dhatu: &Dhatu,
+    lakara: Lakara,
+    pada: Pada,
+    purusha: Purusha,
+    vacana: Vacana,
+) -> Prakriya {
+    let mut p = Prakriya {
+        ctx: Context::new(lakara, pada, purusha, vacana),
+        ..Default::default()
+    };
+    p.terms.push({
+        let mut t = Term::new(dhatu.code);
+        t.add(Tag::Dhatu);
+        t
+    });
+    run_pipeline(&mut p, TINANTA_RULES);
     p
 }
 
