@@ -13,6 +13,10 @@ pub enum Lakara {
     Lat,
     Lan,
     Lot,
+    /// The optative use of liṅ (sārvadhātuka: bhavet). The benedictive use
+    /// (āśīrliṅ, ārdhadhātuka: bhūyāt) derives differently and will be a
+    /// separate variant when implemented.
+    VidhiLin,
 }
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Purusha {

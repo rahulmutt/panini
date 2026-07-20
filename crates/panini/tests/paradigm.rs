@@ -153,6 +153,54 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
             "vadAma",
         ],
     ),
+    (
+        "BU",
+        "viDiliN",
+        [
+            "Bavet", "BavetAm", "BaveyuH", "BaveH", "Bavetam", "Baveta", "Baveyam", "Baveva",
+            "Bavema",
+        ],
+    ),
+    (
+        "nI",
+        "viDiliN",
+        [
+            "nayet", "nayetAm", "nayeyuH", "nayeH", "nayetam", "nayeta", "nayeyam", "nayeva",
+            "nayema",
+        ],
+    ),
+    (
+        "ji",
+        "viDiliN",
+        [
+            "jayet", "jayetAm", "jayeyuH", "jayeH", "jayetam", "jayeta", "jayeyam", "jayeva",
+            "jayema",
+        ],
+    ),
+    (
+        "smf",
+        "viDiliN",
+        [
+            "smaret", "smaretAm", "smareyuH", "smareH", "smaretam", "smareta", "smareyam",
+            "smareva", "smarema",
+        ],
+    ),
+    (
+        "paW",
+        "viDiliN",
+        [
+            "paWet", "paWetAm", "paWeyuH", "paWeH", "paWetam", "paWeta", "paWeyam", "paWeva",
+            "paWema",
+        ],
+    ),
+    (
+        "vad",
+        "viDiliN",
+        [
+            "vadet", "vadetAm", "vadeyuH", "vadeH", "vadetam", "vadeta", "vadeyam", "vadeva",
+            "vadema",
+        ],
+    ),
 ];
 
 #[test]
@@ -184,6 +232,8 @@ fn known_nonforms_are_invalid() {
         "Bavat",    // laṅ 3sg ending without the augment
         "aBavanti", // augment on a laṭ form
         "aBavatu",  // augment on a loṭ form
+        "aBavet",   // laṅ's aṭ-āgama on a vidhiliṅ form
+        "Bavetu",   // loṭ's er uḥ ending on a vidhiliṅ stem
         // Still out of scope entirely.
         "gacCati",
         "Bavati123",

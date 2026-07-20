@@ -119,9 +119,36 @@ pub static TINANTA_RULES: &[Rule] = &[
             true
         },
     },
+    // 3.4.108 jher jus: in liṅ, the ending Ji is replaced by jus. Apavāda to
+    // 3.4.100 itaś ca (Ji is i-final), hence ordered before it — the same
+    // preemption pattern as 3.4.87/3.4.89 before 3.4.86.
+    //
+    // The initial j of jus is an anubandha (1.3.7 cuṭū), elided here and
+    // recorded as 1.3.9 per the existing convention that saṃjñā rules
+    // (1.3.3/1.3.7/1.3.8) are silent and only the elision is traced. It is
+    // NOT folded into run_it_samjna: a general cuṭū arm there would also eat
+    // the J of laṭ/loṭ's Ji, which is not an anubandha but a coded segment
+    // that must survive for 7.1.3 jho'ntaḥ.
+    Rule {
+        id: "3.4.108",
+        name: "Jer jus",
+        kind: RuleKind::Vidhi,
+        apply: |p| {
+            if !matches!(p.ctx.lakara, Lakara::VidhiLin) || p.terms[ENDING_PRE_SHAP].text != "Ji" {
+                return false;
+            }
+            let before = p.snapshot();
+            p.terms[ENDING_PRE_SHAP].text = "jus".into();
+            p.record("3.4.108", "Jer jus", before);
+            let before = p.snapshot();
+            p.terms[ENDING_PRE_SHAP].text = "us".into();
+            p.record("1.3.9", "tasya lopaH", before);
+            true
+        },
+    },
     // 3.4.101 tasthasthamipāṃ tāṃtaṃtāmaḥ: tas→tAm, Tas→tam, Ta→ta, mip→am.
     //
-    // The mip→am arm is laṅ-only: loṭ's uttama-eka is `ni` by the more specific
+    // The mip→am arm excludes loṭ: loṭ's uttama-eka is `ni` by the more specific
     // 3.4.89 mer niḥ, so it must not be captured here.
     //
     // MUST precede 3.4.99: 3.4.101 is the apavAda (the specific rule) for
@@ -143,7 +170,9 @@ pub static TINANTA_RULES: &[Rule] = &[
                 "tas" => "tAm",
                 "Tas" => "tam",
                 "Ta" => "ta",
-                "mi" if matches!(p.ctx.lakara, Lakara::Lan) => "am",
+                // loṭ keeps its apavāda 3.4.89 mer niḥ (mi → ni); every
+                // other ṅit-like lakāra takes am.
+                "mi" if !matches!(p.ctx.lakara, Lakara::Lot) => "am",
                 _ => return false,
             };
             let before = p.snapshot();
@@ -230,15 +259,21 @@ pub static TINANTA_RULES: &[Rule] = &[
             true
         },
     },
-    // 3.4.100 itaś ca: laṅ-only. The final `i` of laṅ's tiṅ is elided.
-    // loṭ's final `i` is handled by 3.4.86 er uḥ (apavāda).
-    // ti → t, si → s, Ji → J.
+    // 3.4.100 itaś ca: the final `i` of a ṅit-lakāra's tiṅ is elided.
+    // laṅ/vidhiliṅ: ti → t, si → s, Ji → J (laṅ; liṅ's Ji is gone by
+    // 3.4.108). loṭ is excluded: its final `i` is handled by the apavāda
+    // 3.4.86 er uḥ.
     Rule {
         id: "3.4.100",
         name: "itaS ca",
         kind: RuleKind::Vidhi,
         apply: |p| {
-            if !matches!(p.ctx.lakara, Lakara::Lan) || !p.terms[ENDING_PRE_SHAP].text.ends_with('i')
+            // ṅit lakāras generally — but NOT loṭ, whose i-finals belong to
+            // the apavāda set 3.4.86/87/89 (and 3.4.87's output `hi` is
+            // itself i-final, so a bare ṅit guard would corrupt it to `h`).
+            if !p.ctx.is_ngit_like
+                || matches!(p.ctx.lakara, Lakara::Lot)
+                || !p.terms[ENDING_PRE_SHAP].text.ends_with('i')
             {
                 return false;
             }
@@ -272,6 +307,29 @@ pub static TINANTA_RULES: &[Rule] = &[
             let before = p.snapshot();
             p.terms[ENDING_PRE_SHAP].text = format!("A{}", p.terms[ENDING_PRE_SHAP].text);
             p.record("3.4.92", "Aq uttamasya pic ca", before);
+            true
+        },
+    },
+    // 3.4.103 yāsuṭ parasmaipadeṣūdātto ṅic ca: the yāsuṭ-āgama is prefixed
+    // to liṅ's parasmaipada endings. Modelled as a text prefix on the ending
+    // term (the āṭ 3.4.92 / aṭ 6.4.71 precedent) so the term indices stay
+    // stable. "parasmaipadeṣu" is trivially satisfied — Pada has one variant;
+    // revisit the guard when ātmanepada arrives (its liṅ takes sīyuṭ, 3.4.102).
+    //
+    // MUST follow the 3.4.9x/10x ending substitutions above: their guards
+    // match the ending text exactly ("mi", "vas", …), so prefixing yAs first
+    // would make every one of them miss.
+    Rule {
+        id: "3.4.103",
+        name: "yAsuw parasmEpadezUdAtto Nic ca",
+        kind: RuleKind::Vidhi,
+        apply: |p| {
+            if !matches!(p.ctx.lakara, Lakara::VidhiLin) {
+                return false;
+            }
+            let before = p.snapshot();
+            p.terms[ENDING_PRE_SHAP].text = format!("yAs{}", p.terms[ENDING_PRE_SHAP].text);
+            p.record("3.4.103", "yAsuw parasmEpadezUdAtto Nic ca", before);
             true
         },
     },
@@ -334,6 +392,58 @@ pub static TINANTA_RULES: &[Rule] = &[
             let rest: String = p.terms[ENDING].text.chars().skip(1).collect();
             p.terms[ENDING].text = format!("ant{rest}");
             p.record("7.1.3", "Jo'ntaH", before);
+            true
+        },
+    },
+    // 7.2.79 liṅaḥ salopo 'nantyasya: the non-final s of sārvadhātuka liṅ's
+    // ending is elided. yAst → yAt, yAss → yAs (madhyama-eka: only the first
+    // s is non-final!), yAsus → yAus. MUST precede 7.2.80: only after the s
+    // goes does the ending start with the `yA` shape 7.2.80 rewrites.
+    // Every non-final s reaching this rule is yāsuṭ-derived, because 3.4.103
+    // fires unconditionally for vidhiliṅ and no rule between them introduces
+    // an s.
+    Rule {
+        id: "7.2.79",
+        name: "liNaH salopo'nantyasya",
+        kind: RuleKind::Vidhi,
+        apply: |p| {
+            if !matches!(p.ctx.lakara, Lakara::VidhiLin) {
+                return false;
+            }
+            let text = &p.terms[ENDING].text;
+            let n = text.chars().count();
+            let reduced: String = text
+                .chars()
+                .enumerate()
+                .filter(|&(i, c)| c != 's' || i + 1 == n)
+                .map(|(_, c)| c)
+                .collect();
+            if reduced == *text {
+                return false;
+            }
+            let before = p.snapshot();
+            p.terms[ENDING].text = reduced;
+            p.record("7.2.79", "liNaH salopo'nantyasya", before);
+            true
+        },
+    },
+    // 7.2.80 ato yeyaḥ: after an a-final aṅga (here: the śap), the yA of the
+    // yāsuṭ is replaced by iy. yAt → iyt, yAus → iyus.
+    Rule {
+        id: "7.2.80",
+        name: "ato yeyaH",
+        kind: RuleKind::Vidhi,
+        apply: |p| {
+            if !matches!(p.ctx.lakara, Lakara::VidhiLin)
+                || p.terms[SHAP].text != "a"
+                || !p.terms[ENDING].text.starts_with("yA")
+            {
+                return false;
+            }
+            let before = p.snapshot();
+            let rest: String = p.terms[ENDING].text.chars().skip(2).collect();
+            p.terms[ENDING].text = format!("iy{rest}");
+            p.record("7.2.80", "ato yeyaH", before);
             true
         },
     },
@@ -436,6 +546,52 @@ pub static TINANTA_RULES: &[Rule] = &[
             let before = p.snapshot();
             p.terms[ENDING].text = p.terms[ENDING].text.chars().skip(1).collect();
             p.record("6.1.97", "ato guRe", before);
+            true
+        },
+    },
+    // 6.1.87 ād guṇaḥ: śap `a` + ending-initial `i` coalesce to guṇa `e`.
+    // Bava + iyt → Bave + yt. Same mechanical shape as 6.1.101 above: the
+    // śap stands in for the coalesced vowel, the ending loses its initial.
+    // MUST precede 6.1.66: only after the `i` is absorbed does the ending
+    // start with the `y` that 6.1.66 tests.
+    Rule {
+        id: "6.1.87",
+        name: "Ad guRaH",
+        kind: RuleKind::Vidhi,
+        apply: |p| {
+            if p.terms[SHAP].text != "a" || !p.terms[ENDING].text.starts_with('i') {
+                return false;
+            }
+            let before = p.snapshot();
+            p.terms[SHAP].text = "e".into();
+            p.terms[ENDING].text = p.terms[ENDING].text.chars().skip(1).collect();
+            p.record("6.1.87", "Ad guRaH", before);
+            true
+        },
+    },
+    // 6.1.66 lopo vyor vali: v or y is elided before a val consonant. Here
+    // only the ending-initial y from the yāsuṭ chain ever matches: yt → t,
+    // yva → va; yus survives (u is a vowel, not in val). The val pratyāhāra
+    // is every consonant except y, and no `yy` sequence arises in this
+    // engine, so "any consonant" is an exact guard here.
+    Rule {
+        id: "6.1.66",
+        name: "lopo vyor vali",
+        kind: RuleKind::Vidhi,
+        apply: |p| {
+            let mut chars = p.terms[ENDING].text.chars();
+            if chars.next() != Some('y') {
+                return false;
+            }
+            let Some(second) = chars.next() else {
+                return false;
+            };
+            if is_vowel(second) {
+                return false;
+            }
+            let before = p.snapshot();
+            p.terms[ENDING].text = p.terms[ENDING].text.chars().skip(1).collect();
+            p.record("6.1.66", "lopo vyor vali", before);
             true
         },
     },
@@ -621,6 +777,42 @@ mod tests {
         assert_eq!(p.terms[ENDING_PRE_SHAP].text, "ti");
     }
 
+    #[test]
+    fn jher_jus_replaces_ji_and_elides_the_j_marker() {
+        let mut p = Prakriya {
+            terms: vec![Term::new("BU"), Term::new("Ji")],
+            log: vec![],
+            ctx: Context::new(
+                Lakara::VidhiLin,
+                Pada::Parasmaipada,
+                Purusha::Prathama,
+                Vacana::Bahu,
+            ),
+        };
+        let rule = TINANTA_RULES.iter().find(|r| r.id == "3.4.108").unwrap();
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.terms[ENDING_PRE_SHAP].text, "us");
+        // Both the substitution and the marker elision must be traced.
+        assert!(p.log.iter().any(|s| s.sutra == "3.4.108"));
+        assert!(p.log.iter().any(|s| s.sutra == "1.3.9"));
+    }
+
+    #[test]
+    fn jher_jus_leaves_lat_and_lot_ji_alone() {
+        // laṭ's Ji must survive to 7.1.3 jho'ntaḥ (Bavanti), loṭ's to
+        // 3.4.86 er uḥ (Bavantu).
+        for lakara in [Lakara::Lat, Lakara::Lot] {
+            let mut p = Prakriya {
+                terms: vec![Term::new("BU"), Term::new("Ji")],
+                log: vec![],
+                ctx: Context::new(lakara, Pada::Parasmaipada, Purusha::Prathama, Vacana::Bahu),
+            };
+            let rule = TINANTA_RULES.iter().find(|r| r.id == "3.4.108").unwrap();
+            assert!(!(rule.apply)(&mut p), "{lakara:?}");
+            assert_eq!(p.terms[ENDING_PRE_SHAP].text, "Ji");
+        }
+    }
+
     // --- Fix 2: the sutra-name hard gate --------------------------------
     //
     // AGENTS.md declares that sutra ids/names in traces must match the cited
@@ -637,11 +829,11 @@ mod tests {
     // special-case which call site fired.
 
     /// Drive every (root, lakara, purusha, vacana) cell over the curated
-    /// roots and all three lakaras/nine cells, and assert every recorded
+    /// roots and all four lakaras/nine cells, and assert every recorded
     /// `RuleStep.name` matches the `TINANTA_RULES` entry for its `sutra` id.
     #[test]
     fn recorded_step_names_match_tinanta_rules_for_every_id() {
-        let lakaras = [Lakara::Lat, Lakara::Lan, Lakara::Lot];
+        let lakaras = [Lakara::Lat, Lakara::Lan, Lakara::Lot, Lakara::VidhiLin];
         let purushas = [Purusha::Prathama, Purusha::Madhyama, Purusha::Uttama];
         let vacanas = [Vacana::Eka, Vacana::Dvi, Vacana::Bahu];
 
@@ -707,6 +899,243 @@ mod tests {
                     bad
                 );
             }
+        }
+    }
+
+    #[test]
+    fn itash_ca_fires_for_vidhilin() {
+        let mut p = Prakriya {
+            terms: vec![Term::new("BU"), Term::new("ti")],
+            log: vec![],
+            ctx: Context::new(
+                Lakara::VidhiLin,
+                Pada::Parasmaipada,
+                Purusha::Prathama,
+                Vacana::Eka,
+            ),
+        };
+        let rule = TINANTA_RULES.iter().find(|r| r.id == "3.4.100").unwrap();
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.terms[ENDING_PRE_SHAP].text, "t");
+    }
+
+    #[test]
+    fn itash_ca_never_touches_lot_even_when_ngit_like() {
+        // After 3.4.85 loṭ is ṅit-like, and after 3.4.87 its madhyama-eka
+        // ending is `hi` — which is i-final. A bare ṅit guard would corrupt
+        // it to `h`; the guard must exclude loṭ explicitly.
+        let mut p = Prakriya {
+            terms: vec![Term::new("BU"), Term::new("hi")],
+            log: vec![],
+            ctx: Context::new(
+                Lakara::Lot,
+                Pada::Parasmaipada,
+                Purusha::Madhyama,
+                Vacana::Eka,
+            ),
+        };
+        p.ctx.is_ngit_like = true; // as 3.4.85 would have set it
+        let rule = TINANTA_RULES.iter().find(|r| r.id == "3.4.100").unwrap();
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[ENDING_PRE_SHAP].text, "hi");
+    }
+
+    #[test]
+    fn mip_becomes_am_in_vidhilin() {
+        let mut p = Prakriya {
+            terms: vec![Term::new("BU"), Term::new("mi")],
+            log: vec![],
+            ctx: Context::new(
+                Lakara::VidhiLin,
+                Pada::Parasmaipada,
+                Purusha::Uttama,
+                Vacana::Eka,
+            ),
+        };
+        let rule = TINANTA_RULES.iter().find(|r| r.id == "3.4.101").unwrap();
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.terms[ENDING_PRE_SHAP].text, "am");
+    }
+
+    #[test]
+    fn aduttamasya_requires_uttama_purusha() {
+        // loT, madhyama, ending "va": the ending is in the {ni, va, ma} set
+        // and lakara is loT, but puruSa is madhyama, not uttama. The guard's
+        // second `||` must still short-circuit to false. Kills the `||` ->
+        // `&&` mutant at the second operator, which would otherwise let
+        // this fire whenever loT holds and the ending matches, regardless
+        // of puruSa.
+        let mut p = Prakriya {
+            terms: vec![Term::new("BU"), Term::new("va")],
+            log: vec![],
+            ctx: Context::new(
+                Lakara::Lot,
+                Pada::Parasmaipada,
+                Purusha::Madhyama,
+                Vacana::Bahu,
+            ),
+        };
+        let rule = TINANTA_RULES.iter().find(|r| r.id == "3.4.92").unwrap();
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[ENDING_PRE_SHAP].text, "va");
+    }
+
+    #[test]
+    fn yasut_prefixes_the_substituted_ending() {
+        let mut p = Prakriya {
+            terms: vec![Term::new("BU"), Term::new("t")],
+            log: vec![],
+            ctx: Context::new(
+                Lakara::VidhiLin,
+                Pada::Parasmaipada,
+                Purusha::Prathama,
+                Vacana::Eka,
+            ),
+        };
+        let rule = TINANTA_RULES.iter().find(|r| r.id == "3.4.103").unwrap();
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.terms[ENDING_PRE_SHAP].text, "yAst");
+    }
+
+    #[test]
+    fn yasut_is_vidhilin_only() {
+        let mut p = Prakriya {
+            terms: vec![Term::new("BU"), Term::new("t")],
+            log: vec![],
+            ctx: Context::new(
+                Lakara::Lan,
+                Pada::Parasmaipada,
+                Purusha::Prathama,
+                Vacana::Eka,
+            ),
+        };
+        let rule = TINANTA_RULES.iter().find(|r| r.id == "3.4.103").unwrap();
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[ENDING_PRE_SHAP].text, "t");
+    }
+
+    #[test]
+    fn salopa_elides_only_the_non_final_s() {
+        // Madhyama-eka is the trap: yAs + s = yAss, and only the FIRST s is
+        // non-final. Eliding both would derive *Bave for BaveH.
+        for (ending, want) in [("yAst", "yAt"), ("yAss", "yAs"), ("yAsus", "yAus")] {
+            let mut p = Prakriya {
+                terms: vec![Term::new("Bav"), Term::new("a"), Term::new(ending)],
+                log: vec![],
+                ctx: Context::new(
+                    Lakara::VidhiLin,
+                    Pada::Parasmaipada,
+                    Purusha::Prathama,
+                    Vacana::Eka,
+                ),
+            };
+            let rule = TINANTA_RULES.iter().find(|r| r.id == "7.2.79").unwrap();
+            assert!((rule.apply)(&mut p), "{ending}");
+            assert_eq!(p.terms[ENDING].text, want, "{ending}");
+        }
+    }
+
+    #[test]
+    fn ato_yeyah_rewrites_the_ya_prefix_after_shap_a() {
+        let mut p = Prakriya {
+            terms: vec![Term::new("Bav"), Term::new("a"), Term::new("yAt")],
+            log: vec![],
+            ctx: Context::new(
+                Lakara::VidhiLin,
+                Pada::Parasmaipada,
+                Purusha::Prathama,
+                Vacana::Eka,
+            ),
+        };
+        let rule = TINANTA_RULES.iter().find(|r| r.id == "7.2.80").unwrap();
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.terms[ENDING].text, "iyt");
+    }
+
+    #[test]
+    fn ato_yeyah_requires_vidhilin_lakara() {
+        // shap == "a" and ending starts_with "yA" are both satisfied, but the
+        // lakara isn't vidhilin: the guard's first `||` must still short-
+        // circuit to false. Kills the `||` -> `&&` mutant at the first
+        // operator, which would otherwise let this fire whenever the other
+        // two conditions hold regardless of lakara.
+        let mut p = Prakriya {
+            terms: vec![Term::new("Bav"), Term::new("a"), Term::new("yAt")],
+            log: vec![],
+            ctx: Context::new(
+                Lakara::Lan,
+                Pada::Parasmaipada,
+                Purusha::Prathama,
+                Vacana::Eka,
+            ),
+        };
+        let rule = TINANTA_RULES.iter().find(|r| r.id == "7.2.80").unwrap();
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[ENDING].text, "yAt");
+    }
+
+    #[test]
+    fn ato_yeyah_requires_shap_a() {
+        // lakara is vidhilin and ending starts_with "yA", but shap isn't
+        // "a": the guard's second `||` must still short-circuit to false.
+        // Kills the `||` -> `&&` mutant at the second operator, which would
+        // otherwise let this fire whenever lakara is vidhilin regardless of
+        // shap.
+        let mut p = Prakriya {
+            terms: vec![Term::new("i"), Term::new("i"), Term::new("yAt")],
+            log: vec![],
+            ctx: Context::new(
+                Lakara::VidhiLin,
+                Pada::Parasmaipada,
+                Purusha::Prathama,
+                Vacana::Eka,
+            ),
+        };
+        let rule = TINANTA_RULES.iter().find(|r| r.id == "7.2.80").unwrap();
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[ENDING].text, "yAt");
+    }
+
+    fn lin_form(code: &str, pu: Purusha, va: Vacana) -> String {
+        let d = dhatus().iter().find(|d| d.code == code).unwrap();
+        derive(d, Lakara::VidhiLin, Pada::Parasmaipada, pu, va).text()
+    }
+
+    #[test]
+    fn bhu_vidhilin_all_nine_cells() {
+        for (pu, va, want) in [
+            (Purusha::Prathama, Vacana::Eka, "Bavet"),
+            (Purusha::Prathama, Vacana::Dvi, "BavetAm"),
+            (Purusha::Prathama, Vacana::Bahu, "BaveyuH"),
+            (Purusha::Madhyama, Vacana::Eka, "BaveH"),
+            (Purusha::Madhyama, Vacana::Dvi, "Bavetam"),
+            (Purusha::Madhyama, Vacana::Bahu, "Baveta"),
+            (Purusha::Uttama, Vacana::Eka, "Baveyam"),
+            (Purusha::Uttama, Vacana::Dvi, "Baveva"),
+            (Purusha::Uttama, Vacana::Bahu, "Bavema"),
+        ] {
+            assert_eq!(lin_form("BU", pu, va), want, "{pu:?} {va:?}");
+        }
+    }
+
+    #[test]
+    fn vali_lopa_spares_a_following_vowel() {
+        // BaveyuH keeps its y because `u` is not a val consonant; Baveva
+        // loses it because `v` is. Pin the guard at the rule level.
+        for (ending, fires, want) in [("yva", true, "va"), ("yus", false, "yus")] {
+            let mut p = Prakriya {
+                terms: vec![Term::new("Bav"), Term::new("e"), Term::new(ending)],
+                log: vec![],
+                ctx: Context::new(
+                    Lakara::VidhiLin,
+                    Pada::Parasmaipada,
+                    Purusha::Uttama,
+                    Vacana::Dvi,
+                ),
+            };
+            let rule = TINANTA_RULES.iter().find(|r| r.id == "6.1.66").unwrap();
+            assert_eq!((rule.apply)(&mut p), fires, "{ending}");
+            assert_eq!(p.terms[ENDING].text, want, "{ending}");
         }
     }
 }

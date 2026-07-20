@@ -14,9 +14,10 @@ cargo run -p panini-cli -- check 'bhavati' --trace
 ## Scope
 
 Finite verbs (*tiṅanta*), *bhvādi* (gaṇa 1), *parasmaipada*, over a curated
-6-root set, in three lakāras: *laṭ* (present), *laṅ* (imperfect), and *loṭ*
-(imperative). `INVALID` means "not derivable within this covered grammar," not
-"ungrammatical in Sanskrit." See `docs/ARCHITECTURE.md`.
+6-root set, in four lakāras: *laṭ* (present), *laṅ* (imperfect), *loṭ*
+(imperative), and *vidhiliṅ* (optative). `INVALID` means "not derivable within
+this covered grammar," not "ungrammatical in Sanskrit." See
+`docs/ARCHITECTURE.md`.
 
 ## Layout
 
