@@ -41,6 +41,22 @@ const ENDING_PRE_SHAP: usize = 1;
 const SHAP: usize = 1;
 const ENDING: usize = 2;
 
+// NOTE: `ENDING_PRE_SHAP` and `SHAP` are deliberately the same value (1), not
+// a typo. Rule 3.1.68 (kartari śap) inserts śap between the aṅga and the
+// ending, which shifts the ending from index 1 to index 2. This bisects
+// `TINANTA_RULES` into two halves along the array's shape, not along any
+// lakāra or rule-family boundary:
+//   - Rules ordered BEFORE 3.1.68 must address the ending via
+//     `ENDING_PRE_SHAP` (index 1, where the ending still lives).
+//   - Rules ordered AFTER 3.1.68 must address the ending via `ENDING`
+//     (index 2, where it lives once śap has been inserted) and may address
+//     śap itself via `SHAP` (also index 1).
+// A rule placed on the wrong side of 3.1.68 either mutates śap while
+// believing it is mutating the ending, or panics indexing `terms[2]` before
+// that slot exists. This matters in particular for new `3.4.x` rules, which
+// look like they could go "anywhere in the first block" but must in fact be
+// placed relative to 3.1.68, not just relative to other 3.4.x rules.
+
 /// The ordered rule list. Read it top to bottom against the Aṣṭādhyāyī: this
 /// sequence IS the grammar this crate implements. Every rule self-guards and
 /// returns whether it fired.
@@ -108,11 +124,13 @@ pub static TINANTA_RULES: &[Rule] = &[
     // The mip→am arm is laṅ-only: loṭ's uttama-eka is `ni` by the more specific
     // 3.4.89 mer niḥ, so it must not be captured here.
     //
-    // MUST precede 3.4.99: `tas`/`Tas` also end in `s`, and 3.4.99's guard
-    // does not distinguish them from `vas`/`mas`. Ordering 3.4.101 first
-    // substitutes tas/Tas/Ta/mi away before 3.4.99 can wrongly strip their
-    // final `s` (verified by hand-tracing `aBavatAm`, which the reversed
-    // order corrupts into a spurious `aBavata`).
+    // MUST precede 3.4.99: 3.4.101 is the apavAda (the specific rule) for
+    // tas/Tas/Ta/mip, while 3.4.99 is the utsarga (the general Ngit rule).
+    // By 1.4.2 vipratizeDhe paraM kAryam ("in conflict, the [more specific/
+    // later-scoped] rule prevails"), the apavAda wins over the general rule
+    // whenever both would otherwise apply. Ordering 3.4.101 first realizes
+    // that outcome directly (verified by hand-tracing `aBavatAm`, which the
+    // reversed order corrupts into a spurious `aBavata`).
     Rule {
         id: "3.4.101",
         name: "tasTasTamipAM tAMtaMtAmaH",
@@ -234,12 +252,21 @@ pub static TINANTA_RULES: &[Rule] = &[
     },
     // 3.4.92 āḍ uttamasya pic ca: the āṭ-āgama is prefixed to loṭ's uttama
     // endings. ni → Ani, va → Ava, ma → Ama.
+    //
+    // Guarded to exactly `ni`/`va`/`ma` rather than "any uttama ending in
+    // loṭ": those forms only exist because 3.4.89 mer niḥ and 3.4.99 nityaṃ
+    // ṅitaḥ have already normalized mi→ni and vas/mas→va/ma. The explicit set
+    // makes the preemption independent of ordering accidents — MUST follow
+    // 3.4.89 and 3.4.99, but the guard no longer silently depends on it.
     Rule {
         id: "3.4.92",
         name: "Aq uttamasya pic ca",
         kind: RuleKind::Vidhi,
         apply: |p| {
-            if !matches!(p.ctx.lakara, Lakara::Lot) || !matches!(p.ctx.purusha, Purusha::Uttama) {
+            if !matches!(p.ctx.lakara, Lakara::Lot)
+                || !matches!(p.ctx.purusha, Purusha::Uttama)
+                || !matches!(p.terms[ENDING_PRE_SHAP].text.as_str(), "ni" | "va" | "ma")
+            {
                 return false;
             }
             let before = p.snapshot();
@@ -248,6 +275,13 @@ pub static TINANTA_RULES: &[Rule] = &[
             true
         },
     },
+    // ============================================================
+    // BOUNDARY: 3.1.68 kartari śap inserts śap and shifts the ending from
+    // index 1 to index 2 (see the ANGA/ENDING_PRE_SHAP/SHAP/ENDING doc
+    // comment above). Every rule ABOVE this point addresses the ending as
+    // `ENDING_PRE_SHAP` (index 1). Every rule BELOW this point addresses the
+    // ending as `ENDING` (index 2), and may address śap as `SHAP` (index 1).
+    // ============================================================
     // 3.1.68 kartari śap: insert śap between dhātu and ending, run it-samjña
     // on it (Sap → a), and mark the dhātu an aṅga.
     Rule {
@@ -585,5 +619,94 @@ mod tests {
             "1.3.9 should report firing when tip loses its final p"
         );
         assert_eq!(p.terms[ENDING_PRE_SHAP].text, "ti");
+    }
+
+    // --- Fix 2: the sutra-name hard gate --------------------------------
+    //
+    // AGENTS.md declares that sutra ids/names in traces must match the cited
+    // reference. Nothing previously asserted that a `RuleStep.name` emitted
+    // into a user-facing trace actually equals the `name` field of the
+    // `TINANTA_RULES` entry with the matching `id`. `Rule.name` itself is
+    // write-only dead data: what a user sees is `RuleStep.name`, populated
+    // solely from the string literal passed to `p.record(...)` at each call
+    // site (there are two for id "1.3.9": this rule's own body, and
+    // `run_it_samjna` in `it_samjna.rs`, called from 3.1.68's body — both
+    // currently pass the literal "tasya lopaH"). Comparing every recorded
+    // step's name against `TINANTA_RULES` by id, over real derivations,
+    // catches either call site drifting from `Rule.name` without having to
+    // special-case which call site fired.
+
+    /// Drive every (root, lakara, purusha, vacana) cell over the curated
+    /// roots and all three lakaras/nine cells, and assert every recorded
+    /// `RuleStep.name` matches the `TINANTA_RULES` entry for its `sutra` id.
+    #[test]
+    fn recorded_step_names_match_tinanta_rules_for_every_id() {
+        let lakaras = [Lakara::Lat, Lakara::Lan, Lakara::Lot];
+        let purushas = [Purusha::Prathama, Purusha::Madhyama, Purusha::Uttama];
+        let vacanas = [Vacana::Eka, Vacana::Dvi, Vacana::Bahu];
+
+        let mut steps_checked = 0usize;
+        for d in dhatus() {
+            for &lakara in &lakaras {
+                for &purusha in &purushas {
+                    for &vacana in &vacanas {
+                        let p = derive(d, lakara, Pada::Parasmaipada, purusha, vacana);
+                        for step in &p.log {
+                            let rule = TINANTA_RULES.iter().find(|r| r.id == step.sutra).unwrap_or_else(|| {
+                                panic!(
+                                    "recorded step cites sutra id {:?} which is not in TINANTA_RULES \
+                                     (dhatu {}, {lakara:?} {purusha:?} {vacana:?})",
+                                    step.sutra, d.code
+                                )
+                            });
+                            assert_eq!(
+                                step.name, rule.name,
+                                "RuleStep.name for sutra {} (dhatu {}, {lakara:?} {purusha:?} {vacana:?}) \
+                                 is {:?} but TINANTA_RULES[id={:?}].name is {:?} -- a record() call site \
+                                 has drifted from the Rule.name field",
+                                step.sutra, d.code, step.name, rule.id, rule.name
+                            );
+                            steps_checked += 1;
+                        }
+                    }
+                }
+            }
+        }
+        assert!(
+            steps_checked > 0,
+            "sanity: the derivations above should have recorded at least one RuleStep"
+        );
+    }
+
+    /// SLP1 validity of every sutra name in `TINANTA_RULES`: none may contain
+    /// one of the digraphs (`gh`, `jh`, `dh`, `kh`, `th`, `bh`, `ph`, `ch`)
+    /// that are always wrong inside SLP1 (SLP1 is one-char-per-phoneme; those
+    /// aspirates are `G`, `J`, `D`, `K`, `T`, `B`, `P`, `C`). This is the
+    /// error class that produced the non-SLP1 names swept by hand earlier on
+    /// this branch (see commit 892cfa4).
+    ///
+    /// This check is intentionally narrow: it flags exactly these eight
+    /// lowercase digraphs and nothing else. A legitimate SLP1 name may
+    /// contain a genuine consonant-then-`h`-vowel sequence (e.g. `hy`, as in
+    /// "ser hyapic ca") or the avagraha apostrophe (as in "Jo'ntaH"); this
+    /// check does not touch either. It also cannot detect a name whose
+    /// *content* is wrong (a mistranscribed sutra) as long as it avoids these
+    /// eight substrings -- it only catches the specific historical error
+    /// class of "wrote an aspirate as two ASCII letters instead of SLP1's one
+    /// capital letter."
+    #[test]
+    fn sutra_names_contain_no_forbidden_slp1_digraphs() {
+        const FORBIDDEN: [&str; 8] = ["gh", "jh", "dh", "kh", "th", "bh", "ph", "ch"];
+        for rule in TINANTA_RULES {
+            for bad in FORBIDDEN {
+                assert!(
+                    !rule.name.contains(bad),
+                    "rule {} name {:?} contains forbidden non-SLP1 digraph {:?}",
+                    rule.id,
+                    rule.name,
+                    bad
+                );
+            }
+        }
     }
 }

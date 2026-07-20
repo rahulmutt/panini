@@ -114,7 +114,7 @@ fn main() {
                     }
                 }
             } else {
-                println!("INVALID (not derivable within the covered v1 grammar)");
+                println!("INVALID (not derivable within the covered grammar)");
             }
             std::process::exit(if matches!(result.verdict, Verdict::Valid) {
                 0

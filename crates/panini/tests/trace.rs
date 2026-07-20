@@ -3,21 +3,24 @@
 //! The product's headline deliverable is "the ordered sequence of sūtras that
 //! derive the word" (see `Analysis.trace` / `Prakriya.log`). The rest of the
 //! suite only checks that particular sūtras are *present* in a trace; that
-//! would still pass if a `record()` call were dropped or reordered. This test
-//! pins the FULL ORDERED sequence for three representative forms so a
-//! regression like that fails loudly.
+//! would still pass if a `record()` call were dropped or reordered. This
+//! file pins the FULL ORDERED sequence for representative forms so a
+//! regression like that fails loudly, across all three lakāras this crate
+//! covers (laṭ, laṅ, loṭ) — **nine** tests in total below.
 //!
-//! The three forms exercise the three distinct rule paths documented in the
-//! v1 plan's fixed pipeline:
-//! `3.4.78 -> it-samjna[1.3.9] -> 3.1.68 -> it-samjna[1.3.9] -> 7.1.3 (Ji only)
-//!  -> 7.3.84 guna -> 6.1.78 ayadesa -> 6.1.97 (anti coalescence only)
-//!  -> 7.3.101 (before m/v endings only) -> 8.3.15 (final s -> visarga only)`.
+//! For the authoritative rule order itself, do not rely on a diagram here:
+//! read `TINANTA_RULES` in `crates/panini-prakriya/src/tinanta.rs` top to
+//! bottom. That static array — not this comment — is the source of truth for
+//! sequencing; a diagram in this header would drift out of sync with it as
+//! rules are added (as happened to the laṭ-only diagram this comment used to
+//! carry, before laṅ and loṭ support existed) and a stale diagram is worse
+//! than none.
 //!
 //! Note that an it-samjna step only records 1.3.9 when it actually elides an
 //! anubandha: `tip` -> `ti` and `Sap` -> `a` do record it, but `Ji` (nothing to
 //! strip) and the 1.3.4-protected `mas` (run_it_samjna skipped entirely) do
-//! not, so the three sequences below differ in more than just which optional
-//! steps fire.
+//! not, so the sequences below differ in more than just which optional steps
+//! fire.
 
 use panini::Panini;
 
