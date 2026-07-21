@@ -813,7 +813,7 @@ pub static TINANTA_RULES: &[Rule] = &[
         kind: RuleKind::Vidhi,
         apply: |p| {
             if !matches!(p.ctx.lakara, Lakara::VidhiLin)
-                || p.terms[SHAP].text != "a"
+                || p.terms[SHAP].text.chars().last() != Some('a')
                 || !p.terms[ENDING].text.starts_with("yA")
             {
                 return false;
@@ -838,7 +838,7 @@ pub static TINANTA_RULES: &[Rule] = &[
         name: "Ato NitaH",
         kind: RuleKind::Vidhi,
         apply: |p| {
-            if p.terms[SHAP].text != "a"
+            if p.terms[SHAP].text.chars().last() != Some('a')
                 || !p.terms[ENDING].has(Tag::Ngit)
                 || !p.terms[ENDING].text.starts_with('A')
             {
@@ -1134,7 +1134,7 @@ pub static TINANTA_RULES: &[Rule] = &[
         name: "ato heH",
         kind: RuleKind::Vidhi,
         apply: |p| {
-            if p.terms[SHAP].text != "a" || p.terms[ENDING].text != "hi" {
+            if p.terms[SHAP].text.chars().last() != Some('a') || p.terms[ENDING].text != "hi" {
                 return false;
             }
             let before = p.snapshot();
@@ -1351,6 +1351,21 @@ mod tests {
         assert_eq!(
             form_g("man", Lakara::Lat, Purusha::Uttama, Vacana::Eka),
             "manye"
+        );
+        // 7.2.81 Ato NitaH: ātmanepada dual Ate→iyte, then coalesced.
+        assert_eq!(
+            form_g("man", Lakara::Lat, Purusha::Prathama, Vacana::Dvi),
+            "manyete"
+        );
+        // 7.2.80 ato yeyaH: vidhiliṅ yA→iy after śyan's `ya`.
+        assert_eq!(
+            form_g("kup", Lakara::VidhiLin, Purusha::Prathama, Vacana::Eka),
+            "kupyet"
+        );
+        // 6.4.105 ato heH: imperative hi-elision after śyan's `ya`.
+        assert_eq!(
+            form_g("naS", Lakara::Lot, Purusha::Madhyama, Vacana::Eka),
+            "naSya"
         );
     }
 
