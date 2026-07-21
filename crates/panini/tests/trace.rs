@@ -233,3 +233,15 @@ fn labhai_trace_is_exactly_the_at_vrddhi_path() {
         ]
     );
 }
+
+#[test]
+fn aidhata_trace_is_exactly_the_at_agama_path() {
+    // eD laṅ prathama eka: no pre-śap ending change (ta survives; 3.4.100 is
+    // parasmaipada-only), then 6.4.72 āṭ + 6.1.90 vṛddhi on the aṅga.
+    assert_eq!(
+        trace_for("EData"),
+        vec![
+            "1.3.12", "3.4.78", "1.2.4", "3.1.68", "1.3.9", "6.4.72", "6.1.90"
+        ]
+    );
+}

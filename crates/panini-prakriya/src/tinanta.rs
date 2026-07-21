@@ -592,12 +592,32 @@ pub static TINANTA_RULES: &[Rule] = &[
         name: "luNlaNlfNkzvaqudAttaH",
         kind: RuleKind::Vidhi,
         apply: |p| {
-            if !matches!(p.ctx.lakara, Lakara::Lan) {
+            let first = p.terms[ANGA].text.chars().next().unwrap();
+            if !matches!(p.ctx.lakara, Lakara::Lan) || is_vowel(first) {
                 return false;
             }
             let before = p.snapshot();
             p.terms[ANGA].text = format!("a{}", p.terms[ANGA].text);
             p.record("6.4.71", "luNlaNlfNkzvaqudAttaH", before);
+            true
+        },
+    },
+    // 6.4.72 āḍ ajādīnām: vowel-initial aṅgas take the āṭ-āgama in laṅ
+    // (apavāda to 6.4.71's aṭ). The A then merges with the root's initial
+    // vowel by 6.1.90 āṭaś ca into vṛddhi: a+eD → ED, a+Ikz → Ekz.
+    Rule {
+        id: "6.4.72",
+        name: "Aq ajAdInAm",
+        kind: RuleKind::Vidhi,
+        apply: |p| {
+            let first = p.terms[ANGA].text.chars().next().unwrap();
+            // Only apply to true vowel-initial roots, not to 'a' prefixed by 6.4.71
+            if !matches!(p.ctx.lakara, Lakara::Lan) || !is_vowel(first) || first == 'a' {
+                return false;
+            }
+            let before = p.snapshot();
+            p.terms[ANGA].text = format!("A{}", p.terms[ANGA].text);
+            p.record("6.4.72", "Aq ajAdInAm", before);
             true
         },
     },

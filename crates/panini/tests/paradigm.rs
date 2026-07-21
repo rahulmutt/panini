@@ -1,4 +1,6 @@
 use panini::{Panini, Verdict};
+use panini_data::{Lakara, Pada, Purusha, Vacana, dhatus};
+use panini_prakriya::derive;
 
 /// (root_code, lakara_label, [P.E, P.D, P.B, M.E, M.D, M.B, U.E, U.D, U.B]) in SLP1.
 const PARADIGM: &[(&str, &str, [&str; 9])] = &[
@@ -310,7 +312,113 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
             "IkzAmahE",
         ],
     ),
+    (
+        "eD",
+        "laN",
+        [
+            "EData", "EDetAm", "EDanta", "EDaTAH", "EDeTAm", "EDaDvam", "EDe", "EDAvahi", "EDAmahi",
+        ],
+    ),
+    (
+        "laB",
+        "laN",
+        [
+            "alaBata",
+            "alaBetAm",
+            "alaBanta",
+            "alaBaTAH",
+            "alaBeTAm",
+            "alaBaDvam",
+            "alaBe",
+            "alaBAvahi",
+            "alaBAmahi",
+        ],
+    ),
+    (
+        "sev",
+        "laN",
+        [
+            "asevata",
+            "asevetAm",
+            "asevanta",
+            "asevaTAH",
+            "aseveTAm",
+            "asevaDvam",
+            "aseve",
+            "asevAvahi",
+            "asevAmahi",
+        ],
+    ),
+    (
+        "vft",
+        "laN",
+        [
+            "avartata",
+            "avartetAm",
+            "avartanta",
+            "avartaTAH",
+            "avarteTAm",
+            "avartaDvam",
+            "avarte",
+            "avartAvahi",
+            "avartAmahi",
+        ],
+    ),
+    (
+        "BAz",
+        "laN",
+        [
+            "aBAzata",
+            "aBAzetAm",
+            "aBAzanta",
+            "aBAzaTAH",
+            "aBAzeTAm",
+            "aBAzaDvam",
+            "aBAze",
+            "aBAzAvahi",
+            "aBAzAmahi",
+        ],
+    ),
+    (
+        "Ikz",
+        "laN",
+        [
+            "Ekzata", "EkzetAm", "Ekzanta", "EkzaTAH", "EkzeTAm", "EkzaDvam", "Ekze", "EkzAvahi",
+            "EkzAmahi",
+        ],
+    ),
 ];
+
+fn lan_a_form(code: &str, pu: Purusha, va: Vacana) -> String {
+    let d = dhatus().iter().find(|d| d.code == code).unwrap();
+    derive(d, Lakara::Lan, Pada::Atmanepada, pu, va).text()
+}
+
+#[test]
+fn labh_lan_atmanepada_all_nine_cells() {
+    let expected = [
+        (Purusha::Prathama, Vacana::Eka, "alaBata"),
+        (Purusha::Prathama, Vacana::Dvi, "alaBetAm"),
+        (Purusha::Prathama, Vacana::Bahu, "alaBanta"),
+        (Purusha::Madhyama, Vacana::Eka, "alaBaTAH"),
+        (Purusha::Madhyama, Vacana::Dvi, "alaBeTAm"),
+        (Purusha::Madhyama, Vacana::Bahu, "alaBaDvam"),
+        (Purusha::Uttama, Vacana::Eka, "alaBe"),
+        (Purusha::Uttama, Vacana::Dvi, "alaBAvahi"),
+        (Purusha::Uttama, Vacana::Bahu, "alaBAmahi"),
+    ];
+    for (pu, va, form) in expected {
+        assert_eq!(lan_a_form("laB", pu, va), form, "{pu:?} {va:?}");
+    }
+}
+
+#[test]
+fn vowel_initial_roots_take_at_not_a() {
+    // 6.4.72 āḍ ajādīnām (apavāda to 6.4.71) + 6.1.90 vṛddhi:
+    // a+eD → ED (aidhata), a+Ikz → Ekz (aikṣata).
+    assert_eq!(lan_a_form("eD", Purusha::Prathama, Vacana::Eka), "EData");
+    assert_eq!(lan_a_form("Ikz", Purusha::Prathama, Vacana::Eka), "Ekzata");
+}
 
 #[test]
 fn every_form_validates_and_matches() {
