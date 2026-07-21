@@ -1,5 +1,5 @@
 use panini::Panini;
-use panini_data::{Pada, Purusha, Vacana, dhatus};
+use panini_data::{Purusha, Vacana, dhatus};
 
 const CELLS: &[(Purusha, Vacana)] = &[
     (Purusha::Prathama, Vacana::Eka),
@@ -19,7 +19,7 @@ fn generate_then_check_recovers_inputs() {
     for d in dhatus() {
         for &lakara in panini_analyze::LAKARAS {
             for &(pu, va) in CELLS {
-                let form = engine.derive(d, lakara, Pada::Parasmaipada, pu, va).text();
+                let form = engine.derive(d, lakara, d.pada, pu, va).text();
                 let r = engine.check(&form);
                 assert!(
                     r.analyses

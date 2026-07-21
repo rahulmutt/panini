@@ -21,6 +21,10 @@
 //! strip) and the 1.3.4-protected `mas` (run_it_samjna skipped entirely) do
 //! not, so the sequences below differ in more than just which optional steps
 //! fire.
+//!
+//! The pada-sanction step (1.3.78 for these parasmaipada roots; 1.3.12 for
+//! atmanepada roots) is the derivation's source of truth for pada and now
+//! opens every trace.
 
 use panini::Panini;
 
@@ -40,7 +44,9 @@ fn bhavati_trace_is_exactly_the_base_path() {
     // BU prathama eka: base path, ending `tip` -> `ti`.
     assert_eq!(
         trace_for("Bavati"),
-        vec!["3.4.78", "1.3.9", "3.1.68", "1.3.9", "7.3.84", "6.1.78"]
+        vec![
+            "1.3.78", "3.4.78", "1.3.9", "3.1.68", "1.3.9", "7.3.84", "6.1.78"
+        ]
     );
 }
 
@@ -50,7 +56,7 @@ fn bhavanti_trace_is_exactly_the_ji_coalescence_path() {
     assert_eq!(
         trace_for("Bavanti"),
         vec![
-            "3.4.78", "3.1.68", "1.3.9", "7.1.3", "7.3.84", "6.1.78", "6.1.97"
+            "1.3.78", "3.4.78", "3.1.68", "1.3.9", "7.1.3", "7.3.84", "6.1.78", "6.1.97"
         ]
     );
 }
@@ -61,7 +67,7 @@ fn bhavamah_trace_is_exactly_the_dirgha_visarga_path() {
     assert_eq!(
         trace_for("BavAmaH"),
         vec![
-            "3.4.78", "3.1.68", "1.3.9", "7.3.84", "6.1.78", "7.3.101", "8.3.15"
+            "1.3.78", "3.4.78", "3.1.68", "1.3.9", "7.3.84", "6.1.78", "7.3.101", "8.3.15"
         ]
     );
 }
@@ -72,7 +78,7 @@ fn abhavat_trace_is_exactly_the_lan_augment_path() {
     assert_eq!(
         trace_for("aBavat"),
         vec![
-            "3.4.78", "1.3.9", "3.4.100", "3.1.68", "1.3.9", "6.4.71", "7.3.84", "6.1.78"
+            "1.3.78", "3.4.78", "1.3.9", "3.4.100", "3.1.68", "1.3.9", "6.4.71", "7.3.84", "6.1.78"
         ]
     );
 }
@@ -84,8 +90,8 @@ fn abhavan_trace_is_exactly_the_samyoganta_path() {
     assert_eq!(
         trace_for("aBavan"),
         vec![
-            "3.4.78", "3.4.100", "3.1.68", "1.3.9", "6.4.71", "7.1.3", "7.3.84", "6.1.78",
-            "6.1.97", "8.2.23"
+            "1.3.78", "3.4.78", "3.4.100", "3.1.68", "1.3.9", "6.4.71", "7.1.3", "7.3.84",
+            "6.1.78", "6.1.97", "8.2.23"
         ]
     );
 }
@@ -106,7 +112,7 @@ fn bhavatu_trace_is_exactly_the_lot_er_uh_path() {
     assert_eq!(
         trace_for("Bavatu"),
         vec![
-            "3.4.78", "1.3.9", "3.4.85", "3.4.86", "3.1.68", "1.3.9", "7.3.84", "6.1.78"
+            "1.3.78", "3.4.78", "1.3.9", "3.4.85", "3.4.86", "3.1.68", "1.3.9", "7.3.84", "6.1.78"
         ]
     );
 }
@@ -139,8 +145,8 @@ fn bhavet_trace_is_exactly_the_vidhilin_vali_lopa_path() {
     assert_eq!(
         trace_for("Bavet"),
         vec![
-            "3.4.78", "1.3.9", "3.4.100", "3.4.103", "3.1.68", "1.3.9", "7.2.79", "7.2.80",
-            "7.3.84", "6.1.78", "6.1.87", "6.1.66"
+            "1.3.78", "3.4.78", "1.3.9", "3.4.100", "3.4.103", "3.1.68", "1.3.9", "7.2.79",
+            "7.2.80", "7.3.84", "6.1.78", "6.1.87", "6.1.66"
         ]
     );
 }
@@ -153,8 +159,8 @@ fn bhaveyuh_trace_is_exactly_the_jus_path() {
     assert_eq!(
         trace_for("BaveyuH"),
         vec![
-            "3.4.78", "3.4.108", "1.3.9", "3.4.103", "3.1.68", "1.3.9", "7.2.79", "7.2.80",
-            "7.3.84", "6.1.78", "6.1.87", "8.3.15"
+            "1.3.78", "3.4.78", "3.4.108", "1.3.9", "3.4.103", "3.1.68", "1.3.9", "7.2.79",
+            "7.2.80", "7.3.84", "6.1.78", "6.1.87", "8.3.15"
         ]
     );
 }
@@ -166,8 +172,8 @@ fn bhaveyam_trace_is_exactly_the_widened_mip_path() {
     assert_eq!(
         trace_for("Baveyam"),
         vec![
-            "3.4.78", "1.3.9", "3.4.101", "3.4.103", "3.1.68", "1.3.9", "7.2.79", "7.2.80",
-            "7.3.84", "6.1.78", "6.1.87"
+            "1.3.78", "3.4.78", "1.3.9", "3.4.101", "3.4.103", "3.1.68", "1.3.9", "7.2.79",
+            "7.2.80", "7.3.84", "6.1.78", "6.1.87"
         ]
     );
 }

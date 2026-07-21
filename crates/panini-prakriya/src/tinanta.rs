@@ -61,6 +61,53 @@ const ENDING: usize = 2;
 /// sequence IS the grammar this crate implements. Every rule self-guards and
 /// returns whether it fired.
 pub static TINANTA_RULES: &[Rule] = &[
+    // 1.3.12 anudāttaṅita ātmanepadam: a root carrying the anudātta/ṅit
+    // marker (here: the data-layer Atmanepadin tag) takes ātmanepada.
+    // Sanctions the requested pada; the wrong pada BLOCKS the derivation —
+    // derivation, not the analyzer, is the source of truth for pada.
+    Rule {
+        id: "1.3.12",
+        name: "anudAttaNita Atmanepadam",
+        kind: RuleKind::Vidhi,
+        apply: |p| {
+            if !p.terms[ANGA].has(Tag::Atmanepadin) {
+                return false; // parasmaipada roots are 1.3.78's business
+            }
+            match p.ctx.pada {
+                Pada::Atmanepada => {
+                    let before = p.snapshot();
+                    p.record("1.3.12", "anudAttaNita Atmanepadam", before);
+                    true
+                }
+                Pada::Parasmaipada => {
+                    p.blocked = true;
+                    false
+                }
+            }
+        },
+    },
+    // 1.3.78 śeṣāt kartari parasmaipadam: everything else takes parasmaipada.
+    Rule {
+        id: "1.3.78",
+        name: "SezAt kartari parasmEpadam",
+        kind: RuleKind::Vidhi,
+        apply: |p| {
+            if p.terms[ANGA].has(Tag::Atmanepadin) {
+                return false;
+            }
+            match p.ctx.pada {
+                Pada::Parasmaipada => {
+                    let before = p.snapshot();
+                    p.record("1.3.78", "SezAt kartari parasmEpadam", before);
+                    true
+                }
+                Pada::Atmanepada => {
+                    p.blocked = true;
+                    false
+                }
+            }
+        },
+    },
     // 3.4.78 tiptasjhi...: replace the lakāra by the tiṅ ending.
     // 3.4.113 tiṅ-śit sārvadhātukam makes it sārvadhātuka.
     Rule {
@@ -158,12 +205,15 @@ pub static TINANTA_RULES: &[Rule] = &[
     // whenever both would otherwise apply. Ordering 3.4.101 first realizes
     // that outcome directly (verified by hand-tracing `aBavatAm`, which the
     // reversed order corrupts into a spurious `aBavata`).
+    //
+    // The sutra's tas/thas/tha/mip are parasmaipada endings; today this is
+    // also safe by text, the guard states the domain.
     Rule {
         id: "3.4.101",
         name: "tasTasTamipAM tAMtaMtAmaH",
         kind: RuleKind::Vidhi,
         apply: |p| {
-            if !p.ctx.is_ngit_like {
+            if !p.ctx.is_ngit_like || matches!(p.ctx.pada, Pada::Atmanepada) {
                 return false;
             }
             let sub = match p.terms[ENDING_PRE_SHAP].text.as_str() {
@@ -262,7 +312,8 @@ pub static TINANTA_RULES: &[Rule] = &[
     // 3.4.100 itaś ca: the final `i` of a ṅit-lakāra's tiṅ is elided.
     // laṅ/vidhiliṅ: ti → t, si → s, Ji → J (laṅ; liṅ's Ji is gone by
     // 3.4.108). loṭ is excluded: its final `i` is handled by the apavāda
-    // 3.4.86 er uḥ.
+    // 3.4.86 er uḥ. The sutra elides the i of *parasmaipada* ṅit endings;
+    // ātmanepada vahi/mahi/i keep theirs — aBavAvahi.
     Rule {
         id: "3.4.100",
         name: "itaS ca",
@@ -273,6 +324,7 @@ pub static TINANTA_RULES: &[Rule] = &[
             // itself i-final, so a bare ṅit guard would corrupt it to `h`).
             if !p.ctx.is_ngit_like
                 || matches!(p.ctx.lakara, Lakara::Lot)
+                || matches!(p.ctx.pada, Pada::Atmanepada)
                 || !p.terms[ENDING_PRE_SHAP].text.ends_with('i')
             {
                 return false;
@@ -313,8 +365,8 @@ pub static TINANTA_RULES: &[Rule] = &[
     // 3.4.103 yāsuṭ parasmaipadeṣūdātto ṅic ca: the yāsuṭ-āgama is prefixed
     // to liṅ's parasmaipada endings. Modelled as a text prefix on the ending
     // term (the āṭ 3.4.92 / aṭ 6.4.71 precedent) so the term indices stay
-    // stable. "parasmaipadeṣu" is trivially satisfied — Pada has one variant;
-    // revisit the guard when ātmanepada arrives (its liṅ takes sīyuṭ, 3.4.102).
+    // stable. The sutra's own text says parasmaipadeṣu, now enforced;
+    // ātmanepada liṅ takes sīyuṭ instead (3.4.102, Task 9).
     //
     // MUST follow the 3.4.9x/10x ending substitutions above: their guards
     // match the ending text exactly ("mi", "vas", …), so prefixing yAs first
@@ -324,7 +376,7 @@ pub static TINANTA_RULES: &[Rule] = &[
         name: "yAsuw parasmEpadezUdAtto Nic ca",
         kind: RuleKind::Vidhi,
         apply: |p| {
-            if !matches!(p.ctx.lakara, Lakara::VidhiLin) {
+            if !matches!(p.ctx.lakara, Lakara::VidhiLin) || matches!(p.ctx.pada, Pada::Atmanepada) {
                 return false;
             }
             let before = p.snapshot();
@@ -670,6 +722,9 @@ pub fn derive(
     p.terms.push({
         let mut t = Term::new(dhatu.code);
         t.add(Tag::Dhatu);
+        if matches!(dhatu.pada, Pada::Atmanepada) {
+            t.add(Tag::Atmanepadin);
+        }
         t
     });
     run_pipeline(&mut p, TINANTA_RULES);
@@ -788,6 +843,7 @@ mod tests {
                 Purusha::Prathama,
                 Vacana::Bahu,
             ),
+            blocked: false,
         };
         let rule = TINANTA_RULES.iter().find(|r| r.id == "3.4.108").unwrap();
         assert!((rule.apply)(&mut p));
@@ -806,6 +862,7 @@ mod tests {
                 terms: vec![Term::new("BU"), Term::new("Ji")],
                 log: vec![],
                 ctx: Context::new(lakara, Pada::Parasmaipada, Purusha::Prathama, Vacana::Bahu),
+                blocked: false,
             };
             let rule = TINANTA_RULES.iter().find(|r| r.id == "3.4.108").unwrap();
             assert!(!(rule.apply)(&mut p), "{lakara:?}");
@@ -842,7 +899,7 @@ mod tests {
             for &lakara in &lakaras {
                 for &purusha in &purushas {
                     for &vacana in &vacanas {
-                        let p = derive(d, lakara, Pada::Parasmaipada, purusha, vacana);
+                        let p = derive(d, lakara, d.pada, purusha, vacana);
                         for step in &p.log {
                             let rule = TINANTA_RULES.iter().find(|r| r.id == step.sutra).unwrap_or_else(|| {
                                 panic!(
@@ -913,6 +970,7 @@ mod tests {
                 Purusha::Prathama,
                 Vacana::Eka,
             ),
+            blocked: false,
         };
         let rule = TINANTA_RULES.iter().find(|r| r.id == "3.4.100").unwrap();
         assert!((rule.apply)(&mut p));
@@ -933,6 +991,7 @@ mod tests {
                 Purusha::Madhyama,
                 Vacana::Eka,
             ),
+            blocked: false,
         };
         p.ctx.is_ngit_like = true; // as 3.4.85 would have set it
         let rule = TINANTA_RULES.iter().find(|r| r.id == "3.4.100").unwrap();
@@ -951,6 +1010,7 @@ mod tests {
                 Purusha::Uttama,
                 Vacana::Eka,
             ),
+            blocked: false,
         };
         let rule = TINANTA_RULES.iter().find(|r| r.id == "3.4.101").unwrap();
         assert!((rule.apply)(&mut p));
@@ -974,6 +1034,7 @@ mod tests {
                 Purusha::Madhyama,
                 Vacana::Bahu,
             ),
+            blocked: false,
         };
         let rule = TINANTA_RULES.iter().find(|r| r.id == "3.4.92").unwrap();
         assert!(!(rule.apply)(&mut p));
@@ -991,6 +1052,7 @@ mod tests {
                 Purusha::Prathama,
                 Vacana::Eka,
             ),
+            blocked: false,
         };
         let rule = TINANTA_RULES.iter().find(|r| r.id == "3.4.103").unwrap();
         assert!((rule.apply)(&mut p));
@@ -1008,6 +1070,7 @@ mod tests {
                 Purusha::Prathama,
                 Vacana::Eka,
             ),
+            blocked: false,
         };
         let rule = TINANTA_RULES.iter().find(|r| r.id == "3.4.103").unwrap();
         assert!(!(rule.apply)(&mut p));
@@ -1028,6 +1091,7 @@ mod tests {
                     Purusha::Prathama,
                     Vacana::Eka,
                 ),
+                blocked: false,
             };
             let rule = TINANTA_RULES.iter().find(|r| r.id == "7.2.79").unwrap();
             assert!((rule.apply)(&mut p), "{ending}");
@@ -1046,6 +1110,7 @@ mod tests {
                 Purusha::Prathama,
                 Vacana::Eka,
             ),
+            blocked: false,
         };
         let rule = TINANTA_RULES.iter().find(|r| r.id == "7.2.80").unwrap();
         assert!((rule.apply)(&mut p));
@@ -1068,6 +1133,7 @@ mod tests {
                 Purusha::Prathama,
                 Vacana::Eka,
             ),
+            blocked: false,
         };
         let rule = TINANTA_RULES.iter().find(|r| r.id == "7.2.80").unwrap();
         assert!(!(rule.apply)(&mut p));
@@ -1090,6 +1156,7 @@ mod tests {
                 Purusha::Prathama,
                 Vacana::Eka,
             ),
+            blocked: false,
         };
         let rule = TINANTA_RULES.iter().find(|r| r.id == "7.2.80").unwrap();
         assert!(!(rule.apply)(&mut p));
@@ -1132,10 +1199,83 @@ mod tests {
                     Purusha::Uttama,
                     Vacana::Dvi,
                 ),
+                blocked: false,
             };
             let rule = TINANTA_RULES.iter().find(|r| r.id == "6.1.66").unwrap();
             assert_eq!((rule.apply)(&mut p), fires, "{ending}");
             assert_eq!(p.terms[ENDING].text, want, "{ending}");
+        }
+    }
+
+    #[test]
+    fn pada_sanction_blocks_wrong_pada_derivations() {
+        // 1.3.12/1.3.78: derivation is the source of truth for pada. A
+        // wrong-pada derive must not silently produce a surface form.
+        let labh = dhatus().iter().find(|d| d.code == "laB").unwrap();
+        let p = derive(
+            labh,
+            Lakara::Lat,
+            Pada::Parasmaipada,
+            Purusha::Prathama,
+            Vacana::Eka,
+        );
+        assert!(p.blocked, "atmanepadin root + parasmaipada must block");
+        assert_eq!(p.text(), "laB", "no rule may run after the block");
+        assert!(p.log.is_empty(), "a blocked derivation records nothing");
+
+        let bhu = dhatus().iter().find(|d| d.code == "BU").unwrap();
+        let p = derive(
+            bhu,
+            Lakara::Lat,
+            Pada::Atmanepada,
+            Purusha::Prathama,
+            Vacana::Eka,
+        );
+        assert!(p.blocked, "parasmaipada root + atmanepada must block");
+    }
+
+    #[test]
+    fn pada_sanction_records_the_sanctioning_sutra() {
+        let bhu = dhatus().iter().find(|d| d.code == "BU").unwrap();
+        let p = derive(
+            bhu,
+            Lakara::Lat,
+            Pada::Parasmaipada,
+            Purusha::Prathama,
+            Vacana::Eka,
+        );
+        assert_eq!(p.log.first().unwrap().sutra, "1.3.78");
+
+        let labh = dhatus().iter().find(|d| d.code == "laB").unwrap();
+        let p = derive(
+            labh,
+            Lakara::Lat,
+            Pada::Atmanepada,
+            Purusha::Prathama,
+            Vacana::Eka,
+        );
+        assert_eq!(p.log.first().unwrap().sutra, "1.3.12");
+    }
+
+    #[test]
+    fn itash_ca_and_yasut_are_parasmaipada_only() {
+        // 3.4.100 must not eat the final i of atmanepada vahi/mahi/i in Nit
+        // lakaras (aBavAvahi, not aBavAvah), and 3.4.103's own text says
+        // parasmEpadezu — atmanepada lin takes siyut (3.4.102) instead.
+        for (id, ending, lakara) in [
+            ("3.4.100", "vahi", Lakara::Lan),
+            ("3.4.100", "i", Lakara::Lan),
+            ("3.4.103", "ta", Lakara::VidhiLin),
+        ] {
+            let mut p = Prakriya {
+                terms: vec![Term::new("laB"), Term::new(ending)],
+                log: vec![],
+                ctx: Context::new(lakara, Pada::Atmanepada, Purusha::Uttama, Vacana::Dvi),
+                blocked: false,
+            };
+            let rule = TINANTA_RULES.iter().find(|r| r.id == id).unwrap();
+            assert!(!(rule.apply)(&mut p), "{id} must not fire for atmanepada");
+            assert_eq!(p.terms[ENDING_PRE_SHAP].text, ending);
         }
     }
 }

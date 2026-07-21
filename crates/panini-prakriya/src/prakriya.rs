@@ -14,6 +14,10 @@ pub struct Prakriya {
     pub terms: Vec<Term>,
     pub log: Vec<RuleStep>,
     pub ctx: Context,
+    /// Set when a samjna/sanction rule determines the requested derivation
+    /// is impossible (wrong pada for the root). The pipeline stops; the
+    /// prakriya's text can never equal a real surface form.
+    pub blocked: bool,
 }
 
 impl Prakriya {
