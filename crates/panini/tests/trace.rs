@@ -177,3 +177,33 @@ fn bhaveyam_trace_is_exactly_the_widened_mip_path() {
         ]
     );
 }
+
+#[test]
+fn labhate_trace_is_exactly_the_minimal_atmanepada_path() {
+    // laB laṭ prathama eka: pada sanction (1.3.12), ṅid-vat atideśa (1.2.4),
+    // ta → te (3.4.79). No it-saṃjñā step for `ta` (nothing to strip).
+    assert_eq!(
+        trace_for("laBate"),
+        vec!["1.3.12", "3.4.78", "1.2.4", "3.4.79", "3.1.68", "1.3.9"]
+    );
+}
+
+#[test]
+fn labhete_trace_is_exactly_the_ato_nitah_path() {
+    // laB laṭ prathama dvi: AtAm → Ate (3.4.79) → iyte (7.2.81) →
+    // laBe+yte (6.1.87) → laBete (6.1.66).
+    assert_eq!(
+        trace_for("laBete"),
+        vec![
+            "1.3.12", "3.4.78", "1.2.4", "3.4.79", "3.1.68", "1.3.9", "7.2.81", "6.1.87", "6.1.66"
+        ]
+    );
+}
+
+#[test]
+fn vartate_trace_shows_laghupadha_guna() {
+    // vft: 7.3.86 (upadhā guṇa), NOT 7.3.84 (final-ik guṇa).
+    let trace = trace_for("vartate");
+    assert!(trace.contains(&"7.3.86".to_string()), "got {trace:?}");
+    assert!(!trace.contains(&"7.3.84".to_string()), "got {trace:?}");
+}

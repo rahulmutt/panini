@@ -366,6 +366,61 @@ pub static TINANTA_RULES: &[Rule] = &[
             true
         },
     },
+    // 3.4.80 thāsaḥ se: ātmanepada madhyama-eka TAs → se. Apavāda to 3.4.79
+    // ṭita… ter e, hence ordered before it: reversed, 3.4.79 would rewrite
+    // TAs's ṭi (As → e) to Te and this rule would never see TAs.
+    Rule {
+        id: "3.4.80",
+        name: "TAsas se",
+        kind: RuleKind::Vidhi,
+        apply: |p| {
+            // Guarded to the ṭit lakāras (laṭ, loṭ): in the ṅit lakāras the
+            // 3.4.79 context that 3.4.80 carves out does not apply and TAs
+            // survives unchanged (laṅ aBavaTAH).
+            if !matches!(p.ctx.lakara, Lakara::Lat | Lakara::Lot)
+                || p.terms[ENDING_PRE_SHAP].text != "TAs"
+            {
+                return false;
+            }
+            let before = p.snapshot();
+            p.terms[ENDING_PRE_SHAP].text = "se".into();
+            p.record("3.4.80", "TAsas se", before);
+            true
+        },
+    },
+    // 3.4.79 ṭita ātmanepadānām ter e: in a ṭit lakāra (laṭ, loṭ — the ṭ
+    // anubandha in their names), the ṭi of an ātmanepada ending (its last
+    // vowel plus anything after, 1.1.64 aco'ntyādi ṭi) → e.
+    // ta→te, AtAm→Ate, Ja→Je, ATAm→ATe, Dvam→Dve, i→e, vahi→vahe, mahi→mahe.
+    Rule {
+        id: "3.4.79",
+        name: "wita AtmanepadAnAM wer e",
+        kind: RuleKind::Vidhi,
+        apply: |p| {
+            if !matches!(p.ctx.lakara, Lakara::Lat | Lakara::Lot)
+                || !matches!(p.ctx.pada, Pada::Atmanepada)
+            {
+                return false;
+            }
+            let text = &p.terms[ENDING_PRE_SHAP].text;
+            let Some(ti_start) = text
+                .char_indices()
+                .rev()
+                .find(|&(_, c)| is_vowel(c))
+                .map(|(i, _)| i)
+            else {
+                return false;
+            };
+            let replaced = format!("{}e", &text[..ti_start]);
+            if replaced == *text {
+                return false; // ṭi is already e (post-3.4.80 "se"): no-op
+            }
+            let before = p.snapshot();
+            p.terms[ENDING_PRE_SHAP].text = replaced;
+            p.record("3.4.79", "wita AtmanepadAnAM wer e", before);
+            true
+        },
+    },
     // 3.4.92 āḍ uttamasya pic ca: the āṭ-āgama is prefixed to loṭ's uttama
     // endings. ni → Ani, va → Ava, ma → Ama.
     //
@@ -528,6 +583,32 @@ pub static TINANTA_RULES: &[Rule] = &[
             true
         },
     },
+    // 7.2.81 āto ṅitaḥ: after an a-final aṅga (the śap), the initial ā of a
+    // ṅit ending → iy. Ate→iyte (laṭ), AtAm→iytAm (laṅ/loṭ), ATe→iyTe.
+    // The ṅit condition is the TERM tag from 1.2.4 (laṭ/loṭ are ṭit lakāras,
+    // yet their apit ātmanepada endings behave as ṅit) — NOT ctx.is_ngit_like.
+    // The tag also keeps this rule off parasmaipada loṭ uttama's āṭ (Ani),
+    // which 1.2.4 never tags (pic ca) and which belongs to 6.1.101.
+    // MUST precede 6.1.101, which would otherwise dīrgha-merge the tagged
+    // A-initial endings (laṭ 3du would surface as laBAte, not laBete).
+    Rule {
+        id: "7.2.81",
+        name: "Ato NitaH",
+        kind: RuleKind::Vidhi,
+        apply: |p| {
+            if p.terms[SHAP].text != "a"
+                || !p.terms[ENDING].has(Tag::Ngit)
+                || !p.terms[ENDING].text.starts_with('A')
+            {
+                return false;
+            }
+            let before = p.snapshot();
+            let rest: String = p.terms[ENDING].text.chars().skip(1).collect();
+            p.terms[ENDING].text = format!("iy{rest}");
+            p.record("7.2.81", "Ato NitaH", before);
+            true
+        },
+    },
     // 7.3.84 sārvadhātukārdhadhātukayoḥ: guṇa of the aṅga's final ik.
     Rule {
         id: "7.3.84",
@@ -543,6 +624,37 @@ pub static TINANTA_RULES: &[Rule] = &[
             s.pop();
             p.terms[ANGA].text = s.into_iter().collect::<String>() + g;
             p.record("7.3.84", "sArvaDAtukArDaDAtukayoH", before);
+            true
+        },
+    },
+    // 7.3.86 pugantalaghūpadhasya ca: guṇa of a light (short, pre-single-
+    // consonant) penultimate ik before the sārvadhātuka. vft → vart. The
+    // only curated root with an ik upadhā; final-ik roots (BU, smf…) are
+    // 7.3.84's business and never reach this shape guard.
+    Rule {
+        id: "7.3.86",
+        name: "pugantalaGUpaDasya ca",
+        kind: RuleKind::Vidhi,
+        apply: |p| {
+            let chars: Vec<char> = p.terms[ANGA].text.chars().collect();
+            let n = chars.len();
+            if n < 2 || is_vowel(chars[n - 1]) {
+                return false; // final-vowel aṅgas are 7.3.84's business
+            }
+            let Some(g) = guna_of(chars[n - 2]) else {
+                return false;
+            };
+            // laghu: the short ik vowels are exactly the lowercase ones our
+            // guna_of accepts; long variants are guru and out of scope here.
+            if !matches!(chars[n - 2], 'i' | 'u' | 'f' | 'x') {
+                return false;
+            }
+            let before = p.snapshot();
+            let mut s: String = chars[..n - 2].iter().collect();
+            s.push_str(g);
+            s.push(chars[n - 1]);
+            p.terms[ANGA].text = s;
+            p.record("7.3.86", "pugantalaGUpaDasya ca", before);
             true
         },
     },
@@ -616,15 +728,27 @@ pub static TINANTA_RULES: &[Rule] = &[
     // (NOT savarṇa-dīrgha `A`), so `Bav`+`a`+`nti` = `Bavanti`. Drop the
     // ending's leading `a`; the surviving śap `a` stands in for the coalesced
     // vowel and the term vector stays consistent for `.text()`.
+    //
+    // Widened beyond the `a+a` case to cover any guṇa vowel (a/e/o) following
+    // śap `a`, per the sūtra's own text: `a+a` (anti) and `a+e` (laṭ
+    // ātmanepada uttama-eka, laB+a+e → laBe) both arise from the curated
+    // roots; no `a+o` case arises, but the guard states the sūtra's full set.
     Rule {
         id: "6.1.97",
         name: "ato guRe",
         kind: RuleKind::Vidhi,
         apply: |p| {
-            if p.terms[SHAP].text != "a" || !p.terms[ENDING].text.starts_with('a') {
+            let Some(first) = p.terms[ENDING].text.chars().next() else {
+                return false;
+            };
+            if p.terms[SHAP].text != "a" || !matches!(first, 'a' | 'e' | 'o') {
                 return false;
             }
             let before = p.snapshot();
+            // Para-rūpa: the single substitute is the FOLLOWING vowel. For
+            // a+a the śap already spells it; for a+e (laṭ Ā uttama-eka
+            // laB+a+e → laBe) the śap must become that vowel.
+            p.terms[SHAP].text = first.to_string();
             p.terms[ENDING].text = p.terms[ENDING].text.chars().skip(1).collect();
             p.record("6.1.97", "ato guRe", before);
             true
@@ -1349,5 +1473,80 @@ mod tests {
             assert!(!(rule.apply)(&mut p), "{ending} {lakara:?} {pada:?}");
             assert!(!p.terms[ENDING_PRE_SHAP].has(Tag::Ngit));
         }
+    }
+
+    fn lat_a_form(code: &str, pu: Purusha, va: Vacana) -> String {
+        let d = dhatus().iter().find(|d| d.code == code).unwrap();
+        derive(d, Lakara::Lat, Pada::Atmanepada, pu, va).text()
+    }
+
+    #[test]
+    fn labh_lat_atmanepada_all_nine_cells() {
+        let expected = [
+            (Purusha::Prathama, Vacana::Eka, "laBate"),
+            (Purusha::Prathama, Vacana::Dvi, "laBete"),
+            (Purusha::Prathama, Vacana::Bahu, "laBante"),
+            (Purusha::Madhyama, Vacana::Eka, "laBase"),
+            (Purusha::Madhyama, Vacana::Dvi, "laBeTe"),
+            (Purusha::Madhyama, Vacana::Bahu, "laBaDve"),
+            (Purusha::Uttama, Vacana::Eka, "laBe"),
+            (Purusha::Uttama, Vacana::Dvi, "laBAvahe"),
+            (Purusha::Uttama, Vacana::Bahu, "laBAmahe"),
+        ];
+        for (pu, va, form) in expected {
+            assert_eq!(lat_a_form("laB", pu, va), form, "{pu:?} {va:?}");
+        }
+    }
+
+    #[test]
+    fn vrt_lat_uses_laghupadha_guna() {
+        // vft's f is PENULTIMATE (upadha), not final like smf's: guna comes
+        // from 7.3.86 pugantalaghUpaDasya ca, not 7.3.84.
+        assert_eq!(lat_a_form("vft", Purusha::Prathama, Vacana::Eka), "vartate");
+    }
+
+    #[test]
+    fn thasah_se_precedes_and_preempts_ter_e() {
+        // 3.4.80 is the apavada: TAs -> se. Reversed order would give 3.4.79
+        // TAs -> Te (wrong). And 3.4.79 must report false on "se" (ti of
+        // "se" is already e) rather than record a no-op step.
+        let mut p = Prakriya {
+            terms: vec![Term::new("laB"), Term::new("se")],
+            log: vec![],
+            ctx: Context::new(
+                Lakara::Lat,
+                Pada::Atmanepada,
+                Purusha::Madhyama,
+                Vacana::Eka,
+            ),
+            blocked: false,
+        };
+        let rule = TINANTA_RULES.iter().find(|r| r.id == "3.4.79").unwrap();
+        assert!(
+            !(rule.apply)(&mut p),
+            "3.4.79 must not record a no-op on se"
+        );
+    }
+
+    #[test]
+    fn ato_nitah_requires_the_ngit_tag() {
+        // Parasmaipada lot uttama Ani starts with A but is NOT Nid-vat
+        // (1.2.4 pic-ca exclusion) — it belongs to 6.1.101, not 7.2.81.
+        let mut anga = Term::new("Bav");
+        anga.add(Tag::Anga);
+        let mut p = Prakriya {
+            terms: vec![anga, Term::new("a"), Term::new("Ani")],
+            log: vec![],
+            ctx: Context::new(
+                Lakara::Lot,
+                Pada::Parasmaipada,
+                Purusha::Uttama,
+                Vacana::Eka,
+            ),
+            blocked: false,
+        };
+        let rule = TINANTA_RULES.iter().find(|r| r.id == "7.2.81").unwrap();
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[ENDING].text, "Ani");
     }
 }

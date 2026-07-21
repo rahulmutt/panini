@@ -201,6 +201,60 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
             "vadema",
         ],
     ),
+    (
+        "eD",
+        "laT",
+        [
+            "eDate", "eDete", "eDante", "eDase", "eDeTe", "eDaDve", "eDe", "eDAvahe", "eDAmahe",
+        ],
+    ),
+    (
+        "laB",
+        "laT",
+        [
+            "laBate", "laBete", "laBante", "laBase", "laBeTe", "laBaDve", "laBe", "laBAvahe",
+            "laBAmahe",
+        ],
+    ),
+    (
+        "sev",
+        "laT",
+        [
+            "sevate", "sevete", "sevante", "sevase", "seveTe", "sevaDve", "seve", "sevAvahe",
+            "sevAmahe",
+        ],
+    ),
+    (
+        "vft",
+        "laT",
+        [
+            "vartate",
+            "vartete",
+            "vartante",
+            "vartase",
+            "varteTe",
+            "vartaDve",
+            "varte",
+            "vartAvahe",
+            "vartAmahe",
+        ],
+    ),
+    (
+        "BAz",
+        "laT",
+        [
+            "BAzate", "BAzete", "BAzante", "BAzase", "BAzeTe", "BAzaDve", "BAze", "BAzAvahe",
+            "BAzAmahe",
+        ],
+    ),
+    (
+        "Ikz",
+        "laT",
+        [
+            "Ikzate", "Ikzete", "Ikzante", "Ikzase", "IkzeTe", "IkzaDve", "Ikze", "IkzAvahe",
+            "IkzAmahe",
+        ],
+    ),
 ];
 
 #[test]
