@@ -1082,6 +1082,22 @@ fn known_nonforms_are_invalid() {
         "laBAte",  // 7.2.81 skipped: A must become iy after the shap
         "laBesva", // lot's sva on a lat stem (3.4.91 without 3.4.90's lakara)
         "IkzAmi",  // parasmaipada uttama ending on the vowel-initial A-root
+        // Wrong vikaraṇa: divādi/tudādi roots take śyan/śa, not śap, and
+        // bhvādi does not take śyan.
+        "divati",  // div with śap instead of śyan
+        "tudyati", // tud with śyan instead of śa
+        "Bavyati", // BU (bhvādi) with a śyan it has no claim to
+        "naSati",  // naś with śap
+        "kupati",  // kup with śap
+        // Guṇa should have been blocked (1.1.5): these are the guṇa'd forms.
+        "kopyati", // kup guṇa'd — 7.3.86 must be blocked by śyan's ṅit
+        "todati",  // tud guṇa'd — 7.3.86 must be blocked by śa's ṅit
+        "jozate",  // juṣ guṇa'd — block under ātmanepada too
+        "devyati", // div guṇa'd (before 8.2.77): guṇa must be blocked
+        // Wrong pada: the root's pada tag gates the whole derivation.
+        "manyati", // atmanepadin divādi root with a parasmaipada ending
+        "vidyati", // atmanepadin divādi root, parasmaipada ending
+        "tudate",  // parasmaipada tudādi root with an atmanepada ending
     ] {
         assert!(
             matches!(engine.check(bad).verdict, Verdict::Invalid),
