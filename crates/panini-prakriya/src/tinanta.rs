@@ -1142,6 +1142,28 @@ mod tests {
     }
 
     #[test]
+    fn vrddhi_of_ac_vowels_all_arms() {
+        // 1.1.1 vRddhir Adaic: pin every arm of the vRddhi substitution
+        // table directly, since the curated roots only ever drive
+        // vrddhi_of through 6.1.90 with e/I/E inputs (never a/A/u/U/o/O),
+        // leaving those arms unreachable via golden derivations. Mirrors
+        // guna_of_ik_vowels_all_arms above.
+        assert_eq!(vrddhi_of('a'), Some('A'));
+        assert_eq!(vrddhi_of('A'), Some('A'));
+        assert_eq!(vrddhi_of('i'), Some('E'));
+        assert_eq!(vrddhi_of('I'), Some('E'));
+        assert_eq!(vrddhi_of('e'), Some('E'));
+        assert_eq!(vrddhi_of('E'), Some('E'));
+        assert_eq!(vrddhi_of('u'), Some('O'));
+        assert_eq!(vrddhi_of('U'), Some('O'));
+        assert_eq!(vrddhi_of('o'), Some('O'));
+        assert_eq!(vrddhi_of('O'), Some('O'));
+        // Non-ac letters (consonants) have no vRddhi substitute.
+        assert_eq!(vrddhi_of('t'), None);
+        assert_eq!(vrddhi_of('f'), None);
+    }
+
+    #[test]
     fn is_vowel_distinguishes_vowels_from_consonants() {
         for c in [
             'a', 'A', 'i', 'I', 'u', 'U', 'f', 'F', 'x', 'X', 'e', 'E', 'o', 'O',
@@ -1840,5 +1862,137 @@ mod tests {
         let rule = TINANTA_RULES.iter().find(|r| r.id == "7.2.81").unwrap();
         assert!(!(rule.apply)(&mut p));
         assert_eq!(p.terms[ENDING].text, "Ani");
+    }
+
+    #[test]
+    fn eta_ai_requires_ending_to_actually_end_in_e() {
+        // 3.4.93's guard is a 4-clause `||` chain: lakara != loT, purusha !=
+        // uttama, pada != Atmanepada, or the ending isn't e-final -> return
+        // false. Here the first three clauses are all false (loT, uttama,
+        // Atmanepada all hold), so only the last clause -- ending
+        // "sva" doesn't end in 'e' -- makes the guard true and the rule
+        // report false, leaving "sva" untouched.
+        //
+        // The targeted mutant flips the LAST `||` to `&&`, turning the
+        // guard into `c1 || c2 || (c3 && c4)`. With c1=c2=c3=false and
+        // c4=true, that mutant guard evaluates to false -- the early
+        // return is skipped, and the rule wrongly pops "sva"'s final char
+        // and appends 'E', corrupting it to "svE". Asserting both the
+        // false return AND the unchanged text kills the mutant.
+        let mut p = Prakriya {
+            terms: vec![Term::new("BU"), Term::new("sva")],
+            log: vec![],
+            ctx: Context::new(Lakara::Lot, Pada::Atmanepada, Purusha::Uttama, Vacana::Eka),
+            blocked: false,
+        };
+        let rule = TINANTA_RULES.iter().find(|r| r.id == "3.4.93").unwrap();
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[ENDING_PRE_SHAP].text, "sva");
+    }
+
+    // --- 7.3.86 pugantalaGUpaDasya ca: guard-edge pins -------------------
+    //
+    // The guard `n < 2 || is_vowel(chars[n - 1])` followed by index
+    // arithmetic on `chars[n - 2]` / `chars[..n - 2]` is reachable-
+    // equivalent to its mutants for every curated aGga except the 3-char
+    // "vft" (where n-2 == n/2), so each case below is a constructed
+    // Prakriya chosen to separate the mutant from the original at a
+    // different edge.
+
+    #[test]
+    fn pugantalaghupadhasya_one_char_anga_returns_false_without_panic() {
+        // n=1: `n < 2` alone is true, so `||` short-circuits and the body
+        // never touches `chars[n - 2]`. The `<` -> `==` mutant makes
+        // `n == 2` false for n=1; evaluating the right disjunct then needs
+        // `chars[n - 1]` (fine, n-1=0) but the guard as a whole is now
+        // false, so the mutant falls through to `chars[n - 2]` with n=1,
+        // a usize underflow that panics. The original must return false
+        // cleanly.
+        let mut p = Prakriya {
+            terms: vec![Term::new("d"), Term::new("a")],
+            log: vec![],
+            ..Default::default()
+        };
+        let rule = TINANTA_RULES.iter().find(|r| r.id == "7.3.86").unwrap();
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "d");
+    }
+
+    #[test]
+    fn pugantalaghupadhasya_two_char_ik_penult_fires() {
+        // n=2, final char 'd' is a consonant so the guard is false and the
+        // rule fires: guNa of penult 'i' is "e", giving "ed". The
+        // `<` -> `<=` mutant makes `n <= 2` true for n=2, so the mutant
+        // guard short-circuits to true and wrongly returns false instead
+        // of firing.
+        let mut p = Prakriya {
+            terms: vec![Term::new("id"), Term::new("a")],
+            log: vec![],
+            ..Default::default()
+        };
+        let rule = TINANTA_RULES.iter().find(|r| r.id == "7.3.86").unwrap();
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "ed");
+    }
+
+    #[test]
+    fn pugantalaghupadhasya_skips_vowel_final_anga() {
+        // n=3, final char 'u' is a vowel, so the guard's `is_vowel` disjunct
+        // is true and the rule must not fire (this shape is 7.3.84's
+        // business). The `||` -> `&&` mutant makes the guard
+        // `n < 2 && is_vowel(...)` = false && true = false, so the mutant
+        // falls through and wrongly fires on the ik penult 'f'.
+        let mut p = Prakriya {
+            terms: vec![Term::new("Bfu"), Term::new("a")],
+            log: vec![],
+            ..Default::default()
+        };
+        let rule = TINANTA_RULES.iter().find(|r| r.id == "7.3.86").unwrap();
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "Bfu");
+    }
+
+    #[test]
+    fn pugantalaghupadhasya_uses_n_minus_2_not_n_over_2() {
+        // n=5 ("aBiur"): n-2=3 (penult 'u') but n/2=2 (chars[2]='i') --
+        // these differ, so this case separates both `-` -> `/` mutants
+        // from the original at once. By hand: guNa of chars[3]='u' is
+        // "o"; laghu-check on chars[3]='u' passes; prefix is chars[..3]
+        // = "aBi"; result = "aBi" + "o" + chars[4]='r' = "aBior".
+        // Mutating `chars[n - 2]` (line 806) to `chars[n / 2]` would guNa
+        // 'i' instead ("e"), yielding "aBier". Mutating `chars[..n - 2]`
+        // (line 815) to `chars[..n / 2]` would prefix with "aB" instead
+        // of "aBi", yielding "aBor". Both diverge from "aBior".
+        let mut p = Prakriya {
+            terms: vec![Term::new("aBiur"), Term::new("a")],
+            log: vec![],
+            ..Default::default()
+        };
+        let rule = TINANTA_RULES.iter().find(|r| r.id == "7.3.86").unwrap();
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "aBior");
+    }
+
+    #[test]
+    fn awas_ca_ending_arm_requires_a_third_term() {
+        // 6.1.90's ending arm reads p.terms[SHAP] and p.terms[ENDING]
+        // (index 2) once its guard passes. With only two terms (aGga +
+        // SHAP, no ending inserted yet), `p.terms.len() > ENDING` (2 > 2)
+        // is false, so the guard short-circuits before ever indexing
+        // terms[2]. The `>` -> `>=` mutant makes `2 >= 2` true, so the
+        // mutant guard proceeds to check terms[SHAP].text == "A" (true
+        // here) and then indexes terms[ENDING], which is out of bounds
+        // for a 2-term vector and panics. The aGga itself ("kf") also
+        // must not satisfy the aGga arm (it doesn't start with 'A'), so
+        // this isolates the ending-arm guard alone.
+        let mut p = Prakriya {
+            terms: vec![Term::new("kf"), Term::new("A")],
+            log: vec![],
+            ..Default::default()
+        };
+        let rule = TINANTA_RULES.iter().find(|r| r.id == "6.1.90").unwrap();
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "kf");
+        assert_eq!(p.terms[SHAP].text, "A");
     }
 }
