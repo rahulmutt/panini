@@ -17,6 +17,15 @@ pub enum Tag {
     /// The term behaves as Nit (set by the atidesha 1.2.4 sarvadhatukam apit;
     /// consumed by 7.2.81 Ato NitaH).
     Ngit,
+    /// The pratyaya carries the p-anubandha (pit). Set on śap by 3.1.68; the
+    /// second 1.2.4 application reads it to leave śap alone (only apit
+    /// vikaraṇas — śyan, śa — become ṅit).
+    Pit,
+    /// The dhātu belongs to divādi (gaṇa 4) / tudādi (gaṇa 6). Data-layer
+    /// stand-ins mirroring Atmanepadin, read by 3.1.69 / 3.1.77. bhvādi
+    /// carries neither tag.
+    Divadi,
+    Tudadi,
 }
 
 #[derive(Debug, Clone)]

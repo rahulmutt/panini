@@ -630,12 +630,38 @@ pub static TINANTA_RULES: &[Rule] = &[
             let mut s = Term::new("Sap");
             s.add(Tag::Vikarana);
             s.add(Tag::Sarvadhatuka);
+            s.add(Tag::Pit); // p-anubandha: śap is pit, so 1.2.4 leaves it alone
             p.terms.insert(SHAP, s);
             p.record("3.1.68", "kartari Sap", before);
             let mut s = p.terms[SHAP].clone();
             run_it_samjna(&mut s, p, SHAP);
             p.terms[SHAP] = s;
             p.terms[ANGA].add(Tag::Anga);
+            true
+        },
+    },
+    // 1.2.4 sārvadhātukam apit — second application, on the vikaraṇa. The
+    // first application (above the boundary) tags apit ātmanepada endings;
+    // this one tags the apit sārvadhātuka VIKARAṆA ṅit once it exists. śyan
+    // and śa are apit (no p-anubandha); śap carries Tag::Pit (3.1.68) and is
+    // skipped — so bhvādi is untouched. NOT pada-gated: śyan/śa are apit in
+    // parasmaipada derivations too, which is what blocks guṇa in dīvyati /
+    // kupyati / tudati.
+    Rule {
+        id: "1.2.4",
+        name: "sArvaDAtukam apit",
+        kind: RuleKind::Atidesha,
+        apply: |p| {
+            if !(p.terms.len() > SHAP
+                && p.terms[SHAP].has(Tag::Vikarana)
+                && !p.terms[SHAP].has(Tag::Pit)
+                && !p.terms[SHAP].has(Tag::Ngit))
+            {
+                return false;
+            }
+            let before = p.snapshot();
+            p.terms[SHAP].add(Tag::Ngit);
+            p.record("1.2.4", "sArvaDAtukam apit", before);
             true
         },
     },
@@ -777,6 +803,12 @@ pub static TINANTA_RULES: &[Rule] = &[
         name: "sArvaDAtukArDaDAtukayoH",
         kind: RuleKind::Vidhi,
         apply: |p| {
+            // 1.1.5 kṅiti ca: a following ṅit sārvadhātuka blocks guṇa. The
+            // vikaraṇa at SHAP is ṅit (1.2.4) exactly when apit (śyan, śa);
+            // śap is pit and is not, so bhvādi guṇa is unaffected.
+            if p.terms.len() > SHAP && p.terms[SHAP].has(Tag::Ngit) {
+                return false;
+            }
             let last = p.terms[ANGA].text.chars().last().unwrap();
             let Some(g) = guna_of(last) else {
                 return false;
@@ -798,6 +830,12 @@ pub static TINANTA_RULES: &[Rule] = &[
         name: "pugantalaGUpaDasya ca",
         kind: RuleKind::Vidhi,
         apply: |p| {
+            // 1.1.5 kṅiti ca: a following ṅit sārvadhātuka blocks guṇa. The
+            // vikaraṇa at SHAP is ṅit (1.2.4) exactly when apit (śyan, śa);
+            // śap is pit and is not, so bhvādi guṇa is unaffected.
+            if p.terms.len() > SHAP && p.terms[SHAP].has(Tag::Ngit) {
+                return false;
+            }
             let chars: Vec<char> = p.terms[ANGA].text.chars().collect();
             let n = chars.len();
             if n < 2 || is_vowel(chars[n - 1]) {
@@ -1122,6 +1160,25 @@ mod tests {
     #[test]
     fn bhu_3pl_is_bhavanti() {
         assert_eq!(form("BU", Purusha::Prathama, Vacana::Bahu), "Bavanti");
+    }
+    #[test]
+    fn shap_is_pit_and_bhvadi_guna_survives() {
+        // Regression guard for Task 3: adding the guṇa-block mechanism must
+        // not disturb bhvādi. śap is pit, so 7.3.84 still fires for BU.
+        assert_eq!(form("BU", Purusha::Prathama, Vacana::Eka), "Bavati");
+        let d = dhatus().iter().find(|d| d.code == "vft").unwrap();
+        // vṛt uses 7.3.86 (laghūpadhā guṇa) before śap (pit) → vartate.
+        assert_eq!(
+            derive(
+                d,
+                Lakara::Lat,
+                Pada::Atmanepada,
+                Purusha::Prathama,
+                Vacana::Eka
+            )
+            .text(),
+            "vartate"
+        );
     }
     #[test]
     fn guna_of_ik_vowels_all_arms() {
