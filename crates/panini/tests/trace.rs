@@ -6,7 +6,7 @@
 //! would still pass if a `record()` call were dropped or reordered. This
 //! file pins the FULL ORDERED sequence for representative forms so a
 //! regression like that fails loudly, across all four lakāras this crate
-//! covers (laṭ, laṅ, loṭ, vidhiliṅ) — **twelve** tests in total below.
+//! covers (laṭ, laṅ, loṭ, vidhiliṅ) — **twenty** tests in total below.
 //!
 //! For the authoritative rule order itself, do not rely on a diagram here:
 //! read `TINANTA_RULES` in `crates/panini-prakriya/src/tinanta.rs` top to
@@ -242,6 +242,33 @@ fn aidhata_trace_is_exactly_the_at_agama_path() {
         trace_for("EData"),
         vec![
             "1.3.12", "3.4.78", "1.2.4", "3.1.68", "1.3.9", "6.4.72", "6.1.90"
+        ]
+    );
+}
+
+#[test]
+fn labheran_trace_is_exactly_the_siyut_ran_path() {
+    // laB vidhiliṅ prathama bahu: Ja → ran (3.4.105) → sIyran (3.4.102) →
+    // Iyran (7.2.79) → laBe+yran (6.1.87) → laBeran (6.1.66; r is val).
+    assert_eq!(
+        trace_for("laBeran"),
+        vec![
+            "1.3.12", "3.4.78", "1.2.4", "3.4.105", "3.4.102", "3.1.68", "1.3.9", "7.2.79",
+            "6.1.87", "6.1.66"
+        ]
+    );
+}
+
+#[test]
+fn labheya_trace_is_exactly_the_ito_t_path() {
+    // laB vidhiliṅ uttama eka: iw → i (1.3.9) → a (3.4.106) → sIya
+    // (3.4.102) → Iya (7.2.79) → laBe+ya (6.1.87); the y SURVIVES 6.1.66
+    // (a is a vowel, not val).
+    assert_eq!(
+        trace_for("laBeya"),
+        vec![
+            "1.3.12", "3.4.78", "1.3.9", "1.2.4", "3.4.106", "3.4.102", "3.1.68", "1.3.9",
+            "7.2.79", "6.1.87"
         ]
     );
 }

@@ -233,6 +233,42 @@ pub static TINANTA_RULES: &[Rule] = &[
             true
         },
     },
+    // 3.4.105 jhasya ran: in liṅ, ātmanepada Ja → ran. Apavāda to 7.1.3
+    // jho'ntaḥ by position: 7.1.3 runs post-śap, by which time Ja is gone.
+    // The liṅ ātmanepada sibling of 3.4.108 jher jus.
+    Rule {
+        id: "3.4.105",
+        name: "Jasya ran",
+        kind: RuleKind::Vidhi,
+        apply: |p| {
+            if !matches!(p.ctx.lakara, Lakara::VidhiLin) || p.terms[ENDING_PRE_SHAP].text != "Ja" {
+                return false;
+            }
+            let before = p.snapshot();
+            p.terms[ENDING_PRE_SHAP].text = "ran".into();
+            p.record("3.4.105", "Jasya ran", before);
+            true
+        },
+    },
+    // 3.4.106 iṭo 't: in liṅ, the ātmanepada uttama-eka i (from iw) → a.
+    // laBeya, not laBeyi.
+    Rule {
+        id: "3.4.106",
+        name: "iwo't",
+        kind: RuleKind::Vidhi,
+        apply: |p| {
+            if !matches!(p.ctx.lakara, Lakara::VidhiLin)
+                || !matches!(p.ctx.pada, Pada::Atmanepada)
+                || p.terms[ENDING_PRE_SHAP].text != "i"
+            {
+                return false;
+            }
+            let before = p.snapshot();
+            p.terms[ENDING_PRE_SHAP].text = "a".into();
+            p.record("3.4.106", "iwo't", before);
+            true
+        },
+    },
     // 3.4.101 tasthasthamipāṃ tāṃtaṃtāmaḥ: tas→tAm, Tas→tam, Ta→ta, mip→am.
     //
     // The mip→am arm excludes loṭ: loṭ's uttama-eka is `ni` by the more specific
@@ -555,6 +591,27 @@ pub static TINANTA_RULES: &[Rule] = &[
             true
         },
     },
+    // 3.4.102 liṅaḥ sīyuṭ: liṅ's ātmanepada endings take the sīyuṭ-āgama,
+    // prefixed as text like yāsuṭ (3.4.103). Its s is non-final, so the
+    // existing 7.2.79 salopa elides it: sIyta → Iyta — then 6.1.87 (a+I→e)
+    // and 6.1.66 finish exactly as in the yāsuṭ chain.
+    // Same ordering constraint as 3.4.103: MUST follow the ending
+    // substitutions (3.4.105/3.4.106 match exact text).
+    Rule {
+        id: "3.4.102",
+        name: "liNas sIyuw",
+        kind: RuleKind::Vidhi,
+        apply: |p| {
+            if !matches!(p.ctx.lakara, Lakara::VidhiLin) || !matches!(p.ctx.pada, Pada::Atmanepada)
+            {
+                return false;
+            }
+            let before = p.snapshot();
+            p.terms[ENDING_PRE_SHAP].text = format!("sIy{}", p.terms[ENDING_PRE_SHAP].text);
+            p.record("3.4.102", "liNas sIyuw", before);
+            true
+        },
+    },
     // ============================================================
     // BOUNDARY: 3.1.68 kartari śap inserts śap and shifts the ending from
     // index 1 to index 2 (see the ANGA/ENDING_PRE_SHAP/SHAP/ENDING doc
@@ -641,9 +698,8 @@ pub static TINANTA_RULES: &[Rule] = &[
     // ending is elided. yAst → yAt, yAss → yAs (madhyama-eka: only the first
     // s is non-final!), yAsus → yAus. MUST precede 7.2.80: only after the s
     // goes does the ending start with the `yA` shape 7.2.80 rewrites.
-    // Every non-final s reaching this rule is yāsuṭ-derived, because 3.4.103
-    // fires unconditionally for vidhiliṅ and no rule between them introduces
-    // an s.
+    // Every non-final s reaching this rule is yāsuṭ- or sīyuṭ-derived; the
+    // invariant is that the only non-final s is āgama-initial.
     Rule {
         id: "7.2.79",
         name: "liNaH salopo'nantyasya",
@@ -908,12 +964,16 @@ pub static TINANTA_RULES: &[Rule] = &[
     // śap stands in for the coalesced vowel, the ending loses its initial.
     // MUST precede 6.1.66: only after the `i` is absorbed does the ending
     // start with the `y` that 6.1.66 tests.
+    //
+    // Short `iy` comes from 7.2.80/7.2.81; long `Iy` is sīyuṭ after salopa
+    // (7.2.79). Both coalesce with śap `a` to guṇa `e`.
     Rule {
         id: "6.1.87",
         name: "Ad guRaH",
         kind: RuleKind::Vidhi,
         apply: |p| {
-            if p.terms[SHAP].text != "a" || !p.terms[ENDING].text.starts_with('i') {
+            let first = p.terms[ENDING].text.chars().next();
+            if p.terms[SHAP].text != "a" || !matches!(first, Some('i') | Some('I')) {
                 return false;
             }
             let before = p.snapshot();
@@ -1685,6 +1745,49 @@ mod tests {
     fn am_etah_is_lot_only() {
         // laṭ's te/Ate must NOT become tAm/AtAm.
         assert_eq!(lat_a_form("laB", Purusha::Prathama, Vacana::Eka), "laBate");
+    }
+
+    fn lin_a_form(code: &str, pu: Purusha, va: Vacana) -> String {
+        let d = dhatus().iter().find(|d| d.code == code).unwrap();
+        derive(d, Lakara::VidhiLin, Pada::Atmanepada, pu, va).text()
+    }
+
+    #[test]
+    fn labh_vidhilin_atmanepada_all_nine_cells() {
+        let expected = [
+            (Purusha::Prathama, Vacana::Eka, "laBeta"),
+            (Purusha::Prathama, Vacana::Dvi, "laBeyAtAm"),
+            (Purusha::Prathama, Vacana::Bahu, "laBeran"),
+            (Purusha::Madhyama, Vacana::Eka, "laBeTAH"),
+            (Purusha::Madhyama, Vacana::Dvi, "laBeyATAm"),
+            (Purusha::Madhyama, Vacana::Bahu, "laBeDvam"),
+            (Purusha::Uttama, Vacana::Eka, "laBeya"),
+            (Purusha::Uttama, Vacana::Dvi, "laBevahi"),
+            (Purusha::Uttama, Vacana::Bahu, "laBemahi"),
+        ];
+        for (pu, va, form) in expected {
+            assert_eq!(lin_a_form("laB", pu, va), form, "{pu:?} {va:?}");
+        }
+    }
+
+    #[test]
+    fn siyut_survives_salopa_as_long_i() {
+        // sIyta → (7.2.79) Iyta: 6.1.87's widened guard must accept the
+        // long I (yāsuṭ's chain produced short iy via 7.2.80).
+        let p = {
+            let d = dhatus().iter().find(|d| d.code == "laB").unwrap();
+            derive(
+                d,
+                Lakara::VidhiLin,
+                Pada::Atmanepada,
+                Purusha::Prathama,
+                Vacana::Eka,
+            )
+        };
+        assert!(p.log.iter().any(|s| s.sutra == "3.4.102"));
+        assert!(p.log.iter().any(|s| s.sutra == "7.2.79"));
+        assert!(p.log.iter().any(|s| s.sutra == "6.1.87"));
+        assert_eq!(p.text(), "laBeta");
     }
 
     #[test]
