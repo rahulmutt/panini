@@ -146,17 +146,26 @@ This adds a new `Tag::Pit` to `term.rs` (the existing `Tag::Ngit` is the *ṅit*
 marker 1.2.4 already sets on apit endings; there is no pit marker today). śap is
 the only curated pit affix; śyan/śa carry no `Pit` tag.
 
+### Threading the gaṇa
+
+The gaṇa is carried as a tag on the aṅga term, exactly mirroring how
+`Tag::Atmanepadin` already carries pada (the data-layer stand-in that 1.3.12
+reads). `derive` tags the aṅga `Tag::Divadi` or `Tag::Tudadi` from `dhatu.gana`
+(bhvādi = neither tag). Rules guard on `p.terms[ANGA].has(Tag::Divadi)`. This
+avoids threading a fifth coordinate through `Context::new` (24 call sites) and
+reuses the established aṅga-marker pattern.
+
 ### New rules
 
 **3.1.69 divādibhyaḥ śyan** — apavāda to 3.1.68 for divādi. Guard:
-`ctx.gana == Divadi`. Inserts `Syan` at `SHAP`, runs it-saṁjñā (1.3.8 strips
+`p.terms[ANGA].has(Tag::Divadi)`. Inserts `Syan` at `SHAP`, runs it-saṁjñā (1.3.8 strips
 leading `S`; 1.3.3 *halantyam* strips final `n` → `ya`), tags it
 `Vikarana + Sarvadhatuka` (not `Pit`), marks the aṅga. Ordered immediately
 before 3.1.68, exactly as 6.4.72 precedes its utsarga 6.4.71.
 
 **3.1.77 tudādibhyaḥ śaḥ** — apavāda to 3.1.68 for tudādi. Guard:
-`ctx.gana == Tudadi`. Inserts `Sa` → `a` (1.3.8 strips `S`), same tagging shape,
-not `Pit`.
+`p.terms[ANGA].has(Tag::Tudadi)`. Inserts `Sa` → `a` (1.3.8 strips `S`), same
+tagging shape, not `Pit`.
 
 **8.2.77 hali ca** — root-specific, self-guarding on shape: a root ending in `v`
 (or `r`) with a short ik upadhā lengthens that upadhā when a hal follows. Fires
@@ -197,8 +206,8 @@ comments (guards are cited in comments in this codebase, not the trace).
 
 ```
 … 3.4.102 liNas sIyuw
-[new] 3.1.69 divAdibhyaH Syan      (guard: gana == Divadi)   ┐ apavādas,
-[new] 3.1.77 tudAdibhyaH SaH       (guard: gana == Tudadi)   ┘ before utsarga
+[new] 3.1.69 divAdibhyaH Syan      (guard: ANGA has Tag::Divadi) ┐ apavādas,
+[new] 3.1.77 tudAdibhyaH SaH       (guard: ANGA has Tag::Tudadi) ┘ before utsarga
       3.1.68 kartari Sap           (guard: no vikaraṇa yet; tags śap Pit)
 [new] 1.2.4  sArvaDAtukam apit     (2nd application: tags apit vikaraṇa ṅit)
       6.4.71 luNlaNlfNkzvaqudAttaH
