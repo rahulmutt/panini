@@ -1143,6 +1143,43 @@ pub static TINANTA_RULES: &[Rule] = &[
             true
         },
     },
+    // 8.2.77 hali ca: a root ending in `r`/`v` with a short ik upadhā
+    // lengthens that upadhā before a hal (8.2.76 rvorupadhāyā dīrghaḥ is the
+    // anuvṛtti source). The only curated root reaching this is div, after
+    // guṇa is blocked: div + śyan (y-initial) → dīv → dīvyati. Self-guards on
+    // shape; no other curated root fires it (sev has an e-upadhā, vart ends
+    // in t).
+    Rule {
+        id: "8.2.77",
+        name: "hali ca",
+        kind: RuleKind::Vidhi,
+        apply: |p| {
+            let chars: Vec<char> = p.terms[ANGA].text.chars().collect();
+            let n = chars.len();
+            if n < 2 {
+                return false;
+            }
+            let final_c = chars[n - 1];
+            let upadha = chars[n - 2];
+            if !matches!(final_c, 'r' | 'v') || !matches!(upadha, 'i' | 'u') {
+                return false;
+            }
+            let Some(next) = p.terms.get(SHAP).and_then(|t| t.text.chars().next()) else {
+                return false;
+            };
+            if is_vowel(next) {
+                return false;
+            }
+            let before = p.snapshot();
+            let long = if upadha == 'i' { 'I' } else { 'U' };
+            let mut s: String = chars[..n - 2].iter().collect();
+            s.push(long);
+            s.push(final_c);
+            p.terms[ANGA].text = s;
+            p.record("8.2.77", "hali ca", before);
+            true
+        },
+    },
     // 8.2.23 saṃyogāntasya lopaḥ: the final consonant of a word-final conjunct
     // is elided. aBavant → aBavan.
     Rule {
@@ -1314,6 +1351,19 @@ mod tests {
         assert_eq!(
             form_g("man", Lakara::Lat, Purusha::Uttama, Vacana::Eka),
             "manye"
+        );
+    }
+
+    #[test]
+    fn div_lengthens_before_syan() {
+        assert_eq!(
+            form_g("div", Lakara::Lat, Purusha::Prathama, Vacana::Eka),
+            "dIvyati"
+        );
+        // laṅ: augment does not disturb the upadhā i.
+        assert_eq!(
+            form_g("div", Lakara::Lan, Purusha::Prathama, Vacana::Eka),
+            "adIvyat"
         );
     }
 
