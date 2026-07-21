@@ -6,7 +6,7 @@
 //! would still pass if a `record()` call were dropped or reordered. This
 //! file pins the FULL ORDERED sequence for representative forms so a
 //! regression like that fails loudly, across all four lakāras this crate
-//! covers (laṭ, laṅ, loṭ, vidhiliṅ) — **twelve** tests in total below.
+//! covers (laṭ, laṅ, loṭ, vidhiliṅ) — **twenty** tests in total below.
 //!
 //! For the authoritative rule order itself, do not rely on a diagram here:
 //! read `TINANTA_RULES` in `crates/panini-prakriya/src/tinanta.rs` top to
@@ -21,6 +21,10 @@
 //! strip) and the 1.3.4-protected `mas` (run_it_samjna skipped entirely) do
 //! not, so the sequences below differ in more than just which optional steps
 //! fire.
+//!
+//! The pada-sanction step (1.3.78 for these parasmaipada roots; 1.3.12 for
+//! atmanepada roots) is the derivation's source of truth for pada and now
+//! opens every trace.
 
 use panini::Panini;
 
@@ -40,7 +44,9 @@ fn bhavati_trace_is_exactly_the_base_path() {
     // BU prathama eka: base path, ending `tip` -> `ti`.
     assert_eq!(
         trace_for("Bavati"),
-        vec!["3.4.78", "1.3.9", "3.1.68", "1.3.9", "7.3.84", "6.1.78"]
+        vec![
+            "1.3.78", "3.4.78", "1.3.9", "3.1.68", "1.3.9", "7.3.84", "6.1.78"
+        ]
     );
 }
 
@@ -50,7 +56,7 @@ fn bhavanti_trace_is_exactly_the_ji_coalescence_path() {
     assert_eq!(
         trace_for("Bavanti"),
         vec![
-            "3.4.78", "3.1.68", "1.3.9", "7.1.3", "7.3.84", "6.1.78", "6.1.97"
+            "1.3.78", "3.4.78", "3.1.68", "1.3.9", "7.1.3", "7.3.84", "6.1.78", "6.1.97"
         ]
     );
 }
@@ -61,7 +67,7 @@ fn bhavamah_trace_is_exactly_the_dirgha_visarga_path() {
     assert_eq!(
         trace_for("BavAmaH"),
         vec![
-            "3.4.78", "3.1.68", "1.3.9", "7.3.84", "6.1.78", "7.3.101", "8.3.15"
+            "1.3.78", "3.4.78", "3.1.68", "1.3.9", "7.3.84", "6.1.78", "7.3.101", "8.3.15"
         ]
     );
 }
@@ -72,7 +78,7 @@ fn abhavat_trace_is_exactly_the_lan_augment_path() {
     assert_eq!(
         trace_for("aBavat"),
         vec![
-            "3.4.78", "1.3.9", "3.4.100", "3.1.68", "1.3.9", "6.4.71", "7.3.84", "6.1.78"
+            "1.3.78", "3.4.78", "1.3.9", "3.4.100", "3.1.68", "1.3.9", "6.4.71", "7.3.84", "6.1.78"
         ]
     );
 }
@@ -84,8 +90,8 @@ fn abhavan_trace_is_exactly_the_samyoganta_path() {
     assert_eq!(
         trace_for("aBavan"),
         vec![
-            "3.4.78", "3.4.100", "3.1.68", "1.3.9", "6.4.71", "7.1.3", "7.3.84", "6.1.78",
-            "6.1.97", "8.2.23"
+            "1.3.78", "3.4.78", "3.4.100", "3.1.68", "1.3.9", "6.4.71", "7.1.3", "7.3.84",
+            "6.1.78", "6.1.97", "8.2.23"
         ]
     );
 }
@@ -106,7 +112,7 @@ fn bhavatu_trace_is_exactly_the_lot_er_uh_path() {
     assert_eq!(
         trace_for("Bavatu"),
         vec![
-            "3.4.78", "1.3.9", "3.4.85", "3.4.86", "3.1.68", "1.3.9", "7.3.84", "6.1.78"
+            "1.3.78", "3.4.78", "1.3.9", "3.4.85", "3.4.86", "3.1.68", "1.3.9", "7.3.84", "6.1.78"
         ]
     );
 }
@@ -139,8 +145,8 @@ fn bhavet_trace_is_exactly_the_vidhilin_vali_lopa_path() {
     assert_eq!(
         trace_for("Bavet"),
         vec![
-            "3.4.78", "1.3.9", "3.4.100", "3.4.103", "3.1.68", "1.3.9", "7.2.79", "7.2.80",
-            "7.3.84", "6.1.78", "6.1.87", "6.1.66"
+            "1.3.78", "3.4.78", "1.3.9", "3.4.100", "3.4.103", "3.1.68", "1.3.9", "7.2.79",
+            "7.2.80", "7.3.84", "6.1.78", "6.1.87", "6.1.66"
         ]
     );
 }
@@ -153,8 +159,8 @@ fn bhaveyuh_trace_is_exactly_the_jus_path() {
     assert_eq!(
         trace_for("BaveyuH"),
         vec![
-            "3.4.78", "3.4.108", "1.3.9", "3.4.103", "3.1.68", "1.3.9", "7.2.79", "7.2.80",
-            "7.3.84", "6.1.78", "6.1.87", "8.3.15"
+            "1.3.78", "3.4.78", "3.4.108", "1.3.9", "3.4.103", "3.1.68", "1.3.9", "7.2.79",
+            "7.2.80", "7.3.84", "6.1.78", "6.1.87", "8.3.15"
         ]
     );
 }
@@ -166,8 +172,103 @@ fn bhaveyam_trace_is_exactly_the_widened_mip_path() {
     assert_eq!(
         trace_for("Baveyam"),
         vec![
-            "3.4.78", "1.3.9", "3.4.101", "3.4.103", "3.1.68", "1.3.9", "7.2.79", "7.2.80",
-            "7.3.84", "6.1.78", "6.1.87"
+            "1.3.78", "3.4.78", "1.3.9", "3.4.101", "3.4.103", "3.1.68", "1.3.9", "7.2.79",
+            "7.2.80", "7.3.84", "6.1.78", "6.1.87"
+        ]
+    );
+}
+
+#[test]
+fn labhate_trace_is_exactly_the_minimal_atmanepada_path() {
+    // laB laṭ prathama eka: pada sanction (1.3.12), ṅid-vat atideśa (1.2.4),
+    // ta → te (3.4.79). No it-saṃjñā step for `ta` (nothing to strip).
+    assert_eq!(
+        trace_for("laBate"),
+        vec!["1.3.12", "3.4.78", "1.2.4", "3.4.79", "3.1.68", "1.3.9"]
+    );
+}
+
+#[test]
+fn labhete_trace_is_exactly_the_ato_nitah_path() {
+    // laB laṭ prathama dvi: AtAm → Ate (3.4.79) → iyte (7.2.81) →
+    // laBe+yte (6.1.87) → laBete (6.1.66).
+    assert_eq!(
+        trace_for("laBete"),
+        vec![
+            "1.3.12", "3.4.78", "1.2.4", "3.4.79", "3.1.68", "1.3.9", "7.2.81", "6.1.87", "6.1.66"
+        ]
+    );
+}
+
+#[test]
+fn vartate_trace_shows_laghupadha_guna() {
+    // vft: 7.3.86 (upadhā guṇa), NOT 7.3.84 (final-ik guṇa).
+    let trace = trace_for("vartate");
+    assert!(trace.contains(&"7.3.86".to_string()), "got {trace:?}");
+    assert!(!trace.contains(&"7.3.84".to_string()), "got {trace:?}");
+}
+
+#[test]
+fn labhasva_trace_is_exactly_the_savabhyam_path() {
+    // laB loṭ madhyama eka: TAs → se (3.4.80) → sva (3.4.91); 3.4.79
+    // reports false on `se` (its ṭi is already e) and must not appear.
+    assert_eq!(
+        trace_for("laBasva"),
+        vec![
+            "1.3.12", "3.4.78", "1.2.4", "3.4.85", "3.4.80", "3.4.91", "3.1.68", "1.3.9"
+        ]
+    );
+}
+
+#[test]
+fn labhai_trace_is_exactly_the_at_vrddhi_path() {
+    // laB loṭ uttama eka: iw → i (1.3.9) → e (3.4.79) → E (3.4.93) →
+    // AE (3.4.92); post-śap 6.1.101 (a+A → A) then 6.1.90 (A+E → E).
+    // No 1.2.4: loṭ uttama endings are pit (pic ca), not apit.
+    assert_eq!(
+        trace_for("laBE"),
+        vec![
+            "1.3.12", "3.4.78", "1.3.9", "3.4.85", "3.4.79", "3.4.93", "3.4.92", "3.1.68", "1.3.9",
+            "6.1.101", "6.1.90"
+        ]
+    );
+}
+
+#[test]
+fn aidhata_trace_is_exactly_the_at_agama_path() {
+    // eD laṅ prathama eka: no pre-śap ending change (ta survives; 3.4.100 is
+    // parasmaipada-only), then 6.4.72 āṭ + 6.1.90 vṛddhi on the aṅga.
+    assert_eq!(
+        trace_for("EData"),
+        vec![
+            "1.3.12", "3.4.78", "1.2.4", "3.1.68", "1.3.9", "6.4.72", "6.1.90"
+        ]
+    );
+}
+
+#[test]
+fn labheran_trace_is_exactly_the_siyut_ran_path() {
+    // laB vidhiliṅ prathama bahu: Ja → ran (3.4.105) → sIyran (3.4.102) →
+    // Iyran (7.2.79) → laBe+yran (6.1.87) → laBeran (6.1.66; r is val).
+    assert_eq!(
+        trace_for("laBeran"),
+        vec![
+            "1.3.12", "3.4.78", "1.2.4", "3.4.105", "3.4.102", "3.1.68", "1.3.9", "7.2.79",
+            "6.1.87", "6.1.66"
+        ]
+    );
+}
+
+#[test]
+fn labheya_trace_is_exactly_the_ito_t_path() {
+    // laB vidhiliṅ uttama eka: iw → i (1.3.9) → a (3.4.106) → sIya
+    // (3.4.102) → Iya (7.2.79) → laBe+ya (6.1.87); the y SURVIVES 6.1.66
+    // (a is a vowel, not val).
+    assert_eq!(
+        trace_for("laBeya"),
+        vec![
+            "1.3.12", "3.4.78", "1.3.9", "1.2.4", "3.4.106", "3.4.102", "3.1.68", "1.3.9",
+            "7.2.79", "6.1.87"
         ]
     );
 }

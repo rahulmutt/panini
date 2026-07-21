@@ -1,6 +1,6 @@
 #![forbid(unsafe_code)]
 use clap::{Parser, Subcommand, ValueEnum};
-use panini::{Panini, Verdict, lakara_name, render};
+use panini::{Panini, Verdict, lakara_name, pada_name, render};
 use panini_lipi::Scheme;
 
 #[derive(Parser)]
@@ -95,6 +95,7 @@ fn main() {
                     "analyses": result.analyses.iter().map(|a| serde_json::json!({
                         "dhatu": a.dhatu,
                         "lakara": lakara_name(a.lakara),
+                        "pada": pada_name(a.pada),
                         "form": render(&a.form_slp1, scheme),
                         "trace": a.trace.iter().map(|s| serde_json::json!({"sutra": s.sutra, "name": s.name, "after": s.after})).collect::<Vec<_>>(),
                     })).collect::<Vec<_>>(),

@@ -33,7 +33,7 @@ pub fn candidates(surface_slp1: &str) -> Vec<Candidate> {
                 out.push(Candidate {
                     dhatu: d,
                     lakara,
-                    pada: Pada::Parasmaipada,
+                    pada: d.pada,
                     purusha,
                     vacana,
                 });

@@ -11,6 +11,12 @@ pub enum Tag {
     Ardhadhatuka,
     It,
     Abhyasa,
+    /// The dhatu takes atmanepada (the data-layer stand-in for the anudatta
+    /// it-marker that 1.3.12 reads; see the spec's pada-sanction section).
+    Atmanepadin,
+    /// The term behaves as Nit (set by the atidesha 1.2.4 sarvadhatukam apit;
+    /// consumed by 7.2.81 Ato NitaH).
+    Ngit,
 }
 
 #[derive(Debug, Clone)]

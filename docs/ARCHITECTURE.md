@@ -6,11 +6,13 @@ Data flow for `check`:
 
 ## Crates
 - `panini-lipi` — SLP1 ⇄ IAST/HK/Devanāgarī + scheme detection. No grammar.
-- `panini-data` — curated roots, tiṅ table, enums. No I/O beyond embedded data.
+- `panini-data` — curated roots (each tagged with its pada), tiṅ table, enums.
+  No I/O beyond embedded data.
 - `panini-prakriya` — the engine: `Term`/`Prakriya`/`Context` model, it-samjna,
   and `TINANTA_RULES`, the ordered rule list that `tinanta::derive` runs via
   `run_pipeline`. Pure SLP1, no I/O.
-- `panini-analyze` — proposes candidate `(root, puruṣa, vacana)` inputs.
+- `panini-analyze` — proposes candidate `(root, lakāra, pada, puruṣa, vacana)`
+  inputs, with the pada taken from the root's tag.
 - `panini` — facade: `Panini::check` / `Panini::derive`, `Verdict`, `Analysis`.
 - `panini-cli` — the `panini` binary (`check` subcommand; `--trace`, `--json`,
   `--out`, validity exit codes).

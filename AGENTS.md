@@ -24,7 +24,8 @@
   target under `crates/panini-lipi/fuzz` legitimately omits it, since it uses
   `#![no_main]` plus the libfuzzer harness macro).
 - Grammar changes are gated by the golden paradigm test
-  (`crates/panini/tests/paradigm.rs`, 216 forms across laṭ/laṅ/loṭ/vidhiliṅ)
+  (`crates/panini/tests/paradigm.rs`, 432 forms across
+  laṭ/laṅ/loṭ/vidhiliṅ × parasmaipada/ātmanepada)
   and by the ordered-trace test (`crates/panini/tests/trace.rs`), which pins
   rule order. Surface forms and trace order there are the source of truth;
   sūtra ids/names in traces must match the cited reference (ashtadhyayi.com).

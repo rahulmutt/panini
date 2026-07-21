@@ -13,6 +13,7 @@ pub enum Verdict {
 pub struct Analysis {
     pub dhatu: String,
     pub lakara: Lakara,
+    pub pada: Pada,
     pub purusha: Purusha,
     pub vacana: Vacana,
     pub form_slp1: String,
@@ -42,6 +43,7 @@ impl Panini {
                 analyses.push(Analysis {
                     dhatu: c.dhatu.code.to_string(),
                     lakara: c.lakara,
+                    pada: c.pada,
                     purusha: c.purusha,
                     vacana: c.vacana,
                     form_slp1: p.text(),
@@ -92,6 +94,14 @@ pub fn lakara_name(lakara: Lakara) -> &'static str {
         Lakara::Lan => "laN",
         Lakara::Lot => "loT",
         Lakara::VidhiLin => "viDiliN",
+    }
+}
+
+/// SLP1 name of a pada, for display in traces and CLI output.
+pub fn pada_name(pada: Pada) -> &'static str {
+    match pada {
+        Pada::Parasmaipada => "parasmEpadam",
+        Pada::Atmanepada => "Atmanepadam",
     }
 }
 
@@ -146,5 +156,15 @@ mod tests {
         let a = r.analyses.iter().find(|a| a.form_slp1 == "Bavet").unwrap();
         assert_eq!(a.dhatu, "BU");
         assert!(matches!(a.lakara, Lakara::VidhiLin));
+    }
+
+    #[test]
+    fn analysis_reports_its_pada() {
+        let engine = Panini::new();
+        let r = engine.check("Bavati");
+        let a = r.analyses.iter().find(|a| a.form_slp1 == "Bavati").unwrap();
+        assert!(matches!(a.pada, Pada::Parasmaipada));
+        assert_eq!(pada_name(a.pada), "parasmEpadam");
+        assert_eq!(pada_name(Pada::Atmanepada), "Atmanepadam");
     }
 }

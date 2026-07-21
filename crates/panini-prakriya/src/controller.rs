@@ -7,6 +7,9 @@ pub use crate::rule::{Rule as _Rule, RuleKind};
 /// returning false when inapplicable. Ordering is the controller's concern.
 pub fn run_pipeline(p: &mut Prakriya, rules: &[Rule]) {
     for rule in rules {
+        if p.blocked {
+            return;
+        }
         (rule.apply)(p);
     }
 }
