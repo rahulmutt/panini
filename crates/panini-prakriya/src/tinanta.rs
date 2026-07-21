@@ -149,6 +149,35 @@ pub static TINANTA_RULES: &[Rule] = &[
             p.terms[ENDING_PRE_SHAP].text != original
         },
     },
+    // 1.2.4 sārvadhātukam apit: an apit sārvadhātuka behaves as ṅit. An
+    // atideśa (the 3.4.85 precedent): a rule that appears in the trace and
+    // sets a term-level tag — distinct from ctx.is_ngit_like, which says the
+    // *lakāra* is ṅit and drives 3.4.99/100/101.
+    //
+    // Guard notes (see the spec's 1.2.4 section):
+    // - Ātmanepada only in this slice: parasmaipada apit endings (tas, Ji…)
+    //   are equally ṅid-vat in principle, but no implemented rule consumes
+    //   that fact, and firing here would add a step to the pinned
+    //   parasmaipada traces. Widening later is additive, not a fix.
+    // - Loṭ uttama is a genuine exclusion, not trace-minimalism: 3.4.92's
+    //   own "pic ca" makes those endings pit, hence not apit — which is what
+    //   keeps 7.2.81 off the āṭ-āgama (AvahE goes to 6.1.101 instead).
+    Rule {
+        id: "1.2.4",
+        name: "sArvaDAtukam apit",
+        kind: RuleKind::Atidesha,
+        apply: |p| {
+            if !matches!(p.ctx.pada, Pada::Atmanepada)
+                || (matches!(p.ctx.lakara, Lakara::Lot) && matches!(p.ctx.purusha, Purusha::Uttama))
+            {
+                return false;
+            }
+            let before = p.snapshot();
+            p.terms[ENDING_PRE_SHAP].add(Tag::Ngit);
+            p.record("1.2.4", "sArvaDAtukam apit", before);
+            true
+        },
+    },
     // 3.4.85 loṭo laṅvat: loṭ behaves as laṅ, so the ṅit-conditioned rules
     // (3.4.99, 3.4.101) apply to it. An atideśa, so it is a rule and appears
     // in the trace rather than being folded into Context::new.
@@ -1276,6 +1305,49 @@ mod tests {
             let rule = TINANTA_RULES.iter().find(|r| r.id == id).unwrap();
             assert!(!(rule.apply)(&mut p), "{id} must not fire for atmanepada");
             assert_eq!(p.terms[ENDING_PRE_SHAP].text, ending);
+        }
+    }
+
+    #[test]
+    fn sarvadhatukam_apit_tags_atmanepada_endings_ngit() {
+        let mut p = Prakriya {
+            terms: vec![Term::new("laB"), Term::new("ta")],
+            log: vec![],
+            ctx: Context::new(
+                Lakara::Lat,
+                Pada::Atmanepada,
+                Purusha::Prathama,
+                Vacana::Eka,
+            ),
+            blocked: false,
+        };
+        let rule = TINANTA_RULES.iter().find(|r| r.id == "1.2.4").unwrap();
+        assert!((rule.apply)(&mut p));
+        assert!(p.terms[ENDING_PRE_SHAP].has(Tag::Ngit));
+        assert!(p.log.iter().any(|s| s.sutra == "1.2.4"));
+    }
+
+    #[test]
+    fn sarvadhatukam_apit_skips_parasmaipada_and_lot_uttama() {
+        // Parasmaipada apit endings are Nid-vat in principle too, but no
+        // implemented rule consumes the fact and firing here would perturb
+        // the 216 pinned parasmaipada traces (see the spec). Lot uttama is a
+        // GENUINE exclusion: 3.4.92's own "pic ca" makes those endings pit,
+        // hence not apit — which is what keeps 7.2.81 off the AT-agama.
+        let cases = [
+            ("ti", Lakara::Lat, Pada::Parasmaipada, Purusha::Prathama),
+            ("iw", Lakara::Lot, Pada::Atmanepada, Purusha::Uttama),
+        ];
+        for (ending, lakara, pada, purusha) in cases {
+            let mut p = Prakriya {
+                terms: vec![Term::new("laB"), Term::new(ending)],
+                log: vec![],
+                ctx: Context::new(lakara, pada, purusha, Vacana::Eka),
+                blocked: false,
+            };
+            let rule = TINANTA_RULES.iter().find(|r| r.id == "1.2.4").unwrap();
+            assert!(!(rule.apply)(&mut p), "{ending} {lakara:?} {pada:?}");
+            assert!(!p.terms[ENDING_PRE_SHAP].has(Tag::Ngit));
         }
     }
 }
