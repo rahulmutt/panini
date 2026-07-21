@@ -17,6 +17,17 @@ fn guna_of(v: char) -> Option<&'static str> {
     }
 }
 
+/// Vṛddhi substitute of a vowel (1.1.1 vṛddhir ādaic; only the arms the
+/// curated roots exercise via 6.1.90 — e/I from eD/Ikz, E from loṭ's 3.4.93).
+fn vrddhi_of(v: char) -> Option<char> {
+    match v {
+        'a' | 'A' => Some('A'),
+        'i' | 'I' | 'e' | 'E' => Some('E'),
+        'u' | 'U' | 'o' | 'O' => Some('O'),
+        _ => None,
+    }
+}
+
 fn is_vowel(c: char) -> bool {
     matches!(
         c,
@@ -421,14 +432,86 @@ pub static TINANTA_RULES: &[Rule] = &[
             true
         },
     },
+    // 3.4.91 savābhyāṃ vāmau: loṭ's e → va after s, → am after v.
+    // se → sva, Dve → Dvam. Apavāda to 3.4.90 ām etaḥ, hence ordered
+    // before it (reversed: se → sAm, Dve → DvAm).
+    Rule {
+        id: "3.4.91",
+        name: "savAByAM vAmO",
+        kind: RuleKind::Vidhi,
+        apply: |p| {
+            if !matches!(p.ctx.lakara, Lakara::Lot) {
+                return false;
+            }
+            let sub = match p.terms[ENDING_PRE_SHAP].text.as_str() {
+                "se" => "sva",
+                "Dve" => "Dvam",
+                _ => return false,
+            };
+            let before = p.snapshot();
+            p.terms[ENDING_PRE_SHAP].text = sub.into();
+            p.record("3.4.91", "savAByAM vAmO", before);
+            true
+        },
+    },
+    // 3.4.93 eta ai: loṭ's uttama e → E. Apavāda to 3.4.90 (ordered before
+    // it); afterwards the uttama endings are E-final, which 3.4.90's short-e
+    // guard ignores — no explicit uttama exclusion needed there.
+    Rule {
+        id: "3.4.93",
+        name: "eta E",
+        kind: RuleKind::Vidhi,
+        apply: |p| {
+            if !matches!(p.ctx.lakara, Lakara::Lot)
+                || !matches!(p.ctx.purusha, Purusha::Uttama)
+                || !matches!(p.ctx.pada, Pada::Atmanepada)
+                || !p.terms[ENDING_PRE_SHAP].text.ends_with('e')
+            {
+                return false;
+            }
+            let before = p.snapshot();
+            let mut s: Vec<char> = p.terms[ENDING_PRE_SHAP].text.chars().collect();
+            s.pop();
+            s.push('E');
+            p.terms[ENDING_PRE_SHAP].text = s.into_iter().collect();
+            p.record("3.4.93", "eta E", before);
+            true
+        },
+    },
+    // 3.4.90 ām etaḥ: loṭ's ending-final e → Am. te→tAm, Ate→AtAm, Je→JAm,
+    // ATe→ATAm. The A-initial results are then reshaped post-śap by 7.2.81
+    // (ṅid-vat) exactly like their laṭ counterparts — the net laṭ/loṭ
+    // difference in those cells is this rule alone.
+    Rule {
+        id: "3.4.90",
+        name: "Am etaH",
+        kind: RuleKind::Vidhi,
+        apply: |p| {
+            if !matches!(p.ctx.lakara, Lakara::Lot)
+                || !matches!(p.ctx.pada, Pada::Atmanepada)
+                || !p.terms[ENDING_PRE_SHAP].text.ends_with('e')
+            {
+                return false;
+            }
+            let before = p.snapshot();
+            let mut s: Vec<char> = p.terms[ENDING_PRE_SHAP].text.chars().collect();
+            s.pop();
+            p.terms[ENDING_PRE_SHAP].text = s.into_iter().collect::<String>() + "Am";
+            p.record("3.4.90", "Am etaH", before);
+            true
+        },
+    },
     // 3.4.92 āḍ uttamasya pic ca: the āṭ-āgama is prefixed to loṭ's uttama
-    // endings. ni → Ani, va → Ava, ma → Ama.
+    // endings. ni → Ani, va → Ava, ma → Ama. E/vahE/mahE (the ātmanepada
+    // shapes 3.4.93 leaves) also take it: E → AE, vahE → AvahE, mahE → AmahE.
     //
-    // Guarded to exactly `ni`/`va`/`ma` rather than "any uttama ending in
-    // loṭ": those forms only exist because 3.4.89 mer niḥ and 3.4.99 nityaṃ
-    // ṅitaḥ have already normalized mi→ni and vas/mas→va/ma. The explicit set
-    // makes the preemption independent of ordering accidents — MUST follow
-    // 3.4.89 and 3.4.99, but the guard no longer silently depends on it.
+    // Guarded to exactly `ni`/`va`/`ma`/`E`/`vahE`/`mahE` rather than "any
+    // uttama ending in loṭ": those forms only exist because 3.4.89 mer niḥ,
+    // 3.4.99 nityaṃ ṅitaḥ, and 3.4.93 eta ai have already normalized
+    // mi→ni, vas/mas→va/ma, and the ātmanepada e→E. The explicit set makes
+    // the preemption independent of ordering accidents — MUST follow
+    // 3.4.89, 3.4.99, and 3.4.93, but the guard no longer silently depends
+    // on it.
     Rule {
         id: "3.4.92",
         name: "Aq uttamasya pic ca",
@@ -436,7 +519,10 @@ pub static TINANTA_RULES: &[Rule] = &[
         apply: |p| {
             if !matches!(p.ctx.lakara, Lakara::Lot)
                 || !matches!(p.ctx.purusha, Purusha::Uttama)
-                || !matches!(p.terms[ENDING_PRE_SHAP].text.as_str(), "ni" | "va" | "ma")
+                || !matches!(
+                    p.terms[ENDING_PRE_SHAP].text.as_str(),
+                    "ni" | "va" | "ma" | "E" | "vahE" | "mahE"
+                )
             {
                 return false;
             }
@@ -720,6 +806,49 @@ pub static TINANTA_RULES: &[Rule] = &[
             p.terms[ENDING].text = p.terms[ENDING].text.chars().skip(1).collect();
             p.record("6.1.101", "akaH savarRe dIrGaH", before);
             true
+        },
+    },
+    // 6.1.90 āṭaś ca: āṭ + a following vowel yield a single vṛddhi. Two
+    // shapes, one sūtra:
+    // - Aṅga arm (laṅ, Task 8): 6.4.72's āṭ + the root's initial vowel.
+    //   AeD → ED, AIkz → Ekz.
+    // - Ending arm (loṭ uttama eka, ātmanepada): after 6.1.101 has coalesced
+    //   śap a + āṭ A into śap A, that A + the ending's E merge to E
+    //   (laB+A+E → laBE). MUST follow 6.1.101 — before it the shape is
+    //   a + AE and this arm cannot see it.
+    Rule {
+        id: "6.1.90",
+        name: "AwaS ca",
+        kind: RuleKind::Vidhi,
+        apply: |p| {
+            // Aṅga arm: āṭ prefix on a vowel-initial aṅga.
+            let anga: Vec<char> = p.terms[ANGA].text.chars().collect();
+            if anga.len() >= 2
+                && anga[0] == 'A'
+                && is_vowel(anga[1])
+                && let Some(v) = vrddhi_of(anga[1])
+            {
+                let before = p.snapshot();
+                let mut s = String::new();
+                s.push(v);
+                s.extend(&anga[2..]);
+                p.terms[ANGA].text = s;
+                p.record("6.1.90", "AwaS ca", before);
+                return true;
+            }
+            // Ending arm: śap A (āṭ via 6.1.101) + ending-initial ec.
+            if p.terms.len() > ENDING
+                && p.terms[SHAP].text == "A"
+                && let Some(first) = p.terms[ENDING].text.chars().next()
+                && matches!(first, 'e' | 'E' | 'o' | 'O')
+            {
+                let before = p.snapshot();
+                p.terms[SHAP].text = vrddhi_of(first).unwrap().to_string();
+                p.terms[ENDING].text = p.terms[ENDING].text.chars().skip(1).collect();
+                p.record("6.1.90", "AwaS ca", before);
+                return true;
+            }
+            false
         },
     },
     // 6.1.97 ato guṇe: a short `a` (the śap) followed by a guṇa vowel yields
@@ -1496,6 +1625,46 @@ mod tests {
         for (pu, va, form) in expected {
             assert_eq!(lat_a_form("laB", pu, va), form, "{pu:?} {va:?}");
         }
+    }
+
+    fn lot_a_form(code: &str, pu: Purusha, va: Vacana) -> String {
+        let d = dhatus().iter().find(|d| d.code == code).unwrap();
+        derive(d, Lakara::Lot, Pada::Atmanepada, pu, va).text()
+    }
+
+    #[test]
+    fn labh_lot_atmanepada_all_nine_cells() {
+        let expected = [
+            (Purusha::Prathama, Vacana::Eka, "laBatAm"),
+            (Purusha::Prathama, Vacana::Dvi, "laBetAm"),
+            (Purusha::Prathama, Vacana::Bahu, "laBantAm"),
+            (Purusha::Madhyama, Vacana::Eka, "laBasva"),
+            (Purusha::Madhyama, Vacana::Dvi, "laBeTAm"),
+            (Purusha::Madhyama, Vacana::Bahu, "laBaDvam"),
+            (Purusha::Uttama, Vacana::Eka, "laBE"),
+            (Purusha::Uttama, Vacana::Dvi, "laBAvahE"),
+            (Purusha::Uttama, Vacana::Bahu, "laBAmahE"),
+        ];
+        for (pu, va, form) in expected {
+            assert_eq!(lot_a_form("laB", pu, va), form, "{pu:?} {va:?}");
+        }
+    }
+
+    #[test]
+    fn savabhyam_vamau_preempts_am_etah() {
+        // 3.4.91 (se→sva, Dve→Dvam) is the apavāda ordered before 3.4.90:
+        // reversed, se would become sAm and Dve DvAm.
+        assert_eq!(lot_a_form("laB", Purusha::Madhyama, Vacana::Eka), "laBasva");
+        assert_eq!(
+            lot_a_form("laB", Purusha::Madhyama, Vacana::Bahu),
+            "laBaDvam"
+        );
+    }
+
+    #[test]
+    fn am_etah_is_lot_only() {
+        // laṭ's te/Ate must NOT become tAm/AtAm.
+        assert_eq!(lat_a_form("laB", Purusha::Prathama, Vacana::Eka), "laBate");
     }
 
     #[test]

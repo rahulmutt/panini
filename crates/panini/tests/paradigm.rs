@@ -255,6 +255,61 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
             "IkzAmahe",
         ],
     ),
+    (
+        "eD",
+        "loT",
+        [
+            "eDatAm", "eDetAm", "eDantAm", "eDasva", "eDeTAm", "eDaDvam", "eDE", "eDAvahE",
+            "eDAmahE",
+        ],
+    ),
+    (
+        "laB",
+        "loT",
+        [
+            "laBatAm", "laBetAm", "laBantAm", "laBasva", "laBeTAm", "laBaDvam", "laBE", "laBAvahE",
+            "laBAmahE",
+        ],
+    ),
+    (
+        "sev",
+        "loT",
+        [
+            "sevatAm", "sevetAm", "sevantAm", "sevasva", "seveTAm", "sevaDvam", "sevE", "sevAvahE",
+            "sevAmahE",
+        ],
+    ),
+    (
+        "vft",
+        "loT",
+        [
+            "vartatAm",
+            "vartetAm",
+            "vartantAm",
+            "vartasva",
+            "varteTAm",
+            "vartaDvam",
+            "vartE",
+            "vartAvahE",
+            "vartAmahE",
+        ],
+    ),
+    (
+        "BAz",
+        "loT",
+        [
+            "BAzatAm", "BAzetAm", "BAzantAm", "BAzasva", "BAzeTAm", "BAzaDvam", "BAzE", "BAzAvahE",
+            "BAzAmahE",
+        ],
+    ),
+    (
+        "Ikz",
+        "loT",
+        [
+            "IkzatAm", "IkzetAm", "IkzantAm", "Ikzasva", "IkzeTAm", "IkzaDvam", "IkzE", "IkzAvahE",
+            "IkzAmahE",
+        ],
+    ),
 ];
 
 #[test]

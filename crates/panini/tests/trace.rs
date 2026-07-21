@@ -207,3 +207,29 @@ fn vartate_trace_shows_laghupadha_guna() {
     assert!(trace.contains(&"7.3.86".to_string()), "got {trace:?}");
     assert!(!trace.contains(&"7.3.84".to_string()), "got {trace:?}");
 }
+
+#[test]
+fn labhasva_trace_is_exactly_the_savabhyam_path() {
+    // laB loṭ madhyama eka: TAs → se (3.4.80) → sva (3.4.91); 3.4.79
+    // reports false on `se` (its ṭi is already e) and must not appear.
+    assert_eq!(
+        trace_for("laBasva"),
+        vec![
+            "1.3.12", "3.4.78", "1.2.4", "3.4.85", "3.4.80", "3.4.91", "3.1.68", "1.3.9"
+        ]
+    );
+}
+
+#[test]
+fn labhai_trace_is_exactly_the_at_vrddhi_path() {
+    // laB loṭ uttama eka: iw → i (1.3.9) → e (3.4.79) → E (3.4.93) →
+    // AE (3.4.92); post-śap 6.1.101 (a+A → A) then 6.1.90 (A+E → E).
+    // No 1.2.4: loṭ uttama endings are pit (pic ca), not apit.
+    assert_eq!(
+        trace_for("laBE"),
+        vec![
+            "1.3.12", "3.4.78", "1.3.9", "3.4.85", "3.4.79", "3.4.93", "3.4.92", "3.1.68", "1.3.9",
+            "6.1.101", "6.1.90"
+        ]
+    );
+}
