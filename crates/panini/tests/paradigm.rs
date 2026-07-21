@@ -545,6 +545,12 @@ fn known_nonforms_are_invalid() {
         "eDati",  // vowel-initial atmanepadin root, parasmaipada ending
         "alaBat", // laN parasmaipada shape on an atmanepadin root
         "laB",    // a bare root code is not a surface form
+        // Cross-lakāra atmanepada confusions.
+        "alaBeta", // laN's augment on a vidhilin form
+        "laBatam", // parasmaipada dual ending on an atmanepadin root
+        "laBAte",  // 7.2.81 skipped: A must become iy after the shap
+        "laBesva", // lot's sva on a lat stem (3.4.91 without 3.4.90's lakara)
+        "IkzAmi",  // parasmaipada uttama ending on the vowel-initial A-root
     ] {
         assert!(
             matches!(engine.check(bad).verdict, Verdict::Invalid),
