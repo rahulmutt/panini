@@ -199,9 +199,9 @@ Per AGENTS.md, sūtra ids and names in traces must match ashtadhyayi.com
 sūtras must each be verified for id, SLP1 name, and effect before their trace
 literals are pinned. Draft SLP1 names, to be confirmed verbatim:
 `anudAttaNita Atmanepadam` (1.3.12), `SezAt kartari parasmEpadam` (1.3.78),
-`sArvaDAtukam apit` (1.2.4), `TAsaH se` (3.4.80), `wita AtmanepadAnAM wer e`
+`sArvaDAtukam apit` (1.2.4), `TAsas se` (3.4.80), `wita AtmanepadAnAM wer e`
 (3.4.79), `savAByAM vAmO` (3.4.91), `eta E` (3.4.93), `Am etaH` (3.4.90),
-`Jasya ran` (3.4.105), `iwo 't` (3.4.106), `liNaH sIyuw` (3.4.102),
+`Jasya ran` (3.4.105), `iwo't` (3.4.106), `liNas sIyuw` (3.4.102),
 `Aq ajAdInAm` (6.4.72), `AwaS ca` (6.1.90), `Ato NitaH` (7.2.81),
 `pugantalaGUpaDasya ca` (7.3.86).
 
