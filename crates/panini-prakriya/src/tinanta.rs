@@ -4,7 +4,7 @@ use crate::it_samjna::run_it_samjna;
 use crate::prakriya::Prakriya;
 use crate::rule::{Rule, RuleKind};
 use crate::term::{Tag, Term};
-use panini_data::{Dhatu, Lakara, Pada, Purusha, Vacana, tin_ending};
+use panini_data::{Dhatu, Gana, Lakara, Pada, Purusha, Vacana, tin_ending};
 
 /// Guṇa substitute of an ik vowel (1.1.2 aden guṇaḥ, applied by 7.3.84).
 fn guna_of(v: char) -> Option<&'static str> {
@@ -619,6 +619,53 @@ pub static TINANTA_RULES: &[Rule] = &[
     // `ENDING_PRE_SHAP` (index 1). Every rule BELOW this point addresses the
     // ending as `ENDING` (index 2), and may address śap as `SHAP` (index 1).
     // ============================================================
+    // 3.1.69 divādibhyaḥ śyan: divādi (gaṇa 4) takes śyan, not śap. Apavāda
+    // to the utsarga 3.1.68, ordered before it (as 6.4.72 precedes 6.4.71).
+    // śyan is apit; the second 1.2.4 makes it ṅit and 1.1.5 then blocks guṇa.
+    Rule {
+        id: "3.1.69",
+        name: "divAdiByaH Syan",
+        kind: RuleKind::Vidhi,
+        apply: |p| {
+            if !p.terms[ANGA].has(Tag::Divadi) {
+                return false;
+            }
+            let before = p.snapshot();
+            let mut s = Term::new("Syan");
+            s.add(Tag::Vikarana);
+            s.add(Tag::Sarvadhatuka);
+            p.terms.insert(SHAP, s);
+            p.record("3.1.69", "divAdiByaH Syan", before);
+            let mut s = p.terms[SHAP].clone();
+            run_it_samjna(&mut s, p, SHAP); // 1.3.8 strips S, 1.3.3 strips n → ya
+            p.terms[SHAP] = s;
+            p.terms[ANGA].add(Tag::Anga);
+            true
+        },
+    },
+    // 3.1.77 tudādibhyaḥ śaḥ: tudādi (gaṇa 6) takes śa, not śap. Apavāda to
+    // 3.1.68, same shape as 3.1.69. śa is apit → ṅit (1.2.4) → guṇa blocked.
+    Rule {
+        id: "3.1.77",
+        name: "tudAdiByaH SaH",
+        kind: RuleKind::Vidhi,
+        apply: |p| {
+            if !p.terms[ANGA].has(Tag::Tudadi) {
+                return false;
+            }
+            let before = p.snapshot();
+            let mut s = Term::new("Sa");
+            s.add(Tag::Vikarana);
+            s.add(Tag::Sarvadhatuka);
+            p.terms.insert(SHAP, s);
+            p.record("3.1.77", "tudAdiByaH SaH", before);
+            let mut s = p.terms[SHAP].clone();
+            run_it_samjna(&mut s, p, SHAP); // 1.3.8 strips S → a
+            p.terms[SHAP] = s;
+            p.terms[ANGA].add(Tag::Anga);
+            true
+        },
+    },
     // 3.1.68 kartari śap: insert śap between dhātu and ending, run it-samjña
     // on it (Sap → a), and mark the dhātu an aṅga.
     Rule {
@@ -626,16 +673,49 @@ pub static TINANTA_RULES: &[Rule] = &[
         name: "kartari Sap",
         kind: RuleKind::Vidhi,
         apply: |p| {
+            // Utsarga: fires only when no apavāda vikaraṇa (śyan 3.1.69 / śa
+            // 3.1.77) is already present. Guarding on the vikaraṇa's presence
+            // keeps śap the default without hard-coding a gaṇa, so curādi can
+            // reuse śap later.
+            if p.terms.len() > SHAP && p.terms[SHAP].has(Tag::Vikarana) {
+                return false;
+            }
             let before = p.snapshot();
             let mut s = Term::new("Sap");
             s.add(Tag::Vikarana);
             s.add(Tag::Sarvadhatuka);
+            s.add(Tag::Pit); // p-anubandha: śap is pit, so 1.2.4 leaves it alone
             p.terms.insert(SHAP, s);
             p.record("3.1.68", "kartari Sap", before);
             let mut s = p.terms[SHAP].clone();
             run_it_samjna(&mut s, p, SHAP);
             p.terms[SHAP] = s;
             p.terms[ANGA].add(Tag::Anga);
+            true
+        },
+    },
+    // 1.2.4 sārvadhātukam apit — second application, on the vikaraṇa. The
+    // first application (above the boundary) tags apit ātmanepada endings;
+    // this one tags the apit sārvadhātuka VIKARAṆA ṅit once it exists. śyan
+    // and śa are apit (no p-anubandha); śap carries Tag::Pit (3.1.68) and is
+    // skipped — so bhvādi is untouched. NOT pada-gated: śyan/śa are apit in
+    // parasmaipada derivations too, which is what blocks guṇa in dīvyati /
+    // kupyati / tudati.
+    Rule {
+        id: "1.2.4",
+        name: "sArvaDAtukam apit",
+        kind: RuleKind::Atidesha,
+        apply: |p| {
+            if !(p.terms.len() > SHAP
+                && p.terms[SHAP].has(Tag::Vikarana)
+                && !p.terms[SHAP].has(Tag::Pit)
+                && !p.terms[SHAP].has(Tag::Ngit))
+            {
+                return false;
+            }
+            let before = p.snapshot();
+            p.terms[SHAP].add(Tag::Ngit);
+            p.record("1.2.4", "sArvaDAtukam apit", before);
             true
         },
     },
@@ -733,7 +813,7 @@ pub static TINANTA_RULES: &[Rule] = &[
         kind: RuleKind::Vidhi,
         apply: |p| {
             if !matches!(p.ctx.lakara, Lakara::VidhiLin)
-                || p.terms[SHAP].text != "a"
+                || !p.terms[SHAP].text.ends_with('a')
                 || !p.terms[ENDING].text.starts_with("yA")
             {
                 return false;
@@ -758,7 +838,7 @@ pub static TINANTA_RULES: &[Rule] = &[
         name: "Ato NitaH",
         kind: RuleKind::Vidhi,
         apply: |p| {
-            if p.terms[SHAP].text != "a"
+            if !p.terms[SHAP].text.ends_with('a')
                 || !p.terms[ENDING].has(Tag::Ngit)
                 || !p.terms[ENDING].text.starts_with('A')
             {
@@ -777,6 +857,12 @@ pub static TINANTA_RULES: &[Rule] = &[
         name: "sArvaDAtukArDaDAtukayoH",
         kind: RuleKind::Vidhi,
         apply: |p| {
+            // 1.1.5 kṅiti ca: a following ṅit sārvadhātuka blocks guṇa. The
+            // vikaraṇa at SHAP is ṅit (1.2.4) exactly when apit (śyan, śa);
+            // śap is pit and is not, so bhvādi guṇa is unaffected.
+            if p.terms.len() > SHAP && p.terms[SHAP].has(Tag::Ngit) {
+                return false;
+            }
             let last = p.terms[ANGA].text.chars().last().unwrap();
             let Some(g) = guna_of(last) else {
                 return false;
@@ -798,6 +884,12 @@ pub static TINANTA_RULES: &[Rule] = &[
         name: "pugantalaGUpaDasya ca",
         kind: RuleKind::Vidhi,
         apply: |p| {
+            // 1.1.5 kṅiti ca: a following ṅit sārvadhātuka blocks guṇa. The
+            // vikaraṇa at SHAP is ṅit (1.2.4) exactly when apit (śyan, śa);
+            // śap is pit and is not, so bhvādi guṇa is unaffected.
+            if p.terms.len() > SHAP && p.terms[SHAP].has(Tag::Ngit) {
+                return false;
+            }
             let chars: Vec<char> = p.terms[ANGA].text.chars().collect();
             let n = chars.len();
             if n < 2 || is_vowel(chars[n - 1]) {
@@ -858,11 +950,16 @@ pub static TINANTA_RULES: &[Rule] = &[
                 return false;
             }
             let ending_first = p.terms[ENDING].text.chars().next().unwrap();
-            if !matches!(ending_first, 'm' | 'v') || p.terms[SHAP].text != "a" {
+            // Ends in `a`, not equal to `a`: śyan's residue is `ya`, not `a`
+            // (see 6.1.97's comment for why only the final vowel matters).
+            if !matches!(ending_first, 'm' | 'v') || !p.terms[SHAP].text.ends_with('a') {
                 return false;
             }
             let before = p.snapshot();
-            p.terms[SHAP].text = "A".into();
+            let mut s: Vec<char> = p.terms[SHAP].text.chars().collect();
+            s.pop();
+            s.push('A');
+            p.terms[SHAP].text = s.into_iter().collect();
             p.record("7.3.101", "ato dIrGo yaYi", before);
             true
         },
@@ -874,11 +971,14 @@ pub static TINANTA_RULES: &[Rule] = &[
         name: "akaH savarRe dIrGaH",
         kind: RuleKind::Vidhi,
         apply: |p| {
-            if p.terms[SHAP].text != "a" || !p.terms[ENDING].text.starts_with('A') {
+            if !p.terms[SHAP].text.ends_with('a') || !p.terms[ENDING].text.starts_with('A') {
                 return false;
             }
             let before = p.snapshot();
-            p.terms[SHAP].text = "A".into();
+            let mut s: Vec<char> = p.terms[SHAP].text.chars().collect();
+            s.pop();
+            s.push('A');
+            p.terms[SHAP].text = s.into_iter().collect();
             p.terms[ENDING].text = p.terms[ENDING].text.chars().skip(1).collect();
             p.record("6.1.101", "akaH savarRe dIrGaH", before);
             true
@@ -912,14 +1012,19 @@ pub static TINANTA_RULES: &[Rule] = &[
                 p.record("6.1.90", "AwaS ca", before);
                 return true;
             }
-            // Ending arm: śap A (āṭ via 6.1.101) + ending-initial ec.
+            // Ending arm: śap/śyan A-final (āṭ via 6.1.101) + ending-initial
+            // ec. Ends in `A`, not equal to `A`, so śyan's `yA` (after
+            // 6.1.101 widened the same way) keeps its `y`.
             if p.terms.len() > ENDING
-                && p.terms[SHAP].text == "A"
+                && p.terms[SHAP].text.ends_with('A')
                 && let Some(first) = p.terms[ENDING].text.chars().next()
                 && matches!(first, 'e' | 'E' | 'o' | 'O')
             {
                 let before = p.snapshot();
-                p.terms[SHAP].text = vrddhi_of(first).unwrap().to_string();
+                let mut s: Vec<char> = p.terms[SHAP].text.chars().collect();
+                s.pop();
+                s.push(vrddhi_of(first).unwrap());
+                p.terms[SHAP].text = s.into_iter().collect();
                 p.terms[ENDING].text = p.terms[ENDING].text.chars().skip(1).collect();
                 p.record("6.1.90", "AwaS ca", before);
                 return true;
@@ -946,14 +1051,19 @@ pub static TINANTA_RULES: &[Rule] = &[
             let Some(first) = p.terms[ENDING].text.chars().next() else {
                 return false;
             };
-            if p.terms[SHAP].text != "a" || !matches!(first, 'a' | 'e' | 'o') {
+            if !p.terms[SHAP].text.ends_with('a') || !matches!(first, 'a' | 'e' | 'o') {
                 return false;
             }
             let before = p.snapshot();
             // Para-rūpa: the single substitute is the FOLLOWING vowel. For
             // a+a the śap already spells it; for a+e (laṭ Ā uttama-eka
-            // laB+a+e → laBe) the śap must become that vowel.
-            p.terms[SHAP].text = first.to_string();
+            // laB+a+e → laBe) the śap must become that vowel. Only the
+            // final vowel is replaced — śyan's `ya` keeps its `y` (so
+            // divya+anti → divyanti, not divy+anti).
+            let mut s: Vec<char> = p.terms[SHAP].text.chars().collect();
+            s.pop();
+            s.push(first);
+            p.terms[SHAP].text = s.into_iter().collect();
             p.terms[ENDING].text = p.terms[ENDING].text.chars().skip(1).collect();
             p.record("6.1.97", "ato guRe", before);
             true
@@ -973,11 +1083,14 @@ pub static TINANTA_RULES: &[Rule] = &[
         kind: RuleKind::Vidhi,
         apply: |p| {
             let first = p.terms[ENDING].text.chars().next();
-            if p.terms[SHAP].text != "a" || !matches!(first, Some('i') | Some('I')) {
+            if !p.terms[SHAP].text.ends_with('a') || !matches!(first, Some('i') | Some('I')) {
                 return false;
             }
             let before = p.snapshot();
-            p.terms[SHAP].text = "e".into();
+            let mut s: Vec<char> = p.terms[SHAP].text.chars().collect();
+            s.pop();
+            s.push('e');
+            p.terms[SHAP].text = s.into_iter().collect();
             p.terms[ENDING].text = p.terms[ENDING].text.chars().skip(1).collect();
             p.record("6.1.87", "Ad guRaH", before);
             true
@@ -1016,12 +1129,49 @@ pub static TINANTA_RULES: &[Rule] = &[
         name: "ato heH",
         kind: RuleKind::Vidhi,
         apply: |p| {
-            if p.terms[SHAP].text != "a" || p.terms[ENDING].text != "hi" {
+            if !p.terms[SHAP].text.ends_with('a') || p.terms[ENDING].text != "hi" {
                 return false;
             }
             let before = p.snapshot();
             p.terms[ENDING].text = String::new();
             p.record("6.4.105", "ato heH", before);
+            true
+        },
+    },
+    // 8.2.77 hali ca: a root ending in `r`/`v` with a short ik upadhā
+    // lengthens that upadhā before a hal (8.2.76 rvorupadhāyā dīrghaḥ is the
+    // anuvṛtti source). The only curated root reaching this is div, after
+    // guṇa is blocked: div + śyan (y-initial) → dīv → dīvyati. Self-guards on
+    // shape; no other curated root fires it (sev has an e-upadhā, vart ends
+    // in t).
+    Rule {
+        id: "8.2.77",
+        name: "hali ca",
+        kind: RuleKind::Vidhi,
+        apply: |p| {
+            let chars: Vec<char> = p.terms[ANGA].text.chars().collect();
+            let n = chars.len();
+            if n < 2 {
+                return false;
+            }
+            let final_c = chars[n - 1];
+            let upadha = chars[n - 2];
+            if !matches!(final_c, 'r' | 'v') || !matches!(upadha, 'i' | 'u') {
+                return false;
+            }
+            let Some(next) = p.terms.get(SHAP).and_then(|t| t.text.chars().next()) else {
+                return false;
+            };
+            if is_vowel(next) {
+                return false;
+            }
+            let before = p.snapshot();
+            let long = if upadha == 'i' { 'I' } else { 'U' };
+            let mut s: String = chars[..n - 2].iter().collect();
+            s.push(long);
+            s.push(final_c);
+            p.terms[ANGA].text = s;
+            p.record("8.2.77", "hali ca", before);
             true
         },
     },
@@ -1087,6 +1237,11 @@ pub fn derive(
         if matches!(dhatu.pada, Pada::Atmanepada) {
             t.add(Tag::Atmanepadin);
         }
+        match dhatu.gana {
+            Gana::Divadi => t.add(Tag::Divadi),
+            Gana::Tudadi => t.add(Tag::Tudadi),
+            Gana::Bhvadi => {}
+        }
         t
     });
     run_pipeline(&mut p, TINANTA_RULES);
@@ -1101,6 +1256,125 @@ mod tests {
     fn form(code: &str, pu: Purusha, va: Vacana) -> String {
         let d = dhatus().iter().find(|d| d.code == code).unwrap();
         derive(d, Lakara::Lat, Pada::Parasmaipada, pu, va).text()
+    }
+
+    fn form_g(code: &str, la: Lakara, pu: Purusha, va: Vacana) -> String {
+        let d = dhatus().iter().find(|d| d.code == code).unwrap();
+        derive(d, la, d.pada, pu, va).text()
+    }
+
+    #[test]
+    fn divadi_tudadi_present_third_singular() {
+        // Guṇa blocked by 1.1.5 (śyan/śa are ṅit): kup→kupyati NOT kopyati,
+        // tud→tudati NOT todati, juṣ→juṣate NOT joṣate.
+        assert_eq!(
+            form_g("naS", Lakara::Lat, Purusha::Prathama, Vacana::Eka),
+            "naSyati"
+        );
+        assert_eq!(
+            form_g("kup", Lakara::Lat, Purusha::Prathama, Vacana::Eka),
+            "kupyati"
+        );
+        assert_eq!(
+            form_g("man", Lakara::Lat, Purusha::Prathama, Vacana::Eka),
+            "manyate"
+        );
+        assert_eq!(
+            form_g("yuD", Lakara::Lat, Purusha::Prathama, Vacana::Eka),
+            "yuDyate"
+        );
+        assert_eq!(
+            form_g("vid", Lakara::Lat, Purusha::Prathama, Vacana::Eka),
+            "vidyate"
+        );
+        assert_eq!(
+            form_g("tud", Lakara::Lat, Purusha::Prathama, Vacana::Eka),
+            "tudati"
+        );
+        assert_eq!(
+            form_g("liK", Lakara::Lat, Purusha::Prathama, Vacana::Eka),
+            "liKati"
+        );
+        assert_eq!(
+            form_g("viS", Lakara::Lat, Purusha::Prathama, Vacana::Eka),
+            "viSati"
+        );
+        assert_eq!(
+            form_g("juz", Lakara::Lat, Purusha::Prathama, Vacana::Eka),
+            "juzate"
+        );
+        assert_eq!(
+            form_g("vij", Lakara::Lat, Purusha::Prathama, Vacana::Eka),
+            "vijate"
+        );
+        assert_eq!(
+            form_g("gur", Lakara::Lat, Purusha::Prathama, Vacana::Eka),
+            "gurate"
+        );
+    }
+
+    #[test]
+    fn divadi_tudadi_vowel_sandhi_cells() {
+        // 3rd-singular alone never exercises the SHAP-final-vowel sandhi
+        // rules (6.1.97/6.1.101/6.1.90/6.1.87/7.3.101): its `ti` ending is
+        // consonant-initial. These cells pin the fix that generalized those
+        // rules from "SHAP.text == a single a" to "SHAP.text ends in a" so
+        // śyan's two-character `ya` residue (not just śa's/śap's `a`)
+        // coalesces correctly with a following vowel.
+        //
+        // 3rd plural (6.1.97 para-rūpa: śyan/śa `a` + Ji→`anti`'s `a` → `a`,
+        // not `aa`). naS/tud/juz avoid √div, whose 8.2.77 lengthening is
+        // Task 5's job — its short-vowel `divyanti` is already correct here.
+        assert_eq!(
+            form_g("naS", Lakara::Lat, Purusha::Prathama, Vacana::Bahu),
+            "naSyanti"
+        );
+        assert_eq!(
+            form_g("tud", Lakara::Lat, Purusha::Prathama, Vacana::Bahu),
+            "tudanti"
+        );
+        assert_eq!(
+            form_g("juz", Lakara::Lat, Purusha::Prathama, Vacana::Bahu),
+            "juzante"
+        );
+        // 1st singular (7.3.101 ato dIrgho yaYi: śyan/śa `a` + `mi` → `Ami`).
+        assert_eq!(
+            form_g("tud", Lakara::Lat, Purusha::Uttama, Vacana::Eka),
+            "tudAmi"
+        );
+        // Ātmanepada uttama-eka (6.1.97 a+e para-rūpa: śyan `ya` + `e` → `ye`).
+        assert_eq!(
+            form_g("man", Lakara::Lat, Purusha::Uttama, Vacana::Eka),
+            "manye"
+        );
+        // 7.2.81 Ato NitaH: ātmanepada dual Ate→iyte, then coalesced.
+        assert_eq!(
+            form_g("man", Lakara::Lat, Purusha::Prathama, Vacana::Dvi),
+            "manyete"
+        );
+        // 7.2.80 ato yeyaH: vidhiliṅ yA→iy after śyan's `ya`.
+        assert_eq!(
+            form_g("kup", Lakara::VidhiLin, Purusha::Prathama, Vacana::Eka),
+            "kupyet"
+        );
+        // 6.4.105 ato heH: imperative hi-elision after śyan's `ya`.
+        assert_eq!(
+            form_g("naS", Lakara::Lot, Purusha::Madhyama, Vacana::Eka),
+            "naSya"
+        );
+    }
+
+    #[test]
+    fn div_lengthens_before_syan() {
+        assert_eq!(
+            form_g("div", Lakara::Lat, Purusha::Prathama, Vacana::Eka),
+            "dIvyati"
+        );
+        // laṅ: augment does not disturb the upadhā i.
+        assert_eq!(
+            form_g("div", Lakara::Lan, Purusha::Prathama, Vacana::Eka),
+            "adIvyat"
+        );
     }
 
     #[test]
@@ -1122,6 +1396,25 @@ mod tests {
     #[test]
     fn bhu_3pl_is_bhavanti() {
         assert_eq!(form("BU", Purusha::Prathama, Vacana::Bahu), "Bavanti");
+    }
+    #[test]
+    fn shap_is_pit_and_bhvadi_guna_survives() {
+        // Regression guard for Task 3: adding the guṇa-block mechanism must
+        // not disturb bhvādi. śap is pit, so 7.3.84 still fires for BU.
+        assert_eq!(form("BU", Purusha::Prathama, Vacana::Eka), "Bavati");
+        let d = dhatus().iter().find(|d| d.code == "vft").unwrap();
+        // vṛt uses 7.3.86 (laghūpadhā guṇa) before śap (pit) → vartate.
+        assert_eq!(
+            derive(
+                d,
+                Lakara::Lat,
+                Pada::Atmanepada,
+                Purusha::Prathama,
+                Vacana::Eka
+            )
+            .text(),
+            "vartate"
+        );
     }
     #[test]
     fn guna_of_ik_vowels_all_arms() {
@@ -1974,6 +2267,29 @@ mod tests {
     }
 
     #[test]
+    fn pugantalaghupadhasya_single_term_still_applies_guna() {
+        // 7.3.86 has its own 1.1.5 (Girit) guard, `p.terms.len() > SHAP &&
+        // p.terms[SHAP].has(Tag::Girit)`, mirroring 7.3.84's. Unlike
+        // 7.3.84 (unreachable for divAdi/tudAdi, whose aGgas are all
+        // consonant-final), 7.3.86's Girit-true branch IS reached by the
+        // curated corpus (div, tud, juz, ...), so the `==`/`<` boundary
+        // mutants are already caught there. Only the `>` -> `>=` mutant on
+        // the `len() > SHAP` half survives: with len == 1 (no vikaraNa
+        // term), the original short-circuits (`1 > 1` false) without
+        // indexing terms[SHAP], so guNa proceeds normally: vft -> vart.
+        // The mutant makes `1 >= 1` true, forcing an out-of-bounds index
+        // into terms[SHAP] on a 1-element Vec, which panics.
+        let mut p = Prakriya {
+            terms: vec![Term::new("vft")],
+            log: vec![],
+            ..Default::default()
+        };
+        let rule = TINANTA_RULES.iter().find(|r| r.id == "7.3.86").unwrap();
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "vart");
+    }
+
+    #[test]
     fn awas_ca_ending_arm_requires_a_third_term() {
         // 6.1.90's ending arm reads p.terms[SHAP] and p.terms[ENDING]
         // (index 2) once its guard passes. With only two terms (aGga +
@@ -1994,5 +2310,152 @@ mod tests {
         assert!(!(rule.apply)(&mut p));
         assert_eq!(p.terms[ANGA].text, "kf");
         assert_eq!(p.terms[SHAP].text, "A");
+    }
+
+    // --- 3.1.68 / second 1.2.4: `len() > SHAP` boundary pins --------------
+    //
+    // Both guards read `p.terms.len() > SHAP && p.terms[SHAP]. ...` to
+    // avoid indexing the not-yet-inserted vikaraNa slot. Every real
+    // derivation always has an ending term present (terms.len() >= 2)
+    // before either rule runs, so `> SHAP` (i.e. `> 1`) and `>= SHAP`
+    // never diverge on any golden or negative derivation: len() is never
+    // exactly 1 there. Pin the boundary directly with a single-term
+    // Prakriya (aGga only, no ending) so the two outcomes diverge: the
+    // original short-circuits before indexing terms[SHAP]; the `>` -> `>=`
+    // mutant does not, and panics indexing out of bounds on a 1-element
+    // Vec (an unexpected panic still fails the test).
+    #[test]
+    fn kartari_sap_single_term_anga_does_not_panic() {
+        let mut p = Prakriya {
+            terms: vec![Term::new("kf")],
+            log: vec![],
+            ..Default::default()
+        };
+        let rule = TINANTA_RULES.iter().find(|r| r.id == "3.1.68").unwrap();
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "kf");
+        assert_eq!(p.terms[SHAP].text, "a");
+    }
+
+    #[test]
+    fn sarvadhatukam_apit_second_application_single_term_does_not_panic() {
+        // The SECOND "1.2.4" rule in TINANTA_RULES (the vikaraNa-Girit
+        // application, ordered after 3.1.68) is targeted here, not the
+        // first (ENDING_PRE_SHAP) application above the 3.1.68 boundary.
+        let mut p = Prakriya {
+            terms: vec![Term::new("kf")],
+            log: vec![],
+            ..Default::default()
+        };
+        assert_eq!(
+            TINANTA_RULES.iter().filter(|r| r.id == "1.2.4").count(),
+            2,
+            "expected exactly two 1.2.4 rule entries; nth(1) locator assumes this"
+        );
+        let rule = TINANTA_RULES
+            .iter()
+            .filter(|r| r.id == "1.2.4")
+            .nth(1)
+            .unwrap();
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "kf");
+    }
+
+    // --- 7.3.84 sArvaDAtukArDaDAtukayoH: 1.1.5 (Girit) guard pins ---------
+    //
+    // No curated divAdi/tudAdi root has a vowel-final aGga (they are all
+    // consonant-final: div, naS, kup, man, yuD, vid, tud, liK, viS, juz,
+    // vij, gur all end in a consonant), so 7.3.84's guNa-blocking business
+    // — final-ik aGgas — is only ever reached by bhvAdi roots (BU, nI, ji,
+    // smf), whose vikaraNa (Sap) is never Girit. The `has(Tag::Girit)`
+    // guard's `true` branch is therefore never exercised by any golden or
+    // negative derivation, and boundary mutants on `p.terms.len() > SHAP`
+    // are invisible to the suite. Pin both edges directly.
+    #[test]
+    fn sarvadhatukardhadhatukayoh_blocks_guna_when_vikarana_is_ngit() {
+        // Constructed vowel-final aGga ("nI") + a Girit vikaraNa (as Syan/
+        // Sa would be via the second 1.2.4): guNa must be blocked. The
+        // `>` -> `==` and `>` -> `<` mutants both make `len() > SHAP`
+        // false at len=2, so the guard's early return is skipped and the
+        // mutant wrongly applies guNa ("nI" -> "ne").
+        let mut p = Prakriya {
+            terms: vec![Term::new("nI"), Term::new("ya")],
+            log: vec![],
+            ..Default::default()
+        };
+        p.terms[SHAP].add(Tag::Ngit);
+        let rule = TINANTA_RULES.iter().find(|r| r.id == "7.3.84").unwrap();
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "nI");
+    }
+
+    #[test]
+    fn sarvadhatukardhadhatukayoh_single_term_anga_still_applies_guna() {
+        // len == 1 (no vikaraNa term at all): the original guard
+        // short-circuits (`1 > 1` is false) without indexing terms[SHAP],
+        // so guNa proceeds normally: "nI" -> "ne". The `>` -> `>=` mutant
+        // makes `1 >= 1` true, forcing an out-of-bounds index into
+        // terms[SHAP] on a 1-element Vec, which panics (an unexpected
+        // panic still fails the test).
+        let mut p = Prakriya {
+            terms: vec![Term::new("nI")],
+            log: vec![],
+            ..Default::default()
+        };
+        let rule = TINANTA_RULES.iter().find(|r| r.id == "7.3.84").unwrap();
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "ne");
+    }
+
+    // --- 8.2.77 hali ca: guard-edge pin -----------------------------------
+    //
+    // Every curated root reaching 8.2.77 (only div) has an aGga of length
+    // 3+, so `n < 2` is never observed at the boundary n == 2 by any golden
+    // or negative form: the only 2-char roots in the corpus (nI, ji) fail
+    // the immediately following `r`/`v` shape check regardless of this
+    // guard's outcome, making mutants at this boundary (`<` -> `==`,
+    // `<` -> `<=`) behaviorally invisible to the golden 864 and to
+    // known_nonforms_are_invalid. Pin the boundary directly with a
+    // constructed 2-char aGga that DOES match the rest of the rule's shape
+    // (upadhA `i`/`u`, final `r`/`v`, hal-initial vikaraNa) so the two
+    // outcomes diverge.
+    #[test]
+    fn hali_ca_two_char_anga_still_fires() {
+        // n=2, "iv": upadhA 'i', final 'v' - matches 8.2.77's shape. The
+        // original `n < 2` guard is false (2 < 2 is false), so the rule
+        // proceeds and lengthens: "iv" -> "Iv". The `<` -> `==` mutant
+        // (n == 2 is true here) and the `<` -> `<=` mutant (2 <= 2 is
+        // true) both wrongly take the early-return branch and leave the
+        // aGga untouched.
+        let mut p = Prakriya {
+            terms: vec![Term::new("iv"), Term::new("ta")],
+            log: vec![],
+            ..Default::default()
+        };
+        let rule = TINANTA_RULES.iter().find(|r| r.id == "8.2.77").unwrap();
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "Iv");
+    }
+
+    #[test]
+    fn hali_ca_uses_n_minus_2_not_n_over_2() {
+        // n=5 ("aBiur"): n-2=3 (upadhA 'u') but n/2=2 (chars[2]='i') --
+        // these differ, separating both `-` -> `/` mutants (on the upadhA
+        // index and the prefix slice) from the original at once. By hand:
+        // final_c=chars[4]='r', upadhA=chars[3]='u' (both match the
+        // shape); lengthened upadhA is 'U'; prefix is chars[..3]="aBi";
+        // result = "aBi" + "U" + "r" = "aBiUr". Mutating `chars[n - 2]`
+        // (upadhA) to `chars[n / 2]` would read upadhA as 'i' instead,
+        // giving long 'I' and result "aBiIr". Mutating `chars[..n - 2]`
+        // (the prefix) to `chars[..n / 2]` would prefix with "aB"
+        // instead of "aBi", giving "aBUr". Both diverge from "aBiUr".
+        let mut p = Prakriya {
+            terms: vec![Term::new("aBiur"), Term::new("ta")],
+            log: vec![],
+            ..Default::default()
+        };
+        let rule = TINANTA_RULES.iter().find(|r| r.id == "8.2.77").unwrap();
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "aBiUr");
     }
 }

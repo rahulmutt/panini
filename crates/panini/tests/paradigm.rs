@@ -470,6 +470,537 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
             "Ikzemahi",
         ],
     ),
+    (
+        "div",
+        "laT",
+        [
+            "dIvyati", "dIvyataH", "dIvyanti", "dIvyasi", "dIvyaTaH", "dIvyaTa", "dIvyAmi",
+            "dIvyAvaH", "dIvyAmaH",
+        ],
+    ),
+    (
+        "naS",
+        "laT",
+        [
+            "naSyati", "naSyataH", "naSyanti", "naSyasi", "naSyaTaH", "naSyaTa", "naSyAmi",
+            "naSyAvaH", "naSyAmaH",
+        ],
+    ),
+    (
+        "kup",
+        "laT",
+        [
+            "kupyati", "kupyataH", "kupyanti", "kupyasi", "kupyaTaH", "kupyaTa", "kupyAmi",
+            "kupyAvaH", "kupyAmaH",
+        ],
+    ),
+    (
+        "man",
+        "laT",
+        [
+            "manyate",
+            "manyete",
+            "manyante",
+            "manyase",
+            "manyeTe",
+            "manyaDve",
+            "manye",
+            "manyAvahe",
+            "manyAmahe",
+        ],
+    ),
+    (
+        "yuD",
+        "laT",
+        [
+            "yuDyate",
+            "yuDyete",
+            "yuDyante",
+            "yuDyase",
+            "yuDyeTe",
+            "yuDyaDve",
+            "yuDye",
+            "yuDyAvahe",
+            "yuDyAmahe",
+        ],
+    ),
+    (
+        "vid",
+        "laT",
+        [
+            "vidyate",
+            "vidyete",
+            "vidyante",
+            "vidyase",
+            "vidyeTe",
+            "vidyaDve",
+            "vidye",
+            "vidyAvahe",
+            "vidyAmahe",
+        ],
+    ),
+    (
+        "tud",
+        "laT",
+        [
+            "tudati", "tudataH", "tudanti", "tudasi", "tudaTaH", "tudaTa", "tudAmi", "tudAvaH",
+            "tudAmaH",
+        ],
+    ),
+    (
+        "liK",
+        "laT",
+        [
+            "liKati", "liKataH", "liKanti", "liKasi", "liKaTaH", "liKaTa", "liKAmi", "liKAvaH",
+            "liKAmaH",
+        ],
+    ),
+    (
+        "viS",
+        "laT",
+        [
+            "viSati", "viSataH", "viSanti", "viSasi", "viSaTaH", "viSaTa", "viSAmi", "viSAvaH",
+            "viSAmaH",
+        ],
+    ),
+    (
+        "juz",
+        "laT",
+        [
+            "juzate", "juzete", "juzante", "juzase", "juzeTe", "juzaDve", "juze", "juzAvahe",
+            "juzAmahe",
+        ],
+    ),
+    (
+        "vij",
+        "laT",
+        [
+            "vijate", "vijete", "vijante", "vijase", "vijeTe", "vijaDve", "vije", "vijAvahe",
+            "vijAmahe",
+        ],
+    ),
+    (
+        "gur",
+        "laT",
+        [
+            "gurate", "gurete", "gurante", "gurase", "gureTe", "guraDve", "gure", "gurAvahe",
+            "gurAmahe",
+        ],
+    ),
+    (
+        "div",
+        "laN",
+        [
+            "adIvyat",
+            "adIvyatAm",
+            "adIvyan",
+            "adIvyaH",
+            "adIvyatam",
+            "adIvyata",
+            "adIvyam",
+            "adIvyAva",
+            "adIvyAma",
+        ],
+    ),
+    (
+        "naS",
+        "laN",
+        [
+            "anaSyat",
+            "anaSyatAm",
+            "anaSyan",
+            "anaSyaH",
+            "anaSyatam",
+            "anaSyata",
+            "anaSyam",
+            "anaSyAva",
+            "anaSyAma",
+        ],
+    ),
+    (
+        "kup",
+        "laN",
+        [
+            "akupyat",
+            "akupyatAm",
+            "akupyan",
+            "akupyaH",
+            "akupyatam",
+            "akupyata",
+            "akupyam",
+            "akupyAva",
+            "akupyAma",
+        ],
+    ),
+    (
+        "man",
+        "laN",
+        [
+            "amanyata",
+            "amanyetAm",
+            "amanyanta",
+            "amanyaTAH",
+            "amanyeTAm",
+            "amanyaDvam",
+            "amanye",
+            "amanyAvahi",
+            "amanyAmahi",
+        ],
+    ),
+    (
+        "yuD",
+        "laN",
+        [
+            "ayuDyata",
+            "ayuDyetAm",
+            "ayuDyanta",
+            "ayuDyaTAH",
+            "ayuDyeTAm",
+            "ayuDyaDvam",
+            "ayuDye",
+            "ayuDyAvahi",
+            "ayuDyAmahi",
+        ],
+    ),
+    (
+        "vid",
+        "laN",
+        [
+            "avidyata",
+            "avidyetAm",
+            "avidyanta",
+            "avidyaTAH",
+            "avidyeTAm",
+            "avidyaDvam",
+            "avidye",
+            "avidyAvahi",
+            "avidyAmahi",
+        ],
+    ),
+    (
+        "tud",
+        "laN",
+        [
+            "atudat", "atudatAm", "atudan", "atudaH", "atudatam", "atudata", "atudam", "atudAva",
+            "atudAma",
+        ],
+    ),
+    (
+        "liK",
+        "laN",
+        [
+            "aliKat", "aliKatAm", "aliKan", "aliKaH", "aliKatam", "aliKata", "aliKam", "aliKAva",
+            "aliKAma",
+        ],
+    ),
+    (
+        "viS",
+        "laN",
+        [
+            "aviSat", "aviSatAm", "aviSan", "aviSaH", "aviSatam", "aviSata", "aviSam", "aviSAva",
+            "aviSAma",
+        ],
+    ),
+    (
+        "juz",
+        "laN",
+        [
+            "ajuzata",
+            "ajuzetAm",
+            "ajuzanta",
+            "ajuzaTAH",
+            "ajuzeTAm",
+            "ajuzaDvam",
+            "ajuze",
+            "ajuzAvahi",
+            "ajuzAmahi",
+        ],
+    ),
+    (
+        "vij",
+        "laN",
+        [
+            "avijata",
+            "avijetAm",
+            "avijanta",
+            "avijaTAH",
+            "avijeTAm",
+            "avijaDvam",
+            "avije",
+            "avijAvahi",
+            "avijAmahi",
+        ],
+    ),
+    (
+        "gur",
+        "laN",
+        [
+            "agurata",
+            "aguretAm",
+            "aguranta",
+            "aguraTAH",
+            "agureTAm",
+            "aguraDvam",
+            "agure",
+            "agurAvahi",
+            "agurAmahi",
+        ],
+    ),
+    (
+        "div",
+        "loT",
+        [
+            "dIvyatu", "dIvyatAm", "dIvyantu", "dIvya", "dIvyatam", "dIvyata", "dIvyAni",
+            "dIvyAva", "dIvyAma",
+        ],
+    ),
+    (
+        "naS",
+        "loT",
+        [
+            "naSyatu", "naSyatAm", "naSyantu", "naSya", "naSyatam", "naSyata", "naSyAni",
+            "naSyAva", "naSyAma",
+        ],
+    ),
+    (
+        "kup",
+        "loT",
+        [
+            "kupyatu", "kupyatAm", "kupyantu", "kupya", "kupyatam", "kupyata", "kupyAni",
+            "kupyAva", "kupyAma",
+        ],
+    ),
+    (
+        "man",
+        "loT",
+        [
+            "manyatAm",
+            "manyetAm",
+            "manyantAm",
+            "manyasva",
+            "manyeTAm",
+            "manyaDvam",
+            "manyE",
+            "manyAvahE",
+            "manyAmahE",
+        ],
+    ),
+    (
+        "yuD",
+        "loT",
+        [
+            "yuDyatAm",
+            "yuDyetAm",
+            "yuDyantAm",
+            "yuDyasva",
+            "yuDyeTAm",
+            "yuDyaDvam",
+            "yuDyE",
+            "yuDyAvahE",
+            "yuDyAmahE",
+        ],
+    ),
+    (
+        "vid",
+        "loT",
+        [
+            "vidyatAm",
+            "vidyetAm",
+            "vidyantAm",
+            "vidyasva",
+            "vidyeTAm",
+            "vidyaDvam",
+            "vidyE",
+            "vidyAvahE",
+            "vidyAmahE",
+        ],
+    ),
+    (
+        "tud",
+        "loT",
+        [
+            "tudatu", "tudatAm", "tudantu", "tuda", "tudatam", "tudata", "tudAni", "tudAva",
+            "tudAma",
+        ],
+    ),
+    (
+        "liK",
+        "loT",
+        [
+            "liKatu", "liKatAm", "liKantu", "liKa", "liKatam", "liKata", "liKAni", "liKAva",
+            "liKAma",
+        ],
+    ),
+    (
+        "viS",
+        "loT",
+        [
+            "viSatu", "viSatAm", "viSantu", "viSa", "viSatam", "viSata", "viSAni", "viSAva",
+            "viSAma",
+        ],
+    ),
+    (
+        "juz",
+        "loT",
+        [
+            "juzatAm", "juzetAm", "juzantAm", "juzasva", "juzeTAm", "juzaDvam", "juzE", "juzAvahE",
+            "juzAmahE",
+        ],
+    ),
+    (
+        "vij",
+        "loT",
+        [
+            "vijatAm", "vijetAm", "vijantAm", "vijasva", "vijeTAm", "vijaDvam", "vijE", "vijAvahE",
+            "vijAmahE",
+        ],
+    ),
+    (
+        "gur",
+        "loT",
+        [
+            "guratAm", "guretAm", "gurantAm", "gurasva", "gureTAm", "guraDvam", "gurE", "gurAvahE",
+            "gurAmahE",
+        ],
+    ),
+    (
+        "div",
+        "viDiliN",
+        [
+            "dIvyet", "dIvyetAm", "dIvyeyuH", "dIvyeH", "dIvyetam", "dIvyeta", "dIvyeyam",
+            "dIvyeva", "dIvyema",
+        ],
+    ),
+    (
+        "naS",
+        "viDiliN",
+        [
+            "naSyet", "naSyetAm", "naSyeyuH", "naSyeH", "naSyetam", "naSyeta", "naSyeyam",
+            "naSyeva", "naSyema",
+        ],
+    ),
+    (
+        "kup",
+        "viDiliN",
+        [
+            "kupyet", "kupyetAm", "kupyeyuH", "kupyeH", "kupyetam", "kupyeta", "kupyeyam",
+            "kupyeva", "kupyema",
+        ],
+    ),
+    (
+        "man",
+        "viDiliN",
+        [
+            "manyeta",
+            "manyeyAtAm",
+            "manyeran",
+            "manyeTAH",
+            "manyeyATAm",
+            "manyeDvam",
+            "manyeya",
+            "manyevahi",
+            "manyemahi",
+        ],
+    ),
+    (
+        "yuD",
+        "viDiliN",
+        [
+            "yuDyeta",
+            "yuDyeyAtAm",
+            "yuDyeran",
+            "yuDyeTAH",
+            "yuDyeyATAm",
+            "yuDyeDvam",
+            "yuDyeya",
+            "yuDyevahi",
+            "yuDyemahi",
+        ],
+    ),
+    (
+        "vid",
+        "viDiliN",
+        [
+            "vidyeta",
+            "vidyeyAtAm",
+            "vidyeran",
+            "vidyeTAH",
+            "vidyeyATAm",
+            "vidyeDvam",
+            "vidyeya",
+            "vidyevahi",
+            "vidyemahi",
+        ],
+    ),
+    (
+        "tud",
+        "viDiliN",
+        [
+            "tudet", "tudetAm", "tudeyuH", "tudeH", "tudetam", "tudeta", "tudeyam", "tudeva",
+            "tudema",
+        ],
+    ),
+    (
+        "liK",
+        "viDiliN",
+        [
+            "liKet", "liKetAm", "liKeyuH", "liKeH", "liKetam", "liKeta", "liKeyam", "liKeva",
+            "liKema",
+        ],
+    ),
+    (
+        "viS",
+        "viDiliN",
+        [
+            "viSet", "viSetAm", "viSeyuH", "viSeH", "viSetam", "viSeta", "viSeyam", "viSeva",
+            "viSema",
+        ],
+    ),
+    (
+        "juz",
+        "viDiliN",
+        [
+            "juzeta",
+            "juzeyAtAm",
+            "juzeran",
+            "juzeTAH",
+            "juzeyATAm",
+            "juzeDvam",
+            "juzeya",
+            "juzevahi",
+            "juzemahi",
+        ],
+    ),
+    (
+        "vij",
+        "viDiliN",
+        [
+            "vijeta",
+            "vijeyAtAm",
+            "vijeran",
+            "vijeTAH",
+            "vijeyATAm",
+            "vijeDvam",
+            "vijeya",
+            "vijevahi",
+            "vijemahi",
+        ],
+    ),
+    (
+        "gur",
+        "viDiliN",
+        [
+            "gureta",
+            "gureyAtAm",
+            "gureran",
+            "gureTAH",
+            "gureyATAm",
+            "gureDvam",
+            "gureya",
+            "gurevahi",
+            "guremahi",
+        ],
+    ),
 ];
 
 fn lan_a_form(code: &str, pu: Purusha, va: Vacana) -> String {
@@ -551,6 +1082,22 @@ fn known_nonforms_are_invalid() {
         "laBAte",  // 7.2.81 skipped: A must become iy after the shap
         "laBesva", // lot's sva on a lat stem (3.4.91 without 3.4.90's lakara)
         "IkzAmi",  // parasmaipada uttama ending on the vowel-initial A-root
+        // Wrong vikaraṇa: divādi/tudādi roots take śyan/śa, not śap, and
+        // bhvādi does not take śyan.
+        "divati",  // div with śap instead of śyan
+        "tudyati", // tud with śyan instead of śa
+        "Bavyati", // BU (bhvādi) with a śyan it has no claim to
+        "naSati",  // naś with śap
+        "kupati",  // kup with śap
+        // Guṇa should have been blocked (1.1.5): these are the guṇa'd forms.
+        "kopyati", // kup guṇa'd — 7.3.86 must be blocked by śyan's ṅit
+        "todati",  // tud guṇa'd — 7.3.86 must be blocked by śa's ṅit
+        "jozate",  // juṣ guṇa'd — block under ātmanepada too
+        "devyati", // div guṇa'd (before 8.2.77): guṇa must be blocked
+        // Wrong pada: the root's pada tag gates the whole derivation.
+        "manyati", // atmanepadin divādi root with a parasmaipada ending
+        "vidyati", // atmanepadin divādi root, parasmaipada ending
+        "tudate",  // parasmaipada tudādi root with an atmanepada ending
     ] {
         assert!(
             matches!(engine.check(bad).verdict, Verdict::Invalid),

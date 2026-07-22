@@ -226,6 +226,40 @@ comments (guards are cited in comments in this codebase, not the trace).
 (1.2.4 now appears twice). Three existing rules gain guards: 3.1.68, 7.3.84,
 7.3.86.
 
+### Implementation deviation: sandhi rules keyed on vikaraṇa text, not just a-finality
+
+This spec (see "Why divādi + tudādi next" and the "Engine" preamble above)
+assumed the slice needed **no changes to existing sandhi rules**, reasoning
+that "neither śyan nor śa changes the term-index layout — both occupy the
+same slot śap does and are a-final like śap — so every rule on either side of
+the 3.1.68 boundary keeps working unmodified." That assumption was
+incomplete.
+
+śyan reduces to the text `"ya"`, not a bare `"a"`. A number of existing rules
+were written to gate on the vikaraṇa term's text being exactly `"a"` (i.e.
+implicitly assuming śap), rather than on its **final vowel** being `a`. Under
+that literal check, śyan (`"ya"`) would silently fail to trigger rules that
+should still fire for it (and would give wrong results for divādi forms).
+Implementation therefore required generalizing **eight** existing rules to
+match on the vikaraṇa's final vowel instead of its full text:
+
+- **7.2.80** *ato yeyaḥ* (guard widening)
+- **7.2.81** *āto ṅitaḥ* (guard widening)
+- **6.4.105** *ato heḥ* (guard widening)
+- **7.3.101** *ato dīrgho yañi* (guard + final-vowel-preserving mutation)
+- **6.1.101** *akaḥ savarṇe dīrghaḥ* (guard + final-vowel-preserving mutation)
+- **6.1.90** *āṭaś ca*, ending arm (guard + final-vowel-preserving mutation)
+- **6.1.97** *ato guṇe* (guard + final-vowel-preserving mutation)
+- **6.1.87** *ād guṇaḥ* (guard + final-vowel-preserving mutation)
+
+Behavior for bhvādi (śap) and tudādi (śa) is unchanged by this
+generalization, since both reduce to the single character `"a"` — matching
+on "final vowel is `a`" and matching on "text is exactly `a`" coincide for
+those two. Only divādi's śyan (`"ya"`) distinguishes the two conditions. This
+was a human-approved deviation from the spec's original no-sandhi-changes
+assumption, adopted during implementation (Tasks 3–5) once the śyan case
+surfaced it.
+
 ## Analyzer, facade, CLI
 
 No code change, by construction:

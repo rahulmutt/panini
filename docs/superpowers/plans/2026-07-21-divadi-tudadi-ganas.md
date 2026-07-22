@@ -139,7 +139,9 @@ Sūtra ids/names in traces must match the reference (AGENTS.md hard gate). Only 
   - `3.1.77` → `tudAdiByaH SaH` (tudādibhyaḥ śaḥ)
   - `8.2.77` → `hali ca` (hali ca)
 
-- [ ] **Step 3: Record the confirmed spellings** here (edit this line in the plan): `3.1.69 = "____"`, `3.1.77 = "____"`, `8.2.77 = "____"`. Tasks 4–6 MUST use these confirmed strings verbatim in both the `id`/`name` fields and the `p.record(...)` calls. If a spelling differs from the draft, use the confirmed one everywhere.
+- [x] **Step 3: Record the confirmed spellings** here (edit this line in the plan): `3.1.69 = "divAdiByaH Syan"`, `3.1.77 = "tudAdiByaH SaH"`, `8.2.77 = "hali ca"`. Tasks 4–6 MUST use these confirmed strings verbatim in both the `id`/`name` fields and the `p.record(...)` calls. If a spelling differs from the draft, use the confirmed one everywhere.
+
+  Verified against `ashtadhyayi-com/data` (`sutraani/data.txt`, entries `i=31069`, `i=31077`, `i=82077`) — Devanāgarī: दिवादिभ्यः श्यन् (3.1.69), तुदादिभ्यः शः (3.1.77), हलि च (8.2.77). Transliterated to SLP1 both by hand and via the repo's own `panini_lipi::to_slp1(_, Scheme::Devanagari)` converter; both methods agree. All three drafts confirmed **verbatim**, no corrections needed.
 
 - [ ] **Step 4: Commit** (documentation of the check, if the repo convention records it — otherwise skip and note in the Task 4 commit).
 

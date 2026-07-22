@@ -3,6 +3,8 @@
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Gana {
     Bhvadi,
+    Divadi,
+    Tudadi,
 }
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Pada {
@@ -115,6 +117,80 @@ static DHATUS: &[Dhatu] = &[
         pada: Pada::Atmanepada,
         artha: "darSane",
     },
+    // divādi (gaṇa 4) — vikaraṇa śyan (3.1.69)
+    Dhatu {
+        code: "div",
+        gana: Gana::Divadi,
+        pada: Pada::Parasmaipada,
+        artha: "krIqAyAm",
+    },
+    Dhatu {
+        code: "naS",
+        gana: Gana::Divadi,
+        pada: Pada::Parasmaipada,
+        artha: "adarSane",
+    },
+    Dhatu {
+        code: "kup",
+        gana: Gana::Divadi,
+        pada: Pada::Parasmaipada,
+        artha: "kroDe",
+    },
+    Dhatu {
+        code: "man",
+        gana: Gana::Divadi,
+        pada: Pada::Atmanepada,
+        artha: "jYAne",
+    },
+    Dhatu {
+        code: "yuD",
+        gana: Gana::Divadi,
+        pada: Pada::Atmanepada,
+        artha: "samprahAre",
+    },
+    Dhatu {
+        code: "vid",
+        gana: Gana::Divadi,
+        pada: Pada::Atmanepada,
+        artha: "sattAyAm",
+    },
+    // tudādi (gaṇa 6) — vikaraṇa śa (3.1.77)
+    Dhatu {
+        code: "tud",
+        gana: Gana::Tudadi,
+        pada: Pada::Parasmaipada,
+        artha: "vyaTane",
+    },
+    Dhatu {
+        code: "liK",
+        gana: Gana::Tudadi,
+        pada: Pada::Parasmaipada,
+        artha: "akzaravinyAse",
+    },
+    Dhatu {
+        code: "viS",
+        gana: Gana::Tudadi,
+        pada: Pada::Parasmaipada,
+        artha: "praveSane",
+    },
+    Dhatu {
+        code: "juz",
+        gana: Gana::Tudadi,
+        pada: Pada::Atmanepada,
+        artha: "prItisevanayoH",
+    },
+    Dhatu {
+        code: "vij",
+        gana: Gana::Tudadi,
+        pada: Pada::Atmanepada,
+        artha: "BayacalanayoH",
+    },
+    Dhatu {
+        code: "gur",
+        gana: Gana::Tudadi,
+        pada: Pada::Atmanepada,
+        artha: "udyamane",
+    },
 ];
 
 pub fn dhatus() -> &'static [Dhatu] {
@@ -155,8 +231,8 @@ mod tests {
     use super::*;
 
     #[test]
-    fn has_twelve_curated_roots_with_padas() {
-        assert_eq!(dhatus().len(), 12);
+    fn has_twentyfour_curated_roots_with_padas() {
+        assert_eq!(dhatus().len(), 24);
         let bu = dhatus().iter().find(|d| d.code == "BU").unwrap();
         assert!(matches!(bu.pada, Pada::Parasmaipada));
         let labh = dhatus().iter().find(|d| d.code == "laB").unwrap();
@@ -165,6 +241,15 @@ mod tests {
         // the AT-augment path 6.4.72/6.1.90).
         assert!(dhatus().iter().any(|d| d.code == "eD"));
         assert!(dhatus().iter().any(|d| d.code == "Ikz"));
+        // New gaṇas, both padas.
+        let div = dhatus().iter().find(|d| d.code == "div").unwrap();
+        assert!(matches!(div.gana, Gana::Divadi) && matches!(div.pada, Pada::Parasmaipada));
+        let man = dhatus().iter().find(|d| d.code == "man").unwrap();
+        assert!(matches!(man.gana, Gana::Divadi) && matches!(man.pada, Pada::Atmanepada));
+        let tud = dhatus().iter().find(|d| d.code == "tud").unwrap();
+        assert!(matches!(tud.gana, Gana::Tudadi) && matches!(tud.pada, Pada::Parasmaipada));
+        let juz = dhatus().iter().find(|d| d.code == "juz").unwrap();
+        assert!(matches!(juz.gana, Gana::Tudadi) && matches!(juz.pada, Pada::Atmanepada));
     }
 
     #[test]
