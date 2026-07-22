@@ -6,8 +6,8 @@ Data flow for `check`:
 
 ## Crates
 - `panini-lipi` — SLP1 ⇄ IAST/HK/Devanāgarī + scheme detection. No grammar.
-- `panini-data` — curated roots (each tagged with its pada), tiṅ table, enums.
-  No I/O beyond embedded data.
+- `panini-data` — curated roots (each tagged with its gaṇa and pada), tiṅ
+  table, enums. No I/O beyond embedded data.
 - `panini-prakriya` — the engine: `Term`/`Prakriya`/`Context` model, it-samjna,
   and `TINANTA_RULES`, the ordered rule list that `tinanta::derive` runs via
   `run_pipeline`. Pure SLP1, no I/O.
@@ -28,6 +28,12 @@ Rule order is load-bearing and several orderings are non-obvious; the
 constraints and their justifications are documented in the design specs
 under `docs/superpowers/specs/`. The exact ordered traces in
 `crates/panini/tests/trace.rs` are what pin them.
+
+Three gaṇas are covered: bhvādi (1), divādi (4), tudādi (6). gaṇa is carried
+as a tag on the aṅga term (`Tag::Divadi` / `Tag::Tudadi`, mirroring how
+`Tag::Atmanepadin` carries pada), read by 3.1.69 and 3.1.77. The vikaraṇa
+itself is selected by 3.1.68 (śap, bhvādi), 3.1.69 (śyan, divādi), and 3.1.77
+(śa, tudādi).
 
 ## Rule trace
 Every applied sūtra is logged as a `RuleStep { sutra, name, before, after }`.
