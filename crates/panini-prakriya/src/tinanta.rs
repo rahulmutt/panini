@@ -813,7 +813,7 @@ pub static TINANTA_RULES: &[Rule] = &[
         kind: RuleKind::Vidhi,
         apply: |p| {
             if !matches!(p.ctx.lakara, Lakara::VidhiLin)
-                || p.terms[SHAP].text.chars().last() != Some('a')
+                || !p.terms[SHAP].text.ends_with('a')
                 || !p.terms[ENDING].text.starts_with("yA")
             {
                 return false;
@@ -838,7 +838,7 @@ pub static TINANTA_RULES: &[Rule] = &[
         name: "Ato NitaH",
         kind: RuleKind::Vidhi,
         apply: |p| {
-            if p.terms[SHAP].text.chars().last() != Some('a')
+            if !p.terms[SHAP].text.ends_with('a')
                 || !p.terms[ENDING].has(Tag::Ngit)
                 || !p.terms[ENDING].text.starts_with('A')
             {
@@ -952,8 +952,7 @@ pub static TINANTA_RULES: &[Rule] = &[
             let ending_first = p.terms[ENDING].text.chars().next().unwrap();
             // Ends in `a`, not equal to `a`: śyan's residue is `ya`, not `a`
             // (see 6.1.97's comment for why only the final vowel matters).
-            if !matches!(ending_first, 'm' | 'v') || p.terms[SHAP].text.chars().last() != Some('a')
-            {
+            if !matches!(ending_first, 'm' | 'v') || !p.terms[SHAP].text.ends_with('a') {
                 return false;
             }
             let before = p.snapshot();
@@ -972,9 +971,7 @@ pub static TINANTA_RULES: &[Rule] = &[
         name: "akaH savarRe dIrGaH",
         kind: RuleKind::Vidhi,
         apply: |p| {
-            if p.terms[SHAP].text.chars().last() != Some('a')
-                || !p.terms[ENDING].text.starts_with('A')
-            {
+            if !p.terms[SHAP].text.ends_with('a') || !p.terms[ENDING].text.starts_with('A') {
                 return false;
             }
             let before = p.snapshot();
@@ -1019,7 +1016,7 @@ pub static TINANTA_RULES: &[Rule] = &[
             // ec. Ends in `A`, not equal to `A`, so śyan's `yA` (after
             // 6.1.101 widened the same way) keeps its `y`.
             if p.terms.len() > ENDING
-                && p.terms[SHAP].text.chars().last() == Some('A')
+                && p.terms[SHAP].text.ends_with('A')
                 && let Some(first) = p.terms[ENDING].text.chars().next()
                 && matches!(first, 'e' | 'E' | 'o' | 'O')
             {
@@ -1054,7 +1051,7 @@ pub static TINANTA_RULES: &[Rule] = &[
             let Some(first) = p.terms[ENDING].text.chars().next() else {
                 return false;
             };
-            if p.terms[SHAP].text.chars().last() != Some('a') || !matches!(first, 'a' | 'e' | 'o') {
+            if !p.terms[SHAP].text.ends_with('a') || !matches!(first, 'a' | 'e' | 'o') {
                 return false;
             }
             let before = p.snapshot();
@@ -1086,9 +1083,7 @@ pub static TINANTA_RULES: &[Rule] = &[
         kind: RuleKind::Vidhi,
         apply: |p| {
             let first = p.terms[ENDING].text.chars().next();
-            if p.terms[SHAP].text.chars().last() != Some('a')
-                || !matches!(first, Some('i') | Some('I'))
-            {
+            if !p.terms[SHAP].text.ends_with('a') || !matches!(first, Some('i') | Some('I')) {
                 return false;
             }
             let before = p.snapshot();
@@ -1134,7 +1129,7 @@ pub static TINANTA_RULES: &[Rule] = &[
         name: "ato heH",
         kind: RuleKind::Vidhi,
         apply: |p| {
-            if p.terms[SHAP].text.chars().last() != Some('a') || p.terms[ENDING].text != "hi" {
+            if !p.terms[SHAP].text.ends_with('a') || p.terms[ENDING].text != "hi" {
                 return false;
             }
             let before = p.snapshot();
