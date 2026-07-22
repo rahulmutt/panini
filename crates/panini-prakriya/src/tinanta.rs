@@ -2272,6 +2272,29 @@ mod tests {
     }
 
     #[test]
+    fn pugantalaghupadhasya_single_term_still_applies_guna() {
+        // 7.3.86 has its own 1.1.5 (Girit) guard, `p.terms.len() > SHAP &&
+        // p.terms[SHAP].has(Tag::Girit)`, mirroring 7.3.84's. Unlike
+        // 7.3.84 (unreachable for divAdi/tudAdi, whose aGgas are all
+        // consonant-final), 7.3.86's Girit-true branch IS reached by the
+        // curated corpus (div, tud, juz, ...), so the `==`/`<` boundary
+        // mutants are already caught there. Only the `>` -> `>=` mutant on
+        // the `len() > SHAP` half survives: with len == 1 (no vikaraNa
+        // term), the original short-circuits (`1 > 1` false) without
+        // indexing terms[SHAP], so guNa proceeds normally: vft -> vart.
+        // The mutant makes `1 >= 1` true, forcing an out-of-bounds index
+        // into terms[SHAP] on a 1-element Vec, which panics.
+        let mut p = Prakriya {
+            terms: vec![Term::new("vft")],
+            log: vec![],
+            ..Default::default()
+        };
+        let rule = TINANTA_RULES.iter().find(|r| r.id == "7.3.86").unwrap();
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "vart");
+    }
+
+    #[test]
     fn awas_ca_ending_arm_requires_a_third_term() {
         // 6.1.90's ending arm reads p.terms[SHAP] and p.terms[ENDING]
         // (index 2) once its guard passes. With only two terms (aGga +
@@ -2292,5 +2315,147 @@ mod tests {
         assert!(!(rule.apply)(&mut p));
         assert_eq!(p.terms[ANGA].text, "kf");
         assert_eq!(p.terms[SHAP].text, "A");
+    }
+
+    // --- 3.1.68 / second 1.2.4: `len() > SHAP` boundary pins --------------
+    //
+    // Both guards read `p.terms.len() > SHAP && p.terms[SHAP]. ...` to
+    // avoid indexing the not-yet-inserted vikaraNa slot. Every real
+    // derivation always has an ending term present (terms.len() >= 2)
+    // before either rule runs, so `> SHAP` (i.e. `> 1`) and `>= SHAP`
+    // never diverge on any golden or negative derivation: len() is never
+    // exactly 1 there. Pin the boundary directly with a single-term
+    // Prakriya (aGga only, no ending) so the two outcomes diverge: the
+    // original short-circuits before indexing terms[SHAP]; the `>` -> `>=`
+    // mutant does not, and panics indexing out of bounds on a 1-element
+    // Vec (an unexpected panic still fails the test).
+    #[test]
+    fn kartari_sap_single_term_anga_does_not_panic() {
+        let mut p = Prakriya {
+            terms: vec![Term::new("kf")],
+            log: vec![],
+            ..Default::default()
+        };
+        let rule = TINANTA_RULES.iter().find(|r| r.id == "3.1.68").unwrap();
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "kf");
+        assert_eq!(p.terms[SHAP].text, "a");
+    }
+
+    #[test]
+    fn sarvadhatukam_apit_second_application_single_term_does_not_panic() {
+        // The SECOND "1.2.4" rule in TINANTA_RULES (the vikaraNa-Girit
+        // application, ordered after 3.1.68) is targeted here, not the
+        // first (ENDING_PRE_SHAP) application above the 3.1.68 boundary.
+        let mut p = Prakriya {
+            terms: vec![Term::new("kf")],
+            log: vec![],
+            ..Default::default()
+        };
+        let rule = TINANTA_RULES
+            .iter()
+            .filter(|r| r.id == "1.2.4")
+            .nth(1)
+            .unwrap();
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "kf");
+    }
+
+    // --- 7.3.84 sArvaDAtukArDaDAtukayoH: 1.1.5 (Girit) guard pins ---------
+    //
+    // No curated divAdi/tudAdi root has a vowel-final aGga (they are all
+    // consonant-final: div, naS, kup, man, yuD, vid, tud, liK, viS, juz,
+    // vij, gur all end in a consonant), so 7.3.84's guNa-blocking business
+    // — final-ik aGgas — is only ever reached by bhvAdi roots (BU, nI, ji,
+    // smf), whose vikaraNa (Sap) is never Girit. The `has(Tag::Girit)`
+    // guard's `true` branch is therefore never exercised by any golden or
+    // negative derivation, and boundary mutants on `p.terms.len() > SHAP`
+    // are invisible to the suite. Pin both edges directly.
+    #[test]
+    fn sarvadhatukardhadhatukayoh_blocks_guna_when_vikarana_is_ngit() {
+        // Constructed vowel-final aGga ("nI") + a Girit vikaraNa (as Syan/
+        // Sa would be via the second 1.2.4): guNa must be blocked. The
+        // `>` -> `==` and `>` -> `<` mutants both make `len() > SHAP`
+        // false at len=2, so the guard's early return is skipped and the
+        // mutant wrongly applies guNa ("nI" -> "ne").
+        let mut p = Prakriya {
+            terms: vec![Term::new("nI"), Term::new("ya")],
+            log: vec![],
+            ..Default::default()
+        };
+        p.terms[SHAP].add(Tag::Ngit);
+        let rule = TINANTA_RULES.iter().find(|r| r.id == "7.3.84").unwrap();
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "nI");
+    }
+
+    #[test]
+    fn sarvadhatukardhadhatukayoh_single_term_anga_still_applies_guna() {
+        // len == 1 (no vikaraNa term at all): the original guard
+        // short-circuits (`1 > 1` is false) without indexing terms[SHAP],
+        // so guNa proceeds normally: "nI" -> "ne". The `>` -> `>=` mutant
+        // makes `1 >= 1` true, forcing an out-of-bounds index into
+        // terms[SHAP] on a 1-element Vec, which panics (an unexpected
+        // panic still fails the test).
+        let mut p = Prakriya {
+            terms: vec![Term::new("nI")],
+            log: vec![],
+            ..Default::default()
+        };
+        let rule = TINANTA_RULES.iter().find(|r| r.id == "7.3.84").unwrap();
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "ne");
+    }
+
+    // --- 8.2.77 hali ca: guard-edge pin -----------------------------------
+    //
+    // Every curated root reaching 8.2.77 (only div) has an aGga of length
+    // 3+, so `n < 2` is never observed at the boundary n == 2 by any golden
+    // or negative form: the only 2-char roots in the corpus (nI, ji) fail
+    // the immediately following `r`/`v` shape check regardless of this
+    // guard's outcome, making mutants at this boundary (`<` -> `==`,
+    // `<` -> `<=`) behaviorally invisible to the golden 864 and to
+    // known_nonforms_are_invalid. Pin the boundary directly with a
+    // constructed 2-char aGga that DOES match the rest of the rule's shape
+    // (upadhA `i`/`u`, final `r`/`v`, hal-initial vikaraNa) so the two
+    // outcomes diverge.
+    #[test]
+    fn hali_ca_two_char_anga_still_fires() {
+        // n=2, "iv": upadhA 'i', final 'v' - matches 8.2.77's shape. The
+        // original `n < 2` guard is false (2 < 2 is false), so the rule
+        // proceeds and lengthens: "iv" -> "Iv". The `<` -> `==` mutant
+        // (n == 2 is true here) and the `<` -> `<=` mutant (2 <= 2 is
+        // true) both wrongly take the early-return branch and leave the
+        // aGga untouched.
+        let mut p = Prakriya {
+            terms: vec![Term::new("iv"), Term::new("ta")],
+            log: vec![],
+            ..Default::default()
+        };
+        let rule = TINANTA_RULES.iter().find(|r| r.id == "8.2.77").unwrap();
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "Iv");
+    }
+
+    #[test]
+    fn hali_ca_uses_n_minus_2_not_n_over_2() {
+        // n=5 ("aBiur"): n-2=3 (upadhA 'u') but n/2=2 (chars[2]='i') --
+        // these differ, separating both `-` -> `/` mutants (on the upadhA
+        // index and the prefix slice) from the original at once. By hand:
+        // final_c=chars[4]='r', upadhA=chars[3]='u' (both match the
+        // shape); lengthened upadhA is 'U'; prefix is chars[..3]="aBi";
+        // result = "aBi" + "U" + "r" = "aBiUr". Mutating `chars[n - 2]`
+        // (upadhA) to `chars[n / 2]` would read upadhA as 'i' instead,
+        // giving long 'I' and result "aBiIr". Mutating `chars[..n - 2]`
+        // (the prefix) to `chars[..n / 2]` would prefix with "aB"
+        // instead of "aBi", giving "aBUr". Both diverge from "aBiUr".
+        let mut p = Prakriya {
+            terms: vec![Term::new("aBiur"), Term::new("ta")],
+            log: vec![],
+            ..Default::default()
+        };
+        let rule = TINANTA_RULES.iter().find(|r| r.id == "8.2.77").unwrap();
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "aBiUr");
     }
 }
