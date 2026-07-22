@@ -274,7 +274,7 @@ fn labheya_trace_is_exactly_the_ito_t_path() {
 }
 
 #[test]
-fn divyati_trace_is_the_syan_block_lengthen_path() {
+fn divyati_trace_is_exactly_the_syan_block_lengthen_path() {
     // div laṭ P 3sg: śyan (3.1.69) → apit → ṅit (1.2.4, 2nd application);
     // 7.3.84/7.3.86 blocked (no record); 8.2.77 lengthens div → dīv.
     assert_eq!(
@@ -286,7 +286,7 @@ fn divyati_trace_is_the_syan_block_lengthen_path() {
 }
 
 #[test]
-fn tudati_trace_is_the_sa_block_path() {
+fn tudati_trace_is_exactly_the_sa_block_path() {
     // tud laṭ P 3sg: śa (3.1.77) → ṅit (1.2.4); 7.3.86 blocked (no todati).
     assert_eq!(
         trace_for("tudati"),
@@ -295,7 +295,7 @@ fn tudati_trace_is_the_sa_block_path() {
 }
 
 #[test]
-fn manyate_trace_is_the_syan_atmanepada_path() {
+fn manyate_trace_is_exactly_the_syan_atmanepada_path() {
     // man laṭ Ā 3sg: laBate's path with 3.1.68→3.1.69 and the second 1.2.4
     // (śyan ṅit) appended.
     assert_eq!(
@@ -307,7 +307,7 @@ fn manyate_trace_is_the_syan_atmanepada_path() {
 }
 
 #[test]
-fn jusate_trace_is_the_sa_atmanepada_block_path() {
+fn jusate_trace_is_exactly_the_sa_atmanepada_block_path() {
     // juṣ laṭ Ā 3sg: śa path; 7.3.86 blocked (juṣate NOT joṣate).
     assert_eq!(
         trace_for("juzate"),
@@ -318,7 +318,7 @@ fn jusate_trace_is_the_sa_atmanepada_block_path() {
 }
 
 #[test]
-fn kupyet_trace_is_the_syan_vidhilin_path() {
+fn kupyet_trace_is_exactly_the_syan_vidhilin_path() {
     // kup vidhiliṅ P 3sg: bhavet's yāsuṭ chain with śyan instead of śap, the
     // second 1.2.4 (śyan ṅit), and NO 7.3.84/6.1.78 (guṇa blocked; kup has no
     // guṇable final and its upadhā guṇa is blocked).

@@ -25,7 +25,7 @@
   `#![no_main]` plus the libfuzzer harness macro).
 - Grammar changes are gated by the golden paradigm test
   (`crates/panini/tests/paradigm.rs`, 864 forms across
-    laṭ/laṅ/loṭ/vidhiliṅ × parasmaipada/ātmanepada × bhvādi/divādi/tudādi)
+  laṭ/laṅ/loṭ/vidhiliṅ × parasmaipada/ātmanepada × bhvādi/divādi/tudādi)
   and by the ordered-trace test (`crates/panini/tests/trace.rs`), which pins
   rule order. Surface forms and trace order there are the source of truth;
   sūtra ids/names in traces must match the cited reference (ashtadhyayi.com).

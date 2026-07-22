@@ -2347,6 +2347,11 @@ mod tests {
             log: vec![],
             ..Default::default()
         };
+        assert_eq!(
+            TINANTA_RULES.iter().filter(|r| r.id == "1.2.4").count(),
+            2,
+            "expected exactly two 1.2.4 rule entries; nth(1) locator assumes this"
+        );
         let rule = TINANTA_RULES
             .iter()
             .filter(|r| r.id == "1.2.4")
