@@ -1,5 +1,5 @@
 use panini::{Panini, Verdict};
-use panini_data::{Lakara, Pada, Purusha, Vacana, dhatus};
+use panini_data::{Gana, Lakara, Pada, Purusha, Vacana, dhatus};
 use panini_prakriya::derive;
 
 /// (root_code, lakara_label, [P.E, P.D, P.B, M.E, M.D, M.B, U.E, U.D, U.B]) in SLP1.
@@ -1104,11 +1104,35 @@ fn every_form_validates_and_matches() {
 #[test]
 fn paradigm_covers_every_enumerable_cell() {
     // Slice 5a scope boundary, NOT an eternal exclusion: adādi × vidhiliṅ is
-    // gated in `panini_prakriya::derive` because the athematic optative
-    // (yās → yuḥ: yāyāt / yāyuḥ) lands in slice 5b. Those 18 cells derive
-    // nothing today, so they have no goldens. Slice 5b deletes the gate, adds
-    // the golden rows, and empties this list. It must never grow.
+    // gated in `panini_prakriya::derive` because the athematic optative's
+    // reduction of the sārvadhātuka yās to yā/yuḥ (yā + yuḥ → yāyuḥ, yā +
+    // yām → yāyām) lands in slice 5b. Those 18 cells derive nothing today,
+    // so they have no goldens. Slice 5b deletes the gate, adds the golden
+    // rows, and empties this list. It must never grow — see the machine
+    // guard below.
     const GATED: &[(&str, &str)] = &[("yA", "viDiliN"), ("vA", "viDiliN")];
+
+    // Machine guard against `GATED` growing beyond the 5a scope boundary: a
+    // widened list (e.g. a whole root's four lakāras) would otherwise pass
+    // the two assertions below unnoticed. The gate only ever applies to
+    // adādi roots × vidhiliṅ, so pin that shape directly instead of relying
+    // on the comment above.
+    assert!(
+        GATED.len() <= 2,
+        "GATED grew beyond the adadi x vidhilin scope boundary: {GATED:?}"
+    );
+    for &(root, lakara) in GATED {
+        assert_eq!(
+            lakara, "viDiliN",
+            "GATED entry {root} has lakara {lakara}, expected viDiliN (the only gated lakara)"
+        );
+        assert!(
+            dhatus()
+                .iter()
+                .any(|d| d.code == root && matches!(d.gana, Gana::Adadi)),
+            "GATED entry {root} is not an adadi root"
+        );
+    }
 
     let pinned: Vec<(&str, &str)> = PARADIGM.iter().map(|(r, l, _)| (*r, *l)).collect();
     let mut unpinned: Vec<(&str, &str)> = Vec::new();
@@ -1188,13 +1212,17 @@ fn known_nonforms_are_invalid() {
         "yAati",  // luk skipped: śap's `a` left standing after ā (uncoalesced)
         "yA",     // a bare root code is not a surface form
         "vA",
-        // adādi × vidhiliṅ is GATED UNTIL SLICE 5b, not eternally invalid:
-        // these are the non-words the ungated pipeline emitted (the real
-        // forms are yāyuḥ and yāyām, from the yās → yuḥ reduction 5b adds).
-        // When 5b lands, these four move from "must be INVALID" to golden
-        // rows for the corrected forms; do not treat them as permanent
-        // negatives. yāyāt / vāyāt are deliberately absent — those the
-        // ungated pipeline already got right and 5b will derive.
+        // adādi × vidhiliṅ is GATED UNTIL SLICE 5b (see `panini_prakriya::
+        // derive`), but these four strings are not Sanskrit either way: they
+        // are the non-words the ungated pipeline emitted before the gate was
+        // added (the real forms are yāyuḥ and yāyām, from the yās → yuḥ
+        // reduction 5b adds). Today they exercise the gate; once 5b removes
+        // the gate they become the direct regression test that the athematic
+        // optative reduction actually ran instead of leaving yās unreduced.
+        // They stay pinned as permanent negatives — slice 5b adds yāyuḥ /
+        // yāyām (and the √vā pair) as new golden rows, it does not touch
+        // these. yāyāt / vāyāt are deliberately absent — those the ungated
+        // pipeline already got right and 5b will derive.
         "yAyAuH", // 3pl: real form yāyuḥ
         "yAyAam", // 1sg: real form yāyām
         "vAyAuH",

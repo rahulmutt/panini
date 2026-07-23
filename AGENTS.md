@@ -32,7 +32,11 @@
   rule order. Surface forms and trace order there are the source of truth;
   sūtra ids/names in traces must match the cited reference (ashtadhyayi.com).
 - New grammar goes in `TINANTA_RULES` as a self-guarding `Rule`, not as a
-  branch inside `derive`.
+  branch inside `derive`. The one adjudicated exception is the slice 5a
+  scope gate in `crates/panini-prakriya/src/tinanta.rs::derive` (adādi ×
+  vidhiliṅ, deleted in slice 5b): it is not grammar, just an "unimplemented,
+  decline honestly" boundary, so it deliberately stays a branch instead of a
+  `Rule`. Do not "fix" it back into `TINANTA_RULES`.
 - The `panini-cli` binary has a single subcommand, `check` (flags `--trace`,
   `--json`, `--out`, `--in`). There is no `derive` subcommand in v1. `--in auto`
   (the default) auto-detects the input transliteration scheme; passing an

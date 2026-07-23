@@ -26,13 +26,24 @@ fn generate_then_check_recovers_inputs() {
                     // The derivation was declined (adādi × vidhiliṅ is gated
                     // until slice 5b; see `panini_prakriya::derive`), so there
                     // is no surface form to recover. What must hold instead is
-                    // that its partial text is never accepted as a word.
+                    // that its partial text is never accepted as a word at
+                    // all — not merely never attributed back to this root,
+                    // which would still allow it to be misread as some
+                    // other root's form.
                     assert!(
-                        !r.analyses.iter().any(|a| a.dhatu == d.code),
-                        "blocked derivation leaked a form: {} {} -> {}",
+                        r.analyses.is_empty(),
+                        "blocked derivation leaked a form: {} {} -> {} (analyses: {:?})",
                         d.code,
                         panini::lakara_name(lakara),
-                        form
+                        form,
+                        r.analyses
+                            .iter()
+                            .map(|a| (
+                                a.dhatu.as_str(),
+                                panini::lakara_name(a.lakara),
+                                a.form_slp1.as_str()
+                            ))
+                            .collect::<Vec<_>>()
                     );
                     continue;
                 }
