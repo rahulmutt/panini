@@ -42,6 +42,16 @@ is the first gaṇa where the vikaraṇa is *luk'd*: 3.1.68 still inserts śap
 kept in place with empty text rather than removed, so the `ANGA`/`SHAP`/
 `ENDING` term indices stay stable for downstream rules.
 
+adādi is covered in laṭ, laṅ and loṭ only. adādi × vidhiliṅ needs the
+athematic optative (the yās → yuḥ reduction), which is not implemented; a
+scope gate at the top of `panini_prakriya::derive` — deliberately *not* a
+`Rule`, so it is never mistaken for grammar — blocks that combination so it
+reports INVALID instead of emitting a non-word. A blocked prakriya's partial
+text never counts as a match in `Panini::check`. Coverage of the enumerable
+(root × lakāra) space is pinned by
+`crates/panini/tests/paradigm.rs::paradigm_covers_every_enumerable_cell`,
+whose `GATED` list holds exactly this one hole.
+
 ## Rule trace
 Every applied sūtra is logged as a `RuleStep { sutra, name, before, after }`.
 The `check` result carries the full trace per analysis.
