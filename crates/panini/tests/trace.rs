@@ -330,3 +330,25 @@ fn kupyet_trace_is_exactly_the_syan_vidhilin_path() {
         ]
     );
 }
+
+#[test]
+fn yati_trace_is_the_bare_luk_path() {
+    // yA laṭ P 3sg: 3.1.68 inserts śap (1.3.9 its it-samjña), 2.4.72 luks it,
+    // then guṇa (7.3.84) and 6.1.78 both decline (ā-final root, empty śap).
+    assert_eq!(
+        trace_for("yAti"),
+        vec!["1.3.78", "3.4.78", "1.3.9", "3.1.68", "1.3.9", "2.4.72"]
+    );
+}
+
+#[test]
+fn yanti_trace_is_the_luk_plus_savarna_path() {
+    // yA laṭ P 3pl: Ji → anti (7.1.3) after the luk, then root ā + a → ā
+    // (6.1.101).
+    assert_eq!(
+        trace_for("yAnti"),
+        vec![
+            "1.3.78", "3.4.78", "3.1.68", "1.3.9", "2.4.72", "7.1.3", "6.1.101"
+        ]
+    );
+}
