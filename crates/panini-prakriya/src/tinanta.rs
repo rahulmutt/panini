@@ -1002,6 +1002,20 @@ pub static TINANTA_RULES: &[Rule] = &[
         name: "akaH savarRe dIrGaH",
         kind: RuleKind::Vidhi,
         apply: |p| {
+            // adādi (śap luk'd by 2.4.72): the aṅga's own final ā meets an
+            // a/ā-initial ending directly (no vikaraṇa buffer). ā + a/ā are
+            // savarṇa → a single long ā. Keep the aṅga's ā, drop the ending's
+            // initial vowel: yA + anti → yAnti, yA + Ani (āṭ) → yAni.
+            if p.terms.len() > ENDING
+                && p.terms[SHAP].text.is_empty()
+                && p.terms[ANGA].text.ends_with('A')
+                && matches!(p.terms[ENDING].text.chars().next(), Some('a') | Some('A'))
+            {
+                let before = p.snapshot();
+                p.terms[ENDING].text = p.terms[ENDING].text.chars().skip(1).collect();
+                p.record("6.1.101", "akaH savarRe dIrGaH", before);
+                return true;
+            }
             if !p.terms[SHAP].text.ends_with('a') || !p.terms[ENDING].text.starts_with('A') {
                 return false;
             }
@@ -1434,6 +1448,28 @@ mod tests {
         assert_eq!(
             form_g("yA", Lakara::Lot, Purusha::Madhyama, Vacana::Eka),
             "yAhi"
+        );
+    }
+
+    #[test]
+    fn adadi_root_final_a_coalesces_with_vowel_endings() {
+        // ā + a(nti) → ā : yānti (laṭ 3pl), yAntu (loṭ 3pl), ayAn (laṅ 3pl).
+        assert_eq!(
+            form_g("yA", Lakara::Lat, Purusha::Prathama, Vacana::Bahu),
+            "yAnti"
+        );
+        assert_eq!(
+            form_g("yA", Lakara::Lot, Purusha::Prathama, Vacana::Bahu),
+            "yAntu"
+        );
+        assert_eq!(
+            form_g("yA", Lakara::Lan, Purusha::Prathama, Vacana::Bahu),
+            "ayAn"
+        );
+        // ā + A(ṭ) → ā : loṭ uttama-eka takes āṭ (yA + Ani → yAni).
+        assert_eq!(
+            form_g("yA", Lakara::Lot, Purusha::Uttama, Vacana::Eka),
+            "yAni"
         );
     }
 
