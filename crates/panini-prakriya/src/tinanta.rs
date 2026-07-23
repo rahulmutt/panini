@@ -1240,6 +1240,7 @@ pub fn derive(
         match dhatu.gana {
             Gana::Divadi => t.add(Tag::Divadi),
             Gana::Tudadi => t.add(Tag::Tudadi),
+            Gana::Adadi => t.add(Tag::Adadi),
             Gana::Bhvadi => {}
         }
         t

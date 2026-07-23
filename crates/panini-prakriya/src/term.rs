@@ -26,6 +26,9 @@ pub enum Tag {
     /// carries neither tag.
     Divadi,
     Tudadi,
+    /// The dhātu belongs to adādi (gaṇa 2), the aluk gaṇa. Read by 2.4.72,
+    /// which luks the śap that 3.1.68 inserts. Mirrors Divadi/Tudadi.
+    Adadi,
 }
 
 #[derive(Debug, Clone)]
