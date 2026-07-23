@@ -192,8 +192,9 @@ static DHATUS: &[Dhatu] = &[
         pada: Pada::Atmanepada,
         artha: "udyamane",
     },
-    // adādi (gaṇa 2) — śap luk (2.4.72); slice 5a covers these two ā-final
-    // parasmaipada roots across laṭ/laṅ/loṭ.
+    // adādi (gaṇa 2) — śap luk (2.4.72); √yā/√vā, the two ā-final
+    // parasmaipada roots, are covered across all four lakāras
+    // (laṭ/laṅ/loṭ/vidhiliṅ).
     Dhatu {
         code: "yA",
         gana: Gana::Adadi,

@@ -961,7 +961,8 @@ pub static TINANTA_RULES: &[Rule] = &[
             };
             // śap may be luk'd (adādi, 2.4.72): then it is empty and this rule
             // has no a-final vikaraṇa to work against. Decline rather than
-            // panic. (5b generalizes this to the root+ending junction for √śī.)
+            // panic. (when the consonant-final and ātmanepada adādi roots land,
+            // this will generalize to the root+ending junction for √śī.)
             let Some(next_first) = p.terms[SHAP].text.chars().next() else {
                 return false;
             };
@@ -1003,7 +1004,9 @@ pub static TINANTA_RULES: &[Rule] = &[
         },
     },
     // 6.1.101 akaḥ savarṇe dīrghaḥ: an ak vowel followed by a savarṇa vowel
-    // coalesces into the corresponding long vowel. Two arms:
+    // coalesces into the corresponding long vowel. Three arms:
+    //   - adādi vidhiliṅ 1sg (śap luk'd, 7.2.80 declined): the yāsuṭ ā + the
+    //     ending a coalesce inside the ending, yAam → yAm (→ yAyAm);
     //   - adādi (śap luk'd by 2.4.72): the aṅga's own final `A` meets an
     //     a/ā-initial ending, yA + anti → yAnti, yA + Ani → yAni;
     //   - bhvādi &c.: śap `a` + the ending's initial `A` (from 3.4.92 āḍ),
@@ -1013,6 +1016,31 @@ pub static TINANTA_RULES: &[Rule] = &[
         name: "akaH savarRe dIrGaH",
         kind: RuleKind::Vidhi,
         apply: |p| {
+            // adādi vidhiliṅ 1sg: after 7.2.79 the ending is `yAam` (yāsuṭ ā +
+            // the uttama-eka `am`). 7.2.80 would have rewritten `yA`->`iy` for
+            // a thematic gaṇa, but śap is luk'd so it declined; the yāsuṭ ā and
+            // the ending a are savarṇa -> a single ā: yAam -> yAm. Guard is
+            // tight: VidhiLin + empty śap + a `yA`+vowel ending (never `yAt`/
+            // `yAs`/... whose yA is followed by a consonant).
+            if p.terms.len() > ENDING
+                && matches!(p.ctx.lakara, Lakara::VidhiLin)
+                && p.terms[SHAP].text.is_empty()
+                && p.terms[ENDING].text.starts_with("yA")
+                && matches!(p.terms[ENDING].text.chars().nth(2), Some('a') | Some('A'))
+            {
+                let before = p.snapshot();
+                // drop the ending's third char (the a/A after `yA`)
+                let kept: String = p.terms[ENDING]
+                    .text
+                    .chars()
+                    .enumerate()
+                    .filter(|&(i, _)| i != 2)
+                    .map(|(_, c)| c)
+                    .collect();
+                p.terms[ENDING].text = kept;
+                p.record("6.1.101", "akaH savarRe dIrGaH", before);
+                return true;
+            }
             // adādi (śap luk'd by 2.4.72): the aṅga's own final ā meets an
             // a/ā-initial ending directly (no vikaraṇa buffer). ā + a/ā are
             // savarṇa → a single long ā. Keep the aṅga's ā, drop the ending's
@@ -1037,6 +1065,35 @@ pub static TINANTA_RULES: &[Rule] = &[
             p.terms[SHAP].text = s.into_iter().collect();
             p.terms[ENDING].text = p.terms[ENDING].text.chars().skip(1).collect();
             p.record("6.1.101", "akaH savarRe dIrGaH", before);
+            true
+        },
+    },
+    // 6.1.96 usyapadāntāt: an a/ā immediately before the ending `us` is
+    // elided (a single substitution in the ekaḥ pūrvaparayoḥ section). Fires
+    // only for adādi vidhiliṅ 3pl: after 7.2.79 strips yāsuṭ's s, the ending
+    // is `yAus`, and here the ā before `us` drops -> `yus` -> yA + yuH.
+    // Inert for the thematic gaṇas: 7.2.80 has already rewritten their liṅ
+    // 3pl ending to `iyus`, whose segment before `us` is `y`, not a/ā.
+    Rule {
+        id: "6.1.96",
+        name: "usyapadAntAt",
+        kind: RuleKind::Vidhi,
+        apply: |p| {
+            let e = &p.terms[ENDING].text;
+            if !e.ends_with("us") {
+                return false;
+            }
+            let n = e.chars().count();
+            // the char immediately before the final `us` (None if the ending
+            // is just "us", which wrapping_sub keeps panic-free)
+            let pre = e.chars().nth(n.wrapping_sub(3));
+            if !matches!(pre, Some('a') | Some('A')) {
+                return false;
+            }
+            let before = p.snapshot();
+            let kept: String = e.chars().take(n - 3).collect();
+            p.terms[ENDING].text = format!("{kept}us");
+            p.record("6.1.96", "usyapadAntAt", before);
             true
         },
     },
@@ -1217,7 +1274,8 @@ pub static TINANTA_RULES: &[Rule] = &[
             }
             // Reads śap as "the segment following the aṅga"; when śap is luk'd
             // (adādi, 2.4.72) that is empty and the rule silently declines.
-            // Unreachable in 5a (no r/v-final adādi root); 5b must generalize
+            // Currently unreachable (no r/v-final adādi root in scope); when the
+            // consonant-final and ātmanepada adādi roots land, this must generalize
             // this to the root+ending junction, as 6.1.78 already flags.
             let Some(next) = p.terms.get(SHAP).and_then(|t| t.text.chars().next()) else {
                 return false;
@@ -1305,22 +1363,6 @@ pub fn derive(
         }
         t
     });
-    // ---- SLICE 5a SCOPE BOUNDARY (not a sūtra; delete in slice 5b) ----
-    // adādi × vidhiliṅ is not implemented. The athematic optative reduces
-    // the sārvadhātuka yās to yā/yuḥ (yā + yuḥ → yāyuḥ, yā + yām → yāyām);
-    // slice 5a implements none of that, so running the pipeline here would
-    // emit plausible-looking non-words (yāyāuḥ, yāyāam) and the analyzer
-    // would report them VALID. Declining to derive is the honest answer:
-    // these cells report INVALID, i.e. "not derivable within the covered
-    // grammar". This is a scope gate, deliberately kept OUT of
-    // `TINANTA_RULES` so it is not mistaken for grammar.
-    // Slice 5b lands the yās → yuḥ reduction, deletes this block, and
-    // empties `GATED` in
-    // `crates/panini/tests/paradigm.rs::paradigm_covers_every_enumerable_cell`.
-    if matches!(dhatu.gana, Gana::Adadi) && matches!(lakara, Lakara::VidhiLin) {
-        p.blocked = true;
-        return p;
-    }
     run_pipeline(&mut p, TINANTA_RULES);
     p
 }
@@ -1505,33 +1547,32 @@ mod tests {
     }
 
     #[test]
-    fn adadi_vidhilin_is_gated_until_slice_5b() {
-        // Scope gate, not grammar: the athematic optative (yās → yuḥ) is 5b.
-        // Until then adādi × vidhiliṅ must derive NOTHING — no pipeline run,
-        // no rules logged — rather than emit the non-words yāyāuḥ / yāyāam.
+    fn adadi_vidhilin_derives_the_yas_yuh_reduction() {
+        // adādi × vidhiliṅ now
+        // derives through the full pipeline, running the yāsuṭ chain plus
+        // the 6.1.96 / 6.1.101 junction reductions, for every cell and pada.
         for code in ["yA", "vA"] {
             let d = dhatus().iter().find(|d| d.code == code).unwrap();
             for pu in [Purusha::Prathama, Purusha::Madhyama, Purusha::Uttama] {
                 for va in [Vacana::Eka, Vacana::Dvi, Vacana::Bahu] {
                     let p = derive(d, Lakara::VidhiLin, d.pada, pu, va);
-                    assert!(p.blocked, "{code} vidhiliṅ {pu:?} {va:?} was derived");
-                    assert!(p.log.is_empty(), "{code} vidhiliṅ ran rules");
+                    assert!(!p.blocked, "{code} vidhiliṅ {pu:?} {va:?} was blocked");
+                    assert!(!p.log.is_empty(), "{code} vidhiliṅ ran no rules");
+                    assert!(
+                        !p.text().is_empty(),
+                        "{code} vidhiliṅ {pu:?} {va:?} is empty"
+                    );
                 }
             }
         }
-        // The gate is narrow: adādi in the three covered lakāras and every
-        // other gaṇa in vidhiliṅ are untouched.
-        let ya = dhatus().iter().find(|d| d.code == "yA").unwrap();
-        for la in [Lakara::Lat, Lakara::Lan, Lakara::Lot] {
-            let p = derive(ya, la, ya.pada, Purusha::Prathama, Vacana::Eka);
-            assert!(!p.blocked, "adādi {la:?} must still derive");
-        }
-        for code in ["BU", "div", "tud"] {
-            let d = dhatus().iter().find(|d| d.code == code).unwrap();
-            let p = derive(d, Lakara::VidhiLin, d.pada, Purusha::Prathama, Vacana::Eka);
-            assert!(!p.blocked, "{code} vidhiliṅ must still derive");
-            assert!(!p.text().is_empty());
-        }
+        assert_eq!(
+            form_g("yA", Lakara::VidhiLin, Purusha::Prathama, Vacana::Bahu),
+            "yAyuH"
+        );
+        assert_eq!(
+            form_g("yA", Lakara::VidhiLin, Purusha::Uttama, Vacana::Eka),
+            "yAyAm"
+        );
     }
 
     #[test]
@@ -2675,5 +2716,159 @@ mod tests {
         let rule = TINANTA_RULES.iter().find(|r| r.id == "8.2.77").unwrap();
         assert!((rule.apply)(&mut p));
         assert_eq!(p.terms[ANGA].text, "aBiUr");
+    }
+
+    #[test]
+    fn usyapadantat_drops_a_before_us_and_spares_iyus() {
+        // Fires: after 7.2.79 the adādi liṅ 3pl ending is `yAus`; the ā
+        // before `us` drops -> `yus`.
+        let mut p = Prakriya {
+            terms: vec![Term::new("yA"), Term::new(""), Term::new("yAus")],
+            log: vec![],
+            ctx: Context::new(
+                Lakara::VidhiLin,
+                Pada::Parasmaipada,
+                Purusha::Prathama,
+                Vacana::Bahu,
+            ),
+            blocked: false,
+        };
+        let rule = TINANTA_RULES.iter().find(|r| r.id == "6.1.96").unwrap();
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.terms[ENDING].text, "yus");
+
+        // Declines: the thematic liṅ 3pl ending is `iyus` (7.2.80 rewrote yA
+        // -> iy); the char before `us` is `y`, not a/ā, so nothing changes.
+        let mut q = Prakriya {
+            terms: vec![Term::new("Bav"), Term::new("a"), Term::new("iyus")],
+            log: vec![],
+            ctx: Context::new(
+                Lakara::VidhiLin,
+                Pada::Parasmaipada,
+                Purusha::Prathama,
+                Vacana::Bahu,
+            ),
+            blocked: false,
+        };
+        assert!(!(rule.apply)(&mut q));
+        assert_eq!(q.terms[ENDING].text, "iyus");
+    }
+
+    #[test]
+    fn savarna_dirgha_adadi_lin_1sg_arm() {
+        let rule = TINANTA_RULES.iter().find(|r| r.id == "6.1.101").unwrap();
+
+        // Fires: adādi liṅ 1sg ending `yAam` (śap empty) -> `yAm`.
+        let mut p = Prakriya {
+            terms: vec![Term::new("yA"), Term::new(""), Term::new("yAam")],
+            log: vec![],
+            ctx: Context::new(
+                Lakara::VidhiLin,
+                Pada::Parasmaipada,
+                Purusha::Uttama,
+                Vacana::Eka,
+            ),
+            blocked: false,
+        };
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.terms[ENDING].text, "yAm");
+
+        // Declines: the `yA` of `yAt` (2sg-shape) is followed by a consonant,
+        // not a vowel, so no savarṇa coalescence.
+        let mut q = Prakriya {
+            terms: vec![Term::new("yA"), Term::new(""), Term::new("yAt")],
+            log: vec![],
+            ctx: Context::new(
+                Lakara::VidhiLin,
+                Pada::Parasmaipada,
+                Purusha::Prathama,
+                Vacana::Eka,
+            ),
+            blocked: false,
+        };
+        assert!(!(rule.apply)(&mut q));
+        assert_eq!(q.terms[ENDING].text, "yAt");
+
+        // Declines: thematic liṅ (śap = `a`, non-empty) is never touched by
+        // this arm — the SHAP-empty guard is what scopes it to adādi.
+        let mut r = Prakriya {
+            terms: vec![Term::new("Bav"), Term::new("a"), Term::new("iyam")],
+            log: vec![],
+            ctx: Context::new(
+                Lakara::VidhiLin,
+                Pada::Parasmaipada,
+                Purusha::Uttama,
+                Vacana::Eka,
+            ),
+            blocked: false,
+        };
+        assert!(!(rule.apply)(&mut r));
+        assert_eq!(r.terms[ENDING].text, "iyam");
+    }
+
+    // --- 6.1.101 adAdi vidhiliG 1sg arm: `len() > ENDING` boundary pin ----
+    //
+    // The 1sg arm's guard (line ~1025) is `len() > ENDING && lakara ==
+    // VidhiLin && SHAP.is_empty() && ENDING.starts_with("yA") && ...`. A
+    // 2-term Prakriya (aGga "yA" + an empty Sap slot, no ENDING term at
+    // all) makes `len() > ENDING` (2 > 2) false in the original, so the
+    // if-block short-circuits before ever indexing terms[ENDING]; control
+    // falls through the second (pre-adAdi) arm (also guarded by the same
+    // `len() > ENDING`, equally false) to the third (thematic) branch,
+    // whose `!SHAP.text.ends_with('a')` is true for an empty SHAP and
+    // short-circuits the `||` there too -- so the original returns false
+    // with no panic. Unlike the existing two-term regression test for the
+    // adAdi arm above, this one pins the lakara to VidhiLin: the `>` ->
+    // `>=` mutant needs `lakara == VidhiLin` to be true to reach its
+    // fourth conjunct, which indexes the nonexistent terms[ENDING] (index
+    // 2 on a 2-element Vec) and panics. A default-lakara (Lat) Prakriya
+    // would let the mutant's second conjunct short-circuit first and
+    // never distinguish it -- this is why the earlier two-term test alone
+    // didn't kill this mutant.
+    #[test]
+    fn savarna_dirgha_adadi_lin_1sg_arm_two_term_prakriya_does_not_panic() {
+        let mut p = Prakriya {
+            terms: vec![Term::new("yA"), Term::new("")],
+            log: vec![],
+            ctx: Context::new(
+                Lakara::VidhiLin,
+                Pada::Parasmaipada,
+                Purusha::Uttama,
+                Vacana::Eka,
+            ),
+            blocked: false,
+        };
+        let rule = TINANTA_RULES.iter().find(|r| r.id == "6.1.101").unwrap();
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "yA");
+    }
+
+    // --- 6.1.96 usyapadAntAt: `n - 3` not `n / 3` boundary pin -------------
+    //
+    // The only real firing ending is `yAus`/`vAus` (n=4), where n-3=1
+    // equals n/3=1 (integer division) -- the two expressions are
+    // indistinguishable at that length, which is why the existing
+    // `usyapadantat_drops_a_before_us_and_spares_iyus` test alone doesn't
+    // kill the `-` -> `/` mutant on `e.chars().take(n - 3)`. A synthetic
+    // 5-char ending "yAaus" (y,A,a,u,s) still satisfies the guard
+    // (ends_with "us"; char at n-3=index 2 is 'a') but separates the two
+    // arithmetic expressions: original take(n-3)=take(2)="yA" -> "yAus";
+    // mutant take(n/3)=take(1)="y" -> "yus".
+    #[test]
+    fn usyapadantat_uses_n_minus_3_not_n_over_3() {
+        let mut p = Prakriya {
+            terms: vec![Term::new("yA"), Term::new(""), Term::new("yAaus")],
+            log: vec![],
+            ctx: Context::new(
+                Lakara::VidhiLin,
+                Pada::Parasmaipada,
+                Purusha::Prathama,
+                Vacana::Bahu,
+            ),
+            blocked: false,
+        };
+        let rule = TINANTA_RULES.iter().find(|r| r.id == "6.1.96").unwrap();
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.terms[ENDING].text, "yAus");
     }
 }
