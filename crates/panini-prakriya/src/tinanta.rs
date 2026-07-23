@@ -1040,6 +1040,35 @@ pub static TINANTA_RULES: &[Rule] = &[
             true
         },
     },
+    // 6.1.96 usyapadāntāt: an a/ā immediately before the ending `us` is
+    // elided (a single substitution in the ekaḥ pūrvaparayoḥ section). Fires
+    // only for adādi vidhiliṅ 3pl: after 7.2.79 strips yāsuṭ's s, the ending
+    // is `yAus`, and here the ā before `us` drops -> `yus` -> yA + yuH.
+    // Inert for the thematic gaṇas: 7.2.80 has already rewritten their liṅ
+    // 3pl ending to `iyus`, whose segment before `us` is `y`, not a/ā.
+    Rule {
+        id: "6.1.96",
+        name: "usyapadAntAt",
+        kind: RuleKind::Vidhi,
+        apply: |p| {
+            let e = &p.terms[ENDING].text;
+            if !e.ends_with("us") {
+                return false;
+            }
+            let n = e.chars().count();
+            // the char immediately before the final `us` (None if the ending
+            // is just "us", which wrapping_sub keeps panic-free)
+            let pre = e.chars().nth(n.wrapping_sub(3));
+            if !matches!(pre, Some('a') | Some('A')) {
+                return false;
+            }
+            let before = p.snapshot();
+            let kept: String = e.chars().take(n - 3).collect();
+            p.terms[ENDING].text = format!("{kept}us");
+            p.record("6.1.96", "usyapadAntAt", before);
+            true
+        },
+    },
     // 6.1.90 āṭaś ca: āṭ + a following vowel yield a single vṛddhi. Two
     // shapes, one sūtra:
     // - Aṅga arm (laṅ, Task 8): 6.4.72's āṭ + the root's initial vowel.
@@ -2675,5 +2704,41 @@ mod tests {
         let rule = TINANTA_RULES.iter().find(|r| r.id == "8.2.77").unwrap();
         assert!((rule.apply)(&mut p));
         assert_eq!(p.terms[ANGA].text, "aBiUr");
+    }
+
+    #[test]
+    fn usyapadantat_drops_a_before_us_and_spares_iyus() {
+        // Fires: after 7.2.79 the adādi liṅ 3pl ending is `yAus`; the ā
+        // before `us` drops -> `yus`.
+        let mut p = Prakriya {
+            terms: vec![Term::new("yA"), Term::new(""), Term::new("yAus")],
+            log: vec![],
+            ctx: Context::new(
+                Lakara::VidhiLin,
+                Pada::Parasmaipada,
+                Purusha::Prathama,
+                Vacana::Bahu,
+            ),
+            blocked: false,
+        };
+        let rule = TINANTA_RULES.iter().find(|r| r.id == "6.1.96").unwrap();
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.terms[ENDING].text, "yus");
+
+        // Declines: the thematic liṅ 3pl ending is `iyus` (7.2.80 rewrote yA
+        // -> iy); the char before `us` is `y`, not a/ā, so nothing changes.
+        let mut q = Prakriya {
+            terms: vec![Term::new("Bav"), Term::new("a"), Term::new("iyus")],
+            log: vec![],
+            ctx: Context::new(
+                Lakara::VidhiLin,
+                Pada::Parasmaipada,
+                Purusha::Prathama,
+                Vacana::Bahu,
+            ),
+            blocked: false,
+        };
+        assert!(!(rule.apply)(&mut q));
+        assert_eq!(q.terms[ENDING].text, "iyus");
     }
 }
