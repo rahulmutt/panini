@@ -1413,13 +1413,28 @@ mod tests {
     fn adadi_luk_present_no_junction_cells() {
         // ā-final adādi roots: śap is luk'd (2.4.72), the ending attaches to
         // the root directly. These cells need only the luk (no ā+a junction).
-        assert_eq!(form_g("yA", Lakara::Lat, Purusha::Prathama, Vacana::Eka), "yAti");
-        assert_eq!(form_g("yA", Lakara::Lat, Purusha::Madhyama, Vacana::Eka), "yAsi");
-        assert_eq!(form_g("yA", Lakara::Lat, Purusha::Uttama, Vacana::Eka), "yAmi");
+        assert_eq!(
+            form_g("yA", Lakara::Lat, Purusha::Prathama, Vacana::Eka),
+            "yAti"
+        );
+        assert_eq!(
+            form_g("yA", Lakara::Lat, Purusha::Madhyama, Vacana::Eka),
+            "yAsi"
+        );
+        assert_eq!(
+            form_g("yA", Lakara::Lat, Purusha::Uttama, Vacana::Eka),
+            "yAmi"
+        );
         // laṅ: aṭ-augment (yā is consonant-initial) → ayā; ending attaches.
-        assert_eq!(form_g("yA", Lakara::Lan, Purusha::Prathama, Vacana::Eka), "ayAt");
+        assert_eq!(
+            form_g("yA", Lakara::Lan, Purusha::Prathama, Vacana::Eka),
+            "ayAt"
+        );
         // loṭ 2sg: hi does NOT elide after ā (6.4.105 needs short a) → yāhi.
-        assert_eq!(form_g("yA", Lakara::Lot, Purusha::Madhyama, Vacana::Eka), "yAhi");
+        assert_eq!(
+            form_g("yA", Lakara::Lot, Purusha::Madhyama, Vacana::Eka),
+            "yAhi"
+        );
     }
 
     #[test]
