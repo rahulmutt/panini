@@ -961,7 +961,8 @@ pub static TINANTA_RULES: &[Rule] = &[
             };
             // śap may be luk'd (adādi, 2.4.72): then it is empty and this rule
             // has no a-final vikaraṇa to work against. Decline rather than
-            // panic. (5b generalizes this to the root+ending junction for √śī.)
+            // panic. (when the consonant-final and ātmanepada adādi roots land,
+            // this will generalize to the root+ending junction for √śī.)
             let Some(next_first) = p.terms[SHAP].text.chars().next() else {
                 return false;
             };
@@ -1273,8 +1274,9 @@ pub static TINANTA_RULES: &[Rule] = &[
             }
             // Reads śap as "the segment following the aṅga"; when śap is luk'd
             // (adādi, 2.4.72) that is empty and the rule silently declines.
-            // Unreachable in 5a (no r/v-final adādi root); 5b must generalize
+            // Currently unreachable (no r/v-final adādi root in scope); when the
             // this to the root+ending junction, as 6.1.78 already flags.
+            // consonant-final and ātmanepada adādi roots land, this must generalize
             let Some(next) = p.terms.get(SHAP).and_then(|t| t.text.chars().next()) else {
                 return false;
             };
@@ -1546,7 +1548,7 @@ mod tests {
 
     #[test]
     fn adadi_vidhilin_derives_the_yas_yuh_reduction() {
-        // The slice 5a scope gate is gone (slice 5b): adādi × vidhiliṅ now
+        // adādi × vidhiliṅ now
         // derives through the full pipeline, running the yāsuṭ chain plus
         // the 6.1.96 / 6.1.101 junction reductions, for every cell and pada.
         for code in ["yA", "vA"] {
