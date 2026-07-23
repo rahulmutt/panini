@@ -1096,6 +1096,46 @@ fn every_form_validates_and_matches() {
     }
 }
 
+/// `every_form_validates_and_matches` only walks `PARADIGM`, so a root or
+/// lakāra added to the enumerable space without golden rows would be checked
+/// by nothing at all. This test closes that hole from the other side: every
+/// (root × lakāra) pair the analyzer enumerates must either be pinned by a
+/// `PARADIGM` block or appear in the explicit gated list below.
+#[test]
+fn paradigm_covers_every_enumerable_cell() {
+    // Slice 5a scope boundary, NOT an eternal exclusion: adādi × vidhiliṅ is
+    // gated in `panini_prakriya::derive` because the athematic optative
+    // (yās → yuḥ: yāyāt / yāyuḥ) lands in slice 5b. Those 18 cells derive
+    // nothing today, so they have no goldens. Slice 5b deletes the gate, adds
+    // the golden rows, and empties this list. It must never grow.
+    const GATED: &[(&str, &str)] = &[("yA", "viDiliN"), ("vA", "viDiliN")];
+
+    let pinned: Vec<(&str, &str)> = PARADIGM.iter().map(|(r, l, _)| (*r, *l)).collect();
+    let mut unpinned: Vec<(&str, &str)> = Vec::new();
+    for d in dhatus() {
+        for &lakara in panini_analyze::LAKARAS {
+            let pair = (d.code, panini::lakara_name(lakara));
+            if !pinned.contains(&pair) {
+                unpinned.push(pair);
+            }
+        }
+    }
+    unpinned.sort_unstable();
+    let mut gated = GATED.to_vec();
+    gated.sort_unstable();
+    assert_eq!(
+        unpinned, gated,
+        "every enumerable (root, lakara) pair needs golden rows in PARADIGM \
+         (or an explicit entry in GATED, which only slice 5b may touch)"
+    );
+    // Catches a duplicated PARADIGM block masking a missing one above.
+    assert_eq!(
+        PARADIGM.len() + GATED.len(),
+        dhatus().len() * panini_analyze::LAKARAS.len(),
+        "PARADIGM has a duplicate or stale (root, lakara) block"
+    );
+}
+
 #[test]
 fn known_nonforms_are_invalid() {
     let engine = Panini::new();
@@ -1146,6 +1186,19 @@ fn known_nonforms_are_invalid() {
         "yAte",   // parasmaipada yā with an ātmanepada ending (wrong pada)
         "vAte",   // parasmaipada vā with an ātmanepada ending (wrong pada)
         "yAati",  // luk skipped: śap's `a` left standing after ā (uncoalesced)
+        "yA",     // a bare root code is not a surface form
+        "vA",
+        // adādi × vidhiliṅ is GATED UNTIL SLICE 5b, not eternally invalid:
+        // these are the non-words the ungated pipeline emitted (the real
+        // forms are yāyuḥ and yāyām, from the yās → yuḥ reduction 5b adds).
+        // When 5b lands, these four move from "must be INVALID" to golden
+        // rows for the corrected forms; do not treat them as permanent
+        // negatives. yāyāt / vāyāt are deliberately absent — those the
+        // ungated pipeline already got right and 5b will derive.
+        "yAyAuH", // 3pl: real form yāyuḥ
+        "yAyAam", // 1sg: real form yāyām
+        "vAyAuH",
+        "vAyAam",
     ] {
         assert!(
             matches!(engine.check(bad).verdict, Verdict::Invalid),

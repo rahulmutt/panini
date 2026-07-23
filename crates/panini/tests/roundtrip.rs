@@ -19,8 +19,23 @@ fn generate_then_check_recovers_inputs() {
     for d in dhatus() {
         for &lakara in panini_analyze::LAKARAS {
             for &(pu, va) in CELLS {
-                let form = engine.derive(d, lakara, d.pada, pu, va).text();
+                let p = engine.derive(d, lakara, d.pada, pu, va);
+                let form = p.text();
                 let r = engine.check(&form);
+                if p.blocked {
+                    // The derivation was declined (adādi × vidhiliṅ is gated
+                    // until slice 5b; see `panini_prakriya::derive`), so there
+                    // is no surface form to recover. What must hold instead is
+                    // that its partial text is never accepted as a word.
+                    assert!(
+                        !r.analyses.iter().any(|a| a.dhatu == d.code),
+                        "blocked derivation leaked a form: {} {} -> {}",
+                        d.code,
+                        panini::lakara_name(lakara),
+                        form
+                    );
+                    continue;
+                }
                 assert!(
                     r.analyses
                         .iter()
