@@ -2805,4 +2805,70 @@ mod tests {
         assert!(!(rule.apply)(&mut r));
         assert_eq!(r.terms[ENDING].text, "iyam");
     }
+
+    // --- 6.1.101 adAdi vidhiliG 1sg arm: `len() > ENDING` boundary pin ----
+    //
+    // The 1sg arm's guard (line ~1025) is `len() > ENDING && lakara ==
+    // VidhiLin && SHAP.is_empty() && ENDING.starts_with("yA") && ...`. A
+    // 2-term Prakriya (aGga "yA" + an empty Sap slot, no ENDING term at
+    // all) makes `len() > ENDING` (2 > 2) false in the original, so the
+    // if-block short-circuits before ever indexing terms[ENDING]; control
+    // falls through the second (pre-adAdi) arm (also guarded by the same
+    // `len() > ENDING`, equally false) to the third (thematic) branch,
+    // whose `!SHAP.text.ends_with('a')` is true for an empty SHAP and
+    // short-circuits the `||` there too -- so the original returns false
+    // with no panic. Unlike the existing two-term regression test for the
+    // adAdi arm above, this one pins the lakara to VidhiLin: the `>` ->
+    // `>=` mutant needs `lakara == VidhiLin` to be true to reach its
+    // fourth conjunct, which indexes the nonexistent terms[ENDING] (index
+    // 2 on a 2-element Vec) and panics. A default-lakara (Lat) Prakriya
+    // would let the mutant's second conjunct short-circuit first and
+    // never distinguish it -- this is why the earlier two-term test alone
+    // didn't kill this mutant.
+    #[test]
+    fn savarna_dirgha_adadi_lin_1sg_arm_two_term_prakriya_does_not_panic() {
+        let mut p = Prakriya {
+            terms: vec![Term::new("yA"), Term::new("")],
+            log: vec![],
+            ctx: Context::new(
+                Lakara::VidhiLin,
+                Pada::Parasmaipada,
+                Purusha::Uttama,
+                Vacana::Eka,
+            ),
+            blocked: false,
+        };
+        let rule = TINANTA_RULES.iter().find(|r| r.id == "6.1.101").unwrap();
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "yA");
+    }
+
+    // --- 6.1.96 usyapadAntAt: `n - 3` not `n / 3` boundary pin -------------
+    //
+    // The only real firing ending is `yAus`/`vAus` (n=4), where n-3=1
+    // equals n/3=1 (integer division) -- the two expressions are
+    // indistinguishable at that length, which is why the existing
+    // `usyapadantat_drops_a_before_us_and_spares_iyus` test alone doesn't
+    // kill the `-` -> `/` mutant on `e.chars().take(n - 3)`. A synthetic
+    // 5-char ending "yAaus" (y,A,a,u,s) still satisfies the guard
+    // (ends_with "us"; char at n-3=index 2 is 'a') but separates the two
+    // arithmetic expressions: original take(n-3)=take(2)="yA" -> "yAus";
+    // mutant take(n/3)=take(1)="y" -> "yus".
+    #[test]
+    fn usyapadantat_uses_n_minus_3_not_n_over_3() {
+        let mut p = Prakriya {
+            terms: vec![Term::new("yA"), Term::new(""), Term::new("yAaus")],
+            log: vec![],
+            ctx: Context::new(
+                Lakara::VidhiLin,
+                Pada::Parasmaipada,
+                Purusha::Prathama,
+                Vacana::Bahu,
+            ),
+            blocked: false,
+        };
+        let rule = TINANTA_RULES.iter().find(|r| r.id == "6.1.96").unwrap();
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.terms[ENDING].text, "yAus");
+    }
 }
