@@ -352,3 +352,33 @@ fn yanti_trace_is_the_luk_plus_savarna_path() {
         ]
     );
 }
+
+#[test]
+fn yayuh_trace_is_the_adadi_us_junction_path() {
+    // √yā adādi vidhiliṅ 3pl: Ji -> jus (3.4.108) -> us, śap inserted
+    // (3.1.68) then luk'd (2.4.72), yāsuṭ's s elided (7.2.79) -> yAus, the ā
+    // before us drops (6.1.96) -> yus, word-final s -> visarga (8.3.15):
+    // yA + yuH -> yAyuH.
+    assert_eq!(
+        trace_for("yAyuH"),
+        vec![
+            "1.3.78", "3.4.78", "3.4.108", "1.3.9", "3.4.103", "3.1.68", "1.3.9", "2.4.72",
+            "7.2.79", "6.1.96", "8.3.15"
+        ]
+    );
+}
+
+#[test]
+fn yayam_trace_is_the_adadi_am_junction_path() {
+    // √yā adādi vidhiliṅ 1sg: mip -> am (3.4.101), yāsuṭ prefixed (3.4.103)
+    // -> yAsam, śap inserted (3.1.68) then luk'd (2.4.72), yāsuṭ's s elided
+    // (7.2.79) -> yAam, then yāsuṭ ā + ending a coalesce (6.1.101 new arm)
+    // -> yAm: yA + yAm -> yAyAm. No 8.3.15 (ends in m).
+    assert_eq!(
+        trace_for("yAyAm"),
+        vec![
+            "1.3.78", "3.4.78", "1.3.9", "3.4.101", "3.4.103", "3.1.68", "1.3.9", "2.4.72",
+            "7.2.79", "6.1.101"
+        ]
+    );
+}

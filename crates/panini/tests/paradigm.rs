@@ -1,5 +1,5 @@
 use panini::{Panini, Verdict};
-use panini_data::{Gana, Lakara, Pada, Purusha, Vacana, dhatus};
+use panini_data::{Lakara, Pada, Purusha, Vacana, dhatus};
 use panini_prakriya::derive;
 
 /// (root_code, lakara_label, [P.E, P.D, P.B, M.E, M.D, M.B, U.E, U.D, U.B]) in SLP1.
@@ -1043,6 +1043,20 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
             "vAtu", "vAtAm", "vAntu", "vAhi", "vAtam", "vAta", "vAni", "vAva", "vAma",
         ],
     ),
+    (
+        "yA",
+        "viDiliN",
+        [
+            "yAyAt", "yAyAtAm", "yAyuH", "yAyAH", "yAyAtam", "yAyAta", "yAyAm", "yAyAva", "yAyAma",
+        ],
+    ),
+    (
+        "vA",
+        "viDiliN",
+        [
+            "vAyAt", "vAyAtAm", "vAyuH", "vAyAH", "vAyAtam", "vAyAta", "vAyAm", "vAyAva", "vAyAma",
+        ],
+    ),
 ];
 
 fn lan_a_form(code: &str, pu: Purusha, va: Vacana) -> String {
@@ -1103,36 +1117,12 @@ fn every_form_validates_and_matches() {
 /// `PARADIGM` block or appear in the explicit gated list below.
 #[test]
 fn paradigm_covers_every_enumerable_cell() {
-    // Slice 5a scope boundary, NOT an eternal exclusion: adādi × vidhiliṅ is
-    // gated in `panini_prakriya::derive` because the athematic optative's
-    // reduction of the sārvadhātuka yās to yā/yuḥ (yā + yuḥ → yāyuḥ, yā +
-    // yām → yāyām) lands in slice 5b. Those 18 cells derive nothing today,
-    // so they have no goldens. Slice 5b deletes the gate, adds the golden
-    // rows, and empties this list. It must never grow — see the machine
-    // guard below.
-    const GATED: &[(&str, &str)] = &[("yA", "viDiliN"), ("vA", "viDiliN")];
-
-    // Machine guard against `GATED` growing beyond the 5a scope boundary: a
-    // widened list (e.g. a whole root's four lakāras) would otherwise pass
-    // the two assertions below unnoticed. The gate only ever applies to
-    // adādi roots × vidhiliṅ, so pin that shape directly instead of relying
-    // on the comment above.
-    assert!(
-        GATED.len() <= 2,
-        "GATED grew beyond the adadi x vidhilin scope boundary: {GATED:?}"
-    );
-    for &(root, lakara) in GATED {
-        assert_eq!(
-            lakara, "viDiliN",
-            "GATED entry {root} has lakara {lakara}, expected viDiliN (the only gated lakara)"
-        );
-        assert!(
-            dhatus()
-                .iter()
-                .any(|d| d.code == root && matches!(d.gana, Gana::Adadi)),
-            "GATED entry {root} is not an adadi root"
-        );
-    }
+    // adādi × vidhiliṅ was gated in slice 5a and ungated in slice 5b; there
+    // are no gated cells any more. This constant stays (empty) so the two
+    // assertions below keep documenting that EVERY enumerable (root, lakara)
+    // pair must be pinned in PARADIGM — a future partial slice may repopulate
+    // it, but it must never silently hide a missing golden block.
+    const GATED: &[(&str, &str)] = &[];
 
     let pinned: Vec<(&str, &str)> = PARADIGM.iter().map(|(r, l, _)| (*r, *l)).collect();
     let mut unpinned: Vec<(&str, &str)> = Vec::new();
@@ -1212,17 +1202,12 @@ fn known_nonforms_are_invalid() {
         "yAati",  // luk skipped: śap's `a` left standing after ā (uncoalesced)
         "yA",     // a bare root code is not a surface form
         "vA",
-        // adādi × vidhiliṅ is GATED UNTIL SLICE 5b (see `panini_prakriya::
-        // derive`), but these four strings are not Sanskrit either way: they
-        // are the non-words the ungated pipeline emitted before the gate was
-        // added (the real forms are yāyuḥ and yāyām, from the yās → yuḥ
-        // reduction 5b adds). Today they exercise the gate; once 5b removes
-        // the gate they become the direct regression test that the athematic
-        // optative reduction actually ran instead of leaving yās unreduced.
-        // They stay pinned as permanent negatives — slice 5b adds yāyuḥ /
-        // yāyām (and the √vā pair) as new golden rows, it does not touch
-        // these. yāyāt / vāyāt are deliberately absent — those the ungated
-        // pipeline already got right and 5b will derive.
+        // These four are the non-words the pre-5b pipeline emitted for adādi
+        // vidhiliṅ before 6.1.96 / the 6.1.101 arm reduced the yāsuṭ-ā + vowel
+        // junction. They stay pinned INVALID as the regression that the
+        // reduction actually RAN: the real forms are yAyuH / yAyAm (and the vā
+        // pair), now pinned as goldens in PARADIGM. If any of these four ever
+        // validates, the junction reduction regressed.
         "yAyAuH", // 3pl: real form yāyuḥ
         "yAyAam", // 1sg: real form yāyām
         "vAyAuH",

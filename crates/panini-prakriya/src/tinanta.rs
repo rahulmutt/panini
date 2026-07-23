@@ -1361,22 +1361,6 @@ pub fn derive(
         }
         t
     });
-    // ---- SLICE 5a SCOPE BOUNDARY (not a sūtra; delete in slice 5b) ----
-    // adādi × vidhiliṅ is not implemented. The athematic optative reduces
-    // the sārvadhātuka yās to yā/yuḥ (yā + yuḥ → yāyuḥ, yā + yām → yāyām);
-    // slice 5a implements none of that, so running the pipeline here would
-    // emit plausible-looking non-words (yāyāuḥ, yāyāam) and the analyzer
-    // would report them VALID. Declining to derive is the honest answer:
-    // these cells report INVALID, i.e. "not derivable within the covered
-    // grammar". This is a scope gate, deliberately kept OUT of
-    // `TINANTA_RULES` so it is not mistaken for grammar.
-    // Slice 5b lands the yās → yuḥ reduction, deletes this block, and
-    // empties `GATED` in
-    // `crates/panini/tests/paradigm.rs::paradigm_covers_every_enumerable_cell`.
-    if matches!(dhatu.gana, Gana::Adadi) && matches!(lakara, Lakara::VidhiLin) {
-        p.blocked = true;
-        return p;
-    }
     run_pipeline(&mut p, TINANTA_RULES);
     p
 }
@@ -1561,33 +1545,32 @@ mod tests {
     }
 
     #[test]
-    fn adadi_vidhilin_is_gated_until_slice_5b() {
-        // Scope gate, not grammar: the athematic optative (yās → yuḥ) is 5b.
-        // Until then adādi × vidhiliṅ must derive NOTHING — no pipeline run,
-        // no rules logged — rather than emit the non-words yāyāuḥ / yāyāam.
+    fn adadi_vidhilin_derives_the_yas_yuh_reduction() {
+        // The slice 5a scope gate is gone (slice 5b): adādi × vidhiliṅ now
+        // derives through the full pipeline, running the yāsuṭ chain plus
+        // the 6.1.96 / 6.1.101 junction reductions, for every cell and pada.
         for code in ["yA", "vA"] {
             let d = dhatus().iter().find(|d| d.code == code).unwrap();
             for pu in [Purusha::Prathama, Purusha::Madhyama, Purusha::Uttama] {
                 for va in [Vacana::Eka, Vacana::Dvi, Vacana::Bahu] {
                     let p = derive(d, Lakara::VidhiLin, d.pada, pu, va);
-                    assert!(p.blocked, "{code} vidhiliṅ {pu:?} {va:?} was derived");
-                    assert!(p.log.is_empty(), "{code} vidhiliṅ ran rules");
+                    assert!(!p.blocked, "{code} vidhiliṅ {pu:?} {va:?} was blocked");
+                    assert!(!p.log.is_empty(), "{code} vidhiliṅ ran no rules");
+                    assert!(
+                        !p.text().is_empty(),
+                        "{code} vidhiliṅ {pu:?} {va:?} is empty"
+                    );
                 }
             }
         }
-        // The gate is narrow: adādi in the three covered lakāras and every
-        // other gaṇa in vidhiliṅ are untouched.
-        let ya = dhatus().iter().find(|d| d.code == "yA").unwrap();
-        for la in [Lakara::Lat, Lakara::Lan, Lakara::Lot] {
-            let p = derive(ya, la, ya.pada, Purusha::Prathama, Vacana::Eka);
-            assert!(!p.blocked, "adādi {la:?} must still derive");
-        }
-        for code in ["BU", "div", "tud"] {
-            let d = dhatus().iter().find(|d| d.code == code).unwrap();
-            let p = derive(d, Lakara::VidhiLin, d.pada, Purusha::Prathama, Vacana::Eka);
-            assert!(!p.blocked, "{code} vidhiliṅ must still derive");
-            assert!(!p.text().is_empty());
-        }
+        assert_eq!(
+            form_g("yA", Lakara::VidhiLin, Purusha::Prathama, Vacana::Bahu),
+            "yAyuH"
+        );
+        assert_eq!(
+            form_g("yA", Lakara::VidhiLin, Purusha::Uttama, Vacana::Eka),
+            "yAyAm"
+        );
     }
 
     #[test]
