@@ -694,6 +694,32 @@ pub static TINANTA_RULES: &[Rule] = &[
             true
         },
     },
+    // 2.4.72 adiprabhṛtibhyaḥ śapaḥ: adādi (gaṇa 2) luks the śap that 3.1.68
+    // inserts, so the tiṅ ending attaches directly to the root. Modelled by
+    // emptying the śap term's text (the term stays, keeping ENDING at index 2
+    // and text() = root + "" + ending). Guarded on Tag::Adadi and on a real
+    // śap being present, so it never touches divādi/tudādi (śyan/śa) or bhvādi
+    // that has already been processed differently.
+    Rule {
+        id: "2.4.72",
+        name: "adipraBftiByaH SapaH",
+        kind: RuleKind::Vidhi,
+        apply: |p| {
+            if !p.terms[ANGA].has(Tag::Adadi) {
+                return false;
+            }
+            if !(p.terms.len() > SHAP
+                && p.terms[SHAP].has(Tag::Vikarana)
+                && !p.terms[SHAP].text.is_empty())
+            {
+                return false;
+            }
+            let before = p.snapshot();
+            p.terms[SHAP].text = String::new();
+            p.record("2.4.72", "adipraBftiByaH SapaH", before);
+            true
+        },
+    },
     // 1.2.4 sārvadhātukam apit — second application, on the vikaraṇa. The
     // first application (above the boundary) tags apit ātmanepada endings;
     // this one tags the apit sārvadhātuka VIKARAṆA ṅit once it exists. śyan
@@ -919,13 +945,18 @@ pub static TINANTA_RULES: &[Rule] = &[
         kind: RuleKind::Vidhi,
         apply: |p| {
             let anga_last = p.terms[ANGA].text.chars().last().unwrap();
-            let next_first = p.terms[SHAP].text.chars().next().unwrap();
             let sub = match anga_last {
                 'e' => "ay",
                 'o' => "av",
                 'E' => "Ay",
                 'O' => "Av",
                 _ => return false,
+            };
+            // śap may be luk'd (adādi, 2.4.72): then it is empty and this rule
+            // has no a-final vikaraṇa to work against. Decline rather than
+            // panic. (5b generalizes this to the root+ending junction for √śī.)
+            let Some(next_first) = p.terms[SHAP].text.chars().next() else {
+                return false;
             };
             if !is_vowel(next_first) {
                 return false;
@@ -1376,6 +1407,19 @@ mod tests {
             form_g("div", Lakara::Lan, Purusha::Prathama, Vacana::Eka),
             "adIvyat"
         );
+    }
+
+    #[test]
+    fn adadi_luk_present_no_junction_cells() {
+        // ā-final adādi roots: śap is luk'd (2.4.72), the ending attaches to
+        // the root directly. These cells need only the luk (no ā+a junction).
+        assert_eq!(form_g("yA", Lakara::Lat, Purusha::Prathama, Vacana::Eka), "yAti");
+        assert_eq!(form_g("yA", Lakara::Lat, Purusha::Madhyama, Vacana::Eka), "yAsi");
+        assert_eq!(form_g("yA", Lakara::Lat, Purusha::Uttama, Vacana::Eka), "yAmi");
+        // laṅ: aṭ-augment (yā is consonant-initial) → ayā; ending attaches.
+        assert_eq!(form_g("yA", Lakara::Lan, Purusha::Prathama, Vacana::Eka), "ayAt");
+        // loṭ 2sg: hi does NOT elide after ā (6.4.105 needs short a) → yāhi.
+        assert_eq!(form_g("yA", Lakara::Lot, Purusha::Madhyama, Vacana::Eka), "yAhi");
     }
 
     #[test]
