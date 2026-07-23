@@ -1,5 +1,5 @@
 use panini::{Panini, Verdict};
-use panini_data::{Lakara, Pada, Purusha, Vacana, dhatus};
+use panini_data::{Gana, Lakara, Pada, Purusha, Vacana, dhatus};
 use panini_prakriya::derive;
 
 /// (root_code, lakara_label, [P.E, P.D, P.B, M.E, M.D, M.B, U.E, U.D, U.B]) in SLP1.
@@ -1001,6 +1001,48 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
             "guremahi",
         ],
     ),
+    (
+        "yA",
+        "laT",
+        [
+            "yAti", "yAtaH", "yAnti", "yAsi", "yATaH", "yATa", "yAmi", "yAvaH", "yAmaH",
+        ],
+    ),
+    (
+        "vA",
+        "laT",
+        [
+            "vAti", "vAtaH", "vAnti", "vAsi", "vATaH", "vATa", "vAmi", "vAvaH", "vAmaH",
+        ],
+    ),
+    (
+        "yA",
+        "laN",
+        [
+            "ayAt", "ayAtAm", "ayAn", "ayAH", "ayAtam", "ayAta", "ayAm", "ayAva", "ayAma",
+        ],
+    ),
+    (
+        "vA",
+        "laN",
+        [
+            "avAt", "avAtAm", "avAn", "avAH", "avAtam", "avAta", "avAm", "avAva", "avAma",
+        ],
+    ),
+    (
+        "yA",
+        "loT",
+        [
+            "yAtu", "yAtAm", "yAntu", "yAhi", "yAtam", "yAta", "yAni", "yAva", "yAma",
+        ],
+    ),
+    (
+        "vA",
+        "loT",
+        [
+            "vAtu", "vAtAm", "vAntu", "vAhi", "vAtam", "vAta", "vAni", "vAva", "vAma",
+        ],
+    ),
 ];
 
 fn lan_a_form(code: &str, pu: Purusha, va: Vacana) -> String {
@@ -1054,6 +1096,70 @@ fn every_form_validates_and_matches() {
     }
 }
 
+/// `every_form_validates_and_matches` only walks `PARADIGM`, so a root or
+/// lakāra added to the enumerable space without golden rows would be checked
+/// by nothing at all. This test closes that hole from the other side: every
+/// (root × lakāra) pair the analyzer enumerates must either be pinned by a
+/// `PARADIGM` block or appear in the explicit gated list below.
+#[test]
+fn paradigm_covers_every_enumerable_cell() {
+    // Slice 5a scope boundary, NOT an eternal exclusion: adādi × vidhiliṅ is
+    // gated in `panini_prakriya::derive` because the athematic optative's
+    // reduction of the sārvadhātuka yās to yā/yuḥ (yā + yuḥ → yāyuḥ, yā +
+    // yām → yāyām) lands in slice 5b. Those 18 cells derive nothing today,
+    // so they have no goldens. Slice 5b deletes the gate, adds the golden
+    // rows, and empties this list. It must never grow — see the machine
+    // guard below.
+    const GATED: &[(&str, &str)] = &[("yA", "viDiliN"), ("vA", "viDiliN")];
+
+    // Machine guard against `GATED` growing beyond the 5a scope boundary: a
+    // widened list (e.g. a whole root's four lakāras) would otherwise pass
+    // the two assertions below unnoticed. The gate only ever applies to
+    // adādi roots × vidhiliṅ, so pin that shape directly instead of relying
+    // on the comment above.
+    assert!(
+        GATED.len() <= 2,
+        "GATED grew beyond the adadi x vidhilin scope boundary: {GATED:?}"
+    );
+    for &(root, lakara) in GATED {
+        assert_eq!(
+            lakara, "viDiliN",
+            "GATED entry {root} has lakara {lakara}, expected viDiliN (the only gated lakara)"
+        );
+        assert!(
+            dhatus()
+                .iter()
+                .any(|d| d.code == root && matches!(d.gana, Gana::Adadi)),
+            "GATED entry {root} is not an adadi root"
+        );
+    }
+
+    let pinned: Vec<(&str, &str)> = PARADIGM.iter().map(|(r, l, _)| (*r, *l)).collect();
+    let mut unpinned: Vec<(&str, &str)> = Vec::new();
+    for d in dhatus() {
+        for &lakara in panini_analyze::LAKARAS {
+            let pair = (d.code, panini::lakara_name(lakara));
+            if !pinned.contains(&pair) {
+                unpinned.push(pair);
+            }
+        }
+    }
+    unpinned.sort_unstable();
+    let mut gated = GATED.to_vec();
+    gated.sort_unstable();
+    assert_eq!(
+        unpinned, gated,
+        "every enumerable (root, lakara) pair needs golden rows in PARADIGM \
+         (or an explicit entry in GATED, which only slice 5b may touch)"
+    );
+    // Catches a duplicated PARADIGM block masking a missing one above.
+    assert_eq!(
+        PARADIGM.len() + GATED.len(),
+        dhatus().len() * panini_analyze::LAKARAS.len(),
+        "PARADIGM has a duplicate or stale (root, lakara) block"
+    );
+}
+
 #[test]
 fn known_nonforms_are_invalid() {
     let engine = Panini::new();
@@ -1098,6 +1204,29 @@ fn known_nonforms_are_invalid() {
         "manyati", // atmanepadin divādi root with a parasmaipada ending
         "vidyati", // atmanepadin divādi root, parasmaipada ending
         "tudate",  // parasmaipada tudādi root with an atmanepada ending
+        // adādi (gaṇa 2): śap is luk'd (2.4.72). A retained-śap surface must
+        // not derive, and the parasmaipada roots reject ātmanepada endings.
+        "yAyati", // yā with a spurious y-śap — no derivation yields it
+        "yAte",   // parasmaipada yā with an ātmanepada ending (wrong pada)
+        "vAte",   // parasmaipada vā with an ātmanepada ending (wrong pada)
+        "yAati",  // luk skipped: śap's `a` left standing after ā (uncoalesced)
+        "yA",     // a bare root code is not a surface form
+        "vA",
+        // adādi × vidhiliṅ is GATED UNTIL SLICE 5b (see `panini_prakriya::
+        // derive`), but these four strings are not Sanskrit either way: they
+        // are the non-words the ungated pipeline emitted before the gate was
+        // added (the real forms are yāyuḥ and yāyām, from the yās → yuḥ
+        // reduction 5b adds). Today they exercise the gate; once 5b removes
+        // the gate they become the direct regression test that the athematic
+        // optative reduction actually ran instead of leaving yās unreduced.
+        // They stay pinned as permanent negatives — slice 5b adds yāyuḥ /
+        // yāyām (and the √vā pair) as new golden rows, it does not touch
+        // these. yāyāt / vāyāt are deliberately absent — those the ungated
+        // pipeline already got right and 5b will derive.
+        "yAyAuH", // 3pl: real form yāyuḥ
+        "yAyAam", // 1sg: real form yāyām
+        "vAyAuH",
+        "vAyAam",
     ] {
         assert!(
             matches!(engine.check(bad).verdict, Verdict::Invalid),

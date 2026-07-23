@@ -24,13 +24,19 @@
   target under `crates/panini-lipi/fuzz` legitimately omits it, since it uses
   `#![no_main]` plus the libfuzzer harness macro).
 - Grammar changes are gated by the golden paradigm test
-  (`crates/panini/tests/paradigm.rs`, 864 forms across
-  laṭ/laṅ/loṭ/vidhiliṅ × parasmaipada/ātmanepada × bhvādi/divādi/tudādi)
+  (`crates/panini/tests/paradigm.rs`, 918 forms; bhvādi/divādi/tudādi are
+    complete across laṭ/laṅ/loṭ/vidhiliṅ × parasmaipada/ātmanepada, and adādi
+    (gaṇa 2) is being added — slice 5a covers √yā/√vā in laṭ/laṅ/loṭ; the
+    consonant-final/ātmanepada roots and vidhiliṅ land in slice 5b)
   and by the ordered-trace test (`crates/panini/tests/trace.rs`), which pins
   rule order. Surface forms and trace order there are the source of truth;
   sūtra ids/names in traces must match the cited reference (ashtadhyayi.com).
 - New grammar goes in `TINANTA_RULES` as a self-guarding `Rule`, not as a
-  branch inside `derive`.
+  branch inside `derive`. The one adjudicated exception is the slice 5a
+  scope gate in `crates/panini-prakriya/src/tinanta.rs::derive` (adādi ×
+  vidhiliṅ, deleted in slice 5b): it is not grammar, just an "unimplemented,
+  decline honestly" boundary, so it deliberately stays a branch instead of a
+  `Rule`. Do not "fix" it back into `TINANTA_RULES`.
 - The `panini-cli` binary has a single subcommand, `check` (flags `--trace`,
   `--json`, `--out`, `--in`). There is no `derive` subcommand in v1. `--in auto`
   (the default) auto-detects the input transliteration scheme; passing an

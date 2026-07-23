@@ -14,9 +14,15 @@ pub struct Prakriya {
     pub terms: Vec<Term>,
     pub log: Vec<RuleStep>,
     pub ctx: Context,
-    /// Set when a samjna/sanction rule determines the requested derivation
-    /// is impossible (wrong pada for the root). The pipeline stops; the
-    /// prakriya's text can never equal a real surface form.
+    /// Set when the requested derivation must not be reported: either a
+    /// samjna/sanction rule determines it is impossible (wrong pada for the
+    /// root), or a scope gate outside the rule pipeline declines a
+    /// derivation that is not yet implemented (e.g. adādi × vidhiliṅ; see
+    /// `panini_prakriya::derive`). Either way the pipeline stops with
+    /// partial, not-a-real-surface-form text — that text can still
+    /// collide with a genuine input string, so callers (e.g.
+    /// `Panini::check`) must check `!blocked` before matching it, not rely
+    /// on the text alone.
     pub blocked: bool,
 }
 
