@@ -2457,6 +2457,67 @@ mod tests {
         assert_eq!(p.terms[ANGA].text, "kf");
     }
 
+    // --- 2.4.72: `len() > SHAP` boundary + guard-order pins ----------------
+    //
+    // 2.4.72's guard is `len() > SHAP && has(Vikarana) && !text.is_empty()`,
+    // each conjunct short-circuiting before the next would index the
+    // not-yet-inserted vikaraNa slot. Every real derivation reaches this
+    // rule only after 3.1.68 has already inserted Sap (terms.len() >= 2),
+    // so `> SHAP` vs `>= SHAP`, and `&&` vs `||` at either join, never
+    // diverge on any golden or negative derivation. Pin the boundary
+    // directly: a single-term Prakriya (aGga only, tagged Adadi so the
+    // outer gana guard passes) makes `len() > SHAP` (1 > 1) false, so the
+    // original short-circuits before ever touching terms[SHAP]. Each of
+    // the three mutants below removes a different short-circuit and
+    // indexes terms[SHAP] out of bounds on this 1-element Vec, panicking:
+    //   - `>` -> `>=`: `1 >= 1` is true, so `has(Vikarana)` is evaluated.
+    //   - first `&&` -> `||`: `len() > SHAP` (false) forces evaluation of
+    //     `has(Vikarana)` to resolve the OR.
+    //   - second `&&` -> `||`: `(len() > SHAP && has(Vikarana))` (false)
+    //     forces evaluation of `!text.is_empty()` to resolve the OR.
+    // One construction catches all three.
+    #[test]
+    fn adiprabhrtibhyah_sapah_single_term_anga_does_not_panic() {
+        let mut anga = Term::new("kf");
+        anga.add(Tag::Adadi);
+        let mut p = Prakriya {
+            terms: vec![anga],
+            log: vec![],
+            ..Default::default()
+        };
+        let rule = TINANTA_RULES.iter().find(|r| r.id == "2.4.72").unwrap();
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "kf");
+    }
+
+    // --- 6.1.101 adAdi arm: `len() > ENDING` boundary pin ------------------
+    //
+    // The adAdi arm's own guard is `len() > ENDING && SHAP.is_empty() &&
+    // ANGA.ends_with('A') && matches!(ENDING.chars().next(), ...)`. Build a
+    // 2-term Prakriya (aGga "yA" + an empty, luk'd Sap slot, no ending term
+    // at all) so `len() > ENDING` (2 > 2) is false in the original: the
+    // if-block short-circuits before ever indexing terms[ENDING], and
+    // control falls to the rule's second (pre-adAdi) branch, whose own
+    // `!SHAP.text.ends_with('a')` is true for an empty SHAP (`""` does not
+    // end with `'a'`) and short-circuits the `||` there too — so the
+    // original returns false with no panic, on only 2 terms. The `>` ->
+    // `>=` mutant lets the first if-block through at `len() == ENDING`,
+    // and its fourth conjunct indexes the nonexistent terms[ENDING],
+    // panicking.
+    #[test]
+    fn akah_savarne_dirghah_adadi_arm_two_term_anga_does_not_panic() {
+        let mut anga = Term::new("yA");
+        anga.add(Tag::Adadi);
+        let mut p = Prakriya {
+            terms: vec![anga, Term::new("")],
+            log: vec![],
+            ..Default::default()
+        };
+        let rule = TINANTA_RULES.iter().find(|r| r.id == "6.1.101").unwrap();
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "yA");
+    }
+
     // --- 7.3.84 sArvaDAtukArDaDAtukayoH: 1.1.5 (Girit) guard pins ---------
     //
     // No curated divAdi/tudAdi root has a vowel-final aGga (they are all
