@@ -1003,7 +1003,9 @@ pub static TINANTA_RULES: &[Rule] = &[
         },
     },
     // 6.1.101 akaḥ savarṇe dīrghaḥ: an ak vowel followed by a savarṇa vowel
-    // coalesces into the corresponding long vowel. Two arms:
+    // coalesces into the corresponding long vowel. Three arms:
+    //   - adādi vidhiliṅ 1sg (śap luk'd, 7.2.80 declined): the yāsuṭ ā + the
+    //     ending a coalesce inside the ending, yAam → yAm (→ yAyAm);
     //   - adādi (śap luk'd by 2.4.72): the aṅga's own final `A` meets an
     //     a/ā-initial ending, yA + anti → yAnti, yA + Ani → yAni;
     //   - bhvādi &c.: śap `a` + the ending's initial `A` (from 3.4.92 āḍ),
@@ -1013,6 +1015,31 @@ pub static TINANTA_RULES: &[Rule] = &[
         name: "akaH savarRe dIrGaH",
         kind: RuleKind::Vidhi,
         apply: |p| {
+            // adādi vidhiliṅ 1sg: after 7.2.79 the ending is `yAam` (yāsuṭ ā +
+            // the uttama-eka `am`). 7.2.80 would have rewritten `yA`->`iy` for
+            // a thematic gaṇa, but śap is luk'd so it declined; the yāsuṭ ā and
+            // the ending a are savarṇa -> a single ā: yAam -> yAm. Guard is
+            // tight: VidhiLin + empty śap + a `yA`+vowel ending (never `yAt`/
+            // `yAs`/... whose yA is followed by a consonant).
+            if p.terms.len() > ENDING
+                && matches!(p.ctx.lakara, Lakara::VidhiLin)
+                && p.terms[SHAP].text.is_empty()
+                && p.terms[ENDING].text.starts_with("yA")
+                && matches!(p.terms[ENDING].text.chars().nth(2), Some('a') | Some('A'))
+            {
+                let before = p.snapshot();
+                // drop the ending's third char (the a/A after `yA`)
+                let kept: String = p.terms[ENDING]
+                    .text
+                    .chars()
+                    .enumerate()
+                    .filter(|&(i, _)| i != 2)
+                    .map(|(_, c)| c)
+                    .collect();
+                p.terms[ENDING].text = kept;
+                p.record("6.1.101", "akaH savarRe dIrGaH", before);
+                return true;
+            }
             // adādi (śap luk'd by 2.4.72): the aṅga's own final ā meets an
             // a/ā-initial ending directly (no vikaraṇa buffer). ā + a/ā are
             // savarṇa → a single long ā. Keep the aṅga's ā, drop the ending's
@@ -2740,5 +2767,57 @@ mod tests {
         };
         assert!(!(rule.apply)(&mut q));
         assert_eq!(q.terms[ENDING].text, "iyus");
+    }
+
+    #[test]
+    fn savarna_dirgha_adadi_lin_1sg_arm() {
+        let rule = TINANTA_RULES.iter().find(|r| r.id == "6.1.101").unwrap();
+
+        // Fires: adādi liṅ 1sg ending `yAam` (śap empty) -> `yAm`.
+        let mut p = Prakriya {
+            terms: vec![Term::new("yA"), Term::new(""), Term::new("yAam")],
+            log: vec![],
+            ctx: Context::new(
+                Lakara::VidhiLin,
+                Pada::Parasmaipada,
+                Purusha::Uttama,
+                Vacana::Eka,
+            ),
+            blocked: false,
+        };
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.terms[ENDING].text, "yAm");
+
+        // Declines: the `yA` of `yAt` (2sg-shape) is followed by a consonant,
+        // not a vowel, so no savarṇa coalescence.
+        let mut q = Prakriya {
+            terms: vec![Term::new("yA"), Term::new(""), Term::new("yAt")],
+            log: vec![],
+            ctx: Context::new(
+                Lakara::VidhiLin,
+                Pada::Parasmaipada,
+                Purusha::Prathama,
+                Vacana::Eka,
+            ),
+            blocked: false,
+        };
+        assert!(!(rule.apply)(&mut q));
+        assert_eq!(q.terms[ENDING].text, "yAt");
+
+        // Declines: thematic liṅ (śap = `a`, non-empty) is never touched by
+        // this arm — the SHAP-empty guard is what scopes it to adādi.
+        let mut r = Prakriya {
+            terms: vec![Term::new("Bav"), Term::new("a"), Term::new("iyam")],
+            log: vec![],
+            ctx: Context::new(
+                Lakara::VidhiLin,
+                Pada::Parasmaipada,
+                Purusha::Uttama,
+                Vacana::Eka,
+            ),
+            blocked: false,
+        };
+        assert!(!(rule.apply)(&mut r));
+        assert_eq!(r.terms[ENDING].text, "iyam");
     }
 }
