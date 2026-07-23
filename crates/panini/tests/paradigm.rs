@@ -1140,6 +1140,12 @@ fn known_nonforms_are_invalid() {
         "manyati", // atmanepadin divādi root with a parasmaipada ending
         "vidyati", // atmanepadin divādi root, parasmaipada ending
         "tudate",  // parasmaipada tudādi root with an atmanepada ending
+        // adādi (gaṇa 2): śap is luk'd (2.4.72). A retained-śap surface must
+        // not derive, and the parasmaipada roots reject ātmanepada endings.
+        "yAyati", // yā with a spurious y-śap — no derivation yields it
+        "yAte",   // parasmaipada yā with an ātmanepada ending (wrong pada)
+        "vAte",   // parasmaipada vā with an ātmanepada ending (wrong pada)
+        "yAati",  // luk skipped: śap's `a` left standing after ā (uncoalesced)
     ] {
         assert!(
             matches!(engine.check(bad).verdict, Verdict::Invalid),

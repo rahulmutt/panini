@@ -35,6 +35,13 @@ as a tag on the aṅga term (`Tag::Divadi` / `Tag::Tudadi`, mirroring how
 itself is selected by 3.1.68 (śap, bhvādi), 3.1.69 (śyan, divādi), and 3.1.77
 (śa, tudādi).
 
+adādi (gaṇa 2) is being introduced, carried the same way via `Tag::Adadi`. It
+is the first gaṇa where the vikaraṇa is *luk'd*: 3.1.68 still inserts śap
+(bhvādi and adādi share the same vikaraṇa rule), and **2.4.72
+*adiprabhṛtibhyaḥ śapaḥ*** then empties it for adādi roots. The śap term is
+kept in place with empty text rather than removed, so the `ANGA`/`SHAP`/
+`ENDING` term indices stay stable for downstream rules.
+
 ## Rule trace
 Every applied sūtra is logged as a `RuleStep { sutra, name, before, after }`.
 The `check` result carries the full trace per analysis.
