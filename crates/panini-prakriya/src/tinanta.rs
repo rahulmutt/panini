@@ -1275,8 +1275,8 @@ pub static TINANTA_RULES: &[Rule] = &[
             // Reads śap as "the segment following the aṅga"; when śap is luk'd
             // (adādi, 2.4.72) that is empty and the rule silently declines.
             // Currently unreachable (no r/v-final adādi root in scope); when the
-            // this to the root+ending junction, as 6.1.78 already flags.
             // consonant-final and ātmanepada adādi roots land, this must generalize
+            // this to the root+ending junction, as 6.1.78 already flags.
             let Some(next) = p.terms.get(SHAP).and_then(|t| t.text.chars().next()) else {
                 return false;
             };

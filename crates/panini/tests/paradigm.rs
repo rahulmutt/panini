@@ -1140,7 +1140,7 @@ fn paradigm_covers_every_enumerable_cell() {
     assert_eq!(
         unpinned, gated,
         "every enumerable (root, lakara) pair needs golden rows in PARADIGM \
-         (or an explicit entry in GATED, for currently ungated grammar)"
+         (or an explicit entry in GATED, for a cell deliberately withheld from golden coverage)"
     );
     // Catches a duplicated PARADIGM block masking a missing one above.
     assert_eq!(
