@@ -312,7 +312,10 @@ mod tests {
 
     #[test]
     fn ad_is_registered_as_adadi_parasmaipada() {
-        let ad = dhatus().iter().find(|d| d.code == "ad").expect("√ad present");
+        let ad = dhatus()
+            .iter()
+            .find(|d| d.code == "ad")
+            .expect("√ad present");
         assert!(matches!(ad.gana, Gana::Adadi));
         assert!(matches!(ad.pada, Pada::Parasmaipada));
         assert_eq!(ad.artha, "BakzaRe");

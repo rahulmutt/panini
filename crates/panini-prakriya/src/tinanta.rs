@@ -3110,22 +3110,40 @@ mod tests {
     fn cartva_guard_is_khar_only_not_m_or_vowel() {
         // Over-application killer: d before `m` (admi) or vowel (adanti) must NOT
         // cartva-ize. Under-application killer: d before `t` MUST (atti, not adti).
-        assert_eq!(form_g("ad", Lakara::Lat, Purusha::Uttama, Vacana::Eka), "admi");
-        assert_eq!(form_g("ad", Lakara::Lat, Purusha::Prathama, Vacana::Bahu), "adanti");
-        assert_eq!(form_g("ad", Lakara::Lat, Purusha::Prathama, Vacana::Eka), "atti");
+        assert_eq!(
+            form_g("ad", Lakara::Lat, Purusha::Uttama, Vacana::Eka),
+            "admi"
+        );
+        assert_eq!(
+            form_g("ad", Lakara::Lat, Purusha::Prathama, Vacana::Bahu),
+            "adanti"
+        );
+        assert_eq!(
+            form_g("ad", Lakara::Lat, Purusha::Prathama, Vacana::Eka),
+            "atti"
+        );
     }
 
     #[test]
     fn her_dhih_guard_is_jhal_final_only() {
         // ā-final √yā loṭ 2sg keeps hi (yAhi), NOT *yADi: 6.4.101 needs a jhal.
-        assert_eq!(form_g("yA", Lakara::Lot, Purusha::Madhyama, Vacana::Eka), "yAhi");
+        assert_eq!(
+            form_g("yA", Lakara::Lot, Purusha::Madhyama, Vacana::Eka),
+            "yAhi"
+        );
     }
 
     #[test]
     fn a_augment_does_not_leak_into_dual_or_plural() {
         // The single-char length guard: 2du ending `tam` must NOT get an `a`
         // (no *Adatam); it stays Attam via cartva.
-        assert_eq!(form_g("ad", Lakara::Lan, Purusha::Madhyama, Vacana::Dvi), "Attam");
-        assert_ne!(form_g("ad", Lakara::Lan, Purusha::Madhyama, Vacana::Dvi), "Adatam");
+        assert_eq!(
+            form_g("ad", Lakara::Lan, Purusha::Madhyama, Vacana::Dvi),
+            "Attam"
+        );
+        assert_ne!(
+            form_g("ad", Lakara::Lan, Purusha::Madhyama, Vacana::Dvi),
+            "Adatam"
+        );
     }
 }
