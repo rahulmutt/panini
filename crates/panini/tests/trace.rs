@@ -382,3 +382,59 @@ fn yayam_trace_is_the_adadi_am_junction_path() {
         ]
     );
 }
+
+#[test]
+fn atti_trace_ends_in_cartva() {
+    // √ad adādi laṭ 3sg: tip's it-lopa (1.3.9) -> ti, śap inserted (3.1.68)
+    // then it-lopa'd (1.3.9) -> a, then luk'd entirely (2.4.72) since adādi
+    // roots take no visible vikaraṇa, leaving `ti` to attach straight onto
+    // `ad`; cartva (8.4.55) then turns the aṅga-final `d` into `t` before the
+    // khar `t` of the ending: ad + ti -> atti.
+    assert_eq!(
+        trace_for("atti"),
+        vec![
+            "1.3.78", "3.4.78", "1.3.9", "3.1.68", "1.3.9", "2.4.72", "8.4.55"
+        ]
+    );
+}
+
+#[test]
+fn addhi_trace_uses_her_dhih_after_ato_heh_declines() {
+    // √ad adādi loṭ 2sg: si -> hi (3.4.87). 6.4.105 ato heḥ (hi elides after
+    // a short `a`) is structurally inapplicable here — the aṅga ends in the
+    // consonant `d`, not a short `a` — so it declines and is not recorded;
+    // 6.4.101 hujhalbhyo her dhiḥ then fires on the jhal-final aṅga instead,
+    // turning `hi` into `Di`: ad + Di -> adDi.
+    let t = trace_for("adDi");
+    let i87 = t
+        .iter()
+        .position(|r| r == "3.4.87")
+        .expect("3.4.87 present");
+    let i101 = t
+        .iter()
+        .position(|r| r == "6.4.101")
+        .expect("6.4.101 present");
+    assert!(i87 < i101, "3.4.87 must precede 6.4.101");
+    assert!(
+        !t.contains(&"6.4.105".to_string()),
+        "6.4.105 declines, not recorded"
+    );
+}
+
+#[test]
+fn adat_trace_a_augment_precedes_and_blocks_cartva() {
+    // √ad adādi laṅ 3sg: ti -> t (3.4.100 itaś ca), śap inserted (3.1.68)
+    // then it-lopa'd (1.3.9) -> a, luk'd (2.4.72), āṭ-augmented (6.4.72,
+    // ad -> Aad), 7.3.100 adaḥ sarvezām prefixes `a` onto the consonant
+    // ending (t -> at) so the word stays vowel-final (8.2.23 declines and
+    // cartva 8.4.55 never sees a khar after the aṅga's `d`), and 6.1.90 āṭaś
+    // ca vṛddhi-fuses the augment `A` with the root's `a` (Aad -> Ad):
+    // Ad + at -> Adat.
+    assert_eq!(
+        trace_for("Adat"),
+        vec![
+            "1.3.78", "3.4.78", "1.3.9", "3.4.100", "3.1.68", "1.3.9", "2.4.72", "6.4.72",
+            "7.3.100", "6.1.90"
+        ]
+    );
+}
