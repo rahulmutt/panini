@@ -192,8 +192,8 @@ static DHATUS: &[Dhatu] = &[
         pada: Pada::Atmanepada,
         artha: "udyamane",
     },
-    // adādi (gaṇa 2) — śap luk (2.4.72); √ad/√yā/√vā, the parasmaipada
-    // roots, are covered across all four lakāras (laṭ/laṅ/loṭ/vidhiliṅ).
+    // adādi (gaṇa 2) — śap luk (2.4.72). √ad/√yā/√vā parasmaipada; √ās
+    // ātmanepada — covered across all four lakāras (laṭ/laṅ/loṭ/vidhiliṅ).
     Dhatu {
         code: "yA",
         gana: Gana::Adadi,
@@ -211,6 +211,12 @@ static DHATUS: &[Dhatu] = &[
         gana: Gana::Adadi,
         pada: Pada::Parasmaipada,
         artha: "BakzaRe",
+    },
+    Dhatu {
+        code: "As",
+        gana: Gana::Adadi,
+        pada: Pada::Atmanepada,
+        artha: "upaveSane",
     },
 ];
 
@@ -252,8 +258,8 @@ mod tests {
     use super::*;
 
     #[test]
-    fn has_twentyseven_curated_roots_with_padas() {
-        assert_eq!(dhatus().len(), 27);
+    fn has_twentyeight_curated_roots_with_padas() {
+        assert_eq!(dhatus().len(), 28);
         let bu = dhatus().iter().find(|d| d.code == "BU").unwrap();
         assert!(matches!(bu.pada, Pada::Parasmaipada));
         let labh = dhatus().iter().find(|d| d.code == "laB").unwrap();
@@ -272,6 +278,9 @@ mod tests {
         assert!(matches!(ya.gana, Gana::Adadi) && matches!(ya.pada, Pada::Parasmaipada));
         let va = dhatus().iter().find(|d| d.code == "vA").unwrap();
         assert!(matches!(va.gana, Gana::Adadi) && matches!(va.pada, Pada::Parasmaipada));
+        // New this slice: adadi ātmanepada √ās.
+        let as_ = dhatus().iter().find(|d| d.code == "As").unwrap();
+        assert!(matches!(as_.gana, Gana::Adadi) && matches!(as_.pada, Pada::Atmanepada));
     }
 
     #[test]
@@ -319,5 +328,16 @@ mod tests {
         assert!(matches!(ad.gana, Gana::Adadi));
         assert!(matches!(ad.pada, Pada::Parasmaipada));
         assert_eq!(ad.artha, "BakzaRe");
+    }
+
+    #[test]
+    fn as_is_registered_as_adadi_atmanepada() {
+        let as_ = dhatus()
+            .iter()
+            .find(|d| d.code == "As")
+            .expect("√ās present");
+        assert!(matches!(as_.gana, Gana::Adadi));
+        assert!(matches!(as_.pada, Pada::Atmanepada));
+        assert_eq!(as_.artha, "upaveSane");
     }
 }
