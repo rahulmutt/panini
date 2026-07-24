@@ -438,3 +438,18 @@ fn adat_trace_a_augment_precedes_and_blocks_cartva() {
         ]
     );
 }
+
+#[test]
+fn asate_trace_uses_anatah_not_jhontah() {
+    // √ās adādi ātmanepada laṭ 3pl: Ja → Je (3.4.79) → luk of śap (2.4.72) →
+    // 7.1.5 ātmanepadeṣv anataḥ replaces the leading J with `at` (Je → ate),
+    // and 7.1.3 declines (ending no longer starts with J): As + ate -> Asate.
+    assert_eq!(
+        trace_for("Asate"),
+        vec![
+            "1.3.12", "3.4.78", "1.2.4", "3.4.79", "3.1.68", "1.3.9", "2.4.72", "7.1.5"
+        ]
+    );
+    // 7.1.3 must NOT appear — 7.1.5 is its apavāda here.
+    assert!(!trace_for("Asate").contains(&"7.1.3".to_string()));
+}

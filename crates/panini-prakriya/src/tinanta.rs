@@ -888,6 +888,47 @@ pub static TINANTA_RULES: &[Rule] = &[
             true
         },
     },
+    // 7.1.5 ātmanepadeṣv anataḥ: in ātmanepada, the leading `J` (jh) of the
+    // ending becomes `at` — not the `ant` of 7.1.3 — when the segment the
+    // ending attaches to does not end in short `a`. Apavāda to 7.1.3, ordered
+    // before it; 7.1.3 then declines on its own (ending no longer starts `J`).
+    // The "anataḥ" test reads the last non-empty char BEFORE the ending: for a
+    // thematic root that is the śap vikaraṇa `a` (rule declines → laBante); for
+    // adādi √ās the śap is luk'd/empty, so it is the root-final `s` (rule fires
+    // → Asate). By this point 3.4.79 has already turned `Ja` → `Je` (laṭ/loṭ),
+    // so 7.1.5 strips the leading `J` and prepends `at`: Je → ate, Ja → ata,
+    // JAm → atAm. First non-a-final ātmanepadī aṅga in the engine.
+    Rule {
+        id: "7.1.5",
+        name: "AtmanepadezvanataH",
+        kind: RuleKind::Vidhi,
+        apply: |p| {
+            if !matches!(p.ctx.pada, Pada::Atmanepada) {
+                return false;
+            }
+            if !p.terms[ENDING].text.starts_with('J') {
+                return false;
+            }
+            // "anataḥ": the segment before the ending must NOT end in short `a`.
+            // Scan the terms before ENDING (skipping the luk'd/empty śap) for
+            // the last non-empty char.
+            let prev = p.terms[..ENDING]
+                .iter()
+                .rev()
+                .find_map(|t| t.text.chars().last());
+            let Some(prev) = prev else {
+                return false;
+            };
+            if prev == 'a' {
+                return false;
+            }
+            let before = p.snapshot();
+            let rest: String = p.terms[ENDING].text.chars().skip(1).collect();
+            p.terms[ENDING].text = format!("at{rest}");
+            p.record("7.1.5", "AtmanepadezvanataH", before);
+            true
+        },
+    },
     // 7.1.3 jho'ntaḥ: a leading `J` of the ending → `ant`.
     Rule {
         id: "7.1.3",
@@ -3166,6 +3207,30 @@ mod tests {
         assert_eq!(
             form_g("ad", Lakara::Lan, Purusha::Madhyama, Vacana::Dvi),
             "Attam"
+        );
+    }
+
+    #[test]
+    fn seventwone_five_atmanepada_3pl_uses_at_not_ant() {
+        // 7.1.5 ātmanepadeṣv anataḥ: √ās (adādi, s-final) 3pl → Asate/Asata/
+        // AsatAm (Ja → at, not the `ant` of 7.1.3). A-final thematic roots keep
+        // `ante` (7.1.5 declines), so laB is unchanged.
+        assert_eq!(
+            form_g("As", Lakara::Lat, Purusha::Prathama, Vacana::Bahu),
+            "Asate"
+        );
+        assert_eq!(
+            form_g("As", Lakara::Lan, Purusha::Prathama, Vacana::Bahu),
+            "Asata"
+        );
+        assert_eq!(
+            form_g("As", Lakara::Lot, Purusha::Prathama, Vacana::Bahu),
+            "AsatAm"
+        );
+        // Guard boundary: a-final ātmanepada aṅga still takes 7.1.3's `ante`.
+        assert_eq!(
+            form_g("laB", Lakara::Lat, Purusha::Prathama, Vacana::Bahu),
+            "laBante"
         );
     }
 }
