@@ -1557,6 +1557,62 @@ pub static TINANTA_RULES: &[Rule] = &[
             true
         },
     },
+    // 8.2.25 dhi ca: the final `s` of the term preceding a `Dh`-initial affix
+    // is ELIDED — not voiced. As + Dve -> A + Dve -> ADve; vas + Dve -> vaDve
+    // (the sūtra's own stock example, and this slice's second witness).
+    //
+    // Placement is the whole point: 8.2 is asiddha to 8.4, so this fires
+    // before any 8.4 junction rule and the `s` never survives to take a jaś
+    // substitute. Slice 5d analysed this junction as 8.4.53 jaśtva (s → d)
+    // and shipped *AdDve; 8.2.25 bleeds that rule completely, which is why
+    // 8.4.53 has no reachable witness and was removed.
+    //
+    // The guard reads the term PRECEDING the Dh-initial affix, not the aṅga.
+    // In laṭ/laṅ/loṭ the śap is luk'd (empty) so the aṅga is what precedes
+    // the ending and the rule fires. In the vidhiliṅ the sīyuṭ residue sits
+    // between (AsIDvam), so the first non-empty term after the aṅga does not
+    // begin with `D` and the rule correctly declines — the `s` is retained.
+    Rule {
+        id: "8.2.25",
+        name: "Di ca",
+        kind: RuleKind::Vidhi,
+        apply: |p| {
+            // The first non-empty term after the aṅga (śap, if present, is
+            // luk'd/empty for adādi) must be the Dh-initial affix.
+            let next_idx = p
+                .terms
+                .iter()
+                .enumerate()
+                .skip(ANGA + 1)
+                .find(|(_, t)| !t.text.is_empty())
+                .map(|(i, _)| i);
+            let Some(next_idx) = next_idx else {
+                return false;
+            };
+            if !p.terms[next_idx].text.starts_with('D') {
+                return false;
+            }
+            // The nearest non-empty term before it must end in `s`.
+            let prev_idx = p.terms[..next_idx]
+                .iter()
+                .enumerate()
+                .rev()
+                .find(|(_, t)| !t.text.is_empty())
+                .map(|(i, _)| i);
+            let Some(prev_idx) = prev_idx else {
+                return false;
+            };
+            if !p.terms[prev_idx].text.ends_with('s') {
+                return false;
+            }
+            let before = p.snapshot();
+            let mut s: Vec<char> = p.terms[prev_idx].text.chars().collect();
+            s.pop();
+            p.terms[prev_idx].text = s.into_iter().collect();
+            p.record("8.2.25", "Di ca", before);
+            true
+        },
+    },
     // 8.2.66 sasajuṣo ruḥ + 8.3.15 kharavasānayoḥ: word-final `s` → visarga.
     Rule {
         id: "8.3.15",
@@ -3398,23 +3454,26 @@ mod tests {
     }
 
     #[test]
-    fn voiced_junction_s_becomes_d_before_dhve() {
-        // √ās 2pl: the root-final `s` meets the voiced `Dh` of Dve/Dvam and
-        // takes its jaś (voiced) counterpart `d`: As + Dve -> AdDve.
+    fn dhi_ca_elides_s_before_dhve() {
+        // √ās 2pl: the root-final `s` meets the `Dh` of Dve/Dvam and is
+        // ELIDED by 8.2.25 dhi ca — it is not voiced to `d`. 8.2.25 sits at
+        // 8.2 in the tripādī and is asiddha to 8.4, so the `s` is gone before
+        // any 8.4 junction rule can look at it: As + Dve -> A + Dve -> ADve.
         assert_eq!(
             form_g("As", Lakara::Lat, Purusha::Madhyama, Vacana::Bahu),
-            "AdDve"
+            "ADve"
         );
         assert_eq!(
             form_g("As", Lakara::Lan, Purusha::Madhyama, Vacana::Bahu),
-            "AdDvam"
+            "ADvam"
         );
         assert_eq!(
             form_g("As", Lakara::Lot, Purusha::Madhyama, Vacana::Bahu),
-            "AdDvam"
+            "ADvam"
         );
-        // Guard boundary: a clean `s`-meets-`s` cell is untouched (se is not a
-        // jhaś), so 2sg stays Asse — the junction must not over-apply.
+        // Guard boundary: the affix must be Dh-initial. A clean `s`-meets-`s`
+        // cell is untouched, so 2sg stays Asse — the rule must not
+        // over-apply.
         assert_eq!(
             form_g("As", Lakara::Lat, Purusha::Madhyama, Vacana::Eka),
             "Asse"

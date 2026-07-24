@@ -455,19 +455,21 @@ fn asate_trace_uses_anatah_not_jhontah() {
 }
 
 #[test]
-fn addhve_trace_ends_in_voiced_junction() {
+fn adhve_trace_ends_in_dhi_ca() {
     // √ās adādi ātmanepada laṭ 2pl: Dvam → Dve (3.4.79), śap luk'd (2.4.72),
-    // then the voiced junction turns the aṅga-final `s` into `d` before the
-    // `Dh` of Dve: As + Dve -> AdDve.
+    // then 8.2.25 dhi ca ELIDES the aṅga-final `s` before the `Dh` of Dve:
+    // As + Dve -> A + Dve -> ADve. Slice 5d pinned *AdDve here via 8.4.53
+    // jaśtva; that rule is asiddha to this one and has been removed.
     assert_eq!(
-        trace_for("AdDve"),
+        trace_for("ADve"),
         vec![
-            "1.3.12", "3.4.78", "1.2.4", "3.4.79", "3.1.68", "1.3.9", "2.4.72", "8.4.53"
+            "1.3.12", "3.4.78", "1.2.4", "3.4.79", "3.1.68", "1.3.9", "2.4.72", "8.2.25"
         ]
     );
-    // cartva (8.4.55, the voiceless junction) must NOT fire here — the trigger
-    // is a voiced stop, not a khar.
-    assert!(!trace_for("AdDve").contains(&"8.4.55".to_string()));
+    // Neither junction rule may fire: 8.4.53 is gone, and cartva (8.4.55) is
+    // the voiceless junction, which a `Dh` never triggers.
+    assert!(!trace_for("ADve").contains(&"8.4.53".to_string()));
+    assert!(!trace_for("ADve").contains(&"8.4.55".to_string()));
 }
 
 #[test]

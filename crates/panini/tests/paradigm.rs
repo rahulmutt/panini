@@ -1089,21 +1089,21 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "As",
         "laT",
         [
-            "Aste", "AsAte", "Asate", "Asse", "AsATe", "AdDve", "Ase", "Asvahe", "Asmahe",
+            "Aste", "AsAte", "Asate", "Asse", "AsATe", "ADve", "Ase", "Asvahe", "Asmahe",
         ],
     ),
     (
         "As",
         "laN",
         [
-            "Asta", "AsAtAm", "Asata", "AsTAH", "AsATAm", "AdDvam", "Asi", "Asvahi", "Asmahi",
+            "Asta", "AsAtAm", "Asata", "AsTAH", "AsATAm", "ADvam", "Asi", "Asvahi", "Asmahi",
         ],
     ),
     (
         "As",
         "loT",
         [
-            "AstAm", "AsAtAm", "AsatAm", "Assva", "AsATAm", "AdDvam", "AsE", "AsAvahE", "AsAmahE",
+            "AstAm", "AsAtAm", "AsatAm", "Assva", "AsATAm", "ADvam", "AsE", "AsAvahE", "AsAmahE",
         ],
     ),
     (
