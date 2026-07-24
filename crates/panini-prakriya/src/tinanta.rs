@@ -2944,6 +2944,49 @@ mod tests {
         assert_eq!(p.terms[SHAP].text, "A");
     }
 
+    #[test]
+    fn awas_ca_athematic_arm_requires_a_third_term() {
+        // 6.1.90's ATHEMATIC ending arm (śap luk'd) reads p.terms[ENDING]
+        // (index 2) once its guard passes. With only two terms (aGga + an
+        // empty śap, no ending inserted yet), `p.terms.len() > ENDING`
+        // (2 > 2) is false, so the guard short-circuits before indexing
+        // terms[2]. The `>` -> `>=` mutant makes `2 >= 2` true; since the
+        // śap here is empty, the mutant guard proceeds and indexes
+        // terms[ENDING], out of bounds for a 2-term vector -> panics. The
+        // aGga ("As") does not satisfy the aGga arm (its 2nd char 's' is
+        // not a vowel), isolating the athematic ending-arm guard.
+        let mut p = Prakriya {
+            terms: vec![Term::new("As"), Term::new("")],
+            log: vec![],
+            ..Default::default()
+        };
+        let rule = TINANTA_RULES.iter().find(|r| r.id == "6.1.90").unwrap();
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "As");
+    }
+
+    #[test]
+    fn awas_ca_athematic_arm_requires_an_empty_shap() {
+        // The athematic arm must fire ONLY when the śap is luk'd (empty) —
+        // that is what distinguishes the adADi (athematic) path from the
+        // thematic one, whose A-widened śap is handled by the thematic arm
+        // above. Here the śap is the non-empty "a" and the ending is "AE"
+        // (A + ec): the thematic arm declines (its guard is
+        // SHAP.ends_with('A'), and "a" does not), and the athematic arm
+        // must ALSO decline because the śap is not empty, leaving "AE"
+        // untouched. The `&&` -> `||` mutant drops the empty-śap
+        // requirement (len() > ENDING is always true), so the mutant fires
+        // and wrongly coalesces "AE" -> "E".
+        let mut p = Prakriya {
+            terms: vec![Term::new("laB"), Term::new("a"), Term::new("AE")],
+            log: vec![],
+            ..Default::default()
+        };
+        let rule = TINANTA_RULES.iter().find(|r| r.id == "6.1.90").unwrap();
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[ENDING].text, "AE");
+    }
+
     // --- 3.1.68 / second 1.2.4: `len() > SHAP` boundary pins --------------
     //
     // Both guards read `p.terms.len() > SHAP && p.terms[SHAP]. ...` to
