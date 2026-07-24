@@ -3125,6 +3125,32 @@ mod tests {
     }
 
     #[test]
+    fn cartva_of_maps_each_jhal_to_its_first_varga_car() {
+        // 8.4.55 car table. Only d→t is exercised by √ad this slice; the other
+        // vargas are written generally for later jhal-final roots. Pin the whole
+        // mapping so a dropped/altered arm is caught by mutation testing.
+        for c in ['d', 'D', 't', 'T'] {
+            assert_eq!(cartva_of(c), Some('t'), "{c}");
+        }
+        for c in ['g', 'G', 'k', 'K'] {
+            assert_eq!(cartva_of(c), Some('k'), "{c}");
+        }
+        for c in ['b', 'B', 'p', 'P'] {
+            assert_eq!(cartva_of(c), Some('p'), "{c}");
+        }
+        for c in ['j', 'J', 'c', 'C'] {
+            assert_eq!(cartva_of(c), Some('c'), "{c}");
+        }
+        for c in ['q', 'Q', 'w', 'W'] {
+            assert_eq!(cartva_of(c), Some('w'), "{c}");
+        }
+        // Non-car targets return None (e.g. h, sibilants, vowels).
+        for c in ['h', 'S', 'z', 's', 'a'] {
+            assert_eq!(cartva_of(c), None, "{c}");
+        }
+    }
+
+    #[test]
     fn her_dhih_guard_is_jhal_final_only() {
         // ā-final √yā loṭ 2sg keeps hi (yAhi), NOT *yADi: 6.4.101 needs a jhal.
         assert_eq!(
