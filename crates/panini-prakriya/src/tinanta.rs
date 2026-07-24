@@ -826,20 +826,65 @@ pub static TINANTA_RULES: &[Rule] = &[
     },
     // 6.4.72 āḍ ajādīnām: vowel-initial aṅgas take the āṭ-āgama in laṅ
     // (apavāda to 6.4.71's aṭ). The A then merges with the root's initial
-    // vowel by 6.1.90 āṭaś ca into vṛddhi: a+eD → ED, a+Ikz → Ekz.
+    // vowel by 6.1.90 āṭaś ca into vṛddhi: a+eD → ED, a+Ikz → Ekz, a+ad → Ad.
     Rule {
         id: "6.4.72",
         name: "Aq ajAdInAm",
         kind: RuleKind::Vidhi,
         apply: |p| {
             let first = p.terms[ANGA].text.chars().next().unwrap();
-            // Only apply to true vowel-initial roots, not to 'a' prefixed by 6.4.71
-            if !matches!(p.ctx.lakara, Lakara::Lan) || !is_vowel(first) || first == 'a' {
+            // Only apply to true vowel-initial roots, not to an aṅga that
+            // already carries 6.4.71's aṭ augment. 6.4.71's augment is
+            // itself the character `a`, which is indistinguishable from a
+            // genuinely a-initial root (√ad) by first-char alone — so check
+            // whether 6.4.71 actually fired in this derivation (the trace)
+            // rather than sniffing the character. Roots 6.4.71 augmented are
+            // consonant-initial by its own guard, so this never double-fires;
+            // genuinely a-initial roots (√ad) never trigger 6.4.71 (their
+            // first char is already a vowel), so they reach here untouched
+            // and correctly take āṭ.
+            let already_augmented = p.log.iter().any(|s| s.sutra == "6.4.71");
+            if !matches!(p.ctx.lakara, Lakara::Lan) || !is_vowel(first) || already_augmented {
                 return false;
             }
             let before = p.snapshot();
             p.terms[ANGA].text = format!("A{}", p.terms[ANGA].text);
             p.record("6.4.72", "Aq ajAdInAm", before);
+            true
+        },
+    },
+    // 7.3.100 adaH sarvezAm: √ad prefixes aṭ (`a`) to a laṅ singular
+    // consonant ending (2sg s, 3sg t). Without it, Ad+s / Ad+t are word-final
+    // conjuncts that 8.2.23 saṃyogāntasya lopaḥ would strip to bare Ad,
+    // collapsing 2sg=3sg=1sg-stem. The inserted `a` makes the word vowel-final:
+    // 8.2.23 declines, and cartva (8.4.55) skips the `d` (now before `a`, not a
+    // khar) → Adat, Adas→AdaH. Guarded structurally (Tag::Adadi ∧ laṅ ∧
+    // consonant-final aṅga ∧ single-char s/t ending): in the current root set
+    // that is exactly √ad (√yā/√vā are ā-final). Retighten when √vas lands.
+    Rule {
+        id: "7.3.100",
+        name: "adaH sarvezAm",
+        kind: RuleKind::Vidhi,
+        apply: |p| {
+            if !matches!(p.ctx.lakara, Lakara::Lan) || !p.terms[ANGA].has(Tag::Adadi) {
+                return false;
+            }
+            // Consonant-final aṅga only (ā-final √yā/√vā never insert).
+            let Some(anga_last) = p.terms[ANGA].text.chars().last() else {
+                return false;
+            };
+            if is_vowel(anga_last) {
+                return false;
+            }
+            // Single-consonant ending: 2sg `s` / 3sg `t` (not the multi-char
+            // tam/tAm/ta of dual/plural).
+            let e = &p.terms[ENDING].text;
+            if e.chars().count() != 1 || !matches!(e.as_str(), "s" | "t") {
+                return false;
+            }
+            let before = p.snapshot();
+            p.terms[ENDING].text = format!("a{e}");
+            p.record("7.3.100", "adaH sarvezAm", before);
             true
         },
     },
@@ -1732,6 +1777,34 @@ mod tests {
         assert_eq!(
             form_g("BU", Lakara::Lot, Purusha::Madhyama, Vacana::Eka),
             "Bava"
+        );
+    }
+
+    #[test]
+    fn adadi_lan_singular_a_augment() {
+        // √ad laṅ 3sg Adat, 2sg AdaH — the inserted `a` blocks the saṃyogānta
+        // collapse (Adt/Ads → Ad) and cartva (d now before `a`, not a khar).
+        assert_eq!(
+            form_g("ad", Lakara::Lan, Purusha::Prathama, Vacana::Eka),
+            "Adat"
+        );
+        assert_eq!(
+            form_g("ad", Lakara::Lan, Purusha::Madhyama, Vacana::Eka),
+            "AdaH"
+        );
+        // Dual/plural keep the direct junction (multi-char endings, no a-augment):
+        // cartva gives Attam/AttAm; 1sg Adam untouched.
+        assert_eq!(
+            form_g("ad", Lakara::Lan, Purusha::Madhyama, Vacana::Dvi),
+            "Attam"
+        );
+        assert_eq!(
+            form_g("ad", Lakara::Lan, Purusha::Prathama, Vacana::Dvi),
+            "AttAm"
+        );
+        assert_eq!(
+            form_g("ad", Lakara::Lan, Purusha::Uttama, Vacana::Eka),
+            "Adam"
         );
     }
 
