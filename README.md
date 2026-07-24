@@ -20,8 +20,8 @@ taken from each root's tag), over a curated 28-root set, in four lakāras:
 (optative). The adādi entry now covers √yā, √vā (parasmaipada, ā-final) and
 √ad (parasmaipada) across all four lakāras, plus √ās (*ātmanepada*) across
 all four lakāras including the athematic (śap-luk'd) ātmanepada optative,
-which is now implemented (the pre-5b/5c belief that it was unsupported no
-longer holds). `INVALID` means "not derivable within this covered grammar,"
+previously unsupported, now implemented. `INVALID` means "not derivable
+within this covered grammar,"
 not "ungrammatical in Sanskrit." See `docs/ARCHITECTURE.md`.
 
 ## Layout
