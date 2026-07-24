@@ -3112,7 +3112,7 @@ mod tests {
         // cartva-ize. Under-application killer: d before `t` MUST (atti, not adti).
         assert_eq!(form_g("ad", Lakara::Lat, Purusha::Uttama, Vacana::Eka), "admi");
         assert_eq!(form_g("ad", Lakara::Lat, Purusha::Prathama, Vacana::Bahu), "adanti");
-        assert_ne!(form_g("ad", Lakara::Lat, Purusha::Prathama, Vacana::Eka), "adti");
+        assert_eq!(form_g("ad", Lakara::Lat, Purusha::Prathama, Vacana::Eka), "atti");
     }
 
     #[test]
