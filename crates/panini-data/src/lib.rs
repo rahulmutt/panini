@@ -192,8 +192,10 @@ static DHATUS: &[Dhatu] = &[
         pada: Pada::Atmanepada,
         artha: "udyamane",
     },
-    // adādi (gaṇa 2) — śap luk (2.4.72). √ad/√yā/√vā parasmaipada; √ās
+    // adādi (gaṇa 2) — śap luk (2.4.72). √ad/√yā/√vā parasmaipada; √ās/√vas
     // ātmanepada — covered across all four lakāras (laṭ/laṅ/loṭ/vidhiliṅ).
+    // √vas here is `vas` ācchādane (2Ā, "to wear"), NOT the far commoner
+    // `vas` nivāse (1P, "to dwell", vasati); artha is the only disambiguator.
     Dhatu {
         code: "yA",
         gana: Gana::Adadi,
@@ -217,6 +219,12 @@ static DHATUS: &[Dhatu] = &[
         gana: Gana::Adadi,
         pada: Pada::Atmanepada,
         artha: "upaveSane",
+    },
+    Dhatu {
+        code: "vas",
+        gana: Gana::Adadi,
+        pada: Pada::Atmanepada,
+        artha: "AcCAdane",
     },
 ];
 
@@ -258,8 +266,8 @@ mod tests {
     use super::*;
 
     #[test]
-    fn has_twentyeight_curated_roots_with_padas() {
-        assert_eq!(dhatus().len(), 28);
+    fn has_twentynine_curated_roots_with_padas() {
+        assert_eq!(dhatus().len(), 29);
         let bu = dhatus().iter().find(|d| d.code == "BU").unwrap();
         assert!(matches!(bu.pada, Pada::Parasmaipada));
         let labh = dhatus().iter().find(|d| d.code == "laB").unwrap();
@@ -278,9 +286,13 @@ mod tests {
         assert!(matches!(ya.gana, Gana::Adadi) && matches!(ya.pada, Pada::Parasmaipada));
         let va = dhatus().iter().find(|d| d.code == "vA").unwrap();
         assert!(matches!(va.gana, Gana::Adadi) && matches!(va.pada, Pada::Parasmaipada));
-        // New this slice: adadi ātmanepada √ās.
+        // adādi ātmanepada: √ās (slice 5d) and √vas (this slice).
         let as_ = dhatus().iter().find(|d| d.code == "As").unwrap();
         assert!(matches!(as_.gana, Gana::Adadi) && matches!(as_.pada, Pada::Atmanepada));
+        let vas = dhatus().iter().find(|d| d.code == "vas").unwrap();
+        assert!(matches!(vas.gana, Gana::Adadi) && matches!(vas.pada, Pada::Atmanepada));
+        // √vas ācchādane (2Ā), not √vas nivāse (1P) — artha disambiguates.
+        assert_eq!(vas.artha, "AcCAdane");
     }
 
     #[test]

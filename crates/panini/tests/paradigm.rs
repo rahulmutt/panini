@@ -1114,6 +1114,44 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
             "AsImahi",
         ],
     ),
+    (
+        "vas",
+        "laT",
+        [
+            "vaste", "vasAte", "vasate", "vasse", "vasATe", "vaDve", "vase", "vasvahe", "vasmahe",
+        ],
+    ),
+    (
+        "vas",
+        "laN",
+        [
+            "avasta", "avasAtAm", "avasata", "avasTAH", "avasATAm", "avaDvam", "avasi", "avasvahi",
+            "avasmahi",
+        ],
+    ),
+    (
+        "vas",
+        "loT",
+        [
+            "vastAm", "vasAtAm", "vasatAm", "vassva", "vasATAm", "vaDvam", "vasE", "vasAvahE",
+            "vasAmahE",
+        ],
+    ),
+    (
+        "vas",
+        "viDiliN",
+        [
+            "vasIta",
+            "vasIyAtAm",
+            "vasIran",
+            "vasITAH",
+            "vasIyATAm",
+            "vasIDvam",
+            "vasIya",
+            "vasIvahi",
+            "vasImahi",
+        ],
+    ),
 ];
 
 fn lan_a_form(code: &str, pu: Purusha, va: Vacana) -> String {
