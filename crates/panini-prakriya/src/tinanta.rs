@@ -87,6 +87,30 @@ fn cartva_of(c: char) -> Option<char> {
     }
 }
 
+/// A jhaś (voiced obstruent) — the trigger of the voiced junction (jaśtva
+/// before a jhaś). The jhaś pratyāhāra is exactly the ten voiced stops
+/// (voiced unaspirate jaś + voiced aspirate: g/gh j/jh ḍ/ḍh d/dh b/bh); `h` is
+/// NOT a jhaś. `Dh` (`D`) of Dve/Dvam is the case this slice exercises.
+fn is_jhas(c: char) -> bool {
+    matches!(c, 'g' | 'G' | 'j' | 'J' | 'q' | 'Q' | 'd' | 'D' | 'b' | 'B')
+}
+
+/// The jaś (voiced unaspirated) substitute of a jhal, per the voiced junction
+/// (8.4.53 jhalāṃ jaś jhaśi). Only `s → d` is exercised this slice; the stop
+/// vargas are written generally for later jhal-final roots. Extend the
+/// sibilant/`h` rows as later roots demand.
+fn jastva_of(c: char) -> Option<char> {
+    match c {
+        'k' | 'K' | 'g' | 'G' => Some('g'),
+        'c' | 'C' | 'j' | 'J' => Some('j'),
+        'w' | 'W' | 'q' | 'Q' => Some('q'),
+        't' | 'T' | 'd' | 'D' => Some('d'),
+        'p' | 'P' | 'b' | 'B' => Some('b'),
+        's' => Some('d'),
+        _ => None,
+    }
+}
+
 /// 1.3.4 na vibhaktau tusmāḥ: a final tu-varga (t/T/d/D/n), `s`, or `m` of a
 /// vibhakti is NOT an it, so the shared halantyam elision must be suppressed
 /// for such tiṅ endings (e.g. tas, Tas, vas, mas keep their final `s`).
@@ -888,6 +912,47 @@ pub static TINANTA_RULES: &[Rule] = &[
             true
         },
     },
+    // 7.1.5 ātmanepadeṣv anataḥ: in ātmanepada, the leading `J` (jh) of the
+    // ending becomes `at` — not the `ant` of 7.1.3 — when the segment the
+    // ending attaches to does not end in short `a`. Apavāda to 7.1.3, ordered
+    // before it; 7.1.3 then declines on its own (ending no longer starts `J`).
+    // The "anataḥ" test reads the last non-empty char BEFORE the ending: for a
+    // thematic root that is the śap vikaraṇa `a` (rule declines → laBante); for
+    // adādi √ās the śap is luk'd/empty, so it is the root-final `s` (rule fires
+    // → Asate). By this point 3.4.79 has already turned `Ja` → `Je` (laṭ/loṭ),
+    // so 7.1.5 strips the leading `J` and prepends `at`: Je → ate, Ja → ata,
+    // JAm → atAm. First non-a-final ātmanepadī aṅga in the engine.
+    Rule {
+        id: "7.1.5",
+        name: "AtmanepadezvanataH",
+        kind: RuleKind::Vidhi,
+        apply: |p| {
+            if !matches!(p.ctx.pada, Pada::Atmanepada) {
+                return false;
+            }
+            if !p.terms[ENDING].text.starts_with('J') {
+                return false;
+            }
+            // "anataḥ": the segment before the ending must NOT end in short `a`.
+            // Scan the terms before ENDING (skipping the luk'd/empty śap) for
+            // the last non-empty char.
+            let prev = p.terms[..ENDING]
+                .iter()
+                .rev()
+                .find_map(|t| t.text.chars().last());
+            let Some(prev) = prev else {
+                return false;
+            };
+            if prev == 'a' {
+                return false;
+            }
+            let before = p.snapshot();
+            let rest: String = p.terms[ENDING].text.chars().skip(1).collect();
+            p.terms[ENDING].text = format!("at{rest}");
+            p.record("7.1.5", "AtmanepadezvanataH", before);
+            true
+        },
+    },
     // 7.1.3 jho'ntaḥ: a leading `J` of the ending → `ant`.
     Rule {
         id: "7.1.3",
@@ -1239,6 +1304,28 @@ pub static TINANTA_RULES: &[Rule] = &[
                 p.record("6.1.90", "AwaS ca", before);
                 return true;
             }
+            // Athematic ending arm (śap luk'd, e.g. adādi √ās loṭ uttama-eka):
+            // with no śap, 6.1.101 never widened śap a + āṭ A, so the āṭ A
+            // still leads the ending as `A ec` (ENDING == "AE"). Coalesce the
+            // two into the single vṛddhi — A + E → E — dropping the A and
+            // vṛddhi-ing the ec: As + AE → AsE. Mirrors the thematic arm's
+            // mechanics with the vowel sitting at the front of ENDING instead
+            // of in SHAP.
+            if p.terms.len() > ENDING && p.terms[SHAP].text.is_empty() {
+                let mut it = p.terms[ENDING].text.chars();
+                if it.next() == Some('A')
+                    && let Some(ec) = it.next()
+                    && matches!(ec, 'e' | 'E' | 'o' | 'O')
+                {
+                    let before = p.snapshot();
+                    let mut s = String::new();
+                    s.push(vrddhi_of(ec).unwrap());
+                    s.extend(p.terms[ENDING].text.chars().skip(2));
+                    p.terms[ENDING].text = s;
+                    p.record("6.1.90", "AwaS ca", before);
+                    return true;
+                }
+            }
             false
         },
     },
@@ -1306,30 +1393,61 @@ pub static TINANTA_RULES: &[Rule] = &[
             true
         },
     },
-    // 6.1.66 lopo vyor vali: v or y is elided before a val consonant. Here
-    // only the ending-initial y from the yāsuṭ chain ever matches: yt → t,
-    // yva → va; yus survives (u is a vowel, not in val). The val pratyāhāra
-    // is every consonant except y, and no `yy` sequence arises in this
-    // engine, so "any consonant" is an exact guard here.
+    // 6.1.66 lopo vyor vali: v or y is elided before a val consonant. Two
+    // arms, both eliding the yāsuṭ/optative y before a val (yt → t, yva → va;
+    // never before a vowel, so yus / IyAtAm keep their y):
+    //  - thematic arm: 6.1.87 has already absorbed the optative i/I into śap's
+    //    guṇa e, so the ending leads with the y directly (Bave + yt → Baveta).
+    //  - athematic arm (śap luk'd, adādi √ās): 6.1.87 never fired, so the
+    //    retained long I still leads the ending as `I y val`; the y is elided
+    //    and the I survives as the stem vowel (Iyta → Ita, āsī-).
+    // The val pratyāhāra is every consonant except y, and no `yy` sequence
+    // arises in this engine, so "not a vowel" is an exact guard here.
     Rule {
         id: "6.1.66",
         name: "lopo vyor vali",
         kind: RuleKind::Vidhi,
         apply: |p| {
             let mut chars = p.terms[ENDING].text.chars();
-            if chars.next() != Some('y') {
-                return false;
+            let first = chars.next();
+            // Thematic arm: 6.1.87 already consumed the optative I into śap's
+            // guṇa e, so the ending leads with the yāsuṭ y directly before a
+            // val consonant (yt → t, yva → va; yus survives — u is a vowel).
+            if first == Some('y') {
+                let Some(second) = chars.next() else {
+                    return false;
+                };
+                if is_vowel(second) {
+                    return false;
+                }
+                let before = p.snapshot();
+                p.terms[ENDING].text = p.terms[ENDING].text.chars().skip(1).collect();
+                p.record("6.1.66", "lopo vyor vali", before);
+                return true;
             }
-            let Some(second) = chars.next() else {
-                return false;
-            };
-            if is_vowel(second) {
-                return false;
+            // Athematic arm (śap luk'd, e.g. adādi √ās): with no śap, 6.1.87
+            // never fired, so the retained optative I still leads the ending
+            // as `I y val` (Iyta). The y is still elided before the val — the
+            // long I survives as the stem vowel (āsī-): Iyta → Ita. Only the
+            // y is dropped, and (as in the thematic arm) never before a vowel,
+            // so IyAtAm / IyATAm / Iya keep their y. The explicit `śap empty`
+            // guard keeps this arm off the thematic path locally (rather than
+            // relying on 6.1.87's ordering), mirroring 6.1.90's athematic arm.
+            if p.terms[SHAP].text.is_empty()
+                && first == Some('I')
+                && chars.next() == Some('y')
+                && let Some(third) = chars.next()
+                && !is_vowel(third)
+            {
+                let before = p.snapshot();
+                let mut s = String::new();
+                s.push('I');
+                s.extend(p.terms[ENDING].text.chars().skip(2));
+                p.terms[ENDING].text = s;
+                p.record("6.1.66", "lopo vyor vali", before);
+                return true;
             }
-            let before = p.snapshot();
-            p.terms[ENDING].text = p.terms[ENDING].text.chars().skip(1).collect();
-            p.record("6.1.66", "lopo vyor vali", before);
-            true
+            false
         },
     },
     // 6.4.105 ato heḥ: `hi` is elided after a short `a` (the śap).
@@ -1455,6 +1573,51 @@ pub static TINANTA_RULES: &[Rule] = &[
             s.push('H');
             p.terms[idx].text = s.into_iter().collect();
             p.record("8.3.15", "KaravasAnayor visarjanIyaH", before);
+            true
+        },
+    },
+    // 8.4.53 jhalāṃ jaś jhaśi (voiced junction / jaśtva): a jhal at the aṅga's
+    // final position, meeting a jhaś (voiced stop) across the root+ending
+    // junction, becomes its jaś (voiced unaspirated). √ās's `s` before the `Dh`
+    // of Dve/Dvam → `d`: As + Dve -> AdDve, As + Dvam -> AdDvam. The engine's
+    // first VOICED internal junction — the voiced mirror of 8.4.55's cartva;
+    // general, reused unchanged by √vas (5e) and every later jhal-final root.
+    // Ordered before 8.4.55: numerically earlier in the tripādī, and their
+    // triggers are disjoint (voiced jhaś vs voiceless khar), so neither
+    // double-fires. Like 8.4.55 it reads the first non-empty term after the
+    // aṅga (śap, if present, is luk'd/empty for adādi).
+    Rule {
+        id: "8.4.53",
+        name: "JalAM jaS JaSi",
+        kind: RuleKind::Vidhi,
+        apply: |p| {
+            let next = p
+                .terms
+                .iter()
+                .skip(ANGA + 1)
+                .find_map(|t| t.text.chars().next());
+            let Some(next) = next else { return false };
+            if !is_jhas(next) {
+                return false;
+            }
+            let Some(last) = p.terms[ANGA].text.chars().last() else {
+                return false;
+            };
+            if !is_jhal(last) {
+                return false;
+            }
+            let Some(sub) = jastva_of(last) else {
+                return false;
+            };
+            if sub == last {
+                return false;
+            }
+            let before = p.snapshot();
+            let mut s: Vec<char> = p.terms[ANGA].text.chars().collect();
+            s.pop();
+            s.push(sub);
+            p.terms[ANGA].text = s.into_iter().collect();
+            p.record("8.4.53", "JalAM jaS JaSi", before);
             true
         },
     },
@@ -2537,6 +2700,51 @@ mod tests {
     }
 
     #[test]
+    fn as_lot_atmanepada_uttama_eka_is_ase() {
+        // adādi √ās (śap luk'd) loṭ uttama-eka: the āṭ A never merged into a
+        // śap (there is none), so it leads the ending as `A E`. 6.1.90's
+        // athematic ending arm must vṛddhi it to a single E (Asai → AsE).
+        // Bug: AsAE (āsāai). Cf. the thematic laBE.
+        assert_eq!(
+            form_g("As", Lakara::Lot, Purusha::Uttama, Vacana::Eka),
+            "AsE"
+        );
+    }
+
+    #[test]
+    fn as_vidhilin_atmanepada_elides_optative_y_before_val() {
+        // adādi √ās vidhiliṅ: on the śap-luk'd path 6.1.87 never consumes the
+        // optative I, so the ending stays `I y val`; 6.1.66 must elide the y
+        // (Iyta → Ita) before a val consonant — but KEEP it before a vowel.
+        for (pu, va, want) in [
+            (Purusha::Prathama, Vacana::Eka, "AsIta"),
+            (Purusha::Prathama, Vacana::Bahu, "AsIran"),
+            (Purusha::Madhyama, Vacana::Eka, "AsITAH"),
+            (Purusha::Madhyama, Vacana::Bahu, "AsIDvam"),
+            (Purusha::Uttama, Vacana::Dvi, "AsIvahi"),
+            (Purusha::Uttama, Vacana::Bahu, "AsImahi"),
+        ] {
+            assert_eq!(
+                form_g("As", Lakara::VidhiLin, pu, va),
+                want,
+                "{pu:?} {va:?}"
+            );
+        }
+        // Guard boundary: the y survives before a vowel (must NOT over-elide).
+        for (pu, va, want) in [
+            (Purusha::Uttama, Vacana::Eka, "AsIya"),
+            (Purusha::Prathama, Vacana::Dvi, "AsIyAtAm"),
+            (Purusha::Madhyama, Vacana::Dvi, "AsIyATAm"),
+        ] {
+            assert_eq!(
+                form_g("As", Lakara::VidhiLin, pu, va),
+                want,
+                "{pu:?} {va:?}"
+            );
+        }
+    }
+
+    #[test]
     fn vrt_lat_uses_laghupadha_guna() {
         // vft's f is PENULTIMATE (upadha), not final like smf's: guna comes
         // from 7.3.86 pugantalaghUpaDasya ca, not 7.3.84.
@@ -2741,6 +2949,71 @@ mod tests {
         assert!(!(rule.apply)(&mut p));
         assert_eq!(p.terms[ANGA].text, "kf");
         assert_eq!(p.terms[SHAP].text, "A");
+    }
+
+    #[test]
+    fn awas_ca_athematic_arm_requires_a_third_term() {
+        // 6.1.90's ATHEMATIC ending arm (śap luk'd) reads p.terms[ENDING]
+        // (index 2) once its guard passes. With only two terms (aGga + an
+        // empty śap, no ending inserted yet), `p.terms.len() > ENDING`
+        // (2 > 2) is false, so the guard short-circuits before indexing
+        // terms[2]. The `>` -> `>=` mutant makes `2 >= 2` true; since the
+        // śap here is empty, the mutant guard proceeds and indexes
+        // terms[ENDING], out of bounds for a 2-term vector -> panics. The
+        // aGga ("As") does not satisfy the aGga arm (its 2nd char 's' is
+        // not a vowel), isolating the athematic ending-arm guard.
+        let mut p = Prakriya {
+            terms: vec![Term::new("As"), Term::new("")],
+            log: vec![],
+            ..Default::default()
+        };
+        let rule = TINANTA_RULES.iter().find(|r| r.id == "6.1.90").unwrap();
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "As");
+    }
+
+    #[test]
+    fn awas_ca_athematic_arm_requires_an_empty_shap() {
+        // The athematic arm must fire ONLY when the śap is luk'd (empty) —
+        // that is what distinguishes the adADi (athematic) path from the
+        // thematic one, whose A-widened śap is handled by the thematic arm
+        // above. Here the śap is the non-empty "a" and the ending is "AE"
+        // (A + ec): the thematic arm declines (its guard is
+        // SHAP.ends_with('A'), and "a" does not), and the athematic arm
+        // must ALSO decline because the śap is not empty, leaving "AE"
+        // untouched. The `&&` -> `||` mutant drops the empty-śap
+        // requirement (len() > ENDING is always true), so the mutant fires
+        // and wrongly coalesces "AE" -> "E".
+        let mut p = Prakriya {
+            terms: vec![Term::new("laB"), Term::new("a"), Term::new("AE")],
+            log: vec![],
+            ..Default::default()
+        };
+        let rule = TINANTA_RULES.iter().find(|r| r.id == "6.1.90").unwrap();
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[ENDING].text, "AE");
+    }
+
+    #[test]
+    fn lopo_vyor_vali_athematic_arm_requires_an_empty_shap() {
+        // 6.1.66's athematic arm (śap luk'd) elides the optative y in an
+        // `I y val` ending (Iyta -> Ita), keeping the long I as the stem
+        // vowel. It must fire ONLY when the śap is empty — that is what
+        // confines it to the adADi (athematic) path; on the thematic path
+        // 6.1.87 has already consumed the I, so the ending never leads with
+        // `I`. Here the śap is the non-empty "a" and the ending is "Iyta":
+        // the athematic arm must decline (leaving "Iyta" untouched), and the
+        // thematic arm also declines (the ending's first char is 'I', not
+        // 'y'). The mutant that drops the empty-śap guard would elide the y
+        // regardless of śap and wrongly yield "Ita".
+        let mut p = Prakriya {
+            terms: vec![Term::new("laB"), Term::new("a"), Term::new("Iyta")],
+            log: vec![],
+            ..Default::default()
+        };
+        let rule = TINANTA_RULES.iter().find(|r| r.id == "6.1.66").unwrap();
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[ENDING].text, "Iyta");
     }
 
     // --- 3.1.68 / second 1.2.4: `len() > SHAP` boundary pins --------------
@@ -3125,6 +3398,30 @@ mod tests {
     }
 
     #[test]
+    fn voiced_junction_s_becomes_d_before_dhve() {
+        // √ās 2pl: the root-final `s` meets the voiced `Dh` of Dve/Dvam and
+        // takes its jaś (voiced) counterpart `d`: As + Dve -> AdDve.
+        assert_eq!(
+            form_g("As", Lakara::Lat, Purusha::Madhyama, Vacana::Bahu),
+            "AdDve"
+        );
+        assert_eq!(
+            form_g("As", Lakara::Lan, Purusha::Madhyama, Vacana::Bahu),
+            "AdDvam"
+        );
+        assert_eq!(
+            form_g("As", Lakara::Lot, Purusha::Madhyama, Vacana::Bahu),
+            "AdDvam"
+        );
+        // Guard boundary: a clean `s`-meets-`s` cell is untouched (se is not a
+        // jhaś), so 2sg stays Asse — the junction must not over-apply.
+        assert_eq!(
+            form_g("As", Lakara::Lat, Purusha::Madhyama, Vacana::Eka),
+            "Asse"
+        );
+    }
+
+    #[test]
     fn cartva_of_maps_each_jhal_to_its_first_varga_car() {
         // 8.4.55 car table. Only d→t is exercised by √ad this slice; the other
         // vargas are written generally for later jhal-final roots. Pin the whole
@@ -3151,6 +3448,43 @@ mod tests {
     }
 
     #[test]
+    fn jastva_of_maps_each_jhal_to_its_jas() {
+        // Pin the whole map so a mutated arm can't survive: each varga's members
+        // collapse to that varga's jaś (voiced unaspirated); `s → d` is the arm
+        // this slice exercises. Non-jhal / unmapped chars return None.
+        for c in ['k', 'K', 'g', 'G'] {
+            assert_eq!(jastva_of(c), Some('g'), "{c}");
+        }
+        for c in ['c', 'C', 'j', 'J'] {
+            assert_eq!(jastva_of(c), Some('j'), "{c}");
+        }
+        for c in ['w', 'W', 'q', 'Q'] {
+            assert_eq!(jastva_of(c), Some('q'), "{c}");
+        }
+        for c in ['t', 'T', 'd', 'D'] {
+            assert_eq!(jastva_of(c), Some('d'), "{c}");
+        }
+        for c in ['p', 'P', 'b', 'B'] {
+            assert_eq!(jastva_of(c), Some('b'), "{c}");
+        }
+        assert_eq!(jastva_of('s'), Some('d'));
+        assert_eq!(jastva_of('a'), None);
+        assert_eq!(jastva_of('m'), None);
+    }
+
+    #[test]
+    fn is_jhas_is_voiced_stops_only() {
+        for c in ['g', 'G', 'j', 'J', 'q', 'Q', 'd', 'D', 'b', 'B'] {
+            assert!(is_jhas(c), "{c} should be jhaś");
+        }
+        // Voiceless obstruents, sibilants, vowels, semivowels, nasals are not —
+        // and neither is `h` (it is outside the jhaś pratyāhāra).
+        for c in ['t', 'T', 's', 'S', 'z', 'a', 'A', 'v', 'y', 'm', 'n', 'h'] {
+            assert!(!is_jhas(c), "{c} should not be jhaś");
+        }
+    }
+
+    #[test]
     fn her_dhih_guard_is_jhal_final_only() {
         // ā-final √yā loṭ 2sg keeps hi (yAhi), NOT *yADi: 6.4.101 needs a jhal.
         assert_eq!(
@@ -3166,6 +3500,69 @@ mod tests {
         assert_eq!(
             form_g("ad", Lakara::Lan, Purusha::Madhyama, Vacana::Dvi),
             "Attam"
+        );
+    }
+
+    #[test]
+    fn seventwone_five_atmanepada_3pl_uses_at_not_ant() {
+        // 7.1.5 ātmanepadeṣv anataḥ: √ās (adādi, s-final) 3pl → Asate/Asata/
+        // AsatAm (Ja → at, not the `ant` of 7.1.3). A-final thematic roots keep
+        // `ante` (7.1.5 declines), so laB is unchanged.
+        assert_eq!(
+            form_g("As", Lakara::Lat, Purusha::Prathama, Vacana::Bahu),
+            "Asate"
+        );
+        assert_eq!(
+            form_g("As", Lakara::Lan, Purusha::Prathama, Vacana::Bahu),
+            "Asata"
+        );
+        assert_eq!(
+            form_g("As", Lakara::Lot, Purusha::Prathama, Vacana::Bahu),
+            "AsatAm"
+        );
+        // Guard boundary: a-final ātmanepada aṅga still takes 7.1.3's `ante`.
+        assert_eq!(
+            form_g("laB", Lakara::Lat, Purusha::Prathama, Vacana::Bahu),
+            "laBante"
+        );
+    }
+
+    #[test]
+    fn anatah_declines_for_a_final_atmanepada_angas() {
+        // 7.1.5's "anataḥ" arm: every a-final (thematic / vikaraṇa-buffered)
+        // ātmanepada 3pl keeps 7.1.3's `ante`. Pins that the guard reads the
+        // preceding segment's `a`, not the consonant-final root.
+        assert_eq!(
+            form_g("laB", Lakara::Lat, Purusha::Prathama, Vacana::Bahu),
+            "laBante"
+        );
+        assert_eq!(
+            form_g("man", Lakara::Lat, Purusha::Prathama, Vacana::Bahu),
+            "manyante"
+        );
+        assert_eq!(
+            form_g("juz", Lakara::Lat, Purusha::Prathama, Vacana::Bahu),
+            "juzante"
+        );
+    }
+
+    #[test]
+    fn voiced_junction_does_not_touch_non_jhas_or_non_jhal_junctions() {
+        // Under-application guard: `s` before the non-jhaś `s`/`th`/`v` of
+        // se/sva/thās stays `s` (Asse, Assva, AsTAH) — only a jhaś triggers it.
+        assert_eq!(
+            form_g("As", Lakara::Lot, Purusha::Madhyama, Vacana::Eka),
+            "Assva"
+        );
+        assert_eq!(
+            form_g("As", Lakara::Lan, Purusha::Madhyama, Vacana::Eka),
+            "AsTAH"
+        );
+        // Over-application guard: √ad is parasmaipada; its voiceless junctions
+        // stay cartva's business:
+        assert_eq!(
+            form_g("ad", Lakara::Lat, Purusha::Prathama, Vacana::Eka),
+            "atti"
         );
     }
 }

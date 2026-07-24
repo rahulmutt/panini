@@ -438,3 +438,77 @@ fn adat_trace_a_augment_precedes_and_blocks_cartva() {
         ]
     );
 }
+
+#[test]
+fn asate_trace_uses_anatah_not_jhontah() {
+    // √ās adādi ātmanepada laṭ 3pl: Ja → Je (3.4.79) → luk of śap (2.4.72) →
+    // 7.1.5 ātmanepadeṣv anataḥ replaces the leading J with `at` (Je → ate),
+    // and 7.1.3 declines (ending no longer starts with J): As + ate -> Asate.
+    assert_eq!(
+        trace_for("Asate"),
+        vec![
+            "1.3.12", "3.4.78", "1.2.4", "3.4.79", "3.1.68", "1.3.9", "2.4.72", "7.1.5"
+        ]
+    );
+    // 7.1.3 must NOT appear — 7.1.5 is its apavāda here.
+    assert!(!trace_for("Asate").contains(&"7.1.3".to_string()));
+}
+
+#[test]
+fn addhve_trace_ends_in_voiced_junction() {
+    // √ās adādi ātmanepada laṭ 2pl: Dvam → Dve (3.4.79), śap luk'd (2.4.72),
+    // then the voiced junction turns the aṅga-final `s` into `d` before the
+    // `Dh` of Dve: As + Dve -> AdDve.
+    assert_eq!(
+        trace_for("AdDve"),
+        vec![
+            "1.3.12", "3.4.78", "1.2.4", "3.4.79", "3.1.68", "1.3.9", "2.4.72", "8.4.53"
+        ]
+    );
+    // cartva (8.4.55, the voiceless junction) must NOT fire here — the trigger
+    // is a voiced stop, not a khar.
+    assert!(!trace_for("AdDve").contains(&"8.4.55".to_string()));
+}
+
+#[test]
+fn ase_lot_uttama_eka_trace_ends_in_atas_ca() {
+    // √ās adādi ātmanepada loṭ uttama eka: iṭ → i (1.3.9) → e (3.4.79) → E
+    // (3.4.93) → AE (3.4.92 āṭ). The śap is inserted (3.1.68) then luk'd
+    // (2.4.72), so — unlike thematic laBE — 6.1.101 never widens śap a + āṭ A
+    // (there is no śap). The āṭ A leads the ending as `AE`; 6.1.90 āṭaś ca's
+    // athematic ending arm vṛddhi-fuses it to a single E: As + E -> AsE.
+    assert_eq!(
+        trace_for("AsE"),
+        vec![
+            "1.3.12", "3.4.78", "1.3.9", "3.4.85", "3.4.79", "3.4.93", "3.4.92", "3.1.68", "1.3.9",
+            "2.4.72", "6.1.90"
+        ]
+    );
+}
+
+#[test]
+fn asita_vidhilin_trace_ends_in_vali_lopa() {
+    // √ās adādi ātmanepada vidhiliṅ prathama eka: ta → sIyta (3.4.102), śap
+    // luk'd (2.4.72), yāsuṭ's s elided (7.2.79) -> Iyta. Unlike thematic
+    // laBeta, there is no śap a for 6.1.87 to coalesce with the I, so the I is
+    // retained as the stem's long vowel (āsī-) and 6.1.66 lopo vyor vali
+    // elides the y before the val consonant `t`: As + Ita -> AsIta.
+    let t = trace_for("AsIta");
+    assert_eq!(
+        t,
+        vec![
+            "1.3.12", "3.4.78", "1.2.4", "3.4.102", "3.1.68", "1.3.9", "2.4.72", "7.2.79", "6.1.66"
+        ]
+    );
+    // 7.2.79 (salopa) must precede 6.1.66; 6.1.87 must NOT fire (no śap a).
+    let i79 = t
+        .iter()
+        .position(|r| r == "7.2.79")
+        .expect("7.2.79 present");
+    let i66 = t
+        .iter()
+        .position(|r| r == "6.1.66")
+        .expect("6.1.66 present");
+    assert!(i79 < i66, "7.2.79 must precede 6.1.66");
+    assert!(!t.contains(&"6.1.87".to_string()), "6.1.87 must not fire");
+}

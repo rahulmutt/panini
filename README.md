@@ -15,13 +15,14 @@ cargo run -p panini-cli -- check 'bhavati' --trace
 
 Finite verbs (*tiṅanta*), four gaṇas — *bhvādi* (1), *divādi* (4), *tudādi*
 (6) fully, and *adādi* (2) partially — *parasmaipada* and *ātmanepada* (pada
-taken from each root's tag), over a curated 26-root set, in four lakāras:
+taken from each root's tag), over a curated 28-root set, in four lakāras:
 *laṭ* (present), *laṅ* (imperfect), *loṭ* (imperative), and *vidhiliṅ*
-(optative). The adādi entry is the two ā-final roots √yā and √vā in laṭ, laṅ
-and loṭ only: adādi in vidhiliṅ needs the athematic optative, which is not
-implemented yet and is therefore declined rather than derived. `INVALID`
-means "not derivable within this covered grammar," not "ungrammatical in
-Sanskrit." See `docs/ARCHITECTURE.md`.
+(optative). The adādi entry now covers √yā, √vā (parasmaipada, ā-final) and
+√ad (parasmaipada) across all four lakāras, plus √ās (*ātmanepada*) across
+all four lakāras including the athematic (śap-luk'd) ātmanepada optative,
+previously unsupported, now implemented. `INVALID` means "not derivable
+within this covered grammar,"
+not "ungrammatical in Sanskrit." See `docs/ARCHITECTURE.md`.
 
 ## Layout
 
