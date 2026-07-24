@@ -1085,6 +1085,35 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
             "adyAt", "adyAtAm", "adyuH", "adyAH", "adyAtam", "adyAta", "adyAm", "adyAva", "adyAma",
         ],
     ),
+    (
+        "As",
+        "laT",
+        [
+            "Aste", "AsAte", "Asate", "Asse", "AsATe", "AdDve", "Ase", "Asvahe", "Asmahe",
+        ],
+    ),
+    (
+        "As",
+        "laN",
+        [
+            "Asta", "AsAtAm", "Asata", "AsTAH", "AsATAm", "AdDvam", "Asi", "Asvahi", "Asmahi",
+        ],
+    ),
+    (
+        "As",
+        "loT",
+        [
+            "AstAm", "AsAtAm", "AsatAm", "Assva", "AsATAm", "AdDvam", "AsE", "AsAvahE", "AsAmahE",
+        ],
+    ),
+    (
+        "As",
+        "viDiliN",
+        [
+            "AsIta", "AsIyAtAm", "AsIran", "AsITAH", "AsIyATAm", "AsIDvam", "AsIya", "AsIvahi",
+            "AsImahi",
+        ],
+    ),
 ];
 
 fn lan_a_form(code: &str, pu: Purusha, va: Vacana) -> String {
