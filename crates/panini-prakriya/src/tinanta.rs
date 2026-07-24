@@ -1305,6 +1305,28 @@ pub static TINANTA_RULES: &[Rule] = &[
                 p.record("6.1.90", "AwaS ca", before);
                 return true;
             }
+            // Athematic ending arm (śap luk'd, e.g. adādi √ās loṭ uttama-eka):
+            // with no śap, 6.1.101 never widened śap a + āṭ A, so the āṭ A
+            // still leads the ending as `A ec` (ENDING == "AE"). Coalesce the
+            // two into the single vṛddhi — A + E → E — dropping the A and
+            // vṛddhi-ing the ec: As + AE → AsE. Mirrors the thematic arm's
+            // mechanics with the vowel sitting at the front of ENDING instead
+            // of in SHAP.
+            if p.terms.len() > ENDING && p.terms[SHAP].text.is_empty() {
+                let mut it = p.terms[ENDING].text.chars();
+                if it.next() == Some('A')
+                    && let Some(ec) = it.next()
+                    && matches!(ec, 'e' | 'E' | 'o' | 'O')
+                {
+                    let before = p.snapshot();
+                    let mut s = String::new();
+                    s.push(vrddhi_of(ec).unwrap());
+                    s.extend(p.terms[ENDING].text.chars().skip(2));
+                    p.terms[ENDING].text = s;
+                    p.record("6.1.90", "AwaS ca", before);
+                    return true;
+                }
+            }
             false
         },
     },
@@ -1383,19 +1405,42 @@ pub static TINANTA_RULES: &[Rule] = &[
         kind: RuleKind::Vidhi,
         apply: |p| {
             let mut chars = p.terms[ENDING].text.chars();
-            if chars.next() != Some('y') {
-                return false;
+            let first = chars.next();
+            // Thematic arm: 6.1.87 already consumed the optative I into śap's
+            // guṇa e, so the ending leads with the yāsuṭ y directly before a
+            // val consonant (yt → t, yva → va; yus survives — u is a vowel).
+            if first == Some('y') {
+                let Some(second) = chars.next() else {
+                    return false;
+                };
+                if is_vowel(second) {
+                    return false;
+                }
+                let before = p.snapshot();
+                p.terms[ENDING].text = p.terms[ENDING].text.chars().skip(1).collect();
+                p.record("6.1.66", "lopo vyor vali", before);
+                return true;
             }
-            let Some(second) = chars.next() else {
-                return false;
-            };
-            if is_vowel(second) {
-                return false;
+            // Athematic arm (śap luk'd, e.g. adādi √ās): with no śap, 6.1.87
+            // never fired, so the retained optative I still leads the ending
+            // as `I y val` (Iyta). The y is still elided before the val — the
+            // long I survives as the stem vowel (āsī-): Iyta → Ita. Only the
+            // y is dropped, and (as in the thematic arm) never before a vowel,
+            // so IyAtAm / IyATAm / Iya keep their y.
+            if first == Some('I')
+                && chars.next() == Some('y')
+                && let Some(third) = chars.next()
+                && !is_vowel(third)
+            {
+                let before = p.snapshot();
+                let mut s = String::new();
+                s.push('I');
+                s.extend(p.terms[ENDING].text.chars().skip(2));
+                p.terms[ENDING].text = s;
+                p.record("6.1.66", "lopo vyor vali", before);
+                return true;
             }
-            let before = p.snapshot();
-            p.terms[ENDING].text = p.terms[ENDING].text.chars().skip(1).collect();
-            p.record("6.1.66", "lopo vyor vali", before);
-            true
+            false
         },
     },
     // 6.4.105 ato heḥ: `hi` is elided after a short `a` (the śap).
@@ -2645,6 +2690,43 @@ mod tests {
         assert!(p.log.iter().any(|s| s.sutra == "7.2.79"));
         assert!(p.log.iter().any(|s| s.sutra == "6.1.87"));
         assert_eq!(p.text(), "laBeta");
+    }
+
+    #[test]
+    fn as_lot_atmanepada_uttama_eka_is_ase() {
+        // adādi √ās (śap luk'd) loṭ uttama-eka: the āṭ A never merged into a
+        // śap (there is none), so it leads the ending as `A E`. 6.1.90's
+        // athematic ending arm must vṛddhi it to a single E (Asai → AsE).
+        // Bug: AsAE (āsāai). Cf. the thematic laBE.
+        assert_eq!(
+            form_g("As", Lakara::Lot, Purusha::Uttama, Vacana::Eka),
+            "AsE"
+        );
+    }
+
+    #[test]
+    fn as_vidhilin_atmanepada_elides_optative_y_before_val() {
+        // adādi √ās vidhiliṅ: on the śap-luk'd path 6.1.87 never consumes the
+        // optative I, so the ending stays `I y val`; 6.1.66 must elide the y
+        // (Iyta → Ita) before a val consonant — but KEEP it before a vowel.
+        for (pu, va, want) in [
+            (Purusha::Prathama, Vacana::Eka, "AsIta"),
+            (Purusha::Prathama, Vacana::Bahu, "AsIran"),
+            (Purusha::Madhyama, Vacana::Eka, "AsITAH"),
+            (Purusha::Madhyama, Vacana::Bahu, "AsIDvam"),
+            (Purusha::Uttama, Vacana::Dvi, "AsIvahi"),
+            (Purusha::Uttama, Vacana::Bahu, "AsImahi"),
+        ] {
+            assert_eq!(form_g("As", Lakara::VidhiLin, pu, va), want, "{pu:?} {va:?}");
+        }
+        // Guard boundary: the y survives before a vowel (must NOT over-elide).
+        for (pu, va, want) in [
+            (Purusha::Uttama, Vacana::Eka, "AsIya"),
+            (Purusha::Prathama, Vacana::Dvi, "AsIyAtAm"),
+            (Purusha::Madhyama, Vacana::Dvi, "AsIyATAm"),
+        ] {
+            assert_eq!(form_g("As", Lakara::VidhiLin, pu, va), want, "{pu:?} {va:?}");
+        }
     }
 
     #[test]
