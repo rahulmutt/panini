@@ -87,6 +87,31 @@ fn cartva_of(c: char) -> Option<char> {
     }
 }
 
+/// A jhaś (voiced stop) — the trigger of the voiced junction (jaśtva before a
+/// voiced stop). `Dh` (`D`) of Dve/Dvam is the case this slice exercises.
+fn is_jhas(c: char) -> bool {
+    matches!(
+        c,
+        'g' | 'G' | 'j' | 'J' | 'q' | 'Q' | 'd' | 'D' | 'b' | 'B' | 'h'
+    )
+}
+
+/// The jaś (voiced unaspirated) substitute of a jhal, per the voiced junction
+/// (8.4.53 jhalāṃ jaś jhaśi). Only `s → d` is exercised this slice; the stop
+/// vargas are written generally for later jhal-final roots. Extend the
+/// sibilant/`h` rows as later roots demand.
+fn jastva_of(c: char) -> Option<char> {
+    match c {
+        'k' | 'K' | 'g' | 'G' => Some('g'),
+        'c' | 'C' | 'j' | 'J' => Some('j'),
+        'w' | 'W' | 'q' | 'Q' => Some('q'),
+        't' | 'T' | 'd' | 'D' => Some('d'),
+        'p' | 'P' | 'b' | 'B' => Some('b'),
+        's' => Some('d'),
+        _ => None,
+    }
+}
+
 /// 1.3.4 na vibhaktau tusmāḥ: a final tu-varga (t/T/d/D/n), `s`, or `m` of a
 /// vibhakti is NOT an it, so the shared halantyam elision must be suppressed
 /// for such tiṅ endings (e.g. tas, Tas, vas, mas keep their final `s`).
@@ -1496,6 +1521,51 @@ pub static TINANTA_RULES: &[Rule] = &[
             s.push('H');
             p.terms[idx].text = s.into_iter().collect();
             p.record("8.3.15", "KaravasAnayor visarjanIyaH", before);
+            true
+        },
+    },
+    // 8.4.53 jhalāṃ jaś jhaśi (voiced junction / jaśtva): a jhal at the aṅga's
+    // final position, meeting a jhaś (voiced stop) across the root+ending
+    // junction, becomes its jaś (voiced unaspirated). √ās's `s` before the `Dh`
+    // of Dve/Dvam → `d`: As + Dve -> AdDve, As + Dvam -> AdDvam. The engine's
+    // first VOICED internal junction — the voiced mirror of 8.4.55's cartva;
+    // general, reused unchanged by √vas (5e) and every later jhal-final root.
+    // Ordered before 8.4.55: numerically earlier in the tripādī, and their
+    // triggers are disjoint (voiced jhaś vs voiceless khar), so neither
+    // double-fires. Like 8.4.55 it reads the first non-empty term after the
+    // aṅga (śap, if present, is luk'd/empty for adādi).
+    Rule {
+        id: "8.4.53",
+        name: "JalAM jaS JaSi",
+        kind: RuleKind::Vidhi,
+        apply: |p| {
+            let next = p
+                .terms
+                .iter()
+                .skip(ANGA + 1)
+                .find_map(|t| t.text.chars().next());
+            let Some(next) = next else { return false };
+            if !is_jhas(next) {
+                return false;
+            }
+            let Some(last) = p.terms[ANGA].text.chars().last() else {
+                return false;
+            };
+            if !is_jhal(last) {
+                return false;
+            }
+            let Some(sub) = jastva_of(last) else {
+                return false;
+            };
+            if sub == last {
+                return false;
+            }
+            let before = p.snapshot();
+            let mut s: Vec<char> = p.terms[ANGA].text.chars().collect();
+            s.pop();
+            s.push(sub);
+            p.terms[ANGA].text = s.into_iter().collect();
+            p.record("8.4.53", "JalAM jaS JaSi", before);
             true
         },
     },
@@ -3166,6 +3236,30 @@ mod tests {
     }
 
     #[test]
+    fn voiced_junction_s_becomes_d_before_dhve() {
+        // √ās 2pl: the root-final `s` meets the voiced `Dh` of Dve/Dvam and
+        // takes its jaś (voiced) counterpart `d`: As + Dve -> AdDve.
+        assert_eq!(
+            form_g("As", Lakara::Lat, Purusha::Madhyama, Vacana::Bahu),
+            "AdDve"
+        );
+        assert_eq!(
+            form_g("As", Lakara::Lan, Purusha::Madhyama, Vacana::Bahu),
+            "AdDvam"
+        );
+        assert_eq!(
+            form_g("As", Lakara::Lot, Purusha::Madhyama, Vacana::Bahu),
+            "AdDvam"
+        );
+        // Guard boundary: a clean `s`-meets-`s` cell is untouched (se is not a
+        // jhaś), so 2sg stays Asse — the junction must not over-apply.
+        assert_eq!(
+            form_g("As", Lakara::Lat, Purusha::Madhyama, Vacana::Eka),
+            "Asse"
+        );
+    }
+
+    #[test]
     fn cartva_of_maps_each_jhal_to_its_first_varga_car() {
         // 8.4.55 car table. Only d→t is exercised by √ad this slice; the other
         // vargas are written generally for later jhal-final roots. Pin the whole
@@ -3188,6 +3282,42 @@ mod tests {
         // Non-car targets return None (e.g. h, sibilants, vowels).
         for c in ['h', 'S', 'z', 's', 'a'] {
             assert_eq!(cartva_of(c), None, "{c}");
+        }
+    }
+
+    #[test]
+    fn jastva_of_maps_each_jhal_to_its_jas() {
+        // Pin the whole map so a mutated arm can't survive: each varga's members
+        // collapse to that varga's jaś (voiced unaspirated); `s → d` is the arm
+        // this slice exercises. Non-jhal / unmapped chars return None.
+        for c in ['k', 'K', 'g', 'G'] {
+            assert_eq!(jastva_of(c), Some('g'), "{c}");
+        }
+        for c in ['c', 'C', 'j', 'J'] {
+            assert_eq!(jastva_of(c), Some('j'), "{c}");
+        }
+        for c in ['w', 'W', 'q', 'Q'] {
+            assert_eq!(jastva_of(c), Some('q'), "{c}");
+        }
+        for c in ['t', 'T', 'd', 'D'] {
+            assert_eq!(jastva_of(c), Some('d'), "{c}");
+        }
+        for c in ['p', 'P', 'b', 'B'] {
+            assert_eq!(jastva_of(c), Some('b'), "{c}");
+        }
+        assert_eq!(jastva_of('s'), Some('d'));
+        assert_eq!(jastva_of('a'), None);
+        assert_eq!(jastva_of('m'), None);
+    }
+
+    #[test]
+    fn is_jhas_is_voiced_stops_only() {
+        for c in ['g', 'G', 'j', 'J', 'q', 'Q', 'd', 'D', 'b', 'B', 'h'] {
+            assert!(is_jhas(c), "{c} should be jhaś");
+        }
+        // Voiceless obstruents, sibilants, vowels, semivowels, nasals are not.
+        for c in ['t', 'T', 's', 'S', 'z', 'a', 'A', 'v', 'y', 'm', 'n'] {
+            assert!(!is_jhas(c), "{c} should not be jhaś");
         }
     }
 

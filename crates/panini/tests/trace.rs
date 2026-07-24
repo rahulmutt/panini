@@ -453,3 +453,19 @@ fn asate_trace_uses_anatah_not_jhontah() {
     // 7.1.3 must NOT appear — 7.1.5 is its apavāda here.
     assert!(!trace_for("Asate").contains(&"7.1.3".to_string()));
 }
+
+#[test]
+fn addhve_trace_ends_in_voiced_junction() {
+    // √ās adādi ātmanepada laṭ 2pl: Dvam → Dve (3.4.79), śap luk'd (2.4.72),
+    // then the voiced junction turns the aṅga-final `s` into `d` before the
+    // `Dh` of Dve: As + Dve -> AdDve.
+    assert_eq!(
+        trace_for("AdDve"),
+        vec![
+            "1.3.12", "3.4.78", "1.2.4", "3.4.79", "3.1.68", "1.3.9", "2.4.72", "8.4.53"
+        ]
+    );
+    // cartva (8.4.55, the voiceless junction) must NOT fire here — the trigger
+    // is a voiced stop, not a khar.
+    assert!(!trace_for("AdDve").contains(&"8.4.55".to_string()));
+}
