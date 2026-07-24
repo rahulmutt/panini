@@ -24,11 +24,12 @@
   target under `crates/panini-lipi/fuzz` legitimately omits it, since it uses
   `#![no_main]` plus the libfuzzer harness macro).
 - Grammar changes are gated by the golden paradigm test
-  (`crates/panini/tests/paradigm.rs`, 936 forms; bhvādi/divādi/tudādi are
+  (`crates/panini/tests/paradigm.rs`, 972 forms; bhvādi/divādi/tudādi are
     complete across laṭ/laṅ/loṭ/vidhiliṅ × parasmaipada/ātmanepada, and adādi
-    (gaṇa 2) is being added — √yā/√vā are complete across all four lakāras
-    (laṭ/laṅ/loṭ/vidhiliṅ); the consonant-final, voiced-junction, and
-    ātmanepada roots (√ad, √vas, √ās, √śī) land in later slices)
+    (gaṇa 2) is being added — √yā/√vā/√ad are complete across all four lakāras
+    (laṭ/laṅ/loṭ/vidhiliṅ), √ad parasmaipada landing the internal junction
+    sandhi cartva (8.4.55); the voiced-junction and ātmanepada roots
+    (√vas, √ās, √śī) land in later slices)
   and by the ordered-trace test (`crates/panini/tests/trace.rs`), which pins
   rule order. Surface forms and trace order there are the source of truth;
   sūtra ids/names in traces must match the cited reference (ashtadhyayi.com).
