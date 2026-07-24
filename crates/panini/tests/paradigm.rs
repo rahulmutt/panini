@@ -1269,6 +1269,9 @@ fn known_nonforms_are_invalid() {
         "yAyAam", // 1sg: real form yāyām
         "vAyAuH",
         "vAyAam",
+        "Asati",  // √ās is ātmanepada; a parasmaipada ending must not derive
+        "Asante", // 3pl must be Asate (7.1.5), never the `ante` of 7.1.3
+        "AsDve",  // 2pl voiced junction must apply: bare s+Dve is not a form
     ] {
         assert!(
             matches!(engine.check(bad).verdict, Verdict::Invalid),

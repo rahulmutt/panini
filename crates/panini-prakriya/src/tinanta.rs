@@ -2717,7 +2717,11 @@ mod tests {
             (Purusha::Uttama, Vacana::Dvi, "AsIvahi"),
             (Purusha::Uttama, Vacana::Bahu, "AsImahi"),
         ] {
-            assert_eq!(form_g("As", Lakara::VidhiLin, pu, va), want, "{pu:?} {va:?}");
+            assert_eq!(
+                form_g("As", Lakara::VidhiLin, pu, va),
+                want,
+                "{pu:?} {va:?}"
+            );
         }
         // Guard boundary: the y survives before a vowel (must NOT over-elide).
         for (pu, va, want) in [
@@ -2725,7 +2729,11 @@ mod tests {
             (Purusha::Prathama, Vacana::Dvi, "AsIyAtAm"),
             (Purusha::Madhyama, Vacana::Dvi, "AsIyATAm"),
         ] {
-            assert_eq!(form_g("As", Lakara::VidhiLin, pu, va), want, "{pu:?} {va:?}");
+            assert_eq!(
+                form_g("As", Lakara::VidhiLin, pu, va),
+                want,
+                "{pu:?} {va:?}"
+            );
         }
     }
 
@@ -3443,6 +3451,45 @@ mod tests {
         assert_eq!(
             form_g("laB", Lakara::Lat, Purusha::Prathama, Vacana::Bahu),
             "laBante"
+        );
+    }
+
+    #[test]
+    fn anatah_declines_for_a_final_atmanepada_angas() {
+        // 7.1.5's "anataḥ" arm: every a-final (thematic / vikaraṇa-buffered)
+        // ātmanepada 3pl keeps 7.1.3's `ante`. Pins that the guard reads the
+        // preceding segment's `a`, not the consonant-final root.
+        assert_eq!(
+            form_g("laB", Lakara::Lat, Purusha::Prathama, Vacana::Bahu),
+            "laBante"
+        );
+        assert_eq!(
+            form_g("man", Lakara::Lat, Purusha::Prathama, Vacana::Bahu),
+            "manyante"
+        );
+        assert_eq!(
+            form_g("juz", Lakara::Lat, Purusha::Prathama, Vacana::Bahu),
+            "juzante"
+        );
+    }
+
+    #[test]
+    fn voiced_junction_does_not_touch_non_jhas_or_non_jhal_junctions() {
+        // Under-application guard: `s` before the non-jhaś `s`/`th`/`v` of
+        // se/sva/thās stays `s` (Asse, Assva, AsTAH) — only a jhaś triggers it.
+        assert_eq!(
+            form_g("As", Lakara::Lot, Purusha::Madhyama, Vacana::Eka),
+            "Assva"
+        );
+        assert_eq!(
+            form_g("As", Lakara::Lan, Purusha::Madhyama, Vacana::Eka),
+            "AsTAH"
+        );
+        // Over-application guard: √ad is parasmaipada; its voiceless junctions
+        // stay cartva's business:
+        assert_eq!(
+            form_g("ad", Lakara::Lat, Purusha::Prathama, Vacana::Eka),
+            "atti"
         );
     }
 }

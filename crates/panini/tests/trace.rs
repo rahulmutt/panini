@@ -501,8 +501,14 @@ fn asita_vidhilin_trace_ends_in_vali_lopa() {
         ]
     );
     // 7.2.79 (salopa) must precede 6.1.66; 6.1.87 must NOT fire (no śap a).
-    let i79 = t.iter().position(|r| r == "7.2.79").expect("7.2.79 present");
-    let i66 = t.iter().position(|r| r == "6.1.66").expect("6.1.66 present");
+    let i79 = t
+        .iter()
+        .position(|r| r == "7.2.79")
+        .expect("7.2.79 present");
+    let i66 = t
+        .iter()
+        .position(|r| r == "6.1.66")
+        .expect("6.1.66 present");
     assert!(i79 < i66, "7.2.79 must precede 6.1.66");
     assert!(!t.contains(&"6.1.87".to_string()), "6.1.87 must not fire");
 }
