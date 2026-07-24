@@ -1303,6 +1303,31 @@ pub static TINANTA_RULES: &[Rule] = &[
             true
         },
     },
+    // 6.4.101 hujhalbhyo her dhiḥ: the loṭ 2sg `hi` becomes `Di` after a
+    // jhal-final aṅga (and after √hu, out of scope). √ad: 6.4.105 ato heḥ
+    // declined (its aṅga ends in `d`, not a short `a`), so `hi` survives to
+    // here → adDi. Thematic roots never reach this: their `hi` is luk'd by
+    // 6.4.105 behind śap's `a`.
+    Rule {
+        id: "6.4.101",
+        name: "her DiH",
+        kind: RuleKind::Vidhi,
+        apply: |p| {
+            if p.terms[ENDING].text != "hi" {
+                return false;
+            }
+            let Some(last) = p.terms[ANGA].text.chars().last() else {
+                return false;
+            };
+            if !is_jhal(last) {
+                return false;
+            }
+            let before = p.snapshot();
+            p.terms[ENDING].text = "Di".into();
+            p.record("6.4.101", "her DiH", before);
+            true
+        },
+    },
     // 8.2.77 hali ca: a root ending in `r`/`v` with a short ik upadhā
     // lengthens that upadhā before a hal (8.2.76 rvorupadhāyā dīrghaḥ is the
     // anuvṛtti source). The only curated root reaching this is div, after
@@ -1692,6 +1717,21 @@ mod tests {
         assert_eq!(
             form_g("ad", Lakara::Lat, Purusha::Prathama, Vacana::Bahu),
             "adanti"
+        );
+    }
+
+    #[test]
+    fn her_dhih_gives_addhi_for_consonant_root() {
+        // √ad loṭ 2sg: 3.4.87 si→hi, 6.4.105 declines (d, not short a),
+        // 6.4.101 hi→Di → adDi.
+        assert_eq!(
+            form_g("ad", Lakara::Lot, Purusha::Madhyama, Vacana::Eka),
+            "adDi"
+        );
+        // Thematic root unaffected: √bhū loṭ 2sg is Bava (hi luk'd by 6.4.105).
+        assert_eq!(
+            form_g("BU", Lakara::Lot, Purusha::Madhyama, Vacana::Eka),
+            "Bava"
         );
     }
 
