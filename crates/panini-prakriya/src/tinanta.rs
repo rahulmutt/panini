@@ -3167,9 +3167,5 @@ mod tests {
             form_g("ad", Lakara::Lan, Purusha::Madhyama, Vacana::Dvi),
             "Attam"
         );
-        assert_ne!(
-            form_g("ad", Lakara::Lan, Purusha::Madhyama, Vacana::Dvi),
-            "Adatam"
-        );
     }
 }

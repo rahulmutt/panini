@@ -252,7 +252,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn has_twentysix_curated_roots_with_padas() {
+    fn has_twentyseven_curated_roots_with_padas() {
         assert_eq!(dhatus().len(), 27);
         let bu = dhatus().iter().find(|d| d.code == "BU").unwrap();
         assert!(matches!(bu.pada, Pada::Parasmaipada));
