@@ -35,6 +35,58 @@ fn is_vowel(c: char) -> bool {
     )
 }
 
+/// A jhal (obstruent) — the set 8.4.55's target ranges over. For this slice
+/// only `d` is exercised, but the classifier is written generally.
+fn is_jhal(c: char) -> bool {
+    matches!(
+        c,
+        'k' | 'K'
+            | 'g'
+            | 'G'
+            | 'c'
+            | 'C'
+            | 'j'
+            | 'J'
+            | 'w'
+            | 'W'
+            | 'q'
+            | 'Q'
+            | 't'
+            | 'T'
+            | 'd'
+            | 'D'
+            | 'p'
+            | 'P'
+            | 'b'
+            | 'B'
+            | 'S'
+            | 'z'
+            | 's'
+            | 'h'
+    )
+}
+
+/// A khar (voiceless obstruent) — the trigger of 8.4.55 (khari ca).
+fn is_khar(c: char) -> bool {
+    matches!(
+        c,
+        'k' | 'K' | 'c' | 'C' | 'w' | 'W' | 't' | 'T' | 'p' | 'P' | 'S' | 'z' | 's'
+    )
+}
+
+/// The car (voiceless unaspirated) substitute of a jhal, per 8.4.55.
+/// Only `d → t` is exercised this slice; extend as later roots demand.
+fn cartva_of(c: char) -> Option<char> {
+    match c {
+        'd' | 'D' | 't' | 'T' => Some('t'),
+        'g' | 'G' | 'k' | 'K' => Some('k'),
+        'b' | 'B' | 'p' | 'P' => Some('p'),
+        'j' | 'J' | 'c' | 'C' => Some('c'),
+        'q' | 'Q' | 'w' | 'W' => Some('w'),
+        _ => None,
+    }
+}
+
 /// 1.3.4 na vibhaktau tusmāḥ: a final tu-varga (t/T/d/D/n), `s`, or `m` of a
 /// vibhakti is NOT an it, so the shared halantyam elision must be suppressed
 /// for such tiṅ endings (e.g. tas, Tas, vas, mas keep their final `s`).
@@ -1336,6 +1388,48 @@ pub static TINANTA_RULES: &[Rule] = &[
             true
         },
     },
+    // 8.4.55 khari ca (cartva): a jhal at the aṅga's final position, meeting a
+    // khar across the root+ending junction, becomes its car (voiceless
+    // unaspirated). √ad's d before ti/tas/si/tha → t: atti, attaH, atsi, atTa.
+    // The engine's first internal junction sandhi; general, reused by every
+    // later gaṇa/subanta slice. Placed last: latest tripādī rule (8.4 > 8.3).
+    Rule {
+        id: "8.4.55",
+        name: "Kari ca",
+        kind: RuleKind::Vidhi,
+        apply: |p| {
+            // The following segment is the first char of the first non-empty
+            // term after the aṅga (the ending; śap, if present, is luk'd/empty).
+            let next = p
+                .terms
+                .iter()
+                .skip(ANGA + 1)
+                .find_map(|t| t.text.chars().next());
+            let Some(next) = next else { return false };
+            if !is_khar(next) {
+                return false;
+            }
+            let Some(last) = p.terms[ANGA].text.chars().last() else {
+                return false;
+            };
+            if !is_jhal(last) {
+                return false;
+            }
+            let Some(sub) = cartva_of(last) else {
+                return false;
+            };
+            if sub == last {
+                return false;
+            }
+            let before = p.snapshot();
+            let mut s: Vec<char> = p.terms[ANGA].text.chars().collect();
+            s.pop();
+            s.push(sub);
+            p.terms[ANGA].text = s.into_iter().collect();
+            p.record("8.4.55", "Kari ca", before);
+            true
+        },
+    },
 ];
 
 pub fn derive(
@@ -1572,6 +1666,32 @@ mod tests {
         assert_eq!(
             form_g("yA", Lakara::VidhiLin, Purusha::Uttama, Vacana::Eka),
             "yAyAm"
+        );
+    }
+
+    #[test]
+    fn cartva_turns_d_to_t_before_khar() {
+        // √ad laṭ: 3sg atti (d+t), 2sg atsi (d+s), 2pl atTa (d+T).
+        assert_eq!(
+            form_g("ad", Lakara::Lat, Purusha::Prathama, Vacana::Eka),
+            "atti"
+        );
+        assert_eq!(
+            form_g("ad", Lakara::Lat, Purusha::Madhyama, Vacana::Eka),
+            "atsi"
+        );
+        assert_eq!(
+            form_g("ad", Lakara::Lat, Purusha::Madhyama, Vacana::Bahu),
+            "atTa"
+        );
+        // Not before a non-khar (m/v) or a vowel: admi, adanti stay.
+        assert_eq!(
+            form_g("ad", Lakara::Lat, Purusha::Uttama, Vacana::Eka),
+            "admi"
+        );
+        assert_eq!(
+            form_g("ad", Lakara::Lat, Purusha::Prathama, Vacana::Bahu),
+            "adanti"
         );
     }
 
