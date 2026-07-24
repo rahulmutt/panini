@@ -23,8 +23,9 @@ immediately.
 directly, so it is also the first to exercise phonology the thematic gaṇas kept
 hidden behind an a-final vikaraṇa. The full paradigm needs **three** new rules,
 not the one the parent spec's √ad row sketched — but the fourth lakāra
-(vidhiliṅ) comes free, and the parent's fourth rule (8.2.23) turns out
-unnecessary. See "Rules" below.
+(vidhiliṅ) comes free, and the parent's fourth rule (8.2.23) is already in the
+engine and never actually fires for √ad (the a-augment preempts it). See
+"Rules" below.
 
 The slice ships √ad's full 36 cells in one golden block, so √ad never needs a
 second visit — the uniform-paradigm invariant slice 5b deliberately
@@ -90,17 +91,25 @@ survives after `ā`). √ad is the first root where `hi` survives to meet a
 ### ② laṅ singular a-augment — laṅ 2sg / 3sg `AdaH` / `Adat`
 
 The laṅ singular endings reduce to a single consonant (2sg `s`, 3sg `t`). After
-the aṭ-augmented stem `Ad`, a bare `Ad + s` / `Ad + t` would leave a word-final
-consonant cluster that 8.2.23 *saṃyogāntasya lopaḥ* would strip to bare `Ad`,
-collapsing 2sg = 3sg = 1sg-stem. To prevent that, √ad inserts an `a` before the
-ending: `Ad + a + s` → `AdaH`, `Ad + a + t` → `Adat`. This is Whitney's
-explicitly-special insertion; it does **not** generalize (√vas, √dviṣ do not
-insert).
+the aṭ-augmented stem `Ad`, a bare `Ad + s` / `Ad + t` leaves a word-final
+consonant cluster that the **pre-existing** 8.2.23 *saṃyogāntasya lopaḥ*
+(`tinanta.rs`, already in the array — it strips `aBavant` → `aBavan`) would
+reduce to bare `Ad`, collapsing 2sg = 3sg = 1sg-stem. To prevent that, √ad
+inserts an `a` before the ending: `Ad + a + s` → `Adas`, `Ad + a + t` → `Adat`.
+The inserted `a` makes the word vowel-final, so 8.2.23 — which checks the last
+two characters of `p.text()` and declines when either is a vowel — correctly
+does **not** fire. This is Whitney's explicitly-special insertion; it does
+**not** generalize (√vas, √dviṣ do not insert).
 
-- **Guard:** root = √ad ∧ lakāra = laṅ ∧ single-consonant ending ∈ {`s` (2sg),
-  `t` (3sg)}. The length guard is what separates 2sg/3sg from the multi-char
-  endings `tam` / `tAm` / `ta` (2du/3du/2pl), which keep their cluster-free
-  junction and go through cartva (`Attam`, `AttAm`, `Atta`).
+- **Guard:** `Tag::Adadi` ∧ lakāra = laṅ ∧ consonant-final aṅga ∧
+  single-consonant ending ∈ {`s` (2sg), `t` (3sg)}. Neither `Context` nor `Term`
+  carries a root code, so — following the codebase's structural-guard precedent
+  (only √div reaches 8.2.77) — the guard is written structurally; in the current
+  root set (adādi's only consonant-final root is √ad; √yā/√vā are ā-final) it
+  selects exactly √ad. When √vas lands it is retightened, pinned by a negative
+  mutation guard. The length guard separates 2sg/3sg from the multi-char endings
+  `tam` / `tAm` / `ta` (2du/3du/2pl), which keep their cluster-free junction and
+  go through cartva (`Attam`, `AttAm`, `Atta`).
 - **Placement:** aṅga layer — necessarily **before** cartva (③), so the inserted
   `a` shields the `d`.
 - **Sūtra id:** a √ad-specific aṭ-vārttika; the exact id/name is pinned against
@@ -124,14 +133,15 @@ every later gaṇa/subanta/compound slice inherits it.
   final-`s` → visarga machinery is independent (both act on `attas`) but the
   ordering is asserted (see Risks).
 
-### Why *not* 8.2.23 *saṃyogāntasya lopaḥ*
+### On 8.2.23 *saṃyogāntasya lopaḥ* (already present)
 
-The parent spec's √ad row listed 8.2.23 alongside cartva. But once ② inserts the
-laṅ-singular `a`, **no √ad cell has a word-final consonant cluster** — verified
-across all 36 forms. 8.2.23 would never fire on a golden cell, so per the
-codebase's YAGNI discipline ("new grammar only as a golden cell demands it") it
-is **not** added in this slice. It belongs to a later root (√vas / √dviṣ) whose
-paradigm actually surfaces a final cluster.
+The parent spec's √ad row listed 8.2.23 alongside cartva. It is already in the
+array (it produces `aBavan` etc.), so this slice adds no 8.2.23 code. Its only
+role here is as the rule the a-augment (②) must **preempt**: without the
+inserted `a`, `Adt` / `Ads` would hit 8.2.23 and collapse to `Ad`; with it, the
+word is vowel-final and 8.2.23 declines. So across all 36 √ad forms, 8.2.23
+never actually fires — the a-augment shields every one. The three *new* rules
+this slice adds remain ①/②/③; 8.2.23 is unchanged.
 
 ### Ordering summary
 
@@ -140,9 +150,10 @@ paradigm actually surfaces a final cluster.
   ... existing sārvadhātuka / aṅga rules ...
   6.4.105 ato heH            (unchanged; short-a guard declines for √ad)
 [new] 6.4.101 her dhiH       (loṭ 2sg: hi → dhi → adDi)
-[new] laṅ a-augment (√ad)    (laṅ 2sg/3sg: Ad+s/Ad+t → Adas/Adat)
+[new] laṅ a-augment (adādi)  (laṅ 2sg/3sg: Ad+s/Ad+t → Adas/Adat)
 [tripādī]
-  ... existing final-s → visarga machinery ...
+  8.2.23 saMyogAntasya lopaH (unchanged; a-augment makes it decline for √ad)
+  8.3.15 KaravasAnayoH       (unchanged; final s → visarga: Adas → AdaH)
 [new] 8.4.55 khari ca        (cartva: d → t before khar → atti, Attam, ...)
 ```
 
