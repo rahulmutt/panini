@@ -3412,6 +3412,75 @@ mod tests {
     }
 
     #[test]
+    fn dhi_ca_fires_for_vas_and_only_before_dh() {
+        // √vas is the sūtra's second witness: vas + Dve -> va + Dve -> vaDve.
+        assert_eq!(
+            form_g("vas", Lakara::Lat, Purusha::Madhyama, Vacana::Bahu),
+            "vaDve"
+        );
+        assert_eq!(
+            form_g("vas", Lakara::Lan, Purusha::Madhyama, Vacana::Bahu),
+            "avaDvam"
+        );
+        assert_eq!(
+            form_g("vas", Lakara::Lot, Purusha::Madhyama, Vacana::Bahu),
+            "vaDvam"
+        );
+        // The affix must be Dh-initial. These four cells put the same aṅga-
+        // final `s` in front of `t`, `T` and `s` and it must survive intact —
+        // and they are also the first pins that cartva (8.4.55) leaves an `s`
+        // alone before a khar, an arm √ad and √ās could not reach.
+        assert_eq!(
+            form_g("vas", Lakara::Lat, Purusha::Prathama, Vacana::Eka),
+            "vaste"
+        );
+        assert_eq!(
+            form_g("vas", Lakara::Lat, Purusha::Madhyama, Vacana::Eka),
+            "vasse"
+        );
+        assert_eq!(
+            form_g("vas", Lakara::Lan, Purusha::Madhyama, Vacana::Eka),
+            "avasTAH"
+        );
+        assert_eq!(
+            form_g("vas", Lakara::Lot, Purusha::Madhyama, Vacana::Eka),
+            "vassva"
+        );
+    }
+
+    #[test]
+    fn dhi_ca_does_not_elide_a_non_s_before_dh() {
+        // Thematic ātmanepada √labh keeps its śap `a` in front of Dve/Dvam:
+        // the term preceding the affix ends in `a`, not `s`, so 8.2.25 must
+        // decline. These are the slice-3 goldens, unchanged.
+        assert_eq!(
+            form_g("laB", Lakara::Lat, Purusha::Madhyama, Vacana::Bahu),
+            "laBaDve"
+        );
+        assert_eq!(
+            form_g("laB", Lakara::Lan, Purusha::Madhyama, Vacana::Bahu),
+            "alaBaDvam"
+        );
+    }
+
+    #[test]
+    fn dhi_ca_reads_the_affixs_neighbour_not_the_anga() {
+        // vidhiliṅ 2pl: the sīyuṭ residue `I` sits between the aṅga and the
+        // Dh-initial affix, so the aṅga's `s` is NOT adjacent to the `Dh` and
+        // must be retained: As + I + Dvam -> AsIDvam (never *AIDvam). This is
+        // the arm that fails if the guard reads the aṅga instead of the term
+        // actually preceding the affix.
+        assert_eq!(
+            form_g("As", Lakara::VidhiLin, Purusha::Madhyama, Vacana::Bahu),
+            "AsIDvam"
+        );
+        assert_eq!(
+            form_g("vas", Lakara::VidhiLin, Purusha::Madhyama, Vacana::Bahu),
+            "vasIDvam"
+        );
+    }
+
+    #[test]
     fn cartva_of_maps_each_jhal_to_its_first_varga_car() {
         // 8.4.55 car table. Only d→t is exercised by √ad this slice; the other
         // vargas are written generally for later jhal-final roots. Pin the whole

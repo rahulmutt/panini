@@ -473,6 +473,23 @@ fn adhve_trace_ends_in_dhi_ca() {
 }
 
 #[test]
+fn vadhve_trace_is_the_second_dhi_ca_witness() {
+    // √vas adādi ātmanepada laṭ 2pl — the cell the commentaries use to state
+    // 8.2.25. Same ordered path as ADve on a consonant-initial root: the
+    // aṅga-final `s` is elided before the `Dh` of Dve, giving vaDve.
+    assert_eq!(
+        trace_for("vaDve"),
+        vec![
+            "1.3.12", "3.4.78", "1.2.4", "3.4.79", "3.1.68", "1.3.9", "2.4.72", "8.2.25"
+        ]
+    );
+    // Non-Dh-initial cells of the same root reach no junction rule at all:
+    // the `s` of vaste survives, so cartva must not appear either.
+    assert!(!trace_for("vaste").contains(&"8.4.55".to_string()));
+    assert!(!trace_for("vaste").contains(&"8.2.25".to_string()));
+}
+
+#[test]
 fn ase_lot_uttama_eka_trace_ends_in_atas_ca() {
     // √ās adādi ātmanepada loṭ uttama eka: iṭ → i (1.3.9) → e (3.4.79) → E
     // (3.4.93) → AE (3.4.92 āṭ). The śap is inserted (3.1.68) then luk'd

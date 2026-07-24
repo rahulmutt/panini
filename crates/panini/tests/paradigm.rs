@@ -1309,7 +1309,15 @@ fn known_nonforms_are_invalid() {
         "vAyAam",
         "Asati",  // √ās is ātmanepada; a parasmaipada ending must not derive
         "Asante", // 3pl must be Asate (7.1.5), never the `ante` of 7.1.3
-        "AsDve",  // 2pl voiced junction must apply: bare s+Dve is not a form
+        // 8.2.25 dhi ca elides the aṅga-final `s` before Dve/Dvam. Both the
+        // un-applied shape and slice 5d's jaśtva'd shape are non-words.
+        "AsDve",    // s retained: the rule did not fire
+        "AdDve",    // 5d's wrong form: s voiced to `d` instead of elided
+        "AdDvam",   // ditto, laṅ/loṭ
+        "vasDve",   // √vas, s retained
+        "vadDve",   // √vas, 5d's wrong analysis
+        "avasDvam", // √vas laṅ, s retained
+        "vasati",   // √vas is ātmanepada; a parasmaipada ending must not derive
     ] {
         assert!(
             matches!(engine.check(bad).verdict, Verdict::Invalid),
