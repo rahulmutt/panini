@@ -35,6 +35,58 @@ fn is_vowel(c: char) -> bool {
     )
 }
 
+/// A jhal (obstruent) — the set 8.4.55's target ranges over. For this slice
+/// only `d` is exercised, but the classifier is written generally.
+fn is_jhal(c: char) -> bool {
+    matches!(
+        c,
+        'k' | 'K'
+            | 'g'
+            | 'G'
+            | 'c'
+            | 'C'
+            | 'j'
+            | 'J'
+            | 'w'
+            | 'W'
+            | 'q'
+            | 'Q'
+            | 't'
+            | 'T'
+            | 'd'
+            | 'D'
+            | 'p'
+            | 'P'
+            | 'b'
+            | 'B'
+            | 'S'
+            | 'z'
+            | 's'
+            | 'h'
+    )
+}
+
+/// A khar (voiceless obstruent) — the trigger of 8.4.55 (khari ca).
+fn is_khar(c: char) -> bool {
+    matches!(
+        c,
+        'k' | 'K' | 'c' | 'C' | 'w' | 'W' | 't' | 'T' | 'p' | 'P' | 'S' | 'z' | 's'
+    )
+}
+
+/// The car (voiceless unaspirated) substitute of a jhal, per 8.4.55.
+/// Only `d → t` is exercised this slice; extend as later roots demand.
+fn cartva_of(c: char) -> Option<char> {
+    match c {
+        'd' | 'D' | 't' | 'T' => Some('t'),
+        'g' | 'G' | 'k' | 'K' => Some('k'),
+        'b' | 'B' | 'p' | 'P' => Some('p'),
+        'j' | 'J' | 'c' | 'C' => Some('c'),
+        'q' | 'Q' | 'w' | 'W' => Some('w'),
+        _ => None,
+    }
+}
+
 /// 1.3.4 na vibhaktau tusmāḥ: a final tu-varga (t/T/d/D/n), `s`, or `m` of a
 /// vibhakti is NOT an it, so the shared halantyam elision must be suppressed
 /// for such tiṅ endings (e.g. tas, Tas, vas, mas keep their final `s`).
@@ -774,20 +826,65 @@ pub static TINANTA_RULES: &[Rule] = &[
     },
     // 6.4.72 āḍ ajādīnām: vowel-initial aṅgas take the āṭ-āgama in laṅ
     // (apavāda to 6.4.71's aṭ). The A then merges with the root's initial
-    // vowel by 6.1.90 āṭaś ca into vṛddhi: a+eD → ED, a+Ikz → Ekz.
+    // vowel by 6.1.90 āṭaś ca into vṛddhi: a+eD → ED, a+Ikz → Ekz, a+ad → Ad.
     Rule {
         id: "6.4.72",
         name: "Aq ajAdInAm",
         kind: RuleKind::Vidhi,
         apply: |p| {
             let first = p.terms[ANGA].text.chars().next().unwrap();
-            // Only apply to true vowel-initial roots, not to 'a' prefixed by 6.4.71
-            if !matches!(p.ctx.lakara, Lakara::Lan) || !is_vowel(first) || first == 'a' {
+            // Only apply to true vowel-initial roots, not to an aṅga that
+            // already carries 6.4.71's aṭ augment. 6.4.71's augment is
+            // itself the character `a`, which is indistinguishable from a
+            // genuinely a-initial root (√ad) by first-char alone — so check
+            // whether 6.4.71 actually fired in this derivation (the trace)
+            // rather than sniffing the character. Roots 6.4.71 augmented are
+            // consonant-initial by its own guard, so this never double-fires;
+            // genuinely a-initial roots (√ad) never trigger 6.4.71 (their
+            // first char is already a vowel), so they reach here untouched
+            // and correctly take āṭ.
+            let already_augmented = p.log.iter().any(|s| s.sutra == "6.4.71");
+            if !matches!(p.ctx.lakara, Lakara::Lan) || !is_vowel(first) || already_augmented {
                 return false;
             }
             let before = p.snapshot();
             p.terms[ANGA].text = format!("A{}", p.terms[ANGA].text);
             p.record("6.4.72", "Aq ajAdInAm", before);
+            true
+        },
+    },
+    // 7.3.100 adaH sarvezAm: √ad prefixes aṭ (`a`) to a laṅ singular
+    // consonant ending (2sg s, 3sg t). Without it, Ad+s / Ad+t are word-final
+    // conjuncts that 8.2.23 saṃyogāntasya lopaḥ would strip to bare Ad,
+    // collapsing 2sg=3sg=1sg-stem. The inserted `a` makes the word vowel-final:
+    // 8.2.23 declines, and cartva (8.4.55) skips the `d` (now before `a`, not a
+    // khar) → Adat, Adas→AdaH. Guarded structurally (Tag::Adadi ∧ laṅ ∧
+    // consonant-final aṅga ∧ single-char s/t ending): in the current root set
+    // that is exactly √ad (√yā/√vā are ā-final). Retighten when √vas lands.
+    Rule {
+        id: "7.3.100",
+        name: "adaH sarvezAm",
+        kind: RuleKind::Vidhi,
+        apply: |p| {
+            if !matches!(p.ctx.lakara, Lakara::Lan) || !p.terms[ANGA].has(Tag::Adadi) {
+                return false;
+            }
+            // Consonant-final aṅga only (ā-final √yā/√vā never insert).
+            let Some(anga_last) = p.terms[ANGA].text.chars().last() else {
+                return false;
+            };
+            if is_vowel(anga_last) {
+                return false;
+            }
+            // Single-consonant ending: 2sg `s` / 3sg `t` (not the multi-char
+            // tam/tAm/ta of dual/plural).
+            let e = &p.terms[ENDING].text;
+            if e.chars().count() != 1 || !matches!(e.as_str(), "s" | "t") {
+                return false;
+            }
+            let before = p.snapshot();
+            p.terms[ENDING].text = format!("a{e}");
+            p.record("7.3.100", "adaH sarvezAm", before);
             true
         },
     },
@@ -1251,6 +1348,31 @@ pub static TINANTA_RULES: &[Rule] = &[
             true
         },
     },
+    // 6.4.101 hujhalbhyo her dhiḥ: the loṭ 2sg `hi` becomes `Di` after a
+    // jhal-final aṅga (and after √hu, out of scope). √ad: 6.4.105 ato heḥ
+    // declined (its aṅga ends in `d`, not a short `a`), so `hi` survives to
+    // here → adDi. Thematic roots never reach this: their `hi` is luk'd by
+    // 6.4.105 behind śap's `a`.
+    Rule {
+        id: "6.4.101",
+        name: "her DiH",
+        kind: RuleKind::Vidhi,
+        apply: |p| {
+            if p.terms[ENDING].text != "hi" {
+                return false;
+            }
+            let Some(last) = p.terms[ANGA].text.chars().last() else {
+                return false;
+            };
+            if !is_jhal(last) {
+                return false;
+            }
+            let before = p.snapshot();
+            p.terms[ENDING].text = "Di".into();
+            p.record("6.4.101", "her DiH", before);
+            true
+        },
+    },
     // 8.2.77 hali ca: a root ending in `r`/`v` with a short ik upadhā
     // lengthens that upadhā before a hal (8.2.76 rvorupadhāyā dīrghaḥ is the
     // anuvṛtti source). The only curated root reaching this is div, after
@@ -1333,6 +1455,48 @@ pub static TINANTA_RULES: &[Rule] = &[
             s.push('H');
             p.terms[idx].text = s.into_iter().collect();
             p.record("8.3.15", "KaravasAnayor visarjanIyaH", before);
+            true
+        },
+    },
+    // 8.4.55 khari ca (cartva): a jhal at the aṅga's final position, meeting a
+    // khar across the root+ending junction, becomes its car (voiceless
+    // unaspirated). √ad's d before ti/tas/si/tha → t: atti, attaH, atsi, atTa.
+    // The engine's first internal junction sandhi; general, reused by every
+    // later gaṇa/subanta slice. Placed last: latest tripādī rule (8.4 > 8.3).
+    Rule {
+        id: "8.4.55",
+        name: "Kari ca",
+        kind: RuleKind::Vidhi,
+        apply: |p| {
+            // The following segment is the first char of the first non-empty
+            // term after the aṅga (the ending; śap, if present, is luk'd/empty).
+            let next = p
+                .terms
+                .iter()
+                .skip(ANGA + 1)
+                .find_map(|t| t.text.chars().next());
+            let Some(next) = next else { return false };
+            if !is_khar(next) {
+                return false;
+            }
+            let Some(last) = p.terms[ANGA].text.chars().last() else {
+                return false;
+            };
+            if !is_jhal(last) {
+                return false;
+            }
+            let Some(sub) = cartva_of(last) else {
+                return false;
+            };
+            if sub == last {
+                return false;
+            }
+            let before = p.snapshot();
+            let mut s: Vec<char> = p.terms[ANGA].text.chars().collect();
+            s.pop();
+            s.push(sub);
+            p.terms[ANGA].text = s.into_iter().collect();
+            p.record("8.4.55", "Kari ca", before);
             true
         },
     },
@@ -1572,6 +1736,75 @@ mod tests {
         assert_eq!(
             form_g("yA", Lakara::VidhiLin, Purusha::Uttama, Vacana::Eka),
             "yAyAm"
+        );
+    }
+
+    #[test]
+    fn cartva_turns_d_to_t_before_khar() {
+        // √ad laṭ: 3sg atti (d+t), 2sg atsi (d+s), 2pl atTa (d+T).
+        assert_eq!(
+            form_g("ad", Lakara::Lat, Purusha::Prathama, Vacana::Eka),
+            "atti"
+        );
+        assert_eq!(
+            form_g("ad", Lakara::Lat, Purusha::Madhyama, Vacana::Eka),
+            "atsi"
+        );
+        assert_eq!(
+            form_g("ad", Lakara::Lat, Purusha::Madhyama, Vacana::Bahu),
+            "atTa"
+        );
+        // Not before a non-khar (m/v) or a vowel: admi, adanti stay.
+        assert_eq!(
+            form_g("ad", Lakara::Lat, Purusha::Uttama, Vacana::Eka),
+            "admi"
+        );
+        assert_eq!(
+            form_g("ad", Lakara::Lat, Purusha::Prathama, Vacana::Bahu),
+            "adanti"
+        );
+    }
+
+    #[test]
+    fn her_dhih_gives_addhi_for_consonant_root() {
+        // √ad loṭ 2sg: 3.4.87 si→hi, 6.4.105 declines (d, not short a),
+        // 6.4.101 hi→Di → adDi.
+        assert_eq!(
+            form_g("ad", Lakara::Lot, Purusha::Madhyama, Vacana::Eka),
+            "adDi"
+        );
+        // Thematic root unaffected: √bhū loṭ 2sg is Bava (hi luk'd by 6.4.105).
+        assert_eq!(
+            form_g("BU", Lakara::Lot, Purusha::Madhyama, Vacana::Eka),
+            "Bava"
+        );
+    }
+
+    #[test]
+    fn adadi_lan_singular_a_augment() {
+        // √ad laṅ 3sg Adat, 2sg AdaH — the inserted `a` blocks the saṃyogānta
+        // collapse (Adt/Ads → Ad) and cartva (d now before `a`, not a khar).
+        assert_eq!(
+            form_g("ad", Lakara::Lan, Purusha::Prathama, Vacana::Eka),
+            "Adat"
+        );
+        assert_eq!(
+            form_g("ad", Lakara::Lan, Purusha::Madhyama, Vacana::Eka),
+            "AdaH"
+        );
+        // Dual/plural keep the direct junction (multi-char endings, no a-augment):
+        // cartva gives Attam/AttAm; 1sg Adam untouched.
+        assert_eq!(
+            form_g("ad", Lakara::Lan, Purusha::Madhyama, Vacana::Dvi),
+            "Attam"
+        );
+        assert_eq!(
+            form_g("ad", Lakara::Lan, Purusha::Prathama, Vacana::Dvi),
+            "AttAm"
+        );
+        assert_eq!(
+            form_g("ad", Lakara::Lan, Purusha::Uttama, Vacana::Eka),
+            "Adam"
         );
     }
 
@@ -2870,5 +3103,69 @@ mod tests {
         let rule = TINANTA_RULES.iter().find(|r| r.id == "6.1.96").unwrap();
         assert!((rule.apply)(&mut p));
         assert_eq!(p.terms[ENDING].text, "yAus");
+    }
+
+    // --- cartva, her-dhih, a-augment guard pins for 5c adadi rules -------
+    #[test]
+    fn cartva_guard_is_khar_only_not_m_or_vowel() {
+        // Over-application killer: d before `m` (admi) or vowel (adanti) must NOT
+        // cartva-ize. Under-application killer: d before `t` MUST (atti, not adti).
+        assert_eq!(
+            form_g("ad", Lakara::Lat, Purusha::Uttama, Vacana::Eka),
+            "admi"
+        );
+        assert_eq!(
+            form_g("ad", Lakara::Lat, Purusha::Prathama, Vacana::Bahu),
+            "adanti"
+        );
+        assert_eq!(
+            form_g("ad", Lakara::Lat, Purusha::Prathama, Vacana::Eka),
+            "atti"
+        );
+    }
+
+    #[test]
+    fn cartva_of_maps_each_jhal_to_its_first_varga_car() {
+        // 8.4.55 car table. Only d→t is exercised by √ad this slice; the other
+        // vargas are written generally for later jhal-final roots. Pin the whole
+        // mapping so a dropped/altered arm is caught by mutation testing.
+        for c in ['d', 'D', 't', 'T'] {
+            assert_eq!(cartva_of(c), Some('t'), "{c}");
+        }
+        for c in ['g', 'G', 'k', 'K'] {
+            assert_eq!(cartva_of(c), Some('k'), "{c}");
+        }
+        for c in ['b', 'B', 'p', 'P'] {
+            assert_eq!(cartva_of(c), Some('p'), "{c}");
+        }
+        for c in ['j', 'J', 'c', 'C'] {
+            assert_eq!(cartva_of(c), Some('c'), "{c}");
+        }
+        for c in ['q', 'Q', 'w', 'W'] {
+            assert_eq!(cartva_of(c), Some('w'), "{c}");
+        }
+        // Non-car targets return None (e.g. h, sibilants, vowels).
+        for c in ['h', 'S', 'z', 's', 'a'] {
+            assert_eq!(cartva_of(c), None, "{c}");
+        }
+    }
+
+    #[test]
+    fn her_dhih_guard_is_jhal_final_only() {
+        // ā-final √yā loṭ 2sg keeps hi (yAhi), NOT *yADi: 6.4.101 needs a jhal.
+        assert_eq!(
+            form_g("yA", Lakara::Lot, Purusha::Madhyama, Vacana::Eka),
+            "yAhi"
+        );
+    }
+
+    #[test]
+    fn a_augment_does_not_leak_into_dual_or_plural() {
+        // The single-char length guard: 2du ending `tam` must NOT get an `a`
+        // (no *Adatam); it stays Attam via cartva.
+        assert_eq!(
+            form_g("ad", Lakara::Lan, Purusha::Madhyama, Vacana::Dvi),
+            "Attam"
+        );
     }
 }

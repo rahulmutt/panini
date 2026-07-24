@@ -192,9 +192,8 @@ static DHATUS: &[Dhatu] = &[
         pada: Pada::Atmanepada,
         artha: "udyamane",
     },
-    // adādi (gaṇa 2) — śap luk (2.4.72); √yā/√vā, the two ā-final
-    // parasmaipada roots, are covered across all four lakāras
-    // (laṭ/laṅ/loṭ/vidhiliṅ).
+    // adādi (gaṇa 2) — śap luk (2.4.72); √ad/√yā/√vā, the parasmaipada
+    // roots, are covered across all four lakāras (laṭ/laṅ/loṭ/vidhiliṅ).
     Dhatu {
         code: "yA",
         gana: Gana::Adadi,
@@ -206,6 +205,12 @@ static DHATUS: &[Dhatu] = &[
         gana: Gana::Adadi,
         pada: Pada::Parasmaipada,
         artha: "gatigandhanayoH",
+    },
+    Dhatu {
+        code: "ad",
+        gana: Gana::Adadi,
+        pada: Pada::Parasmaipada,
+        artha: "BakzaRe",
     },
 ];
 
@@ -247,8 +252,8 @@ mod tests {
     use super::*;
 
     #[test]
-    fn has_twentysix_curated_roots_with_padas() {
-        assert_eq!(dhatus().len(), 26);
+    fn has_twentyseven_curated_roots_with_padas() {
+        assert_eq!(dhatus().len(), 27);
         let bu = dhatus().iter().find(|d| d.code == "BU").unwrap();
         assert!(matches!(bu.pada, Pada::Parasmaipada));
         let labh = dhatus().iter().find(|d| d.code == "laB").unwrap();
@@ -303,5 +308,16 @@ mod tests {
             tin_ending(Pada::Parasmaipada, Purusha::Prathama, Vacana::Bahu),
             "Ji"
         );
+    }
+
+    #[test]
+    fn ad_is_registered_as_adadi_parasmaipada() {
+        let ad = dhatus()
+            .iter()
+            .find(|d| d.code == "ad")
+            .expect("√ad present");
+        assert!(matches!(ad.gana, Gana::Adadi));
+        assert!(matches!(ad.pada, Pada::Parasmaipada));
+        assert_eq!(ad.artha, "BakzaRe");
     }
 }
