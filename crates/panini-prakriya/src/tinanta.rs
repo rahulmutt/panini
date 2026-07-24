@@ -87,13 +87,12 @@ fn cartva_of(c: char) -> Option<char> {
     }
 }
 
-/// A jhaś (voiced stop) — the trigger of the voiced junction (jaśtva before a
-/// voiced stop). `Dh` (`D`) of Dve/Dvam is the case this slice exercises.
+/// A jhaś (voiced obstruent) — the trigger of the voiced junction (jaśtva
+/// before a jhaś). The jhaś pratyāhāra is exactly the ten voiced stops
+/// (voiced unaspirate jaś + voiced aspirate: g/gh j/jh ḍ/ḍh d/dh b/bh); `h` is
+/// NOT a jhaś. `Dh` (`D`) of Dve/Dvam is the case this slice exercises.
 fn is_jhas(c: char) -> bool {
-    matches!(
-        c,
-        'g' | 'G' | 'j' | 'J' | 'q' | 'Q' | 'd' | 'D' | 'b' | 'B' | 'h'
-    )
+    matches!(c, 'g' | 'G' | 'j' | 'J' | 'q' | 'Q' | 'd' | 'D' | 'b' | 'B')
 }
 
 /// The jaś (voiced unaspirated) substitute of a jhal, per the voiced junction
@@ -1394,11 +1393,16 @@ pub static TINANTA_RULES: &[Rule] = &[
             true
         },
     },
-    // 6.1.66 lopo vyor vali: v or y is elided before a val consonant. Here
-    // only the ending-initial y from the yāsuṭ chain ever matches: yt → t,
-    // yva → va; yus survives (u is a vowel, not in val). The val pratyāhāra
-    // is every consonant except y, and no `yy` sequence arises in this
-    // engine, so "any consonant" is an exact guard here.
+    // 6.1.66 lopo vyor vali: v or y is elided before a val consonant. Two
+    // arms, both eliding the yāsuṭ/optative y before a val (yt → t, yva → va;
+    // never before a vowel, so yus / IyAtAm keep their y):
+    //  - thematic arm: 6.1.87 has already absorbed the optative i/I into śap's
+    //    guṇa e, so the ending leads with the y directly (Bave + yt → Baveta).
+    //  - athematic arm (śap luk'd, adādi √ās): 6.1.87 never fired, so the
+    //    retained long I still leads the ending as `I y val`; the y is elided
+    //    and the I survives as the stem vowel (Iyta → Ita, āsī-).
+    // The val pratyāhāra is every consonant except y, and no `yy` sequence
+    // arises in this engine, so "not a vowel" is an exact guard here.
     Rule {
         id: "6.1.66",
         name: "lopo vyor vali",
@@ -1426,8 +1430,11 @@ pub static TINANTA_RULES: &[Rule] = &[
             // as `I y val` (Iyta). The y is still elided before the val — the
             // long I survives as the stem vowel (āsī-): Iyta → Ita. Only the
             // y is dropped, and (as in the thematic arm) never before a vowel,
-            // so IyAtAm / IyATAm / Iya keep their y.
-            if first == Some('I')
+            // so IyAtAm / IyATAm / Iya keep their y. The explicit `śap empty`
+            // guard keeps this arm off the thematic path locally (rather than
+            // relying on 6.1.87's ordering), mirroring 6.1.90's athematic arm.
+            if p.terms[SHAP].text.is_empty()
+                && first == Some('I')
                 && chars.next() == Some('y')
                 && let Some(third) = chars.next()
                 && !is_vowel(third)
@@ -2987,6 +2994,28 @@ mod tests {
         assert_eq!(p.terms[ENDING].text, "AE");
     }
 
+    #[test]
+    fn lopo_vyor_vali_athematic_arm_requires_an_empty_shap() {
+        // 6.1.66's athematic arm (śap luk'd) elides the optative y in an
+        // `I y val` ending (Iyta -> Ita), keeping the long I as the stem
+        // vowel. It must fire ONLY when the śap is empty — that is what
+        // confines it to the adADi (athematic) path; on the thematic path
+        // 6.1.87 has already consumed the I, so the ending never leads with
+        // `I`. Here the śap is the non-empty "a" and the ending is "Iyta":
+        // the athematic arm must decline (leaving "Iyta" untouched), and the
+        // thematic arm also declines (the ending's first char is 'I', not
+        // 'y'). The mutant that drops the empty-śap guard would elide the y
+        // regardless of śap and wrongly yield "Ita".
+        let mut p = Prakriya {
+            terms: vec![Term::new("laB"), Term::new("a"), Term::new("Iyta")],
+            log: vec![],
+            ..Default::default()
+        };
+        let rule = TINANTA_RULES.iter().find(|r| r.id == "6.1.66").unwrap();
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[ENDING].text, "Iyta");
+    }
+
     // --- 3.1.68 / second 1.2.4: `len() > SHAP` boundary pins --------------
     //
     // Both guards read `p.terms.len() > SHAP && p.terms[SHAP]. ...` to
@@ -3445,11 +3474,12 @@ mod tests {
 
     #[test]
     fn is_jhas_is_voiced_stops_only() {
-        for c in ['g', 'G', 'j', 'J', 'q', 'Q', 'd', 'D', 'b', 'B', 'h'] {
+        for c in ['g', 'G', 'j', 'J', 'q', 'Q', 'd', 'D', 'b', 'B'] {
             assert!(is_jhas(c), "{c} should be jhaś");
         }
-        // Voiceless obstruents, sibilants, vowels, semivowels, nasals are not.
-        for c in ['t', 'T', 's', 'S', 'z', 'a', 'A', 'v', 'y', 'm', 'n'] {
+        // Voiceless obstruents, sibilants, vowels, semivowels, nasals are not —
+        // and neither is `h` (it is outside the jhaś pratyāhāra).
+        for c in ['t', 'T', 's', 'S', 'z', 'a', 'A', 'v', 'y', 'm', 'n', 'h'] {
             assert!(!is_jhas(c), "{c} should not be jhaś");
         }
     }
