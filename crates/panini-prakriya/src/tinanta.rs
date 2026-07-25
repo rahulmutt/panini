@@ -4024,5 +4024,20 @@ mod tests {
         let rule = TINANTA_RULES.iter().find(|r| r.id == "8.3.59").unwrap();
         assert!(!(rule.apply)(&mut p));
         assert_eq!(p.terms[ENDING].text, "te");
+
+        // No current root's aṅga ends in a bare short `a` at this point —
+        // thematic aṅgas keep the śap's `a` as a separate term, and neither
+        // guṇa nor vṛddhi ever yields a bare aṅga-final `a`. This case exists
+        // purely to pin the `a` half of the a/ā exclusion: the sūtra's iṇ-koḥ
+        // condition excludes both `a` and `ā` (neither is in the iṇ
+        // pratyāhāra), so a future `a`-final aṅga must decline here too, not
+        // silently retroflex.
+        let mut p = Prakriya {
+            terms: vec![Term::new("a"), Term::new(""), Term::new("se")],
+            log: vec![],
+            ..Default::default()
+        };
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[ENDING].text, "se");
     }
 }
