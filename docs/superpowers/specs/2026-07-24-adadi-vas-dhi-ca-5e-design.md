@@ -291,3 +291,31 @@ vidyut emits optional variants our engine does not (`attAt`/`attu`,
 - **A committed cross-check harness** against vidyut-prakriya would have
   caught the 5d error mechanically. Also a follow-up: adding vidyut as a
   dev-dependency is its own decision, with its own supply-chain gate.
+
+## Parked mutant: 7.3.100's `||`/`&&` guard
+
+7.3.100 *adaḥ sarvezām* guards on `!matches!(p.ctx.lakara, Lakara::Lan) ||
+!p.terms[ANGA].has(Tag::Adadi)`. The `||`→`&&` mutant on that line survives
+`cargo-mutants` — human-parked 2026-07-25 (slice 5e), so the mutation gate
+stands at 1 missed survivor by explicit decision. A filtered run in a scratch
+worktree at the branch's merge-base (`79bbd99`, tip of slice 5d) reproduced
+the same survivor, so it predates 5e; it is inherited, not introduced here.
+
+It is unkillable in the current grammar — a two-case analysis:
+
+- **Case A (laṅ, non-adādi root).** Every non-adādi gaṇa keeps its a-final
+  vikaraṇa (śap/śyan/śa) in all four covered lakāras, so the aṅga is always
+  vowel-final; the rule's inner `is_vowel(anga_last)` check excludes the case
+  regardless of the outer guard.
+- **Case B (adādi root, non-laṅ lakāra).** 7.3.100 runs before 3.4.103,
+  7.2.79, 6.1.87 and 6.1.66, so the ending is still in its unreduced
+  multi-character shape when the rule executes; the inner
+  `e.chars().count() != 1` check excludes the case. (3.4.100 *itaś ca*
+  excludes loṭ and ātmanepada and only strips the trailing vowel of an
+  already-2-char ending, so it can't produce a counterexample either.)
+
+Net: wherever `||` and `&&` would diverge, an inner check has already
+excluded the case. Retightening the guard is grammar design work needing its
+own spec; new root coverage (√śī, slice 5f) may supply a real distinguishing
+case, but √vas landing in 5e did not — hence the correction to this rule's
+older "retighten when √vas lands" comment.

@@ -867,8 +867,8 @@ pub static TINANTA_RULES: &[Rule] = &[
     // Known parked mutant: `||`→`&&` on the guard line below is unkillable
     // in the current grammar — both inner checks already exclude every case
     // where the two outer clauses would diverge. Human-parked 2026-07-25
-    // (slice 5e, Task 5); full case analysis in this branch's
-    // `.superpowers/sdd/2026-07-24-adadi-vas-dhi-ca-5e/task-5-report.md`.
+    // (slice 5e, Task 5); full case analysis in the 7.3.100-guard section
+    // of `docs/superpowers/specs/2026-07-24-adadi-vas-dhi-ca-5e-design.md`.
     Rule {
         id: "7.3.100",
         name: "adaH sarvezAm",
