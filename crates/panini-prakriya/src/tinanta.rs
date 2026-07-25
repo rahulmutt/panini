@@ -937,6 +937,33 @@ pub static TINANTA_RULES: &[Rule] = &[
             true
         },
     },
+    // 7.1.6 śīṅo ruṭ: the *jha* of √śī takes the ruṭ augment. 7.1.5 has just
+    // replaced the ending's leading `J` with `at` (Je → ate, Ja → ata,
+    // JAm → atAm); ruṭ's `r` prefixes that, giving Se + r + ate → Serate.
+    //
+    // Guarded on 7.1.5 having FIRED IN THIS DERIVATION rather than on the
+    // ending's surface shape: the ruṭ attaches to the `at` that 7.1.5
+    // produced, so that is the condition itself and not a proxy for it.
+    // Reading the log for a prior rule is the idiom 6.4.72 already uses to
+    // test whether 6.4.71 augmented the aṅga.
+    //
+    // This is why vidhiliṅ needs no special case: 3.4.105 jhasya ran has
+    // already replaced the jha with `ran` far earlier in the array, so 7.1.5
+    // never fires there and ruṭ cannot attach → SayIran, not *SayIraran.
+    Rule {
+        id: "7.1.6",
+        name: "SINo ruw",
+        kind: RuleKind::Vidhi,
+        apply: |p| {
+            if !p.terms[ANGA].text.ends_with("SI") || !p.log.iter().any(|s| s.sutra == "7.1.5") {
+                return false;
+            }
+            let before = p.snapshot();
+            p.terms[ENDING].text = format!("r{}", p.terms[ENDING].text);
+            p.record("7.1.6", "SINo ruw", before);
+            true
+        },
+    },
     // 7.1.3 jho'ntaḥ: a leading `J` of the ending → `ant`.
     Rule {
         id: "7.1.3",
@@ -3840,5 +3867,58 @@ mod tests {
             form_g("ad", Lakara::Lat, Purusha::Prathama, Vacana::Eka),
             "atti"
         );
+    }
+
+    #[test]
+    fn shings_jha_takes_the_rut_augment() {
+        // 7.1.6 śīṅo ruṭ: the *jha* (3pl ātmanepada) of √śī takes the ruṭ
+        // augment. 7.1.5 has just turned the leading J into `at` (Je → ate);
+        // ruṭ's `r` prefixes that: Se + r + ate → Serate.
+        assert_eq!(
+            form_g("SI", Lakara::Lat, Purusha::Prathama, Vacana::Bahu),
+            "Serate"
+        );
+        assert_eq!(
+            form_g("SI", Lakara::Lot, Purusha::Prathama, Vacana::Bahu),
+            "SeratAm"
+        );
+        assert_eq!(
+            form_g("SI", Lakara::Lan, Purusha::Prathama, Vacana::Bahu),
+            "aSerata"
+        );
+    }
+
+    #[test]
+    fn shings_vidhilin_3pl_takes_no_rut() {
+        // 3.4.105 jhasya ran replaces the jha with `ran` long before the 7.x
+        // band, so 7.1.5 never fires in vidhiliṅ and ruṭ cannot attach:
+        // SayIran, NOT *SayIraran.
+        assert_eq!(
+            form_g("SI", Lakara::VidhiLin, Purusha::Prathama, Vacana::Bahu),
+            "SayIran"
+        );
+    }
+
+    #[test]
+    fn rut_requires_both_shing_and_a_fired_seven_one_five() {
+        // Both clauses of 7.1.6's guard must hold. Dropping either one is a
+        // live mutant, and each half is pinned here.
+        //
+        // (a) 7.1.5 fired, but the aṅga is √ās, not √śī: no ruṭ (Asate, not
+        //     *Asrate). This is the clause an `||` → `&&` mutant drops.
+        assert_eq!(
+            form_g("As", Lakara::Lat, Purusha::Prathama, Vacana::Bahu),
+            "Asate"
+        );
+        // (b) The aṅga IS √śī, but 7.1.5 never fired (empty log): the rule
+        //     must decline and leave the ending untouched.
+        let mut p = Prakriya {
+            terms: vec![Term::new("SI"), Term::new(""), Term::new("ate")],
+            log: vec![],
+            ..Default::default()
+        };
+        let rule = TINANTA_RULES.iter().find(|r| r.id == "7.1.6").unwrap();
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[ENDING].text, "ate");
     }
 }
