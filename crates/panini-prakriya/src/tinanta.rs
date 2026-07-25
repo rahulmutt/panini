@@ -860,7 +860,26 @@ pub static TINANTA_RULES: &[Rule] = &[
     // 8.2.23 declines, and cartva (8.4.55) skips the `d` (now before `a`, not a
     // khar) → Adat, Adas→AdaH. Guarded structurally (Tag::Adadi ∧ laṅ ∧
     // consonant-final aṅga ∧ single-char s/t ending): in the current root set
-    // that is exactly √ad (√yā/√vā are ā-final). Retighten when √vas lands.
+    // that is exactly √ad. √vas landing (5e) does NOT retighten this the way
+    // an earlier version of this comment expected: √vas's ātmanepada endings
+    // never collapse to a bare single-char `s`/`t` at the point this rule
+    // runs (that only happens to laṅ *parasmaipada* endings, via 3.4.100
+    // itaś ca, which excludes ātmanepada), so it adds no new case here. The
+    // outer `laṅ ∧ Adadi` guard is, in fact, unfalsifiable by any test in the
+    // current grammar — its two clauses only diverge in cases the two inner
+    // checks (consonant-final aṅga; single-char s/t ending) already exclude:
+    // every non-adādi gaṇa keeps an a-final vikaraṇa (so its aṅga is never
+    // consonant-final, killing a laṅ-without-Adadi divergence), and every
+    // adādi root outside laṅ still has a multi-char ending at this point in
+    // `TINANTA_RULES`'s order (3.4.103/7.2.79/6.1.87/6.1.66, which eventually
+    // collapse a vidhiliṅ parasmaipada ending to bare `t`, all run *after*
+    // this rule — killing an Adadi-without-laṅ divergence). This leaves one
+    // mutation-tested guard (`||`→`&&` on this line) permanently unkillable
+    // without either a grammar-design change to the guard itself or a new
+    // root/lakāra combination that reaches a single-char ending outside laṅ —
+    // neither of which belongs in a test-only pin. Parked by human ruling
+    // 2026-07-25 (slice 5e, Task 5): `mise run mutants` is expected to show
+    // this one survivor and no others.
     Rule {
         id: "7.3.100",
         name: "adaH sarvezAm",
@@ -1083,7 +1102,23 @@ pub static TINANTA_RULES: &[Rule] = &[
             true
         },
     },
-    // 6.1.78 eco'yavāyāvaḥ: e/o/E/O before a vowel → ay/av/Ay/Av.
+    // 6.1.78 eco'yavāyāvaḥ: e/o before a vowel → ay/av. The sūtra also covers
+    // E/O → Ay/Av, but those two arms are dropped here: within the current
+    // 29-root × 4-lakāra grammar, ANGA can never end in a vṛddhi vowel (E/O)
+    // at the point this rule runs. `vrddhi_of` (the only source of E/O in
+    // this engine) is called from three places, all in 6.1.90 — the aṅga arm
+    // writes the vṛddhi vowel at *position 0* of the aṅga (replacing the āṭ
+    // augment + the root's first vowel), never at the aṅga's last character;
+    // the other two arms write into SHAP/ENDING, not ANGA. No curated root is
+    // a single SLP1 character, so the aṅga arm's tail slice is never empty
+    // either. Per the mutation gate's own rule (same rationale as 8.4.53's
+    // removal above), code no test can execute cannot stay as live grammar.
+    // Restore the E/O arms (and re-add their coverage in the golden/mutation
+    // suites) the moment a root lands whose aṅga can end in a vṛddhi vowel
+    // before a vowel-initial ending — the leading candidate is √śī: 7.4.21
+    // already forces guṇa on it (√śī lands in a later slice per AGENTS.md),
+    // and a hypothetical/future root needing *vṛddhi* rather than guṇa at
+    // its aṅga-final position would be the other way in.
     Rule {
         id: "6.1.78",
         name: "eco'yavAyAvaH",
@@ -1093,8 +1128,6 @@ pub static TINANTA_RULES: &[Rule] = &[
             let sub = match anga_last {
                 'e' => "ay",
                 'o' => "av",
-                'E' => "Ay",
-                'O' => "Av",
                 _ => return false,
             };
             // śap may be luk'd (adādi, 2.4.72): then it is empty and this rule
