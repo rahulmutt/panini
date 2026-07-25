@@ -1747,6 +1747,62 @@ pub static TINANTA_RULES: &[Rule] = &[
             true
         },
     },
+    // 8.3.59 ādeśapratyayayoḥ: the `s` of an ādeśa or a pratyaya, when not
+    // word-final, retroflexes to `z` after iṇ-koḥ. The engine's first
+    // retroflexion rule, and general grammar rather than a √śī special — √śī
+    // is merely the first root to reach it, being the first whose aṅga ends
+    // in a vowel other than a/ā right before an s-initial ending:
+    // Se + se → Seze (laṭ 2sg), Se + sva → Sezva (loṭ 2sg).
+    //
+    // NARROW GUARD, by design. The sūtra's trigger is the whole iṇ
+    // pratyāhāra (every vowel but a/ā, plus h y v r l) and `k`; this
+    // implements only the reachable slice of it — an aṅga-final vowel other
+    // than a/ā — so every arm is executed by a test and the mutation gate
+    // stays clean. Same discipline that removed 8.4.53 and 6.1.78's E/O arms
+    // in slice 5e, and the same shape as 8.2.25's narrow guard. Widen it the
+    // moment a root lands whose aṅga ends in h/y/v/r/l or k before an
+    // s-initial affix.
+    //
+    // No conflict with 8.3.15 above: that rule is word-final
+    // (kharavasānayoḥ), this one is apadāntasya. It also declines for every
+    // existing root without knowing about them — √ās's aṅga ends in `A`
+    // (excluded), √vas's in `s` (not a vowel), and every thematic root
+    // presents the vikaraṇa's `a` (excluded): Asse, Assva, vasse, vassva and
+    // laBase are all unchanged.
+    Rule {
+        id: "8.3.59",
+        name: "AdeSapratyayayoH",
+        kind: RuleKind::Vidhi,
+        apply: |p| {
+            // The affix is the first non-empty term after the aṅga (śap, if
+            // present, is luk'd/empty for adādi) — the same idiom 8.2.25 and
+            // 8.4.55 use, which avoids indexing a term that may not exist.
+            let next_idx = p
+                .terms
+                .iter()
+                .enumerate()
+                .skip(ANGA + 1)
+                .find(|(_, t)| !t.text.is_empty())
+                .map(|(i, _)| i);
+            let Some(next_idx) = next_idx else {
+                return false;
+            };
+            if !p.terms[next_idx].text.starts_with('s') {
+                return false;
+            }
+            let Some(anga_last) = p.terms[ANGA].text.chars().last() else {
+                return false;
+            };
+            if !is_vowel(anga_last) || matches!(anga_last, 'a' | 'A') {
+                return false;
+            }
+            let before = p.snapshot();
+            let rest: String = p.terms[next_idx].text.chars().skip(1).collect();
+            p.terms[next_idx].text = format!("z{rest}");
+            p.record("8.3.59", "AdeSapratyayayoH", before);
+            true
+        },
+    },
     // 8.4.55 khari ca (cartva): a jhal at the aṅga's final position, meeting a
     // khar across the root+ending junction, becomes its car (voiceless
     // unaspirated). √ad's d before ti/tas/si/tha → t: atti, attaH, atsi, atTa.
@@ -3920,5 +3976,53 @@ mod tests {
         let rule = TINANTA_RULES.iter().find(|r| r.id == "7.1.6").unwrap();
         assert!(!(rule.apply)(&mut p));
         assert_eq!(p.terms[ENDING].text, "ate");
+    }
+
+    #[test]
+    fn shatva_retroflexes_the_endings_s_after_shings_e() {
+        // 8.3.59 ādeśapratyayayoḥ: the `s` of a pratyaya retroflexes after a
+        // non-a/ā vowel. With the aṅga guṇated to `Se`, the `se` and `sva`
+        // endings meet an `e` → Seze, Sezva.
+        assert_eq!(
+            form_g("SI", Lakara::Lat, Purusha::Madhyama, Vacana::Eka),
+            "Seze"
+        );
+        assert_eq!(
+            form_g("SI", Lakara::Lot, Purusha::Madhyama, Vacana::Eka),
+            "Sezva"
+        );
+    }
+
+    #[test]
+    fn shatva_declines_for_every_pre_existing_junction() {
+        // Each of these pins one boundary of 8.3.59's guard, and each is a
+        // form the suite already ships — so a mutant that widens the guard
+        // breaks a golden, not just this test.
+        //
+        // aṅga-final `A` is excluded (a/ā are not iṇ):
+        assert_eq!(
+            form_g("As", Lakara::Lot, Purusha::Madhyama, Vacana::Eka),
+            "Assva"
+        );
+        // aṅga-final `s` is not a vowel at all:
+        assert_eq!(
+            form_g("vas", Lakara::Lat, Purusha::Madhyama, Vacana::Eka),
+            "vasse"
+        );
+        // Thematic path: the ending is preceded by the śap's `a`, excluded.
+        assert_eq!(
+            form_g("laB", Lakara::Lot, Purusha::Madhyama, Vacana::Eka),
+            "laBasva"
+        );
+        // And a non-s-initial ending after √śī's `e` is left alone — the
+        // clause an `||` → `&&` mutant would drop.
+        let mut p = Prakriya {
+            terms: vec![Term::new("Se"), Term::new(""), Term::new("te")],
+            log: vec![],
+            ..Default::default()
+        };
+        let rule = TINANTA_RULES.iter().find(|r| r.id == "8.3.59").unwrap();
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[ENDING].text, "te");
     }
 }
