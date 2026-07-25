@@ -864,11 +864,12 @@ pub static TINANTA_RULES: &[Rule] = &[
     // no new case here (its ātmanepada endings never collapse to a bare
     // single-char ending at the point this rule runs).
     //
-    // Known parked mutant: `||`→`&&` on the guard line below is unkillable
-    // in the current grammar — both inner checks already exclude every case
-    // where the two outer clauses would diverge. Human-parked 2026-07-25
-    // (slice 5e, Task 5); full case analysis in the 7.3.100-guard section
-    // of `docs/superpowers/specs/2026-07-24-adadi-vas-dhi-ca-5e-design.md`.
+    // The `||`→`&&` mutant on the guard line below is killed by the
+    // `akupyat_trace_shows_7_3_100_declines_for_non_adadi_roots` pin in
+    // `crates/panini/tests/trace.rs`: the mutant fires for laṅ non-adādi
+    // derivations and 6.1.97 repairs the surface form, so only the ordered
+    // trace exposes it. (Slice 5e parked this mutant as unkillable on a case
+    // analysis that slice 5f corrected.)
     Rule {
         id: "7.3.100",
         name: "adaH sarvezAm",

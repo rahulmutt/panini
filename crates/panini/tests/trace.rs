@@ -533,3 +533,122 @@ fn asita_vidhilin_trace_ends_in_vali_lopa() {
     assert!(i79 < i66, "7.2.79 must precede 6.1.66");
     assert!(!t.contains(&"6.1.87".to_string()), "6.1.87 must not fire");
 }
+
+#[test]
+fn shete_trace_is_the_minimal_shing_guna_path() {
+    // √śī adādi Ā laṭ 3sg: ta → te (3.4.79), śap inserted (3.1.68) then luk'd
+    // (2.4.72), and 7.4.21 guṇates the aṅga despite the ṅit ending: SI + te
+    // → Se + te → Sete. 7.3.84 does NOT appear — `Se` is not ik-final.
+    let t = trace_for("Sete");
+    assert_eq!(
+        t,
+        vec![
+            "1.3.12", "3.4.78", "1.2.4", "3.4.79", "3.1.68", "1.3.9", "2.4.72", "7.4.21"
+        ]
+    );
+    assert!(!t.contains(&"7.3.84".to_string()), "7.3.84 must not fire");
+}
+
+#[test]
+fn sherate_trace_is_the_rut_path() {
+    // √śī adādi Ā laṭ 3pl: Ja → Je (3.4.79) → luk (2.4.72) → 7.1.5 replaces
+    // the leading J with `at` (Je → ate) → 7.1.6 prefixes ruṭ's `r` (ate →
+    // rate) → 7.4.21 guṇates: Se + r + ate → Serate.
+    let t = trace_for("Serate");
+    assert_eq!(
+        t,
+        vec![
+            "1.3.12", "3.4.78", "1.2.4", "3.4.79", "3.1.68", "1.3.9", "2.4.72", "7.1.5", "7.1.6",
+            "7.4.21"
+        ]
+    );
+    // 7.1.5 must precede 7.1.6 — the ruṭ attaches to the `at` 7.1.5 makes.
+    let i5 = t.iter().position(|r| r == "7.1.5").expect("7.1.5 present");
+    let i6 = t.iter().position(|r| r == "7.1.6").expect("7.1.6 present");
+    assert!(i5 < i6, "7.1.5 must precede 7.1.6");
+    assert!(!t.contains(&"7.1.3".to_string()), "7.1.3 is bled by 7.1.5");
+}
+
+#[test]
+fn sheshe_trace_ends_in_shatva() {
+    // √śī adādi Ā laṭ 2sg: TAs → se (3.4.80), śap luk'd (2.4.72), 7.4.21
+    // guṇates, and 8.3.59 retroflexes the ending's `s` after the aṅga's `e`:
+    // Se + se → Se + ze → Seze. The engine's first ṣatva.
+    assert_eq!(
+        trace_for("Seze"),
+        vec![
+            "1.3.12", "3.4.78", "1.2.4", "3.4.80", "3.1.68", "1.3.9", "2.4.72", "7.4.21", "8.3.59"
+        ]
+    );
+}
+
+#[test]
+fn shayita_trace_is_the_shing_vali_lopa_path() {
+    // √śī adādi Ā vidhiliṅ 3sg: AsIta's path with two rules added. yāsuṭ's s
+    // elided (7.2.79) → SI + Iy + ta, 7.4.21 guṇates → Se + Iy + ta, 6.1.78
+    // turns the aṅga's `e` into `ay` before the ending's vowel → Say + Iy +
+    // ta, and 6.1.66 elides the y before the val `t` → SayIta.
+    let t = trace_for("SayIta");
+    assert_eq!(
+        t,
+        vec![
+            "1.3.12", "3.4.78", "1.2.4", "3.4.102", "3.1.68", "1.3.9", "2.4.72", "7.2.79",
+            "7.4.21", "6.1.78", "6.1.66"
+        ]
+    );
+    // 6.1.78 must precede 6.1.66: the ay-ādeśa happens while the y is still
+    // there to be elided afterwards.
+    let i78 = t
+        .iter()
+        .position(|r| r == "6.1.78")
+        .expect("6.1.78 present");
+    let i66 = t
+        .iter()
+        .position(|r| r == "6.1.66")
+        .expect("6.1.66 present");
+    assert!(i78 < i66, "6.1.78 must precede 6.1.66");
+    assert!(!t.contains(&"6.1.87".to_string()), "6.1.87 must not fire");
+}
+
+#[test]
+fn shayai_trace_is_the_shing_atas_ca_path() {
+    // √śī adādi Ā loṭ uttama eka: AsE's path plus guṇa and the ay-ādeśa. iṭ →
+    // i (1.3.9) → e (3.4.79) → E (3.4.93) → AE (3.4.92 āṭ); śap luk'd
+    // (2.4.72); 7.4.21 guṇates → Se; 6.1.78 turns `e` → `ay` before the
+    // ending's A → Say; 6.1.90's athematic arm fuses the āṭ A with E → SayE.
+    let t = trace_for("SayE");
+    assert_eq!(
+        t,
+        vec![
+            "1.3.12", "3.4.78", "1.3.9", "3.4.85", "3.4.79", "3.4.93", "3.4.92", "3.1.68", "1.3.9",
+            "2.4.72", "7.4.21", "6.1.78", "6.1.90"
+        ]
+    );
+    assert!(!t.contains(&"6.1.101".to_string()), "no śap to widen");
+}
+
+#[test]
+fn akupyat_trace_shows_7_3_100_declines_for_non_adadi_roots() {
+    // Slice 5f: this pin retires the 7.3.100 mutant slice 5e parked.
+    //
+    // 7.3.100 adaḥ sarveṣām's guard is `!laṅ || !adādi`. The `||` → `&&`
+    // mutant makes the rule proceed for a laṅ NON-adādi derivation, and its
+    // inner checks do not exclude that case: when 7.3.100 runs the aṅga is
+    // still the bare root (`kup`, consonant-final) and 3.4.100 itaś ca has
+    // already reduced the ending to a single `t`. The mutant therefore fires,
+    // producing akupya + at, and 6.1.97 ato guṇe then merges a + a back to a
+    // — so the SURFACE FORM is repaired and no golden notices. Only the
+    // ordered trace does: under the mutant it carries two extra steps,
+    // "7.3.100" and "6.1.97", at the end.
+    let t = trace_for("akupyat");
+    assert_eq!(
+        t,
+        vec![
+            "1.3.78", "3.4.78", "1.3.9", "3.4.100", "3.1.69", "1.3.9", "1.2.4", "6.4.71"
+        ]
+    );
+    assert!(
+        !t.contains(&"7.3.100".to_string()),
+        "7.3.100 is √ad's rule and must decline for a divādi root"
+    );
+}
