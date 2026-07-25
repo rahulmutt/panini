@@ -1030,6 +1030,48 @@ pub static TINANTA_RULES: &[Rule] = &[
             true
         },
     },
+    // 7.4.21 śīṅaḥ sārvadhātuke guṇaḥ: √śī takes guṇa (SI → Se) before a
+    // sārvadhātuka ending, overriding the 1.1.5 block that the ṅit ātmanepada
+    // endings would otherwise impose. This is the entire reason *śete* exists:
+    // with śap luk'd (2.4.72) every other adādi root either has no ik to
+    // guṇate (yā/vā/ās) or is consonant-final (ad/vas), so the gaṇa would show
+    // no guṇa at all.
+    //
+    // Ordered immediately before 7.3.84, which then declines on its own — its
+    // target must be ik-final and `Se` is not — so 7.3.84's 1.1.5 guard is
+    // untouched, and the trace credits the guṇa to the sūtra that licenses it.
+    //
+    // The guard is the single `ends_with("SI")` test, deliberately with no
+    // Tag::Adadi clause: √śī is the only SI-final root, so a gaṇa clause would
+    // be redundant AND unkillable under mutation (with the clause dropped, the
+    // other adādi roots still change nothing — guna_of returns None for their
+    // `d`/`A`/`s` finals). `ends_with` rather than `==` because 6.4.71 has
+    // already prefixed the laṅ aṭ-augment onto the aṅga (aSI) by this point.
+    //
+    // The sūtra's *sārvadhātuke* condition is structurally satisfied, not
+    // guarded: every tiṅ ending in scope is tagged Sarvadhatuka when it is
+    // introduced (3.4.78 / 3.4.113), across all four lakāras, so a guard
+    // clause would be always-true — the same reason 7.3.84 omits it. It must
+    // become a real guard the moment an ārdhadhātuka affix enters scope.
+    Rule {
+        id: "7.4.21",
+        name: "SINaH sArvaDAtuke guRaH",
+        kind: RuleKind::Vidhi,
+        apply: |p| {
+            if !p.terms[ANGA].text.ends_with("SI") {
+                return false;
+            }
+            let mut s: Vec<char> = p.terms[ANGA].text.chars().collect();
+            let last = s.pop().expect("ends_with(\"SI\") implies a final char");
+            let Some(g) = guna_of(last) else {
+                return false;
+            };
+            let before = p.snapshot();
+            p.terms[ANGA].text = s.into_iter().collect::<String>() + g;
+            p.record("7.4.21", "SINaH sArvaDAtuke guRaH", before);
+            true
+        },
+    },
     // 7.3.84 sārvadhātukārdhadhātukayoḥ: guṇa of the aṅga's final ik.
     Rule {
         id: "7.3.84",
@@ -3187,6 +3229,57 @@ mod tests {
         let rule = TINANTA_RULES.iter().find(|r| r.id == "7.3.84").unwrap();
         assert!((rule.apply)(&mut p));
         assert_eq!(p.terms[ANGA].text, "ne");
+    }
+
+    #[test]
+    fn shi_takes_guna_despite_the_ngit_ending() {
+        // 7.4.21 śīṅaḥ sārvadhātuke guṇaḥ: √śī guṇates (SI → Se) even though
+        // the ātmanepada endings are ṅit (1.2.4) and 1.1.5 would otherwise
+        // block guṇa. This is the only visible guṇa in the whole adādi gaṇa.
+        assert_eq!(
+            form_g("SI", Lakara::Lat, Purusha::Prathama, Vacana::Eka),
+            "Sete"
+        );
+        // laṅ: 6.4.71 has already prefixed the aṭ-augment, so the aṅga is
+        // `aSI` when 7.4.21 runs — the guard must match on the tail, not the
+        // whole string.
+        assert_eq!(
+            form_g("SI", Lakara::Lan, Purusha::Prathama, Vacana::Eka),
+            "aSeta"
+        );
+    }
+
+    #[test]
+    fn shings_guna_leaves_every_other_adadi_root_alone() {
+        // 7.4.21 is root-specific. The other five adādi roots must be
+        // untouched by it: their finals (`A`, `d`, `s`) are outside the guard,
+        // and their shipped forms are the proof.
+        assert_eq!(
+            form_g("yA", Lakara::Lat, Purusha::Prathama, Vacana::Eka),
+            "yAti"
+        );
+        assert_eq!(
+            form_g("ad", Lakara::Lat, Purusha::Prathama, Vacana::Eka),
+            "atti"
+        );
+        assert_eq!(
+            form_g("As", Lakara::Lat, Purusha::Prathama, Vacana::Eka),
+            "Aste"
+        );
+        assert_eq!(
+            form_g("vas", Lakara::Lat, Purusha::Prathama, Vacana::Eka),
+            "vaste"
+        );
+        // And the rule declines outright on a prakriya whose aṅga is not √śī,
+        // even when everything else about it looks like √śī's environment.
+        let mut p = Prakriya {
+            terms: vec![Term::new("nI"), Term::new(""), Term::new("te")],
+            log: vec![],
+            ..Default::default()
+        };
+        let rule = TINANTA_RULES.iter().find(|r| r.id == "7.4.21").unwrap();
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "nI");
     }
 
     // --- 8.2.77 hali ca: guard-edge pin -----------------------------------
