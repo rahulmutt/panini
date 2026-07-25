@@ -474,9 +474,11 @@ fn adhve_trace_ends_in_dhi_ca() {
 
 #[test]
 fn vadhve_trace_is_the_second_dhi_ca_witness() {
-    // √vas adādi ātmanepada laṭ 2pl — the cell the commentaries use to state
-    // 8.2.25. Same ordered path as ADve on a consonant-initial root: the
-    // aṅga-final `s` is elided before the `Dh` of Dve, giving vaDve.
+    // √vas adādi ātmanepada laṭ 2pl — `vaDve` is the cell the
+    // Siddhāntakaumudī's adādi paradigm gives (vidyut-prakriya pins it at
+    // `kaumudi_44::sk_2440`), not the sūtra's own example. Same ordered path
+    // as ADve on a consonant-initial root: the aṅga-final `s` is elided
+    // before the `Dh` of Dve, giving vaDve.
     assert_eq!(
         trace_for("vaDve"),
         vec![

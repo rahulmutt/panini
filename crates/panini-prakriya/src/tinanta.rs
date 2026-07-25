@@ -856,30 +856,19 @@ pub static TINANTA_RULES: &[Rule] = &[
     // 7.3.100 adaH sarvezAm: √ad prefixes aṭ (`a`) to a laṅ singular
     // consonant ending (2sg s, 3sg t). Without it, Ad+s / Ad+t are word-final
     // conjuncts that 8.2.23 saṃyogāntasya lopaḥ would strip to bare Ad,
-    // collapsing 2sg=3sg=1sg-stem. The inserted `a` makes the word vowel-final:
-    // 8.2.23 declines, and cartva (8.4.55) skips the `d` (now before `a`, not a
-    // khar) → Adat, Adas→AdaH. Guarded structurally (Tag::Adadi ∧ laṅ ∧
-    // consonant-final aṅga ∧ single-char s/t ending): in the current root set
-    // that is exactly √ad. √vas landing (5e) does NOT retighten this the way
-    // an earlier version of this comment expected: √vas's ātmanepada endings
-    // never collapse to a bare single-char `s`/`t` at the point this rule
-    // runs (that only happens to laṅ *parasmaipada* endings, via 3.4.100
-    // itaś ca, which excludes ātmanepada), so it adds no new case here. The
-    // outer `laṅ ∧ Adadi` guard is, in fact, unfalsifiable by any test in the
-    // current grammar — its two clauses only diverge in cases the two inner
-    // checks (consonant-final aṅga; single-char s/t ending) already exclude:
-    // every non-adādi gaṇa keeps an a-final vikaraṇa (so its aṅga is never
-    // consonant-final, killing a laṅ-without-Adadi divergence), and every
-    // adādi root outside laṅ still has a multi-char ending at this point in
-    // `TINANTA_RULES`'s order (3.4.103/7.2.79/6.1.87/6.1.66, which eventually
-    // collapse a vidhiliṅ parasmaipada ending to bare `t`, all run *after*
-    // this rule — killing an Adadi-without-laṅ divergence). This leaves one
-    // mutation-tested guard (`||`→`&&` on this line) permanently unkillable
-    // without either a grammar-design change to the guard itself or a new
-    // root/lakāra combination that reaches a single-char ending outside laṅ —
-    // neither of which belongs in a test-only pin. Parked by human ruling
-    // 2026-07-25 (slice 5e, Task 5): `mise run mutants` is expected to show
-    // this one survivor and no others.
+    // collapsing 2sg=3sg=1sg-stem. The inserted `a` makes the word
+    // vowel-final: 8.2.23 declines, and cartva (8.4.55) skips the `d` (now
+    // before `a`, not a khar) → Adat, Adas→AdaH. Guarded structurally
+    // (Tag::Adadi ∧ laṅ ∧ consonant-final aṅga ∧ single-char s/t ending); in
+    // the current root set that is exactly √ad, and √vas landing (5e) adds
+    // no new case here (its ātmanepada endings never collapse to a bare
+    // single-char ending at the point this rule runs).
+    //
+    // Known parked mutant: `||`→`&&` on the guard line below is unkillable
+    // in the current grammar — both inner checks already exclude every case
+    // where the two outer clauses would diverge. Human-parked 2026-07-25
+    // (slice 5e, Task 5); full case analysis in this branch's
+    // `.superpowers/sdd/2026-07-24-adadi-vas-dhi-ca-5e/task-5-report.md`.
     Rule {
         id: "7.3.100",
         name: "adaH sarvezAm",
@@ -1111,8 +1100,11 @@ pub static TINANTA_RULES: &[Rule] = &[
     // augment + the root's first vowel), never at the aṅga's last character;
     // the other two arms write into SHAP/ENDING, not ANGA. No curated root is
     // a single SLP1 character, so the aṅga arm's tail slice is never empty
-    // either. Per the mutation gate's own rule (same rationale as 8.4.53's
-    // removal above), code no test can execute cannot stay as live grammar.
+    // either. And the order is decisive on its own: 6.1.90 is the only caller
+    // of `vrddhi_of`, and it runs *after* 6.1.78 in the single-pass rule
+    // array, so any E/O it produces can never be seen by 6.1.78 at all. Per
+    // the mutation gate's own rule (same rationale as 8.4.53's removal
+    // below), unexecutable arms cannot be kept under the mutation gate.
     // Restore the E/O arms (and re-add their coverage in the golden/mutation
     // suites) the moment a root lands whose aṅga can end in a vṛddhi vowel
     // before a vowel-initial ending — the leading candidate is √śī: 7.4.21
@@ -1568,7 +1560,9 @@ pub static TINANTA_RULES: &[Rule] = &[
     },
     // 8.2.25 dhi ca: the final `s` of the term preceding a `Dh`-initial affix
     // is ELIDED — not voiced. As + Dve -> A + Dve -> ADve; vas + Dve -> vaDve
-    // (the sūtra's own stock example, and this slice's second witness).
+    // (this slice's second witness; `vaDve` is the cell the Siddhāntakaumudī's
+    // adādi paradigm gives, per vidyut-prakriya's `kaumudi_44::sk_2440`, not
+    // the sūtra's own example).
     //
     // Placement is the whole point: 8.2 is asiddha to 8.4, so this fires
     // before any 8.4 junction rule and the `s` never survives to take a jaś
@@ -1576,11 +1570,14 @@ pub static TINANTA_RULES: &[Rule] = &[
     // and shipped *AdDve; 8.2.25 bleeds that rule completely, which is why
     // 8.4.53 has no reachable witness and was removed.
     //
-    // The guard reads the term PRECEDING the Dh-initial affix, not the aṅga.
-    // In laṭ/laṅ/loṭ the śap is luk'd (empty) so the aṅga is what precedes
-    // the ending and the rule fires. In the vidhiliṅ the sīyuṭ residue sits
-    // between (AsIDvam), so the first non-empty term after the aṅga does not
-    // begin with `D` and the rule correctly declines — the `s` is retained.
+    // The guard walks backward from the Dh-initial affix to the nearest
+    // non-empty term rather than reading ANGA by index. In today's three-term
+    // `[ANGA, SHAP, ENDING]` layout that search always resolves to ANGA
+    // whenever the forward arm passes (SHAP is luk'd for adādi), so AsIDvam /
+    // vasIDvam below decline at the forward (`D`-initial) arm, not because
+    // the guard distinguishes the aṅga from some other neighbour. The search
+    // is written generally on purpose, for the multi-term layouts a later
+    // slice will bring — mirroring vidyut-prakriya's own `prev_not_empty`.
     Rule {
         id: "8.2.25",
         name: "Di ca",
@@ -3483,9 +3480,12 @@ mod tests {
 
     #[test]
     fn dhi_ca_does_not_elide_a_non_s_before_dh() {
-        // Thematic ātmanepada √labh keeps its śap `a` in front of Dve/Dvam:
-        // the term preceding the affix ends in `a`, not `s`, so 8.2.25 must
-        // decline. These are the slice-3 goldens, unchanged.
+        // Thematic ātmanepada √labh keeps its śap `a` in front of Dve/Dvam.
+        // √labh is bhvādi, so śap is never luk'd: the first non-empty term
+        // after the aṅga is the śap `a` itself, and `"a".starts_with('D')` is
+        // false — the guard declines at its FIRST arm (the `D`-initial
+        // affix search), never reaching the "preceding term ends in `s`"
+        // arm at all. These are the slice-3 goldens, unchanged.
         assert_eq!(
             form_g("laB", Lakara::Lat, Purusha::Madhyama, Vacana::Bahu),
             "laBaDve"
@@ -3494,15 +3494,36 @@ mod tests {
             form_g("laB", Lakara::Lan, Purusha::Madhyama, Vacana::Bahu),
             "alaBaDvam"
         );
+        // adDi (√ad loṭ 2sg, pinned at paradigm level in
+        // crates/panini/tests/paradigm.rs) is the one cell in the current
+        // root set that actually reaches the "ends in `s`" arm: śap is
+        // luk'd (adādi) so ENDING (`Di`, from 6.4.101 her dhiḥ) is the first
+        // non-empty term after the aṅga and the `D`-initial arm PASSES; the
+        // preceding non-empty term is the aṅga `ad`, which does not end in
+        // `s`, so the second arm declines and the `d` survives. Dropping
+        // this arm would wrongly yield *aDi.
+        assert_eq!(
+            form_g("ad", Lakara::Lot, Purusha::Madhyama, Vacana::Eka),
+            "adDi"
+        );
     }
 
     #[test]
     fn dhi_ca_reads_the_affixs_neighbour_not_the_anga() {
-        // vidhiliṅ 2pl: the sīyuṭ residue `I` sits between the aṅga and the
-        // Dh-initial affix, so the aṅga's `s` is NOT adjacent to the `Dh` and
-        // must be retained: As + I + Dvam -> AsIDvam (never *AIDvam). This is
-        // the arm that fails if the guard reads the aṅga instead of the term
-        // actually preceding the affix.
+        // vidhiliṅ 2pl: the sīyuṭ augment is prefixed INTO the ending's text
+        // (`IDvam`), not a separate term, so `terms` is still the plain
+        // three-element `[ANGA, SHAP, ENDING]` layout here. The first
+        // non-empty term after the aṅga is the ending `IDvam` itself, and
+        // `"IDvam".starts_with('D')` is false — these two pins decline at the
+        // guard's FIRST arm (the `D`-initial affix search), the same arm as
+        // laB above, not because the guard is reading some other neighbour
+        // instead of the aṅga. In today's layout the backward search always
+        // resolves to the aṅga whenever the first arm passes; it is written
+        // to walk to the nearest non-empty term (rather than index ANGA
+        // directly) for the multi-term layouts a later slice will bring —
+        // mirroring vidyut-prakriya's own `prev_not_empty`. As + I + Dvam ->
+        // AsIDvam (never *AIDvam): the `s` is retained because the affix
+        // search declines, not because of anything more subtle.
         assert_eq!(
             form_g("As", Lakara::VidhiLin, Purusha::Madhyama, Vacana::Bahu),
             "AsIDvam"
