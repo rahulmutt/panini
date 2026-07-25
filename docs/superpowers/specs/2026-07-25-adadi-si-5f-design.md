@@ -95,8 +95,16 @@ touched. This keeps one `Rule` per sūtra, as AGENTS.md requires, and keeps the
 trace honest: the guṇa is credited to 7.4.21, which is the sūtra that
 licenses it.
 
-**Guard:** aṅga has `Tag::Adadi` ∧ aṅga text **`ends_with("SI")`** ∧ the
-ending is sārvadhātuka.
+**Guard:** aṅga has `Tag::Adadi` ∧ aṅga text **`ends_with("SI")`**.
+
+The sūtra's *sārvadhātuke* condition is structurally satisfied and is
+deliberately **not** written as a guard clause: every tiṅ ending in this
+engine's scope is tagged `Tag::Sarvadhatuka` when it is introduced (3.4.78 /
+3.4.113), across all four lakāras, so the clause would be always-true — and an
+always-true clause is precisely what leaves a `&&`→`||` mutant unkillable.
+7.3.84 omits the same check for the same reason. Record the condition in the
+doc comment instead, and note that it must become a real guard the moment an
+ārdhadhātuka affix enters scope.
 
 `ends_with`, not `==`: 6.4.71 *luṅlaṅlṛṅkṣvaḍudāttaḥ* runs earlier in the
 array and prepends the aṭ augment directly to the aṅga's text, so in laṅ the
