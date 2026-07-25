@@ -1089,21 +1089,21 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "As",
         "laT",
         [
-            "Aste", "AsAte", "Asate", "Asse", "AsATe", "AdDve", "Ase", "Asvahe", "Asmahe",
+            "Aste", "AsAte", "Asate", "Asse", "AsATe", "ADve", "Ase", "Asvahe", "Asmahe",
         ],
     ),
     (
         "As",
         "laN",
         [
-            "Asta", "AsAtAm", "Asata", "AsTAH", "AsATAm", "AdDvam", "Asi", "Asvahi", "Asmahi",
+            "Asta", "AsAtAm", "Asata", "AsTAH", "AsATAm", "ADvam", "Asi", "Asvahi", "Asmahi",
         ],
     ),
     (
         "As",
         "loT",
         [
-            "AstAm", "AsAtAm", "AsatAm", "Assva", "AsATAm", "AdDvam", "AsE", "AsAvahE", "AsAmahE",
+            "AstAm", "AsAtAm", "AsatAm", "Assva", "AsATAm", "ADvam", "AsE", "AsAvahE", "AsAmahE",
         ],
     ),
     (
@@ -1112,6 +1112,44 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         [
             "AsIta", "AsIyAtAm", "AsIran", "AsITAH", "AsIyATAm", "AsIDvam", "AsIya", "AsIvahi",
             "AsImahi",
+        ],
+    ),
+    (
+        "vas",
+        "laT",
+        [
+            "vaste", "vasAte", "vasate", "vasse", "vasATe", "vaDve", "vase", "vasvahe", "vasmahe",
+        ],
+    ),
+    (
+        "vas",
+        "laN",
+        [
+            "avasta", "avasAtAm", "avasata", "avasTAH", "avasATAm", "avaDvam", "avasi", "avasvahi",
+            "avasmahi",
+        ],
+    ),
+    (
+        "vas",
+        "loT",
+        [
+            "vastAm", "vasAtAm", "vasatAm", "vassva", "vasATAm", "vaDvam", "vasE", "vasAvahE",
+            "vasAmahE",
+        ],
+    ),
+    (
+        "vas",
+        "viDiliN",
+        [
+            "vasIta",
+            "vasIyAtAm",
+            "vasIran",
+            "vasITAH",
+            "vasIyATAm",
+            "vasIDvam",
+            "vasIya",
+            "vasIvahi",
+            "vasImahi",
         ],
     ),
 ];
@@ -1271,7 +1309,15 @@ fn known_nonforms_are_invalid() {
         "vAyAam",
         "Asati",  // √ās is ātmanepada; a parasmaipada ending must not derive
         "Asante", // 3pl must be Asate (7.1.5), never the `ante` of 7.1.3
-        "AsDve",  // 2pl voiced junction must apply: bare s+Dve is not a form
+        // 8.2.25 dhi ca elides the aṅga-final `s` before Dve/Dvam. Both the
+        // un-applied shape and slice 5d's jaśtva'd shape are non-words.
+        "AsDve",    // s retained: the rule did not fire
+        "AdDve",    // 5d's wrong form: s voiced to `d` instead of elided
+        "AdDvam",   // ditto, laṅ/loṭ
+        "vasDve",   // √vas, s retained
+        "vadDve",   // √vas, 5d's wrong analysis
+        "avasDvam", // √vas laṅ, s retained
+        "vasati",   // √vas is ātmanepada; a parasmaipada ending must not derive
     ] {
         assert!(
             matches!(engine.check(bad).verdict, Verdict::Invalid),

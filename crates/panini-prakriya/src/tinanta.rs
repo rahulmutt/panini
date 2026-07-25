@@ -87,30 +87,6 @@ fn cartva_of(c: char) -> Option<char> {
     }
 }
 
-/// A jhaś (voiced obstruent) — the trigger of the voiced junction (jaśtva
-/// before a jhaś). The jhaś pratyāhāra is exactly the ten voiced stops
-/// (voiced unaspirate jaś + voiced aspirate: g/gh j/jh ḍ/ḍh d/dh b/bh); `h` is
-/// NOT a jhaś. `Dh` (`D`) of Dve/Dvam is the case this slice exercises.
-fn is_jhas(c: char) -> bool {
-    matches!(c, 'g' | 'G' | 'j' | 'J' | 'q' | 'Q' | 'd' | 'D' | 'b' | 'B')
-}
-
-/// The jaś (voiced unaspirated) substitute of a jhal, per the voiced junction
-/// (8.4.53 jhalāṃ jaś jhaśi). Only `s → d` is exercised this slice; the stop
-/// vargas are written generally for later jhal-final roots. Extend the
-/// sibilant/`h` rows as later roots demand.
-fn jastva_of(c: char) -> Option<char> {
-    match c {
-        'k' | 'K' | 'g' | 'G' => Some('g'),
-        'c' | 'C' | 'j' | 'J' => Some('j'),
-        'w' | 'W' | 'q' | 'Q' => Some('q'),
-        't' | 'T' | 'd' | 'D' => Some('d'),
-        'p' | 'P' | 'b' | 'B' => Some('b'),
-        's' => Some('d'),
-        _ => None,
-    }
-}
-
 /// 1.3.4 na vibhaktau tusmāḥ: a final tu-varga (t/T/d/D/n), `s`, or `m` of a
 /// vibhakti is NOT an it, so the shared halantyam elision must be suppressed
 /// for such tiṅ endings (e.g. tas, Tas, vas, mas keep their final `s`).
@@ -880,11 +856,19 @@ pub static TINANTA_RULES: &[Rule] = &[
     // 7.3.100 adaH sarvezAm: √ad prefixes aṭ (`a`) to a laṅ singular
     // consonant ending (2sg s, 3sg t). Without it, Ad+s / Ad+t are word-final
     // conjuncts that 8.2.23 saṃyogāntasya lopaḥ would strip to bare Ad,
-    // collapsing 2sg=3sg=1sg-stem. The inserted `a` makes the word vowel-final:
-    // 8.2.23 declines, and cartva (8.4.55) skips the `d` (now before `a`, not a
-    // khar) → Adat, Adas→AdaH. Guarded structurally (Tag::Adadi ∧ laṅ ∧
-    // consonant-final aṅga ∧ single-char s/t ending): in the current root set
-    // that is exactly √ad (√yā/√vā are ā-final). Retighten when √vas lands.
+    // collapsing 2sg=3sg=1sg-stem. The inserted `a` makes the word
+    // vowel-final: 8.2.23 declines, and cartva (8.4.55) skips the `d` (now
+    // before `a`, not a khar) → Adat, Adas→AdaH. Guarded structurally
+    // (Tag::Adadi ∧ laṅ ∧ consonant-final aṅga ∧ single-char s/t ending); in
+    // the current root set that is exactly √ad, and √vas landing (5e) adds
+    // no new case here (its ātmanepada endings never collapse to a bare
+    // single-char ending at the point this rule runs).
+    //
+    // Known parked mutant: `||`→`&&` on the guard line below is unkillable
+    // in the current grammar — both inner checks already exclude every case
+    // where the two outer clauses would diverge. Human-parked 2026-07-25
+    // (slice 5e, Task 5); full case analysis in the 7.3.100-guard section
+    // of `docs/superpowers/specs/2026-07-24-adadi-vas-dhi-ca-5e-design.md`.
     Rule {
         id: "7.3.100",
         name: "adaH sarvezAm",
@@ -1107,7 +1091,26 @@ pub static TINANTA_RULES: &[Rule] = &[
             true
         },
     },
-    // 6.1.78 eco'yavāyāvaḥ: e/o/E/O before a vowel → ay/av/Ay/Av.
+    // 6.1.78 eco'yavāyāvaḥ: e/o before a vowel → ay/av. The sūtra also covers
+    // E/O → Ay/Av, but those two arms are dropped here: within the current
+    // 29-root × 4-lakāra grammar, ANGA can never end in a vṛddhi vowel (E/O)
+    // at the point this rule runs. `vrddhi_of` (the only source of E/O in
+    // this engine) is called from three places, all in 6.1.90 — the aṅga arm
+    // writes the vṛddhi vowel at *position 0* of the aṅga (replacing the āṭ
+    // augment + the root's first vowel), never at the aṅga's last character;
+    // the other two arms write into SHAP/ENDING, not ANGA. No curated root is
+    // a single SLP1 character, so the aṅga arm's tail slice is never empty
+    // either. And the order is decisive on its own: 6.1.90 is the only caller
+    // of `vrddhi_of`, and it runs *after* 6.1.78 in the single-pass rule
+    // array, so any E/O it produces can never be seen by 6.1.78 at all. Per
+    // the mutation gate's own rule (same rationale as 8.4.53's removal
+    // below), unexecutable arms cannot be kept under the mutation gate.
+    // Restore the E/O arms (and re-add their coverage in the golden/mutation
+    // suites) the moment a root lands whose aṅga can end in a vṛddhi vowel
+    // before a vowel-initial ending — the leading candidate is √śī: 7.4.21
+    // already forces guṇa on it (√śī lands in a later slice per AGENTS.md),
+    // and a hypothetical/future root needing *vṛddhi* rather than guṇa at
+    // its aṅga-final position would be the other way in.
     Rule {
         id: "6.1.78",
         name: "eco'yavAyAvaH",
@@ -1117,8 +1120,6 @@ pub static TINANTA_RULES: &[Rule] = &[
             let sub = match anga_last {
                 'e' => "ay",
                 'o' => "av",
-                'E' => "Ay",
-                'O' => "Av",
                 _ => return false,
             };
             // śap may be luk'd (adādi, 2.4.72): then it is empty and this rule
@@ -1557,6 +1558,67 @@ pub static TINANTA_RULES: &[Rule] = &[
             true
         },
     },
+    // 8.2.25 dhi ca: the final `s` of the term preceding a `Dh`-initial affix
+    // is ELIDED — not voiced. As + Dve -> A + Dve -> ADve; vas + Dve -> vaDve
+    // (this slice's second witness; `vaDve` is the cell the Siddhāntakaumudī's
+    // adādi paradigm gives, per vidyut-prakriya's `kaumudi_44::sk_2440`, not
+    // the sūtra's own example).
+    //
+    // Placement is the whole point: 8.2 is asiddha to 8.4, so this fires
+    // before any 8.4 junction rule and the `s` never survives to take a jaś
+    // substitute. Slice 5d analysed this junction as 8.4.53 jaśtva (s → d)
+    // and shipped *AdDve; 8.2.25 bleeds that rule completely, which is why
+    // 8.4.53 has no reachable witness and was removed.
+    //
+    // The guard walks backward from the Dh-initial affix to the nearest
+    // non-empty term rather than reading ANGA by index. In today's three-term
+    // `[ANGA, SHAP, ENDING]` layout that search always resolves to ANGA
+    // whenever the forward arm passes (SHAP is luk'd for adādi), so AsIDvam /
+    // vasIDvam below decline at the forward (`D`-initial) arm, not because
+    // the guard distinguishes the aṅga from some other neighbour. The search
+    // is written generally on purpose, for the multi-term layouts a later
+    // slice will bring — mirroring vidyut-prakriya's own `prev_not_empty`.
+    Rule {
+        id: "8.2.25",
+        name: "Di ca",
+        kind: RuleKind::Vidhi,
+        apply: |p| {
+            // The first non-empty term after the aṅga (śap, if present, is
+            // luk'd/empty for adādi) must be the Dh-initial affix.
+            let next_idx = p
+                .terms
+                .iter()
+                .enumerate()
+                .skip(ANGA + 1)
+                .find(|(_, t)| !t.text.is_empty())
+                .map(|(i, _)| i);
+            let Some(next_idx) = next_idx else {
+                return false;
+            };
+            if !p.terms[next_idx].text.starts_with('D') {
+                return false;
+            }
+            // The nearest non-empty term before it must end in `s`.
+            let prev_idx = p.terms[..next_idx]
+                .iter()
+                .enumerate()
+                .rev()
+                .find(|(_, t)| !t.text.is_empty())
+                .map(|(i, _)| i);
+            let Some(prev_idx) = prev_idx else {
+                return false;
+            };
+            if !p.terms[prev_idx].text.ends_with('s') {
+                return false;
+            }
+            let before = p.snapshot();
+            let mut s: Vec<char> = p.terms[prev_idx].text.chars().collect();
+            s.pop();
+            p.terms[prev_idx].text = s.into_iter().collect();
+            p.record("8.2.25", "Di ca", before);
+            true
+        },
+    },
     // 8.2.66 sasajuṣo ruḥ + 8.3.15 kharavasānayoḥ: word-final `s` → visarga.
     Rule {
         id: "8.3.15",
@@ -1573,51 +1635,6 @@ pub static TINANTA_RULES: &[Rule] = &[
             s.push('H');
             p.terms[idx].text = s.into_iter().collect();
             p.record("8.3.15", "KaravasAnayor visarjanIyaH", before);
-            true
-        },
-    },
-    // 8.4.53 jhalāṃ jaś jhaśi (voiced junction / jaśtva): a jhal at the aṅga's
-    // final position, meeting a jhaś (voiced stop) across the root+ending
-    // junction, becomes its jaś (voiced unaspirated). √ās's `s` before the `Dh`
-    // of Dve/Dvam → `d`: As + Dve -> AdDve, As + Dvam -> AdDvam. The engine's
-    // first VOICED internal junction — the voiced mirror of 8.4.55's cartva;
-    // general, reused unchanged by √vas (5e) and every later jhal-final root.
-    // Ordered before 8.4.55: numerically earlier in the tripādī, and their
-    // triggers are disjoint (voiced jhaś vs voiceless khar), so neither
-    // double-fires. Like 8.4.55 it reads the first non-empty term after the
-    // aṅga (śap, if present, is luk'd/empty for adādi).
-    Rule {
-        id: "8.4.53",
-        name: "JalAM jaS JaSi",
-        kind: RuleKind::Vidhi,
-        apply: |p| {
-            let next = p
-                .terms
-                .iter()
-                .skip(ANGA + 1)
-                .find_map(|t| t.text.chars().next());
-            let Some(next) = next else { return false };
-            if !is_jhas(next) {
-                return false;
-            }
-            let Some(last) = p.terms[ANGA].text.chars().last() else {
-                return false;
-            };
-            if !is_jhal(last) {
-                return false;
-            }
-            let Some(sub) = jastva_of(last) else {
-                return false;
-            };
-            if sub == last {
-                return false;
-            }
-            let before = p.snapshot();
-            let mut s: Vec<char> = p.terms[ANGA].text.chars().collect();
-            s.pop();
-            s.push(sub);
-            p.terms[ANGA].text = s.into_iter().collect();
-            p.record("8.4.53", "JalAM jaS JaSi", before);
             true
         },
     },
@@ -3398,26 +3415,122 @@ mod tests {
     }
 
     #[test]
-    fn voiced_junction_s_becomes_d_before_dhve() {
-        // √ās 2pl: the root-final `s` meets the voiced `Dh` of Dve/Dvam and
-        // takes its jaś (voiced) counterpart `d`: As + Dve -> AdDve.
+    fn dhi_ca_elides_s_before_dhve() {
+        // √ās 2pl: the root-final `s` meets the `Dh` of Dve/Dvam and is
+        // ELIDED by 8.2.25 dhi ca — it is not voiced to `d`. 8.2.25 sits at
+        // 8.2 in the tripādī and is asiddha to 8.4, so the `s` is gone before
+        // any 8.4 junction rule can look at it: As + Dve -> A + Dve -> ADve.
         assert_eq!(
             form_g("As", Lakara::Lat, Purusha::Madhyama, Vacana::Bahu),
-            "AdDve"
+            "ADve"
         );
         assert_eq!(
             form_g("As", Lakara::Lan, Purusha::Madhyama, Vacana::Bahu),
-            "AdDvam"
+            "ADvam"
         );
         assert_eq!(
             form_g("As", Lakara::Lot, Purusha::Madhyama, Vacana::Bahu),
-            "AdDvam"
+            "ADvam"
         );
-        // Guard boundary: a clean `s`-meets-`s` cell is untouched (se is not a
-        // jhaś), so 2sg stays Asse — the junction must not over-apply.
+        // Guard boundary: the affix must be Dh-initial. A clean `s`-meets-`s`
+        // cell is untouched, so 2sg stays Asse — the rule must not
+        // over-apply.
         assert_eq!(
             form_g("As", Lakara::Lat, Purusha::Madhyama, Vacana::Eka),
             "Asse"
+        );
+    }
+
+    #[test]
+    fn dhi_ca_fires_for_vas_and_only_before_dh() {
+        // √vas is the sūtra's second witness: vas + Dve -> va + Dve -> vaDve.
+        assert_eq!(
+            form_g("vas", Lakara::Lat, Purusha::Madhyama, Vacana::Bahu),
+            "vaDve"
+        );
+        assert_eq!(
+            form_g("vas", Lakara::Lan, Purusha::Madhyama, Vacana::Bahu),
+            "avaDvam"
+        );
+        assert_eq!(
+            form_g("vas", Lakara::Lot, Purusha::Madhyama, Vacana::Bahu),
+            "vaDvam"
+        );
+        // The affix must be Dh-initial. These four cells put the same aṅga-
+        // final `s` in front of `t`, `T` and `s` and it must survive intact —
+        // and they are also the first pins that cartva (8.4.55) leaves an `s`
+        // alone before a khar, an arm √ad and √ās could not reach.
+        assert_eq!(
+            form_g("vas", Lakara::Lat, Purusha::Prathama, Vacana::Eka),
+            "vaste"
+        );
+        assert_eq!(
+            form_g("vas", Lakara::Lat, Purusha::Madhyama, Vacana::Eka),
+            "vasse"
+        );
+        assert_eq!(
+            form_g("vas", Lakara::Lan, Purusha::Madhyama, Vacana::Eka),
+            "avasTAH"
+        );
+        assert_eq!(
+            form_g("vas", Lakara::Lot, Purusha::Madhyama, Vacana::Eka),
+            "vassva"
+        );
+    }
+
+    #[test]
+    fn dhi_ca_does_not_elide_a_non_s_before_dh() {
+        // Thematic ātmanepada √labh keeps its śap `a` in front of Dve/Dvam.
+        // √labh is bhvādi, so śap is never luk'd: the first non-empty term
+        // after the aṅga is the śap `a` itself, and `"a".starts_with('D')` is
+        // false — the guard declines at its FIRST arm (the `D`-initial
+        // affix search), never reaching the "preceding term ends in `s`"
+        // arm at all. These are the slice-3 goldens, unchanged.
+        assert_eq!(
+            form_g("laB", Lakara::Lat, Purusha::Madhyama, Vacana::Bahu),
+            "laBaDve"
+        );
+        assert_eq!(
+            form_g("laB", Lakara::Lan, Purusha::Madhyama, Vacana::Bahu),
+            "alaBaDvam"
+        );
+        // adDi (√ad loṭ 2sg, pinned at paradigm level in
+        // crates/panini/tests/paradigm.rs) is the one cell in the current
+        // root set that actually reaches the "ends in `s`" arm: śap is
+        // luk'd (adādi) so ENDING (`Di`, from 6.4.101 her dhiḥ) is the first
+        // non-empty term after the aṅga and the `D`-initial arm PASSES; the
+        // preceding non-empty term is the aṅga `ad`, which does not end in
+        // `s`, so the second arm declines and the `d` survives. Dropping
+        // this arm would wrongly yield *aDi.
+        assert_eq!(
+            form_g("ad", Lakara::Lot, Purusha::Madhyama, Vacana::Eka),
+            "adDi"
+        );
+    }
+
+    #[test]
+    fn dhi_ca_reads_the_affixs_neighbour_not_the_anga() {
+        // vidhiliṅ 2pl: the sīyuṭ augment is prefixed INTO the ending's text
+        // (`IDvam`), not a separate term, so `terms` is still the plain
+        // three-element `[ANGA, SHAP, ENDING]` layout here. The first
+        // non-empty term after the aṅga is the ending `IDvam` itself, and
+        // `"IDvam".starts_with('D')` is false — these two pins decline at the
+        // guard's FIRST arm (the `D`-initial affix search), the same arm as
+        // laB above, not because the guard is reading some other neighbour
+        // instead of the aṅga. In today's layout the backward search always
+        // resolves to the aṅga whenever the first arm passes; it is written
+        // to walk to the nearest non-empty term (rather than index ANGA
+        // directly) for the multi-term layouts a later slice will bring —
+        // mirroring vidyut-prakriya's own `prev_not_empty`. As + I + Dvam ->
+        // AsIDvam (never *AIDvam): the `s` is retained because the affix
+        // search declines, not because of anything more subtle.
+        assert_eq!(
+            form_g("As", Lakara::VidhiLin, Purusha::Madhyama, Vacana::Bahu),
+            "AsIDvam"
+        );
+        assert_eq!(
+            form_g("vas", Lakara::VidhiLin, Purusha::Madhyama, Vacana::Bahu),
+            "vasIDvam"
         );
     }
 
@@ -3444,43 +3557,6 @@ mod tests {
         // Non-car targets return None (e.g. h, sibilants, vowels).
         for c in ['h', 'S', 'z', 's', 'a'] {
             assert_eq!(cartva_of(c), None, "{c}");
-        }
-    }
-
-    #[test]
-    fn jastva_of_maps_each_jhal_to_its_jas() {
-        // Pin the whole map so a mutated arm can't survive: each varga's members
-        // collapse to that varga's jaś (voiced unaspirated); `s → d` is the arm
-        // this slice exercises. Non-jhal / unmapped chars return None.
-        for c in ['k', 'K', 'g', 'G'] {
-            assert_eq!(jastva_of(c), Some('g'), "{c}");
-        }
-        for c in ['c', 'C', 'j', 'J'] {
-            assert_eq!(jastva_of(c), Some('j'), "{c}");
-        }
-        for c in ['w', 'W', 'q', 'Q'] {
-            assert_eq!(jastva_of(c), Some('q'), "{c}");
-        }
-        for c in ['t', 'T', 'd', 'D'] {
-            assert_eq!(jastva_of(c), Some('d'), "{c}");
-        }
-        for c in ['p', 'P', 'b', 'B'] {
-            assert_eq!(jastva_of(c), Some('b'), "{c}");
-        }
-        assert_eq!(jastva_of('s'), Some('d'));
-        assert_eq!(jastva_of('a'), None);
-        assert_eq!(jastva_of('m'), None);
-    }
-
-    #[test]
-    fn is_jhas_is_voiced_stops_only() {
-        for c in ['g', 'G', 'j', 'J', 'q', 'Q', 'd', 'D', 'b', 'B'] {
-            assert!(is_jhas(c), "{c} should be jhaś");
-        }
-        // Voiceless obstruents, sibilants, vowels, semivowels, nasals are not —
-        // and neither is `h` (it is outside the jhaś pratyāhāra).
-        for c in ['t', 'T', 's', 'S', 'z', 'a', 'A', 'v', 'y', 'm', 'n', 'h'] {
-            assert!(!is_jhas(c), "{c} should not be jhaś");
         }
     }
 

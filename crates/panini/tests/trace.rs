@@ -455,19 +455,40 @@ fn asate_trace_uses_anatah_not_jhontah() {
 }
 
 #[test]
-fn addhve_trace_ends_in_voiced_junction() {
+fn adhve_trace_ends_in_dhi_ca() {
     // √ās adādi ātmanepada laṭ 2pl: Dvam → Dve (3.4.79), śap luk'd (2.4.72),
-    // then the voiced junction turns the aṅga-final `s` into `d` before the
-    // `Dh` of Dve: As + Dve -> AdDve.
+    // then 8.2.25 dhi ca ELIDES the aṅga-final `s` before the `Dh` of Dve:
+    // As + Dve -> A + Dve -> ADve. Slice 5d pinned *AdDve here via 8.4.53
+    // jaśtva; that rule is asiddha to this one and has been removed.
     assert_eq!(
-        trace_for("AdDve"),
+        trace_for("ADve"),
         vec![
-            "1.3.12", "3.4.78", "1.2.4", "3.4.79", "3.1.68", "1.3.9", "2.4.72", "8.4.53"
+            "1.3.12", "3.4.78", "1.2.4", "3.4.79", "3.1.68", "1.3.9", "2.4.72", "8.2.25"
         ]
     );
-    // cartva (8.4.55, the voiceless junction) must NOT fire here — the trigger
-    // is a voiced stop, not a khar.
-    assert!(!trace_for("AdDve").contains(&"8.4.55".to_string()));
+    // Neither junction rule may fire: 8.4.53 is gone, and cartva (8.4.55) is
+    // the voiceless junction, which a `Dh` never triggers.
+    assert!(!trace_for("ADve").contains(&"8.4.53".to_string()));
+    assert!(!trace_for("ADve").contains(&"8.4.55".to_string()));
+}
+
+#[test]
+fn vadhve_trace_is_the_second_dhi_ca_witness() {
+    // √vas adādi ātmanepada laṭ 2pl — `vaDve` is the cell the
+    // Siddhāntakaumudī's adādi paradigm gives (vidyut-prakriya pins it at
+    // `kaumudi_44::sk_2440`), not the sūtra's own example. Same ordered path
+    // as ADve on a consonant-initial root: the aṅga-final `s` is elided
+    // before the `Dh` of Dve, giving vaDve.
+    assert_eq!(
+        trace_for("vaDve"),
+        vec![
+            "1.3.12", "3.4.78", "1.2.4", "3.4.79", "3.1.68", "1.3.9", "2.4.72", "8.2.25"
+        ]
+    );
+    // Non-Dh-initial cells of the same root reach no junction rule at all:
+    // the `s` of vaste survives, so cartva must not appear either.
+    assert!(!trace_for("vaste").contains(&"8.4.55".to_string()));
+    assert!(!trace_for("vaste").contains(&"8.2.25".to_string()));
 }
 
 #[test]

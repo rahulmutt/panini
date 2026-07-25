@@ -103,6 +103,21 @@ Notes on the curation:
   *jha*, → *śerate*) — plus the already-present **6.1.78 *eco'yavāyāvaḥ***
   (*ayādeśa*, śe + āte → *śayāte*).
 
+> **Correction (2026-07-24, slice 5e).** The √vas row above and the √ās
+> analysis inherited by slice 5d are wrong: the `s` before the `dh` of
+> Dve/Dvam is **elided by 8.2.25 *dhi ca***, not voiced by jaśtva (neither
+> 8.2.39 *jhalāṃ jaśo'nte* nor 8.4.53 *jhalāṃ jaś jhaśi*). 8.2.25 is asiddha
+> to 8.4 and bleeds both. The correct forms are `ADve` / `ADvam` and
+> `vaDve` / `vaDvam`. 8.4.53 was removed as unreachable and returns only with
+> a voiced-stop-final root (√duh / √lih / √dviṣ). See
+> `2026-07-24-adadi-vas-dhi-ca-5e-design.md`. 6.1.78's E/O (Ay/Av) arms were
+> dropped for the same unreachability reason; when a root lands that revives
+> them, the codebase's established shape for keeping a full sūtra table alive
+> under the mutation gate is an extracted helper with an exhaustive table
+> test — `guna_of`, `vrddhi_of` and `cartva_of` are the models (e.g. a
+> `fn ayadi_of(c: char) -> Option<&'static str>` with a table test) — rather
+> than re-adding untested match arms inline.
+
 **On guṇa in this slice.** With śap gone, root-final guṇa is conditioned by the
 following tiṅ ending directly (7.3.84). None of the three parasmaipadī roots has
 an *ik* final (yā/vā are ā-final, ad is d-final), so parasmaipada guṇa never
