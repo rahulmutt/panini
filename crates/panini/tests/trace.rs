@@ -8,8 +8,9 @@
 //! regression like that fails loudly, across all four lakāras this crate
 //! covers (laṭ, laṅ, loṭ, vidhiliṅ) — one ordered-trace pin per `#[test]`
 //! function below. Don't hardcode a count in this comment; it will drift as
-//! tests are added. Run `grep -c '#\[test\]' crates/panini/tests/trace.rs`
-//! for the current total.
+//! tests are added. Run `grep -c '^#\[test\]' crates/panini/tests/trace.rs`
+//! for the current total (anchored to line start so it doesn't match this
+//! sentence's own `#[test]` mentions).
 //!
 //! For the authoritative rule order itself, do not rely on a diagram here:
 //! read `TINANTA_RULES` in `crates/panini-prakriya/src/tinanta.rs` top to
