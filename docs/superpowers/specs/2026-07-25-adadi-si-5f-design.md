@@ -95,7 +95,13 @@ touched. This keeps one `Rule` per sūtra, as AGENTS.md requires, and keeps the
 trace honest: the guṇa is credited to 7.4.21, which is the sūtra that
 licenses it.
 
-**Guard:** aṅga has `Tag::Adadi` ∧ aṅga text **`ends_with("SI")`**.
+**Guard:** aṅga text **`ends_with("SI")`** — that single clause, and no gaṇa
+tag. A `Tag::Adadi` clause would be redundant (√śī is the only `SI`-final root)
+*and* unkillable: under the `||`→`&&` mutant the rule would proceed for the
+other adādi roots, but their aṅga-finals (`d`, `A`, `s`) have no guṇa
+substitute, so `guna_of` returns `None` and no form changes. It also matches
+the sūtra, which names śīṅ rather than the gaṇa. The substitution itself reuses
+the existing `guna_of` helper, whose arms are already table-tested.
 
 The sūtra's *sārvadhātuke* condition is structurally satisfied and is
 deliberately **not** written as a guard clause: every tiṅ ending in this
@@ -131,8 +137,10 @@ that turns the leading `J` into `at` (7.1.5 fires for √śī because the segmen
 before the ending is `I`, not short `a`). 7.1.6 prepends `r` to that `at…`:
 `ate` → `rate` (laṭ), `ata` → `rata` (laṅ), `atAm` → `ratAm` (loṭ).
 
-**Guard:** aṅga is √śī (same `ends_with("SI")` test) ∧ **7.1.5 fired in this
-derivation**, read from `p.log`. Reading the trace for a prior rule is an
+**Guard:** aṅga is √śī (the same single `ends_with("SI")` test, no gaṇa tag) ∧
+**7.1.5 fired in this derivation**, read from `p.log`. Both clauses
+discriminate: under the `||`→`&&` mutant the rule would prepend `r` to √ās's
+3pl ending and yield \*`Asrate`, which the shipped golden rejects. Reading the trace for a prior rule is an
 established idiom here — 6.4.72 *āḍ ajādīnām* uses exactly this to test
 whether 6.4.71 already augmented the aṅga. It is also grammatically exact: the
 *ruṭ* attaches to the `at` that 7.1.5 produced, so predicating on 7.1.5 is the
