@@ -1189,10 +1189,12 @@ pub static TINANTA_RULES: &[Rule] = &[
     // below), unexecutable arms cannot be kept under the mutation gate.
     // Restore the E/O arms (and re-add their coverage in the golden/mutation
     // suites) the moment a root lands whose aṅga can end in a vṛddhi vowel
-    // before a vowel-initial ending — the leading candidate is √śī: 7.4.21
-    // already forces guṇa on it (√śī lands in a later slice per AGENTS.md),
-    // and a hypothetical/future root needing *vṛddhi* rather than guṇa at
-    // its aṅga-final position would be the other way in.
+    // before a vowel-initial ending. √śī (slice 5f) is NOT that root: 7.4.21
+    // gives it guṇa (Se), never vṛddhi, and its `e` arm below is what carries
+    // SayAte / SayIta / SayE. The trigger is a root that takes vṛddhi at the
+    // aṅga-final position. Reaching the `e` arm for adādi at all depends on
+    // the athematic follower lookup this slice added below (SHAP is luk'd
+    // for adādi, so the arm falls back to ENDING's first character).
     Rule {
         id: "6.1.78",
         name: "eco'yavAyAvaH",
@@ -1625,9 +1627,11 @@ pub static TINANTA_RULES: &[Rule] = &[
             }
             // Reads śap as "the segment following the aṅga"; when śap is luk'd
             // (adādi, 2.4.72) that is empty and the rule silently declines.
-            // Currently unreachable (no r/v-final adādi root in scope); when the
-            // consonant-final and ātmanepada adādi roots land, this must generalize
-            // this to the root+ending junction, as 6.1.78 already flags.
+            // Currently unreachable (no r/v-final adādi root in scope); when a
+            // consonant-final r/v-upadhā adādi root lands, this must generalize
+            // to the root+ending junction — 6.1.78's athematic arm (added in
+            // slice 5f for √śī, which falls back to `p.terms[ENDING]` when
+            // SHAP is empty) is the worked example to follow.
             let Some(next) = p.terms.get(SHAP).and_then(|t| t.text.chars().next()) else {
                 return false;
             };

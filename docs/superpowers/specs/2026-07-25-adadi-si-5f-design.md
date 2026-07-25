@@ -193,6 +193,19 @@ tripādī with the `s` intact and must stay unchanged.
 - **2.4.72, 3.1.68, 7.1.5, 7.2.79, 6.1.66, 6.1.90** — all unchanged, but
   6.1.66 and 6.1.90 are the two flagged as at-risk; see Risks.
 
+> **Correction (2026-07-25, slice 5f).** The claim above that 6.1.78 "needs
+> no edit" is false and was falsified during implementation. 6.1.78's live
+> arm reads `p.terms[SHAP]` for the vowel that follows the aṅga, but adādi's
+> **2.4.72** *empties* that term (the śap is luk'd), so for √śī the arm
+> always declined — producing `SeIran` / `SeAte`, not `SayIran` / `SayAte`.
+> √ji's thematic path never exercises the śap-luk'd case, so this gap was
+> invisible until √śī. The fix (this slice) is an **athematic arm**: when
+> `p.terms[SHAP].text.is_empty()`, the rule falls back to
+> `p.terms[ENDING]`'s first character instead. The two arms' guards
+> (SHAP vowel-initial vs. SHAP empty) are mutually exclusive by
+> construction, so at most one ever fires — provably disjoint from the
+> thematic arm above it.
+
 ### Rule order (delta only)
 
 ```

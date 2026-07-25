@@ -6,7 +6,10 @@
 //! would still pass if a `record()` call were dropped or reordered. This
 //! file pins the FULL ORDERED sequence for representative forms so a
 //! regression like that fails loudly, across all four lakāras this crate
-//! covers (laṭ, laṅ, loṭ, vidhiliṅ) — **twenty** tests in total below.
+//! covers (laṭ, laṅ, loṭ, vidhiliṅ) — one ordered-trace pin per `#[test]`
+//! function below. Don't hardcode a count in this comment; it will drift as
+//! tests are added. Run `grep -c '#\[test\]' crates/panini/tests/trace.rs`
+//! for the current total.
 //!
 //! For the authoritative rule order itself, do not rely on a diagram here:
 //! read `TINANTA_RULES` in `crates/panini-prakriya/src/tinanta.rs` top to

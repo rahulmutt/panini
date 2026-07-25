@@ -294,6 +294,17 @@ vidyut emits optional variants our engine does not (`attAt`/`attu`,
 
 ## Parked mutant: 7.3.100's `||`/`&&` guard
 
+> **Superseded (2026-07-25, slice 5f).** The case analysis below is wrong and
+> the mutant is killed. Case A's premise — that the aṅga is always vowel-final
+> for non-adādi roots — is false: `ANGA` holds the bare root and the vikaraṇa
+> is a separate term, so √kup reaches the guard consonant-final and the
+> mutated rule DOES fire. It survives only because **6.1.97 *ato guṇe***
+> repairs `akupyaat` back to `akupyat`, which no golden can see. An ordered
+> trace pin on `akupyat` sees it and kills the mutant. (Case B's stated reason
+> is also wrong — 3.4.103 is earlier in the array, not later — though its
+> conclusion holds, the ending being multi-character either way.) See
+> `2026-07-25-adadi-si-5f-design.md`.
+
 7.3.100 *adaḥ sarvezām* guards on `!matches!(p.ctx.lakara, Lakara::Lan) ||
 !p.terms[ANGA].has(Tag::Adadi)`. The `||`→`&&` mutant on that line survives
 `cargo-mutants` — human-parked 2026-07-25 (slice 5e), so the mutation gate
