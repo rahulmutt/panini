@@ -226,6 +226,12 @@ static DHATUS: &[Dhatu] = &[
         pada: Pada::Atmanepada,
         artha: "AcCAdane",
     },
+    Dhatu {
+        code: "SI",
+        gana: Gana::Adadi,
+        pada: Pada::Atmanepada,
+        artha: "svapne",
+    },
 ];
 
 pub fn dhatus() -> &'static [Dhatu] {
@@ -267,7 +273,7 @@ mod tests {
 
     #[test]
     fn has_twentynine_curated_roots_with_padas() {
-        assert_eq!(dhatus().len(), 29);
+        assert_eq!(dhatus().len(), 30);
         let bu = dhatus().iter().find(|d| d.code == "BU").unwrap();
         assert!(matches!(bu.pada, Pada::Parasmaipada));
         let labh = dhatus().iter().find(|d| d.code == "laB").unwrap();
@@ -286,13 +292,17 @@ mod tests {
         assert!(matches!(ya.gana, Gana::Adadi) && matches!(ya.pada, Pada::Parasmaipada));
         let va = dhatus().iter().find(|d| d.code == "vA").unwrap();
         assert!(matches!(va.gana, Gana::Adadi) && matches!(va.pada, Pada::Parasmaipada));
-        // adādi ātmanepada: √ās (slice 5d) and √vas (this slice).
+        // adādi ātmanepada: √ās (slice 5d), √vas (slice 5e), and √śī (this slice) closes gaṇa.
         let as_ = dhatus().iter().find(|d| d.code == "As").unwrap();
         assert!(matches!(as_.gana, Gana::Adadi) && matches!(as_.pada, Pada::Atmanepada));
         let vas = dhatus().iter().find(|d| d.code == "vas").unwrap();
         assert!(matches!(vas.gana, Gana::Adadi) && matches!(vas.pada, Pada::Atmanepada));
         // √vas ācchādane (2Ā), not √vas nivāse (1P) — artha disambiguates.
         assert_eq!(vas.artha, "AcCAdane");
+        // adādi ātmanepada: √śī (this slice) closes the gaṇa.
+        let shi = dhatus().iter().find(|d| d.code == "SI").unwrap();
+        assert!(matches!(shi.gana, Gana::Adadi) && matches!(shi.pada, Pada::Atmanepada));
+        assert_eq!(shi.artha, "svapne");
     }
 
     #[test]

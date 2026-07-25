@@ -1212,12 +1212,16 @@ fn every_form_validates_and_matches() {
 /// `PARADIGM` block or appear in the explicit gated list below.
 #[test]
 fn paradigm_covers_every_enumerable_cell() {
-    // adādi × vidhiliṅ was gated in slice 5a and ungated in slice 5b; there
-    // are no gated cells any more. This constant stays (empty) so the two
-    // assertions below keep documenting that EVERY enumerable (root, lakara)
-    // pair must be pinned in PARADIGM — a future partial slice may repopulate
-    // it, but it must never silently hide a missing golden block.
-    const GATED: &[(&str, &str)] = &[];
+    // Slice 5f, task 1: √śī is registered but its golden block does not land
+    // until the three new rules (7.4.21, 7.1.6, 8.3.59) are in. These four
+    // entries are removed in the same commit that adds the PARADIGM rows —
+    // GATED must never permanently hide a missing golden block.
+    const GATED: &[(&str, &str)] = &[
+        ("SI", "laN"),
+        ("SI", "laT"),
+        ("SI", "loT"),
+        ("SI", "viDiliN"),
+    ];
 
     let pinned: Vec<(&str, &str)> = PARADIGM.iter().map(|(r, l, _)| (*r, *l)).collect();
     let mut unpinned: Vec<(&str, &str)> = Vec::new();
