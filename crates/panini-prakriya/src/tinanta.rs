@@ -1053,6 +1053,18 @@ pub static TINANTA_RULES: &[Rule] = &[
     // introduced (3.4.78 / 3.4.113), across all four lakāras, so a guard
     // clause would be always-true — the same reason 7.3.84 omits it. It must
     // become a real guard the moment an ārdhadhātuka affix enters scope.
+    //
+    // Latency note: 7.3.84's 1.1.5 guard currently tests `p.terms[SHAP]`, but
+    // on this śap-luk'd path the ṅit tag 1.2.4 assigns lands on the ENDING
+    // term instead (3.1.68's `p.terms.insert(SHAP, …)` shifts the
+    // already-tagged ending from index 1 to index 2), so that 1.1.5 block is
+    // not actually operative at this junction today. What 7.4.21 does here,
+    // concretely, is reshape the aṅga to `Se` first, after which 7.3.84
+    // declines on its *shape* guard (`guna_of('e')` is `None`), not on 1.1.5.
+    // The "overriding 1.1.5" sentence above states the grammatical
+    // relationship this ordering is designed to express, and becomes
+    // literally true if 7.3.84's guard is ever corrected to test the
+    // ending's own Ngit tag, the way 7.2.81 does.
     Rule {
         id: "7.4.21",
         name: "SINaH sArvaDAtuke guRaH",
