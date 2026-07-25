@@ -1152,6 +1152,44 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
             "vasImahi",
         ],
     ),
+    (
+        "SI",
+        "laT",
+        [
+            "Sete", "SayAte", "Serate", "Seze", "SayATe", "SeDve", "Saye", "Sevahe", "Semahe",
+        ],
+    ),
+    (
+        "SI",
+        "laN",
+        [
+            "aSeta", "aSayAtAm", "aSerata", "aSeTAH", "aSayATAm", "aSeDvam", "aSayi", "aSevahi",
+            "aSemahi",
+        ],
+    ),
+    (
+        "SI",
+        "loT",
+        [
+            "SetAm", "SayAtAm", "SeratAm", "Sezva", "SayATAm", "SeDvam", "SayE", "SayAvahE",
+            "SayAmahE",
+        ],
+    ),
+    (
+        "SI",
+        "viDiliN",
+        [
+            "SayIta",
+            "SayIyAtAm",
+            "SayIran",
+            "SayITAH",
+            "SayIyATAm",
+            "SayIDvam",
+            "SayIya",
+            "SayIvahi",
+            "SayImahi",
+        ],
+    ),
 ];
 
 fn lan_a_form(code: &str, pu: Purusha, va: Vacana) -> String {
@@ -1212,16 +1250,13 @@ fn every_form_validates_and_matches() {
 /// `PARADIGM` block or appear in the explicit gated list below.
 #[test]
 fn paradigm_covers_every_enumerable_cell() {
-    // Slice 5f, task 1: √śī is registered but its golden block does not land
-    // until the three new rules (7.4.21, 7.1.6, 8.3.59) are in. These four
-    // entries are removed in the same commit that adds the PARADIGM rows —
-    // GATED must never permanently hide a missing golden block.
-    const GATED: &[(&str, &str)] = &[
-        ("SI", "laN"),
-        ("SI", "laT"),
-        ("SI", "loT"),
-        ("SI", "viDiliN"),
-    ];
+    // adādi × vidhiliṅ was gated in slice 5a and ungated in slice 5b; √śī was
+    // gated in slice 5f task 1 and ungated here. There are no gated cells any
+    // more. This constant stays (empty) so the two assertions below keep
+    // documenting that EVERY enumerable (root, lakara) pair must be pinned in
+    // PARADIGM — a future partial slice may repopulate it, but it must never
+    // silently hide a missing golden block.
+    const GATED: &[(&str, &str)] = &[];
 
     let pinned: Vec<(&str, &str)> = PARADIGM.iter().map(|(r, l, _)| (*r, *l)).collect();
     let mut unpinned: Vec<(&str, &str)> = Vec::new();
