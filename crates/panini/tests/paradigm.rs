@@ -1357,6 +1357,17 @@ fn known_nonforms_are_invalid() {
         "vadDve",   // √vas, 5d's wrong analysis
         "avasDvam", // √vas laṅ, s retained
         "vasati",   // √vas is ātmanepada; a parasmaipada ending must not derive
+        // √śī (slice 5f). Each of these is the form the engine WOULD emit if
+        // one of the slice's three rules were mutated away, so they are the
+        // mutation gate's teeth.
+        "SIte",      // 7.4.21 not applied: guṇa missing (real form Sete)
+        "Sese",      // 8.3.59 not applied: ṣatva missing (real form Seze)
+        "Seate",     // 7.1.6 not applied: ruṭ missing (real form Serate)
+        "SayIraran", // 7.1.6 over-fired into vidhiliṅ, where 3.4.105's `ran`
+        // has already replaced the jha (real form SayIran)
+        "Sayati", // wrong pada: an ātmanepadin root with a parasmaipada ending
+        "Sayate", // the śap surviving 2.4.72 (SI + Sap + te, guṇa'd)
+        "SIyate", // a divādi/tudādi-style vikaraṇa leaking into adādi
     ] {
         assert!(
             matches!(engine.check(bad).verdict, Verdict::Invalid),
