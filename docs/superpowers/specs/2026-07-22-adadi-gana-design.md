@@ -110,7 +110,13 @@ Notes on the curation:
 > to 8.4 and bleeds both. The correct forms are `ADve` / `ADvam` and
 > `vaDve` / `vaDvam`. 8.4.53 was removed as unreachable and returns only with
 > a voiced-stop-final root (√duh / √lih / √dviṣ). See
-> `2026-07-24-adadi-vas-dhi-ca-5e-design.md`.
+> `2026-07-24-adadi-vas-dhi-ca-5e-design.md`. 6.1.78's E/O (Ay/Av) arms were
+> dropped for the same unreachability reason; when a root lands that revives
+> them, the codebase's established shape for keeping a full sūtra table alive
+> under the mutation gate is an extracted helper with an exhaustive table
+> test — `guna_of`, `vrddhi_of` and `cartva_of` are the models (e.g. a
+> `fn ayadi_of(c: char) -> Option<&'static str>` with a table test) — rather
+> than re-adding untested match arms inline.
 
 **On guṇa in this slice.** With śap gone, root-final guṇa is conditioned by the
 following tiṅ ending directly (7.3.84). None of the three parasmaipadī roots has

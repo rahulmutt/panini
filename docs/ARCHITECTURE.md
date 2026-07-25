@@ -45,7 +45,7 @@ kept in place with empty text rather than removed, so the `ANGA`/`SHAP`/
 adādi is now covered across all four lakāras: √yā and √vā (parasmaipada),
 √ad (parasmaipada), and √ās and √vas (ātmanepada) each derive in laṭ, laṅ,
 loṭ and vidhiliṅ, including the athematic (śap-luk'd) optative. The
-consonant-final ātmanepada roots meet the ending directly, so they are the
+consonant-final adādi roots meet the ending directly, so they are the
 engine's junction witnesses: 8.4.55 cartva (√ad), and 8.2.25 dhi ca, which
 elides an aṅga-final `s` before a Dh-initial affix (ADve, vaDve). `derive`
 itself carries no scope gate — it only tags the dhātu and runs `TINANTA_RULES`
