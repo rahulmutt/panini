@@ -43,9 +43,12 @@ kept in place with empty text rather than removed, so the `ANGA`/`SHAP`/
 `ENDING` term indices stay stable for downstream rules.
 
 adādi is now covered across all four lakāras: √yā and √vā (parasmaipada),
-√ad (parasmaipada), and √ās (ātmanepada) each derive in laṭ, laṅ, loṭ and
-vidhiliṅ, including the athematic (śap-luk'd) optative. `derive` itself
-carries no scope gate — it only tags the dhātu and runs `TINANTA_RULES`
+√ad (parasmaipada), and √ās and √vas (ātmanepada) each derive in laṭ, laṅ,
+loṭ and vidhiliṅ, including the athematic (śap-luk'd) optative. The
+consonant-final ātmanepada roots meet the ending directly, so they are the
+engine's junction witnesses: 8.4.55 cartva (√ad), and 8.2.25 dhi ca, which
+elides an aṅga-final `s` before a Dh-initial affix (ADve, vaDve). `derive`
+itself carries no scope gate — it only tags the dhātu and runs `TINANTA_RULES`
 (see `panini_prakriya::tinanta::derive`). A wrong-pada derivation is instead
 blocked by the pada-sanction rule (1.3.12 *anudāttaṅita ātmanepadam* /
 1.3.78 *śeṣāt kartari parasmaipadam*), which sets `Prakriya.blocked` when

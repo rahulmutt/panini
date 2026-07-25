@@ -24,15 +24,17 @@
   target under `crates/panini-lipi/fuzz` legitimately omits it, since it uses
   `#![no_main]` plus the libfuzzer harness macro).
 - Grammar changes are gated by the golden paradigm test
-  (`crates/panini/tests/paradigm.rs`, 1008 forms; bhvādi/divādi/tudādi are
+  (`crates/panini/tests/paradigm.rs`, 1044 forms; bhvādi/divādi/tudādi are
     complete across laṭ/laṅ/loṭ/vidhiliṅ × parasmaipada/ātmanepada, and adādi
-    (gaṇa 2) is being added — √yā/√vā/√ad/√ās are complete across all four
-    lakāras (laṭ/laṅ/loṭ/vidhiliṅ). √ad (parasmaipada) lands the internal
-    junction sandhi cartva (8.4.55); √ās (ātmanepada) lands 7.1.5
-    ātmanepadeṣv anataḥ, the first voiced internal junction (8.4.53 jhalāṃ
-    jaś jhaśi), and extends 6.1.90 āṭaś ca / 6.1.66 lopo vyor vali to the
-    athematic (śap-luk'd) ātmanepada path (loṭ 1sg + optative); the
-    remaining ātmanepada roots (√vas, √śī) land in later slices)
+    (gaṇa 2) is being added — √yā/√vā/√ad/√ās/√vas are complete across all
+    four lakāras (laṭ/laṅ/loṭ/vidhiliṅ). √ad (parasmaipada) lands the
+    internal junction sandhi cartva (8.4.55); √ās (ātmanepada) lands 7.1.5
+    ātmanepadeṣv anataḥ and extends 6.1.90 āṭaś ca / 6.1.66 lopo vyor vali to
+    the athematic (śap-luk'd) ātmanepada path (loṭ 1sg + optative); √vas
+    (ātmanepada) is the second witness for 8.2.25 dhi ca, which elides an
+    aṅga-final `s` before a Dh-initial affix (ADve, vaDve) — it replaced the
+    8.4.53 jaśtva analysis slice 5d shipped, and 8.4.53 was removed as
+    unreachable; √śī lands in a later slice)
   and by the ordered-trace test (`crates/panini/tests/trace.rs`), which pins
   rule order. Surface forms and trace order there are the source of truth;
   sūtra ids/names in traces must match the cited reference (ashtadhyayi.com).
