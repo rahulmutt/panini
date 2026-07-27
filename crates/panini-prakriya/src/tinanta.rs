@@ -3118,17 +3118,18 @@ mod tests {
 
     #[test]
     fn pugantalaghupadhasya_single_term_still_applies_guna() {
-        // 7.3.86 has its own 1.1.5 (Girit) guard, `p.terms.len() > SHAP &&
-        // p.terms[SHAP].has(Tag::Girit)`, mirroring 7.3.84's. Unlike
-        // 7.3.84 (unreachable for divAdi/tudAdi, whose aGgas are all
-        // consonant-final), 7.3.86's Girit-true branch IS reached by the
-        // curated corpus (div, tud, juz, ...), so the `==`/`<` boundary
-        // mutants are already caught there. Only the `>` -> `>=` mutant on
-        // the `len() > SHAP` half survives: with len == 1 (no vikaraNa
-        // term), the original short-circuits (`1 > 1` false) without
-        // indexing terms[SHAP], so guNa proceeds normally: vft -> vart.
-        // The mutant makes `1 >= 1` true, forcing an out-of-bounds index
-        // into terms[SHAP] on a 1-element Vec, which panics.
+        // 7.3.86 shares 7.3.84's 1.1.5 guard verbatim: both call
+        // `following_sarvadhatuka` and block only when it finds a Ngit
+        // follower. Unlike 7.3.84 (unreachable for divAdi/tudAdi, whose
+        // aGgas are all consonant-final), 7.3.86's Ngit-true branch IS
+        // reached by the curated corpus (div, tud, juz, ...), so most of the
+        // helper's behaviour is already exercised there. What survives here
+        // is the "no follower at all" edge: with len == 1 (no vikaraNa
+        // term), `following_sarvadhatuka`'s `p.terms.get(SHAP)` is already
+        // None, so the match's `None => None` arm returns None without
+        // indexing anything -- nothing blocks, and guNa proceeds normally:
+        // vft -> vart. `.get()` cannot panic regardless of arity, unlike the
+        // old `p.terms[SHAP]` index it replaced.
         let mut p = Prakriya {
             terms: vec![Term::new("vft")],
             log: vec![],
@@ -3404,23 +3405,32 @@ mod tests {
         assert_eq!(p.terms[ANGA].text, "yA");
     }
 
-    // --- 7.3.84 sArvaDAtukArDaDAtukayoH: 1.1.5 (Girit) guard pins ---------
+    // --- 7.3.84 sArvaDAtukArDaDAtukayoH: 1.1.5 guard pins ------------------
     //
     // No curated divAdi/tudAdi root has a vowel-final aGga (they are all
     // consonant-final: div, naS, kup, man, yuD, vid, tud, liK, viS, juz,
     // vij, gur all end in a consonant), so 7.3.84's guNa-blocking business
     // — final-ik aGgas — is only ever reached by bhvAdi roots (BU, nI, ji,
-    // smf), whose vikaraNa (Sap) is never Girit. The `has(Tag::Girit)`
-    // guard's `true` branch is therefore never exercised by any golden or
-    // negative derivation, and boundary mutants on `p.terms.len() > SHAP`
-    // are invisible to the suite. Pin both edges directly.
+    // smf), whose vikaraNa (Sap) is never Ngit and whose Sap is always
+    // non-empty, so `following_sarvadhatuka` never falls through to ENDING
+    // for them either. The helper's Ngit-true branch is therefore never
+    // exercised by any golden or negative derivation, and mutants on it --
+    // the whole helper body replaced by `None`, or its
+    // `!shap.text.is_empty()` guard flipped to `true` or `false` -- are
+    // invisible to the suite. Pin both edges directly: a constructed
+    // two-term prakriya whose SHAP itself carries Ngit, and a bare one-term
+    // prakriya with no follower at all.
     #[test]
     fn sarvadhatukardhadhatukayoh_blocks_guna_when_vikarana_is_ngit() {
-        // Constructed vowel-final aGga ("nI") + a Girit vikaraNa (as Syan/
-        // Sa would be via the second 1.2.4): guNa must be blocked. The
-        // `>` -> `==` and `>` -> `<` mutants both make `len() > SHAP`
-        // false at len=2, so the guard's early return is skipped and the
-        // mutant wrongly applies guNa ("nI" -> "ne").
+        // Constructed vowel-final aGga ("nI") + a Ngit vikaraNa (as Syan/Sa
+        // would be via the second 1.2.4), with SHAP carrying non-empty
+        // text: `following_sarvadhatuka` must take its `Some(shap) if
+        // !shap.text.is_empty()` arm and return SHAP itself rather than
+        // fall through to ENDING (there isn't one on this two-term
+        // prakriya). GuNa must be blocked. The `!shap.text.is_empty()`
+        // guard flipped to `false` would fall through to
+        // `p.terms.get(ENDING)`, which is None here, so the mutant sees no
+        // follower at all and wrongly applies guNa ("nI" -> "ne").
         let mut p = Prakriya {
             terms: vec![Term::new("nI"), Term::new("ya")],
             log: vec![],
@@ -3434,12 +3444,14 @@ mod tests {
 
     #[test]
     fn sarvadhatukardhadhatukayoh_single_term_anga_still_applies_guna() {
-        // len == 1 (no vikaraNa term at all): the original guard
-        // short-circuits (`1 > 1` is false) without indexing terms[SHAP],
-        // so guNa proceeds normally: "nI" -> "ne". The `>` -> `>=` mutant
-        // makes `1 >= 1` true, forcing an out-of-bounds index into
-        // terms[SHAP] on a 1-element Vec, which panics (an unexpected
-        // panic still fails the test).
+        // len == 1 (no vikaraNa term, no ending, no follower at all):
+        // `following_sarvadhatuka`'s `p.terms.get(SHAP)` is already None, so
+        // the match's `None => None` arm returns None without ever calling
+        // `p.terms.get(ENDING)` or indexing anything -- nothing can block,
+        // and guNa proceeds normally: "nI" -> "ne". This pins that `None`
+        // arm and its no-panic guarantee: unlike the old `p.terms[SHAP]`
+        // guard, which would have panicked indexing a 1-element Vec,
+        // `.get()` never panics here regardless of arity.
         let mut p = Prakriya {
             terms: vec![Term::new("nI")],
             log: vec![],
@@ -3517,13 +3529,15 @@ mod tests {
         // the ātmanepada endings are ṅit (1.2.4) and 1.1.5 would otherwise
         // block guṇa. This is the only visible guṇa in the whole adādi gaṇa.
         //
-        // Note: the surface forms below (`Sete`, `aSeta`) do not by
-        // themselves distinguish 7.4.21 from 7.3.84. Per the latency note
-        // above 7.4.21's `Rule`, 7.3.84's 1.1.5 guard is not actually
-        // operative on this śap-luk'd path, so if 7.4.21 were removed 7.3.84
-        // would fire unaided and produce these same two forms. This test
-        // pins the *shape*, not the *attribution*; the attribution (that
-        // 7.4.21, not 7.3.84, is the rule that fires) is pinned by the
+        // Note: the surface forms below (`Sete`, `aSeta`) now pin
+        // attribution as well as shape. Before 7.3.84's 1.1.5 guard was
+        // rewired to `following_sarvadhatuka`, it read only the (always-pit)
+        // SHAP term and never actually blocked on this śap-luk'd path, so
+        // removing 7.4.21 would have left 7.3.84 to fire unaided and produce
+        // these same two forms. Now the ṅit ending IS the immediate
+        // follower, so 1.1.5 blocks 7.3.84 here too: removing 7.4.21 would
+        // leave the aṅga un-guṇated (`SIte`/`aSIta`), not `Sete`/`aSeta`.
+        // The attribution is still pinned independently by the
         // ordered-trace test `shete_trace_is_the_minimal_shing_guna_path` in
         // `crates/panini/tests/trace.rs`.
         assert_eq!(
