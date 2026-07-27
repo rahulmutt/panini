@@ -43,7 +43,11 @@
     rule analysis)
   and by the ordered-trace test (`crates/panini/tests/trace.rs`), which pins
   rule order. Surface forms and trace order there are the source of truth;
-  sūtra ids/names in traces must match the cited reference (ashtadhyayi.com).
+  sūtra ids/names in traces must match the cited reference. In practice that
+  reference is vidyut-prakriya's machine-readable `data/sutrapatha.tsv`
+  (ashtadhyayi.com is a JS single-page app that cannot be fetched
+  programmatically), and that is what specs, plans, and verification in this
+  repo actually check ids/names against.
 - New grammar goes in `TINANTA_RULES` as a self-guarding `Rule`, not as a
   branch inside `derive`. `derive` carries no grammar branches: the only
   gana-conditioned logic there is aṅga tagging (`Tag::Adadi` &c.), which feeds

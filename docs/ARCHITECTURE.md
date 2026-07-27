@@ -51,11 +51,11 @@ gaṇa's only guṇa witness and lands the engine's first ṣatva; see
 `docs/superpowers/specs/2026-07-25-adadi-si-5f-design.md` for the rule
 analysis. `derive` itself carries no scope gate — it only tags the dhātu and
 runs `TINANTA_RULES` (see `panini_prakriya::tinanta::derive`). A wrong-pada
-derivation is instead
-blocked by the pada-sanction rule (1.3.12 *anudāttaṅita ātmanepadam* /
-1.3.78 *śeṣāt kartari parasmaipadam*), which sets `Prakriya.blocked` when
-the requested pada doesn't match the root's tag; a blocked prakriya's
-partial text never counts as a match in `Panini::check`. `INVALID` means
+derivation is instead blocked by the pada-sanction rule (1.3.12 *anudāttaṅita
+ātmanepadam* / 1.3.78 *śeṣāt kartari parasmaipadam*), which sets
+`Prakriya.blocked` when the requested pada doesn't match the root's tag; a
+blocked prakriya's partial text never counts as a match in `Panini::check`.
+`INVALID` means
 "not derivable within the covered grammar," not "ungrammatical in
 Sanskrit." Coverage of the enumerable (root × lakāra) space is pinned by
 `crates/panini/tests/paradigm.rs::paradigm_covers_every_enumerable_cell`.

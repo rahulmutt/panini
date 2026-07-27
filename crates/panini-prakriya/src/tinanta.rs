@@ -1175,7 +1175,7 @@ pub static TINANTA_RULES: &[Rule] = &[
     },
     // 6.1.78 eco'yavāyāvaḥ: e/o before a vowel → ay/av. The sūtra also covers
     // E/O → Ay/Av, but those two arms are dropped here: within the current
-    // 29-root × 4-lakāra grammar, ANGA can never end in a vṛddhi vowel (E/O)
+    // 30-root × 4-lakāra grammar, ANGA can never end in a vṛddhi vowel (E/O)
     // at the point this rule runs. `vrddhi_of` (the only source of E/O in
     // this engine) is called from three places, all in 6.1.90 — the aṅga arm
     // writes the vṛddhi vowel at *position 0* of the aṅga (replacing the āṭ
@@ -3431,6 +3431,16 @@ mod tests {
         // 7.4.21 śīṅaḥ sārvadhātuke guṇaḥ: √śī guṇates (SI → Se) even though
         // the ātmanepada endings are ṅit (1.2.4) and 1.1.5 would otherwise
         // block guṇa. This is the only visible guṇa in the whole adādi gaṇa.
+        //
+        // Note: the surface forms below (`Sete`, `aSeta`) do not by
+        // themselves distinguish 7.4.21 from 7.3.84. Per the latency note
+        // above 7.4.21's `Rule`, 7.3.84's 1.1.5 guard is not actually
+        // operative on this śap-luk'd path, so if 7.4.21 were removed 7.3.84
+        // would fire unaided and produce these same two forms. This test
+        // pins the *shape*, not the *attribution*; the attribution (that
+        // 7.4.21, not 7.3.84, is the rule that fires) is pinned by the
+        // ordered-trace test `shete_trace_is_the_minimal_shing_guna_path` in
+        // `crates/panini/tests/trace.rs`.
         assert_eq!(
             form_g("SI", Lakara::Lat, Purusha::Prathama, Vacana::Eka),
             "Sete"

@@ -1357,14 +1357,31 @@ fn known_nonforms_are_invalid() {
         "vadDve",   // √vas, 5d's wrong analysis
         "avasDvam", // √vas laṅ, s retained
         "vasati",   // √vas is ātmanepada; a parasmaipada ending must not derive
-        // √śī (slice 5f). Each of these is the form the engine WOULD emit if
-        // one of the slice's three rules were mutated away, so they are the
-        // mutation gate's teeth.
-        "SIte",      // 7.4.21 not applied: guṇa missing (real form Sete)
-        "Sese",      // 8.3.59 not applied: ṣatva missing (real form Seze)
-        "Seate",     // 7.1.6 not applied: ruṭ missing (real form Serate)
-        "SayIraran", // 7.1.6 over-fired into vidhiliṅ, where 3.4.105's `ran`
-        // has already replaced the jha (real form SayIran)
+        // √śī (slice 5f). Each of these is a non-form the engine must never
+        // produce, chosen around the slice's three new guards — but not all
+        // seven are what a mutation of that guard would actually emit; see
+        // the per-entry notes below where the naive reading is wrong.
+        "SIte", // NOT what removing 7.4.21 emits: 7.3.84's 1.1.5 guard tests
+        // `p.terms[SHAP]`, but on this śap-luk'd path the ṅit tag lands on
+        // ENDING instead (see the latency note above 7.4.21's `Rule`), so
+        // that guard is not actually operative here. Without 7.4.21, 7.3.84
+        // fires unaided and guṇates anyway, emitting `Sete` — the right
+        // surface form with the wrong attribution. `SIte` is unreachable
+        // under any mutation of 7.4.21; it stays pinned as a plain non-form.
+        // The rule actually responsible for 7.4.21's attribution is pinned
+        // by the ordered-trace test `shete_trace_is_the_minimal_shing_guna_path`
+        // in `crates/panini/tests/trace.rs`, which asserts `7.4.21` present
+        // and `7.3.84` absent.
+        "Sese",  // 8.3.59 not applied: ṣatva missing (real form Seze)
+        "Seate", // NOT what removing 7.1.6 emits: without the ruṭ the ending
+        // stays `ate`, and 6.1.78's athematic arm then fires (śap empty, `a`
+        // is a vowel), emitting `Sayate` — already pinned below, which is
+        // the actual witness for 7.1.6's removal.
+        "SayIraran", // NOT a real derivation: dropping 7.1.6's guard against
+        // firing in vidhiliṅ makes it prepend `r` to the sīyuṭ-bearing
+        // ending `sIyran`, after which 7.2.79 no longer sees an s-initial
+        // ending, so the output diverges from this string entirely. Kept
+        // pinned as a plain non-form; the real form is `SayIran`.
         "Sayati", // wrong pada: an ātmanepadin root with a parasmaipada ending
         "Sayate", // the śap surviving 2.4.72 (SI + Sap + te, guṇa'd)
         "SIyate", // a divādi/tudādi-style vikaraṇa leaking into adādi

@@ -27,7 +27,8 @@ retroflex → **`Seze`**, **`Sezva`**. No earlier root could reach this: √ās
 ends in `A`, √vas in `s`, and every thematic root puts the vikaraṇa's `a`
 before the ending.
 
-Three new rules, one new root, no change to any existing rule's behaviour.
+Three new rules, one new root, no change to any existing rule's behaviour
+(this later proved false for 6.1.78 — see the dated Correction below).
 
 ## Scope
 
@@ -216,7 +217,9 @@ tripādī with the `s` intact and must stay unchanged.
 [new] 7.4.21 SINaH sArvaDAtuke guRaH      (√śī: guṇa despite the ṅit ending)
       7.3.84 sArvaDAtukArDaDAtukayoH      (unchanged; declines on Se)
       7.3.86 pugantalaGUpaDasya ca
-      6.1.78 eco'yavAyAvaH                (unchanged; Se + A → Say)
+      6.1.78 eco'yavAyAvaH                (Se + A → Say; gained an athematic
+                                            arm this slice — see the dated
+                                            Correction above)
       …
       8.3.15 KaravasAnayor visarjanIyaH
 [new] 8.3.59 AdeSapratyayayoH             (tripādī ṣatva: Se + se → Seze)
@@ -349,6 +352,15 @@ Dated corrections to record, in the same style 5e used for 5d:
   - `Seze` — 8.3.59 ṣatva;
   - `SayIta` — 7.2.79 → 6.1.66 → 7.4.21 → 6.1.78, the ruṭ-free vidhiliṅ path;
   - `SayE` — 6.1.90's āṭ arm together with 6.1.78.
+
+  Note: the orderings above are vidyut's own rule sequence (see the Appendix),
+  not this engine's. Our shipped `TINANTA_RULES` array order differs at both
+  junctions — `SayIta` runs 7.2.79 → 7.4.21 → 6.1.78 → 6.1.66, and `SayE`
+  runs 7.4.21 → 6.1.78 → 6.1.90 where vidyut runs 7.3.84 → 7.4.21 → 6.1.90 →
+  6.1.78 — though the surface outputs agree. In this repo rule order IS the
+  grammar, so the pins in `crates/panini/tests/trace.rs`
+  (`shayita_trace_is_the_shing_vali_lopa_path`, `shayai_trace_is_the_shing_atas_ca_path`)
+  are authoritative, not the orderings written here or in the Appendix.
 - **One non-√śī trace pin**: `akupyat`, which kills the 7.3.100 mutant (above).
 - **Negatives** (`known_nonforms_are_invalid`), each chosen to kill a specific
   mutated guard:
@@ -398,7 +410,7 @@ Dated corrections to record, in the same style 5e used for 5d:
 
 - All **1080** golden forms validate `VALID` with correct ordered traces; the
   1044 pre-existing forms are unchanged.
-- The six √śī non-forms return `INVALID`.
+- The seven √śī non-forms return `INVALID`.
 - No existing golden or trace output changes — every new rule is guarded on
   √śī or on a junction no existing root reaches.
 - Every sūtra id and name in a trace matches the reference (vidyut's
@@ -437,8 +449,13 @@ viDiliN uttama   eka  => SayIya      viDiliN uttama   dvi  => SayIvahi
 viDiliN uttama   bahu => SayImahi
 ```
 
-Key histories (vidyut's own rule sequence; our trace pins are the same
-sequence restricted to the rules this engine models):
+Key histories (vidyut's own rule sequence). This is NOT the same sequence our
+trace pins use, restricted or otherwise: for `SayIta` and `SayE` our shipped
+`TINANTA_RULES` array orders 7.4.21 relative to 6.1.66/6.1.78/6.1.90/7.3.84
+differently than vidyut does below (see the note in Testing above for the
+specifics), though the surface outputs agree. The pins in
+`crates/panini/tests/trace.rs` are authoritative for this engine's order;
+treat the sequences below as vidyut's derivation history only:
 
 ```
 Sete       3.4.78 SI+ta | 3.1.68 SI+Sap+ta | 2.4.72 SI+ta | 3.4.79 SI+te
