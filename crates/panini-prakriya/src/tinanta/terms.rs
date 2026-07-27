@@ -20,9 +20,10 @@ pub(crate) const ENDING: usize = 2;
 
 // NOTE: `ENDING_PRE_SHAP` and `SHAP` are deliberately the same value (1), not
 // a typo. Rule 3.1.68 (kartari śap) inserts śap between the aṅga and the
-// ending, which shifts the ending from index 1 to index 2. This bisects
-// `TINANTA_RULES` into two halves along the array's shape, not along any
-// lakāra or rule-family boundary:
+// ending, which shifts the ending from index 1 to index 2. This bisects the
+// flattened `TINANTA_RULES` sequence (across its six stage files) into two
+// halves along that sequence's position, not along any lakāra or
+// rule-family boundary:
 //   - Rules ordered BEFORE 3.1.68 must address the ending via
 //     `ENDING_PRE_SHAP` (index 1, where the ending still lives).
 //   - Rules ordered AFTER 3.1.68 must address the ending via `ENDING`

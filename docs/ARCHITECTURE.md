@@ -19,10 +19,27 @@ Data flow for `check`:
 
 ## The rule pipeline
 
-`TINANTA_RULES` (in `crates/panini-prakriya/src/tinanta.rs`) is a single
-ordered `&[Rule]` covering all four lakāras. Each rule self-guards on
-`Prakriya.ctx` (lakāra, pada, puruṣa, vacana) and returns whether it fired.
-Reading the list top to bottom IS reading the grammar this crate implements.
+`TINANTA_RULES` (in `crates/panini-prakriya/src/tinanta/mod.rs`) is an
+ordered `&[&[Rule]]` — six pipeline stages, each in its own file — covering
+all four lakāras. Each rule self-guards on `Prakriya.ctx` (lakāra, pada,
+puruṣa, vacana) and returns whether it fired. Reading the stages in order,
+and the rules within each stage in order, IS reading the grammar this crate
+implements; `tinanta::rules()` yields that flattened sequence.
+
+| stage file | rules | position |
+|---|---|---|
+| `samjna.rs` | 1.3.12, 1.3.78, 3.4.78, 1.3.9, 1.2.4 | before 3.1.68 |
+| `tin.rs` | 3.4.85 … 3.4.102 | before 3.1.68 |
+| `vikarana.rs` | 3.1.69, 3.1.77, 3.1.68, 2.4.72, 1.2.4 | contains 3.1.68 |
+| `anga.rs` | 6.4.71 … 7.3.101 (incl. 6.1.78) | after 3.1.68 |
+| `adesha.rs` | 6.1.101 … 6.4.101 | after 3.1.68 |
+| `tripadi.rs` | 8.2.77 … 8.4.55 | after 3.1.68 |
+
+The stage boundary is file organisation, not grammar: the flattened order is
+what matters, and `tinanta_rule_order_is_pinned` in `derivation_tests.rs`
+pins all 56 ids verbatim. `tinanta/terms.rs` holds the term-index constants
+and the reason 3.1.68 bisects the pipeline; `tinanta/sound.rs` holds the
+varṇa classifiers.
 
 Rule order is load-bearing and several orderings are non-obvious; the
 constraints and their justifications are documented in the design specs
