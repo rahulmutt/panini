@@ -24,6 +24,10 @@ pub(crate) use tests::form_g;
 
 /// Every rule not yet extracted into its own stage file. Shrinks to nothing
 /// as the split proceeds; delete this constant when the last stage moves out.
+///
+/// Every rule here is ordered BEFORE 3.1.68 — the ending is at
+/// `ENDING_PRE_SHAP` (index 1), and `SHAP`/`ENDING` do not yet exist. See
+/// `terms`.
 static UNSPLIT: &[Rule] = &[
     // 1.3.12 anudāttaṅita ātmanepadam: a root carrying the anudātta/ṅit
     // marker (here: the data-layer Atmanepadin tag) takes ātmanepada.
