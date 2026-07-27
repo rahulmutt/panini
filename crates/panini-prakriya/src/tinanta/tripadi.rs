@@ -266,7 +266,7 @@ mod tests {
     use crate::tinanta::terms::ENDING;
     // `form_g` lives in `mod.rs`'s test module; Task 12 moves it into
     // `derivation_tests.rs`, at which point this import follows it.
-    use crate::tinanta::tests::form_g;
+    use crate::tinanta::form_g;
     use panini_data::{Lakara, Purusha, Vacana};
 
     // --- 8.2.77 hali ca: guard-edge pin -----------------------------------
