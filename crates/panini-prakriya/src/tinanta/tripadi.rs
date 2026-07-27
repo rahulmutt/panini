@@ -264,8 +264,8 @@ mod tests {
     use crate::term::Term;
     use crate::tinanta::rules;
     use crate::tinanta::terms::ENDING;
-    // `form_g` lives in `mod.rs`'s test module; Task 12 moves it into
-    // `derivation_tests.rs`, at which point this import follows it.
+    // `form_g` lives in `derivation_tests.rs`; `mod.rs` re-exports it, so
+    // this import stays on the stable `crate::tinanta::form_g` path.
     use crate::tinanta::form_g;
     use panini_data::{Lakara, Purusha, Vacana};
 
