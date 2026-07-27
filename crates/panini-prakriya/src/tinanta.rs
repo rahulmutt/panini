@@ -1920,6 +1920,32 @@ mod tests {
         derive(d, la, d.pada, pu, va).text()
     }
 
+    /// The ordered rule list IS the grammar this crate implements, so its
+    /// sequence is pinned verbatim, not merely by the per-derivation traces
+    /// in `crates/panini/tests/trace.rs` (which only pin order along the
+    /// paths representative forms happen to take).
+    ///
+    /// If you add a rule, add its id here in position. If this test fails
+    /// after a refactor that was supposed to move code without changing it,
+    /// the refactor reordered the grammar — fix the refactor, not this list.
+    ///
+    /// 1.2.4 appears twice, deliberately: once tagging apit ātmanepada
+    /// endings, once tagging the apit vikaraṇa after 3.1.68 inserts it.
+    #[test]
+    fn tinanta_rule_order_is_pinned() {
+        let expected = [
+            "1.3.12", "1.3.78", "3.4.78", "1.3.9", "1.2.4", "3.4.85", "3.4.108", "3.4.105",
+            "3.4.106", "3.4.101", "3.4.99", "3.4.87", "3.4.89", "3.4.86", "3.4.100", "3.4.80",
+            "3.4.79", "3.4.91", "3.4.93", "3.4.90", "3.4.92", "3.4.103", "3.4.102", "3.1.69",
+            "3.1.77", "3.1.68", "2.4.72", "1.2.4", "6.4.71", "6.4.72", "7.3.100", "7.1.5", "7.1.6",
+            "7.1.3", "7.2.79", "7.2.80", "7.2.81", "7.4.21", "7.3.84", "7.3.86", "6.1.78",
+            "7.3.101", "6.1.101", "6.1.96", "6.1.90", "6.1.97", "6.1.87", "6.1.66", "6.4.105",
+            "6.4.101", "8.2.77", "8.2.23", "8.2.25", "8.3.15", "8.3.59", "8.4.55",
+        ];
+        let actual: Vec<&str> = TINANTA_RULES.iter().map(|r| r.id).collect();
+        assert_eq!(actual, expected);
+    }
+
     #[test]
     fn divadi_tudadi_present_third_singular() {
         // Guṇa blocked by 1.1.5 (śyan/śa are ṅit): kup→kupyati NOT kopyati,
