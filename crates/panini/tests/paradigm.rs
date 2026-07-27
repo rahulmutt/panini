@@ -1379,9 +1379,12 @@ fn known_nonforms_are_invalid() {
         // the actual witness for 7.1.6's removal.
         "SayIraran", // NOT a real derivation: dropping 7.1.6's guard against
         // firing in vidhiliṅ makes it prepend `r` to the sīyuṭ-bearing
-        // ending `sIyran`, after which 7.2.79 no longer sees an s-initial
-        // ending, so the output diverges from this string entirely. Kept
-        // pinned as a plain non-form; the real form is `SayIran`.
+        // ending `sIyran` (→ `rsIyran`); 7.2.79 still elides the non-final
+        // `s` regardless (→ `rIyran`), but 6.1.78's athematic arm then
+        // requires the ending's first character to be a vowel, and `r`
+        // isn't one, so the ay-ādeśa never fires and the output diverges
+        // from this string entirely. Kept pinned as a plain non-form; the
+        // real form is `SayIran`.
         "Sayati", // wrong pada: an ātmanepadin root with a parasmaipada ending
         "Sayate", // the śap surviving 2.4.72 (SI + Sap + te, guṇa'd)
         "SIyate", // a divādi/tudādi-style vikaraṇa leaking into adādi

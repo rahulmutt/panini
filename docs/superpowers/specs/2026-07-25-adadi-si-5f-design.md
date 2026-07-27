@@ -373,6 +373,22 @@ Dated corrections to record, in the same style 5e used for 5d:
   - `Sayate` — the śap surviving 2.4.72 (`SI` + `Sap` + `te`, guṇated) — kills
     a mutated 2.4.72 guard for this root;
   - `SIyate` — a divādi/tudādi-style vikaraṇa leaking into adādi.
+
+  > **Correction (2026-07-27, slice 5f).** The three attributions above for
+  > `SIte`, `Seate`, and `SayIraran` are false; none of the three is what its
+  > named mutant actually emits. Removing 7.4.21's guṇa emits `Sete`, not
+  > `SIte` — 7.3.84 fires unaided because its 1.1.5 guard tests
+  > `p.terms[SHAP]`, but on this śap-luk'd path the ṅit tag rides on `ENDING`
+  > instead. Removing 7.1.6's ruṭ emits `Sayate`, not `Seate` — 6.1.78's
+  > athematic arm fires on the surviving `ate` (śap empty, `a` a vowel).
+  > Dropping 7.1.6's guard against firing in vidhiliṅ does not make 7.2.79
+  > "no longer see an s-initial ending" (7.2.79 never tests for s-*initial*;
+  > it elides every non-final `s`, so it still fires on the resulting
+  > `rsIyran` → `rIyran`); the actual divergence is that 6.1.78's athematic
+  > arm then requires the ending's first character to be a vowel, and `r`
+  > isn't one, so the ay-ādeśa never fires and the output is nothing like
+  > `SayIraran`. All three strings remain valid non-form pins — see
+  > `crates/panini/tests/paradigm.rs` for the corrected per-entry notes.
 - **Rule-level guard-boundary tests** in `tinanta.rs` for all three new
   guards, following the `awas_ca_athematic_*` / `lopo_vyor_vali_athematic_*`
   pattern: for each guard, one case just inside and one just outside.
