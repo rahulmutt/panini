@@ -127,6 +127,32 @@ const ENDING: usize = 2;
 // string — `ends_with` / `is_empty` / `chars().next()` matched as an Option
 // are safe, while `chars().next().unwrap()` (or indexing byte 0) panics.
 
+/// The sārvadhātuka that immediately follows the aṅga — the term **1.1.5
+/// *kṅiti ca*** interrogates when it asks whether guṇa is blocked.
+///
+/// Normally that is the vikaraṇa at `SHAP`. But 2.4.72
+/// *adiprabhṛtibhyaḥ śapaḥ* luks śap for adādi by emptying its text while
+/// leaving the term in place (so these indices stay valid), and an empty
+/// term interposes nothing: the ending is then what immediately follows the
+/// aṅga, and the ending is what carries the ṅit tag 1.2.4's first
+/// application assigns. Reading a fixed `SHAP` index therefore renders
+/// 1.1.5 inoperative for the whole śap-luk'd path.
+///
+/// Returning the *immediate* follower — rather than testing every later
+/// term — is what keeps the thematic ātmanepada path correct: for √labh the
+/// ending is ṅit but śap is pit, and guṇa rightly proceeds.
+///
+/// Only meaningful after 3.1.68 has inserted śap. Every caller is ordered
+/// after it. Returns `None` when there is no follower at all (a hand-built
+/// one-term prakriya in a unit test), in which case nothing can block.
+fn following_sarvadhatuka(p: &Prakriya) -> Option<&Term> {
+    match p.terms.get(SHAP) {
+        Some(shap) if !shap.text.is_empty() => Some(shap),
+        Some(_) => p.terms.get(ENDING),
+        None => None,
+    }
+}
+
 /// The ordered rule list. Read it top to bottom against the Aṣṭādhyāyī: this
 /// sequence IS the grammar this crate implements. Every rule self-guards and
 /// returns whether it fired.
@@ -1065,9 +1091,15 @@ pub static TINANTA_RULES: &[Rule] = &[
     // guṇate (yā/vā/ās) or is consonant-final (ad/vas), so the gaṇa would show
     // no guṇa at all.
     //
-    // Ordered immediately before 7.3.84, which then declines on its own — its
-    // target must be ik-final and `Se` is not — so 7.3.84's 1.1.5 guard is
-    // untouched, and the trace credits the guṇa to the sūtra that licenses it.
+    // Ordered immediately before 7.3.84, and now genuinely its apavāda: on
+    // this śap-luk'd path the ṅit ātmanepada ending IS the immediate follower
+    // (see `following_sarvadhatuka`), so 1.1.5 really does block 7.3.84 here
+    // and 7.4.21 is the targeted override that licenses *śete*. The ordering
+    // additionally covers the loṭ-uttama cells, whose endings 1.2.4's first
+    // application deliberately leaves untagged: there nothing blocks 7.3.84,
+    // but 7.4.21 has already reshaped the aṅga to `Se`, on which 7.3.84
+    // declines by its own shape guard (`guna_of('e')` is `None`). Either way
+    // the trace credits the guṇa to the sūtra that licenses it.
     //
     // The guard is the single `ends_with("SI")` test, deliberately with no
     // Tag::Adadi clause: √śī is the only SI-final root, so a gaṇa clause would
@@ -1081,18 +1113,6 @@ pub static TINANTA_RULES: &[Rule] = &[
     // introduced (3.4.78 / 3.4.113), across all four lakāras, so a guard
     // clause would be always-true — the same reason 7.3.84 omits it. It must
     // become a real guard the moment an ārdhadhātuka affix enters scope.
-    //
-    // Latency note: 7.3.84's 1.1.5 guard currently tests `p.terms[SHAP]`, but
-    // on this śap-luk'd path the ṅit tag 1.2.4 assigns lands on the ENDING
-    // term instead (3.1.68's `p.terms.insert(SHAP, …)` shifts the
-    // already-tagged ending from index 1 to index 2), so that 1.1.5 block is
-    // not actually operative at this junction today. What 7.4.21 does here,
-    // concretely, is reshape the aṅga to `Se` first, after which 7.3.84
-    // declines on its *shape* guard (`guna_of('e')` is `None`), not on 1.1.5.
-    // The "overriding 1.1.5" sentence above states the grammatical
-    // relationship this ordering is designed to express, and becomes
-    // literally true if 7.3.84's guard is ever corrected to test the
-    // ending's own Ngit tag, the way 7.2.81 does.
     Rule {
         id: "7.4.21",
         name: "SINaH sArvaDAtuke guRaH",
@@ -1118,10 +1138,15 @@ pub static TINANTA_RULES: &[Rule] = &[
         name: "sArvaDAtukArDaDAtukayoH",
         kind: RuleKind::Vidhi,
         apply: |p| {
-            // 1.1.5 kṅiti ca: a following ṅit sārvadhātuka blocks guṇa. The
-            // vikaraṇa at SHAP is ṅit (1.2.4) exactly when apit (śyan, śa);
-            // śap is pit and is not, so bhvādi guṇa is unaffected.
-            if p.terms.len() > SHAP && p.terms[SHAP].has(Tag::Ngit) {
+            // 1.1.5 kṅiti ca: a following ṅit sārvadhātuka blocks guṇa. On
+            // the thematic path that follower is the vikaraṇa, ṅit (1.2.4)
+            // exactly when apit (śyan, śa); śap is pit and is not, so bhvādi
+            // guṇa is unaffected. On the śap-luk'd path it is the ending —
+            // see `following_sarvadhatuka`. Narrowness: the sūtra is *kṅiti*,
+            // ṅit OR kit; this engine has no kit tag because no implemented
+            // rule assigns or consumes one. Widen this test the moment a kit
+            // sārvadhātuka enters scope.
+            if following_sarvadhatuka(p).is_some_and(|t| t.has(Tag::Ngit)) {
                 return false;
             }
             let last = p.terms[ANGA].text.chars().last().unwrap();
@@ -1145,10 +1170,9 @@ pub static TINANTA_RULES: &[Rule] = &[
         name: "pugantalaGUpaDasya ca",
         kind: RuleKind::Vidhi,
         apply: |p| {
-            // 1.1.5 kṅiti ca: a following ṅit sārvadhātuka blocks guṇa. The
-            // vikaraṇa at SHAP is ṅit (1.2.4) exactly when apit (śyan, śa);
-            // śap is pit and is not, so bhvādi guṇa is unaffected.
-            if p.terms.len() > SHAP && p.terms[SHAP].has(Tag::Ngit) {
+            // 1.1.5 kṅiti ca, exactly as at 7.3.84 above — same follower
+            // lookup, same ṅit-only narrowness.
+            if following_sarvadhatuka(p).is_some_and(|t| t.has(Tag::Ngit)) {
                 return false;
             }
             let chars: Vec<char> = p.terms[ANGA].text.chars().collect();
@@ -3424,6 +3448,67 @@ mod tests {
         let rule = TINANTA_RULES.iter().find(|r| r.id == "7.3.84").unwrap();
         assert!((rule.apply)(&mut p));
         assert_eq!(p.terms[ANGA].text, "ne");
+    }
+
+    #[test]
+    fn sarvadhatukardhadhatukayoh_blocks_guna_when_luk_shap_ending_is_ngit() {
+        // The athematic (śap-luk'd) shape: an empty śap interposes nothing,
+        // so the NGIT ending is what immediately follows the aGga and 1.1.5
+        // must block guNa. Before this arm existed the guard read only
+        // terms[SHAP] -- which on this path carries Sap's own Tag::Pit and
+        // can never be Ngit -- so the block was silently inoperative.
+        let mut p = Prakriya {
+            terms: vec![Term::new("nI"), Term::new(""), Term::new("te")],
+            log: vec![],
+            ..Default::default()
+        };
+        p.terms[ENDING].add(Tag::Ngit);
+        let rule = TINANTA_RULES.iter().find(|r| r.id == "7.3.84").unwrap();
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "nI");
+    }
+
+    #[test]
+    fn sarvadhatukardhadhatukayoh_applies_guna_when_luk_shap_ending_is_not_ngit() {
+        // Same athematic shape, non-Ngit ending: nothing blocks, guNa fires.
+        // This is the "just outside the guard" half of the pair -- without it
+        // a mutant that always blocks on the athematic path would survive.
+        let mut p = Prakriya {
+            terms: vec![Term::new("nI"), Term::new(""), Term::new("ti")],
+            log: vec![],
+            ..Default::default()
+        };
+        let rule = TINANTA_RULES.iter().find(|r| r.id == "7.3.84").unwrap();
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "ne");
+    }
+
+    #[test]
+    fn pugantalaghupadhasya_blocks_guna_when_luk_shap_ending_is_ngit() {
+        // 7.3.86 carries the identical 1.1.5 guard, so it needs the identical
+        // pair. "vft" is a light ik penult before a single consonant, which is
+        // this rule's shape; the Ngit ending must still block it.
+        let mut p = Prakriya {
+            terms: vec![Term::new("vft"), Term::new(""), Term::new("te")],
+            log: vec![],
+            ..Default::default()
+        };
+        p.terms[ENDING].add(Tag::Ngit);
+        let rule = TINANTA_RULES.iter().find(|r| r.id == "7.3.86").unwrap();
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "vft");
+    }
+
+    #[test]
+    fn pugantalaghupadhasya_applies_guna_when_luk_shap_ending_is_not_ngit() {
+        let mut p = Prakriya {
+            terms: vec![Term::new("vft"), Term::new(""), Term::new("ti")],
+            log: vec![],
+            ..Default::default()
+        };
+        let rule = TINANTA_RULES.iter().find(|r| r.id == "7.3.86").unwrap();
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "vart");
     }
 
     #[test]
