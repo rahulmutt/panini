@@ -1361,17 +1361,19 @@ fn known_nonforms_are_invalid() {
         // produce, chosen around the slice's three new guards — but not all
         // seven are what a mutation of that guard would actually emit; see
         // the per-entry notes below where the naive reading is wrong.
-        "SIte", // NOT what removing 7.4.21 emits: 7.3.84's 1.1.5 guard tests
-        // `p.terms[SHAP]`, but on this śap-luk'd path the ṅit tag lands on
-        // ENDING instead (see the latency note above 7.4.21's `Rule`), so
-        // that guard is not actually operative here. Without 7.4.21, 7.3.84
-        // fires unaided and guṇates anyway, emitting `Sete` — the right
-        // surface form with the wrong attribution. `SIte` is unreachable
-        // under any mutation of 7.4.21; it stays pinned as a plain non-form.
-        // The rule actually responsible for 7.4.21's attribution is pinned
-        // by the ordered-trace test `shete_trace_is_the_minimal_shing_guna_path`
-        // in `crates/panini/tests/trace.rs`, which asserts `7.4.21` present
-        // and `7.3.84` absent.
+        "SIte", // A genuine witness for 7.4.21's removal, not an unreachable
+        // shape: 7.3.84's 1.1.5 guard now calls `following_sarvadhatuka`,
+        // which on this śap-luk'd path returns the ṅit `te` ending itself
+        // (there is no non-empty śap to interpose), so 1.1.5 really does
+        // block 7.3.84 here. Without 7.4.21, nothing else guṇates `SI`, and
+        // the surface form would be exactly `SIte`. It stays pinned INVALID
+        // because 7.4.21 has not been removed; if 7.4.21 is ever dropped or
+        // its own guard broken, this is the entry that would flip to VALID
+        // and catch it. The rule actually responsible for the guṇa is
+        // pinned independently by the ordered-trace test
+        // `shete_trace_is_the_minimal_shing_guna_path` in
+        // `crates/panini/tests/trace.rs`, which asserts `7.4.21` present and
+        // `7.3.84` absent.
         "Sese",  // 8.3.59 not applied: ṣatva missing (real form Seze)
         "Seate", // NOT what removing 7.1.6 emits: without the ruṭ the ending
         // stays `ate`, and 6.1.78's athematic arm then fires (śap empty, `a`

@@ -3,14 +3,21 @@ use crate::rule::Rule;
 
 pub use crate::rule::{Rule as _Rule, RuleKind};
 
-/// Apply each rule in order, at most once. Rules self-guard via `apply`
-/// returning false when inapplicable. Ordering is the controller's concern.
-pub fn run_pipeline(p: &mut Prakriya, rules: &[Rule]) {
-    for rule in rules {
-        if p.blocked {
-            return;
+/// Apply each stage in order, and each rule within a stage in order, at most
+/// once. Rules self-guard via `apply` returning false when inapplicable.
+/// Ordering is the controller's concern.
+///
+/// Stages are a file-organisation boundary, not a grammatical one: the
+/// flattened sequence is what the grammar is, and it must read the same as it
+/// did when the rules lived in a single array.
+pub fn run_pipeline(p: &mut Prakriya, stages: &[&[Rule]]) {
+    for stage in stages {
+        for rule in *stage {
+            if p.blocked {
+                return;
+            }
+            (rule.apply)(p);
         }
-        (rule.apply)(p);
     }
 }
 
@@ -43,7 +50,7 @@ mod tests {
                 }
             },
         }];
-        run_pipeline(&mut p, &rules);
+        run_pipeline(&mut p, &[&rules[..]]);
         assert_eq!(p.text(), "Bava");
         assert_eq!(p.log.last().unwrap().sutra, "6.1.78");
         // The logged `before` snapshot must be the pre-mutation text, not a

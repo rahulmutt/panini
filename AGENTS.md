@@ -49,9 +49,19 @@
   programmatically), and that is what specs, plans, and verification in this
   repo actually check ids/names against.
 - New grammar goes in `TINANTA_RULES` as a self-guarding `Rule`, not as a
-  branch inside `derive`. `derive` carries no grammar branches: the only
-  gana-conditioned logic there is aṅga tagging (`Tag::Adadi` &c.), which feeds
-  the guarded rules rather than substituting for them.
+  branch inside `derive`. `TINANTA_RULES` is a list of six stage arrays, each
+  living in its own file under `crates/panini-prakriya/src/tinanta/`; add
+  the rule to the stage its pipeline position falls in, and add its id to
+  `tinanta_rule_order_is_pinned` in the same position. Which stage a rule
+  belongs to is decided by its position relative to **3.1.68**, not by its
+  sūtra family: rules before
+  3.1.68 address the ending as `ENDING_PRE_SHAP` (index 1), rules after it as
+  `ENDING` (index 2), and `terms[SHAP].text` may be empty for adādi. See
+  `tinanta/terms.rs`. Per-rule guard tests go beside the rule in its stage
+  file; tests asserting a surface form or trace go in
+  `tinanta/derivation_tests.rs`. `derive` carries no grammar branches: the
+  only gana-conditioned logic there is aṅga tagging (`Tag::Adadi` &c.), which
+  feeds the guarded rules rather than substituting for them.
 - The `panini-cli` binary has a single subcommand, `check` (flags `--trace`,
   `--json`, `--out`, `--in`). There is no `derive` subcommand in v1. `--in auto`
   (the default) auto-detects the input transliteration scheme; passing an
