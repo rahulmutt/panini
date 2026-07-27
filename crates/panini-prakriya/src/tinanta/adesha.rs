@@ -610,7 +610,7 @@ mod tests {
 
     // --- 6.1.101 adAdi vidhiliG 1sg arm: `len() > ENDING` boundary pin ----
     //
-    // The 1sg arm's guard (line ~1025) is `len() > ENDING && lakara ==
+    // 6.1.101's first arm's guard, above, is `len() > ENDING && lakara ==
     // VidhiLin && SHAP.is_empty() && ENDING.starts_with("yA") && ...`. A
     // 2-term Prakriya (aGga "yA" + an empty Sap slot, no ENDING term at
     // all) makes `len() > ENDING` (2 > 2) false in the original, so the

@@ -93,10 +93,11 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // non-empty term rather than reading ANGA by index. In today's three-term
     // `[ANGA, SHAP, ENDING]` layout that search always resolves to ANGA
     // whenever the forward arm passes (SHAP is luk'd for adādi), so AsIDvam /
-    // vasIDvam below decline at the forward (`D`-initial) arm, not because
-    // the guard distinguishes the aṅga from some other neighbour. The search
-    // is written generally on purpose, for the multi-term layouts a later
-    // slice will bring — mirroring vidyut-prakriya's own `prev_not_empty`.
+    // vasIDvam (asserted in `super::derivation_tests`) decline at the forward
+    // (`D`-initial) arm, not because the guard distinguishes the aṅga from
+    // some other neighbour. The search is written generally on purpose, for
+    // the multi-term layouts a later slice will bring — mirroring
+    // vidyut-prakriya's own `prev_not_empty`.
     Rule {
         id: "8.2.25",
         name: "Di ca",

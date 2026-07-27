@@ -1,3 +1,15 @@
+//! The tiṅanta pipeline, as six ordered rule-stage modules plus two support
+//! layers.
+//!
+//! The six stages — `samjna`, `tin`, `vikarana`, `anga`, `adesha`, `tripadi`
+//! — are declared below in *pipeline* order in `TINANTA_RULES`, which is the
+//! grammar's actual sequencing; the `mod` declarations above them are
+//! alphabetical and carry no ordering meaning of their own. `terms` and
+//! `sound` are support layers underneath the rules (term-layout constants
+//! and sandhi/sound predicates respectively) — neither holds a `Rule`.
+//! Which stage a rule belongs to is decided by its position relative to
+//! **3.1.68**, not by its sūtra family; see `terms.rs`.
+
 use crate::context::Context;
 use crate::controller::run_pipeline;
 use crate::prakriya::Prakriya;
@@ -21,7 +33,11 @@ pub(crate) mod derivation_tests;
 /// modules import it by a stable path (`crate::tinanta::form_g`) rather than
 /// reaching into `derivation_tests` by path. `anga.rs` and `tripadi.rs`
 /// import it through this line; keep the path stable if the helper moves
-/// again.
+/// again. This one function goes through a re-export while `sound`/`terms`
+/// items are imported by direct path because `derivation_tests` is
+/// `#[cfg(test)]` and expected to move again; routing its consumers through
+/// one re-export here means only this line needs updating, rather than N
+/// direct paths across the stage files.
 #[cfg(test)]
 pub(in crate::tinanta) use derivation_tests::form_g;
 

@@ -159,9 +159,10 @@ pub(crate) static ANGA_RULES: &[Rule] = &[
     // Reading the log for a prior rule is the idiom 6.4.72 already uses to
     // test whether 6.4.71 augmented the aṅga.
     //
-    // This is why vidhiliṅ needs no special case: 3.4.105 jhasya ran has
-    // already replaced the jha with `ran` far earlier in the array, so 7.1.5
-    // never fires there and ruṭ cannot attach → SayIran, not *SayIraran.
+    // This is why vidhiliṅ needs no special case: 3.4.105 jhasya ran (in
+    // `super::tin`) has already replaced the jha with `ran` earlier in the
+    // pipeline, so 7.1.5 never fires there and ruṭ cannot attach → SayIran,
+    // not *SayIraran.
     Rule {
         id: "7.1.6",
         name: "SINo ruw",
@@ -394,8 +395,9 @@ pub(crate) static ANGA_RULES: &[Rule] = &[
     // either. And the order is decisive on its own: 6.1.90 is the only caller
     // of `vrddhi_of`, and it runs *after* 6.1.78 in the single-pass rule
     // array, so any E/O it produces can never be seen by 6.1.78 at all. Per
-    // the mutation gate's own rule (same rationale as 8.4.53's removal
-    // below), unexecutable arms cannot be kept under the mutation gate.
+    // the mutation gate's own rule (same rationale as 8.4.53's removal in
+    // `super::tripadi`), unexecutable arms cannot be kept under the mutation
+    // gate.
     // Restore the E/O arms (and re-add their coverage in the golden/mutation
     // suites) the moment a root lands whose aṅga can end in a vṛddhi vowel
     // before a vowel-initial ending. √śī (slice 5f) is NOT that root: 7.4.21
@@ -444,8 +446,8 @@ pub(crate) static ANGA_RULES: &[Rule] = &[
             // and 3.4.102/7.2.79 have left the ending leading with `I`
             // (Iyran, after sīyuṭ's salopa strips the non-final `s`); this
             // arm reads only that leading `I` and turns Se + Iyran →
-            // Say + Iyran. 6.1.66 (later in the array) then elides the
-            // surviving `y` before the val `r` → SayIran.
+            // Say + Iyran. 6.1.66 (`super::adesha`, later in the pipeline)
+            // then elides the surviving `y` before the val `r` → SayIran.
             if p.terms.len() > ENDING
                 && p.terms[SHAP].text.is_empty()
                 && let Some(next_first) = p.terms[ENDING].text.chars().next()
@@ -676,9 +678,9 @@ mod tests {
         // from the original at once. By hand: guNa of chars[3]='u' is
         // "o"; laghu-check on chars[3]='u' passes; prefix is chars[..3]
         // = "aBi"; result = "aBi" + "o" + chars[4]='r' = "aBior".
-        // Mutating `chars[n - 2]` (line 806) to `chars[n / 2]` would guNa
-        // 'i' instead ("e"), yielding "aBier". Mutating `chars[..n - 2]`
-        // (line 815) to `chars[..n / 2]` would prefix with "aB" instead
+        // Mutating the `chars[n - 2]` guard to `chars[n / 2]` would guNa
+        // 'i' instead ("e"), yielding "aBier". Mutating the `chars[..n - 2]`
+        // slice to `chars[..n / 2]` would prefix with "aB" instead
         // of "aBi", yielding "aBor". Both diverge from "aBior".
         let mut p = Prakriya {
             terms: vec![Term::new("aBiur"), Term::new("a")],

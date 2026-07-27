@@ -6,8 +6,8 @@
 //! belongs there, not here.
 
 use super::*;
-// Only `tripadi.rs`'s rules use these now, so they are no longer
-// re-exported from `mod.rs`; the unit tests below still cover them.
+// `cartva_of` is otherwise only used by `tripadi.rs`; imported by path since
+// `mod.rs` re-exports nothing from `sound`.
 use crate::tinanta::sound::cartva_of;
 use panini_data::{Lakara, Pada, Purusha, Vacana, dhatus};
 

@@ -17,9 +17,8 @@
 //! then its six stage files in that order. That flattened static sequence —
 //! not this comment — is the source of truth for sequencing; a diagram in
 //! this header would drift out of sync with it as rules are added (as
-//! happened to the laṭ-only diagram this comment used to
-//! carry, before laṅ and loṭ support existed) and a stale diagram is worse
-//! than none.
+//! happened to the laṭ-only diagram this comment used to carry, before laṅ
+//! and loṭ support existed) and a stale diagram is worse than none.
 //!
 //! Note that an it-samjna step only records 1.3.9 when it actually elides an
 //! anubandha: `tip` -> `ti` and `Sap` -> `a` do record it, but `Ji` (nothing to

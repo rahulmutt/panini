@@ -54,12 +54,21 @@ pub(crate) const ENDING: usize = 2;
 /// 1.1.5 inoperative for the whole śap-luk'd path.
 ///
 /// Returning the *immediate* follower — rather than testing every later
-/// term — is what keeps the thematic ātmanepada path correct: for √labh the
-/// ending is ṅit but śap is pit, and guṇa rightly proceeds.
+/// term — is what keeps the thematic path correct: for vRt (vartate) śap is
+/// pit (not ṅit), so guṇa rightly proceeds despite the ending being ṅit;
+/// for div (dIvyati) śyan IS ṅit and blocks guṇa despite the ending being
+/// non-ṅit. Testing the ending instead of the immediate follower would get
+/// dIvyati wrong.
 ///
 /// Only meaningful after 3.1.68 has inserted śap. Every caller is ordered
 /// after it. Returns `None` when there is no follower at all (a hand-built
 /// one-term prakriya in a unit test), in which case nothing can block.
+///
+/// This helper never checks `Tag::Sarvadhatuka` by name — it is safe only
+/// because every tiṅ ending in scope is tagged Sarvadhatuka when introduced
+/// (see `anga.rs`'s 7.4.21 comment). It must become a real guard the moment
+/// an ārdhadhātuka affix enters scope; 7.3.84's own ṅit-only narrowness
+/// carries the same restore trigger locally.
 pub(crate) fn following_sarvadhatuka(p: &Prakriya) -> Option<&Term> {
     match p.terms.get(SHAP) {
         Some(shap) if !shap.text.is_empty() => Some(shap),
