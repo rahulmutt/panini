@@ -103,6 +103,13 @@ Notes on the curation:
   *jha*, → *śerate*) — plus the already-present **6.1.78 *eco'yavāyāvaḥ***
   (*ayādeśa*, śe + āte → *śayāte*).
 
+> **Correction (2026-07-25, slice 5f).** The √śī row above is incomplete in
+> two ways. Its rule list omits **8.3.59 *ādeśapratyayayoḥ*** (ṣatva), which
+> the 2sg cells *śeṣe* / *śeṣva* require and which no earlier root reaches;
+> and it gives 7.4.21's name as `SINaH [guNaH]` where the reference string is
+> **`SINaH sArvaDAtuke guRaH`**. See
+> `2026-07-25-adadi-si-5f-design.md`.
+
 > **Correction (2026-07-24, slice 5e).** The √vas row above and the √ās
 > analysis inherited by slice 5d are wrong: the `s` before the `dh` of
 > Dve/Dvam is **elided by 8.2.25 *dhi ca***, not voiced by jaśtva (neither

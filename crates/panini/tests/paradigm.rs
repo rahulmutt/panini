@@ -1152,6 +1152,44 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
             "vasImahi",
         ],
     ),
+    (
+        "SI",
+        "laT",
+        [
+            "Sete", "SayAte", "Serate", "Seze", "SayATe", "SeDve", "Saye", "Sevahe", "Semahe",
+        ],
+    ),
+    (
+        "SI",
+        "laN",
+        [
+            "aSeta", "aSayAtAm", "aSerata", "aSeTAH", "aSayATAm", "aSeDvam", "aSayi", "aSevahi",
+            "aSemahi",
+        ],
+    ),
+    (
+        "SI",
+        "loT",
+        [
+            "SetAm", "SayAtAm", "SeratAm", "Sezva", "SayATAm", "SeDvam", "SayE", "SayAvahE",
+            "SayAmahE",
+        ],
+    ),
+    (
+        "SI",
+        "viDiliN",
+        [
+            "SayIta",
+            "SayIyAtAm",
+            "SayIran",
+            "SayITAH",
+            "SayIyATAm",
+            "SayIDvam",
+            "SayIya",
+            "SayIvahi",
+            "SayImahi",
+        ],
+    ),
 ];
 
 fn lan_a_form(code: &str, pu: Purusha, va: Vacana) -> String {
@@ -1212,11 +1250,12 @@ fn every_form_validates_and_matches() {
 /// `PARADIGM` block or appear in the explicit gated list below.
 #[test]
 fn paradigm_covers_every_enumerable_cell() {
-    // adādi × vidhiliṅ was gated in slice 5a and ungated in slice 5b; there
-    // are no gated cells any more. This constant stays (empty) so the two
-    // assertions below keep documenting that EVERY enumerable (root, lakara)
-    // pair must be pinned in PARADIGM — a future partial slice may repopulate
-    // it, but it must never silently hide a missing golden block.
+    // adādi × vidhiliṅ was gated in slice 5a and ungated in slice 5b; √śī was
+    // gated in slice 5f task 1 and ungated here. There are no gated cells any
+    // more. This constant stays (empty) so the two assertions below keep
+    // documenting that EVERY enumerable (root, lakara) pair must be pinned in
+    // PARADIGM — a future partial slice may repopulate it, but it must never
+    // silently hide a missing golden block.
     const GATED: &[(&str, &str)] = &[];
 
     let pinned: Vec<(&str, &str)> = PARADIGM.iter().map(|(r, l, _)| (*r, *l)).collect();
@@ -1318,6 +1357,37 @@ fn known_nonforms_are_invalid() {
         "vadDve",   // √vas, 5d's wrong analysis
         "avasDvam", // √vas laṅ, s retained
         "vasati",   // √vas is ātmanepada; a parasmaipada ending must not derive
+        // √śī (slice 5f). Each of these is a non-form the engine must never
+        // produce, chosen around the slice's three new guards — but not all
+        // seven are what a mutation of that guard would actually emit; see
+        // the per-entry notes below where the naive reading is wrong.
+        "SIte", // NOT what removing 7.4.21 emits: 7.3.84's 1.1.5 guard tests
+        // `p.terms[SHAP]`, but on this śap-luk'd path the ṅit tag lands on
+        // ENDING instead (see the latency note above 7.4.21's `Rule`), so
+        // that guard is not actually operative here. Without 7.4.21, 7.3.84
+        // fires unaided and guṇates anyway, emitting `Sete` — the right
+        // surface form with the wrong attribution. `SIte` is unreachable
+        // under any mutation of 7.4.21; it stays pinned as a plain non-form.
+        // The rule actually responsible for 7.4.21's attribution is pinned
+        // by the ordered-trace test `shete_trace_is_the_minimal_shing_guna_path`
+        // in `crates/panini/tests/trace.rs`, which asserts `7.4.21` present
+        // and `7.3.84` absent.
+        "Sese",  // 8.3.59 not applied: ṣatva missing (real form Seze)
+        "Seate", // NOT what removing 7.1.6 emits: without the ruṭ the ending
+        // stays `ate`, and 6.1.78's athematic arm then fires (śap empty, `a`
+        // is a vowel), emitting `Sayate` — already pinned below, which is
+        // the actual witness for 7.1.6's removal.
+        "SayIraran", // NOT a real derivation: dropping 7.1.6's guard against
+        // firing in vidhiliṅ makes it prepend `r` to the sīyuṭ-bearing
+        // ending `sIyran` (→ `rsIyran`); 7.2.79 still elides the non-final
+        // `s` regardless (→ `rIyran`), but 6.1.78's athematic arm then
+        // requires the ending's first character to be a vowel, and `r`
+        // isn't one, so the ay-ādeśa never fires and the output diverges
+        // from this string entirely. Kept pinned as a plain non-form; the
+        // real form is `SayIran`.
+        "Sayati", // wrong pada: an ātmanepadin root with a parasmaipada ending
+        "Sayate", // the śap surviving 2.4.72 (SI + Sap + te, guṇa'd)
+        "SIyate", // a divādi/tudādi-style vikaraṇa leaking into adādi
     ] {
         assert!(
             matches!(engine.check(bad).verdict, Verdict::Invalid),

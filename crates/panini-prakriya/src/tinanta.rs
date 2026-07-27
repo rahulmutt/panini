@@ -864,11 +864,12 @@ pub static TINANTA_RULES: &[Rule] = &[
     // no new case here (its ātmanepada endings never collapse to a bare
     // single-char ending at the point this rule runs).
     //
-    // Known parked mutant: `||`→`&&` on the guard line below is unkillable
-    // in the current grammar — both inner checks already exclude every case
-    // where the two outer clauses would diverge. Human-parked 2026-07-25
-    // (slice 5e, Task 5); full case analysis in the 7.3.100-guard section
-    // of `docs/superpowers/specs/2026-07-24-adadi-vas-dhi-ca-5e-design.md`.
+    // The `||`→`&&` mutant on the guard line below is killed by the
+    // `akupyat_trace_shows_7_3_100_declines_for_non_adadi_roots` pin in
+    // `crates/panini/tests/trace.rs`: the mutant fires for laṅ non-adādi
+    // derivations and 6.1.97 repairs the surface form, so only the ordered
+    // trace exposes it. (Slice 5e parked this mutant as unkillable on a case
+    // analysis that slice 5f corrected.)
     Rule {
         id: "7.3.100",
         name: "adaH sarvezAm",
@@ -934,6 +935,33 @@ pub static TINANTA_RULES: &[Rule] = &[
             let rest: String = p.terms[ENDING].text.chars().skip(1).collect();
             p.terms[ENDING].text = format!("at{rest}");
             p.record("7.1.5", "AtmanepadezvanataH", before);
+            true
+        },
+    },
+    // 7.1.6 śīṅo ruṭ: the *jha* of √śī takes the ruṭ augment. 7.1.5 has just
+    // replaced the ending's leading `J` with `at` (Je → ate, Ja → ata,
+    // JAm → atAm); ruṭ's `r` prefixes that, giving Se + r + ate → Serate.
+    //
+    // Guarded on 7.1.5 having FIRED IN THIS DERIVATION rather than on the
+    // ending's surface shape: the ruṭ attaches to the `at` that 7.1.5
+    // produced, so that is the condition itself and not a proxy for it.
+    // Reading the log for a prior rule is the idiom 6.4.72 already uses to
+    // test whether 6.4.71 augmented the aṅga.
+    //
+    // This is why vidhiliṅ needs no special case: 3.4.105 jhasya ran has
+    // already replaced the jha with `ran` far earlier in the array, so 7.1.5
+    // never fires there and ruṭ cannot attach → SayIran, not *SayIraran.
+    Rule {
+        id: "7.1.6",
+        name: "SINo ruw",
+        kind: RuleKind::Vidhi,
+        apply: |p| {
+            if !p.terms[ANGA].text.ends_with("SI") || !p.log.iter().any(|s| s.sutra == "7.1.5") {
+                return false;
+            }
+            let before = p.snapshot();
+            p.terms[ENDING].text = format!("r{}", p.terms[ENDING].text);
+            p.record("7.1.6", "SINo ruw", before);
             true
         },
     },
@@ -1030,6 +1058,60 @@ pub static TINANTA_RULES: &[Rule] = &[
             true
         },
     },
+    // 7.4.21 śīṅaḥ sārvadhātuke guṇaḥ: √śī takes guṇa (SI → Se) before a
+    // sārvadhātuka ending, overriding the 1.1.5 block that the ṅit ātmanepada
+    // endings would otherwise impose. This is the entire reason *śete* exists:
+    // with śap luk'd (2.4.72) every other adādi root either has no ik to
+    // guṇate (yā/vā/ās) or is consonant-final (ad/vas), so the gaṇa would show
+    // no guṇa at all.
+    //
+    // Ordered immediately before 7.3.84, which then declines on its own — its
+    // target must be ik-final and `Se` is not — so 7.3.84's 1.1.5 guard is
+    // untouched, and the trace credits the guṇa to the sūtra that licenses it.
+    //
+    // The guard is the single `ends_with("SI")` test, deliberately with no
+    // Tag::Adadi clause: √śī is the only SI-final root, so a gaṇa clause would
+    // be redundant AND unkillable under mutation (with the clause dropped, the
+    // other adādi roots still change nothing — guna_of returns None for their
+    // `d`/`A`/`s` finals). `ends_with` rather than `==` because 6.4.71 has
+    // already prefixed the laṅ aṭ-augment onto the aṅga (aSI) by this point.
+    //
+    // The sūtra's *sārvadhātuke* condition is structurally satisfied, not
+    // guarded: every tiṅ ending in scope is tagged Sarvadhatuka when it is
+    // introduced (3.4.78 / 3.4.113), across all four lakāras, so a guard
+    // clause would be always-true — the same reason 7.3.84 omits it. It must
+    // become a real guard the moment an ārdhadhātuka affix enters scope.
+    //
+    // Latency note: 7.3.84's 1.1.5 guard currently tests `p.terms[SHAP]`, but
+    // on this śap-luk'd path the ṅit tag 1.2.4 assigns lands on the ENDING
+    // term instead (3.1.68's `p.terms.insert(SHAP, …)` shifts the
+    // already-tagged ending from index 1 to index 2), so that 1.1.5 block is
+    // not actually operative at this junction today. What 7.4.21 does here,
+    // concretely, is reshape the aṅga to `Se` first, after which 7.3.84
+    // declines on its *shape* guard (`guna_of('e')` is `None`), not on 1.1.5.
+    // The "overriding 1.1.5" sentence above states the grammatical
+    // relationship this ordering is designed to express, and becomes
+    // literally true if 7.3.84's guard is ever corrected to test the
+    // ending's own Ngit tag, the way 7.2.81 does.
+    Rule {
+        id: "7.4.21",
+        name: "SINaH sArvaDAtuke guRaH",
+        kind: RuleKind::Vidhi,
+        apply: |p| {
+            if !p.terms[ANGA].text.ends_with("SI") {
+                return false;
+            }
+            let mut s: Vec<char> = p.terms[ANGA].text.chars().collect();
+            let last = s.pop().expect("ends_with(\"SI\") implies a final char");
+            let Some(g) = guna_of(last) else {
+                return false;
+            };
+            let before = p.snapshot();
+            p.terms[ANGA].text = s.into_iter().collect::<String>() + g;
+            p.record("7.4.21", "SINaH sArvaDAtuke guRaH", before);
+            true
+        },
+    },
     // 7.3.84 sārvadhātukārdhadhātukayoḥ: guṇa of the aṅga's final ik.
     Rule {
         id: "7.3.84",
@@ -1093,7 +1175,7 @@ pub static TINANTA_RULES: &[Rule] = &[
     },
     // 6.1.78 eco'yavāyāvaḥ: e/o before a vowel → ay/av. The sūtra also covers
     // E/O → Ay/Av, but those two arms are dropped here: within the current
-    // 29-root × 4-lakāra grammar, ANGA can never end in a vṛddhi vowel (E/O)
+    // 30-root × 4-lakāra grammar, ANGA can never end in a vṛddhi vowel (E/O)
     // at the point this rule runs. `vrddhi_of` (the only source of E/O in
     // this engine) is called from three places, all in 6.1.90 — the aṅga arm
     // writes the vṛddhi vowel at *position 0* of the aṅga (replacing the āṭ
@@ -1107,10 +1189,12 @@ pub static TINANTA_RULES: &[Rule] = &[
     // below), unexecutable arms cannot be kept under the mutation gate.
     // Restore the E/O arms (and re-add their coverage in the golden/mutation
     // suites) the moment a root lands whose aṅga can end in a vṛddhi vowel
-    // before a vowel-initial ending — the leading candidate is √śī: 7.4.21
-    // already forces guṇa on it (√śī lands in a later slice per AGENTS.md),
-    // and a hypothetical/future root needing *vṛddhi* rather than guṇa at
-    // its aṅga-final position would be the other way in.
+    // before a vowel-initial ending. √śī (slice 5f) is NOT that root: 7.4.21
+    // gives it guṇa (Se), never vṛddhi, and its `e` arm below is what carries
+    // SayAte / SayIta / SayE. The trigger is a root that takes vṛddhi at the
+    // aṅga-final position. Reaching the `e` arm for adādi at all depends on
+    // the athematic follower lookup this slice added below (SHAP is luk'd
+    // for adādi, so the arm falls back to ENDING's first character).
     Rule {
         id: "6.1.78",
         name: "eco'yavAyAvaH",
@@ -1122,22 +1206,50 @@ pub static TINANTA_RULES: &[Rule] = &[
                 'o' => "av",
                 _ => return false,
             };
-            // śap may be luk'd (adādi, 2.4.72): then it is empty and this rule
-            // has no a-final vikaraṇa to work against. Decline rather than
-            // panic. (when the consonant-final and ātmanepada adādi roots land,
-            // this will generalize to the root+ending junction for √śī.)
-            let Some(next_first) = p.terms[SHAP].text.chars().next() else {
-                return false;
-            };
-            if !is_vowel(next_first) {
-                return false;
+            // Thematic arm: the vikaraṇa (śap/śyan/śa) is a real, non-empty
+            // buffer between the aṅga and the ending, so its own first
+            // character is the "next" vowel this sūtra tests. Only reachable
+            // when that first character exists AND is a vowel — a non-empty,
+            // consonant-initial vikaraṇa (śyan's `ya`) correctly declines
+            // here rather than firing on the wrong segment.
+            if let Some(next_first) = p.terms[SHAP].text.chars().next()
+                && is_vowel(next_first)
+            {
+                let before = p.snapshot();
+                let mut s: Vec<char> = p.terms[ANGA].text.chars().collect();
+                s.pop();
+                p.terms[ANGA].text = s.into_iter().collect::<String>() + sub;
+                p.record("6.1.78", "eco'yavAyAvaH", before);
+                return true;
             }
-            let before = p.snapshot();
-            let mut s: Vec<char> = p.terms[ANGA].text.chars().collect();
-            s.pop();
-            p.terms[ANGA].text = s.into_iter().collect::<String>() + sub;
-            p.record("6.1.78", "eco'yavAyAvaH", before);
-            true
+            // Athematic arm (śap luk'd, adādi, 2.4.72): with no vikaraṇa
+            // buffer, the ending attaches directly to the aṅga, so the
+            // ending's own first character is the "next" vowel instead.
+            // Guarded on the śap being EMPTY, so this can never re-process
+            // the thematic path above — a non-empty, non-vowel-initial śap
+            // (śyan's `ya`, which fails the thematic arm's vowel check)
+            // must decline here too, not fall through to test the ending.
+            // The two arms' guards (SHAP vowel-initial vs. SHAP empty) are
+            // mutually exclusive by construction, so at most one ever fires.
+            // √śī vidhiliṅ 3pl: guṇa (7.4.21) has already made the aṅga `Se`,
+            // and 3.4.102/7.2.79 have left the ending leading with `I`
+            // (Iyran, after sīyuṭ's salopa strips the non-final `s`); this
+            // arm reads only that leading `I` and turns Se + Iyran →
+            // Say + Iyran. 6.1.66 (later in the array) then elides the
+            // surviving `y` before the val `r` → SayIran.
+            if p.terms.len() > ENDING
+                && p.terms[SHAP].text.is_empty()
+                && let Some(next_first) = p.terms[ENDING].text.chars().next()
+                && is_vowel(next_first)
+            {
+                let before = p.snapshot();
+                let mut s: Vec<char> = p.terms[ANGA].text.chars().collect();
+                s.pop();
+                p.terms[ANGA].text = s.into_iter().collect::<String>() + sub;
+                p.record("6.1.78", "eco'yavAyAvaH", before);
+                return true;
+            }
+            false
         },
     },
     // 7.3.101 ato dīrgho yañi: aṅga-final `a` (śap) → `A` before a yañ-initial
@@ -1515,9 +1627,11 @@ pub static TINANTA_RULES: &[Rule] = &[
             }
             // Reads śap as "the segment following the aṅga"; when śap is luk'd
             // (adādi, 2.4.72) that is empty and the rule silently declines.
-            // Currently unreachable (no r/v-final adādi root in scope); when the
-            // consonant-final and ātmanepada adādi roots land, this must generalize
-            // this to the root+ending junction, as 6.1.78 already flags.
+            // Currently unreachable (no r/v-final adādi root in scope); when a
+            // consonant-final r/v-upadhā adādi root lands, this must generalize
+            // to the root+ending junction — 6.1.78's athematic arm (added in
+            // slice 5f for √śī, which falls back to `p.terms[ENDING]` when
+            // SHAP is empty) is the worked example to follow.
             let Some(next) = p.terms.get(SHAP).and_then(|t| t.text.chars().next()) else {
                 return false;
             };
@@ -1635,6 +1749,62 @@ pub static TINANTA_RULES: &[Rule] = &[
             s.push('H');
             p.terms[idx].text = s.into_iter().collect();
             p.record("8.3.15", "KaravasAnayor visarjanIyaH", before);
+            true
+        },
+    },
+    // 8.3.59 ādeśapratyayayoḥ: the `s` of an ādeśa or a pratyaya, when not
+    // word-final, retroflexes to `z` after iṇ-koḥ. The engine's first
+    // retroflexion rule, and general grammar rather than a √śī special — √śī
+    // is merely the first root to reach it, being the first whose aṅga ends
+    // in a vowel other than a/ā right before an s-initial ending:
+    // Se + se → Seze (laṭ 2sg), Se + sva → Sezva (loṭ 2sg).
+    //
+    // NARROW GUARD, by design. The sūtra's trigger is the whole iṇ
+    // pratyāhāra (every vowel but a/ā, plus h y v r l) and `k`; this
+    // implements only the reachable slice of it — an aṅga-final vowel other
+    // than a/ā — so every arm is executed by a test and the mutation gate
+    // stays clean. Same discipline that removed 8.4.53 and 6.1.78's E/O arms
+    // in slice 5e, and the same shape as 8.2.25's narrow guard. Widen it the
+    // moment a root lands whose aṅga ends in h/y/v/r/l or k before an
+    // s-initial affix.
+    //
+    // No conflict with 8.3.15 above: that rule is word-final
+    // (kharavasānayoḥ), this one is apadāntasya. It also declines for every
+    // existing root without knowing about them — √ās's aṅga ends in `A`
+    // (excluded), √vas's in `s` (not a vowel), and every thematic root
+    // presents the vikaraṇa's `a` (excluded): Asse, Assva, vasse, vassva and
+    // laBase are all unchanged.
+    Rule {
+        id: "8.3.59",
+        name: "AdeSapratyayayoH",
+        kind: RuleKind::Vidhi,
+        apply: |p| {
+            // The affix is the first non-empty term after the aṅga (śap, if
+            // present, is luk'd/empty for adādi) — the same idiom 8.2.25 and
+            // 8.4.55 use, which avoids indexing a term that may not exist.
+            let next_idx = p
+                .terms
+                .iter()
+                .enumerate()
+                .skip(ANGA + 1)
+                .find(|(_, t)| !t.text.is_empty())
+                .map(|(i, _)| i);
+            let Some(next_idx) = next_idx else {
+                return false;
+            };
+            if !p.terms[next_idx].text.starts_with('s') {
+                return false;
+            }
+            let Some(anga_last) = p.terms[ANGA].text.chars().last() else {
+                return false;
+            };
+            if !is_vowel(anga_last) || matches!(anga_last, 'a' | 'A') {
+                return false;
+            }
+            let before = p.snapshot();
+            let rest: String = p.terms[next_idx].text.chars().skip(1).collect();
+            p.terms[next_idx].text = format!("z{rest}");
+            p.record("8.3.59", "AdeSapratyayayoH", before);
             true
         },
     },
@@ -3033,6 +3203,73 @@ mod tests {
         assert_eq!(p.terms[ENDING].text, "Iyta");
     }
 
+    #[test]
+    fn eco_yavayavah_athematic_arm_produces_the_ay_adesha() {
+        // 6.1.78's athematic arm (śap luk'd, adādi): with no vikaraṇa buffer,
+        // the ending attaches directly to the aṅga, so the ending's own
+        // first character is the "next" vowel this sūtra tests. √śī laṭ
+        // prathama-dvi: guṇa (7.4.21) has already made the aṅga `Se`, and the
+        // ending is the vowel-initial `Ate`; this arm must turn `Se` into
+        // `Say` (Se + Ate → Say + Ate → SayAte), the same mechanism that
+        // gives vidhiliṅ 3pl its `SayIran` (Se + Iyran → Say + Iyran →
+        // 6.1.66 → SayIran).
+        assert_eq!(
+            form_g("SI", Lakara::Lat, Purusha::Prathama, Vacana::Dvi),
+            "SayAte"
+        );
+        assert_eq!(
+            form_g("SI", Lakara::VidhiLin, Purusha::Prathama, Vacana::Bahu),
+            "SayIran"
+        );
+    }
+
+    #[test]
+    fn eco_yavayavah_athematic_arm_requires_a_third_term() {
+        // 6.1.78's ATHEMATIC arm (śap luk'd) reads p.terms[ENDING] (index 2)
+        // once its guard passes. With only two terms (aGga + an empty śap,
+        // no ending inserted yet), `p.terms.len() > ENDING` (2 > 2) is
+        // false, so the guard short-circuits before indexing terms[2]. The
+        // `>` -> `>=` mutant makes `2 >= 2` true; since the śap here is
+        // empty, the mutant guard proceeds and indexes terms[ENDING], out of
+        // bounds for a 2-term vector -> panics. The aGga ("Se") satisfies
+        // the rule's own e/o-final precondition, isolating the athematic
+        // arm's own third-term guard.
+        let mut p = Prakriya {
+            terms: vec![Term::new("Se"), Term::new("")],
+            log: vec![],
+            ..Default::default()
+        };
+        let rule = TINANTA_RULES.iter().find(|r| r.id == "6.1.78").unwrap();
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "Se");
+    }
+
+    #[test]
+    fn eco_yavayavah_athematic_arm_requires_an_empty_shap() {
+        // The athematic arm must fire ONLY when the śap is luk'd (empty) —
+        // that is what confines it to the adADi (athematic) path; on the
+        // thematic path the vikaraṇa itself supplies the "next" vowel. Here
+        // the śap is the non-empty, consonant-initial "ya" (śyan) and the
+        // ending is "Iran" (vowel-initial): the thematic arm declines (its
+        // own guard reads SHAP's first char, 'y', which is not a vowel), and
+        // the athematic arm must ALSO decline — not fall through to test the
+        // vowel-initial ending — because the śap is not empty, leaving
+        // "Iran" untouched. The mutant that drops the empty-śap conjunct
+        // would let the athematic arm fire regardless — reading the ending's
+        // vowel-initial "I" — and wrongly turn the aṅga "Se" into "Say" even
+        // though the śap is a real (non-empty) buffer, not the śap-luk'd
+        // adādi path this arm is for.
+        let mut p = Prakriya {
+            terms: vec![Term::new("Se"), Term::new("ya"), Term::new("Iran")],
+            log: vec![],
+            ..Default::default()
+        };
+        let rule = TINANTA_RULES.iter().find(|r| r.id == "6.1.78").unwrap();
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "Se");
+        assert_eq!(p.terms[ENDING].text, "Iran");
+    }
+
     // --- 3.1.68 / second 1.2.4: `len() > SHAP` boundary pins --------------
     //
     // Both guards read `p.terms.len() > SHAP && p.terms[SHAP]. ...` to
@@ -3187,6 +3424,67 @@ mod tests {
         let rule = TINANTA_RULES.iter().find(|r| r.id == "7.3.84").unwrap();
         assert!((rule.apply)(&mut p));
         assert_eq!(p.terms[ANGA].text, "ne");
+    }
+
+    #[test]
+    fn shi_takes_guna_despite_the_ngit_ending() {
+        // 7.4.21 śīṅaḥ sārvadhātuke guṇaḥ: √śī guṇates (SI → Se) even though
+        // the ātmanepada endings are ṅit (1.2.4) and 1.1.5 would otherwise
+        // block guṇa. This is the only visible guṇa in the whole adādi gaṇa.
+        //
+        // Note: the surface forms below (`Sete`, `aSeta`) do not by
+        // themselves distinguish 7.4.21 from 7.3.84. Per the latency note
+        // above 7.4.21's `Rule`, 7.3.84's 1.1.5 guard is not actually
+        // operative on this śap-luk'd path, so if 7.4.21 were removed 7.3.84
+        // would fire unaided and produce these same two forms. This test
+        // pins the *shape*, not the *attribution*; the attribution (that
+        // 7.4.21, not 7.3.84, is the rule that fires) is pinned by the
+        // ordered-trace test `shete_trace_is_the_minimal_shing_guna_path` in
+        // `crates/panini/tests/trace.rs`.
+        assert_eq!(
+            form_g("SI", Lakara::Lat, Purusha::Prathama, Vacana::Eka),
+            "Sete"
+        );
+        // laṅ: 6.4.71 has already prefixed the aṭ-augment, so the aṅga is
+        // `aSI` when 7.4.21 runs — the guard must match on the tail, not the
+        // whole string.
+        assert_eq!(
+            form_g("SI", Lakara::Lan, Purusha::Prathama, Vacana::Eka),
+            "aSeta"
+        );
+    }
+
+    #[test]
+    fn shings_guna_leaves_every_other_adadi_root_alone() {
+        // 7.4.21 is root-specific. The other five adādi roots must be
+        // untouched by it: their finals (`A`, `d`, `s`) are outside the guard,
+        // and their shipped forms are the proof.
+        assert_eq!(
+            form_g("yA", Lakara::Lat, Purusha::Prathama, Vacana::Eka),
+            "yAti"
+        );
+        assert_eq!(
+            form_g("ad", Lakara::Lat, Purusha::Prathama, Vacana::Eka),
+            "atti"
+        );
+        assert_eq!(
+            form_g("As", Lakara::Lat, Purusha::Prathama, Vacana::Eka),
+            "Aste"
+        );
+        assert_eq!(
+            form_g("vas", Lakara::Lat, Purusha::Prathama, Vacana::Eka),
+            "vaste"
+        );
+        // And the rule declines outright on a prakriya whose aṅga is not √śī,
+        // even when everything else about it looks like √śī's environment.
+        let mut p = Prakriya {
+            terms: vec![Term::new("nI"), Term::new(""), Term::new("te")],
+            log: vec![],
+            ..Default::default()
+        };
+        let rule = TINANTA_RULES.iter().find(|r| r.id == "7.4.21").unwrap();
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "nI");
     }
 
     // --- 8.2.77 hali ca: guard-edge pin -----------------------------------
@@ -3640,5 +3938,121 @@ mod tests {
             form_g("ad", Lakara::Lat, Purusha::Prathama, Vacana::Eka),
             "atti"
         );
+    }
+
+    #[test]
+    fn shings_jha_takes_the_rut_augment() {
+        // 7.1.6 śīṅo ruṭ: the *jha* (3pl ātmanepada) of √śī takes the ruṭ
+        // augment. 7.1.5 has just turned the leading J into `at` (Je → ate);
+        // ruṭ's `r` prefixes that: Se + r + ate → Serate.
+        assert_eq!(
+            form_g("SI", Lakara::Lat, Purusha::Prathama, Vacana::Bahu),
+            "Serate"
+        );
+        assert_eq!(
+            form_g("SI", Lakara::Lot, Purusha::Prathama, Vacana::Bahu),
+            "SeratAm"
+        );
+        assert_eq!(
+            form_g("SI", Lakara::Lan, Purusha::Prathama, Vacana::Bahu),
+            "aSerata"
+        );
+    }
+
+    #[test]
+    fn shings_vidhilin_3pl_takes_no_rut() {
+        // 3.4.105 jhasya ran replaces the jha with `ran` long before the 7.x
+        // band, so 7.1.5 never fires in vidhiliṅ and ruṭ cannot attach:
+        // SayIran, NOT *SayIraran.
+        assert_eq!(
+            form_g("SI", Lakara::VidhiLin, Purusha::Prathama, Vacana::Bahu),
+            "SayIran"
+        );
+    }
+
+    #[test]
+    fn rut_requires_both_shing_and_a_fired_seven_one_five() {
+        // Both clauses of 7.1.6's guard must hold. Dropping either one is a
+        // live mutant, and each half is pinned here.
+        //
+        // (a) 7.1.5 fired, but the aṅga is √ās, not √śī: no ruṭ (Asate, not
+        //     *Asrate). This is the clause an `||` → `&&` mutant drops.
+        assert_eq!(
+            form_g("As", Lakara::Lat, Purusha::Prathama, Vacana::Bahu),
+            "Asate"
+        );
+        // (b) The aṅga IS √śī, but 7.1.5 never fired (empty log): the rule
+        //     must decline and leave the ending untouched.
+        let mut p = Prakriya {
+            terms: vec![Term::new("SI"), Term::new(""), Term::new("ate")],
+            log: vec![],
+            ..Default::default()
+        };
+        let rule = TINANTA_RULES.iter().find(|r| r.id == "7.1.6").unwrap();
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[ENDING].text, "ate");
+    }
+
+    #[test]
+    fn shatva_retroflexes_the_endings_s_after_shings_e() {
+        // 8.3.59 ādeśapratyayayoḥ: the `s` of a pratyaya retroflexes after a
+        // non-a/ā vowel. With the aṅga guṇated to `Se`, the `se` and `sva`
+        // endings meet an `e` → Seze, Sezva.
+        assert_eq!(
+            form_g("SI", Lakara::Lat, Purusha::Madhyama, Vacana::Eka),
+            "Seze"
+        );
+        assert_eq!(
+            form_g("SI", Lakara::Lot, Purusha::Madhyama, Vacana::Eka),
+            "Sezva"
+        );
+    }
+
+    #[test]
+    fn shatva_declines_for_every_pre_existing_junction() {
+        // Each of these pins one boundary of 8.3.59's guard, and each is a
+        // form the suite already ships — so a mutant that widens the guard
+        // breaks a golden, not just this test.
+        //
+        // aṅga-final `A` is excluded (a/ā are not iṇ):
+        assert_eq!(
+            form_g("As", Lakara::Lot, Purusha::Madhyama, Vacana::Eka),
+            "Assva"
+        );
+        // aṅga-final `s` is not a vowel at all:
+        assert_eq!(
+            form_g("vas", Lakara::Lat, Purusha::Madhyama, Vacana::Eka),
+            "vasse"
+        );
+        // Thematic path: the ending is preceded by the śap's `a`, excluded.
+        assert_eq!(
+            form_g("laB", Lakara::Lot, Purusha::Madhyama, Vacana::Eka),
+            "laBasva"
+        );
+        // And a non-s-initial ending after √śī's `e` is left alone — the
+        // clause an `||` → `&&` mutant would drop.
+        let mut p = Prakriya {
+            terms: vec![Term::new("Se"), Term::new(""), Term::new("te")],
+            log: vec![],
+            ..Default::default()
+        };
+        let rule = TINANTA_RULES.iter().find(|r| r.id == "8.3.59").unwrap();
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[ENDING].text, "te");
+
+        // No current root's aṅga ends in a bare short `a` at this point —
+        // thematic aṅgas keep the śap's `a` as a separate term, and neither
+        // guṇa nor vṛddhi ever yields a bare aṅga-final `a`. This case exists
+        // purely to pin the `a` half of the a/ā exclusion: the sūtra's iṇ-koḥ
+        // condition excludes both `a` and `ā` (neither is in the iṇ
+        // pratyāhāra), so a future `a`-final aṅga must decline here too, not
+        // silently retroflex.
+        let mut p = Prakriya {
+            terms: vec![Term::new("a"), Term::new(""), Term::new("se")],
+            log: vec![],
+            ..Default::default()
+        };
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[ENDING].text, "se");
     }
 }
