@@ -63,6 +63,35 @@ pub(crate) static VIKARANA: &[Rule] = &[
             true
         },
     },
+    // 3.1.81 kryādibhyaḥ śnā: kryādi (gaṇa 9) takes śnā, not śap. Apavāda to
+    // 3.1.68, ordered before it, exactly as 3.1.69 and 3.1.77 are. śnā is
+    // apit; the second 1.2.4 makes it ṅit and 1.1.5 then blocks guṇa — which
+    // is what keeps kliS from guṇating to kleS under 7.3.86.
+    //
+    // Unlike adādi's śap, śnā is never luk'd: its text goes nA → nI (6.4.113)
+    // or nA → n (6.4.112), and never to empty. No rule reading terms[SHAP]
+    // can silently decline the way the athematic path made them decline.
+    Rule {
+        id: "3.1.81",
+        name: "kryAdiByaH SnA",
+        kind: RuleKind::Vidhi,
+        apply: |p| {
+            if !p.terms[ANGA].has(Tag::Kryadi) {
+                return false;
+            }
+            let before = p.snapshot();
+            let mut s = Term::new("SnA");
+            s.add(Tag::Vikarana);
+            s.add(Tag::Sarvadhatuka);
+            p.terms.insert(SHAP, s);
+            p.record("3.1.81", "kryAdiByaH SnA", before);
+            let mut s = p.terms[SHAP].clone();
+            run_it_samjna(&mut s, p, SHAP); // 1.3.8 strips S → nA
+            p.terms[SHAP] = s;
+            p.terms[ANGA].add(Tag::Anga);
+            true
+        },
+    },
     // 3.1.68 kartari śap: insert śap between dhātu and ending, run it-samjña
     // on it (Sap → a), and mark the dhātu an aṅga.
     Rule {
@@ -227,5 +256,46 @@ mod tests {
         let rule = rules().find(|r| r.id == "2.4.72").unwrap();
         assert!(!(rule.apply)(&mut p));
         assert_eq!(p.terms[ANGA].text, "kf");
+    }
+
+    #[test]
+    fn kryadibhyah_shna_inserts_shna_for_kryadi_only() {
+        // 3.1.81 is an apavAda to 3.1.68, same shape as 3.1.69/3.1.77.
+        // it-samjNa strips the S (1.3.8), leaving nA. No Tag::Pit: SnA is
+        // apit, so the second 1.2.4 makes it Nit and 1.1.5 then blocks guNa
+        // -- which is why kliS gives kliSnAti and not *kleSnAti.
+        let mut anga = Term::new("kliS");
+        anga.add(Tag::Kryadi);
+        let mut p = Prakriya {
+            terms: vec![anga, Term::new("ti")],
+            log: vec![],
+            ..Default::default()
+        };
+        let rule = rules().find(|r| r.id == "3.1.81").unwrap();
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.terms[SHAP].text, "nA");
+        assert!(p.terms[SHAP].has(Tag::Vikarana));
+        assert!(p.terms[SHAP].has(Tag::Sarvadhatuka));
+        assert!(!p.terms[SHAP].has(Tag::Pit));
+        assert!(p.terms[ANGA].has(Tag::Anga));
+    }
+
+    #[test]
+    fn kryadibhyah_shna_declines_for_every_other_gana() {
+        // bhvAdi carries no gana tag at all; the other three carry their own.
+        // A mutant that drops the tag guard would give every root SnA.
+        for tag in [None, Some(Tag::Divadi), Some(Tag::Tudadi), Some(Tag::Adadi)] {
+            let mut anga = Term::new("BU");
+            if let Some(t) = tag {
+                anga.add(t);
+            }
+            let mut p = Prakriya {
+                terms: vec![anga, Term::new("ti")],
+                log: vec![],
+                ..Default::default()
+            };
+            let rule = rules().find(|r| r.id == "3.1.81").unwrap();
+            assert!(!(rule.apply)(&mut p), "fired for {tag:?}");
+        }
     }
 }

@@ -6,6 +6,7 @@ pub enum Gana {
     Divadi,
     Tudadi,
     Adadi,
+    Kryadi,
 }
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Pada {
