@@ -33,11 +33,11 @@ implements; `tinanta::rules()` yields that flattened sequence.
 | `vikarana.rs` | 3.1.69, 3.1.77, 3.1.81, 3.1.68, 2.4.72, 3.1.83, 1.2.4 | contains 3.1.68 |
 | `anga.rs` | 6.4.71 … 7.3.101, 6.4.112, 6.4.113 (incl. 6.1.78) | after 3.1.68 |
 | `adesha.rs` | 6.1.101 … 6.4.101 | after 3.1.68 |
-| `tripadi.rs` | 8.2.77 … 8.4.55 | after 3.1.68 |
+| `tripadi.rs` | 8.2.77 … 8.4.55, 8.4.1, 8.4.2 | after 3.1.68 |
 
 The stage boundary is file organisation, not grammar: the flattened order is
 what matters, and `tinanta_rule_order_is_pinned` in `derivation_tests.rs`
-pins all 60 ids verbatim. `tinanta/terms.rs` holds the term-index constants
+pins all 62 ids verbatim. `tinanta/terms.rs` holds the term-index constants
 and the reason 3.1.68 bisects the pipeline; `tinanta/sound.rs` holds the
 varṇa classifiers.
 
@@ -78,6 +78,14 @@ consonant-final root (kliSAna). That split is driven by 1.2.4, which as of
 this slice tags parasmaipada apit endings ṅit as well as ātmanepada ones —
 the distinction between pit `tip` (kliSnAti) and apit `tas` (kliSnItaH) is
 the whole paradigm.
+
+8.4.1 / 8.4.2 are the engine's first ṇatva. They are guarded to skip an `n`
+that is word-final or immediately followed by a jhal — the effect of 8.4.37
+*padāntasya* and of 8.3.24 *naś cāpadāntasya jhali* bleeding the rule, neither
+of which is modelled here because the engine has no anusvāra machinery. The
+guard is exactly equivalent within tripādī order; it costs trace fidelity, and
+it is the first thing liṭ and luṅ will want retired. `asmaran` and `BAzante`
+are the goldens that pin it.
 
 `derive` itself carries no scope gate — it only tags the dhātu and
 runs `TINANTA_RULES` (see `panini_prakriya::tinanta::derive`). A wrong-pada
