@@ -9,3 +9,5 @@ recorded below.
 - Cross-reference: Vidyut (github.com/ambuda-org/vidyut), data files under
   their stated open license — consult the upstream LICENSE before importing any
   file verbatim; v1 uses only the small curated subset transcribed here.
+- Cross-reference: the kryādi gaṇa (gaṇa 9) entries correspond to Dhātupāṭha
+  numbers 09.0058 (`kliSU~`), 09.0053 (`guDa~`) and 09.0059 (`aSa~`).

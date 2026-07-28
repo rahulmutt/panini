@@ -17,11 +17,17 @@ use panini_data::Lakara;
 
 pub(crate) static ADESHA: &[Rule] = &[
     // 6.1.101 akaḥ savarṇe dīrghaḥ: an ak vowel followed by a savarṇa vowel
-    // coalesces into the corresponding long vowel. Three arms:
-    //   - adādi vidhiliṅ 1sg (śap luk'd, 7.2.80 declined): the yāsuṭ ā + the
-    //     ending a coalesce inside the ending, yAam → yAm (→ yAyAm);
+    // coalesces into the corresponding long vowel. Four arms:
+    //   - vidhiliṅ 1sg, śap-final-`a` declined (7.2.80 skipped): the yāsuṭ ā
+    //     + the ending a coalesce inside the ending, yAam → yAm (→ yAyAm for
+    //     adādi's śap-luk'd path, → nIyAm for kryādi's śnā-vikaraṇa path);
     //   - adādi (śap luk'd by 2.4.72): the aṅga's own final `A` meets an
     //     a/ā-initial ending, yA + anti → yAnti, yA + Ani → yAni;
+    //   - kryādi (śnā vikaraṇa, 3.1.81): the vikaraṇa's own final `A` meets
+    //     an a/ā-initial ending directly — mip's 3.4.101 `am` (Pit, so
+    //     6.4.112/6.4.113 never touch it) or the loṭ uttama āḍ-augmented
+    //     Ani/Ava/Ama (excluded from 1.2.4's ṅit tagging, so same untouched
+    //     path): nA + am → nAm, nA + Ani → nAni;
     //   - bhvādi &c.: śap `a` + the ending's initial `A` (from 3.4.92 āḍ),
     //     Bav + a + Ani → BavAni.
     Rule {
@@ -29,15 +35,17 @@ pub(crate) static ADESHA: &[Rule] = &[
         name: "akaH savarRe dIrGaH",
         kind: RuleKind::Vidhi,
         apply: |p| {
-            // adādi vidhiliṅ 1sg: after 7.2.79 the ending is `yAam` (yāsuṭ ā +
-            // the uttama-eka `am`). 7.2.80 would have rewritten `yA`->`iy` for
-            // a thematic gaṇa, but śap is luk'd so it declined; the yāsuṭ ā and
-            // the ending a are savarṇa -> a single ā: yAam -> yAm. Guard is
-            // tight: VidhiLin + empty śap + a `yA`+vowel ending (never `yAt`/
-            // `yAs`/... whose yA is followed by a consonant).
+            // vidhiliṅ 1sg: after 7.2.79 the ending is `yAam` (yāsuṭ ā + the
+            // uttama-eka `am`). 7.2.80 would have rewritten `yA`->`iy` after
+            // an a-final śap, but it requires SHAP to end in short `a`; here
+            // it declined (adādi's SHAP is empty, kryādi's is the śnā
+            // vikaraṇa's `A`-final nA/nI), so the yāsuṭ ā and the ending a
+            // are savarṇa -> a single ā: yAam -> yAm. Guard mirrors 7.2.80's
+            // own negated condition, plus a tight ending shape (never
+            // `yAt`/`yAs`/... whose yA is followed by a consonant).
             if p.terms.len() > ENDING
                 && matches!(p.ctx.lakara, Lakara::VidhiLin)
-                && p.terms[SHAP].text.is_empty()
+                && !p.terms[SHAP].text.ends_with('a')
                 && p.terms[ENDING].text.starts_with("yA")
                 && matches!(p.terms[ENDING].text.chars().nth(2), Some('a') | Some('A'))
             {
@@ -61,6 +69,20 @@ pub(crate) static ADESHA: &[Rule] = &[
             if p.terms.len() > ENDING
                 && p.terms[SHAP].text.is_empty()
                 && p.terms[ANGA].text.ends_with('A')
+                && matches!(p.terms[ENDING].text.chars().next(), Some('a') | Some('A'))
+            {
+                let before = p.snapshot();
+                p.terms[ENDING].text = p.terms[ENDING].text.chars().skip(1).collect();
+                p.record("6.1.101", "akaH savarRe dIrGaH", before);
+                return true;
+            }
+            // kryādi: the vikaraṇa (at SHAP) is śnā's own `A`-final `nA`,
+            // meeting an a/ā-initial ending directly — unlike the bhvādi arm
+            // below, there is no `a` at SHAP to widen into `A`; SHAP already
+            // carries the long vowel, so only the ending's leading vowel is
+            // dropped.
+            if p.terms.len() > ENDING
+                && p.terms[SHAP].text.ends_with('A')
                 && matches!(p.terms[ENDING].text.chars().next(), Some('a') | Some('A'))
             {
                 let before = p.snapshot();
@@ -591,8 +613,11 @@ mod tests {
         assert!(!(rule.apply)(&mut q));
         assert_eq!(q.terms[ENDING].text, "yAt");
 
-        // Declines: thematic liṅ (śap = `a`, non-empty) is never touched by
-        // this arm — the SHAP-empty guard is what scopes it to adādi.
+        // Declines: thematic liṅ (śap = `a`) is never touched by this arm —
+        // the `!ends_with('a')` guard (true for adādi's empty śap and for
+        // kryādi's `A`-final vikaraṇa, false for any `a`-final śap) is what
+        // scopes it away from every thematic gaṇa, where 7.2.80 has already
+        // consumed the `yA` shape anyway.
         let mut r = Prakriya {
             terms: vec![Term::new("Bav"), Term::new("a"), Term::new("iyam")],
             log: vec![],
@@ -611,22 +636,22 @@ mod tests {
     // --- 6.1.101 adAdi vidhiliG 1sg arm: `len() > ENDING` boundary pin ----
     //
     // 6.1.101's first arm's guard, above, is `len() > ENDING && lakara ==
-    // VidhiLin && SHAP.is_empty() && ENDING.starts_with("yA") && ...`. A
+    // VidhiLin && !SHAP.ends_with('a') && ENDING.starts_with("yA") && ...`. A
     // 2-term Prakriya (aGga "yA" + an empty Sap slot, no ENDING term at
     // all) makes `len() > ENDING` (2 > 2) false in the original, so the
     // if-block short-circuits before ever indexing terms[ENDING]; control
-    // falls through the second (pre-adAdi) arm (also guarded by the same
-    // `len() > ENDING`, equally false) to the third (thematic) branch,
-    // whose `!SHAP.text.ends_with('a')` is true for an empty SHAP and
-    // short-circuits the `||` there too -- so the original returns false
-    // with no panic. Unlike the existing two-term regression test for the
-    // adAdi arm above, this one pins the lakara to VidhiLin: the `>` ->
-    // `>=` mutant needs `lakara == VidhiLin` to be true to reach its
-    // fourth conjunct, which indexes the nonexistent terms[ENDING] (index
-    // 2 on a 2-element Vec) and panics. A default-lakara (Lat) Prakriya
-    // would let the mutant's second conjunct short-circuit first and
-    // never distinguish it -- this is why the earlier two-term test alone
-    // didn't kill this mutant.
+    // falls through the second (pre-adAdi) and third (kryAdi) arms (both
+    // guarded by the same `len() > ENDING`, equally false) to the fourth
+    // (thematic) branch, whose `!SHAP.text.ends_with('a')` is true for an
+    // empty SHAP and short-circuits the `||` there too -- so the original
+    // returns false with no panic. Unlike the existing two-term regression
+    // test for the adAdi arm above, this one pins the lakara to VidhiLin:
+    // the `>` -> `>=` mutant needs `lakara == VidhiLin` to be true to reach
+    // its fourth conjunct, which indexes the nonexistent terms[ENDING]
+    // (index 2 on a 2-element Vec) and panics. A default-lakara (Lat)
+    // Prakriya would let the mutant's second conjunct short-circuit first
+    // and never distinguish it -- this is why the earlier two-term test
+    // alone didn't kill this mutant.
     #[test]
     fn savarna_dirgha_adadi_lin_1sg_arm_two_term_prakriya_does_not_panic() {
         let mut p = Prakriya {
@@ -643,5 +668,44 @@ mod tests {
         let rule = rules().find(|r| r.id == "6.1.101").unwrap();
         assert!(!(rule.apply)(&mut p));
         assert_eq!(p.terms[ANGA].text, "yA");
+    }
+
+    #[test]
+    fn savarna_dirgha_kryadi_shna_arm() {
+        // kryādi's śnā vikaraṇa (SHAP = "nA") ends in `A`, unlike every other
+        // gaṇa's vikaraṇa (empty, or `a`-final): it needs its own arm because
+        // neither the adādi arm (SHAP empty) nor the bhvādi arm (SHAP ends
+        // `a`) covers it.
+        let rule = rules().find(|r| r.id == "6.1.101").unwrap();
+
+        // Fires: mip's 3.4.101 `am` ending meets the vikaraṇa's `A` -> `nAm`
+        // (kliS laṅ uttama eka, akliSnAm).
+        let mut p = Prakriya {
+            terms: vec![Term::new("kliS"), Term::new("nA"), Term::new("am")],
+            log: vec![],
+            ..Default::default()
+        };
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.terms[ENDING].text, "m");
+
+        // Fires: the loṭ uttama āḍ-augmented ending `Ani` meets the same
+        // vikaraṇa -> `nAni` (kliS loṭ uttama eka, kliSnAni).
+        let mut q = Prakriya {
+            terms: vec![Term::new("kliS"), Term::new("nA"), Term::new("Ani")],
+            log: vec![],
+            ..Default::default()
+        };
+        assert!((rule.apply)(&mut q));
+        assert_eq!(q.terms[ENDING].text, "ni");
+
+        // Declines: a consonant-initial ending (e.g. `ti`) is untouched --
+        // this arm is only for a/ā-initial endings meeting the vikaraṇa's ā.
+        let mut r = Prakriya {
+            terms: vec![Term::new("kliS"), Term::new("nA"), Term::new("ti")],
+            log: vec![],
+            ..Default::default()
+        };
+        assert!(!(rule.apply)(&mut r));
+        assert_eq!(r.terms[ENDING].text, "ti");
     }
 }
