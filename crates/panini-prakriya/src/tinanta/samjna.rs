@@ -5,8 +5,9 @@
 //! (index 1) and śap does not exist yet. See `super::terms`.
 //!
 //! 3.4.78 is what inserts the ending; `super::tin` picks up from 3.4.85 and
-//! reshapes it. 1.2.4 appears here tagging apit ātmanepada endings ṅit, and
-//! again in `super::vikarana` tagging the apit vikaraṇa once it exists.
+//! reshapes it. 1.2.4 appears here tagging apit sārvadhātuka endings ṅit
+//! (not pada-conditioned), and again in `super::vikarana` tagging the apit
+//! vikaraṇa once it exists.
 
 use crate::it_samjna::run_it_samjna;
 use crate::rule::{Rule, RuleKind};
@@ -75,6 +76,13 @@ pub(crate) static SAMJNA: &[Rule] = &[
             let mut e = Term::new(ending);
             e.add(Tag::Tin);
             e.add(Tag::Sarvadhatuka);
+            // 1.3.3 halantyam identifies the final `p` of tip/sip/mip as an
+            // it; that anubandha is what makes those three endings pit. 1.3.9
+            // strips it below, and 1.2.4 runs after that -- so the fact has to
+            // be recorded here, while the raw text still carries it.
+            if ending.ends_with('p') {
+                e.add(Tag::Pit);
+            }
             p.terms.push(e);
             p.record("3.4.78", "tiptasJisipTasTamibvasmas", before);
             true
@@ -110,10 +118,11 @@ pub(crate) static SAMJNA: &[Rule] = &[
     // *lakāra* is ṅit and drives 3.4.99/100/101.
     //
     // Guard notes (see the spec's 1.2.4 section):
-    // - Ātmanepada only in this slice: parasmaipada apit endings (tas, Ji…)
-    //   are equally ṅid-vat in principle, but no implemented rule consumes
-    //   that fact, and firing here would add a step to the pinned
-    //   parasmaipada traces. Widening later is additive, not a fix.
+    // - Not pada-conditioned. Every apit sārvadhātuka is ṅid-vat, parasmaipada
+    //   included: 6.4.112 / 6.4.113 read exactly this tag, and the whole
+    //   kryādi paradigm is the pit/apit split (kliSnAti from pit tip against
+    //   kliSnItaH from apit tas). Pit-ness comes from the `p` anubandha,
+    //   recorded by 3.4.78 before 1.3.9 strips it.
     // - Loṭ uttama is a genuine exclusion, not trace-minimalism: 3.4.92's
     //   own "pic ca" makes those endings pit, hence not apit — which is what
     //   keeps 7.2.81 off the āṭ-āgama (AvahE goes to 6.1.101 instead).
@@ -122,7 +131,7 @@ pub(crate) static SAMJNA: &[Rule] = &[
         name: "sArvaDAtukam apit",
         kind: RuleKind::Atidesha,
         apply: |p| {
-            if !matches!(p.ctx.pada, Pada::Atmanepada)
+            if p.terms[ENDING_PRE_SHAP].has(Tag::Pit)
                 || (matches!(p.ctx.lakara, Lakara::Lot) && matches!(p.ctx.purusha, Purusha::Uttama))
             {
                 return false;
@@ -181,26 +190,79 @@ mod tests {
     }
 
     #[test]
-    fn sarvadhatukam_apit_skips_parasmaipada_and_lot_uttama() {
-        // Parasmaipada apit endings are Nid-vat in principle too, but no
-        // implemented rule consumes the fact and firing here would perturb
-        // the 216 pinned parasmaipada traces (see the spec). Lot uttama is a
-        // GENUINE exclusion: 3.4.92's own "pic ca" makes those endings pit,
-        // hence not apit — which is what keeps 7.2.81 off the AT-agama.
-        let cases = [
-            ("ti", Lakara::Lat, Pada::Parasmaipada, Purusha::Prathama),
-            ("iw", Lakara::Lot, Pada::Atmanepada, Purusha::Uttama),
-        ];
-        for (ending, lakara, pada, purusha) in cases {
+    fn sarvadhatukam_apit_tags_parasmaipada_apit_endings() {
+        // 1.2.4 is not pada-conditioned. `tas` is apit (no p-anubandha), so
+        // it is Nid-vat in a parasmaipada derivation exactly as `ta` is in an
+        // atmanepada one. This is the tag 6.4.112/6.4.113 fire on.
+        for (purusha, vacana) in [
+            (Purusha::Prathama, Vacana::Dvi),  // tas
+            (Purusha::Prathama, Vacana::Bahu), // Ji
+            (Purusha::Uttama, Vacana::Dvi),    // vas
+            (Purusha::Uttama, Vacana::Bahu),   // mas
+        ] {
             let mut p = Prakriya {
-                terms: vec![Term::new("laB"), Term::new(ending)],
-                log: vec![],
-                ctx: Context::new(lakara, pada, purusha, Vacana::Eka),
-                blocked: false,
+                ctx: Context::new(Lakara::Lat, Pada::Parasmaipada, purusha, vacana),
+                ..Default::default()
             };
-            let rule = rules().find(|r| r.id == "1.2.4").unwrap();
-            assert!(!(rule.apply)(&mut p), "{ending} {lakara:?} {pada:?}");
-            assert!(!p.terms[ENDING_PRE_SHAP].has(Tag::Ngit));
+            p.terms.push(Term::new("kliS"));
+            for id in ["3.4.78", "1.3.9", "1.2.4"] {
+                let rule = rules().find(|r| r.id == id).unwrap();
+                (rule.apply)(&mut p);
+            }
+            assert!(
+                p.terms[ENDING_PRE_SHAP].has(Tag::Ngit),
+                "{purusha:?} {vacana:?} should be Nit"
+            );
+        }
+    }
+
+    #[test]
+    fn sarvadhatukam_apit_declines_for_pit_endings() {
+        // tip/sip/mip carry the p-anubandha. They must stay untagged, or
+        // 6.4.113 would fire on them and kliSnAti would surface as
+        // *kliSnIti.
+        for (purusha, vacana) in [
+            (Purusha::Prathama, Vacana::Eka), // tip
+            (Purusha::Madhyama, Vacana::Eka), // sip
+            (Purusha::Uttama, Vacana::Eka),   // mip
+        ] {
+            let mut p = Prakriya {
+                ctx: Context::new(Lakara::Lat, Pada::Parasmaipada, purusha, vacana),
+                ..Default::default()
+            };
+            p.terms.push(Term::new("kliS"));
+            for id in ["3.4.78", "1.3.9", "1.2.4"] {
+                let rule = rules().find(|r| r.id == id).unwrap();
+                (rule.apply)(&mut p);
+            }
+            assert!(p.terms[ENDING_PRE_SHAP].has(Tag::Pit));
+            assert!(
+                !p.terms[ENDING_PRE_SHAP].has(Tag::Ngit),
+                "{purusha:?} {vacana:?} is pit and must not be Nit"
+            );
+        }
+    }
+
+    #[test]
+    fn sarvadhatukam_apit_still_declines_for_lot_uttama_in_both_padas() {
+        // 3.4.92 AD uttamasya pic ca makes the lot-uttama endings pit
+        // outright. Tagging them Nit would let 7.2.81 rewrite the AT-Agama
+        // and turn BavAva into *Baviyva. This exclusion is grammar, not
+        // trace-minimalism -- it must survive the widening.
+        for pada in [Pada::Parasmaipada, Pada::Atmanepada] {
+            let mut p = Prakriya {
+                ctx: Context::new(Lakara::Lot, pada, Purusha::Uttama, Vacana::Dvi),
+                ..Default::default()
+            };
+            p.terms.push(Term::new("BU"));
+            for id in ["3.4.78", "1.3.9", "1.2.4"] {
+                let rule = rules().find(|r| r.id == id).unwrap();
+                (rule.apply)(&mut p);
+            }
+            assert!(
+                !p.terms[ENDING_PRE_SHAP].has(Tag::Ngit),
+                "{pada:?} lot uttama must not be Nit"
+            );
         }
     }
 }

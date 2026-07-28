@@ -54,13 +54,18 @@ fn bhavati_trace_is_exactly_the_base_path() {
     );
 }
 
+// The `1.2.4` step below appears in every parasmaipada derivation whose
+// ending is apit (tas, Ji, vas, mas). It was absent until kryādi needed the
+// tag: 1.2.4 was gated on ātmanepada, so the atideśa that was already
+// grammatically operative went unrecorded. Six traces gained this step and
+// no surface form moved.
 #[test]
 fn bhavanti_trace_is_exactly_the_ji_coalescence_path() {
     // BU prathama bahu: Ji -> anti (7.1.3) + 6.1.97 para-rupa coalescence path.
     assert_eq!(
         trace_for("Bavanti"),
         vec![
-            "1.3.78", "3.4.78", "3.1.68", "1.3.9", "7.1.3", "7.3.84", "6.1.78", "6.1.97"
+            "1.3.78", "3.4.78", "1.2.4", "3.1.68", "1.3.9", "7.1.3", "7.3.84", "6.1.78", "6.1.97"
         ]
     );
 }
@@ -71,7 +76,7 @@ fn bhavamah_trace_is_exactly_the_dirgha_visarga_path() {
     assert_eq!(
         trace_for("BavAmaH"),
         vec![
-            "1.3.78", "3.4.78", "3.1.68", "1.3.9", "7.3.84", "6.1.78", "7.3.101", "8.3.15"
+            "1.3.78", "3.4.78", "1.2.4", "3.1.68", "1.3.9", "7.3.84", "6.1.78", "7.3.101", "8.3.15"
         ]
     );
 }
@@ -94,7 +99,7 @@ fn abhavan_trace_is_exactly_the_samyoganta_path() {
     assert_eq!(
         trace_for("aBavan"),
         vec![
-            "1.3.78", "3.4.78", "3.4.100", "3.1.68", "1.3.9", "6.4.71", "7.1.3", "7.3.84",
+            "1.3.78", "3.4.78", "1.2.4", "3.4.100", "3.1.68", "1.3.9", "6.4.71", "7.1.3", "7.3.84",
             "6.1.78", "6.1.97", "8.2.23"
         ]
     );
@@ -163,8 +168,8 @@ fn bhaveyuh_trace_is_exactly_the_jus_path() {
     assert_eq!(
         trace_for("BaveyuH"),
         vec![
-            "1.3.78", "3.4.78", "3.4.108", "1.3.9", "3.4.103", "3.1.68", "1.3.9", "7.2.79",
-            "7.2.80", "7.3.84", "6.1.78", "6.1.87", "8.3.15"
+            "1.3.78", "3.4.78", "1.2.4", "3.4.108", "1.3.9", "3.4.103", "3.1.68", "1.3.9",
+            "7.2.79", "7.2.80", "7.3.84", "6.1.78", "6.1.87", "8.3.15"
         ]
     );
 }
@@ -352,7 +357,7 @@ fn yanti_trace_is_the_luk_plus_savarna_path() {
     assert_eq!(
         trace_for("yAnti"),
         vec![
-            "1.3.78", "3.4.78", "3.1.68", "1.3.9", "2.4.72", "7.1.3", "6.1.101"
+            "1.3.78", "3.4.78", "1.2.4", "3.1.68", "1.3.9", "2.4.72", "7.1.3", "6.1.101"
         ]
     );
 }
@@ -366,8 +371,8 @@ fn yayuh_trace_is_the_adadi_us_junction_path() {
     assert_eq!(
         trace_for("yAyuH"),
         vec![
-            "1.3.78", "3.4.78", "3.4.108", "1.3.9", "3.4.103", "3.1.68", "1.3.9", "2.4.72",
-            "7.2.79", "6.1.96", "8.3.15"
+            "1.3.78", "3.4.78", "1.2.4", "3.4.108", "1.3.9", "3.4.103", "3.1.68", "1.3.9",
+            "2.4.72", "7.2.79", "6.1.96", "8.3.15"
         ]
     );
 }
