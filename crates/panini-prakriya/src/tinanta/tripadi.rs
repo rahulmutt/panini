@@ -230,26 +230,33 @@ pub(crate) static TRIPADI: &[Rule] = &[
         name: "AdeSapratyayayoH",
         kind: RuleKind::Vidhi,
         apply: |p| {
-            // The affix is the first non-empty term after the aṅga (śap, if
-            // present, is luk'd/empty for adādi) — the same idiom 8.2.25 and
-            // 8.4.55 use, which avoids indexing a term that may not exist.
+            // The affix whose s retroflexes: the first s-initial term after
+            // the aṅga. Searching for the s-initial term — rather than taking
+            // the first non-empty one and testing it — is what lets a
+            // non-empty vikaraṇa sit between the aṅga and the affix.
             let next_idx = p
                 .terms
                 .iter()
                 .enumerate()
                 .skip(ANGA + 1)
-                .find(|(_, t)| !t.text.is_empty())
+                .find(|(_, t)| t.text.starts_with('s'))
                 .map(|(i, _)| i);
             let Some(next_idx) = next_idx else {
                 return false;
             };
-            if !p.terms[next_idx].text.starts_with('s') {
-                return false;
-            }
-            let Some(anga_last) = p.terms[ANGA].text.chars().last() else {
+            // The iṇ-koḥ trigger is the sound IMMEDIATELY before that affix —
+            // the last char of the nearest non-empty preceding term, which is
+            // the aṅga only when nothing intervenes. For kryādi it is śnā's
+            // `ī` (vf + nI + sva → vfRIzva); reading ANGA here would ask
+            // about `f` and miss the rule entirely.
+            let Some(prev) = p.terms[..next_idx]
+                .iter()
+                .rev()
+                .find_map(|t| t.text.chars().last())
+            else {
                 return false;
             };
-            if !is_vowel(anga_last) || matches!(anga_last, 'a' | 'A') {
+            if !is_vowel(prev) || matches!(prev, 'a' | 'A') {
                 return false;
             }
             let before = p.snapshot();
@@ -486,6 +493,29 @@ mod tests {
         };
         assert!(!(rule.apply)(&mut p));
         assert_eq!(p.terms[ENDING].text, "se");
+    }
+
+    #[test]
+    fn shatva_reads_the_sound_before_the_affix_not_the_anga() {
+        // vf + nI + sva: the iN trigger is SnA's I, not the anga's f. The
+        // pre-kryadi guard read ANGA and would have declined here.
+        let mut p = Prakriya {
+            terms: vec![Term::new("vf"), Term::new("nI"), Term::new("sva")],
+            log: vec![],
+            ..Default::default()
+        };
+        let rule = rules().find(|r| r.id == "8.3.59").unwrap();
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.text(), "vfnIzva");
+        // And the thematic case still declines on the vikaraNa's `a`, which
+        // is what keeps laBasva intact.
+        let mut p = Prakriya {
+            terms: vec![Term::new("laB"), Term::new("a"), Term::new("sva")],
+            log: vec![],
+            ..Default::default()
+        };
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.text(), "laBasva");
     }
 
     fn natva_prakriya(anga: &str, vikarana: &str, ending: &str) -> Prakriya {

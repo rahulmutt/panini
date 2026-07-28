@@ -730,3 +730,48 @@ fn ashnat_trace_takes_the_vowel_initial_anga_augment() {
     assert!(t.contains(&"6.1.90".to_string()), "got {t:?}");
     assert!(t.contains(&"3.1.81".to_string()), "got {t:?}");
 }
+
+#[test]
+fn mushnati_trace_takes_adjacent_natva() {
+    // z directly precedes SnA's n -> 8.4.1, not 8.4.2.
+    let t = trace_for("muzRAti");
+    assert!(t.contains(&"8.4.1".to_string()), "got {t:?}");
+    assert!(!t.contains(&"8.4.2".to_string()), "got {t:?}");
+}
+
+#[test]
+fn vrinati_trace_takes_intervening_natva() {
+    // r, then the aw vowel I, then n -> 8.4.2, not 8.4.1.
+    let t = trace_for("vrIRAti");
+    assert!(t.contains(&"8.4.2".to_string()), "got {t:?}");
+    assert!(!t.contains(&"8.4.1".to_string()), "got {t:?}");
+}
+
+#[test]
+fn mushana_trace_is_shanac_plus_intervening_natva() {
+    // lot 2sg: 3.1.83 gives Ana, 6.4.105 drops the hi, and 8.4.2 then
+    // retroflexes across the A. Both rules in one derivation.
+    let t = trace_for("muzARa");
+    assert!(t.contains(&"3.1.83".to_string()), "got {t:?}");
+    assert!(t.contains(&"6.4.105".to_string()), "got {t:?}");
+    assert!(t.contains(&"8.4.2".to_string()), "got {t:?}");
+}
+
+#[test]
+fn vrinite_trace_is_the_atmanepada_shna_path() {
+    // vf + SnA + te: te is apit -> Nit (1.2.4), consonant-initial -> 6.4.113,
+    // and the r-vowel triggers 8.4.1.
+    let t = trace_for("vfRIte");
+    assert!(t.contains(&"3.1.81".to_string()), "got {t:?}");
+    assert!(t.contains(&"6.4.113".to_string()), "got {t:?}");
+    assert!(t.contains(&"8.4.1".to_string()), "got {t:?}");
+}
+
+#[test]
+fn vrinishva_trace_reaches_the_existing_shatva() {
+    // lot 2sg atmanepada: 6.4.113 gives nI, and the existing 8.3.59
+    // AdeSapratyayayoH then retroflexes sva's s after that I -> vfRIzva.
+    let t = trace_for("vfRIzva");
+    assert!(t.contains(&"6.4.113".to_string()), "got {t:?}");
+    assert!(t.contains(&"8.3.59".to_string()), "got {t:?}");
+}

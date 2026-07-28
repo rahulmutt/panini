@@ -4,11 +4,15 @@
 //! `terms[SHAP].text` may be empty (2.4.72). See `super::terms`.
 //!
 //! Three rules here (6.1.90 āṭaś ca, 6.1.66 lopo vyor vali, and 6.1.78 over
-//! in `super::anga`) carry explicit *athematic arms* for the śap-luk'd path.
-//! Those arms duplicate a follower lookup on purpose: each is pinned by its
-//! own `*_athematic_*` guard tests asserting disjointness from its thematic
-//! arm, and funnelling them through one shared helper would collapse three
-//! independent mutation pins into one.
+//! in `super::anga`) carry explicit *athematic arms* for the non-`a`-final
+//! SHAP path — adādi's śap-luk'd empty SHAP originally, and (since Task 10)
+//! kryādi's śnā vikaraṇa, reduced by 6.4.112/6.4.113 to a non-empty `n`/`nI`
+//! that is likewise never `a`-final. 6.1.66's arm now guards on
+//! `!SHAP.ends_with('a')` rather than emptiness for exactly this reason; see
+//! its own comment. Those arms duplicate a follower lookup on purpose: each
+//! is pinned by its own `*_athematic_*` guard tests asserting disjointness
+//! from its thematic arm, and funnelling them through one shared helper
+//! would collapse three independent mutation pins into one.
 
 use crate::rule::{Rule, RuleKind};
 use crate::tinanta::sound::{is_jhal, is_vowel, vrddhi_of};
@@ -298,15 +302,20 @@ pub(crate) static ADESHA: &[Rule] = &[
                 p.record("6.1.66", "lopo vyor vali", before);
                 return true;
             }
-            // Athematic arm (śap luk'd, e.g. adādi √ās): with no śap, 6.1.87
-            // never fired, so the retained optative I still leads the ending
-            // as `I y val` (Iyta). The y is still elided before the val — the
-            // long I survives as the stem vowel (āsī-): Iyta → Ita. Only the
-            // y is dropped, and (as in the thematic arm) never before a vowel,
-            // so IyAtAm / IyATAm / Iya keep their y. The explicit `śap empty`
-            // guard keeps this arm off the thematic path locally (rather than
-            // relying on 6.1.87's ordering), mirroring 6.1.90's athematic arm.
-            if p.terms[SHAP].text.is_empty()
+            // Athematic arm (SHAP not `a`-final: empty for adādi's śap-luk'd
+            // path, or kryādi's śnā-vikaraṇa reduced to `n`/`nI` by
+            // 6.4.112/6.4.113): 6.1.87 only fires when SHAP ends in short
+            // `a`, so whenever it doesn't, the retained optative I still
+            // leads the ending as `I y val` (Iyta). The y is still elided
+            // before the val — the long I survives as the stem vowel
+            // (āsī-, vfRI-): Iyta → Ita. Only the y is dropped, and (as in
+            // the thematic arm) never before a vowel, so IyAtAm / IyATAm /
+            // Iya keep their y. The guard mirrors 6.1.101's own
+            // `!ends_with('a')` idiom (rather than testing emptiness, which
+            // only covered adādi and silently declined for kryādi's
+            // non-empty, non-`a`-final SHAP — vfRIta surfaced as *vfRIyta
+            // until this was widened).
+            if !p.terms[SHAP].text.ends_with('a')
                 && first == Some('I')
                 && chars.next() == Some('y')
                 && let Some(third) = chars.next()
@@ -398,16 +407,16 @@ mod tests {
     }
 
     #[test]
-    fn lopo_vyor_vali_athematic_arm_requires_an_empty_shap() {
-        // 6.1.66's athematic arm (śap luk'd) elides the optative y in an
-        // `I y val` ending (Iyta -> Ita), keeping the long I as the stem
-        // vowel. It must fire ONLY when the śap is empty — that is what
-        // confines it to the adADi (athematic) path; on the thematic path
-        // 6.1.87 has already consumed the I, so the ending never leads with
-        // `I`. Here the śap is the non-empty "a" and the ending is "Iyta":
-        // the athematic arm must decline (leaving "Iyta" untouched), and the
-        // thematic arm also declines (the ending's first char is 'I', not
-        // 'y'). The mutant that drops the empty-śap guard would elide the y
+    fn lopo_vyor_vali_athematic_arm_requires_a_non_a_final_shap() {
+        // 6.1.66's athematic arm elides the optative y in an `I y val`
+        // ending (Iyta -> Ita), keeping the long I as the stem vowel. It
+        // must fire ONLY when SHAP does NOT end in short `a` — that is
+        // exactly the condition under which 6.1.87 (which requires an
+        // `a`-final SHAP) could NOT already have consumed the I. Here the
+        // śap is the thematic "a" and the ending is "Iyta": the athematic
+        // arm must decline (leaving "Iyta" untouched), and the thematic arm
+        // also declines (the ending's first char is 'I', not 'y'). The
+        // mutant that drops the `!ends_with('a')` guard would elide the y
         // regardless of śap and wrongly yield "Ita".
         let mut p = Prakriya {
             terms: vec![Term::new("laB"), Term::new("a"), Term::new("Iyta")],
@@ -417,6 +426,24 @@ mod tests {
         let rule = rules().find(|r| r.id == "6.1.66").unwrap();
         assert!(!(rule.apply)(&mut p));
         assert_eq!(p.terms[ENDING].text, "Iyta");
+    }
+
+    #[test]
+    fn lopo_vyor_vali_athematic_arm_fires_for_kryadis_non_empty_shap() {
+        // Unlike adādi, kryādi's SHAP is never empty (it holds the śnā
+        // vikaraṇa, reduced to `n`/`nI` by 6.4.112/6.4.113) but also never
+        // `a`-final, so the athematic arm must still fire: vf + n + Iyta ->
+        // vf + n + Ita (the "vfRIta" golden's mechanism, before 8.4.1
+        // natva). A guard that tested emptiness instead of `!ends_with('a')`
+        // would wrongly decline here and leave the y in place.
+        let mut p = Prakriya {
+            terms: vec![Term::new("vf"), Term::new("n"), Term::new("Iyta")],
+            log: vec![],
+            ..Default::default()
+        };
+        let rule = rules().find(|r| r.id == "6.1.66").unwrap();
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.terms[ENDING].text, "Ita");
     }
 
     #[test]
