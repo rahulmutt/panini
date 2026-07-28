@@ -58,7 +58,7 @@ Out of scope, deferred:
 
 | slice | roots | forms | new rules |
 |---|---|---|---|
-| **9a** vikaraṇa core | √kliś, √gudh, √aś (P) | 108 → 1188 | 3.1.81, 3.1.83, 6.4.112, 6.4.113 |
+| **9a** apit layer + vikaraṇa core | √kliś, √gudh, √aś (P) | 108 → 1188 | 3.1.81, 3.1.83, 6.4.112, 6.4.113 (plus the 1.2.4 / 3.4.78 / 3.4.87 / 3.4.103 tagging fix — see "Prerequisite") |
 | **9b** ṇatva + ātmanepada | √muṣ, √vrī (P), √vṛṅ (A) | 108 → 1296 | 8.4.1, 8.4.2 |
 
 The split is not about diff size — it is about attribution. 8.4.1 / 8.4.2 are
@@ -156,11 +156,72 @@ the engine yet) and the rule is guarded to śnā accordingly.
 rule comment rather than implemented, since no ghu root can reach this rule.
 
 Both rules read the following ending through the existing
-`following_sarvadhatuka` helper and sit in `anga.rs` in sūtra order, after
-6.4.105. Order between them is immaterial — their conditions are disjoint
-(ajādi vs halādi) — but sūtra order is kept. Order against 6.4.105 is also
-safe in either direction: 6.4.105 requires a short `a` before `hi`, and śnā's
-`ā` is long.
+`following_sarvadhatuka` helper. Order between them is immaterial — their
+conditions are disjoint (ajādi vs halādi) — but sūtra order is kept.
+
+**Placement: at the end of `anga.rs`, after 7.3.101.** Not "in sūtra order
+after 6.4.105", which was this spec's first answer and is wrong twice over:
+6.4.105 lives in `adesha.rs`, a later stage, and sūtra order is not what
+governs here. Three real constraints fix the position:
+
+- **After 7.1.3 *jho'ntaḥ*** (`anga.rs`), which turns `Ji` into `anti` / `ant`.
+  Until it runs, laṭ and laṅ 3pl endings are not vowel-initial and 6.4.112
+  cannot recognise them.
+- **After 7.2.79 *liṅaḥ salopo'nantyasya*** (`anga.rs`). The ātmanepada
+  vidhiliṅ ending is `sIyta` until 7.2.79 elides the `s`; run before it and
+  6.4.113 would see a consonant-initial ending and produce \*`vfRIsIyta`
+  instead of letting 6.4.112 elide the `ā` before `Iyta`.
+- **Before `adesha.rs`'s vowel sandhi** — 6.1.87 *ād guṇaḥ* in particular.
+  For √vṛṅ vidhiliṅ, `nA` + `Iyta` must lose its `ā` (6.4.112) before 6.1.87
+  can coalesce `ā` + `ī` into `e` and yield \*`vfReta`. Living in `anga.rs`,
+  which runs entirely before `adesha.rs`, satisfies this structurally.
+
+6.4.105 itself needs no ordering care: it requires a short `a` before `hi`,
+and śnā's `ā` is long, so it declines either way.
+
+### Prerequisite: completing the apit layer
+
+6.4.112 and 6.4.113 fire on **kṅit** endings, and that is the whole basis of
+the kryādi paradigm — `kliSnAti` (tip, pit) against `kliSnItaH` (tas, apit).
+The engine does not currently supply that distinction for parasmaipada.
+
+The first 1.2.4 in `samjna.rs` is gated on `Pada::Atmanepada`, so **no
+parasmaipada ending is ever tagged ṅit**, apit or not. The rule's own comment
+records this as a deliberate v1 narrowing and names the exit condition
+exactly — *"parasmaipada apit endings (tas, Ji…) are equally ṅid-vat in
+principle, but no implemented rule consumes that fact… Widening later is
+additive, not a fix."* kryādi is the slice where a rule does consume it, so
+the widening is the anticipated next step rather than a surprise. Three
+changes, all in slice 9a and all ahead of the vikaraṇa work:
+
+1. **3.4.78** tags `Tag::Pit` on an ending whose raw text ends in `p` —
+   `tip`, `sip`, `mip` — before 1.3.9 strips the anubandha.
+2. **1.2.4** (first application) drops the ātmanepada gate and declines on
+   `Tag::Pit` instead. The loṭ-uttama exclusion **stays**: 3.4.92 *āḍ uttamasya
+   pic ca* makes those endings pit outright, which is what keeps 7.2.81 off the
+   āṭ-āgama and `BavAva` off \*`Baviyva`.
+3. **3.4.87** *ser hyapic ca* clears `Tag::Pit` and adds `Tag::Ngit` on the
+   `hi` it creates — the sūtra's own *apit ca* — and **3.4.103** *yāsuṭ …
+   ṅic ca* adds `Tag::Ngit` to the augmented ending, likewise its own text.
+   Both are needed downstream: `vrIRIhi` and `kliSnIyAt` come from 6.4.113
+   only if `hi` and the yāsuṭ ending are ṅit.
+
+**Delta on the existing 1080 forms: none.** The only consumers of an ending's
+ṅit tag are 7.2.81 and, on the śap-luk'd path, 7.3.84 / 7.3.86 via
+`following_sarvadhatuka`. 7.2.81 additionally requires an `A`-initial ending
+over an `a`-final śap, and no parasmaipada apit ending is `A`-initial once
+loṭ-uttama is excluded. 7.3.84 needs an ik-final aṅga and 7.3.86 a laghu ik
+upadhā; the three adādi parasmaipadī roots are `yA`, `vA` and `ad`, none of
+which satisfies either. This is a prediction, not an assumption — the task
+that makes the change verifies all 1080 surfaces before anything else lands.
+
+**Delta on traces: exactly six**, and only from change 2. Widening 1.2.4 makes
+it record a step wherever a parasmaipada apit ending appears, so
+`aBavan`, `BavAmaH`, `Bavanti`, `BaveyuH`, `yAnti` and `yAyuH` each gain one
+`1.2.4` entry. Changes 1 and 3 add no step at all — 3.4.87 and 3.4.103 already
+record, and tagging happens inside them. The six re-pins are a trace
+*improvement*: the atideśa that is actually operative now appears in the
+history that claims to be complete.
 
 Because śnā's text goes `nA` → `n` or `nI` and never to empty, no rule reading
 `p.terms[SHAP]` can silently decline the way the athematic adādi path made them
@@ -323,6 +384,12 @@ optional; the repo's existing goldens are `Bavatu`, `adDi`, `Assva`).
     together), `vfRIte` (ātmanepada 6.4.113), `vfRIze` (8.3.59 ṣatva).
 - **Rule-level guard tests** beside each rule in its stage file, inside/outside
   pattern, per `AGENTS.md`. Specifically:
+  - 1.2.4 (first application) now tags `tas` / `Ji` / `vas` / `mas` in a
+    parasmaipada derivation, still declines on `tip` / `sip` / `mip`, and
+    still declines for loṭ uttama in both padas — the `BavAva` tripwire named
+    in the test.
+  - 3.4.78 tags `Tag::Pit` on `tip` / `sip` / `mip` and on nothing else;
+    3.4.87's `hi` comes out apit and ṅit; 3.4.103's ending comes out ṅit.
   - 3.1.81 fires on `Tag::Kryadi` and declines on every other gaṇa tag.
   - 3.1.83 fires on a consonant-final root before `hi` and declines on a
     vowel-final one (the `vrIRIhi` case), and declines when the ending is not
@@ -367,15 +434,27 @@ optional; the repo's existing goldens are `Bavatu`, `adDi`, `Assva`).
    in sūtra order and this slice keeps them there. If it crosses that mark,
    extracting the 7.x guṇa rules into their own stage file is the obvious
    mechanical follow-up — explicitly **not** part of this slice.
-5. **Root-set discipline.** Five of the six roots were chosen partly for what
+5. **The apit widening is the slice's highest-blast-radius change.** It alters
+   a tag that every derivation in the repo passes through, and it lands before
+   any kryādi code exists — deliberately, so its effect is measured against a
+   suite that is otherwise untouched. It is also the one change whose
+   "no delta" claim rests on an argument (no adādi parasmaipadī root has an
+   ik-final aṅga or a laghu ik upadhā) rather than on a rule's own guard. If a
+   surface form moves, the argument is wrong and the widening needs a
+   narrower form — do not adjust a golden to match.
+6. **Root-set discipline.** Five of the six roots were chosen partly for what
    they *avoid* (6.4.24, 7.3.79, 7.3.80, 8.4.39, saṁprasāraṇa). Adding a
    seventh kryādi root casually will reintroduce one of those; the deferral
    list above is the checklist.
 
 ## Success criteria
 
-- All **1296** goldens validate `VALID`; the 1080 pre-existing forms and their
-  traces are byte-identical to `main` after both slices.
+- All **1296** goldens validate `VALID`; the 1080 pre-existing **surface
+  forms** are byte-identical to `main` after both slices.
+- Pre-existing **traces** are byte-identical except for exactly six —
+  `aBavan`, `BavAmaH`, `Bavanti`, `BaveyuH`, `yAnti`, `yAyuH` — each of which
+  gains one `1.2.4` step from the apit-layer widening, and no other change.
+  Any seventh trace delta is a bug, not a re-pin.
 - Every new rule is pinned by an ordered trace *and* by inside/outside guard
   tests in its stage file.
 - `asmaran` and `BAzante` still derive with a dental `n`, and a test names them
