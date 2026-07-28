@@ -73,8 +73,9 @@ pub(crate) fn is_khar(c: char) -> bool {
 }
 
 /// 8.4.1's trigger set: `r`, `z`, and the r-vowels `f`/`F`, which contain the
-/// r-sound by 1.1.51 *uraṇ raparaḥ*. `S` is deliberately absent — it is not
-/// `z`, which is why varSanti keeps its dental `n`.
+/// r-sound by 1.1.51 *uraṇ raparaḥ*. `S` (the palatal śa) is deliberately
+/// absent — it is not `z` (the retroflex ṣa) despite the visual similarity,
+/// so a following `n` stays dental across it.
 pub(crate) fn is_natva_trigger(c: char) -> bool {
     matches!(c, 'r' | 'z' | 'f' | 'F')
 }
@@ -184,7 +185,8 @@ mod tests {
         for c in ['r', 'z', 'f', 'F'] {
             assert!(is_natva_trigger(c), "{c} should trigger Natva");
         }
-        // S is NOT z. varSanti keeps its dental n precisely because of this.
+        // S is NOT z: a following n stays dental across it (avartanta's t
+        // is the existing golden that pins the analogous non-trigger case).
         for c in ['S', 's', 'n', 'a', 'l', 'v'] {
             assert!(!is_natva_trigger(c), "{c} should not trigger Natva");
         }
@@ -207,9 +209,10 @@ mod tests {
         for c in ['p', 'P', 'b', 'B', 'm'] {
             assert!(is_natva_intervener(c), "pu member {c} should intervene");
         }
-        // Everything else BREAKS the intervention. These three are the ones
-        // that protect existing goldens: S (varSanti), t (avartanta), and the
-        // retroflex R itself (amuzRan's final n stays dental).
+        // Everything else BREAKS the intervention. `t` is the one that
+        // protects an existing golden (avartanta); `S` and the retroflex `R`
+        // itself are the same non-trigger, non-intervener shape but have no
+        // curated root exercising them yet.
         for c in [
             'S', 's', 'z', 't', 'T', 'd', 'D', 'n', 'R', 'c', 'j', 'w', 'q', 'l',
         ] {

@@ -507,6 +507,15 @@ mod tests {
         let mut p = natva_prakriya("vf", "nI", "te");
         assert!((rule.apply)(&mut p));
         assert_eq!(p.text(), "vfRIte");
+        // 8.4.2 must decline on the same adjacent input: `j == i` (nothing
+        // intervened) is `break j < i` = `break false`, and the two rules
+        // must stay disjoint so a trace credits 8.4.1, not 8.4.2, here. A
+        // mutant turning that `break j < i` into `break true` would make
+        // 8.4.2 fire wherever 8.4.1 does, and nothing else in this file
+        // would catch it.
+        let mut p = natva_prakriya("muz", "nA", "ti");
+        let r842 = rules().find(|r| r.id == "8.4.2").unwrap();
+        assert!(!(r842.apply)(&mut p), "8.4.2 must not fire on adjacency");
     }
 
     #[test]
@@ -563,9 +572,18 @@ mod tests {
 
     #[test]
     fn natva_declines_when_a_non_intervener_breaks_the_run() {
-        // varSanti: S is not z and not an aw member, so it breaks the run
-        // between r and n. avartanta: t likewise. Both are existing goldens.
-        for (anga, vikarana, ending) in [("varS", "a", "nti"), ("a", "varta", "nta")] {
+        // varS + A + ni: v a r S A n i. The n is followed by i (not jhal), so
+        // it IS a target and the backward scan actually runs -- unlike a
+        // pre-jhal case, where is_natva_target declines before the scan ever
+        // starts. The scan walks the aw vowel A, then hits S: not a trigger
+        // (z, not S) and not an intervener, so it breaks. varS is not a
+        // curated root; this case is constructed to exercise that break.
+        //
+        // a + varta + nta: avartanta IS an existing golden (see
+        // paradigm.rs), but t is a jhal immediately after n, so this case is
+        // decided by is_natva_target's jhal guard (8.3.24) before the scan
+        // ever runs -- it does not exercise the intervener break above.
+        for (anga, vikarana, ending) in [("varS", "A", "ni"), ("a", "varta", "nta")] {
             let mut p = natva_prakriya(anga, vikarana, ending);
             let before = p.text();
             for id in ["8.4.1", "8.4.2"] {
