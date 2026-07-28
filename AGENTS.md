@@ -24,23 +24,26 @@
   target under `crates/panini-lipi/fuzz` legitimately omits it, since it uses
   `#![no_main]` plus the libfuzzer harness macro).
 - Grammar changes are gated by the golden paradigm test
-  (`crates/panini/tests/paradigm.rs`, 1080 forms; bhvādi/divādi/tudādi are
-    complete across laṭ/laṅ/loṭ/vidhiliṅ × parasmaipada/ātmanepada, and adādi
-    (gaṇa 2) is now **complete** — √yā/√vā/√ad (parasmaipada) and
-    √ās/√vas/√śī (ātmanepada) are complete across all four lakāras
-    (laṭ/laṅ/loṭ/vidhiliṅ). √ad (parasmaipada) lands the internal junction
-    sandhi cartva (8.4.55); √ās (ātmanepada) lands 7.1.5 ātmanepadeṣv anataḥ
-    and extends 6.1.90 āṭaś ca / 6.1.66 lopo vyor vali to the athematic
-    (śap-luk'd) ātmanepada path (loṭ 1sg + optative); √vas (ātmanepada) is
-    the second witness for 8.2.25 dhi ca, which elides an aṅga-final `s`
-    before a Dh-initial affix (ADve, vaDve) — it replaced the 8.4.53 jaśtva
-    analysis slice 5d shipped, and 8.4.53 was removed as unreachable; √śī
-    (ātmanepada) closes the gaṇa and lands 7.4.21 śīṅaḥ sārvadhātuke guṇaḥ
-    (guṇa despite the ṅit ending — the gaṇa's only visible guṇa), 7.1.6
-    śīṅo ruṭ (Serate), and 8.3.59 ādeśapratyayayoḥ, the engine's first ṣatva
-    (Seze, Sezva) — see
+  (`crates/panini/tests/paradigm.rs`, 1188 forms, five gaṇas; bhvādi/divādi/
+    tudādi are complete across laṭ/laṅ/loṭ/vidhiliṅ × parasmaipada/
+    ātmanepada, and adādi (gaṇa 2) is now **complete** — √yā/√vā/√ad
+    (parasmaipada) and √ās/√vas/√śī (ātmanepada) are complete across all four
+    lakāras (laṭ/laṅ/loṭ/vidhiliṅ). √ad (parasmaipada) lands the internal
+    junction sandhi cartva (8.4.55); √ās (ātmanepada) lands 7.1.5
+    ātmanepadeṣv anataḥ and extends 6.1.90 āṭaś ca / 6.1.66 lopo vyor vali to
+    the athematic (śap-luk'd) ātmanepada path (loṭ 1sg + optative); √vas
+    (ātmanepada) is the second witness for 8.2.25 dhi ca, which elides an
+    aṅga-final `s` before a Dh-initial affix (ADve, vaDve) — it replaced the
+    8.4.53 jaśtva analysis slice 5d shipped, and 8.4.53 was removed as
+    unreachable; √śī (ātmanepada) closes the gaṇa and lands 7.4.21 śīṅaḥ
+    sārvadhātuke guṇaḥ (guṇa despite the ṅit ending — the gaṇa's only visible
+    guṇa), 7.1.6 śīṅo ruṭ (Serate), and 8.3.59 ādeśapratyayayoḥ, the engine's
+    first ṣatva (Seze, Sezva) — see
     `docs/superpowers/specs/2026-07-25-adadi-si-5f-design.md` for the full
-    rule analysis)
+    rule analysis; kryādi (gaṇa 9)'s three parasmaipadī roots — √kliś, √gudh,
+    √aś — landed in slice 9a across all four lakāras, the first gaṇa whose
+    vikaraṇa (śnā) is itself reshaped by the ending — see
+    `docs/superpowers/specs/2026-07-28-kryadi-gana-design.md`)
   and by the ordered-trace test (`crates/panini/tests/trace.rs`), which pins
   rule order. Surface forms and trace order there are the source of truth;
   sūtra ids/names in traces must match the cited reference. In practice that

@@ -708,4 +708,35 @@ mod tests {
         assert!(!(rule.apply)(&mut r));
         assert_eq!(r.terms[ENDING].text, "ti");
     }
+
+    // --- 6.1.101 kryAdi arm: `len() > ENDING` boundary pin -----------------
+    //
+    // The kryādi arm's own guard, above, is `len() > ENDING &&
+    // SHAP.ends_with('A') && ...`. A 2-term Prakriya (aṅga + the śnā
+    // vikaraṇa at SHAP, no ENDING term at all) makes `len() > ENDING`
+    // (2 > 2) false in the original, so the if-block short-circuits before
+    // ever indexing terms[ENDING]. Lat (the default context) keeps the
+    // vidhiliṅ 1sg arm above out of the way regardless of the length
+    // operator (its own guard requires `lakara == VidhiLin`), and the
+    // adādi arm above is skipped because SHAP ("nA") is not empty — so
+    // control reaches the kryādi arm on its own terms. It then falls
+    // through, safely, to the thematic (bhvādi) arm, whose decline check
+    // is `!SHAP.ends_with('a') || !ENDING.starts_with('A')`: SHAP = "nA"
+    // does not end in lowercase `a`, so the first disjunct is true and
+    // short-circuits the `||` before it can index the nonexistent
+    // terms[ENDING] either. The whole call is therefore panic-free and
+    // returns false in the original. The `>` -> `>=` mutant lets the
+    // kryādi arm's if-block through at `len() == ENDING`, and its third
+    // conjunct indexes the nonexistent terms[ENDING], panicking.
+    #[test]
+    fn akah_savarne_dirghah_kryadi_arm_two_term_prakriya_does_not_panic() {
+        let mut p = Prakriya {
+            terms: vec![Term::new("kliS"), Term::new("nA")],
+            log: vec![],
+            ..Default::default()
+        };
+        let rule = rules().find(|r| r.id == "6.1.101").unwrap();
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "kliS");
+    }
 }
