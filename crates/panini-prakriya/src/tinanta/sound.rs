@@ -75,7 +75,6 @@ pub(crate) fn is_khar(c: char) -> bool {
 /// 8.4.1's trigger set: `r`, `z`, and the r-vowels `f`/`F`, which contain the
 /// r-sound by 1.1.51 *uraṇ raparaḥ*. `S` is deliberately absent — it is not
 /// `z`, which is why varSanti keeps its dental `n`.
-#[allow(dead_code)]
 pub(crate) fn is_natva_trigger(c: char) -> bool {
     matches!(c, 'r' | 'z' | 'f' | 'F')
 }
@@ -93,7 +92,6 @@ pub(crate) fn is_natva_trigger(c: char) -> bool {
 ///
 /// Note `r` and the r-vowels are BOTH triggers and interveners. Callers must
 /// test for a trigger first; see 8.4.2's backward scan.
-#[allow(dead_code)]
 pub(crate) fn is_natva_intervener(c: char) -> bool {
     is_vowel(c)
         || matches!(

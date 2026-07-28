@@ -135,8 +135,14 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "smf",
         "loT",
         [
-            "smaratu", "smaratAm", "smarantu", "smara", "smaratam", "smarata", "smarAni",
-            "smarAva", "smarAma",
+            // uttama eka is smarARi, not smarAni: smar's r and the Ani
+            // ending's n are separated only by the aw vowel A (6.1.101's
+            // savarRa merge), so 8.4.2 retroflexes it -- same mechanism as
+            // karavARi (< kf). Contrast BavAni (< BU), which has no r and
+            // keeps its dental n. This entry predates Ratva modelling and
+            // was wrong; the new tripAdI rules 8.4.1/8.4.2 caught it.
+            "smaratu", "smaratAm", "smarantu", "smara", "smaratam", "smarata", "smarARi", "smarAva",
+            "smarAma",
         ],
     ),
     (

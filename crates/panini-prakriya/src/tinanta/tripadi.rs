@@ -4,9 +4,54 @@
 //! `SHAP` (index 1); `terms[SHAP].text` may be empty (2.4.72). See
 //! `super::terms`.
 
+use crate::prakriya::Prakriya;
 use crate::rule::{Rule, RuleKind};
-use crate::tinanta::sound::{cartva_of, is_jhal, is_khar, is_vowel};
+use crate::tinanta::sound::{
+    cartva_of, is_jhal, is_khar, is_natva_intervener, is_natva_trigger, is_vowel,
+};
 use crate::tinanta::terms::{ANGA, SHAP};
+
+/// The assembled word as `(term index, char index, char)`, so a tripādī rule
+/// can reason over the whole pada and still write back into the right term.
+fn word_chars(p: &Prakriya) -> Vec<(usize, usize, char)> {
+    let mut out = Vec::new();
+    for (ti, t) in p.terms.iter().enumerate() {
+        for (ci, c) in t.text.chars().enumerate() {
+            out.push((ti, ci, c));
+        }
+    }
+    out
+}
+
+/// Replace one character of one term, addressed as `word_chars` reports it.
+fn set_char(p: &mut Prakriya, term: usize, idx: usize, to: char) {
+    let mut s: Vec<char> = p.terms[term].text.chars().collect();
+    s[idx] = to;
+    p.terms[term].text = s.into_iter().collect();
+}
+
+/// Shared precondition for 8.4.1 and 8.4.2: the `n` at `i` is a legal target.
+///
+/// Two sūtras are folded in here as guards rather than modelled as rules,
+/// which is this slice's one stated simplification:
+///   - **8.4.37 padāntasya**: ṇatva never applies to a word-final n
+///     (asmaran, not *asmaraR).
+///   - **8.3.24 naś cāpadāntasya jhali**: a non-padānta n before a jhal has
+///     ALREADY become an anusvāra by the time the 8.4 rules run, and 8.4.58
+///     restores it afterwards — so no such n can be a target (BAzante, not
+///     *BAzaRte). This engine has no anusvāra machinery; the condition below
+///     is exactly equivalent within tripādī order.
+///
+/// Retire both in favour of the real rules when liṭ/luṅ bring 8.3.24 in.
+fn is_natva_target(w: &[(usize, usize, char)], i: usize) -> bool {
+    if w[i].2 != 'n' {
+        return false;
+    }
+    if i + 1 == w.len() {
+        return false; // 8.4.37 padAntasya
+    }
+    !is_jhal(w[i + 1].2) // 8.3.24 has already bled this case
+}
 
 pub(crate) static TRIPADI: &[Rule] = &[
     // 8.2.77 hali ca: a root ending in `r`/`v` with a short ik upadhā
@@ -256,6 +301,79 @@ pub(crate) static TRIPADI: &[Rule] = &[
             true
         },
     },
+    // 8.4.1 raṣābhyāṁ no ṇaḥ samānapade: `n` → `ṇ` when `r`/`ṣ` DIRECTLY
+    // precedes it within the same pada. muz + nAti → muzRAti; vf + nIte →
+    // vfRIte (the r-vowel triggers it by 1.1.51 uraṇ raparaḥ).
+    //
+    // The engine's first ṇatva. Kept disjoint from 8.4.2 — adjacency here,
+    // intervention there — so a trace names the sūtra that actually applied.
+    Rule {
+        id: "8.4.1",
+        name: "razAByAM no RaH samAnapade",
+        kind: RuleKind::Vidhi,
+        apply: |p| {
+            let w = word_chars(p);
+            for i in 0..w.len() {
+                if !is_natva_target(&w, i) || i == 0 {
+                    continue;
+                }
+                if !is_natva_trigger(w[i - 1].2) {
+                    continue;
+                }
+                let before = p.snapshot();
+                set_char(p, w[i].0, w[i].1, 'R');
+                p.record("8.4.1", "razAByAM no RaH samAnapade", before);
+                return true;
+            }
+            false
+        },
+    },
+    // 8.4.2 aṭkupvāṅnumvyavāye'pi: 8.4.1 applies even when aṭ, ku or pu
+    // intervene. vrI + nAti → vrIRAti (the aṭ vowel `I`); muz + Ana → muzARa
+    // (the aṭ vowel `A`).
+    //
+    // The backward scan takes the NEAREST trigger, and must test for a
+    // trigger BEFORE testing for an intervener: `r` and the r-vowels are in
+    // both sets, so a greedy intervener scan would walk straight past the `r`
+    // of `vrI` and find nothing.
+    //
+    // `j == i` means nothing intervened — that is 8.4.1's case, and this rule
+    // declines so the trace credits the right sūtra.
+    Rule {
+        id: "8.4.2",
+        name: "awkupvANnumvyavAye'pi",
+        kind: RuleKind::Vidhi,
+        apply: |p| {
+            let w = word_chars(p);
+            for i in 0..w.len() {
+                if !is_natva_target(&w, i) {
+                    continue;
+                }
+                let mut j = i;
+                let fired = loop {
+                    if j == 0 {
+                        break false;
+                    }
+                    let c = w[j - 1].2;
+                    if is_natva_trigger(c) {
+                        break j < i;
+                    }
+                    if !is_natva_intervener(c) {
+                        break false;
+                    }
+                    j -= 1;
+                };
+                if !fired {
+                    continue;
+                }
+                let before = p.snapshot();
+                set_char(p, w[i].0, w[i].1, 'R');
+                p.record("8.4.2", "awkupvANnumvyavAye'pi", before);
+                return true;
+            }
+            false
+        },
+    },
 ];
 
 #[cfg(test)]
@@ -368,5 +486,93 @@ mod tests {
         };
         assert!(!(rule.apply)(&mut p));
         assert_eq!(p.terms[ENDING].text, "se");
+    }
+
+    fn natva_prakriya(anga: &str, vikarana: &str, ending: &str) -> Prakriya {
+        Prakriya {
+            terms: vec![Term::new(anga), Term::new(vikarana), Term::new(ending)],
+            log: vec![],
+            ..Default::default()
+        }
+    }
+
+    #[test]
+    fn natva_fires_adjacent_under_8_4_1() {
+        // muz + nA + ti: z directly precedes the n.
+        let mut p = natva_prakriya("muz", "nA", "ti");
+        let rule = rules().find(|r| r.id == "8.4.1").unwrap();
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.text(), "muzRAti");
+        // vf + nI + te: the r-vowel triggers it (1.1.51).
+        let mut p = natva_prakriya("vf", "nI", "te");
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.text(), "vfRIte");
+    }
+
+    #[test]
+    fn natva_fires_across_intervention_under_8_4_2() {
+        // vrI + nA + ti: r, then the aw vowel I, then n. 8.4.1 must DECLINE
+        // here (not adjacent) and 8.4.2 must fire.
+        let mut p = natva_prakriya("vrI", "nA", "ti");
+        let r841 = rules().find(|r| r.id == "8.4.1").unwrap();
+        assert!(!(r841.apply)(&mut p), "8.4.1 must not fire non-adjacently");
+        let r842 = rules().find(|r| r.id == "8.4.2").unwrap();
+        assert!((r842.apply)(&mut p));
+        assert_eq!(p.text(), "vrIRAti");
+        // muz + Ana (the SAnac form): z, the aw vowel A, then n.
+        let mut p = natva_prakriya("muz", "Ana", "");
+        assert!((r842.apply)(&mut p));
+        assert_eq!(p.text(), "muzARa");
+    }
+
+    #[test]
+    fn natva_declines_word_finally_per_8_4_37() {
+        // asmaran: r, the aw vowel a, then a WORD-FINAL n. 8.4.37 padAntasya
+        // forbids Natva there. This is an existing golden -- a mutant that
+        // drops this guard breaks the 1080, not just this test.
+        assert_eq!(
+            form_g("smf", Lakara::Lan, Purusha::Prathama, Vacana::Bahu),
+            "asmaran"
+        );
+        let mut p = natva_prakriya("a", "smar", "an");
+        for id in ["8.4.1", "8.4.2"] {
+            let rule = rules().find(|r| r.id == id).unwrap();
+            assert!(!(rule.apply)(&mut p), "{id} fired word-finally");
+        }
+        assert_eq!(p.text(), "asmaran");
+    }
+
+    #[test]
+    fn natva_declines_before_a_jhal_because_8_3_24_bleeds_it() {
+        // BAzante: z, the aw vowel a, then n -- but the n is followed by the
+        // jhal `t`. In the full grammar 8.3.24 naS cApadAntasya jhali has
+        // already made that n an anusvAra by the time 8.4.1 runs, and 8.4.58
+        // restores it afterwards. This engine has no anusvAra machinery, so
+        // the bleeding is encoded as this guard. Another existing golden.
+        assert_eq!(
+            form_g("BAz", Lakara::Lat, Purusha::Prathama, Vacana::Bahu),
+            "BAzante"
+        );
+        let mut p = natva_prakriya("BAz", "a", "nte");
+        for id in ["8.4.1", "8.4.2"] {
+            let rule = rules().find(|r| r.id == id).unwrap();
+            assert!(!(rule.apply)(&mut p), "{id} fired before a jhal");
+        }
+        assert_eq!(p.text(), "BAzante");
+    }
+
+    #[test]
+    fn natva_declines_when_a_non_intervener_breaks_the_run() {
+        // varSanti: S is not z and not an aw member, so it breaks the run
+        // between r and n. avartanta: t likewise. Both are existing goldens.
+        for (anga, vikarana, ending) in [("varS", "a", "nti"), ("a", "varta", "nta")] {
+            let mut p = natva_prakriya(anga, vikarana, ending);
+            let before = p.text();
+            for id in ["8.4.1", "8.4.2"] {
+                let rule = rules().find(|r| r.id == id).unwrap();
+                assert!(!(rule.apply)(&mut p), "{id} fired on {before}");
+            }
+            assert_eq!(p.text(), before);
+        }
     }
 }
