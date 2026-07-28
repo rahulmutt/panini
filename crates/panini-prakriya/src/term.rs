@@ -50,4 +50,7 @@ impl Term {
     pub fn add(&mut self, tag: Tag) {
         self.tags.insert(tag);
     }
+    pub fn remove(&mut self, tag: Tag) {
+        self.tags.remove(&tag);
+    }
 }
