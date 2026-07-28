@@ -155,8 +155,11 @@ the engine yet) and the rule is guarded to śnā accordingly.
 (√dā, √dhā), which are gaṇa 3 and out of scope; the exclusion is noted in the
 rule comment rather than implemented, since no ghu root can reach this rule.
 
-Both rules read the following ending through the existing
-`following_sarvadhatuka` helper. Order between them is immaterial — their
+Both rules read `p.terms[ENDING]` **directly**, not through
+`following_sarvadhatuka`. The helper answers "what immediately follows the
+*aṅga*", which for kryādi is śnā itself — these rules need what follows
+*śnā*. Using the helper here would have them interrogate their own target.
+Order between them is immaterial — their
 conditions are disjoint (ajādi vs halādi) — but sūtra order is kept.
 
 **Placement: at the end of `anga.rs`, after 7.3.101.** Not "in sūtra order
@@ -233,7 +236,9 @@ decline. This gaṇa introduces no new athematic arms.
 traces stay honest about which one fired:
 
 - **8.4.1** when `r`/`ṣ` **directly** precedes the `n` — `muz + nAti` →
-  `muzRAti`, `vf + nIte` → `vfRIte`.
+  `muzRAti`, `vf + nIte` → `vfRIte`. The trigger set is `r z f F`: `ṛ` and
+  `ṝ` count as `r` for this rule, by 1.1.51 *uraṇ raparaḥ* — which is the
+  only reason √vṛṅ retroflexes at all.
 - **8.4.2** when only **aṭ / ku / pu / āṅ / num** intervene — `vrI + nAti` →
   `vrIRAti` (aṭ `ī`), `muz + Ana` → `muzARa` (aṭ `ā`).
 
@@ -283,6 +288,24 @@ The cost is trace fidelity, and it is a real cost: a derivation whose correct
 history *records* 8.4.37 will show no such step. This is stated in both rule
 comments, and it is the first thing liṭ and luṅ will want retired — they need
 the anusvāra machinery for their own reasons.
+
+### 8.3.59 must stop assuming the aṅga abuts the affix
+
+√vṛṅ's `vfRIzva` and `vfRIze` need the existing 8.3.59 *ādeśapratyayayoḥ*, and
+it declines on them as written. The rule takes "the first non-empty term after
+the aṅga", checks that it is s-initial, and then reads **`p.terms[ANGA]`'s last
+char** as the iṇ-koḥ trigger. For kryādi the first non-empty term is śnā
+(`nI`), not the affix — and the trigger is śnā's `ī`, which is not in the aṅga
+at all. Left alone, `vfRIzva` surfaces as \*`vfRIsva`.
+
+The fix is to search for the **s-initial** term and to read the sound
+immediately before it — the last char of the nearest non-empty preceding term,
+which is the aṅga only when nothing intervenes. Every earlier gaṇa reached
+8.3.59 with the affix directly on the aṅga (adādi's śap is luk'd), so the
+assumption held until now; kryādi is the first non-empty vikaraṇa to sit in
+that gap. The five forms already pinning the rule — `Seze`, `Sezva`, and the
+declines `Assva`, `vasse`, `laBasva` — all keep their current outcome, since
+the sound before their affix is unchanged by the rewrite.
 
 ## Data
 
