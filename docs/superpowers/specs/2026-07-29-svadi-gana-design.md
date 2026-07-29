@@ -36,6 +36,11 @@ aṅga as a fixed term index (`ANGA`, "the dhātu"), so it currently expresses o
 the first. Slice 5a adds the second as a **second application of 7.3.84**, in
 the same way the pipeline already carries two applications of 1.2.4.
 
+That second application is the first of **four** places where the engine has to
+stop treating "the aṅga" as "the root": 6.1.78, 6.1.90 and 6.4.101 all read the
+root's final sound where svādi needs the vikaraṇa's, and all three are modified
+rather than added. See "Three existing rules assume the aṅga is the root".
+
 The rest of the gaṇa is the śnu alternation before vowel-initial endings
 (6.4.87 / 6.4.77) and the hi-luk (6.4.106), all three turning on one predicate:
 whether śnu's `u` is preceded by a conjunct.
@@ -77,7 +82,7 @@ Out of scope, deferred:
 |---|---|---|---|
 | **prep 1** | split `anga.rs` into `anga.rs` + `guna.rs` | 1296 → 1296 | none |
 | **prep 2** | `Dhatu::id`, gaṇa-qualified root identity | 1296 → 1296 | none |
-| **5a** | six roots, the śnu core | 1296 → 1512 | 3.1.73, 7.3.84 (2nd application), 6.4.87, 6.4.77, 6.4.106; 6.4.101 modified |
+| **5a** | six roots, the śnu core | 1296 → 1512 | new: 3.1.73, 6.4.87, 6.4.77, 6.4.106; 7.3.84 second application; modified: 6.1.78, 6.1.90, 6.4.101 |
 | **5b** | optional-rule support | 1512 → 1512 (+8 alternates) | 6.4.107 |
 
 Both prep commits are behaviour-preserving and are verified the same way: the
@@ -276,6 +281,29 @@ Placed immediately after the existing **6.4.105 *ato heḥ***, which it continue
 and which supplies the luk. 6.4.105 already declines for svādi on its own guard
 (the stem ends in `u`, not `a`), so the two coexist without interaction.
 
+### Three existing rules assume the aṅga is the root
+
+The second application of 7.3.84 is not an isolated curiosity. It is the first
+of **four** instances of one problem, and the other three are modifications to
+existing rules rather than additions.
+
+Every rule that operates on "the aṅga's final sound" was written when that
+sound was always the *root's* final, because in bhvādi it is (`Bo` + śap), in
+adādi it is (śap luk'd), and in divādi / tudādi / kryādi the aṅga-final vowel
+this family cares about never arises — guṇa is blocked, so no `e`/`o` is ever
+created. Svādi is the first gaṇa where the operative aṅga-final sound sits on
+the **vikaraṇa**, and every such rule has to be told.
+
+| rule | reads | svādi wants | left alone |
+|---|---|---|---|
+| **7.3.84** | `ANGA` final ik | `SHAP` final ik (`nu` → `no`) | \*`Apnuti` |
+| **6.1.78** *eco'yavāyāvaḥ* | `ANGA` final `e`/`o` | `SHAP` final `o` (`no` → `nav`) | \*`ApnoAni` |
+| **6.1.90** *āṭaś ca* | athematic arm gated on `SHAP.is_empty()` | fire for any non-`a`/`A`-final SHAP | \*`aSnavAE` |
+| **6.4.101** *hujhalbhyo her dhiḥ* | `ANGA` final jhal | the sound before the ending | \*`ApnuDi` |
+
+Each is treated below. None of the four is optional, and each is revealed by a
+*different* handful of cells, so no one golden catches them all.
+
 ### 6.4.101 must stop assuming the aṅga abuts the ending — `adesha.rs`
 
 **A modification to an existing rule, not a new one**, and the second instance
@@ -313,6 +341,54 @@ Every existing path either reaches the same answer by the same character or has
 no `hi` left to rewrite. The adādi row is the one that matters: the fallback to
 `ANGA` when śap is empty is what keeps `adDi` working, and it is the reason the
 helper returns the nearest *non-empty* term rather than simply `terms[SHAP]`.
+
+### 6.1.78 needs a vikaraṇa arm — `guna.rs`
+
+6.1.78 *eco'yavāyāvaḥ* opens with
+
+```rust
+let anga_last = p.terms[ANGA].text.chars().last().unwrap();
+let sub = match anga_last { 'e' => "ay", 'o' => "av", _ => return false };
+```
+
+so for √āp (`Ap`, final `p`) it returns before either of its two existing arms
+is consulted. The `o` that needs converting is the one the second 7.3.84 just
+created on the vikaraṇa. Without a third arm, `ApnavAni` surfaces as
+\*`ApnoAni` and `aSnavE` as \*`aSnoAE` — every loṭ uttama cell and the laṅ
+uttama-eka cells, 18 of the 216.
+
+**Third arm:** when `SHAP` ends in `e`/`o` and `ENDING` is vowel-initial,
+convert `SHAP`'s final rather than `ANGA`'s. It is mutually exclusive with both
+existing arms by construction: those two both require `ANGA` to end in `e`/`o`,
+which no svādi root does, and this one requires `SHAP` to end in `e`/`o`, which
+neither śap (`a`), śyan (`ya`), śa (`a`), śnā (`nA`/`n`/`nI`), śānac (`Ana`) nor
+adādi's empty śap ever does. The existing early return has to be restructured so
+it no longer short-circuits before the new arm is reached — that restructuring,
+not the arm itself, is the risky edit, and the 1296-form regression is what
+pins it.
+
+### 6.1.90's athematic arm must widen — `adesha.rs`
+
+The arm that handles loṭ uttama-eka for a stem the coalescence rules did not
+touch is gated on `p.terms[SHAP].text.is_empty()`, with a comment reasoning that
+kryādi is safely excluded because 6.1.101's kryādi arm has already consumed the
+āṭ `A` into SHAP. That reasoning is correct and stays correct. But svādi's SHAP
+at that point is `nav` — not empty, not `a`-final, not `A`-final — so **no arm
+of 6.1.101 fires and no arm of 6.1.90 fires**, and the āṭ `A` is left stranded
+at the head of the ending: `aS` + `nav` + `AE` = \*`aSnavAE`.
+
+**Widen the guard** from `is_empty()` to "SHAP ends in neither `a` nor `A`".
+This is the correction the 3.1.81 comment in `vikarana.rs` predicted in general
+terms — *"a rule that guards on `SHAP.is_empty()` to detect 'the thematic
+coalescence rules didn't apply' still silently declines"* — now with a second
+witness. The no-delta check is by enumeration of SHAP at that point: adādi
+`""` (fires, as before), bhvādi/tudādi `a` or `A`, divādi `ya`/`yA`, kryādi
+`nA`, śānac `Ana` — all excluded by the new test exactly as they were by the
+old one. Svādi's `nav` is the only shape whose answer changes.
+
+Only **two cells** in the whole slice reveal this: `aSnavE` and `stiGnavE`. The
+parasmaipada loṭ uttama endings are `Ani`/`Ava`/`Ama`, whose second character is
+a consonant, so they never enter this arm at all.
 
 ### The *asaṁyogapūrva* predicate
 
@@ -487,7 +563,8 @@ slice introduces:
 | `Apnoti` | the second 7.3.84 fires; the first declines on shape |
 | `ApnutaH` | the second 7.3.84 blocked by 1.1.5 (apit ending) |
 | `Apnuvanti` | 6.4.77 |
-| `ApnavAni` | the 7.3.84 → 6.1.78 order, and that 6.4.77 does not preempt it |
+| `ApnavAni` | the 7.3.84 → 6.1.78 order, 6.1.78's vikaraṇa arm, and that 6.4.77 does not preempt it |
+| `aSnavE` | 6.1.90's widened athematic arm |
 | `Apnuhi` | 6.4.106 declines on the conjunct, and 6.4.101 no longer fires |
 | `hinoti` | the *first* 7.3.84 blocked by 1.1.5 (śnu is ṅit) — no \*`henoti` |
 | `hinvanti` | 6.4.87, and that it precedes 6.4.77 |
@@ -572,8 +649,9 @@ panini-prakriya`). `mise run fmt-check`, `lint` and `audit` clean.
 - `Dhatu::id` resolves `aS.5` and `aS.9` to different rows, and a test asserts
   that both `aSnute` and `aSnAti` validate and that the two ids have different
   gaṇas.
-- `adDi` and `vrIRIhi` are byte-identical after the 6.4.101 change, and a test
-  names them as its tripwires.
+- `adDi` and `vrIRIhi` are byte-identical after the 6.4.101 change, `AsE` after
+  the 6.1.90 change, and `Bavati` / `SayIran` after the 6.1.78 change; a test
+  names each pair as that change's tripwire.
 - The flattened rule order is pinned verbatim at 62 ids (prep) and 67 ids (5a)
   — 6.4.101 is modified in place, so it adds no id.
 - `derive` still carries no grammar branch — only the new `Tag::Svadi` aṅga tag.
