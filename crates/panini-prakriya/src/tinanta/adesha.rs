@@ -4,23 +4,37 @@
 //! `terms[SHAP].text` may be empty (2.4.72). See `super::terms`.
 //!
 //! Three rules here (6.1.90 āṭaś ca, 6.1.66 lopo vyor vali, and 6.1.78 over
-//! in `super::anga`) carry explicit *athematic arms*, but they split on how
-//! kryādi's śnā vikaraṇa is covered:
+//! in `super::guna`) carry explicit *athematic arms*, and each now sits at a
+//! different point after slice 9b/Task 9 widened two of them:
 //!   - 6.1.66 guards its athematic arm on `!SHAP.ends_with('a')`, which
 //!     covers BOTH athematic paths — adādi's śap-luk'd empty SHAP and
 //!     kryādi's śnā, reduced by 6.4.112/6.4.113 to a non-empty, non-`a`-final
 //!     `n`/`nI`. It was widened from `SHAP.is_empty()` in slice 9b, which
 //!     silently declined for kryādi's non-empty SHAP and produced *vfRIyta
 //!     instead of vfRIta; see its own comment.
-//!   - 6.1.90 and 6.1.78 still guard their athematic arms on
-//!     `SHAP.is_empty()`, and stay adādi-only — correctly, not by oversight.
-//!     Kryādi's `A`-final SHAP never reaches either arm: 6.1.101's kryādi
-//!     arm elides the ending's redundant leading vowel against SHAP's
-//!     pre-existing `A`, routing the result through 6.1.90's *thematic* arm
-//!     (nA + AE → nA + E → nE → vfRE), and kryādi never guṇates
-//!     (`following_sarvadhatuka` returns the non-empty ṅit śnā, so 1.1.5
-//!     blocks 7.3.84/7.3.86), so 6.1.78's `e`/`o`-final-aṅga precondition
-//!     is unreachable for it.
+//!   - 6.1.90's athematic arm (below) guards on "SHAP ends in neither `a`
+//!     nor `A`", widened from `is_empty()` in Task 9 to admit svādi's `nav`
+//!     (Task 5), which is non-empty but also neither `a`- nor `A`-final.
+//!     Kryādi's `A`-final `nA` is still excluded by the same guard — 6.1.101's
+//!     kryādi arm has already elided the ending's redundant leading vowel
+//!     against SHAP's pre-existing `A`, routing the result through 6.1.90's
+//!     *thematic* arm instead (nA + AE → nA + E → nE → vfRE). Kryādi's
+//!     REDUCED `n`/`nI` are never excluded by this guard directly (they are
+//!     neither `a`- nor `A`-final either) but are unreachable here for a
+//!     pipeline reason, not a guard reason: 6.4.112/6.4.113 both require the
+//!     ending to be Ngit, and 1.2.4 excludes the only endings that ever carry
+//!     an āṭ (loṭ uttama, 3.4.92) from Ngit — so an ending shaped `A ec`
+//!     never coexists with a reduced `n`/`nI` SHAP. See the athematic arm's
+//!     own comment below for the mechanics, and `vikarana.rs`'s 3.1.81
+//!     comment for the general correction this widening implements.
+//!   - 6.1.78's athematic arm (`super::guna`) is UNCHANGED by Task 9 and
+//!     still guards on `SHAP.is_empty()`, staying adādi-only correctly:
+//!     kryādi never guṇates its aṅga (the ṅit śnā blocks 7.3.84/7.3.86 via
+//!     1.1.5), so an `e`/`o`-final aṅga — that arm's whole precondition — is
+//!     unreachable for it regardless of SHAP shape. Svādi reaches 6.1.78 by
+//!     an entirely separate, THIRD arm added in this slice (Task 5): a
+//!     vikaraṇa arm that reads an `e`/`o`-final SHAP directly (`no` → `nav`),
+//!     never touching the athematic arm's `is_empty()` guard at all.
 //!
 //! Those arms duplicate a follower lookup on purpose: each is pinned by its
 //! own `*_athematic_*` guard tests asserting disjointness from its thematic
@@ -218,8 +232,10 @@ pub(crate) static ADESHA: &[Rule] = &[
             // in general terms — is_empty() as a stand-in for "the thematic
             // path didn't apply" silently declines for a non-empty,
             // non-`a`-final vikaraṇa.
-            let shap = &p.terms[SHAP].text;
-            if p.terms.len() > ENDING && !shap.ends_with('a') && !shap.ends_with('A') {
+            if p.terms.len() > ENDING
+                && !p.terms[SHAP].text.ends_with('a')
+                && !p.terms[SHAP].text.ends_with('A')
+            {
                 let mut it = p.terms[ENDING].text.chars();
                 if it.next() == Some('A')
                     && let Some(ec) = it.next()
@@ -558,16 +574,19 @@ mod tests {
     }
 
     #[test]
-    fn awas_ca_athematic_arm_requires_an_empty_shap() {
-        // The athematic arm must fire ONLY when the śap is luk'd (empty) —
-        // that is what distinguishes the adADi (athematic) path from the
-        // thematic one, whose A-widened śap is handled by the thematic arm
-        // above. Here the śap is the non-empty "a" and the ending is "AE"
-        // (A + ec): the thematic arm declines (its guard is
-        // SHAP.ends_with('A'), and "a" does not), and the athematic arm
-        // must ALSO decline because the śap is not empty, leaving "AE"
-        // untouched. The `&&` -> `||` mutant drops the empty-śap
-        // requirement (len() > ENDING is always true), so the mutant fires
+    fn awas_ca_athematic_arm_declines_for_an_a_final_shap() {
+        // Task 9 widened the athematic arm's guard from `SHAP.is_empty()` to
+        // "SHAP ends in neither `a` nor `A`", so it is no longer the empty
+        // śap that gates this arm — an `a`-final śap (the ordinary thematic
+        // śap `a`, not yet widened to `A` by 6.1.101) must ALSO decline, and
+        // for the same reason as an `A`-final one: 6.1.97 (ato guṇe) is that
+        // shape's business, not this arm's. Here the śap is the non-empty
+        // "a" and the ending is "AE" (A + ec): the thematic arm declines
+        // (its own guard is SHAP.ends_with('A'), and "a" does not), and the
+        // athematic arm must ALSO decline because "a" ends in `a`, leaving
+        // "AE" untouched. The `&&` -> `||` mutant on the length check
+        // (`len() > ENDING`) makes the guard always true regardless of the
+        // two `ends_with` conjuncts short-circuiting it, so the mutant fires
         // and wrongly coalesces "AE" -> "E".
         let mut p = Prakriya {
             terms: vec![Term::new("laB"), Term::new("a"), Term::new("AE")],
@@ -606,8 +625,30 @@ mod tests {
 
     #[test]
     fn atash_ca_athematic_arm_stays_off_a_and_capital_a_final_shap() {
-        // bhvādi (`A` after 6.1.101) and kryādi (`nA`) are handled by the
-        // thematic arm; this arm must keep its hands off both.
+        // The ending is fixed at "AE", whose first char is 'A' — never one
+        // of the thematic arm's `e|E|o|O`, so the thematic arm can never
+        // fire here regardless of SHAP. That means for every SHAP in this
+        // list, NO arm may fire: bhvādi (`A`) and kryādi (`nA`) are the
+        // thematic arm's business in a different ending shape, not this
+        // one, and 6.1.101 has already acted for both before this arm would
+        // ever see them. The assertion is unconditional, not gated on
+        // `fired`: gating on it would let a mutant that drops
+        // `!ends_with('a')` or `!ends_with('A')` fire the athematic arm,
+        // coalesce "AE" -> "E", and skip the very assertion meant to catch
+        // it.
+        //
+        // Deliberately NOT extended to kryādi's reduced `n`/`nI`
+        // (6.4.112/6.4.113): those are excluded from ever meeting an "AE"
+        // ending by a PIPELINE guarantee (3.4.92 adds āṭ only to loṭ
+        // uttama; 1.2.4 excludes loṭ uttama from Ngit; 6.4.112/6.4.113 both
+        // require Ngit) documented in the module doc above, not by this
+        // rule's own guard. Verified directly: `"n".ends_with('a')` and
+        // `"n".ends_with('A')` are both false (same for `"nI"`), so a
+        // hand-built Prakriya pairing SHAP "n"/"nI" with ENDING "AE" WOULD
+        // make this arm fire — that combination just never arises through
+        // the real pipeline. Adding those two rows here would pin an
+        // artificial state this rule was never asked to reject, and would
+        // fail on unmodified code (not just under a guard-deletion mutant).
         for shap in ["a", "A", "ya", "yA", "nA", "Ana"] {
             let mut p = Prakriya {
                 terms: vec![Term::new("laB"), Term::new(shap), Term::new("AE")],
@@ -615,11 +656,8 @@ mod tests {
             };
             let rule = rules().find(|r| r.id == "6.1.90").unwrap();
             let fired = (rule.apply)(&mut p);
-            // Either the thematic arm fired (A-final SHAP) or nothing did; in
-            // neither case may the ENDING keep a stranded leading A.
-            if !fired {
-                assert_eq!(p.terms[ENDING].text, "AE", "SHAP {shap:?}");
-            }
+            assert!(!fired, "SHAP {shap:?}: no arm may fire on an AE ending");
+            assert_eq!(p.terms[ENDING].text, "AE", "SHAP {shap:?}");
         }
     }
 
