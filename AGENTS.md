@@ -7,10 +7,20 @@
 - Optional dev/audit tooling is pinned in `mise.dev.toml`. Install it on demand:
   `MISE_ENV=dev mise install`. This provides:
   - `cargo-mutants` (mutation testing) — `mise run mutants` runs
-    `cargo mutants --package panini-prakriya --test-workspace=true` (the
-    `--test-workspace` flag is required so the mutation run exercises the
-    `panini` crate's golden paradigm/trace/roundtrip tests, not just
-    `panini-prakriya`'s own unit tests).
+    `cargo mutants --package panini-prakriya --test-workspace=true --timeout
+    300` (the `--test-workspace` flag is required so each **mutant** run
+    exercises the `panini` crate's golden paradigm/trace/roundtrip tests, not
+    just `panini-prakriya`'s own unit tests — but it does NOT apply to
+    cargo-mutants' own **baseline** run, which always exercises only the
+    mutated package's tests regardless of the flag). The explicit, generous
+    `--timeout` is required for the same asymmetry: cargo-mutants calibrates
+    its per-mutant timeout from the baseline's runtime, but the baseline here
+    (`panini-prakriya`'s unit tests, ~2s) is far faster than an actual mutant
+    run (the full `panini` golden suite, ~95s at 1512 forms). Under a short
+    cap — or auto-derived timing, which falls back to a 20s floor — a mutant
+    that changes nothing detectable exceeds the cap and is recorded as a
+    **timeout rather than a survivor**, so a reported zero-survivor run can
+    be vacuous instead of clean. Always pass an explicit, generous timeout.
   - `cargo-deny` + `cargo-audit` (supply-chain checks) — `mise run audit` runs
     `cargo audit && cargo deny check` and is expected to pass, including
     `cargo deny check advisories`.
