@@ -7,6 +7,7 @@
 
 use crate::prakriya::Prakriya;
 use crate::term::Term;
+use crate::tinanta::sound::is_vowel;
 
 /// Index of the aṅga (the dhātu) in `terms`. Stable across the pipeline.
 pub(crate) const ANGA: usize = 0;
@@ -74,5 +75,100 @@ pub(crate) fn following_sarvadhatuka(p: &Prakriya) -> Option<&Term> {
         Some(shap) if !shap.text.is_empty() => Some(shap),
         Some(_) => p.terms.get(ENDING),
         None => None,
+    }
+}
+
+/// The sound immediately preceding the ending — the last character of the
+/// nearest **non-empty** term before `ENDING`.
+///
+/// Rules that ask "what does the ending attach to?" cannot read `ANGA`: a
+/// non-empty vikaraṇa sits between the two, and it is the vikaraṇa's final
+/// sound the ending actually meets. They cannot read `SHAP` either, because
+/// 2.4.72 luks śap to an empty string for adādi, where the ending really
+/// does attach to the root.
+///
+/// The fallback is what keeps `adDi` working: with śap empty the search
+/// walks past it to the root's `d`. Two other rules open-code the identical
+/// walk for the same reason, rather than calling this helper, because each
+/// keeps its own independent mutation pin (see `adesha.rs`'s note on why
+/// follower lookups are duplicated rather than shared): 8.3.59 in
+/// `tripadi.rs` (parameterized on the s-initial affix's own index rather
+/// than `ENDING`) and 7.1.5 in `anga.rs` (expression-for-expression
+/// identical). Keep this comment's enumeration current if a third copy is
+/// ever added — the point is to always know how many there are.
+///
+/// Returns `None` for a prakriyā with no term before the ending.
+pub(crate) fn sound_before_ending(p: &Prakriya) -> Option<char> {
+    p.terms
+        .get(..ENDING)?
+        .iter()
+        .rev()
+        .find_map(|t| t.text.chars().last())
+}
+
+/// Is śnu's `u` *asaṁyogapūrva* — preceded by a single consonant rather
+/// than a conjunct?
+///
+/// The condition 6.4.87 inherits by anuvṛtti from 6.4.82 *er anekāco'saṁ-
+/// yogapūrvasya*, and the same condition 6.4.106 states in its own text.
+/// The `u` is always preceded by śnu's own `n`, so the question reduces to
+/// whether that `n` follows a vowel — i.e. whether the aṅga's final
+/// character is a vowel.
+///
+/// √hi and √ri qualify (`hinu`, `riRu`); √āp, √śak, √aś and √ṣṭigh do not
+/// (`Apnu`, `Saknu`, `aSnu`, `stiGnu`). √aś is the counter-intuitive one:
+/// it looks like √su, but the root's own final `S` joins śnu's `n` into a
+/// conjunct — which is why `aSnumahe` has no lopa alternate while
+/// `sunmahe` does.
+///
+/// Returns false whenever the vikaraṇa is not śnu, so callers do not need
+/// their own gaṇa test.
+pub(crate) fn shnu_asamyogapurva(p: &Prakriya) -> bool {
+    if p.terms.get(SHAP).map(|t| t.text.as_str()) != Some("nu") {
+        return false;
+    }
+    p.terms[ANGA].text.chars().last().is_some_and(is_vowel)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::term::{Tag, Term};
+
+    #[test]
+    fn shnu_asamyogapurva_is_true_exactly_for_the_vowel_final_roots() {
+        // The `u` of śnu is asaṁyogapūrva iff the `n` follows a vowel — i.e.
+        // iff the aṅga's final character is a vowel. A wrong predicate here
+        // turns hinu into *hinuhi and Apnuhi into *Apnu, both of which look
+        // like plausible Sanskrit, so enumerate rather than rely on goldens.
+        //
+        // BU carries its real bhvādi vikaraṇa text ("a", not "nu"): unlike
+        // the other controls, its point is to pin the helper's OTHER guard —
+        // "vikaraṇa is not śnu at all" — which only engages when SHAP's text
+        // truly isn't "nu". BU ends in the vowel U, so pairing it with a
+        // literal "nu" SHAP (as every other row does) would make the
+        // vowel-final check itself return true, giving a false positive that
+        // masks exactly the silent-failure risk this test exists to catch.
+        for (root, vikarana, expected) in [
+            ("hi", "nu", true),    // svādi, vowel-final
+            ("ri", "nu", true),    // svādi, vowel-final
+            ("Ap", "nu", false),   // svādi, `pn` conjunct
+            ("Sak", "nu", false),  // svādi, `kn` conjunct
+            ("aS", "nu", false),   // svādi, `Sn` conjunct — the counter-intuitive one
+            ("stiG", "nu", false), // svādi, `Gn` conjunct
+            ("kliS", "nu", false), // kryādi control (consonant-final guard)
+            ("BU", "a", false),    // bhvādi control (vikaraṇa-is-not-śnu guard)
+        ] {
+            let mut p = Prakriya {
+                terms: vec![Term::new(root), Term::new(vikarana), Term::new("anti")],
+                ..Default::default()
+            };
+            p.terms[SHAP].add(Tag::Vikarana);
+            assert_eq!(
+                shnu_asamyogapurva(&p),
+                expected,
+                "{root}: asaṁyogapūrva should be {expected}"
+            );
+        }
     }
 }

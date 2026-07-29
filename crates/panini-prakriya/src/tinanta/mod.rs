@@ -1,11 +1,11 @@
-//! The tiṅanta pipeline, as six ordered rule-stage modules plus two support
+//! The tiṅanta pipeline, as seven ordered rule-stage modules plus two support
 //! layers.
 //!
-//! The six stages — `samjna`, `tin`, `vikarana`, `anga`, `adesha`, `tripadi`
-//! — are declared below in *pipeline* order in `TINANTA_RULES`, which is the
-//! grammar's actual sequencing; the `mod` declarations above them are
-//! alphabetical and carry no ordering meaning of their own. `terms` and
-//! `sound` are support layers underneath the rules (term-layout constants
+//! The seven stages — `samjna`, `tin`, `vikarana`, `anga`, `guna`, `adesha`,
+//! `tripadi` — are declared below in *pipeline* order in `TINANTA_RULES`,
+//! which is the grammar's actual sequencing; the `mod` declarations above
+//! them are alphabetical and carry no ordering meaning of their own. `terms`
+//! and `sound` are support layers underneath the rules (term-layout constants
 //! and sandhi/sound predicates respectively) — neither holds a `Rule`.
 //! Which stage a rule belongs to is decided by its position relative to
 //! **3.1.68**, not by its sūtra family; see `terms.rs`.
@@ -19,6 +19,7 @@ use panini_data::{Dhatu, Gana, Lakara, Pada, Purusha, Vacana};
 
 mod adesha;
 mod anga;
+mod guna;
 mod samjna;
 mod sound;
 mod terms;
@@ -50,6 +51,7 @@ pub static TINANTA_RULES: &[&[Rule]] = &[
     tin::TIN,
     vikarana::VIKARANA,
     anga::ANGA_RULES,
+    guna::GUNA,
     adesha::ADESHA,
     tripadi::TRIPADI,
 ];
@@ -81,6 +83,7 @@ pub fn derive(
             Gana::Tudadi => t.add(Tag::Tudadi),
             Gana::Adadi => t.add(Tag::Adadi),
             Gana::Kryadi => t.add(Tag::Kryadi),
+            Gana::Svadi => t.add(Tag::Svadi),
             Gana::Bhvadi => {}
         }
         t

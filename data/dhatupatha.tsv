@@ -1,3 +1,11 @@
+# Reference data mirrored into crates/panini-data/src/lib.rs's DHATUS table.
+# Not parsed by any code in this repo.
+#
+# Note: stiG (05.0021 zwiGa~\) is stored post-6.1.64 dhAtvAdeH zaH saH — the
+# upadesha's initial z has already become s (and the retroflex w along with
+# it), because no rule in the engine performs that substitution. This follows
+# the file's existing convention of storing post-upadesha, it-stripped SLP1
+# (e.g. vf for vfN), not a new liberty.
 BU	bhvadi	parasmaipada	sattAyAm
 nI	bhvadi	parasmaipada	prApaRe
 ji	bhvadi	parasmaipada	jaye
@@ -34,3 +42,9 @@ aS	kryadi	parasmaipada	Bojane
 muz	kryadi	parasmaipada	steye
 vrI	kryadi	parasmaipada	varaRe
 vf	kryadi	atmanepada	samBaktO
+Ap	svadi	parasmaipada	vyAptO
+Sak	svadi	parasmaipada	SaktO
+hi	svadi	parasmaipada	gatO vfdDO ca
+ri	svadi	parasmaipada	hiMsAyAm
+aS	svadi	atmanepada	vyAptO saNGAte ca
+stiG	svadi	atmanepada	Askandane

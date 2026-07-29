@@ -20,7 +20,7 @@ Data flow for `check`:
 ## The rule pipeline
 
 `TINANTA_RULES` (in `crates/panini-prakriya/src/tinanta/mod.rs`) is an
-ordered `&[&[Rule]]` — six pipeline stages, each in its own file — covering
+ordered `&[&[Rule]]` — seven pipeline stages, each in its own file — covering
 all four lakāras. Each rule self-guards on `Prakriya.ctx` (lakāra, pada,
 puruṣa, vacana) and returns whether it fired. Reading the stages in order,
 and the rules within each stage in order, IS reading the grammar this crate
@@ -30,14 +30,15 @@ implements; `tinanta::rules()` yields that flattened sequence.
 |---|---|---|
 | `samjna.rs` | 1.3.12, 1.3.78, 3.4.78, 1.3.9, 1.2.4 | before 3.1.68 |
 | `tin.rs` | 3.4.85 … 3.4.102 | before 3.1.68 |
-| `vikarana.rs` | 3.1.69, 3.1.77, 3.1.81, 3.1.68, 2.4.72, 3.1.83, 1.2.4 | contains 3.1.68 |
-| `anga.rs` | 6.4.71 … 7.3.101, 6.4.112, 6.4.113 (incl. 6.1.78) | after 3.1.68 |
+| `vikarana.rs` | 3.1.69, 3.1.73, 3.1.77, 3.1.81, 3.1.68, 2.4.72, 3.1.83, 1.2.4 | contains 3.1.68 |
+| `anga.rs` | 6.4.71 … 7.2.81 | after 3.1.68 |
+| `guna.rs` | 7.4.21, 7.3.84, 7.3.86, 7.3.84 (again — see below), 6.4.87, 6.4.77, 6.1.78, 7.3.101, 6.4.112, 6.4.113 — vowel gradation and vikaraṇa reshaping | after 3.1.68 |
 | `adesha.rs` | 6.1.101 … 6.4.101 | after 3.1.68 |
 | `tripadi.rs` | 8.2.77 … 8.4.55, 8.4.1, 8.4.2 | after 3.1.68 |
 
 The stage boundary is file organisation, not grammar: the flattened order is
 what matters, and `tinanta_rule_order_is_pinned` in `derivation_tests.rs`
-pins all 62 ids verbatim. `tinanta/terms.rs` holds the term-index constants
+pins all 67 ids verbatim. `tinanta/terms.rs` holds the term-index constants
 and the reason 3.1.68 bisects the pipeline; `tinanta/sound.rs` holds the
 varṇa classifiers.
 
@@ -46,12 +47,13 @@ constraints and their justifications are documented in the design specs
 under `docs/superpowers/specs/`. The exact ordered traces in
 `crates/panini/tests/trace.rs` are what pin them.
 
-Five gaṇas are covered: bhvādi (1), divādi (4), tudādi (6), adādi (2), kryādi
-(9). gaṇa is carried as a tag on the aṅga term (`Tag::Divadi` / `Tag::Tudadi`
-/ `Tag::Adadi` / `Tag::Kryadi`, mirroring how `Tag::Atmanepadin` carries
-pada), read by 3.1.69, 3.1.77, 3.1.81, and 2.4.72. The vikaraṇa itself is
-selected by 3.1.68 (śap, bhvādi and adādi), 3.1.69 (śyan, divādi), 3.1.77
-(śa, tudādi), and 3.1.81 (śnā, kryādi).
+Six gaṇas are covered: bhvādi (1), divādi (4), tudādi (6), adādi (2), kryādi
+(9), svādi (5). gaṇa is carried as a tag on the aṅga term (`Tag::Divadi` /
+`Tag::Tudadi` / `Tag::Adadi` / `Tag::Kryadi` / `Tag::Svadi`, mirroring how
+`Tag::Atmanepadin` carries pada), read by 3.1.69, 3.1.73, 3.1.77, 3.1.81, and
+2.4.72. The vikaraṇa itself is selected by 3.1.68 (śap, bhvādi and adādi),
+3.1.69 (śyan, divādi), 3.1.73 (śnu, svādi), 3.1.77 (śa, tudādi), and 3.1.81
+(śnā, kryādi).
 
 adādi (gaṇa 2) is the only gaṇa where the vikaraṇa is *luk'd*: 3.1.68 still
 inserts śap (bhvādi and adādi share the same vikaraṇa rule), and **2.4.72
@@ -78,6 +80,33 @@ consonant-final root (kliSAna). That split is driven by 1.2.4, which as of
 this slice tags parasmaipada apit endings ṅit as well as ātmanepada ones —
 the distinction between pit `tip` (kliSnAti) and apit `tas` (kliSnItaH) is
 the whole paradigm.
+
+svādi (gaṇa 5) is thematic like divādi, tudādi and kryādi — its vikaraṇa is
+śnu (3.1.73) — but it is the first gaṇa where 7.3.84's guṇa is not blocked
+outright by 1.1.5: śnu is apit, so guṇa reaches it, and the ik that guṇates
+belongs to the vikaraṇa rather than the root. That forces four rules to stop
+reading "the aṅga's final sound" as shorthand for "the root's final sound",
+because 1.4.13 *yasmāt pratyayavidhis tadādi pratyaye'ṅgam* makes the aṅga
+affix-relative and svādi is the first gaṇa where the two readings diverge
+visibly: **7.3.84** now has a second `Rule` entry (same id, ordered right
+after the first) that guṇates `terms[SHAP]` with respect to `terms[ENDING]`
+(`Ap` + `nu` + `ti` → `Apnoti`, blocked before ṅit `tas` → `ApnutaH`);
+**6.1.78** *eco'yavāyāvaḥ* gained a vikaraṇa arm so the resulting `o`
+converts to `av` before a vowel (`ApnavAni`); **6.1.90** *āṭaś ca*'s
+athematic arm widened from `SHAP.is_empty()` to "any non-`a`/`A`-final
+SHAP", since a non-empty `SHAP` no longer implies the root abuts the
+ending; and **6.4.101** *hujhalbhyo her dhiḥ* was rewritten to read the
+sound immediately before the ending rather than the aṅga's own final sound.
+None of the four is optional and each is revealed by a different cell — see
+`docs/superpowers/specs/2026-07-29-svadi-gana-design.md`'s "Three existing
+rules assume the aṅga is the root" for the full analysis, and
+`AGENTS.md`'s note on 7.3.84 / 1.2.4 appearing twice by design.
+
+The gaṇa's other rules turn on a single predicate, *asaṁyogapūrva* — whether
+śnu's `u` is preceded by a conjunct: 6.4.87 *huśnuvoḥ sārvadhātuke* (yaṇ,
+apavāda) and 6.4.77 *aci śnudhātubhruvāṁ yvor iyaṅuvaṅau* (uvaṅ, utsarga)
+split `hinvanti` from `Apnuvanti` before a vowel-initial ending, and 6.4.106
+*utaś ca pratyayād asaṁyogapūrvāt* splits `hinu` from `Apnuhi` at `hi`.
 
 8.4.1 / 8.4.2 are the engine's first ṇatva. They are guarded to skip an `n`
 that is word-final or immediately followed by a jhal — the effect of 8.4.37
