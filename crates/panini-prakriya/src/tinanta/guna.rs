@@ -614,6 +614,28 @@ mod tests {
     }
 
     #[test]
+    fn eco_yavayavah_vikarana_arm_requires_a_third_term() {
+        // 6.1.78's VIKARAṆA arm (svādi) reads p.terms[ENDING] (index 2) once
+        // its guard passes. With only two terms (aṅga + a guṇated śnu, no
+        // ending inserted yet), `p.terms.len() > ENDING` (2 > 2) is false,
+        // so the guard short-circuits before indexing terms[2]. The
+        // `>` -> `>=` mutant makes `2 >= 2` true; since the śap here ends in
+        // `o` (guṇated śnu, as 7.3.84's second application leaves it), the
+        // mutant guard proceeds and indexes terms[ENDING], out of bounds for
+        // a 2-term vector -> panics. The aṅga ("Ap") does not end in e/o, so
+        // the thematic/athematic arms above decline, isolating the vikaraṇa
+        // arm's own third-term guard.
+        let mut p = Prakriya {
+            terms: vec![Term::new("Ap"), Term::new("no")],
+            log: vec![],
+            ..Default::default()
+        };
+        let rule = rules().find(|r| r.id == "6.1.78").unwrap();
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[SHAP].text, "no");
+    }
+
+    #[test]
     fn eco_yavayavah_athematic_arm_requires_an_empty_shap() {
         // The athematic arm must fire ONLY when the śap is luk'd (empty) —
         // that is what confines it to the adADi (athematic) path; on the
