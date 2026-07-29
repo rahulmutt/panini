@@ -13,15 +13,12 @@ cargo run -p panini-cli -- check 'bhavati' --trace
 
 ## Scope
 
-Finite verbs (*tiṅanta*), four gaṇas — *bhvādi* (1), *divādi* (4), *tudādi*
-(6), and *adādi* (2), all fully covered — *parasmaipada* and *ātmanepada*
-(pada taken from each root's tag), over a curated 30-root set, in four
-lakāras: *laṭ* (present), *laṅ* (imperfect), *loṭ* (imperative), and
-*vidhiliṅ* (optative). Adādi is complete: √yā, √vā (parasmaipada, ā-final)
-and √ad (parasmaipada), plus √ās, √vas and √śī (*ātmanepada*), each across
-all four lakāras, including the athematic (śap-luk'd) ātmanepada path. See
-`docs/superpowers/specs/2026-07-25-adadi-si-5f-design.md` for √śī's rule
-analysis. `INVALID` means "not derivable within this covered grammar,"
+Finite verbs (*tiṅanta*), six gaṇas — *bhvādi* (1, vikaraṇa śap), *divādi*
+(4, śyan), *tudādi* (6, śa), *adādi* (2, śap luk'd), *kryādi* (9, śnā) and
+*svādi* (5, śnu) — all fully covered, *parasmaipada* and *ātmanepada* (pada
+taken from each root's tag), over a curated 42-root set, in four lakāras:
+*laṭ* (present), *laṅ* (imperfect), *loṭ* (imperative), and *vidhiliṅ*
+(optative). `INVALID` means "not derivable within this covered grammar,"
 not "ungrammatical in Sanskrit." See `docs/ARCHITECTURE.md`.
 
 ## Layout
