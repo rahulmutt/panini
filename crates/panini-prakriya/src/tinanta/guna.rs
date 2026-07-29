@@ -15,7 +15,7 @@
 
 use crate::rule::{Rule, RuleKind};
 use crate::term::Tag;
-use crate::tinanta::sound::{guna_of, is_vowel};
+use crate::tinanta::sound::{guna_of, is_vowel, shnu_asamyogapurva};
 use crate::tinanta::terms::{ANGA, ENDING, SHAP, following_sarvadhatuka};
 use panini_data::Lakara;
 
@@ -186,6 +186,74 @@ pub(crate) static GUNA: &[Rule] = &[
             s.pop();
             p.terms[SHAP].text = s.into_iter().collect::<String>() + g;
             p.record("7.3.84", "sArvaDAtukArDaDAtukayoH", before);
+            true
+        },
+    },
+    // 6.4.87 huśnuvoḥ sārvadhātuke: for √hu and śnu, before a sārvadhātuka,
+    // yaṇ — `u` → `v` — rather than 6.4.77's uvaṅ. hi + nu + anti →
+    // hinvanti; ri + nu + antu → riRvantu (ṇatva lands later, in tripadi).
+    //
+    // The *asaṁyogapūrva* restriction is anuvṛtti from 6.4.82 er anekāco'-
+    // saṁyogapūrvasya; it is not visible in this sūtra's own words, which
+    // is why the guard would otherwise look invented. It is what separates
+    // hinvanti from Apnuvanti.
+    //
+    // The √hu arm is not implemented: √hu is juhotyādi, out of scope. Widen
+    // when gaṇa 3 lands.
+    //
+    // APAVĀDA to 6.4.77 below, and ordered before it as the pipeline's other
+    // apavāda pairs are (3.1.69 before 3.1.68; 6.4.72 before 6.4.71). It
+    // self-guards: once this rule has written `nv`, 6.4.77's `nu` test no
+    // longer matches, so no "did the apavāda fire?" check is needed.
+    Rule {
+        id: "6.4.87",
+        name: "huSnuvoH sArvaDAtuke",
+        kind: RuleKind::Vidhi,
+        apply: |p| {
+            if p.terms.len() <= ENDING || !shnu_asamyogapurva(p) {
+                return false;
+            }
+            let Some(next) = p.terms[ENDING].text.chars().next() else {
+                return false;
+            };
+            if !is_vowel(next) {
+                return false;
+            }
+            let before = p.snapshot();
+            p.terms[SHAP].text = "nv".into();
+            p.record("6.4.87", "huSnuvoH sArvaDAtuke", before);
+            true
+        },
+    },
+    // 6.4.77 aci śnudhātubhruvāṁ yvor iyaṅuvaṅau: before a vowel, śnu's `u`
+    // becomes uvaṅ. Ap + nu + anti → Apnuvanti; aS + nu + ate → aSnuvate;
+    // aS + nu + Iyta → aSnuvIta (6.1.66 drops the y later, in `adesha`).
+    //
+    // Only the śnu arm is implemented. The *dhātu* arm (ī/ū-final roots) and
+    // the *bhrū* arm have no root in scope — recorded rather than written,
+    // as 6.4.112's *abhyasta* half and 6.4.113's *aghoḥ* are. Widen when a
+    // root reaches either.
+    //
+    // Reads terms[ENDING] directly, NOT `following_sarvadhatuka`: that
+    // helper answers "what follows the aṅga", which here is śnu itself —
+    // this rule needs what follows śnu. Same reasoning as 6.4.112/6.4.113.
+    Rule {
+        id: "6.4.77",
+        name: "aci SnuDAtuBruvAM yvoriyaNuvaNO",
+        kind: RuleKind::Vidhi,
+        apply: |p| {
+            if p.terms.len() <= ENDING || p.terms[SHAP].text != "nu" {
+                return false;
+            }
+            let Some(next) = p.terms[ENDING].text.chars().next() else {
+                return false;
+            };
+            if !is_vowel(next) {
+                return false;
+            }
+            let before = p.snapshot();
+            p.terms[SHAP].text = "nuv".into();
+            p.record("6.4.77", "aci SnuDAtuBruvAM yvoriyaNuvaNO", before);
             true
         },
     },
@@ -935,5 +1003,81 @@ mod tests {
         let rule = rules().find(|r| r.id == "6.1.78").unwrap();
         assert!((rule.apply)(&mut p));
         assert_eq!(p.terms[ANGA].text, "Say");
+    }
+
+    // --- 6.4.87 / 6.4.77: śnu's u before a vowel ---------------------------
+
+    #[test]
+    fn hushnuvoh_yields_yan_for_a_vowel_final_root() {
+        // hi + nu + anti → hi + nv + anti → hinvanti.
+        let mut p = Prakriya {
+            terms: vec![Term::new("hi"), Term::new("nu"), Term::new("anti")],
+            ..Default::default()
+        };
+        p.terms[SHAP].add(Tag::Vikarana);
+        let rule = rules().find(|r| r.id == "6.4.87").unwrap();
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.terms[SHAP].text, "nv");
+    }
+
+    #[test]
+    fn hushnuvoh_declines_on_a_conjunct_and_leaves_it_to_6_4_77() {
+        let mut p = Prakriya {
+            terms: vec![Term::new("Ap"), Term::new("nu"), Term::new("anti")],
+            ..Default::default()
+        };
+        p.terms[SHAP].add(Tag::Vikarana);
+        let apavada = rules().find(|r| r.id == "6.4.87").unwrap();
+        assert!(!(apavada.apply)(&mut p));
+        let utsarga = rules().find(|r| r.id == "6.4.77").unwrap();
+        assert!((utsarga.apply)(&mut p));
+        assert_eq!(p.terms[SHAP].text, "nuv");
+    }
+
+    #[test]
+    fn shnu_vowel_rules_decline_before_a_consonant_ending() {
+        // ApnutaH: `taH` is consonant-initial, so neither fires.
+        let mut p = Prakriya {
+            terms: vec![Term::new("Ap"), Term::new("nu"), Term::new("taH")],
+            ..Default::default()
+        };
+        p.terms[SHAP].add(Tag::Vikarana);
+        for id in ["6.4.87", "6.4.77"] {
+            let rule = rules().find(|r| r.id == id).unwrap();
+            assert!(!(rule.apply)(&mut p), "{id} should decline");
+        }
+        assert_eq!(p.terms[SHAP].text, "nu");
+    }
+
+    #[test]
+    fn shnu_vowel_rules_decline_once_guna_has_run() {
+        // ApnavAni: 7.3.84's second application already made SHAP `no`, so
+        // neither rule matches `nu` any more. This is what keeps the ordering
+        // constraint honest — *ApnuvAni is the failure it prevents.
+        let mut p = Prakriya {
+            terms: vec![Term::new("Ap"), Term::new("no"), Term::new("Ani")],
+            ..Default::default()
+        };
+        p.terms[SHAP].add(Tag::Vikarana);
+        for id in ["6.4.87", "6.4.77"] {
+            let rule = rules().find(|r| r.id == id).unwrap();
+            assert!(!(rule.apply)(&mut p), "{id} should decline");
+        }
+    }
+
+    #[test]
+    fn shnu_vowel_rules_never_touch_another_ganas_vikarana() {
+        // kryādi's `nA` and bhvādi's `a` must be invisible to both rules.
+        for shap in ["nA", "nI", "n", "a", "ya", "Ana", ""] {
+            let mut p = Prakriya {
+                terms: vec![Term::new("kliS"), Term::new(shap), Term::new("anti")],
+                ..Default::default()
+            };
+            p.terms[SHAP].add(Tag::Vikarana);
+            for id in ["6.4.87", "6.4.77"] {
+                let rule = rules().find(|r| r.id == id).unwrap();
+                assert!(!(rule.apply)(&mut p), "{id} fired on SHAP {shap:?}");
+            }
+        }
     }
 }

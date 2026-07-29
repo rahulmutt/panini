@@ -4,6 +4,9 @@
 //! derivation state. Several are deliberately narrower than the pratyāhāra
 //! they name — each says so, with the trigger for widening it.
 
+use crate::prakriya::Prakriya;
+use crate::tinanta::terms::{ANGA, SHAP};
+
 /// Guṇa substitute of an ik vowel (1.1.2 aden guṇaḥ, applied by 7.3.84).
 pub(crate) fn guna_of(v: char) -> Option<&'static str> {
     match v {
@@ -121,9 +124,34 @@ pub(crate) fn is_vibhakti_protected_final(c: char) -> bool {
     matches!(c, 't' | 'T' | 'd' | 'D' | 'n' | 's' | 'm')
 }
 
+/// Is śnu's `u` *asaṁyogapūrva* — preceded by a single consonant rather
+/// than a conjunct?
+///
+/// The condition 6.4.87 inherits by anuvṛtti from 6.4.82 *er anekāco'saṁ-
+/// yogapūrvasya*, and the same condition 6.4.106 states in its own text.
+/// The `u` is always preceded by śnu's own `n`, so the question reduces to
+/// whether that `n` follows a vowel — i.e. whether the aṅga's final
+/// character is a vowel.
+///
+/// √hi and √ri qualify (`hinu`, `riRu`); √āp, √śak, √aś and √ṣṭigh do not
+/// (`Apnu`, `Saknu`, `aSnu`, `stiGnu`). √aś is the counter-intuitive one:
+/// it looks like √su, but the root's own final `S` joins śnu's `n` into a
+/// conjunct — which is why `aSnumahe` has no lopa alternate while
+/// `sunmahe` does.
+///
+/// Returns false whenever the vikaraṇa is not śnu, so callers do not need
+/// their own gaṇa test.
+pub(crate) fn shnu_asamyogapurva(p: &Prakriya) -> bool {
+    if p.terms.get(SHAP).map(|t| t.text.as_str()) != Some("nu") {
+        return false;
+    }
+    p.terms[ANGA].text.chars().last().is_some_and(is_vowel)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::term::{Tag, Term};
 
     #[test]
     fn guna_of_ik_vowels_all_arms() {
@@ -217,6 +245,43 @@ mod tests {
             'S', 's', 'z', 't', 'T', 'd', 'D', 'n', 'R', 'c', 'j', 'w', 'q', 'l',
         ] {
             assert!(!is_natva_intervener(c), "{c} must break intervention");
+        }
+    }
+
+    #[test]
+    fn shnu_asamyogapurva_is_true_exactly_for_the_vowel_final_roots() {
+        // The `u` of śnu is asaṁyogapūrva iff the `n` follows a vowel — i.e.
+        // iff the aṅga's final character is a vowel. A wrong predicate here
+        // turns hinu into *hinuhi and Apnuhi into *Apnu, both of which look
+        // like plausible Sanskrit, so enumerate rather than rely on goldens.
+        //
+        // BU carries its real bhvādi vikaraṇa text ("a", not "nu"): unlike
+        // the other controls, its point is to pin the helper's OTHER guard —
+        // "vikaraṇa is not śnu at all" — which only engages when SHAP's text
+        // truly isn't "nu". BU ends in the vowel U, so pairing it with a
+        // literal "nu" SHAP (as every other row does) would make the
+        // vowel-final check itself return true, giving a false positive that
+        // masks exactly the silent-failure risk this test exists to catch.
+        for (root, vikarana, expected) in [
+            ("hi", "nu", true),    // svādi, vowel-final
+            ("ri", "nu", true),    // svādi, vowel-final
+            ("Ap", "nu", false),   // svādi, `pn` conjunct
+            ("Sak", "nu", false),  // svādi, `kn` conjunct
+            ("aS", "nu", false),   // svādi, `Sn` conjunct — the counter-intuitive one
+            ("stiG", "nu", false), // svādi, `Gn` conjunct
+            ("kliS", "nu", false), // kryādi control (consonant-final guard)
+            ("BU", "a", false),    // bhvādi control (vikaraṇa-is-not-śnu guard)
+        ] {
+            let mut p = Prakriya {
+                terms: vec![Term::new(root), Term::new(vikarana), Term::new("anti")],
+                ..Default::default()
+            };
+            p.terms[SHAP].add(Tag::Vikarana);
+            assert_eq!(
+                shnu_asamyogapurva(&p),
+                expected,
+                "{root}: asaṁyogapūrva should be {expected}"
+            );
         }
     }
 }
