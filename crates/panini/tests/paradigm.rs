@@ -1480,8 +1480,8 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     ),
 ];
 
-fn lan_a_form(code: &str, pu: Purusha, va: Vacana) -> String {
-    let d = dhatus().iter().find(|d| d.code == code).unwrap();
+fn lan_a_form(id: &str, pu: Purusha, va: Vacana) -> String {
+    let d = dhatus().iter().find(|d| d.id == id).unwrap();
     derive(d, Lakara::Lan, Pada::Atmanepada, pu, va).text()
 }
 
@@ -1550,7 +1550,7 @@ fn paradigm_covers_every_enumerable_cell() {
     let mut unpinned: Vec<(&str, &str)> = Vec::new();
     for d in dhatus() {
         for &lakara in panini_analyze::LAKARAS {
-            let pair = (d.code, panini::lakara_name(lakara));
+            let pair = (d.id, panini::lakara_name(lakara));
             if !pinned.contains(&pair) {
                 unpinned.push(pair);
             }

@@ -12,7 +12,7 @@ use crate::tinanta::sound::cartva_of;
 use panini_data::{Lakara, Pada, Purusha, Vacana, dhatus};
 
 pub(super) fn form(code: &str, pu: Purusha, va: Vacana) -> String {
-    let d = dhatus().iter().find(|d| d.code == code).unwrap();
+    let d = dhatus().iter().find(|d| d.id == code).unwrap();
     derive(d, Lakara::Lat, Pada::Parasmaipada, pu, va).text()
 }
 
@@ -21,27 +21,27 @@ pub(super) fn form(code: &str, pu: Purusha, va: Vacana) -> String {
 // stable path. The other helpers carry the same visibility so a stage test
 // module can import any of them the same way.
 pub(super) fn form_g(code: &str, la: Lakara, pu: Purusha, va: Vacana) -> String {
-    let d = dhatus().iter().find(|d| d.code == code).unwrap();
+    let d = dhatus().iter().find(|d| d.id == code).unwrap();
     derive(d, la, d.pada, pu, va).text()
 }
 
 pub(super) fn lin_form(code: &str, pu: Purusha, va: Vacana) -> String {
-    let d = dhatus().iter().find(|d| d.code == code).unwrap();
+    let d = dhatus().iter().find(|d| d.id == code).unwrap();
     derive(d, Lakara::VidhiLin, Pada::Parasmaipada, pu, va).text()
 }
 
 pub(super) fn lat_a_form(code: &str, pu: Purusha, va: Vacana) -> String {
-    let d = dhatus().iter().find(|d| d.code == code).unwrap();
+    let d = dhatus().iter().find(|d| d.id == code).unwrap();
     derive(d, Lakara::Lat, Pada::Atmanepada, pu, va).text()
 }
 
 pub(super) fn lot_a_form(code: &str, pu: Purusha, va: Vacana) -> String {
-    let d = dhatus().iter().find(|d| d.code == code).unwrap();
+    let d = dhatus().iter().find(|d| d.id == code).unwrap();
     derive(d, Lakara::Lot, Pada::Atmanepada, pu, va).text()
 }
 
 pub(super) fn lin_a_form(code: &str, pu: Purusha, va: Vacana) -> String {
-    let d = dhatus().iter().find(|d| d.code == code).unwrap();
+    let d = dhatus().iter().find(|d| d.id == code).unwrap();
     derive(d, Lakara::VidhiLin, Pada::Atmanepada, pu, va).text()
 }
 
@@ -241,7 +241,7 @@ fn adadi_vidhilin_derives_the_yas_yuh_reduction() {
     // derives through the full pipeline, running the yāsuṭ chain plus
     // the 6.1.96 / 6.1.101 junction reductions, for every cell and pada.
     for code in ["yA", "vA"] {
-        let d = dhatus().iter().find(|d| d.code == code).unwrap();
+        let d = dhatus().iter().find(|d| d.id == code).unwrap();
         for pu in [Purusha::Prathama, Purusha::Madhyama, Purusha::Uttama] {
             for va in [Vacana::Eka, Vacana::Dvi, Vacana::Bahu] {
                 let p = derive(d, Lakara::VidhiLin, d.pada, pu, va);
@@ -358,7 +358,7 @@ fn shap_is_pit_and_bhvadi_guna_survives() {
     // Regression guard for Task 3: adding the guṇa-block mechanism must
     // not disturb bhvādi. śap is pit, so 7.3.84 still fires for BU.
     assert_eq!(form("BU", Purusha::Prathama, Vacana::Eka), "Bavati");
-    let d = dhatus().iter().find(|d| d.code == "vft").unwrap();
+    let d = dhatus().iter().find(|d| d.id == "vft").unwrap();
     // vṛt uses 7.3.86 (laghūpadhā guṇa) before śap (pit) → vartate.
     assert_eq!(
         derive(
@@ -383,7 +383,7 @@ fn ji_3sg_is_jayati() {
 
 #[test]
 fn trace_is_recorded() {
-    let d = dhatus().iter().find(|d| d.code == "BU").unwrap();
+    let d = dhatus().iter().find(|d| d.id == "BU").unwrap();
     let p = derive(
         d,
         Lakara::Lat,
@@ -506,7 +506,7 @@ fn bhu_vidhilin_all_nine_cells() {
 fn pada_sanction_blocks_wrong_pada_derivations() {
     // 1.3.12/1.3.78: derivation is the source of truth for pada. A
     // wrong-pada derive must not silently produce a surface form.
-    let labh = dhatus().iter().find(|d| d.code == "laB").unwrap();
+    let labh = dhatus().iter().find(|d| d.id == "laB").unwrap();
     let p = derive(
         labh,
         Lakara::Lat,
@@ -518,7 +518,7 @@ fn pada_sanction_blocks_wrong_pada_derivations() {
     assert_eq!(p.text(), "laB", "no rule may run after the block");
     assert!(p.log.is_empty(), "a blocked derivation records nothing");
 
-    let bhu = dhatus().iter().find(|d| d.code == "BU").unwrap();
+    let bhu = dhatus().iter().find(|d| d.id == "BU").unwrap();
     let p = derive(
         bhu,
         Lakara::Lat,
@@ -531,7 +531,7 @@ fn pada_sanction_blocks_wrong_pada_derivations() {
 
 #[test]
 fn pada_sanction_records_the_sanctioning_sutra() {
-    let bhu = dhatus().iter().find(|d| d.code == "BU").unwrap();
+    let bhu = dhatus().iter().find(|d| d.id == "BU").unwrap();
     let p = derive(
         bhu,
         Lakara::Lat,
@@ -541,7 +541,7 @@ fn pada_sanction_records_the_sanctioning_sutra() {
     );
     assert_eq!(p.log.first().unwrap().sutra, "1.3.78");
 
-    let labh = dhatus().iter().find(|d| d.code == "laB").unwrap();
+    let labh = dhatus().iter().find(|d| d.id == "laB").unwrap();
     let p = derive(
         labh,
         Lakara::Lat,
@@ -628,7 +628,7 @@ fn siyut_survives_salopa_as_long_i() {
     // sIyta → (7.2.79) Iyta: 6.1.87's widened guard must accept the
     // long I (yāsuṭ's chain produced short iy via 7.2.80).
     let p = {
-        let d = dhatus().iter().find(|d| d.code == "laB").unwrap();
+        let d = dhatus().iter().find(|d| d.id == "laB").unwrap();
         derive(
             d,
             Lakara::VidhiLin,
