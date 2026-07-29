@@ -41,6 +41,38 @@ pub(crate) static VIKARANA: &[Rule] = &[
             true
         },
     },
+    // 3.1.73 svādibhyaḥ śnuḥ: svādi (gaṇa 5) takes śnu, not śap. Apavāda to
+    // 3.1.68, ordered before it, exactly as 3.1.69, 3.1.77 and 3.1.81 are.
+    //
+    // śnu is apit, so the second 1.2.4 below tags it ṅit with no change of
+    // its own — which is what blocks the FIRST 7.3.84 on the ik-final roots
+    // (hi, ri): hinoti, not *henoti. The guṇa svādi IS famous for lands on
+    // śnu's own `u` and belongs to 7.3.84's SECOND application (`guna.rs`),
+    // because by 1.4.13 the aṅga for the tiṅ ending is root + vikaraṇa.
+    //
+    // Unlike śnā, śnu's text never changes shape here — 6.4.87 and 6.4.77
+    // rewrite its `u` later, in `guna.rs`, and only before a vowel.
+    Rule {
+        id: "3.1.73",
+        name: "svAdiByaH SnuH",
+        kind: RuleKind::Vidhi,
+        apply: |p| {
+            if !p.terms[ANGA].has(Tag::Svadi) {
+                return false;
+            }
+            let before = p.snapshot();
+            let mut s = Term::new("Snu");
+            s.add(Tag::Vikarana);
+            s.add(Tag::Sarvadhatuka);
+            p.terms.insert(SHAP, s);
+            p.record("3.1.73", "svAdiByaH SnuH", before);
+            let mut s = p.terms[SHAP].clone();
+            run_it_samjna(&mut s, p, SHAP); // 1.3.8 strips S → nu
+            p.terms[SHAP] = s;
+            p.terms[ANGA].add(Tag::Anga);
+            true
+        },
+    },
     // 3.1.77 tudādibhyaḥ śaḥ: tudādi (gaṇa 6) takes śa, not śap. Apavāda to
     // 3.1.68, same shape as 3.1.69. śa is apit → ṅit (1.2.4) → guṇa blocked.
     Rule {
@@ -237,6 +269,51 @@ mod tests {
     use crate::prakriya::Prakriya;
     use crate::term::Term;
     use crate::tinanta::rules;
+
+    #[test]
+    fn svadibhyah_shnu_inserts_nu_for_svadi_only() {
+        let mut p = Prakriya {
+            terms: vec![Term::new("Ap"), Term::new("ti")],
+            ..Default::default()
+        };
+        p.terms[ANGA].add(Tag::Svadi);
+        let rule = rules().find(|r| r.id == "3.1.73").unwrap();
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.terms[SHAP].text, "nu");
+        assert!(p.terms[SHAP].has(Tag::Vikarana));
+        assert!(p.terms[SHAP].has(Tag::Sarvadhatuka));
+        assert_eq!(p.terms[ENDING].text, "ti");
+    }
+
+    #[test]
+    fn svadibhyah_shnu_declines_without_the_gana_tag() {
+        // bhvādi: no Tag::Svadi, so the apavāda must not fire and 3.1.68 keeps
+        // its utsarga job.
+        let mut p = Prakriya {
+            terms: vec![Term::new("BU"), Term::new("ti")],
+            ..Default::default()
+        };
+        let rule = rules().find(|r| r.id == "3.1.73").unwrap();
+        assert!(!(rule.apply)(&mut p));
+    }
+
+    #[test]
+    fn shnu_is_tagged_ngit_by_the_second_1_2_4_without_change() {
+        // śnu carries no p-anubandha, so the existing second 1.2.4 must tag it
+        // ṅit with no edit. This is what blocks the FIRST 7.3.84 on ik-final
+        // roots (hinoti, not *henoti).
+        let mut p = Prakriya {
+            terms: vec![Term::new("hi"), Term::new("ti")],
+            ..Default::default()
+        };
+        p.terms[ANGA].add(Tag::Svadi);
+        let shnu = rules().find(|r| r.id == "3.1.73").unwrap();
+        assert!((shnu.apply)(&mut p));
+        assert_eq!(rules().filter(|r| r.id == "1.2.4").count(), 2);
+        let second = rules().filter(|r| r.id == "1.2.4").nth(1).unwrap();
+        assert!((second.apply)(&mut p));
+        assert!(p.terms[SHAP].has(Tag::Ngit));
+    }
 
     // --- 3.1.68 / second 1.2.4: `len() > SHAP` boundary pins --------------
     //
