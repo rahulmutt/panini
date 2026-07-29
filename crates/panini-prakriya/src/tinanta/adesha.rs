@@ -28,7 +28,7 @@
 //! independent mutation pins into one.
 
 use crate::rule::{Rule, RuleKind};
-use crate::tinanta::sound::{is_jhal, is_vowel, vrddhi_of};
+use crate::tinanta::sound::{is_jhal, is_vowel, shnu_asamyogapurva, vrddhi_of};
 use crate::tinanta::terms::{ANGA, ENDING, SHAP, sound_before_ending};
 use panini_data::Lakara;
 
@@ -361,6 +361,36 @@ pub(crate) static ADESHA: &[Rule] = &[
             let before = p.snapshot();
             p.terms[ENDING].text = String::new();
             p.record("6.4.105", "ato heH", before);
+            true
+        },
+    },
+    // 6.4.106 utaś ca pratyayād asaṁyogapūrvāt: `hi` is luk'd after an
+    // affix-final `u` that is not conjunct-preceded. hi + nu + hi → hinu;
+    // ri + nu + hi → riRu (ṇatva lands later). Ap + nu + hi keeps its `hi`
+    // → Apnuhi, and that pair is the rule's pin.
+    //
+    // Continues the luk of 6.4.105 ato heḥ immediately above, which is why
+    // it sits here rather than in sūtra-number order elsewhere. 6.4.105
+    // declines for svādi on its own guard (the stem ends in `u`, not a
+    // short `a`), so the two never contend.
+    //
+    // Must precede 6.4.101 her DhiH below: for the conjunct roots this rule
+    // deliberately leaves `hi` standing, and 6.4.101 is what must then also
+    // decline — see its own comment on reading the sound before the ending.
+    Rule {
+        id: "6.4.106",
+        name: "utaSca pratyayAdasaMyogapUrvAt",
+        kind: RuleKind::Vidhi,
+        apply: |p| {
+            if p.terms.len() <= ENDING || p.terms[ENDING].text != "hi" {
+                return false;
+            }
+            if !shnu_asamyogapurva(p) {
+                return false;
+            }
+            let before = p.snapshot();
+            p.terms[ENDING].text = String::new();
+            p.record("6.4.106", "utaSca pratyayAdasaMyogapUrvAt", before);
             true
         },
     },
@@ -824,6 +854,43 @@ mod tests {
             ..Default::default()
         };
         let rule = rules().find(|r| r.id == "6.4.101").unwrap();
+        assert!(!(rule.apply)(&mut p));
+    }
+
+    #[test]
+    fn utash_ca_luks_hi_after_a_non_conjunct_u() {
+        // hi + nu + hi → hinu.
+        let mut p = Prakriya {
+            terms: vec![Term::new("hi"), Term::new("nu"), Term::new("hi")],
+            ..Default::default()
+        };
+        p.terms[SHAP].add(Tag::Vikarana);
+        let rule = rules().find(|r| r.id == "6.4.106").unwrap();
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.terms[ENDING].text, "");
+    }
+
+    #[test]
+    fn utash_ca_declines_after_a_conjunct_u() {
+        // Ap + nu + hi → Apnuhi. The asaṁyogapūrva clause is the whole rule.
+        let mut p = Prakriya {
+            terms: vec![Term::new("Ap"), Term::new("nu"), Term::new("hi")],
+            ..Default::default()
+        };
+        p.terms[SHAP].add(Tag::Vikarana);
+        let rule = rules().find(|r| r.id == "6.4.106").unwrap();
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[ENDING].text, "hi");
+    }
+
+    #[test]
+    fn utash_ca_declines_when_the_ending_is_not_hi() {
+        let mut p = Prakriya {
+            terms: vec![Term::new("hi"), Term::new("nu"), Term::new("ti")],
+            ..Default::default()
+        };
+        p.terms[SHAP].add(Tag::Vikarana);
+        let rule = rules().find(|r| r.id == "6.4.106").unwrap();
         assert!(!(rule.apply)(&mut p));
     }
 }
