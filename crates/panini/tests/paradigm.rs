@@ -1678,6 +1678,18 @@ fn known_nonforms_are_invalid() {
         "Sayati", // wrong pada: an ātmanepadin root with a parasmaipada ending
         "Sayate", // the śap surviving 2.4.72 (SI + Sap + te, guṇa'd)
         "SIyate", // a divādi/tudādi-style vikaraṇa leaking into adādi
+        // kryādi (gaṇa 9, slices 9a/9b). Each of these is what the slice's
+        // own rule comments say would surface if the named rule misfired;
+        // pinning them keeps those rules' guards honest the same way the
+        // adādi and √śī groups above pin theirs.
+        "kliSnIti",  // 1.2.4 misfiring on the pit ending tip (śnā stays anit)
+        "kleSAna",   // 7.3.86 not blocked by 1.1.5 for śānac (guṇa'd upadhā)
+        "kliSnIhi",  // 3.1.83 (śnā-lopa before hi) ordered after 6.4.113
+        "vfReta",    // 6.4.112 (nA -> n) running after 6.1.87, not before
+        "vfRIyta",   // 6.1.66's old is_empty() guard, silently declining for kryādi
+        "vfRIsva",   // 8.3.59 before it read the preceding term instead of ANGA
+        "vrIRAhi",   // 3.4.87 not tagging hi as pit
+        "kliSnAyAt", // 3.4.103 not tagging yāsuṭ's ending ṅit
     ] {
         assert!(
             matches!(engine.check(bad).verdict, Verdict::Invalid),

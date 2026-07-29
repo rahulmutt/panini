@@ -70,8 +70,15 @@ pub(crate) static VIKARANA: &[Rule] = &[
     // is what keeps kliS from guṇating to kleS under 7.3.86.
     //
     // Unlike adādi's śap, śnā is never luk'd: its text goes nA → nI (6.4.113)
-    // or nA → n (6.4.112), and never to empty. No rule reading terms[SHAP]
-    // can silently decline the way the athematic path made them decline.
+    // or nA → n (6.4.112), and never to empty. But a rule that guards on
+    // `SHAP.is_empty()` to detect "the thematic coalescence rules didn't
+    // apply" still silently declines for kryādi: its SHAP is non-empty but
+    // also non-`a`-final, so `is_empty()` misses it exactly where an
+    // athematic arm is needed. 6.1.66 (`adesha.rs`) learned this the hard
+    // way — its old emptiness guard produced *vfRIyta instead of vfRIta
+    // until it was widened to `!SHAP.ends_with('a')`, which is the correct
+    // test. Any new rule reading terms[SHAP] to distinguish the athematic
+    // path from the thematic one should use that test, not emptiness.
     Rule {
         id: "3.1.81",
         name: "kryAdiByaH SnA",

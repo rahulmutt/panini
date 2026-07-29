@@ -442,6 +442,10 @@ pub(crate) static ANGA_RULES: &[Rule] = &[
             // must decline here too, not fall through to test the ending.
             // The two arms' guards (SHAP vowel-initial vs. SHAP empty) are
             // mutually exclusive by construction, so at most one ever fires.
+            // `is_empty()` (not `!ends_with('a')`) is still the right test
+            // here and stays adādi-only: kryādi never guṇates its aṅga (the
+            // ṅit śnā blocks 7.3.84/7.3.86 via 1.1.5), so an `e`/`o`-final
+            // aṅga — this rule's whole precondition — never arises for it.
             // √śī vidhiliṅ 3pl: guṇa (7.4.21) has already made the aṅga `Se`,
             // and 3.4.102/7.2.79 have left the ending leading with `I`
             // (Iyran, after sīyuṭ's salopa strips the non-final `s`); this

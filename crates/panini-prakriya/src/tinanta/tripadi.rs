@@ -518,6 +518,33 @@ mod tests {
         assert_eq!(p.text(), "laBasva");
     }
 
+    #[test]
+    fn shatva_affix_search_skips_the_anga_itself() {
+        // Pins that the s-initial affix search starts AFTER the aGga
+        // (`.skip(ANGA + 1)`), not AT it (`.skip(ANGA * 1)` == `.skip(0)`,
+        // since ANGA == 0). The corpus alone can't catch a `+` -> `*`
+        // mutant here: its only s-initial roots (smf, sev) both decline
+        // 8.3.59 on other grounds, so both versions of the search agree on
+        // every golden and every known-nonform. An s-initial aGga is
+        // needed to force the two versions apart.
+        //
+        // sI + nI + sva: with skip(1), the search starts past the aGga and
+        // finds `sva` at index 2; the preceding non-empty term's last char
+        // is SnA's `I` (a non-a/A vowel), so 8.3.59 fires: sInIzva.
+        let mut p = Prakriya {
+            terms: vec![Term::new("sI"), Term::new("nI"), Term::new("sva")],
+            log: vec![],
+            ..Default::default()
+        };
+        let rule = rules().find(|r| r.id == "8.3.59").unwrap();
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.text(), "sInIzva");
+        // With the `ANGA * 1` mutant, the search would instead match the
+        // aGga `sI` itself at index 0 (it too starts with `s`), leaving no
+        // preceding term to read a trigger sound from, so the rule would
+        // wrongly decline and `sva` would surface unchanged.
+    }
+
     fn natva_prakriya(anga: &str, vikarana: &str, ending: &str) -> Prakriya {
         Prakriya {
             terms: vec![Term::new(anga), Term::new(vikarana), Term::new(ending)],

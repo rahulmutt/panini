@@ -4,15 +4,27 @@
 //! `terms[SHAP].text` may be empty (2.4.72). See `super::terms`.
 //!
 //! Three rules here (6.1.90 āṭaś ca, 6.1.66 lopo vyor vali, and 6.1.78 over
-//! in `super::anga`) carry explicit *athematic arms* for the non-`a`-final
-//! SHAP path — adādi's śap-luk'd empty SHAP originally, and (since Task 10)
-//! kryādi's śnā vikaraṇa, reduced by 6.4.112/6.4.113 to a non-empty `n`/`nI`
-//! that is likewise never `a`-final. 6.1.66's arm now guards on
-//! `!SHAP.ends_with('a')` rather than emptiness for exactly this reason; see
-//! its own comment. Those arms duplicate a follower lookup on purpose: each
-//! is pinned by its own `*_athematic_*` guard tests asserting disjointness
-//! from its thematic arm, and funnelling them through one shared helper
-//! would collapse three independent mutation pins into one.
+//! in `super::anga`) carry explicit *athematic arms*, but they split on how
+//! kryādi's śnā vikaraṇa is covered:
+//!   - 6.1.66 guards its athematic arm on `!SHAP.ends_with('a')`, which
+//!     covers BOTH athematic paths — adādi's śap-luk'd empty SHAP and
+//!     kryādi's śnā, reduced by 6.4.112/6.4.113 to a non-empty, non-`a`-final
+//!     `n`/`nI`. It was widened from `SHAP.is_empty()` in slice 9b, which
+//!     silently declined for kryādi's non-empty SHAP and produced *vfRIyta
+//!     instead of vfRIta; see its own comment.
+//!   - 6.1.90 and 6.1.78 still guard their athematic arms on
+//!     `SHAP.is_empty()`, and stay adādi-only — correctly, not by oversight.
+//!     Kryādi's `A`-final SHAP never reaches either arm: 6.1.101's kryādi
+//!     arm consumes the āṭ `A` from the ending into SHAP first, routing the
+//!     result through 6.1.90's *thematic* arm (nA + Ani → nAni), and kryādi
+//!     never guṇates (`following_sarvadhatuka` returns the non-empty ṅit
+//!     śnā, so 1.1.5 blocks 7.3.84/7.3.86), so 6.1.78's `e`/`o`-final-aṅga
+//!     precondition is unreachable for it.
+//!
+//! Those arms duplicate a follower lookup on purpose: each is pinned by its
+//! own `*_athematic_*` guard tests asserting disjointness from its thematic
+//! arm, and funnelling them through one shared helper would collapse three
+//! independent mutation pins into one.
 
 use crate::rule::{Rule, RuleKind};
 use crate::tinanta::sound::{is_jhal, is_vowel, vrddhi_of};
@@ -187,7 +199,10 @@ pub(crate) static ADESHA: &[Rule] = &[
             // two into the single vṛddhi — A + E → E — dropping the A and
             // vṛddhi-ing the ec: As + AE → AsE. Mirrors the thematic arm's
             // mechanics with the vowel sitting at the front of ENDING instead
-            // of in SHAP.
+            // of in SHAP. `is_empty()` (not `!ends_with('a')`) is still the
+            // right test here: kryādi's `A`-final SHAP never reaches this
+            // arm — 6.1.101's kryādi arm already consumed the āṭ A into SHAP,
+            // so kryādi is handled by the thematic arm above instead.
             if p.terms.len() > ENDING && p.terms[SHAP].text.is_empty() {
                 let mut it = p.terms[ENDING].text.chars();
                 if it.next() == Some('A')
