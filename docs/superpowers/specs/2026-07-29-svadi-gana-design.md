@@ -77,7 +77,7 @@ Out of scope, deferred:
 |---|---|---|---|
 | **prep 1** | split `anga.rs` into `anga.rs` + `guna.rs` | 1296 → 1296 | none |
 | **prep 2** | `Dhatu::id`, gaṇa-qualified root identity | 1296 → 1296 | none |
-| **5a** | six roots, the śnu core | 1296 → 1512 | 3.1.73, 7.3.84 (2nd application), 6.4.87, 6.4.77, 6.4.106 |
+| **5a** | six roots, the śnu core | 1296 → 1512 | 3.1.73, 7.3.84 (2nd application), 6.4.87, 6.4.77, 6.4.106; 6.4.101 modified |
 | **5b** | optional-rule support | 1512 → 1512 (+8 alternates) | 6.4.107 |
 
 Both prep commits are behaviour-preserving and are verified the same way: the
@@ -276,6 +276,44 @@ Placed immediately after the existing **6.4.105 *ato heḥ***, which it continue
 and which supplies the luk. 6.4.105 already declines for svādi on its own guard
 (the stem ends in `u`, not `a`), so the two coexist without interaction.
 
+### 6.4.101 must stop assuming the aṅga abuts the ending — `adesha.rs`
+
+**A modification to an existing rule, not a new one**, and the second instance
+in this slice of the affix-relative aṅga problem 7.3.84 has.
+
+6.4.101 *hujhalbhyo her dhiḥ* turns loṭ 2sg `hi` into `Di` after a jhal-final
+aṅga — √ad's `adDi`. It tests the last character of `terms[ANGA]`, i.e. the
+*root's* final. For the two conjunct parasmaipadī roots that is a jhal (`p` in
+`Ap`, `k` in `Sak`), while the sound actually preceding `hi` is śnu's `u`. Left
+alone, the rule fires and produces \*`ApnuDi` and \*`SaknuDi`.
+
+Nothing upstream saves it. 6.4.105 declines (the stem ends in `u`, not `a`), and
+the new 6.4.106 declines on exactly these two roots, by design — so `hi`
+survives to 6.4.101 with a jhal-final root behind it. The two ātmanepadī roots
+never take `hi` and √hi / √ri end in vowels, so **√āp and √śak are the only
+witnesses, and their loṭ 2sg cell is the only cell that reveals it.**
+
+The fix is the idiom 8.3.59 already uses: read the sound immediately preceding
+the ending — the last character of the nearest non-empty term before `ENDING` —
+rather than the root's final. This is extracted as a shared helper rather than
+written inline a third time.
+
+It is **behaviour-preserving on all 1296 existing forms**, and provably so by
+enumeration of what precedes `hi` when 6.4.101 runs:
+
+| path | term before ENDING | old test | new test | outcome |
+|---|---|---|---|---|
+| adādi (√ad) | śap, empty → falls back to `ad` | `d` jhal | `d` jhal | `adDi`, unchanged |
+| bhvādi / divādi / tudādi | śap `a` | — | — | `hi` already luk'd by 6.4.105; rule declines either way |
+| kryādi (√vrī) | śnā `nI` | `I` on `vrI`, not jhal | `I`, not jhal | `vrIRIhi`, unchanged |
+| kryādi (√kliś) | śānac `Ana` | — | — | `hi` already luk'd by 6.4.105 |
+| svādi (√āp, √śak) | śnu `nu` | `p`/`k` jhal — **wrong** | `u`, not jhal | `Apnuhi`, fixed |
+
+Every existing path either reaches the same answer by the same character or has
+no `hi` left to rewrite. The adādi row is the one that matters: the fallback to
+`ANGA` when śap is empty is what keeps `adDi` working, and it is the reason the
+helper returns the nearest *non-empty* term rather than simply `terms[SHAP]`.
+
 ### The *asaṁyogapūrva* predicate
 
 6.4.87, 6.4.106 and (in 5b) 6.4.107 share one condition, which becomes a single
@@ -450,7 +488,7 @@ slice introduces:
 | `ApnutaH` | the second 7.3.84 blocked by 1.1.5 (apit ending) |
 | `Apnuvanti` | 6.4.77 |
 | `ApnavAni` | the 7.3.84 → 6.1.78 order, and that 6.4.77 does not preempt it |
-| `Apnuhi` | 6.4.106 declines on the conjunct |
+| `Apnuhi` | 6.4.106 declines on the conjunct, and 6.4.101 no longer fires |
 | `hinoti` | the *first* 7.3.84 blocked by 1.1.5 (śnu is ṅit) — no \*`henoti` |
 | `hinvanti` | 6.4.87, and that it precedes 6.4.77 |
 | `hinu` | 6.4.106 fires |
@@ -534,7 +572,10 @@ panini-prakriya`). `mise run fmt-check`, `lint` and `audit` clean.
 - `Dhatu::id` resolves `aS.5` and `aS.9` to different rows, and a test asserts
   that both `aSnute` and `aSnAti` validate and that the two ids have different
   gaṇas.
-- The flattened rule order is pinned verbatim at 62 ids (prep) and 67 ids (5a).
+- `adDi` and `vrIRIhi` are byte-identical after the 6.4.101 change, and a test
+  names them as its tripwires.
+- The flattened rule order is pinned verbatim at 62 ids (prep) and 67 ids (5a)
+  — 6.4.101 is modified in place, so it adds no id.
 - `derive` still carries no grammar branch — only the new `Tag::Svadi` aṅga tag.
 - `docs/ARCHITECTURE.md` and `AGENTS.md` name svādi, the two-juncture guṇa, and
   the `anga.rs` / `guna.rs` split. **`README.md`'s Scope section is refreshed**
