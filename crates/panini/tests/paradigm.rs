@@ -1823,8 +1823,13 @@ fn every_form_validates_and_matches() {
         // two √aś rows stay distinct: `aS.5` vs `aS`), but `Analysis::dhatu`
         // reports the surface `code` (deliberately not unique — it's a
         // user-facing spelling, not a key). The two must be resolved against
-        // each other rather than compared directly.
-        let code = dhatus().iter().find(|d| d.id == *root).unwrap().code;
+        // each other rather than compared directly. Because both √aś rows
+        // share `code == "aS"`, matching on `code` alone would let a
+        // mis-transcribed row silently bind to the WRONG root's forms as
+        // long as the two roots' surfaces happen to be disjoint; `pada`
+        // differs between the two (kryādi's is parasmaipada, svādi's is
+        // ātmanepada), so pinning it too closes that hole.
+        let d = dhatus().iter().find(|d| d.id == *root).unwrap();
         for expected in forms {
             let r = engine.check(expected);
             assert!(
@@ -1833,7 +1838,8 @@ fn every_form_validates_and_matches() {
             );
             assert!(
                 r.analyses.iter().any(|a| a.form_slp1 == *expected
-                    && a.dhatu == code
+                    && a.dhatu == d.code
+                    && a.pada == d.pada
                     && panini::lakara_name(a.lakara) == *lakara),
                 "no {lakara} analysis of {root} produced {expected}"
             );
@@ -2000,6 +2006,44 @@ fn known_nonforms_are_invalid() {
         "vfRIsva",   // 8.3.59 before it read the preceding term instead of ANGA
         "vrIRAhi",   // 3.4.87 not tagging hi as pit
         "kliSnAyAt", // 3.4.103 not tagging yāsuṭ's ending ṅit
+        // svādi (gaṇa 5). Four sūtras, three widened guards and six roots
+        // landed with nothing pinned here until now; pinning them keeps
+        // those rules' guards honest the same way the adādi, √śī and kryādi
+        // groups above pin theirs.
+        "aSnoti", // wrong pada: svādi's √aś is ātmanepada (real form aSnute);
+        // also catches an id/code collapse from the other side — kryādi's
+        // √aś (id "aS") is parasmaipada and DOES take this ending, so this
+        // string would wrongly validate if the two "aS" rows' padas were
+        // ever merged or mismatched.
+        "Apnute", // wrong pada: √āp is parasmaipada (real form Apnoti)
+        "ApnuDi", // 6.4.101 reading ANGA ("p", a jhal) instead of
+        // sound_before_ending (śnu's "u", not a jhal) — real form Apnuhi
+        "SaknuDi", // same guard, second conjunct root — real form Saknuhi
+        "ApnoAni", // 6.1.78's vikaraṇa arm (svādi's third arm) removed —
+        // real form ApnavAni
+        "ApnuvAni", // 7.3.84's second application ordered AFTER 6.4.77/
+        // 6.4.87 instead of before them — real form ApnavAni
+        "hinuhi", // 6.4.106 under-firing (declining to luk hi after a
+        // non-conjunct u) — real form hinu
+        "Apnu", // 6.4.106 over-firing (luking hi after a conjunct u) —
+        // real form Apnuhi
+        "hinuvanti", // 6.4.87/6.4.77 swapped: the non-conjunct root taking
+        // 6.4.77's uvaṅ instead of 6.4.87's yaṇ — real form hinvanti
+        "Apnvanti", // the conjunct root taking 6.4.87's yaṇ instead of
+        // 6.4.77's uvaṅ — real form Apnuvanti
+        "aSnavAE", // 6.1.90's athematic arm not widened past is_empty() to
+        // admit svādi's non-empty, non-a/A-final `nav` — real form aSnavE
+        "henoti", // the FIRST 7.3.84 (root-relative) not blocked by śnu's
+        // ṅit vikaraṇa — svādi never guṇates the root itself; real form
+        // hinoti
+        "reRoti", // same guard, second non-conjunct root — real form riRoti
+        "kliSne", // 7.3.84's SECOND application (vikaraṇa-relative, svādi's
+        // own addition) firing on kryādi's `nI` instead of declining by
+        // 1.1.5 — real form kliSnAti
+        "hinmaH", // the deliberate slice-5b gap the spec records: the
+                  // elided-vikaraṇa alternate (hinvaH/hinmaH) is a second valid form
+                  // not yet implemented, so it stays INVALID until 5b lands — see
+                  // docs/superpowers/specs/2026-07-29-svadi-gana-design.md:117
     ] {
         assert!(
             matches!(engine.check(bad).verdict, Verdict::Invalid),
