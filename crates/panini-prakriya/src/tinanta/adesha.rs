@@ -15,11 +15,12 @@
 //!   - 6.1.90 and 6.1.78 still guard their athematic arms on
 //!     `SHAP.is_empty()`, and stay adādi-only — correctly, not by oversight.
 //!     Kryādi's `A`-final SHAP never reaches either arm: 6.1.101's kryādi
-//!     arm consumes the āṭ `A` from the ending into SHAP first, routing the
-//!     result through 6.1.90's *thematic* arm (nA + Ani → nAni), and kryādi
-//!     never guṇates (`following_sarvadhatuka` returns the non-empty ṅit
-//!     śnā, so 1.1.5 blocks 7.3.84/7.3.86), so 6.1.78's `e`/`o`-final-aṅga
-//!     precondition is unreachable for it.
+//!     arm elides the ending's redundant leading vowel against SHAP's
+//!     pre-existing `A`, routing the result through 6.1.90's *thematic* arm
+//!     (nA + AE → nA + E → nE → vfRE), and kryādi never guṇates
+//!     (`following_sarvadhatuka` returns the non-empty ṅit śnā, so 1.1.5
+//!     blocks 7.3.84/7.3.86), so 6.1.78's `e`/`o`-final-aṅga precondition
+//!     is unreachable for it.
 //!
 //! Those arms duplicate a follower lookup on purpose: each is pinned by its
 //! own `*_athematic_*` guard tests asserting disjointness from its thematic
