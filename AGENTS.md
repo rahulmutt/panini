@@ -56,8 +56,8 @@
   programmatically), and that is what specs, plans, and verification in this
   repo actually check ids/names against.
 - New grammar goes in `TINANTA_RULES` as a self-guarding `Rule`, not as a
-  branch inside `derive`. `TINANTA_RULES` is a list of six stage arrays, each
-  living in its own file under `crates/panini-prakriya/src/tinanta/`; add
+  branch inside `derive`. `TINANTA_RULES` is a list of seven stage arrays,
+  each living in its own file under `crates/panini-prakriya/src/tinanta/`; add
   the rule to the stage its pipeline position falls in, and add its id to
   `tinanta_rule_order_is_pinned` in the same position. Which stage a rule
   belongs to is decided by its position relative to **3.1.68**, not by its
