@@ -311,6 +311,35 @@ static DHATUS: &[Dhatu] = &[
         pada: Pada::Atmanepada,
         artha: "samBaktO",
     },
+    // svādi (gaṇa 5) — vikaraṇa śnu (3.1.73)
+    Dhatu {
+        id: "Ap",
+        code: "Ap",
+        gana: Gana::Svadi,
+        pada: Pada::Parasmaipada,
+        artha: "vyAptO",
+    },
+    Dhatu {
+        id: "Sak",
+        code: "Sak",
+        gana: Gana::Svadi,
+        pada: Pada::Parasmaipada,
+        artha: "SaktO",
+    },
+    Dhatu {
+        id: "hi",
+        code: "hi",
+        gana: Gana::Svadi,
+        pada: Pada::Parasmaipada,
+        artha: "gatO vfdDO ca",
+    },
+    Dhatu {
+        id: "ri",
+        code: "ri",
+        gana: Gana::Svadi,
+        pada: Pada::Parasmaipada,
+        artha: "hiMsAyAm",
+    },
 ];
 
 pub fn dhatus() -> &'static [Dhatu] {
@@ -352,7 +381,7 @@ mod tests {
 
     #[test]
     fn curated_roots_have_expected_ganas_and_padas() {
-        assert_eq!(dhatus().len(), 36);
+        assert_eq!(dhatus().len(), 40);
         let bu = dhatus().iter().find(|d| d.id == "BU").unwrap();
         assert!(matches!(bu.pada, Pada::Parasmaipada));
         let labh = dhatus().iter().find(|d| d.id == "laB").unwrap();
@@ -403,6 +432,12 @@ mod tests {
         let vf = dhatus().iter().find(|d| d.id == "vf").unwrap();
         assert!(matches!(vf.gana, Gana::Kryadi) && matches!(vf.pada, Pada::Atmanepada));
         assert_eq!(vf.artha, "samBaktO");
+        // New: svādi (gaṇa 5), all four parasmaipadī.
+        for id in ["Ap", "Sak", "hi", "ri"] {
+            let d = dhatus().iter().find(|d| d.id == id).unwrap();
+            assert!(matches!(d.gana, Gana::Svadi));
+            assert!(matches!(d.pada, Pada::Parasmaipada));
+        }
     }
 
     #[test]

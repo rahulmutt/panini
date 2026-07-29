@@ -775,3 +775,96 @@ fn vrinishva_trace_reaches_the_existing_shatva() {
     assert!(t.contains(&"6.4.113".to_string()), "got {t:?}");
     assert!(t.contains(&"8.3.59".to_string()), "got {t:?}");
 }
+
+#[test]
+fn apnoti_trace_pins_the_vikarana_guna() {
+    // Ap prathama eka. The second 7.3.84 guṇates śnu's `u`; the first
+    // declines on the root's `p`. 3.1.68 never fires -- 3.1.73 is its
+    // apavāda.
+    assert_eq!(
+        trace_for("Apnoti"),
+        vec![
+            "1.3.78", "3.4.78", "1.3.9", "3.1.73", "1.3.9", "1.2.4", "7.3.84"
+        ]
+    );
+}
+
+#[test]
+fn apnavani_trace_pins_the_guna_before_6_1_78_order() {
+    // Ap loT uttama eka. The second 7.3.84 must run before 6.1.78 so the
+    // vikaraṇa's guṇated `o` (not the root's) gets the ay-ādeśa: Apnu + Ani
+    // -> Apno + Ani (7.3.84) -> Apnav + Ani (6.1.78). Ordered the other way
+    // round gives *ApnoAni; run before 6.4.77/6.4.87 it would give
+    // *ApnuvAni instead.
+    assert_eq!(
+        trace_for("ApnavAni"),
+        vec![
+            "1.3.78", "3.4.78", "1.3.9", "3.4.85", "3.4.89", "3.4.92", "3.1.73", "1.3.9", "1.2.4",
+            "7.3.84", "6.1.78"
+        ]
+    );
+}
+
+#[test]
+fn apnuvanti_trace_is_the_conjunct_uvang_path() {
+    // Ap prathama bahu. `p` before śnu's `n` makes the `u` saṁyogapūrva, so
+    // 6.4.87 (yaṇ) declines and 6.4.77 (uvaṅ) fires instead.
+    assert_eq!(
+        trace_for("Apnuvanti"),
+        vec![
+            "1.3.78", "3.4.78", "1.2.4", "3.1.73", "1.3.9", "1.2.4", "7.1.3", "6.4.77"
+        ]
+    );
+}
+
+#[test]
+fn apnuhi_trace_is_the_conjunct_hi_luk_block() {
+    // Ap loT madhyama eka. 6.4.106 declines (conjunct-preceded `u`), so `hi`
+    // survives to where 6.4.101 would rewrite it -- but the nearest
+    // non-empty term before the ending is śnu's `u`, not the root's jhal
+    // `p`, so 6.4.101 declines too and `hi` surfaces unchanged.
+    assert_eq!(
+        trace_for("Apnuhi"),
+        vec![
+            "1.3.78", "3.4.78", "1.3.9", "3.4.85", "3.4.87", "3.1.73", "1.3.9", "1.2.4"
+        ]
+    );
+}
+
+#[test]
+fn hinvanti_trace_is_the_asamyogapurva_yan_path() {
+    // hi prathama bahu. The `i` before śnu's `n` is asaṁyogapūrva, so 6.4.87
+    // (yaṇ) fires and its apavāda-ordering pre-empts 6.4.77 (uvaṅ), which
+    // never runs.
+    assert_eq!(
+        trace_for("hinvanti"),
+        vec![
+            "1.3.78", "3.4.78", "1.2.4", "3.1.73", "1.3.9", "1.2.4", "7.1.3", "6.4.87"
+        ]
+    );
+}
+
+#[test]
+fn hinu_trace_pins_the_hi_luk() {
+    // hi loT madhyama eka. Asaṁyogapūrva `u` lets 6.4.106 elide `hi`
+    // outright.
+    assert_eq!(
+        trace_for("hinu"),
+        vec![
+            "1.3.78", "3.4.78", "1.3.9", "3.4.85", "3.4.87", "3.1.73", "1.3.9", "1.2.4", "6.4.106"
+        ]
+    );
+}
+
+#[test]
+fn rinoti_trace_ends_in_natva_over_the_new_stem() {
+    // ri prathama eka: guṇa (7.3.84) creates rinoti, and ṇatva then reaches
+    // across the vowel to retroflex the ending's `n` -- the tripādī rule
+    // seeing the new (vikaraṇa-bearing) stem correctly.
+    assert_eq!(
+        trace_for("riRoti"),
+        vec![
+            "1.3.78", "3.4.78", "1.3.9", "3.1.73", "1.3.9", "1.2.4", "7.3.84", "8.4.2"
+        ]
+    );
+}
