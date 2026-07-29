@@ -381,6 +381,13 @@ pub(crate) static ADESHA: &[Rule] = &[
     },
     // 6.4.105 ato heḥ: `hi` is elided after a short `a` (the śap).
     // Bav + a + hi → Bava.
+    //
+    // Deliberately reads `SHAP.ends_with('a')` by index rather than via
+    // `sound_before_ending`: the sūtra's own condition is specifically about
+    // śap's `a`, not "whatever sound precedes the ending" in general. This is
+    // what makes it decline outright for svādi — the stem there ends in śnu's
+    // `u`, never a short `a` — leaving 6.4.106 below as the rule that must
+    // handle (or deliberately not handle) the `hi` ending for that gaṇa.
     Rule {
         id: "6.4.105",
         name: "ato heH",

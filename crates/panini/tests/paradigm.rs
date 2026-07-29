@@ -2,7 +2,11 @@ use panini::{Panini, Verdict};
 use panini_data::{Lakara, Pada, Purusha, Vacana, dhatus};
 use panini_prakriya::derive;
 
-/// (root_code, lakara_label, [P.E, P.D, P.B, M.E, M.D, M.B, U.E, U.D, U.B]) in SLP1.
+/// (root_id, lakara_label, [P.E, P.D, P.B, M.E, M.D, M.B, U.E, U.D, U.B]) in SLP1.
+/// The first column is a `Dhatu::id`, not a `code` — see
+/// `every_form_validates_and_matches`'s comment for why that distinction
+/// matters (it is gaṇa-qualified where two roots share an SLP1 form, e.g.
+/// svādi's `aS.5` vs kryādi's `aS`).
 const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "BU",

@@ -1,4 +1,5 @@
-//! Vikaraṇa selection and luk: 3.1.69, 3.1.77, 3.1.68, 2.4.72, 1.2.4.
+//! Vikaraṇa selection and luk: 3.1.69, 3.1.73, 3.1.77, 3.1.81, 3.1.68,
+//! 2.4.72, 3.1.83, 1.2.4.
 //!
 //! **This stage contains the 3.1.68 boundary.** Rules before 3.1.68 in this
 //! file address the ending as `ENDING_PRE_SHAP` (index 1); rules after it use

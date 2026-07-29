@@ -88,8 +88,14 @@ pub(crate) fn following_sarvadhatuka(p: &Prakriya) -> Option<&Term> {
 /// does attach to the root.
 ///
 /// The fallback is what keeps `adDi` working: with śap empty the search
-/// walks past it to the root's `d`. 8.3.59 in `tripadi.rs` open-codes the
-/// same walk for the same reason.
+/// walks past it to the root's `d`. Two other rules open-code the identical
+/// walk for the same reason, rather than calling this helper, because each
+/// keeps its own independent mutation pin (see `adesha.rs`'s note on why
+/// follower lookups are duplicated rather than shared): 8.3.59 in
+/// `tripadi.rs` (parameterized on the s-initial affix's own index rather
+/// than `ENDING`) and 7.1.5 in `anga.rs` (expression-for-expression
+/// identical). Keep this comment's enumeration current if a third copy is
+/// ever added — the point is to always know how many there are.
 ///
 /// Returns `None` for a prakriyā with no term before the ending.
 pub(crate) fn sound_before_ending(p: &Prakriya) -> Option<char> {

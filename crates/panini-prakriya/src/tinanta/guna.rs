@@ -256,7 +256,7 @@ pub(crate) static GUNA: &[Rule] = &[
     },
     // 6.1.78 eco'yavāyāvaḥ: e/o before a vowel → ay/av. The sūtra also covers
     // E/O → Ay/Av, but those two arms are dropped here: within the current
-    // 30-root × 4-lakāra grammar, ANGA can never end in a vṛddhi vowel (E/O)
+    // 42-root × 4-lakāra grammar, ANGA can never end in a vṛddhi vowel (E/O)
     // at the point this rule runs. `vrddhi_of` (the only source of E/O in
     // this engine) is called from three places, all in 6.1.90 — the aṅga arm
     // writes the vṛddhi vowel at *position 0* of the aṅga (replacing the āṭ
@@ -348,11 +348,11 @@ pub(crate) static GUNA: &[Rule] = &[
             // Vikaraṇa arm (svādi): 7.3.84's second application has just
             // guṇated śnu's `u` to `o`, so the ec this sūtra converts sits
             // on the VIKARAṆA, not on the aṅga — Ap + no + Ani → Apnav +
-            // Ani. Mutually exclusive with both arms above by construction:
-            // those require the aṅga to end in e/o, which no svādi root
-            // does, and this one requires SHAP to end in e/o, which none of
-            // śap `a`, śyan `ya`, śa `a`, śnā `nA`/`n`/`nI`, śānac `Ana` or
-            // adādi's empty śap ever does.
+            // Ani. Mutually exclusive with both arms above: those require the
+            // aṅga to end in e/o, which no svādi root does, and this one
+            // requires SHAP to end in e/o, which none of śap `a`, śyan `ya`,
+            // śa `a`, śnā `nA`/`n`/`nI`, śānac `Ana` or adādi's empty śap
+            // ever does.
             if p.terms.len() > ENDING
                 && let Some(shap_last) = p.terms[SHAP].text.chars().last()
                 && let Some(sub) = sub_for(shap_last)
@@ -928,7 +928,7 @@ mod tests {
         // kryādi: `nI` IS ik-final, so only the 1.1.5 guard keeps this rule off
         // it — and 6.4.113 only ever produces `nI` before a ṅit ending, so the
         // guard is always satisfied. The no-delta guard, half two. If this ever
-        // fires, kryādi surfaces *kliSne and 1296 goldens move.
+        // fires, kryādi surfaces *kliSne and 1512 goldens move.
         let mut p = Prakriya {
             terms: vec![Term::new("kliS"), Term::new("nI"), Term::new("taH")],
             ..Default::default()

@@ -39,9 +39,11 @@ pub enum Vacana {
 
 #[derive(Debug, Clone, Copy)]
 pub struct Dhatu {
-    /// Unique lookup key. Equal to `code` except where two roots in
-    /// different gaṇas share an SLP1 form, in which case it is
-    /// gaṇa-qualified (`aS.5` vs `aS.9`). Never hand this to `Term::new`.
+    /// Unique lookup key. Equal to `code`, except when a later gaṇa's root
+    /// collides with an SLP1 form already in use: the incumbent keeps its
+    /// bare `code` as its id, and only the newcomer's id is gaṇa-qualified
+    /// (kryādi's `aS` keeps the bare id `aS`; svādi's colliding root is
+    /// `aS.5`, not `aS.9`). Never hand this to `Term::new`.
     pub id: &'static str,
     /// The root's SLP1 text, as it enters the derivation.
     pub code: &'static str,
@@ -521,9 +523,18 @@ mod tests {
         assert_eq!(sorted.len(), ids.len(), "dhatu ids must be unique");
         // svādi's aS.5 is the first id that differs from its code (aS) — the
         // kryādi/svādi collision the field exists for. Every other dhatu's id
-        // still equals its code.
+        // still equals its code. Assert the actual relation `Dhatu::id`'s doc
+        // promises (`id == code`, or `id` qualified as `{code}.{gana}`), not
+        // just non-emptiness — a stray literal like `"x"` would satisfy the
+        // old assertion without ever being a real id/code pair.
         for d in dhatus() {
-            assert!(!d.id.is_empty());
+            assert!(
+                d.id == d.code || d.id.starts_with(&format!("{}.", d.code)),
+                "id {:?} must equal code {:?} or be gaṇa-qualified as \
+                 {{code}}.{{gana}}",
+                d.id,
+                d.code
+            );
         }
     }
 
