@@ -133,6 +133,62 @@ pub(crate) static GUNA: &[Rule] = &[
             true
         },
     },
+    // 7.3.84 sārvadhātukārdhadhātukayoḥ — SECOND APPLICATION, on the
+    // vikaraṇa. This is not a duplicate: by 1.4.13 yasmāt pratyayavidhis
+    // tadādi pratyaye'ṅgam the aṅga is defined relative to the affix, so
+    // the sūtra has two occasions in a single derivation. With respect to
+    // the vikaraṇa the aṅga is the root — that is the entry above. With
+    // respect to the tiṅ ending the aṅga is root + vikaraṇa, and its final
+    // ik belongs to the vikaraṇa. Ap + nu + ti → Ap + no + ti.
+    //
+    // The pipeline already carries two applications of 1.2.4 for exactly
+    // this reason (ending, then vikaraṇa); this is the same shape. Both
+    // entries appear in `tinanta_rule_order_is_pinned`, and tests locate
+    // this one with `.filter(id == "7.3.84").nth(1)`. Do not "deduplicate".
+    //
+    // Reads terms[ENDING] directly rather than `following_sarvadhatuka`:
+    // that helper answers "what follows the aṅga", which for this
+    // application is the vikaraṇa being operated on, not the trigger.
+    //
+    // NO DELTA on any pre-existing form, by guard rather than by argument.
+    // The complete inventory of SHAP texts reaching this point is `a`
+    // (śap/śa), `ya` (śyan), `` (adādi luk), `Ana` (śānac), `nA`/`n`
+    // (śnā, 6.4.112) and `nI` (śnā, 6.4.113). Only `nI` is ik-final, and
+    // 6.4.113 produces it ONLY before a ṅit ending — so the 1.1.5 test
+    // below declines there. Two tests pin both halves.
+    //
+    // Ordered BEFORE 6.1.78: the loṭ uttama endings are vowel-initial and
+    // pit, so guṇa leaves `no`, which 6.1.78 must then make `nav`. Ordered
+    // after it, ApnavAni surfaces as *ApnoAni. Ordered BEFORE 6.4.87/6.4.77
+    // for the same cells: those fire on a vowel-initial ending too, and
+    // would take `nu` to `nuv` first, giving *ApnuvAni.
+    Rule {
+        id: "7.3.84",
+        name: "sArvaDAtukArDaDAtukayoH",
+        kind: RuleKind::Vidhi,
+        apply: |p| {
+            if p.terms.len() <= ENDING {
+                return false;
+            }
+            // 1.1.5 kṅiti ca, as in the first application. Same ṅit-only
+            // narrowness: no kit tag exists in this engine yet.
+            if p.terms[ENDING].has(Tag::Ngit) {
+                return false;
+            }
+            let Some(last) = p.terms[SHAP].text.chars().last() else {
+                return false;
+            };
+            let Some(g) = guna_of(last) else {
+                return false;
+            };
+            let before = p.snapshot();
+            let mut s: Vec<char> = p.terms[SHAP].text.chars().collect();
+            s.pop();
+            p.terms[SHAP].text = s.into_iter().collect::<String>() + g;
+            p.record("7.3.84", "sArvaDAtukArDaDAtukayoH", before);
+            true
+        },
+    },
     // 6.1.78 eco'yavāyāvaḥ: e/o before a vowel → ay/av. The sūtra also covers
     // E/O → Ay/Av, but those two arms are dropped here: within the current
     // 30-root × 4-lakāra grammar, ANGA can never end in a vṛddhi vowel (E/O)
@@ -700,6 +756,78 @@ mod tests {
         assert!(!(rule.apply)(&mut p));
         assert_eq!(p.terms[SHAP].text, "nA");
         assert_eq!(p.text(), "kliSnAti");
+    }
+
+    // --- 7.3.84 second application: the vikaraṇa-aṅga guṇa ------------------
+
+    fn second_7_3_84() -> &'static Rule {
+        assert_eq!(
+            rules().filter(|r| r.id == "7.3.84").count(),
+            2,
+            "expected exactly two 7.3.84 entries; nth(1) locator assumes this"
+        );
+        rules().filter(|r| r.id == "7.3.84").nth(1).unwrap()
+    }
+
+    #[test]
+    fn second_7_3_84_gunates_shnu_before_a_pit_ending() {
+        // Ap + nu + ti → Ap + no + ti. `ti` is pit, so 1.1.5 does not block.
+        let mut p = Prakriya {
+            terms: vec![Term::new("Ap"), Term::new("nu"), Term::new("ti")],
+            ..Default::default()
+        };
+        assert!((second_7_3_84().apply)(&mut p));
+        assert_eq!(p.terms[SHAP].text, "no");
+        assert_eq!(p.terms[ANGA].text, "Ap", "the root must not be touched");
+    }
+
+    #[test]
+    fn second_7_3_84_blocked_by_a_ngit_ending() {
+        // Ap + nu + taH → ApnutaH. `tas` is apit, so the first 1.2.4 tagged it
+        // ṅit and 1.1.5 blocks guṇa. This is the gaṇa's signature contrast.
+        let mut p = Prakriya {
+            terms: vec![Term::new("Ap"), Term::new("nu"), Term::new("taH")],
+            ..Default::default()
+        };
+        p.terms[ENDING].add(Tag::Ngit);
+        assert!(!(second_7_3_84().apply)(&mut p));
+        assert_eq!(p.terms[SHAP].text, "nu");
+    }
+
+    #[test]
+    fn second_7_3_84_declines_on_a_thematic_vikarana() {
+        // bhvādi: SHAP is śap's `a`, not an ik. The no-delta guard, half one.
+        let mut p = Prakriya {
+            terms: vec![Term::new("Bo"), Term::new("a"), Term::new("ti")],
+            ..Default::default()
+        };
+        assert!(!(second_7_3_84().apply)(&mut p));
+        assert_eq!(p.terms[SHAP].text, "a");
+    }
+
+    #[test]
+    fn second_7_3_84_declines_on_kryadi_shni() {
+        // kryādi: `nI` IS ik-final, so only the 1.1.5 guard keeps this rule off
+        // it — and 6.4.113 only ever produces `nI` before a ṅit ending, so the
+        // guard is always satisfied. The no-delta guard, half two. If this ever
+        // fires, kryādi surfaces *kliSne and 1296 goldens move.
+        let mut p = Prakriya {
+            terms: vec![Term::new("kliS"), Term::new("nI"), Term::new("taH")],
+            ..Default::default()
+        };
+        p.terms[ENDING].add(Tag::Ngit);
+        assert!(!(second_7_3_84().apply)(&mut p));
+        assert_eq!(p.terms[SHAP].text, "nI");
+    }
+
+    #[test]
+    fn second_7_3_84_declines_on_an_empty_shap() {
+        // adādi: śap is luk'd to an empty string. Must not panic.
+        let mut p = Prakriya {
+            terms: vec![Term::new("ad"), Term::new(""), Term::new("ti")],
+            ..Default::default()
+        };
+        assert!(!(second_7_3_84().apply)(&mut p));
     }
 
     #[test]

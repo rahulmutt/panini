@@ -56,6 +56,12 @@ pub(super) fn lin_a_form(code: &str, pu: Purusha, va: Vacana) -> String {
 ///
 /// 1.2.4 appears twice, deliberately: once tagging apit ātmanepada
 /// endings, once tagging the apit vikaraṇa after 3.1.68 inserts it.
+///
+/// 7.3.84 also appears twice, for the analogous reason (1.4.13): the aṅga
+/// is affix-relative, so the sūtra has two occasions in one derivation —
+/// once with respect to the vikaraṇa (guṇates the root), once with
+/// respect to the tiṅ ending (guṇates the vikaraṇa). See its second entry
+/// in `tinanta/guna.rs` for the full rationale.
 #[test]
 fn tinanta_rule_order_is_pinned() {
     let expected = [
@@ -63,10 +69,10 @@ fn tinanta_rule_order_is_pinned() {
         "3.4.101", "3.4.99", "3.4.87", "3.4.89", "3.4.86", "3.4.100", "3.4.80", "3.4.79", "3.4.91",
         "3.4.93", "3.4.90", "3.4.92", "3.4.103", "3.4.102", "3.1.69", "3.1.73", "3.1.77", "3.1.81",
         "3.1.68", "2.4.72", "3.1.83", "1.2.4", "6.4.71", "6.4.72", "7.3.100", "7.1.5", "7.1.6",
-        "7.1.3", "7.2.79", "7.2.80", "7.2.81", "7.4.21", "7.3.84", "7.3.86", "6.1.78", "7.3.101",
-        "6.4.112", "6.4.113", "6.1.101", "6.1.96", "6.1.90", "6.1.97", "6.1.87", "6.1.66",
-        "6.4.105", "6.4.101", "8.2.77", "8.2.23", "8.2.25", "8.3.15", "8.3.59", "8.4.55", "8.4.1",
-        "8.4.2",
+        "7.1.3", "7.2.79", "7.2.80", "7.2.81", "7.4.21", "7.3.84", "7.3.86", "7.3.84", "6.1.78",
+        "7.3.101", "6.4.112", "6.4.113", "6.1.101", "6.1.96", "6.1.90", "6.1.97", "6.1.87",
+        "6.1.66", "6.4.105", "6.4.101", "8.2.77", "8.2.23", "8.2.25", "8.3.15", "8.3.59", "8.4.55",
+        "8.4.1", "8.4.2",
     ];
     let actual: Vec<&str> = rules().map(|r| r.id).collect();
     assert_eq!(actual, expected);
