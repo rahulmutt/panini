@@ -217,56 +217,87 @@ pub(crate) static GUNA: &[Rule] = &[
         name: "eco'yavAyAvaH",
         kind: RuleKind::Vidhi,
         apply: |p| {
-            let anga_last = p.terms[ANGA].text.chars().last().unwrap();
-            let sub = match anga_last {
-                'e' => "ay",
-                'o' => "av",
-                _ => return false,
-            };
-            // Thematic arm: the vikaraṇa (śap/śyan/śa) is a real, non-empty
-            // buffer between the aṅga and the ending, so its own first
-            // character is the "next" vowel this sūtra tests. Only reachable
-            // when that first character exists AND is a vowel — a non-empty,
-            // consonant-initial vikaraṇa (śyan's `ya`) correctly declines
-            // here rather than firing on the wrong segment.
-            if let Some(next_first) = p.terms[SHAP].text.chars().next()
-                && is_vowel(next_first)
-            {
-                let before = p.snapshot();
-                let mut s: Vec<char> = p.terms[ANGA].text.chars().collect();
-                s.pop();
-                p.terms[ANGA].text = s.into_iter().collect::<String>() + sub;
-                p.record("6.1.78", "eco'yavAyAvaH", before);
-                return true;
+            fn sub_for(c: char) -> Option<&'static str> {
+                match c {
+                    'e' => Some("ay"),
+                    'o' => Some("av"),
+                    _ => None,
+                }
             }
-            // Athematic arm (śap luk'd, adādi, 2.4.72): with no vikaraṇa
-            // buffer, the ending attaches directly to the aṅga, so the
-            // ending's own first character is the "next" vowel instead.
-            // Guarded on the śap being EMPTY, so this can never re-process
-            // the thematic path above — a non-empty, non-vowel-initial śap
-            // (śyan's `ya`, which fails the thematic arm's vowel check)
-            // must decline here too, not fall through to test the ending.
-            // The two arms' guards (SHAP vowel-initial vs. SHAP empty) are
-            // mutually exclusive by construction, so at most one ever fires.
-            // `is_empty()` (not `!ends_with('a')`) is still the right test
-            // here and stays adādi-only: kryādi never guṇates its aṅga (the
-            // ṅit śnā blocks 7.3.84/7.3.86 via 1.1.5), so an `e`/`o`-final
-            // aṅga — this rule's whole precondition — never arises for it.
-            // √śī vidhiliṅ 3pl: guṇa (7.4.21) has already made the aṅga `Se`,
-            // and 3.4.102/7.2.79 have left the ending leading with `I`
-            // (Iyran, after sīyuṭ's salopa strips the non-final `s`); this
-            // arm reads only that leading `I` and turns Se + Iyran →
-            // Say + Iyran. 6.1.66 (`super::adesha`, later in the pipeline)
-            // then elides the surviving `y` before the val `r` → SayIran.
+
+            // The two arms below operate on the aṅga's own final ec. They
+            // are reached only when the root has one; svādi's roots never
+            // do, which is why the vikaraṇa arm at the bottom exists.
+            if let Some(anga_last) = p.terms[ANGA].text.chars().last()
+                && let Some(sub) = sub_for(anga_last)
+            {
+                // Thematic arm: the vikaraṇa (śap/śyan/śa) is a real, non-empty
+                // buffer between the aṅga and the ending, so its own first
+                // character is the "next" vowel this sūtra tests. Only reachable
+                // when that first character exists AND is a vowel — a non-empty,
+                // consonant-initial vikaraṇa (śyan's `ya`) correctly declines
+                // here rather than firing on the wrong segment.
+                if let Some(next_first) = p.terms[SHAP].text.chars().next()
+                    && is_vowel(next_first)
+                {
+                    let before = p.snapshot();
+                    let mut s: Vec<char> = p.terms[ANGA].text.chars().collect();
+                    s.pop();
+                    p.terms[ANGA].text = s.into_iter().collect::<String>() + sub;
+                    p.record("6.1.78", "eco'yavAyAvaH", before);
+                    return true;
+                }
+                // Athematic arm (śap luk'd, adādi, 2.4.72): with no vikaraṇa
+                // buffer, the ending attaches directly to the aṅga, so the
+                // ending's own first character is the "next" vowel instead.
+                // Guarded on the śap being EMPTY, so this can never re-process
+                // the thematic path above — a non-empty, non-vowel-initial śap
+                // (śyan's `ya`, which fails the thematic arm's vowel check)
+                // must decline here too, not fall through to test the ending.
+                // The two arms' guards (SHAP vowel-initial vs. SHAP empty) are
+                // mutually exclusive by construction, so at most one ever fires.
+                // `is_empty()` (not `!ends_with('a')`) is still the right test
+                // here and stays adādi-only: kryādi never guṇates its aṅga (the
+                // ṅit śnā blocks 7.3.84/7.3.86 via 1.1.5), so an `e`/`o`-final
+                // aṅga — this rule's whole precondition — never arises for it.
+                // √śī vidhiliṅ 3pl: guṇa (7.4.21) has already made the aṅga `Se`,
+                // and 3.4.102/7.2.79 have left the ending leading with `I`
+                // (Iyran, after sīyuṭ's salopa strips the non-final `s`); this
+                // arm reads only that leading `I` and turns Se + Iyran →
+                // Say + Iyran. 6.1.66 (`super::adesha`, later in the pipeline)
+                // then elides the surviving `y` before the val `r` → SayIran.
+                if p.terms.len() > ENDING
+                    && p.terms[SHAP].text.is_empty()
+                    && let Some(next_first) = p.terms[ENDING].text.chars().next()
+                    && is_vowel(next_first)
+                {
+                    let before = p.snapshot();
+                    let mut s: Vec<char> = p.terms[ANGA].text.chars().collect();
+                    s.pop();
+                    p.terms[ANGA].text = s.into_iter().collect::<String>() + sub;
+                    p.record("6.1.78", "eco'yavAyAvaH", before);
+                    return true;
+                }
+            }
+
+            // Vikaraṇa arm (svādi): 7.3.84's second application has just
+            // guṇated śnu's `u` to `o`, so the ec this sūtra converts sits
+            // on the VIKARAṆA, not on the aṅga — Ap + no + Ani → Apnav +
+            // Ani. Mutually exclusive with both arms above by construction:
+            // those require the aṅga to end in e/o, which no svādi root
+            // does, and this one requires SHAP to end in e/o, which none of
+            // śap `a`, śyan `ya`, śa `a`, śnā `nA`/`n`/`nI`, śānac `Ana` or
+            // adādi's empty śap ever does.
             if p.terms.len() > ENDING
-                && p.terms[SHAP].text.is_empty()
+                && let Some(shap_last) = p.terms[SHAP].text.chars().last()
+                && let Some(sub) = sub_for(shap_last)
                 && let Some(next_first) = p.terms[ENDING].text.chars().next()
                 && is_vowel(next_first)
             {
                 let before = p.snapshot();
-                let mut s: Vec<char> = p.terms[ANGA].text.chars().collect();
+                let mut s: Vec<char> = p.terms[SHAP].text.chars().collect();
                 s.pop();
-                p.terms[ANGA].text = s.into_iter().collect::<String>() + sub;
+                p.terms[SHAP].text = s.into_iter().collect::<String>() + sub;
                 p.record("6.1.78", "eco'yavAyAvaH", before);
                 return true;
             }
@@ -852,5 +883,57 @@ mod tests {
             let rule = rules().find(|r| r.id == id).unwrap();
             assert!(!(rule.apply)(&mut p));
         }
+    }
+
+    // --- 6.1.78 third arm: the vikaraṇa-final ec ---------------------------
+
+    #[test]
+    fn eco_yavayavah_converts_the_vikaranas_o_before_a_vowel_ending() {
+        // Ap + no + Ani → Ap + nav + Ani → ApnavAni.
+        let mut p = Prakriya {
+            terms: vec![Term::new("Ap"), Term::new("no"), Term::new("Ani")],
+            ..Default::default()
+        };
+        let rule = rules().find(|r| r.id == "6.1.78").unwrap();
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.terms[SHAP].text, "nav");
+        assert_eq!(p.terms[ANGA].text, "Ap");
+    }
+
+    #[test]
+    fn eco_yavayavah_vikarana_arm_declines_before_a_consonant_ending() {
+        // Apnoti: `ti` is consonant-initial, so nothing converts.
+        let mut p = Prakriya {
+            terms: vec![Term::new("Ap"), Term::new("no"), Term::new("ti")],
+            ..Default::default()
+        };
+        let rule = rules().find(|r| r.id == "6.1.78").unwrap();
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[SHAP].text, "no");
+    }
+
+    #[test]
+    fn eco_yavayavah_thematic_arm_still_wins_for_bhvadi() {
+        // Bo + a + ti → Bav + a + ti. The root's `o`, not the vikaraṇa's.
+        let mut p = Prakriya {
+            terms: vec![Term::new("Bo"), Term::new("a"), Term::new("ti")],
+            ..Default::default()
+        };
+        let rule = rules().find(|r| r.id == "6.1.78").unwrap();
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "Bav");
+        assert_eq!(p.terms[SHAP].text, "a");
+    }
+
+    #[test]
+    fn eco_yavayavah_athematic_arm_still_wins_for_adadi() {
+        // Se + "" + Iyran → Say + "" + Iyran (√śī vidhiliṅ 3pl).
+        let mut p = Prakriya {
+            terms: vec![Term::new("Se"), Term::new(""), Term::new("Iyran")],
+            ..Default::default()
+        };
+        let rule = rules().find(|r| r.id == "6.1.78").unwrap();
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "Say");
     }
 }
