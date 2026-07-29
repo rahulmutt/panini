@@ -194,17 +194,32 @@ pub(crate) static ADESHA: &[Rule] = &[
                 p.record("6.1.90", "AwaS ca", before);
                 return true;
             }
-            // Athematic ending arm (śap luk'd, e.g. adādi √ās loṭ uttama-eka):
-            // with no śap, 6.1.101 never widened śap a + āṭ A, so the āṭ A
-            // still leads the ending as `A ec` (ENDING == "AE"). Coalesce the
-            // two into the single vṛddhi — A + E → E — dropping the A and
-            // vṛddhi-ing the ec: As + AE → AsE. Mirrors the thematic arm's
-            // mechanics with the vowel sitting at the front of ENDING instead
-            // of in SHAP. `is_empty()` (not `!ends_with('a')`) is still the
-            // right test here: kryādi's `A`-final SHAP never reaches this
-            // arm — 6.1.101's kryādi arm already consumed the āṭ A into SHAP,
-            // so kryādi is handled by the thematic arm above instead.
-            if p.terms.len() > ENDING && p.terms[SHAP].text.is_empty() {
+            // Athematic ending arm (śap luk'd, e.g. adādi √ās loṭ uttama-eka,
+            // or svādi's `nav`, Task 5): with no thematic coalescence having
+            // consumed the āṭ A into SHAP, the āṭ A still leads the ending as
+            // `A ec` (ENDING == "AE"). Coalesce the two into the single
+            // vṛddhi — A + E → E — dropping the A and vṛddhi-ing the ec:
+            // As + AE → AsE. Mirrors the thematic arm's mechanics with the
+            // vowel sitting at the front of ENDING instead of in SHAP.
+            //
+            // Widened from `is_empty()` for svādi. The arm's job is "the
+            // coalescence rules never consumed the āṭ A into SHAP, so it
+            // still leads the ending" — and emptiness was only ever a proxy
+            // for that. adādi's empty śap qualifies, as before; so does
+            // svādi's `nav`, which fails every arm of 6.1.101 (its `v` is
+            // neither savarṇa with A nor an `a`/`A` for the bhvādi and
+            // kryādi arms) and so really does leave the A stranded.
+            //
+            // `a`- and `A`-final SHAPs are excluded because for them 6.1.101
+            // HAS already acted: bhvādi's śap became `A` and kryādi's śnā
+            // already swallowed the ending's leading A, so both are the
+            // thematic arm's business and reaching here would double-count.
+            // This is the correction vikarana.rs's 3.1.81 comment predicts
+            // in general terms — is_empty() as a stand-in for "the thematic
+            // path didn't apply" silently declines for a non-empty,
+            // non-`a`-final vikaraṇa.
+            let shap = &p.terms[SHAP].text;
+            if p.terms.len() > ENDING && !shap.ends_with('a') && !shap.ends_with('A') {
                 let mut it = p.terms[ENDING].text.chars();
                 if it.next() == Some('A')
                     && let Some(ec) = it.next()
@@ -562,6 +577,62 @@ mod tests {
         let rule = rules().find(|r| r.id == "6.1.90").unwrap();
         assert!(!(rule.apply)(&mut p));
         assert_eq!(p.terms[ENDING].text, "AE");
+    }
+
+    #[test]
+    fn atash_ca_athematic_arm_fires_for_a_svadi_stem() {
+        // aS + nav + AE → aS + nav + E → aSnavE (loṭ ātmanepada uttama eka).
+        let mut p = Prakriya {
+            terms: vec![Term::new("aS"), Term::new("nav"), Term::new("AE")],
+            ..Default::default()
+        };
+        let rule = rules().find(|r| r.id == "6.1.90").unwrap();
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.terms[ENDING].text, "E");
+        assert_eq!(p.terms[SHAP].text, "nav");
+    }
+
+    #[test]
+    fn atash_ca_athematic_arm_still_fires_for_adadi() {
+        // As + "" + AE → AsE. The arm's original job; must not regress.
+        let mut p = Prakriya {
+            terms: vec![Term::new("As"), Term::new(""), Term::new("AE")],
+            ..Default::default()
+        };
+        let rule = rules().find(|r| r.id == "6.1.90").unwrap();
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.terms[ENDING].text, "E");
+    }
+
+    #[test]
+    fn atash_ca_athematic_arm_stays_off_a_and_capital_a_final_shap() {
+        // bhvādi (`A` after 6.1.101) and kryādi (`nA`) are handled by the
+        // thematic arm; this arm must keep its hands off both.
+        for shap in ["a", "A", "ya", "yA", "nA", "Ana"] {
+            let mut p = Prakriya {
+                terms: vec![Term::new("laB"), Term::new(shap), Term::new("AE")],
+                ..Default::default()
+            };
+            let rule = rules().find(|r| r.id == "6.1.90").unwrap();
+            let fired = (rule.apply)(&mut p);
+            // Either the thematic arm fired (A-final SHAP) or nothing did; in
+            // neither case may the ENDING keep a stranded leading A.
+            if !fired {
+                assert_eq!(p.terms[ENDING].text, "AE", "SHAP {shap:?}");
+            }
+        }
+    }
+
+    #[test]
+    fn atash_ca_declines_when_the_ending_is_not_a_plus_ec() {
+        // ApnavAni: `Ani` is A + n, not A + ec, so nothing coalesces.
+        let mut p = Prakriya {
+            terms: vec![Term::new("Ap"), Term::new("nav"), Term::new("Ani")],
+            ..Default::default()
+        };
+        let rule = rules().find(|r| r.id == "6.1.90").unwrap();
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[ENDING].text, "Ani");
     }
 
     #[test]
