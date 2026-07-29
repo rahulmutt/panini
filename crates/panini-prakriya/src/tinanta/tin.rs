@@ -8,6 +8,7 @@
 //! the ending; everything from 3.4.85 on substitutes and reshapes it.
 
 use crate::rule::{Rule, RuleKind};
+use crate::term::Tag;
 use crate::tinanta::sound::is_vowel;
 use crate::tinanta::terms::ENDING_PRE_SHAP;
 use panini_data::{Lakara, Pada, Purusha};
@@ -163,6 +164,12 @@ pub(crate) static TIN: &[Rule] = &[
             }
             let before = p.snapshot();
             p.terms[ENDING_PRE_SHAP].text = "hi".into();
+            // "apit ca": hi is apit, so 1.2.4's atideśa reaches it. sip
+            // arrived pit from 3.4.78; clear that before adding the ṅit, or
+            // the term claims both. 1.2.4 has already run by now (samjna
+            // stage), so the tag is set here rather than left to it.
+            p.terms[ENDING_PRE_SHAP].remove(Tag::Pit);
+            p.terms[ENDING_PRE_SHAP].add(Tag::Ngit);
             p.record("3.4.87", "ser hyapic ca", before);
             true
         },
@@ -411,6 +418,10 @@ pub(crate) static TIN: &[Rule] = &[
             }
             let before = p.snapshot();
             p.terms[ENDING_PRE_SHAP].text = format!("yAs{}", p.terms[ENDING_PRE_SHAP].text);
+            // "Nic ca": yāsuṭ is ṅit, and the ending it augments is ṅit with
+            // it. This is what 6.4.113 reads to give kliSnIyAt; tip's own pit
+            // tag is left in place, since 1.1.5 asks only about ṅit.
+            p.terms[ENDING_PRE_SHAP].add(Tag::Ngit);
             p.record("3.4.103", "yAsuw parasmEpadezUdAtto Nic ca", before);
             true
         },
@@ -672,5 +683,50 @@ mod tests {
         let rule = rules().find(|r| r.id == "3.4.93").unwrap();
         assert!(!(rule.apply)(&mut p));
         assert_eq!(p.terms[ENDING_PRE_SHAP].text, "sva");
+    }
+
+    #[test]
+    fn ser_hyapic_ca_makes_hi_apit_and_ngit() {
+        // "ser hi apit ca": the sutra names hi as apit in its own text. sip
+        // arrives pit (3.4.78), so 3.4.87 must clear that and tag Nit --
+        // otherwise 6.4.113 declines and vrIRIhi surfaces as *vrIRAhi.
+        let mut p = Prakriya {
+            ctx: Context::new(
+                Lakara::Lot,
+                Pada::Parasmaipada,
+                Purusha::Madhyama,
+                Vacana::Eka,
+            ),
+            ..Default::default()
+        };
+        p.terms.push(Term::new("vrI"));
+        for id in ["3.4.78", "1.3.9", "1.2.4", "3.4.85", "3.4.87"] {
+            let rule = rules().find(|r| r.id == id).unwrap();
+            (rule.apply)(&mut p);
+        }
+        assert_eq!(p.terms[ENDING_PRE_SHAP].text, "hi");
+        assert!(!p.terms[ENDING_PRE_SHAP].has(Tag::Pit));
+        assert!(p.terms[ENDING_PRE_SHAP].has(Tag::Ngit));
+    }
+
+    #[test]
+    fn yasut_is_ngit() {
+        // 3.4.103's own name ends "Nic ca". Without the tag, 6.4.113 declines
+        // in vidhilin and kliSnIyAt surfaces as *kliSnAyAt.
+        let mut p = Prakriya {
+            ctx: Context::new(
+                Lakara::VidhiLin,
+                Pada::Parasmaipada,
+                Purusha::Prathama,
+                Vacana::Eka,
+            ),
+            ..Default::default()
+        };
+        p.terms.push(Term::new("kliS"));
+        for id in ["3.4.78", "1.3.9", "1.2.4", "3.4.100", "3.4.103"] {
+            let rule = rules().find(|r| r.id == id).unwrap();
+            (rule.apply)(&mut p);
+        }
+        assert!(p.terms[ENDING_PRE_SHAP].has(Tag::Ngit));
     }
 }

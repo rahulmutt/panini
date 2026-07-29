@@ -6,6 +6,7 @@ pub enum Gana {
     Divadi,
     Tudadi,
     Adadi,
+    Kryadi,
 }
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Pada {
@@ -232,6 +233,42 @@ static DHATUS: &[Dhatu] = &[
         pada: Pada::Atmanepada,
         artha: "svapne",
     },
+    Dhatu {
+        code: "kliS",
+        gana: Gana::Kryadi,
+        pada: Pada::Parasmaipada,
+        artha: "vibADane",
+    },
+    Dhatu {
+        code: "guD",
+        gana: Gana::Kryadi,
+        pada: Pada::Parasmaipada,
+        artha: "roze",
+    },
+    Dhatu {
+        code: "aS",
+        gana: Gana::Kryadi,
+        pada: Pada::Parasmaipada,
+        artha: "Bojane",
+    },
+    Dhatu {
+        code: "muz",
+        gana: Gana::Kryadi,
+        pada: Pada::Parasmaipada,
+        artha: "steye",
+    },
+    Dhatu {
+        code: "vrI",
+        gana: Gana::Kryadi,
+        pada: Pada::Parasmaipada,
+        artha: "varaRe",
+    },
+    Dhatu {
+        code: "vf",
+        gana: Gana::Kryadi,
+        pada: Pada::Atmanepada,
+        artha: "samBaktO",
+    },
 ];
 
 pub fn dhatus() -> &'static [Dhatu] {
@@ -273,7 +310,7 @@ mod tests {
 
     #[test]
     fn curated_roots_have_expected_ganas_and_padas() {
-        assert_eq!(dhatus().len(), 30);
+        assert_eq!(dhatus().len(), 36);
         let bu = dhatus().iter().find(|d| d.code == "BU").unwrap();
         assert!(matches!(bu.pada, Pada::Parasmaipada));
         let labh = dhatus().iter().find(|d| d.code == "laB").unwrap();
@@ -303,6 +340,27 @@ mod tests {
         let shi = dhatus().iter().find(|d| d.code == "SI").unwrap();
         assert!(matches!(shi.gana, Gana::Adadi) && matches!(shi.pada, Pada::Atmanepada));
         assert_eq!(shi.artha, "svapne");
+        // kryādi (gaṇa 9), slice 9a: kliS/guD/aS, all parasmaipada.
+        let klis = dhatus().iter().find(|d| d.code == "kliS").unwrap();
+        assert!(matches!(klis.gana, Gana::Kryadi) && matches!(klis.pada, Pada::Parasmaipada));
+        assert_eq!(klis.artha, "vibADane");
+        let gud = dhatus().iter().find(|d| d.code == "guD").unwrap();
+        assert!(matches!(gud.gana, Gana::Kryadi) && matches!(gud.pada, Pada::Parasmaipada));
+        assert_eq!(gud.artha, "roze");
+        let ash = dhatus().iter().find(|d| d.code == "aS").unwrap();
+        assert!(matches!(ash.gana, Gana::Kryadi) && matches!(ash.pada, Pada::Parasmaipada));
+        assert_eq!(ash.artha, "Bojane");
+        // kryādi, slice 9b: muz/vrI parasmaipada, vf (√vṛṅ) atmanepada --
+        // the gaṇa's only pure-atmanepadi root.
+        let muz = dhatus().iter().find(|d| d.code == "muz").unwrap();
+        assert!(matches!(muz.gana, Gana::Kryadi) && matches!(muz.pada, Pada::Parasmaipada));
+        assert_eq!(muz.artha, "steye");
+        let vri = dhatus().iter().find(|d| d.code == "vrI").unwrap();
+        assert!(matches!(vri.gana, Gana::Kryadi) && matches!(vri.pada, Pada::Parasmaipada));
+        assert_eq!(vri.artha, "varaRe");
+        let vf = dhatus().iter().find(|d| d.code == "vf").unwrap();
+        assert!(matches!(vf.gana, Gana::Kryadi) && matches!(vf.pada, Pada::Atmanepada));
+        assert_eq!(vf.artha, "samBaktO");
     }
 
     #[test]

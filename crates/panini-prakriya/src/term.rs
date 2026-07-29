@@ -29,6 +29,9 @@ pub enum Tag {
     /// The dhātu belongs to adādi (gaṇa 2), the aluk gaṇa. Read by 2.4.72,
     /// which luks the śap that 3.1.68 inserts. Mirrors Divadi/Tudadi.
     Adadi,
+    /// The dhātu belongs to kryādi (gaṇa 9), whose vikaraṇa is śnā. Read by
+    /// 3.1.81 alone. Mirrors Divadi/Tudadi/Adadi.
+    Kryadi,
 }
 
 #[derive(Debug, Clone)]
@@ -49,5 +52,8 @@ impl Term {
     }
     pub fn add(&mut self, tag: Tag) {
         self.tags.insert(tag);
+    }
+    pub fn remove(&mut self, tag: Tag) {
+        self.tags.remove(&tag);
     }
 }

@@ -72,6 +72,35 @@ pub(crate) fn is_khar(c: char) -> bool {
     )
 }
 
+/// 8.4.1's trigger set: `r`, `z`, and the r-vowels `f`/`F`, which contain the
+/// r-sound by 1.1.51 *uraṇ raparaḥ*. `S` (the palatal śa) is deliberately
+/// absent — it is not `z` (the retroflex ṣa) despite the visual similarity,
+/// so a following `n` stays dental across it.
+pub(crate) fn is_natva_trigger(c: char) -> bool {
+    matches!(c, 'r' | 'z' | 'f' | 'F')
+}
+
+/// 8.4.2's intervention set: aṭ (the vowels plus `h y v r`), ku (`k K g G N`)
+/// and pu (`p P b B m`).
+///
+/// The sūtra also names **āṅ** and **num**, which are morphemes rather than
+/// varṇa classes. Ṇatva runs in the tripādī over assembled text, where
+/// morpheme identity is gone — and neither is a loss: āṅ is the upasarga `ā`,
+/// already an aṭ vowel, and num's nasal cannot occur in the intervening
+/// position for any form in the covered grammar (no num-infixing root is in
+/// scope, and upasargas are out of scope entirely). Revisit when either
+/// enters scope.
+///
+/// Note `r` and the r-vowels are BOTH triggers and interveners. Callers must
+/// test for a trigger first; see 8.4.2's backward scan.
+pub(crate) fn is_natva_intervener(c: char) -> bool {
+    is_vowel(c)
+        || matches!(
+            c,
+            'h' | 'y' | 'v' | 'r' | 'k' | 'K' | 'g' | 'G' | 'N' | 'p' | 'P' | 'b' | 'B' | 'm'
+        )
+}
+
 /// The car (voiceless unaspirated) substitute of a jhal, per 8.4.55.
 /// Only `d → t` is exercised this slice; extend as later roots demand.
 pub(crate) fn cartva_of(c: char) -> Option<char> {
@@ -145,6 +174,49 @@ mod tests {
         }
         for c in ['t', 'k', 'p', 's', 'm'] {
             assert!(!is_vowel(c), "{c} should not be a vowel");
+        }
+    }
+
+    #[test]
+    fn natva_trigger_is_ra_sha_and_the_r_vowels() {
+        // 8.4.1 "razAByAm": r and z. f/F (R/RR) count too -- they contain the
+        // r-sound by 1.1.51 uraN raparaH, and that is the ONLY reason vfN
+        // retroflexes (vf + nIte -> vfRIte).
+        for c in ['r', 'z', 'f', 'F'] {
+            assert!(is_natva_trigger(c), "{c} should trigger Natva");
+        }
+        // S is NOT z: a following n stays dental across it (avartanta's t
+        // is the existing golden that pins the analogous non-trigger case).
+        for c in ['S', 's', 'n', 'a', 'l', 'v'] {
+            assert!(!is_natva_trigger(c), "{c} should not trigger Natva");
+        }
+    }
+
+    #[test]
+    fn natva_intervener_is_at_ku_pu_and_nothing_else() {
+        // 8.4.2 aw-ku-pu-AN-num-vyavAye'pi. aw = the vowels plus h y v r.
+        for c in [
+            'a', 'A', 'i', 'I', 'u', 'U', 'f', 'F', 'x', 'X', 'e', 'E', 'o', 'O', 'h', 'y', 'v',
+            'r',
+        ] {
+            assert!(is_natva_intervener(c), "aw member {c} should intervene");
+        }
+        // ku = k K g G N
+        for c in ['k', 'K', 'g', 'G', 'N'] {
+            assert!(is_natva_intervener(c), "ku member {c} should intervene");
+        }
+        // pu = p P b B m
+        for c in ['p', 'P', 'b', 'B', 'm'] {
+            assert!(is_natva_intervener(c), "pu member {c} should intervene");
+        }
+        // Everything else BREAKS the intervention. `t` is the one that
+        // protects an existing golden (avartanta); `S` and the retroflex `R`
+        // itself are the same non-trigger, non-intervener shape but have no
+        // curated root exercising them yet.
+        for c in [
+            'S', 's', 'z', 't', 'T', 'd', 'D', 'n', 'R', 'c', 'j', 'w', 'q', 'l',
+        ] {
+            assert!(!is_natva_intervener(c), "{c} must break intervention");
         }
     }
 }

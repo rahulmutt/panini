@@ -442,6 +442,10 @@ pub(crate) static ANGA_RULES: &[Rule] = &[
             // must decline here too, not fall through to test the ending.
             // The two arms' guards (SHAP vowel-initial vs. SHAP empty) are
             // mutually exclusive by construction, so at most one ever fires.
+            // `is_empty()` (not `!ends_with('a')`) is still the right test
+            // here and stays adādi-only: kryādi never guṇates its aṅga (the
+            // ṅit śnā blocks 7.3.84/7.3.86 via 1.1.5), so an `e`/`o`-final
+            // aṅga — this rule's whole precondition — never arises for it.
             // √śī vidhiliṅ 3pl: guṇa (7.4.21) has already made the aṅga `Se`,
             // and 3.4.102/7.2.79 have left the ending leading with `I`
             // (Iyran, after sīyuṭ's salopa strips the non-final `s`); this
@@ -486,6 +490,82 @@ pub(crate) static ANGA_RULES: &[Rule] = &[
             s.push('A');
             p.terms[SHAP].text = s.into_iter().collect();
             p.record("7.3.101", "ato dIrGo yaYi", before);
+            true
+        },
+    },
+    // --- śnā's alternation (6.4.112, 6.4.113) -----------------------------
+    //
+    // Placed at the END of this stage, not in sūtra order. Three constraints
+    // fix the position and each fails visibly if broken:
+    //   - AFTER 7.1.3 jho'ntaḥ, which makes `Ji` into `anti`/`ant`. Before it,
+    //     the 3pl endings are not vowel-initial and 6.4.112 cannot see them.
+    //   - AFTER 7.2.79 liṅaḥ salopo'nantyasya. The ātmanepada vidhiliṅ ending
+    //     is `sIyta` until its s is elided; run earlier and 6.4.113 matches
+    //     the s, giving *vfRIsIyta.
+    //   - BEFORE adesha.rs, whose 6.1.87 ād guṇaḥ would coalesce nA + Iyta
+    //     into ne and give *vfReta. This stage runs entirely before that one.
+    //
+    // Both read p.terms[ENDING] directly, NOT following_sarvadhatuka: the
+    // helper answers "what follows the aṅga", which here is śnā itself — these
+    // rules need what follows śnā.
+
+    // 6.4.112 śnābhyastayor ātaḥ: śnā's `ā` is elided before a kṅit
+    // sārvadhātuka beginning with a vowel. kliS + nA + anti → kliSnanti;
+    // vf + nA + ate → vfRate; vf + nA + e → vfRe.
+    //
+    // The *abhyasta* half of the sūtra is out of scope — there is no
+    // reduplication in this engine — so the guard is śnā's text alone. Widen
+    // it when juhotyādi lands.
+    Rule {
+        id: "6.4.112",
+        name: "SnA'ByastayorAtaH",
+        kind: RuleKind::Vidhi,
+        apply: |p| {
+            if p.terms.len() <= ENDING || p.terms[SHAP].text != "nA" {
+                return false;
+            }
+            if !p.terms[ENDING].has(Tag::Ngit) {
+                return false;
+            }
+            let Some(next) = p.terms[ENDING].text.chars().next() else {
+                return false;
+            };
+            if !is_vowel(next) {
+                return false;
+            }
+            let before = p.snapshot();
+            p.terms[SHAP].text = "n".into();
+            p.record("6.4.112", "SnA'ByastayorAtaH", before);
+            true
+        },
+    },
+    // 6.4.113 ī halyaghoḥ: śnā's `ā` becomes `ī` before a kṅit sārvadhātuka
+    // beginning with a consonant. kliS + nA + taH → kliSnItaH; kliS + nA +
+    // yAt → kliSnIyAt; vrI + nA + hi → vrIRIhi.
+    //
+    // *aghoḥ* excludes the ghu roots (√dā, √dhā). They are juhotyādi, out of
+    // scope, and no root that can reach this rule is one — so the exclusion is
+    // recorded here rather than implemented. Implement it when gaṇa 3 lands.
+    Rule {
+        id: "6.4.113",
+        name: "I halyaGoH",
+        kind: RuleKind::Vidhi,
+        apply: |p| {
+            if p.terms.len() <= ENDING || p.terms[SHAP].text != "nA" {
+                return false;
+            }
+            if !p.terms[ENDING].has(Tag::Ngit) {
+                return false;
+            }
+            let Some(next) = p.terms[ENDING].text.chars().next() else {
+                return false;
+            };
+            if is_vowel(next) {
+                return false;
+            }
+            let before = p.snapshot();
+            p.terms[SHAP].text = "nI".into();
+            p.record("6.4.113", "I halyaGoH", before);
             true
         },
     },
@@ -912,6 +992,97 @@ mod tests {
         let rule = rules().find(|r| r.id == "7.4.21").unwrap();
         assert!(!(rule.apply)(&mut p));
         assert_eq!(p.terms[ANGA].text, "nI");
+    }
+
+    /// Build `[anga, SnA, ending]` with the ending's ṅit-ness set explicitly.
+    fn shna_prakriya(anga: &str, ending: &str, ngit: bool) -> Prakriya {
+        let mut vik = Term::new("nA");
+        vik.add(Tag::Vikarana);
+        vik.add(Tag::Sarvadhatuka);
+        vik.add(Tag::Ngit);
+        let mut end = Term::new(ending);
+        end.add(Tag::Tin);
+        end.add(Tag::Sarvadhatuka);
+        if ngit {
+            end.add(Tag::Ngit);
+        }
+        Prakriya {
+            terms: vec![Term::new(anga), vik, end],
+            log: vec![],
+            ..Default::default()
+        }
+    }
+
+    #[test]
+    fn shnabhyastayor_atah_elides_a_before_ajadi_ngit() {
+        // kliS + nA + anti -> kliS + n + anti -> kliSnanti.
+        let mut p = shna_prakriya("kliS", "anti", true);
+        let rule = rules().find(|r| r.id == "6.4.112").unwrap();
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.terms[SHAP].text, "n");
+        assert_eq!(p.text(), "kliSnanti");
+    }
+
+    #[test]
+    fn shnabhyastayor_atah_declines_on_halali_and_on_non_ngit() {
+        // Consonant-initial: 6.4.113's case, not this rule's.
+        let mut p = shna_prakriya("kliS", "taH", true);
+        let rule = rules().find(|r| r.id == "6.4.112").unwrap();
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[SHAP].text, "nA");
+        // Vowel-initial but PIT (lot 3pl would be the only ajadi pit ending
+        // if 1.2.4 misfired): the A must survive.
+        let mut p = shna_prakriya("kliS", "anti", false);
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[SHAP].text, "nA");
+    }
+
+    #[test]
+    fn i_halyaghoh_replaces_a_with_i_before_halali_ngit() {
+        // kliS + nA + taH -> kliS + nI + taH -> kliSnItaH.
+        let mut p = shna_prakriya("kliS", "taH", true);
+        let rule = rules().find(|r| r.id == "6.4.113").unwrap();
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.terms[SHAP].text, "nI");
+        assert_eq!(p.text(), "kliSnItaH");
+    }
+
+    #[test]
+    fn i_halyaghoh_declines_on_ajadi_and_on_non_ngit() {
+        // Vowel-initial: 6.4.112's case.
+        let mut p = shna_prakriya("kliS", "anti", true);
+        let rule = rules().find(|r| r.id == "6.4.113").unwrap();
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[SHAP].text, "nA");
+        // The pit case is the whole paradigm split: kliSnAti, not *kliSnIti.
+        let mut p = shna_prakriya("kliS", "ti", false);
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[SHAP].text, "nA");
+        assert_eq!(p.text(), "kliSnAti");
+    }
+
+    #[test]
+    fn shna_alternation_rules_ignore_other_vikaranas_and_short_prakriyas() {
+        // The text guard is what keeps these off Sap/Syan/Sa and off the
+        // Sanac that 3.1.83 substitutes ("Ana", not "nA").
+        for vikarana in ["a", "ya", "Ana", ""] {
+            let mut p = shna_prakriya("kliS", "taH", true);
+            p.terms[SHAP].text = vikarana.to_string();
+            for id in ["6.4.112", "6.4.113"] {
+                let rule = rules().find(|r| r.id == id).unwrap();
+                assert!(!(rule.apply)(&mut p), "{id} fired on {vikarana:?}");
+            }
+        }
+        // A one-term prakriya must not panic indexing SHAP or ENDING.
+        let mut p = Prakriya {
+            terms: vec![Term::new("kliS")],
+            log: vec![],
+            ..Default::default()
+        };
+        for id in ["6.4.112", "6.4.113"] {
+            let rule = rules().find(|r| r.id == id).unwrap();
+            assert!(!(rule.apply)(&mut p));
+        }
     }
 
     #[test]

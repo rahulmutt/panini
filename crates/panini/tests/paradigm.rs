@@ -135,8 +135,14 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "smf",
         "loT",
         [
-            "smaratu", "smaratAm", "smarantu", "smara", "smaratam", "smarata", "smarAni",
-            "smarAva", "smarAma",
+            // uttama eka is smarARi, not smarAni: smar's r and the Ani
+            // ending's n are separated only by the aw vowel A (6.1.101's
+            // savarRa merge), so 8.4.2 retroflexes it -- same mechanism as
+            // karavARi (< kf). Contrast BavAni (< BU), which has no r and
+            // keeps its dental n. This entry predates Ratva modelling and
+            // was wrong; the new tripAdI rules 8.4.1/8.4.2 caught it.
+            "smaratu", "smaratAm", "smarantu", "smara", "smaratam", "smarata", "smarARi", "smarAva",
+            "smarAma",
         ],
     ),
     (
@@ -1190,6 +1196,288 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
             "SayImahi",
         ],
     ),
+    (
+        "kliS",
+        "laT",
+        [
+            "kliSnAti",
+            "kliSnItaH",
+            "kliSnanti",
+            "kliSnAsi",
+            "kliSnITaH",
+            "kliSnITa",
+            "kliSnAmi",
+            "kliSnIvaH",
+            "kliSnImaH",
+        ],
+    ),
+    (
+        "kliS",
+        "laN",
+        [
+            "akliSnAt",
+            "akliSnItAm",
+            "akliSnan",
+            "akliSnAH",
+            "akliSnItam",
+            "akliSnIta",
+            "akliSnAm",
+            "akliSnIva",
+            "akliSnIma",
+        ],
+    ),
+    (
+        "kliS",
+        "loT",
+        [
+            "kliSnAtu",
+            "kliSnItAm",
+            "kliSnantu",
+            "kliSAna",
+            "kliSnItam",
+            "kliSnIta",
+            "kliSnAni",
+            "kliSnAva",
+            "kliSnAma",
+        ],
+    ),
+    (
+        "kliS",
+        "viDiliN",
+        [
+            "kliSnIyAt",
+            "kliSnIyAtAm",
+            "kliSnIyuH",
+            "kliSnIyAH",
+            "kliSnIyAtam",
+            "kliSnIyAta",
+            "kliSnIyAm",
+            "kliSnIyAva",
+            "kliSnIyAma",
+        ],
+    ),
+    (
+        "guD",
+        "laT",
+        [
+            "guDnAti", "guDnItaH", "guDnanti", "guDnAsi", "guDnITaH", "guDnITa", "guDnAmi",
+            "guDnIvaH", "guDnImaH",
+        ],
+    ),
+    (
+        "guD",
+        "laN",
+        [
+            "aguDnAt",
+            "aguDnItAm",
+            "aguDnan",
+            "aguDnAH",
+            "aguDnItam",
+            "aguDnIta",
+            "aguDnAm",
+            "aguDnIva",
+            "aguDnIma",
+        ],
+    ),
+    (
+        "guD",
+        "loT",
+        [
+            "guDnAtu", "guDnItAm", "guDnantu", "guDAna", "guDnItam", "guDnIta", "guDnAni",
+            "guDnAva", "guDnAma",
+        ],
+    ),
+    (
+        "guD",
+        "viDiliN",
+        [
+            "guDnIyAt",
+            "guDnIyAtAm",
+            "guDnIyuH",
+            "guDnIyAH",
+            "guDnIyAtam",
+            "guDnIyAta",
+            "guDnIyAm",
+            "guDnIyAva",
+            "guDnIyAma",
+        ],
+    ),
+    (
+        "aS",
+        "laT",
+        [
+            "aSnAti", "aSnItaH", "aSnanti", "aSnAsi", "aSnITaH", "aSnITa", "aSnAmi", "aSnIvaH",
+            "aSnImaH",
+        ],
+    ),
+    (
+        "aS",
+        "laN",
+        [
+            "ASnAt", "ASnItAm", "ASnan", "ASnAH", "ASnItam", "ASnIta", "ASnAm", "ASnIva", "ASnIma",
+        ],
+    ),
+    (
+        "aS",
+        "loT",
+        [
+            "aSnAtu", "aSnItAm", "aSnantu", "aSAna", "aSnItam", "aSnIta", "aSnAni", "aSnAva",
+            "aSnAma",
+        ],
+    ),
+    (
+        "aS",
+        "viDiliN",
+        [
+            "aSnIyAt",
+            "aSnIyAtAm",
+            "aSnIyuH",
+            "aSnIyAH",
+            "aSnIyAtam",
+            "aSnIyAta",
+            "aSnIyAm",
+            "aSnIyAva",
+            "aSnIyAma",
+        ],
+    ),
+    (
+        "muz",
+        "laT",
+        [
+            "muzRAti", "muzRItaH", "muzRanti", "muzRAsi", "muzRITaH", "muzRITa", "muzRAmi",
+            "muzRIvaH", "muzRImaH",
+        ],
+    ),
+    (
+        "muz",
+        "laN",
+        [
+            "amuzRAt",
+            "amuzRItAm",
+            "amuzRan",
+            "amuzRAH",
+            "amuzRItam",
+            "amuzRIta",
+            "amuzRAm",
+            "amuzRIva",
+            "amuzRIma",
+        ],
+    ),
+    (
+        "muz",
+        "loT",
+        [
+            "muzRAtu", "muzRItAm", "muzRantu", "muzARa", "muzRItam", "muzRIta", "muzRAni",
+            "muzRAva", "muzRAma",
+        ],
+    ),
+    (
+        "muz",
+        "viDiliN",
+        [
+            "muzRIyAt",
+            "muzRIyAtAm",
+            "muzRIyuH",
+            "muzRIyAH",
+            "muzRIyAtam",
+            "muzRIyAta",
+            "muzRIyAm",
+            "muzRIyAva",
+            "muzRIyAma",
+        ],
+    ),
+    (
+        "vrI",
+        "laT",
+        [
+            "vrIRAti", "vrIRItaH", "vrIRanti", "vrIRAsi", "vrIRITaH", "vrIRITa", "vrIRAmi",
+            "vrIRIvaH", "vrIRImaH",
+        ],
+    ),
+    (
+        "vrI",
+        "laN",
+        [
+            "avrIRAt",
+            "avrIRItAm",
+            "avrIRan",
+            "avrIRAH",
+            "avrIRItam",
+            "avrIRIta",
+            "avrIRAm",
+            "avrIRIva",
+            "avrIRIma",
+        ],
+    ),
+    (
+        "vrI",
+        "loT",
+        [
+            "vrIRAtu", "vrIRItAm", "vrIRantu", "vrIRIhi", "vrIRItam", "vrIRIta", "vrIRAni",
+            "vrIRAva", "vrIRAma",
+        ],
+    ),
+    (
+        "vrI",
+        "viDiliN",
+        [
+            "vrIRIyAt",
+            "vrIRIyAtAm",
+            "vrIRIyuH",
+            "vrIRIyAH",
+            "vrIRIyAtam",
+            "vrIRIyAta",
+            "vrIRIyAm",
+            "vrIRIyAva",
+            "vrIRIyAma",
+        ],
+    ),
+    (
+        "vf",
+        "laT",
+        [
+            "vfRIte", "vfRAte", "vfRate", "vfRIze", "vfRATe", "vfRIDve", "vfRe", "vfRIvahe",
+            "vfRImahe",
+        ],
+    ),
+    (
+        "vf",
+        "laN",
+        [
+            "avfRIta",
+            "avfRAtAm",
+            "avfRata",
+            "avfRITAH",
+            "avfRATAm",
+            "avfRIDvam",
+            "avfRi",
+            "avfRIvahi",
+            "avfRImahi",
+        ],
+    ),
+    (
+        "vf",
+        "loT",
+        [
+            "vfRItAm", "vfRAtAm", "vfRatAm", "vfRIzva", "vfRATAm", "vfRIDvam", "vfRE", "vfRAvahE",
+            "vfRAmahE",
+        ],
+    ),
+    (
+        "vf",
+        "viDiliN",
+        [
+            "vfRIta",
+            "vfRIyAtAm",
+            "vfRIran",
+            "vfRITAH",
+            "vfRIyATAm",
+            "vfRIDvam",
+            "vfRIya",
+            "vfRIvahi",
+            "vfRImahi",
+        ],
+    ),
 ];
 
 fn lan_a_form(code: &str, pu: Purusha, va: Vacana) -> String {
@@ -1390,6 +1678,18 @@ fn known_nonforms_are_invalid() {
         "Sayati", // wrong pada: an ātmanepadin root with a parasmaipada ending
         "Sayate", // the śap surviving 2.4.72 (SI + Sap + te, guṇa'd)
         "SIyate", // a divādi/tudādi-style vikaraṇa leaking into adādi
+        // kryādi (gaṇa 9, slices 9a/9b). Each of these is what the slice's
+        // own rule comments say would surface if the named rule misfired;
+        // pinning them keeps those rules' guards honest the same way the
+        // adādi and √śī groups above pin theirs.
+        "kliSnIti",  // 1.2.4 misfiring on the pit ending tip (śnā stays anit)
+        "kleSAna",   // 7.3.86 not blocked by 1.1.5 for śānac (guṇa'd upadhā)
+        "kliSnIhi",  // 3.1.83 (śnā-lopa before hi) ordered after 6.4.113
+        "vfReta",    // 6.4.112 (nA -> n) running after 6.1.87, not before
+        "vfRIyta",   // 6.1.66's old is_empty() guard, silently declining for kryādi
+        "vfRIsva",   // 8.3.59 before it read the preceding term instead of ANGA
+        "vrIRAhi",   // 3.4.87 not tagging hi as pit
+        "kliSnAyAt", // 3.4.103 not tagging yāsuṭ's ending ṅit
     ] {
         assert!(
             matches!(engine.check(bad).verdict, Verdict::Invalid),

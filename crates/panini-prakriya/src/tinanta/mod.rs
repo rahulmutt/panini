@@ -80,6 +80,7 @@ pub fn derive(
             Gana::Divadi => t.add(Tag::Divadi),
             Gana::Tudadi => t.add(Tag::Tudadi),
             Gana::Adadi => t.add(Tag::Adadi),
+            Gana::Kryadi => t.add(Tag::Kryadi),
             Gana::Bhvadi => {}
         }
         t

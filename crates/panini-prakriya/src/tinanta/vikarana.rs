@@ -13,7 +13,8 @@
 use crate::it_samjna::run_it_samjna;
 use crate::rule::{Rule, RuleKind};
 use crate::term::{Tag, Term};
-use crate::tinanta::terms::{ANGA, SHAP};
+use crate::tinanta::sound::is_vowel;
+use crate::tinanta::terms::{ANGA, ENDING, SHAP};
 
 pub(crate) static VIKARANA: &[Rule] = &[
     // 3.1.69 divādibhyaḥ śyan: divādi (gaṇa 4) takes śyan, not śap. Apavāda
@@ -58,6 +59,42 @@ pub(crate) static VIKARANA: &[Rule] = &[
             p.record("3.1.77", "tudAdiByaH SaH", before);
             let mut s = p.terms[SHAP].clone();
             run_it_samjna(&mut s, p, SHAP); // 1.3.8 strips S → a
+            p.terms[SHAP] = s;
+            p.terms[ANGA].add(Tag::Anga);
+            true
+        },
+    },
+    // 3.1.81 kryādibhyaḥ śnā: kryādi (gaṇa 9) takes śnā, not śap. Apavāda to
+    // 3.1.68, ordered before it, exactly as 3.1.69 and 3.1.77 are. śnā is
+    // apit; the second 1.2.4 makes it ṅit and 1.1.5 then blocks guṇa — which
+    // is what keeps kliS from guṇating to kleS under 7.3.86.
+    //
+    // Unlike adādi's śap, śnā is never luk'd: its text goes nA → nI (6.4.113)
+    // or nA → n (6.4.112), and never to empty. But a rule that guards on
+    // `SHAP.is_empty()` to detect "the thematic coalescence rules didn't
+    // apply" still silently declines for kryādi: its SHAP is non-empty but
+    // also non-`a`-final, so `is_empty()` misses it exactly where an
+    // athematic arm is needed. 6.1.66 (`adesha.rs`) learned this the hard
+    // way — its old emptiness guard produced *vfRIyta instead of vfRIta
+    // until it was widened to `!SHAP.ends_with('a')`, which is the correct
+    // test. Any new rule reading terms[SHAP] to distinguish the athematic
+    // path from the thematic one should use that test, not emptiness.
+    Rule {
+        id: "3.1.81",
+        name: "kryAdiByaH SnA",
+        kind: RuleKind::Vidhi,
+        apply: |p| {
+            if !p.terms[ANGA].has(Tag::Kryadi) {
+                return false;
+            }
+            let before = p.snapshot();
+            let mut s = Term::new("SnA");
+            s.add(Tag::Vikarana);
+            s.add(Tag::Sarvadhatuka);
+            p.terms.insert(SHAP, s);
+            p.record("3.1.81", "kryAdiByaH SnA", before);
+            let mut s = p.terms[SHAP].clone();
+            run_it_samjna(&mut s, p, SHAP); // 1.3.8 strips S → nA
             p.terms[SHAP] = s;
             p.terms[ANGA].add(Tag::Anga);
             true
@@ -114,6 +151,56 @@ pub(crate) static VIKARANA: &[Rule] = &[
             let before = p.snapshot();
             p.terms[SHAP].text = String::new();
             p.record("2.4.72", "adipraBftiByaH SapaH", before);
+            true
+        },
+    },
+    // 3.1.83 halaḥ śnaḥ śānac: after a CONSONANT-final root, with `hi`
+    // following, śnā is replaced wholesale by śānac. it-samjña strips the
+    // leading S (1.3.8) and the final c (1.3.3), leaving `Ana`; the existing
+    // 6.4.105 ato heḥ then elides the hi after śāna's short `a`, giving
+    // kliSAna. No new rule is needed for the hi-lopa.
+    //
+    // Placement carries two constraints, both failing visibly:
+    //   - BEFORE 6.4.113 (anga stage, later): that rule would otherwise turn
+    //     śnā's ā into ī before the consonant-initial ṅit `hi` and give
+    //     *kliSnIhi. As an apavāda, 3.1.83 must remove śnā first.
+    //   - BEFORE the second 1.2.4, immediately below: śānac is apit and must
+    //     be tagged ṅit, or 7.3.86 guṇates kliS's laghu upadhā and the form
+    //     surfaces as *kleSAna.
+    //
+    // Vowel-final roots fall outside "halaḥ" and keep śnā, taking 6.4.113 to
+    // vrIRIhi. That pair — kliSAna against vrIRIhi — is the rule's pin.
+    //
+    // Its id is 3.1.x but it lives after the 3.1.68 boundary, so it addresses
+    // the ending as ENDING (index 2). Stage placement is by pipeline position,
+    // not sūtra family; see `super::terms`. The `hi` it reads already exists:
+    // 3.4.87 ser hyapic ca runs in the earlier `tin` stage.
+    Rule {
+        id: "3.1.83",
+        name: "halaH SnaH SAnajJO",
+        kind: RuleKind::Vidhi,
+        apply: |p| {
+            if p.terms.len() <= ENDING || p.terms[SHAP].text != "nA" {
+                return false;
+            }
+            if p.terms[ENDING].text != "hi" {
+                return false;
+            }
+            let Some(last) = p.terms[ANGA].text.chars().last() else {
+                return false;
+            };
+            if is_vowel(last) {
+                return false;
+            }
+            let before = p.snapshot();
+            let mut s = Term::new("SAnac");
+            s.add(Tag::Vikarana);
+            s.add(Tag::Sarvadhatuka);
+            p.terms[SHAP] = s;
+            p.record("3.1.83", "halaH SnaH SAnajJO", before);
+            let mut s = p.terms[SHAP].clone();
+            run_it_samjna(&mut s, p, SHAP); // 1.3.8 strips S, 1.3.3 strips c → Ana
+            p.terms[SHAP] = s;
             true
         },
     },
@@ -227,5 +314,111 @@ mod tests {
         let rule = rules().find(|r| r.id == "2.4.72").unwrap();
         assert!(!(rule.apply)(&mut p));
         assert_eq!(p.terms[ANGA].text, "kf");
+    }
+
+    #[test]
+    fn kryadibhyah_shna_inserts_shna_for_kryadi_only() {
+        // 3.1.81 is an apavAda to 3.1.68, same shape as 3.1.69/3.1.77.
+        // it-samjNa strips the S (1.3.8), leaving nA. No Tag::Pit: SnA is
+        // apit, so the second 1.2.4 makes it Nit and 1.1.5 then blocks guNa
+        // -- which is why kliS gives kliSnAti and not *kleSnAti.
+        let mut anga = Term::new("kliS");
+        anga.add(Tag::Kryadi);
+        let mut p = Prakriya {
+            terms: vec![anga, Term::new("ti")],
+            log: vec![],
+            ..Default::default()
+        };
+        let rule = rules().find(|r| r.id == "3.1.81").unwrap();
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.terms[SHAP].text, "nA");
+        assert!(p.terms[SHAP].has(Tag::Vikarana));
+        assert!(p.terms[SHAP].has(Tag::Sarvadhatuka));
+        assert!(!p.terms[SHAP].has(Tag::Pit));
+        assert!(p.terms[ANGA].has(Tag::Anga));
+    }
+
+    #[test]
+    fn kryadibhyah_shna_declines_for_every_other_gana() {
+        // bhvAdi carries no gana tag at all; the other three carry their own.
+        // A mutant that drops the tag guard would give every root SnA.
+        for tag in [None, Some(Tag::Divadi), Some(Tag::Tudadi), Some(Tag::Adadi)] {
+            let mut anga = Term::new("BU");
+            if let Some(t) = tag {
+                anga.add(t);
+            }
+            let mut p = Prakriya {
+                terms: vec![anga, Term::new("ti")],
+                log: vec![],
+                ..Default::default()
+            };
+            let rule = rules().find(|r| r.id == "3.1.81").unwrap();
+            assert!(!(rule.apply)(&mut p), "fired for {tag:?}");
+        }
+    }
+
+    /// `[anga, SnA, ending]`, the shape 3.1.83 inspects.
+    fn shna_before(anga: &str, ending: &str) -> Prakriya {
+        let mut vik = Term::new("nA");
+        vik.add(Tag::Vikarana);
+        vik.add(Tag::Sarvadhatuka);
+        Prakriya {
+            terms: vec![Term::new(anga), vik, Term::new(ending)],
+            log: vec![],
+            ..Default::default()
+        }
+    }
+
+    #[test]
+    fn halah_shnah_shanac_replaces_shna_after_a_consonant_final_root() {
+        // kliS + nA + hi -> kliS + Ana + hi; 6.4.105 ato heH (adesha stage)
+        // then drops the hi, giving kliSAna.
+        let mut p = shna_before("kliS", "hi");
+        let rule = rules().find(|r| r.id == "3.1.83").unwrap();
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.terms[SHAP].text, "Ana");
+        assert!(p.terms[SHAP].has(Tag::Vikarana));
+        assert!(!p.terms[SHAP].has(Tag::Pit)); // apit: the next 1.2.4 tags it
+    }
+
+    #[test]
+    fn halah_shnah_shanac_declines_after_a_vowel_final_root() {
+        // "halaH" is the whole condition. vrI is vowel-final, so it keeps SnA
+        // and takes 6.4.113 instead: vrIRIhi, not *vrIRAna. This pair is the
+        // rule's shape guard.
+        let mut p = shna_before("vrI", "hi");
+        let rule = rules().find(|r| r.id == "3.1.83").unwrap();
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[SHAP].text, "nA");
+    }
+
+    #[test]
+    fn halah_shnah_shanac_declines_for_endings_other_than_hi() {
+        // The sutra is conditioned on hi alone. A mutant dropping this would
+        // rewrite the entire consonant-final paradigm as *kliSAnati.
+        for ending in ["ti", "taH", "anti", "tAt"] {
+            let mut p = shna_before("kliS", ending);
+            let rule = rules().find(|r| r.id == "3.1.83").unwrap();
+            assert!(!(rule.apply)(&mut p), "fired on {ending}");
+            assert_eq!(p.terms[SHAP].text, "nA");
+        }
+    }
+
+    #[test]
+    fn halah_shnah_shanac_ignores_other_vikaranas_and_short_prakriyas() {
+        for vikarana in ["a", "ya", ""] {
+            let mut p = shna_before("kliS", "hi");
+            p.terms[SHAP].text = vikarana.to_string();
+            let rule = rules().find(|r| r.id == "3.1.83").unwrap();
+            assert!(!(rule.apply)(&mut p), "fired on {vikarana:?}");
+        }
+        // A one-term prakriya must not panic indexing SHAP or ENDING.
+        let mut p = Prakriya {
+            terms: vec![Term::new("kliS")],
+            log: vec![],
+            ..Default::default()
+        };
+        let rule = rules().find(|r| r.id == "3.1.83").unwrap();
+        assert!(!(rule.apply)(&mut p));
     }
 }
