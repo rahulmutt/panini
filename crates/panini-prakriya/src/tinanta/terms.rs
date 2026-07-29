@@ -76,3 +76,25 @@ pub(crate) fn following_sarvadhatuka(p: &Prakriya) -> Option<&Term> {
         None => None,
     }
 }
+
+/// The sound immediately preceding the ending — the last character of the
+/// nearest **non-empty** term before `ENDING`.
+///
+/// Rules that ask "what does the ending attach to?" cannot read `ANGA`: a
+/// non-empty vikaraṇa sits between the two, and it is the vikaraṇa's final
+/// sound the ending actually meets. They cannot read `SHAP` either, because
+/// 2.4.72 luks śap to an empty string for adādi, where the ending really
+/// does attach to the root.
+///
+/// The fallback is what keeps `adDi` working: with śap empty the search
+/// walks past it to the root's `d`. 8.3.59 in `tripadi.rs` open-codes the
+/// same walk for the same reason.
+///
+/// Returns `None` for a prakriyā with no term before the ending.
+pub(crate) fn sound_before_ending(p: &Prakriya) -> Option<char> {
+    p.terms
+        .get(..ENDING)?
+        .iter()
+        .rev()
+        .find_map(|t| t.text.chars().last())
+}

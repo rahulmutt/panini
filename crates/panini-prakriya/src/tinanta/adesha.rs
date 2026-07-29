@@ -29,7 +29,7 @@
 
 use crate::rule::{Rule, RuleKind};
 use crate::tinanta::sound::{is_jhal, is_vowel, vrddhi_of};
-use crate::tinanta::terms::{ANGA, ENDING, SHAP};
+use crate::tinanta::terms::{ANGA, ENDING, SHAP, sound_before_ending};
 use panini_data::Lakara;
 
 pub(crate) static ADESHA: &[Rule] = &[
@@ -377,7 +377,13 @@ pub(crate) static ADESHA: &[Rule] = &[
             if p.terms[ENDING].text != "hi" {
                 return false;
             }
-            let Some(last) = p.terms[ANGA].text.chars().last() else {
+            // NOT terms[ANGA]. The jhal this sūtra tests is the sound the
+            // ending attaches to, which for a gaṇa with a live vikaraṇa is
+            // the vikaraṇa's final, not the root's. Reading ANGA fired on
+            // √āp's `p` and √śak's `k` and gave *ApnuDi / *SaknuDi, even
+            // though śnu's `u` sits between. adādi still reaches the root
+            // because its śap is empty and the helper walks past it.
+            let Some(last) = sound_before_ending(p) else {
                 return false;
             };
             if !is_jhal(last) {
@@ -781,5 +787,43 @@ mod tests {
         let rule = rules().find(|r| r.id == "6.1.101").unwrap();
         assert!(!(rule.apply)(&mut p));
         assert_eq!(p.terms[ANGA].text, "kliS");
+    }
+
+    #[test]
+    fn her_dhih_reads_the_sound_before_the_ending_not_the_root() {
+        // Ap + nu + hi must stay Apnuhi. `p` is a jhal, but it is not what
+        // precedes `hi` — śnu's `u` is, and `u` is not a jhal.
+        let mut p = Prakriya {
+            terms: vec![Term::new("Ap"), Term::new("nu"), Term::new("hi")],
+            ..Default::default()
+        };
+        let rule = rules().find(|r| r.id == "6.4.101").unwrap();
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[ENDING].text, "hi");
+    }
+
+    #[test]
+    fn her_dhih_still_fires_for_adadi_across_an_empty_shap() {
+        // √ad: śap is luk'd, so the nearest non-empty term before the ending is
+        // the root itself and `d` is still the right character. adDi.
+        let mut p = Prakriya {
+            terms: vec![Term::new("ad"), Term::new(""), Term::new("hi")],
+            ..Default::default()
+        };
+        let rule = rules().find(|r| r.id == "6.4.101").unwrap();
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.terms[ENDING].text, "Di");
+    }
+
+    #[test]
+    fn her_dhih_declines_for_kryadi_shni() {
+        // vrI + nI + hi → vrIRIhi. `I` is not a jhal. Unchanged by this task,
+        // pinned so the change is provably a no-op here too.
+        let mut p = Prakriya {
+            terms: vec![Term::new("vrI"), Term::new("nI"), Term::new("hi")],
+            ..Default::default()
+        };
+        let rule = rules().find(|r| r.id == "6.4.101").unwrap();
+        assert!(!(rule.apply)(&mut p));
     }
 }
