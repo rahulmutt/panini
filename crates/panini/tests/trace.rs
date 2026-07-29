@@ -868,3 +868,76 @@ fn rinoti_trace_ends_in_natva_over_the_new_stem() {
         ]
     );
 }
+
+#[test]
+fn ashnuvate_trace_is_7_1_5_then_6_4_77() {
+    // aS prathama bahu, atmanepada: 7.1.5 turns jha into ate (the aṅga is not
+    // a-final), then the vowel-initial ending puts śnu's u before a vowel and
+    // 6.4.77 (uvaṅ) fires -- the gaṇa's only ātmanepadī reuse of both rules.
+    assert_eq!(
+        trace_for("aSnuvate"),
+        vec![
+            "1.3.12", "3.4.78", "1.2.4", "3.4.79", "3.1.73", "1.3.9", "1.2.4", "7.1.5", "6.4.77"
+        ]
+    );
+}
+
+#[test]
+fn ashnushva_trace_reaches_8_3_59_through_the_vikarana() {
+    // aS loT madhyama eka: TAs -> se (3.4.80) -> sva (3.4.91), then the
+    // existing 8.3.59 retroflexes the s after śnu's u -- no code change, it
+    // just sees the vikaraṇa's vowel instead of the root's.
+    assert_eq!(
+        trace_for("aSnuzva"),
+        vec![
+            "1.3.12", "3.4.78", "1.2.4", "3.4.85", "3.4.80", "3.4.91", "3.1.73", "1.3.9", "1.2.4",
+            "8.3.59"
+        ]
+    );
+}
+
+#[test]
+fn ashnuvita_trace_is_7_2_79_then_6_4_77_then_6_1_66() {
+    // aS viDiliN prathama eka: yāsuṭ's salopa (7.2.79) leaves a vowel-initial
+    // ending, so 6.4.77 (uvaṅ) fires on śnu's u instead of 7.2.80's yA -> iy
+    // arm (the aṅga isn't a/A-final), and 6.1.66 then drops the resulting y
+    // before the following v.
+    assert_eq!(
+        trace_for("aSnuvIta"),
+        vec![
+            "1.3.12", "3.4.78", "1.2.4", "3.4.102", "3.1.73", "1.3.9", "1.2.4", "7.2.79", "6.4.77",
+            "6.1.66"
+        ]
+    );
+}
+
+#[test]
+fn ashnave_trace_pins_the_widened_6_1_90_athematic_arm() {
+    // aS loT uttama eka: the second 7.3.84 guṇates śnu to no, 6.1.78 turns
+    // that into nav, and SHAP is now nav -- neither empty nor a/A-final, so
+    // only the widened 6.1.90 (SHAP ends in neither a nor A) fires to absorb
+    // the stranded āṭ A. One of the slice's only two witnesses for that
+    // widening; the other, stiGnavE, is pinned only as a PARADIGM golden, not
+    // as an ordered trace here.
+    assert_eq!(
+        trace_for("aSnavE"),
+        vec![
+            "1.3.12", "3.4.78", "1.3.9", "3.4.85", "3.4.79", "3.4.93", "3.4.92", "3.1.73", "1.3.9",
+            "1.2.4", "7.3.84", "6.1.78", "6.1.90"
+        ]
+    );
+}
+
+#[test]
+fn stighnute_trace_has_no_6_1_64_substitution() {
+    // stiG prathama eka. stiG is stored post-6.1.64 dhAtvAdeH zaH saH -- no
+    // rule in the engine performs that z -> s substitution, so this trace
+    // (unlike aSnute's) never mentions 6.1.64; it starts directly from the
+    // pada sanction on the already-s-initial root.
+    assert_eq!(
+        trace_for("stiGnute"),
+        vec![
+            "1.3.12", "3.4.78", "1.2.4", "3.4.79", "3.1.73", "1.3.9", "1.2.4"
+        ]
+    );
+}

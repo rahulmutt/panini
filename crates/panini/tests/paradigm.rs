@@ -1669,6 +1669,119 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
             "riRuyAma",
         ],
     ),
+    (
+        "aS.5",
+        "laT",
+        [
+            "aSnute", "aSnuvAte", "aSnuvate", "aSnuze", "aSnuvATe", "aSnuDve", "aSnuve",
+            "aSnuvahe", "aSnumahe",
+        ],
+    ),
+    (
+        "aS.5",
+        "laN",
+        [
+            "ASnuta",
+            "ASnuvAtAm",
+            "ASnuvata",
+            "ASnuTAH",
+            "ASnuvATAm",
+            "ASnuDvam",
+            "ASnuvi",
+            "ASnuvahi",
+            "ASnumahi",
+        ],
+    ),
+    (
+        "aS.5",
+        "loT",
+        [
+            "aSnutAm",
+            "aSnuvAtAm",
+            "aSnuvatAm",
+            "aSnuzva",
+            "aSnuvATAm",
+            "aSnuDvam",
+            "aSnavE",
+            "aSnavAvahE",
+            "aSnavAmahE",
+        ],
+    ),
+    (
+        "aS.5",
+        "viDiliN",
+        [
+            "aSnuvIta",
+            "aSnuvIyAtAm",
+            "aSnuvIran",
+            "aSnuvITAH",
+            "aSnuvIyATAm",
+            "aSnuvIDvam",
+            "aSnuvIya",
+            "aSnuvIvahi",
+            "aSnuvImahi",
+        ],
+    ),
+    (
+        "stiG",
+        "laT",
+        [
+            "stiGnute",
+            "stiGnuvAte",
+            "stiGnuvate",
+            "stiGnuze",
+            "stiGnuvATe",
+            "stiGnuDve",
+            "stiGnuve",
+            "stiGnuvahe",
+            "stiGnumahe",
+        ],
+    ),
+    (
+        "stiG",
+        "laN",
+        [
+            "astiGnuta",
+            "astiGnuvAtAm",
+            "astiGnuvata",
+            "astiGnuTAH",
+            "astiGnuvATAm",
+            "astiGnuDvam",
+            "astiGnuvi",
+            "astiGnuvahi",
+            "astiGnumahi",
+        ],
+    ),
+    (
+        "stiG",
+        "loT",
+        [
+            "stiGnutAm",
+            "stiGnuvAtAm",
+            "stiGnuvatAm",
+            "stiGnuzva",
+            "stiGnuvATAm",
+            "stiGnuDvam",
+            "stiGnavE",
+            "stiGnavAvahE",
+            "stiGnavAmahE",
+        ],
+    ),
+    (
+        "stiG",
+        "viDiliN",
+        [
+            "stiGnuvIta",
+            "stiGnuvIyAtAm",
+            "stiGnuvIran",
+            "stiGnuvITAH",
+            "stiGnuvIyATAm",
+            "stiGnuvIDvam",
+            "stiGnuvIya",
+            "stiGnuvIvahi",
+            "stiGnuvImahi",
+        ],
+    ),
 ];
 
 fn lan_a_form(id: &str, pu: Purusha, va: Vacana) -> String {
@@ -1885,6 +1998,17 @@ fn known_nonforms_are_invalid() {
         assert!(
             matches!(engine.check(bad).verdict, Verdict::Invalid),
             "expected INVALID for {bad}"
+        );
+    }
+}
+
+#[test]
+fn both_ash_roots_derive() {
+    let engine = Panini::new();
+    for form in ["aSnute", "aSnAti"] {
+        assert!(
+            matches!(engine.check(form).verdict, Verdict::Valid),
+            "{form}"
         );
     }
 }

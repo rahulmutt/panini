@@ -11,6 +11,9 @@ pub enum Verdict {
 }
 
 pub struct Analysis {
+    /// The dhatu's `id` (not `code`): two roots in different gaṇas can share
+    /// an SLP1 form (e.g. svādi's `aS.5` and kryādi's `aS`), and only `id` is
+    /// unique.
     pub dhatu: String,
     pub lakara: Lakara,
     pub pada: Pada,
@@ -44,7 +47,7 @@ impl Panini {
             // as a surface form — cf. the pada blocks in 1.3.12 / 1.3.78.
             if !p.blocked && p.text() == slp1 {
                 analyses.push(Analysis {
-                    dhatu: c.dhatu.code.to_string(),
+                    dhatu: c.dhatu.id.to_string(),
                     lakara: c.lakara,
                     pada: c.pada,
                     purusha: c.purusha,

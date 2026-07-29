@@ -340,6 +340,26 @@ static DHATUS: &[Dhatu] = &[
         pada: Pada::Parasmaipada,
         artha: "hiMsAyAm",
     },
+    Dhatu {
+        // 05.0020 aSU~\ vyAptau. Distinct root from kryādi's 09.0059 aSa~
+        // Bojane, which shares this SLP1 form — hence the qualified id.
+        // aSnute against aSnAti is the pair.
+        id: "aS.5",
+        code: "aS",
+        gana: Gana::Svadi,
+        pada: Pada::Atmanepada,
+        artha: "vyAptO saNGAte ca",
+    },
+    Dhatu {
+        // 05.0021 zwiGa~\. Stored post-6.1.64 dhātvādeḥ ṣaḥ saḥ: no rule in
+        // the engine performs that substitution, so it is a stated
+        // simplification, not a derivation step. See the spec's Data section.
+        id: "stiG",
+        code: "stiG",
+        gana: Gana::Svadi,
+        pada: Pada::Atmanepada,
+        artha: "Askandane",
+    },
 ];
 
 pub fn dhatus() -> &'static [Dhatu] {
@@ -381,7 +401,7 @@ mod tests {
 
     #[test]
     fn curated_roots_have_expected_ganas_and_padas() {
-        assert_eq!(dhatus().len(), 40);
+        assert_eq!(dhatus().len(), 42);
         let bu = dhatus().iter().find(|d| d.id == "BU").unwrap();
         assert!(matches!(bu.pada, Pada::Parasmaipada));
         let labh = dhatus().iter().find(|d| d.id == "laB").unwrap();
@@ -499,10 +519,24 @@ mod tests {
         sorted.sort_unstable();
         sorted.dedup();
         assert_eq!(sorted.len(), ids.len(), "dhatu ids must be unique");
-        // Until svādi lands every id equals its code; the field exists so that
-        // stops being required.
+        // svādi's aS.5 is the first id that differs from its code (aS) — the
+        // kryādi/svādi collision the field exists for. Every other dhatu's id
+        // still equals its code.
         for d in dhatus() {
             assert!(!d.id.is_empty());
         }
+    }
+
+    #[test]
+    fn the_two_ash_roots_are_distinct_rows() {
+        let svadi = dhatus().iter().find(|d| d.id == "aS.5").unwrap();
+        let kryadi = dhatus().iter().find(|d| d.id == "aS").unwrap();
+        assert!(matches!(svadi.gana, Gana::Svadi));
+        assert!(matches!(kryadi.gana, Gana::Kryadi));
+        assert!(matches!(svadi.pada, Pada::Atmanepada));
+        assert!(matches!(kryadi.pada, Pada::Parasmaipada));
+        // Same surface text, different rows. If ids ever collapse, one of these
+        // roots silently stops being derivable.
+        assert_eq!(svadi.code, kryadi.code);
     }
 }

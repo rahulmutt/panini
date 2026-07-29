@@ -25,9 +25,9 @@ fn generate_then_check_recovers_inputs() {
                 assert!(
                     r.analyses
                         .iter()
-                        .any(|a| a.dhatu == d.code && a.form_slp1 == form && a.lakara == lakara),
+                        .any(|a| a.dhatu == d.id && a.form_slp1 == form && a.lakara == lakara),
                     "roundtrip failed: {} {} -> {}",
-                    d.code,
+                    d.id,
                     panini::lakara_name(lakara),
                     form
                 );
