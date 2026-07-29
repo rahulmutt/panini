@@ -413,7 +413,7 @@ pub(crate) static ADESHA: &[Rule] = &[
         name: "utaSca pratyayAdasaMyogapUrvAt",
         kind: RuleKind::Vidhi,
         apply: |p| {
-            if p.terms.len() <= ENDING || p.terms[ENDING].text != "hi" {
+            if p.terms[ENDING].text != "hi" {
                 return false;
             }
             if !shnu_asamyogapurva(p) {

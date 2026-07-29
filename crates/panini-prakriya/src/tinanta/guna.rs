@@ -167,9 +167,6 @@ pub(crate) static GUNA: &[Rule] = &[
         name: "sArvaDAtukArDaDAtukayoH",
         kind: RuleKind::Vidhi,
         apply: |p| {
-            if p.terms.len() <= ENDING {
-                return false;
-            }
             // 1.1.5 kṅiti ca, as in the first application. Same ṅit-only
             // narrowness: no kit tag exists in this engine yet.
             if p.terms[ENDING].has(Tag::Ngit) {
@@ -210,7 +207,7 @@ pub(crate) static GUNA: &[Rule] = &[
         name: "huSnuvoH sArvaDAtuke",
         kind: RuleKind::Vidhi,
         apply: |p| {
-            if p.terms.len() <= ENDING || !shnu_asamyogapurva(p) {
+            if !shnu_asamyogapurva(p) {
                 return false;
             }
             let Some(next) = p.terms[ENDING].text.chars().next() else {
@@ -242,7 +239,7 @@ pub(crate) static GUNA: &[Rule] = &[
         name: "aci SnuDAtuBruvAM yvoriyaNuvaNO",
         kind: RuleKind::Vidhi,
         apply: |p| {
-            if p.terms.len() <= ENDING || p.terms[SHAP].text != "nu" {
+            if p.terms[SHAP].text != "nu" {
                 return false;
             }
             let Some(next) = p.terms[ENDING].text.chars().next() else {
