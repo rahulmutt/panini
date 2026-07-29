@@ -1819,6 +1819,12 @@ fn vowel_initial_roots_take_at_not_a() {
 fn every_form_validates_and_matches() {
     let engine = Panini::new();
     for (root, lakara, forms) in PARADIGM {
+        // `PARADIGM`'s first column is a `Dhatu::id` (gaṇa-qualified, so the
+        // two √aś rows stay distinct: `aS.5` vs `aS`), but `Analysis::dhatu`
+        // reports the surface `code` (deliberately not unique — it's a
+        // user-facing spelling, not a key). The two must be resolved against
+        // each other rather than compared directly.
+        let code = dhatus().iter().find(|d| d.id == *root).unwrap().code;
         for expected in forms {
             let r = engine.check(expected);
             assert!(
@@ -1827,7 +1833,7 @@ fn every_form_validates_and_matches() {
             );
             assert!(
                 r.analyses.iter().any(|a| a.form_slp1 == *expected
-                    && a.dhatu == *root
+                    && a.dhatu == code
                     && panini::lakara_name(a.lakara) == *lakara),
                 "no {lakara} analysis of {root} produced {expected}"
             );
