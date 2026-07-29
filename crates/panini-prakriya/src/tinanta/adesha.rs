@@ -42,8 +42,8 @@
 //! independent mutation pins into one.
 
 use crate::rule::{Rule, RuleKind};
-use crate::tinanta::sound::{is_jhal, is_vowel, shnu_asamyogapurva, vrddhi_of};
-use crate::tinanta::terms::{ANGA, ENDING, SHAP, sound_before_ending};
+use crate::tinanta::sound::{is_jhal, is_vowel, vrddhi_of};
+use crate::tinanta::terms::{ANGA, ENDING, SHAP, shnu_asamyogapurva, sound_before_ending};
 use panini_data::Lakara;
 
 pub(crate) static ADESHA: &[Rule] = &[

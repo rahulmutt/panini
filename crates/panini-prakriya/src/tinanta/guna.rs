@@ -15,8 +15,8 @@
 
 use crate::rule::{Rule, RuleKind};
 use crate::term::Tag;
-use crate::tinanta::sound::{guna_of, is_vowel, shnu_asamyogapurva};
-use crate::tinanta::terms::{ANGA, ENDING, SHAP, following_sarvadhatuka};
+use crate::tinanta::sound::{guna_of, is_vowel};
+use crate::tinanta::terms::{ANGA, ENDING, SHAP, following_sarvadhatuka, shnu_asamyogapurva};
 use panini_data::Lakara;
 
 pub(crate) static GUNA: &[Rule] = &[
