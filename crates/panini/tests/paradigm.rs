@@ -1790,7 +1790,13 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
 
 fn lan_a_form(id: &str, pu: Purusha, va: Vacana) -> String {
     let d = dhatus().iter().find(|d| d.id == id).unwrap();
-    derive(d, Lakara::Lan, Pada::Atmanepada, pu, va).text()
+    let branches = derive(d, Lakara::Lan, Pada::Atmanepada, pu, va);
+    assert_eq!(
+        branches.len(),
+        1,
+        "{id} laṅ ātmanepada {pu:?} {va:?} forked unexpectedly"
+    );
+    branches[0].text()
 }
 
 #[test]

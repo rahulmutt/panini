@@ -19,18 +19,19 @@ fn generate_then_check_recovers_inputs() {
     for d in dhatus() {
         for &lakara in panini_analyze::LAKARAS {
             for &(pu, va) in CELLS {
-                let p = engine.derive(d, lakara, d.pada, pu, va);
-                let form = p.text();
-                let r = engine.check(&form);
-                assert!(
-                    r.analyses
-                        .iter()
-                        .any(|a| a.dhatu == d.code && a.form_slp1 == form && a.lakara == lakara),
-                    "roundtrip failed: {} {} -> {}",
-                    d.code,
-                    panini::lakara_name(lakara),
-                    form
-                );
+                for p in engine.derive(d, lakara, d.pada, pu, va) {
+                    let form = p.text();
+                    let r = engine.check(&form);
+                    assert!(
+                        r.analyses.iter().any(|a| a.dhatu == d.code
+                            && a.form_slp1 == form
+                            && a.lakara == lakara),
+                        "roundtrip failed: {} {} -> {}",
+                        d.code,
+                        panini::lakara_name(lakara),
+                        form
+                    );
+                }
             }
         }
     }

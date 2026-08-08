@@ -39,8 +39,15 @@ pub(crate) mod derivation_tests;
 /// `#[cfg(test)]` and expected to move again; routing its consumers through
 /// one re-export here means only this line needs updating, rather than N
 /// direct paths across the stage files.
+///
+/// `sole` travels the same path pre-emptively: this task's own helpers call
+/// it directly (they live in `derivation_tests` itself), so the re-export
+/// has no consumer yet. It gains one once a stage-file test needs to unwrap
+/// a single-branch derivation — starting with the fork logic in task 3 —
+/// hence the `allow`.
 #[cfg(test)]
-pub(in crate::tinanta) use derivation_tests::form_g;
+#[allow(unused_imports)]
+pub(in crate::tinanta) use derivation_tests::{form_g, sole};
 
 /// The ordered rule list, as a sequence of pipeline stages. Read the stages
 /// in order, and the rules within each stage in order: that flattened
@@ -67,7 +74,7 @@ pub fn derive(
     pada: Pada,
     purusha: Purusha,
     vacana: Vacana,
-) -> Prakriya {
+) -> Vec<Prakriya> {
     let mut p = Prakriya {
         ctx: Context::new(lakara, pada, purusha, vacana),
         ..Default::default()
@@ -88,6 +95,5 @@ pub fn derive(
         }
         t
     });
-    run_pipeline(&mut p, TINANTA_RULES);
-    p
+    run_pipeline(p, TINANTA_RULES)
 }

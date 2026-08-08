@@ -43,20 +43,27 @@ impl Panini {
         let (slp1, detected) = normalize(input);
         let mut analyses = Vec::new();
         for c in candidates(&slp1) {
-            let p = derive_prakriya(c.dhatu, c.lakara, c.pada, c.purusha, c.vacana);
-            // A blocked prakriya derived nothing: its text is a partial
-            // string (often the bare root code) that must never be reported
-            // as a surface form — cf. the pada blocks in 1.3.12 / 1.3.78.
-            if !p.blocked && p.text() == slp1 {
-                analyses.push(Analysis {
-                    dhatu: c.dhatu.code.to_string(),
-                    lakara: c.lakara,
-                    pada: c.pada,
-                    purusha: c.purusha,
-                    vacana: c.vacana,
-                    form_slp1: p.text(),
-                    trace: p.log,
-                });
+            // One candidate can yield several derivations: an optional
+            // (vikalpa) rule forks the prakriyā, and both readings are
+            // valid Sanskrit. Branches are not deduplicated — two entries
+            // with the same form and different traces means one form with
+            // two derivations, which is information, not noise.
+            for p in derive_prakriya(c.dhatu, c.lakara, c.pada, c.purusha, c.vacana) {
+                // A blocked prakriya derived nothing: its text is a partial
+                // string (often the bare root code) that must never be
+                // reported as a surface form — cf. the pada blocks in
+                // 1.3.12 / 1.3.78.
+                if !p.blocked && p.text() == slp1 {
+                    analyses.push(Analysis {
+                        dhatu: c.dhatu.code.to_string(),
+                        lakara: c.lakara,
+                        pada: c.pada,
+                        purusha: c.purusha,
+                        vacana: c.vacana,
+                        form_slp1: p.text(),
+                        trace: p.log,
+                    });
+                }
             }
         }
         let verdict = if analyses.is_empty() {
@@ -79,7 +86,7 @@ impl Panini {
         pada: Pada,
         purusha: Purusha,
         vacana: Vacana,
-    ) -> Prakriya {
+    ) -> Vec<Prakriya> {
         derive_prakriya(dhatu, lakara, pada, purusha, vacana)
     }
 }

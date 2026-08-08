@@ -11,9 +11,25 @@ use super::*;
 use crate::tinanta::sound::cartva_of;
 use panini_data::{Lakara, Pada, Purusha, Vacana, dhatus};
 
+/// Unwrap a derivation that must not have forked.
+///
+/// Every single-form helper below goes through this, so a cell that gains
+/// an unexpected optional-rule branch fails loudly at the unit-test level
+/// rather than silently having its first branch read.
+pub(super) fn sole(branches: Vec<Prakriya>) -> Prakriya {
+    assert_eq!(
+        branches.len(),
+        1,
+        "expected exactly one derivation, got {}: {:?}",
+        branches.len(),
+        branches.iter().map(|p| p.text()).collect::<Vec<_>>()
+    );
+    branches.into_iter().next().unwrap()
+}
+
 pub(super) fn form(code: &str, pu: Purusha, va: Vacana) -> String {
     let d = dhatus().iter().find(|d| d.id == code).unwrap();
-    derive(d, Lakara::Lat, Pada::Parasmaipada, pu, va).text()
+    sole(derive(d, Lakara::Lat, Pada::Parasmaipada, pu, va)).text()
 }
 
 // `pub(super)` — the narrowest visibility that lets `mod.rs` re-export it
@@ -22,27 +38,27 @@ pub(super) fn form(code: &str, pu: Purusha, va: Vacana) -> String {
 // module can import any of them the same way.
 pub(super) fn form_g(code: &str, la: Lakara, pu: Purusha, va: Vacana) -> String {
     let d = dhatus().iter().find(|d| d.id == code).unwrap();
-    derive(d, la, d.pada, pu, va).text()
+    sole(derive(d, la, d.pada, pu, va)).text()
 }
 
 pub(super) fn lin_form(code: &str, pu: Purusha, va: Vacana) -> String {
     let d = dhatus().iter().find(|d| d.id == code).unwrap();
-    derive(d, Lakara::VidhiLin, Pada::Parasmaipada, pu, va).text()
+    sole(derive(d, Lakara::VidhiLin, Pada::Parasmaipada, pu, va)).text()
 }
 
 pub(super) fn lat_a_form(code: &str, pu: Purusha, va: Vacana) -> String {
     let d = dhatus().iter().find(|d| d.id == code).unwrap();
-    derive(d, Lakara::Lat, Pada::Atmanepada, pu, va).text()
+    sole(derive(d, Lakara::Lat, Pada::Atmanepada, pu, va)).text()
 }
 
 pub(super) fn lot_a_form(code: &str, pu: Purusha, va: Vacana) -> String {
     let d = dhatus().iter().find(|d| d.id == code).unwrap();
-    derive(d, Lakara::Lot, Pada::Atmanepada, pu, va).text()
+    sole(derive(d, Lakara::Lot, Pada::Atmanepada, pu, va)).text()
 }
 
 pub(super) fn lin_a_form(code: &str, pu: Purusha, va: Vacana) -> String {
     let d = dhatus().iter().find(|d| d.id == code).unwrap();
-    derive(d, Lakara::VidhiLin, Pada::Atmanepada, pu, va).text()
+    sole(derive(d, Lakara::VidhiLin, Pada::Atmanepada, pu, va)).text()
 }
 
 /// The ordered rule list IS the grammar this crate implements, so its
@@ -263,7 +279,7 @@ fn adadi_vidhilin_derives_the_yas_yuh_reduction() {
         let d = dhatus().iter().find(|d| d.id == code).unwrap();
         for pu in [Purusha::Prathama, Purusha::Madhyama, Purusha::Uttama] {
             for va in [Vacana::Eka, Vacana::Dvi, Vacana::Bahu] {
-                let p = derive(d, Lakara::VidhiLin, d.pada, pu, va);
+                let p = sole(derive(d, Lakara::VidhiLin, d.pada, pu, va));
                 assert!(!p.blocked, "{code} vidhiliṅ {pu:?} {va:?} was blocked");
                 assert!(!p.log.is_empty(), "{code} vidhiliṅ ran no rules");
                 assert!(
@@ -380,13 +396,13 @@ fn shap_is_pit_and_bhvadi_guna_survives() {
     let d = dhatus().iter().find(|d| d.id == "vft").unwrap();
     // vṛt uses 7.3.86 (laghūpadhā guṇa) before śap (pit) → vartate.
     assert_eq!(
-        derive(
+        sole(derive(
             d,
             Lakara::Lat,
             Pada::Atmanepada,
             Purusha::Prathama,
             Vacana::Eka
-        )
+        ))
         .text(),
         "vartate"
     );
@@ -403,13 +419,13 @@ fn ji_3sg_is_jayati() {
 #[test]
 fn trace_is_recorded() {
     let d = dhatus().iter().find(|d| d.id == "BU").unwrap();
-    let p = derive(
+    let p = sole(derive(
         d,
         Lakara::Lat,
         Pada::Parasmaipada,
         Purusha::Prathama,
         Vacana::Eka,
-    );
+    ));
     assert!(p.log.iter().any(|s| s.sutra == "3.1.68"));
     assert!(p.log.iter().any(|s| s.sutra == "7.3.84"));
     assert!(!p.log.is_empty());
@@ -444,23 +460,24 @@ fn recorded_step_names_match_tinanta_rules_for_every_id() {
         for &lakara in &lakaras {
             for &purusha in &purushas {
                 for &vacana in &vacanas {
-                    let p = derive(d, lakara, d.pada, purusha, vacana);
-                    for step in &p.log {
-                        let rule = rules().find(|r| r.id == step.sutra).unwrap_or_else(|| {
-                            panic!(
-                                "recorded step cites sutra id {:?} which is not in TINANTA_RULES \
-                                 (dhatu {}, {lakara:?} {purusha:?} {vacana:?})",
-                                step.sutra, d.code
-                            )
-                        });
-                        assert_eq!(
-                            step.name, rule.name,
-                            "RuleStep.name for sutra {} (dhatu {}, {lakara:?} {purusha:?} {vacana:?}) \
-                             is {:?} but TINANTA_RULES[id={:?}].name is {:?} -- a record() call site \
-                             has drifted from the Rule.name field",
-                            step.sutra, d.code, step.name, rule.id, rule.name
-                        );
-                        steps_checked += 1;
+                    for p in derive(d, lakara, d.pada, purusha, vacana) {
+                        for step in &p.log {
+                            let rule = rules().find(|r| r.id == step.sutra).unwrap_or_else(|| {
+                                panic!(
+                                    "recorded step cites sutra id {:?} which is not in TINANTA_RULES \
+                                     (dhatu {}, {lakara:?} {purusha:?} {vacana:?})",
+                                    step.sutra, d.code
+                                )
+                            });
+                            assert_eq!(
+                                step.name, rule.name,
+                                "RuleStep.name for sutra {} (dhatu {}, {lakara:?} {purusha:?} {vacana:?}) \
+                                 is {:?} but TINANTA_RULES[id={:?}].name is {:?} -- a record() call site \
+                                 has drifted from the Rule.name field",
+                                step.sutra, d.code, step.name, rule.id, rule.name
+                            );
+                            steps_checked += 1;
+                        }
                     }
                 }
             }
@@ -526,48 +543,48 @@ fn pada_sanction_blocks_wrong_pada_derivations() {
     // 1.3.12/1.3.78: derivation is the source of truth for pada. A
     // wrong-pada derive must not silently produce a surface form.
     let labh = dhatus().iter().find(|d| d.id == "laB").unwrap();
-    let p = derive(
+    let p = sole(derive(
         labh,
         Lakara::Lat,
         Pada::Parasmaipada,
         Purusha::Prathama,
         Vacana::Eka,
-    );
+    ));
     assert!(p.blocked, "atmanepadin root + parasmaipada must block");
     assert_eq!(p.text(), "laB", "no rule may run after the block");
     assert!(p.log.is_empty(), "a blocked derivation records nothing");
 
     let bhu = dhatus().iter().find(|d| d.id == "BU").unwrap();
-    let p = derive(
+    let p = sole(derive(
         bhu,
         Lakara::Lat,
         Pada::Atmanepada,
         Purusha::Prathama,
         Vacana::Eka,
-    );
+    ));
     assert!(p.blocked, "parasmaipada root + atmanepada must block");
 }
 
 #[test]
 fn pada_sanction_records_the_sanctioning_sutra() {
     let bhu = dhatus().iter().find(|d| d.id == "BU").unwrap();
-    let p = derive(
+    let p = sole(derive(
         bhu,
         Lakara::Lat,
         Pada::Parasmaipada,
         Purusha::Prathama,
         Vacana::Eka,
-    );
+    ));
     assert_eq!(p.log.first().unwrap().sutra, "1.3.78");
 
     let labh = dhatus().iter().find(|d| d.id == "laB").unwrap();
-    let p = derive(
+    let p = sole(derive(
         labh,
         Lakara::Lat,
         Pada::Atmanepada,
         Purusha::Prathama,
         Vacana::Eka,
-    );
+    ));
     assert_eq!(p.log.first().unwrap().sutra, "1.3.12");
 }
 
@@ -648,13 +665,13 @@ fn siyut_survives_salopa_as_long_i() {
     // long I (yāsuṭ's chain produced short iy via 7.2.80).
     let p = {
         let d = dhatus().iter().find(|d| d.id == "laB").unwrap();
-        derive(
+        sole(derive(
             d,
             Lakara::VidhiLin,
             Pada::Atmanepada,
             Purusha::Prathama,
             Vacana::Eka,
-        )
+        ))
     };
     assert!(p.log.iter().any(|s| s.sutra == "3.4.102"));
     assert!(p.log.iter().any(|s| s.sutra == "7.2.79"));
