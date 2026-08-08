@@ -2048,12 +2048,8 @@ fn known_nonforms_are_invalid() {
         // hinoti
         "reRoti", // same guard, second non-conjunct root — real form riRoti
         "kliSne", // 7.3.84's SECOND application (vikaraṇa-relative, svādi's
-        // own addition) firing on kryādi's `nI` instead of declining by
-        // 1.1.5 — real form kliSnAti
-        "hinmaH", // the deliberate slice-5b gap the spec records: the
-                  // elided-vikaraṇa alternate (hinvaH/hinmaH) is a second valid form
-                  // not yet implemented, so it stays INVALID until 5b lands — see
-                  // docs/superpowers/specs/2026-07-29-svadi-gana-design.md:117
+                  // own addition) firing on kryādi's `nI` instead of declining by
+                  // 1.1.5 — real form kliSnAti
     ] {
         assert!(
             matches!(engine.check(bad).verdict, Verdict::Invalid),
