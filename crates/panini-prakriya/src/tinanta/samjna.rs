@@ -25,6 +25,7 @@ pub(crate) static SAMJNA: &[Rule] = &[
         id: "1.3.12",
         name: "anudAttaNita Atmanepadam",
         kind: RuleKind::Vidhi,
+        vikalpa: false,
         apply: |p| {
             if !p.terms[ANGA].has(Tag::Atmanepadin) {
                 return false; // parasmaipada roots are 1.3.78's business
@@ -47,6 +48,7 @@ pub(crate) static SAMJNA: &[Rule] = &[
         id: "1.3.78",
         name: "SezAt kartari parasmEpadam",
         kind: RuleKind::Vidhi,
+        vikalpa: false,
         apply: |p| {
             if p.terms[ANGA].has(Tag::Atmanepadin) {
                 return false;
@@ -70,6 +72,7 @@ pub(crate) static SAMJNA: &[Rule] = &[
         id: "3.4.78",
         name: "tiptasJisipTasTamibvasmas",
         kind: RuleKind::Vidhi,
+        vikalpa: false,
         apply: |p| {
             let before = p.snapshot();
             let ending = tin_ending(p.ctx.pada, p.ctx.purusha, p.ctx.vacana);
@@ -100,6 +103,7 @@ pub(crate) static SAMJNA: &[Rule] = &[
         id: "1.3.9",
         name: "tasya lopaH",
         kind: RuleKind::Vidhi,
+        vikalpa: false,
         apply: |p| {
             let last = p.terms[ENDING_PRE_SHAP].text.chars().last();
             if last.map(is_vibhakti_protected_final).unwrap_or(false) {
@@ -130,6 +134,7 @@ pub(crate) static SAMJNA: &[Rule] = &[
         id: "1.2.4",
         name: "sArvaDAtukam apit",
         kind: RuleKind::Atidesha,
+        vikalpa: false,
         apply: |p| {
             if p.terms[ENDING_PRE_SHAP].has(Tag::Pit)
                 || (matches!(p.ctx.lakara, Lakara::Lot) && matches!(p.ctx.purusha, Purusha::Uttama))

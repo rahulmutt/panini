@@ -78,6 +78,18 @@ fn tinanta_rule_order_is_pinned() {
     assert_eq!(actual, expected);
 }
 
+/// Optionality is grammar: a rule is *vikalpa* because its sūtra says
+/// *anyatarasyām* / *vā* / *vibhāṣā*, and a mis-set flag silently doubles
+/// every branch the rule touches — a failure no surface-form golden
+/// necessarily catches, because both branches are plausible Sanskrit.
+/// Pin the whole set by id, not just the count.
+#[test]
+fn exactly_the_pinned_vikalpa_rules_are_optional() {
+    let actual: Vec<&str> = rules().filter(|r| r.vikalpa).map(|r| r.id).collect();
+    let expected: [&str; 0] = [];
+    assert_eq!(actual, expected);
+}
+
 #[test]
 fn divadi_tudadi_present_third_singular() {
     // Guṇa blocked by 1.1.5 (śyan/śa are ṅit): kup→kupyati NOT kopyati,

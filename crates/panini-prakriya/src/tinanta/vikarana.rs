@@ -25,6 +25,7 @@ pub(crate) static VIKARANA: &[Rule] = &[
         id: "3.1.69",
         name: "divAdiByaH Syan",
         kind: RuleKind::Vidhi,
+        vikalpa: false,
         apply: |p| {
             if !p.terms[ANGA].has(Tag::Divadi) {
                 return false;
@@ -57,6 +58,7 @@ pub(crate) static VIKARANA: &[Rule] = &[
         id: "3.1.73",
         name: "svAdiByaH SnuH",
         kind: RuleKind::Vidhi,
+        vikalpa: false,
         apply: |p| {
             if !p.terms[ANGA].has(Tag::Svadi) {
                 return false;
@@ -80,6 +82,7 @@ pub(crate) static VIKARANA: &[Rule] = &[
         id: "3.1.77",
         name: "tudAdiByaH SaH",
         kind: RuleKind::Vidhi,
+        vikalpa: false,
         apply: |p| {
             if !p.terms[ANGA].has(Tag::Tudadi) {
                 return false;
@@ -116,6 +119,7 @@ pub(crate) static VIKARANA: &[Rule] = &[
         id: "3.1.81",
         name: "kryAdiByaH SnA",
         kind: RuleKind::Vidhi,
+        vikalpa: false,
         apply: |p| {
             if !p.terms[ANGA].has(Tag::Kryadi) {
                 return false;
@@ -139,6 +143,7 @@ pub(crate) static VIKARANA: &[Rule] = &[
         id: "3.1.68",
         name: "kartari Sap",
         kind: RuleKind::Vidhi,
+        vikalpa: false,
         apply: |p| {
             // Utsarga: fires only when no apavāda vikaraṇa (śyan 3.1.69 / śa
             // 3.1.77) is already present. Guarding on the vikaraṇa's presence
@@ -171,6 +176,7 @@ pub(crate) static VIKARANA: &[Rule] = &[
         id: "2.4.72",
         name: "adipraBftiByaH SapaH",
         kind: RuleKind::Vidhi,
+        vikalpa: false,
         apply: |p| {
             if !p.terms[ANGA].has(Tag::Adadi) {
                 return false;
@@ -212,6 +218,7 @@ pub(crate) static VIKARANA: &[Rule] = &[
         id: "3.1.83",
         name: "halaH SnaH SAnajJO",
         kind: RuleKind::Vidhi,
+        vikalpa: false,
         apply: |p| {
             if p.terms.len() <= ENDING || p.terms[SHAP].text != "nA" {
                 return false;
@@ -248,6 +255,7 @@ pub(crate) static VIKARANA: &[Rule] = &[
         id: "1.2.4",
         name: "sArvaDAtukam apit",
         kind: RuleKind::Atidesha,
+        vikalpa: false,
         apply: |p| {
             if !(p.terms.len() > SHAP
                 && p.terms[SHAP].has(Tag::Vikarana)

@@ -39,6 +39,7 @@ mod tests {
             id: "6.1.78",
             name: "eco'yavAyAvaH",
             kind: RuleKind::Vidhi,
+            vikalpa: false,
             apply: |p| {
                 if p.terms[0].text == "Bo" {
                     let b = p.snapshot();

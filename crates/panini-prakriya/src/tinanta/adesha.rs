@@ -65,6 +65,7 @@ pub(crate) static ADESHA: &[Rule] = &[
         id: "6.1.101",
         name: "akaH savarRe dIrGaH",
         kind: RuleKind::Vidhi,
+        vikalpa: false,
         apply: |p| {
             // vidhiliṅ 1sg: after 7.2.79 the ending is `yAam` (yāsuṭ ā + the
             // uttama-eka `am`). 7.2.80 would have rewritten `yA`->`iy` after
@@ -144,6 +145,7 @@ pub(crate) static ADESHA: &[Rule] = &[
         id: "6.1.96",
         name: "usyapadAntAt",
         kind: RuleKind::Vidhi,
+        vikalpa: false,
         apply: |p| {
             let e = &p.terms[ENDING].text;
             if !e.ends_with("us") {
@@ -175,6 +177,7 @@ pub(crate) static ADESHA: &[Rule] = &[
         id: "6.1.90",
         name: "AwaS ca",
         kind: RuleKind::Vidhi,
+        vikalpa: false,
         apply: |p| {
             // Aṅga arm: āṭ prefix on a vowel-initial aṅga.
             let anga: Vec<char> = p.terms[ANGA].text.chars().collect();
@@ -268,6 +271,7 @@ pub(crate) static ADESHA: &[Rule] = &[
         id: "6.1.97",
         name: "ato guRe",
         kind: RuleKind::Vidhi,
+        vikalpa: false,
         apply: |p| {
             let Some(first) = p.terms[ENDING].text.chars().next() else {
                 return false;
@@ -302,6 +306,7 @@ pub(crate) static ADESHA: &[Rule] = &[
         id: "6.1.87",
         name: "Ad guRaH",
         kind: RuleKind::Vidhi,
+        vikalpa: false,
         apply: |p| {
             let first = p.terms[ENDING].text.chars().next();
             if !p.terms[SHAP].text.ends_with('a') || !matches!(first, Some('i') | Some('I')) {
@@ -331,6 +336,7 @@ pub(crate) static ADESHA: &[Rule] = &[
         id: "6.1.66",
         name: "lopo vyor vali",
         kind: RuleKind::Vidhi,
+        vikalpa: false,
         apply: |p| {
             let mut chars = p.terms[ENDING].text.chars();
             let first = chars.next();
@@ -392,6 +398,7 @@ pub(crate) static ADESHA: &[Rule] = &[
         id: "6.4.105",
         name: "ato heH",
         kind: RuleKind::Vidhi,
+        vikalpa: false,
         apply: |p| {
             if !p.terms[SHAP].text.ends_with('a') || p.terms[ENDING].text != "hi" {
                 return false;
@@ -419,6 +426,7 @@ pub(crate) static ADESHA: &[Rule] = &[
         id: "6.4.106",
         name: "utaSca pratyayAdasaMyogapUrvAt",
         kind: RuleKind::Vidhi,
+        vikalpa: false,
         apply: |p| {
             if p.terms[ENDING].text != "hi" {
                 return false;
@@ -441,6 +449,7 @@ pub(crate) static ADESHA: &[Rule] = &[
         id: "6.4.101",
         name: "her DiH",
         kind: RuleKind::Vidhi,
+        vikalpa: false,
         apply: |p| {
             if p.terms[ENDING].text != "hi" {
                 return false;

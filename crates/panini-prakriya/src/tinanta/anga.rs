@@ -19,6 +19,7 @@ pub(crate) static ANGA_RULES: &[Rule] = &[
         id: "6.4.71",
         name: "luNlaNlfNkzvaqudAttaH",
         kind: RuleKind::Vidhi,
+        vikalpa: false,
         apply: |p| {
             let first = p.terms[ANGA].text.chars().next().unwrap();
             if !matches!(p.ctx.lakara, Lakara::Lan) || is_vowel(first) {
@@ -37,6 +38,7 @@ pub(crate) static ANGA_RULES: &[Rule] = &[
         id: "6.4.72",
         name: "Aq ajAdInAm",
         kind: RuleKind::Vidhi,
+        vikalpa: false,
         apply: |p| {
             let first = p.terms[ANGA].text.chars().next().unwrap();
             // Only apply to true vowel-initial roots, not to an aṅga that
@@ -80,6 +82,7 @@ pub(crate) static ANGA_RULES: &[Rule] = &[
         id: "7.3.100",
         name: "adaH sarvezAm",
         kind: RuleKind::Vidhi,
+        vikalpa: false,
         apply: |p| {
             if !matches!(p.ctx.lakara, Lakara::Lan) || !p.terms[ANGA].has(Tag::Adadi) {
                 return false;
@@ -117,6 +120,7 @@ pub(crate) static ANGA_RULES: &[Rule] = &[
         id: "7.1.5",
         name: "AtmanepadezvanataH",
         kind: RuleKind::Vidhi,
+        vikalpa: false,
         apply: |p| {
             if !matches!(p.ctx.pada, Pada::Atmanepada) {
                 return false;
@@ -162,6 +166,7 @@ pub(crate) static ANGA_RULES: &[Rule] = &[
         id: "7.1.6",
         name: "SINo ruw",
         kind: RuleKind::Vidhi,
+        vikalpa: false,
         apply: |p| {
             if !p.terms[ANGA].text.ends_with("SI") || !p.log.iter().any(|s| s.sutra == "7.1.5") {
                 return false;
@@ -177,6 +182,7 @@ pub(crate) static ANGA_RULES: &[Rule] = &[
         id: "7.1.3",
         name: "Jo'ntaH",
         kind: RuleKind::Vidhi,
+        vikalpa: false,
         apply: |p| {
             if !p.terms[ENDING].text.starts_with('J') {
                 return false;
@@ -198,6 +204,7 @@ pub(crate) static ANGA_RULES: &[Rule] = &[
         id: "7.2.79",
         name: "liNaH salopo'nantyasya",
         kind: RuleKind::Vidhi,
+        vikalpa: false,
         apply: |p| {
             if !matches!(p.ctx.lakara, Lakara::VidhiLin) {
                 return false;
@@ -225,6 +232,7 @@ pub(crate) static ANGA_RULES: &[Rule] = &[
         id: "7.2.80",
         name: "ato yeyaH",
         kind: RuleKind::Vidhi,
+        vikalpa: false,
         apply: |p| {
             if !matches!(p.ctx.lakara, Lakara::VidhiLin)
                 || !p.terms[SHAP].text.ends_with('a')
@@ -251,6 +259,7 @@ pub(crate) static ANGA_RULES: &[Rule] = &[
         id: "7.2.81",
         name: "Ato NitaH",
         kind: RuleKind::Vidhi,
+        vikalpa: false,
         apply: |p| {
             if !p.terms[SHAP].text.ends_with('a')
                 || !p.terms[ENDING].has(Tag::Ngit)

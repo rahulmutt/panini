@@ -64,6 +64,7 @@ pub(crate) static TRIPADI: &[Rule] = &[
         id: "8.2.77",
         name: "hali ca",
         kind: RuleKind::Vidhi,
+        vikalpa: false,
         apply: |p| {
             let chars: Vec<char> = p.terms[ANGA].text.chars().collect();
             let n = chars.len();
@@ -104,6 +105,7 @@ pub(crate) static TRIPADI: &[Rule] = &[
         id: "8.2.23",
         name: "saMyogAntasya lopaH",
         kind: RuleKind::Vidhi,
+        vikalpa: false,
         apply: |p| {
             let word = p.text();
             let mut tail = word.chars().rev();
@@ -147,6 +149,7 @@ pub(crate) static TRIPADI: &[Rule] = &[
         id: "8.2.25",
         name: "Di ca",
         kind: RuleKind::Vidhi,
+        vikalpa: false,
         apply: |p| {
             // The first non-empty term after the aṅga (śap, if present, is
             // luk'd/empty for adādi) must be the Dh-initial affix.
@@ -189,6 +192,7 @@ pub(crate) static TRIPADI: &[Rule] = &[
         id: "8.3.15",
         name: "KaravasAnayor visarjanIyaH",
         kind: RuleKind::Vidhi,
+        vikalpa: false,
         apply: |p| {
             if !p.text().ends_with('s') {
                 return false;
@@ -229,6 +233,7 @@ pub(crate) static TRIPADI: &[Rule] = &[
         id: "8.3.59",
         name: "AdeSapratyayayoH",
         kind: RuleKind::Vidhi,
+        vikalpa: false,
         apply: |p| {
             // The affix whose s retroflexes: the first s-initial term after
             // the aṅga. Searching for the s-initial term — rather than taking
@@ -275,6 +280,7 @@ pub(crate) static TRIPADI: &[Rule] = &[
         id: "8.4.55",
         name: "Kari ca",
         kind: RuleKind::Vidhi,
+        vikalpa: false,
         apply: |p| {
             // The following segment is the first char of the first non-empty
             // term after the aṅga (the ending; śap, if present, is luk'd/empty).
@@ -318,6 +324,7 @@ pub(crate) static TRIPADI: &[Rule] = &[
         id: "8.4.1",
         name: "razAByAM no RaH samAnapade",
         kind: RuleKind::Vidhi,
+        vikalpa: false,
         apply: |p| {
             let w = word_chars(p);
             for i in 0..w.len() {
@@ -350,6 +357,7 @@ pub(crate) static TRIPADI: &[Rule] = &[
         id: "8.4.2",
         name: "awkupvANnumvyavAye'pi",
         kind: RuleKind::Vidhi,
+        vikalpa: false,
         apply: |p| {
             let w = word_chars(p);
             for i in 0..w.len() {

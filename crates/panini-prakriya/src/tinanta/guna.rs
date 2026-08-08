@@ -53,6 +53,7 @@ pub(crate) static GUNA: &[Rule] = &[
         id: "7.4.21",
         name: "SINaH sArvaDAtuke guRaH",
         kind: RuleKind::Vidhi,
+        vikalpa: false,
         apply: |p| {
             if !p.terms[ANGA].text.ends_with("SI") {
                 return false;
@@ -73,6 +74,7 @@ pub(crate) static GUNA: &[Rule] = &[
         id: "7.3.84",
         name: "sArvaDAtukArDaDAtukayoH",
         kind: RuleKind::Vidhi,
+        vikalpa: false,
         apply: |p| {
             // 1.1.5 kṅiti ca: a following ṅit sārvadhātuka blocks guṇa. On
             // the thematic path that follower is the vikaraṇa, ṅit (1.2.4)
@@ -105,6 +107,7 @@ pub(crate) static GUNA: &[Rule] = &[
         id: "7.3.86",
         name: "pugantalaGUpaDasya ca",
         kind: RuleKind::Vidhi,
+        vikalpa: false,
         apply: |p| {
             // 1.1.5 kṅiti ca, exactly as at 7.3.84 above — same follower
             // lookup, same ṅit-only narrowness.
@@ -166,6 +169,7 @@ pub(crate) static GUNA: &[Rule] = &[
         id: "7.3.84",
         name: "sArvaDAtukArDaDAtukayoH",
         kind: RuleKind::Vidhi,
+        vikalpa: false,
         apply: |p| {
             // 1.1.5 kṅiti ca, as in the first application. Same ṅit-only
             // narrowness: no kit tag exists in this engine yet.
@@ -206,6 +210,7 @@ pub(crate) static GUNA: &[Rule] = &[
         id: "6.4.87",
         name: "huSnuvoH sArvaDAtuke",
         kind: RuleKind::Vidhi,
+        vikalpa: false,
         apply: |p| {
             if !shnu_asamyogapurva(p) {
                 return false;
@@ -238,6 +243,7 @@ pub(crate) static GUNA: &[Rule] = &[
         id: "6.4.77",
         name: "aci SnuDAtuBruvAM yvoriyaNuvaNO",
         kind: RuleKind::Vidhi,
+        vikalpa: false,
         apply: |p| {
             if p.terms[SHAP].text != "nu" {
                 return false;
@@ -281,6 +287,7 @@ pub(crate) static GUNA: &[Rule] = &[
         id: "6.1.78",
         name: "eco'yavAyAvaH",
         kind: RuleKind::Vidhi,
+        vikalpa: false,
         apply: |p| {
             fn sub_for(c: char) -> Option<&'static str> {
                 match c {
@@ -375,6 +382,7 @@ pub(crate) static GUNA: &[Rule] = &[
         id: "7.3.101",
         name: "ato dIrGo yaYi",
         kind: RuleKind::Vidhi,
+        vikalpa: false,
         apply: |p| {
             // loṭ uttama gets its dīrgha from 3.4.92 āḍ + 6.1.101 instead.
             if matches!(p.ctx.lakara, Lakara::Lot) {
@@ -422,6 +430,7 @@ pub(crate) static GUNA: &[Rule] = &[
         id: "6.4.112",
         name: "SnA'ByastayorAtaH",
         kind: RuleKind::Vidhi,
+        vikalpa: false,
         apply: |p| {
             if p.terms.len() <= ENDING || p.terms[SHAP].text != "nA" {
                 return false;
@@ -452,6 +461,7 @@ pub(crate) static GUNA: &[Rule] = &[
         id: "6.4.113",
         name: "I halyaGoH",
         kind: RuleKind::Vidhi,
+        vikalpa: false,
         apply: |p| {
             if p.terms.len() <= ENDING || p.terms[SHAP].text != "nA" {
                 return false;
