@@ -69,7 +69,10 @@
     through the gaṇa is *asaṁyogapūrva* — whether śnu's `u` is preceded by a
     conjunct decides both the yaṇ alternation (6.4.87 / 6.4.77: `hinvanti`
     against `Apnuvanti`) and the hi-luk (6.4.106: `hinu` against `Apnuhi`) —
-    see `docs/superpowers/specs/2026-07-29-svadi-gana-design.md`)
+    see `docs/superpowers/specs/2026-07-29-svadi-gana-design.md`. `PARADIGM`
+    stays one-form-per-cell: a cell forked by an optional rule keeps its
+    second form in `ALTERNATES`, and `derivation_set_is_exactly_pinned`
+    asserts each cell's derivation set is exactly the union of the two.)
   and by the ordered-trace test (`crates/panini/tests/trace.rs`), which pins
   rule order. Surface forms and trace order there are the source of truth;
   sūtra ids/names in traces must match the cited reference. In practice that
@@ -91,6 +94,27 @@
   `tinanta/derivation_tests.rs`. `derive` carries no grammar branches: the
   only gana-conditioned logic there is aṅga tagging (`Tag::Adadi` &c.), which
   feeds the guarded rules rather than substituting for them.
+- **Optional (*vikalpa*) rules set `Rule.vikalpa = true`.** `run_pipeline`
+  forks there: it clones each live branch, applies to the clone, and keeps
+  the clone only if `apply` returned true, so a rule that declines its own
+  guard forks nothing. The declined branch keeps its index and the applied
+  clone is inserted immediately after it, which is why index 0 of a
+  derivation is always what the engine would have produced with no optional
+  rules at all. `derive` therefore returns `Vec<Prakriya>`, and a cell may
+  have more than one valid form. Add an optional rule exactly as any other —
+  in its stage file, with its id in `tinanta_rule_order_is_pinned` in
+  position — and also add it to
+  `exactly_the_pinned_vikalpa_rules_are_optional`, which pins the whole
+  optional set by id. **6.4.107 is currently the only one.**
+- **An optional rule must be ordered after every consumer of a predicate its
+  own mutation invalidates.** Nothing enforces this. 6.4.107 leaves
+  `terms[SHAP].text == "n"`, so `shnu_asamyogapurva` (whose first guard is
+  `== "nu"`) returns false for the rest of the pipeline — on the forked
+  branch only. A consumer placed below it would be right on one branch and
+  wrong on the other, which surfaces as half a paradigm being wrong with
+  both halves individually plausible. Every rule that reads śnu's `nu` text
+  must precede it — 6.4.87 and 6.4.106 via `shnu_asamyogapurva`, and 6.4.77,
+  which open-codes the same `text == "nu"` test — and all three do.
 - **7.3.84 and 1.2.4 each appear twice in `TINANTA_RULES`, by design — do not
   "deduplicate" them.** 1.4.13 *yasmāt pratyayavidhis tadādi pratyaye'ṅgam*
   makes the aṅga affix-relative, and a derivation with a live vikaraṇa has

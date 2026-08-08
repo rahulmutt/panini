@@ -461,9 +461,10 @@ pub(crate) static ADESHA: &[Rule] = &[
     // `SHAP.text == "n"`, so the helper's first guard (`== "nu"`) makes it
     // return false for the rest of the pipeline — on the forked branch
     // only. A consumer placed below this rule would read the wrong answer
-    // for half a paradigm, with both halves individually plausible. The
-    // three current consumers (6.4.87 and 6.4.77 in guna.rs, 6.4.106 just
-    // above) all precede it.
+    // for half a paradigm, with both halves individually plausible. Every
+    // rule that reads śnu's `nu` text must precede it — 6.4.87 and 6.4.106
+    // (just above) via `shnu_asamyogapurva`, and 6.4.77 in guna.rs, which
+    // open-codes the same `text == "nu"` test — and all three do.
     Rule {
         id: "6.4.107",
         name: "lopaScAsyAnyatarasyAM mvoH",
