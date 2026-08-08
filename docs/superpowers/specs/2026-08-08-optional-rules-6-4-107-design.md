@@ -224,8 +224,13 @@ cross-lakāra coincidences). A fork adds members to a list that already exists.
 collision — eliding a vowel always changes the string — but if a future
 optional rule did, two `Analysis` entries with the same form and different
 traces is the honest answer: one form, two derivations. That is information,
-not noise. The exhaustiveness test below compares sets of texts, so it is
-indifferent either way.
+not noise. The exhaustiveness test below (`derivation_set_is_exactly_pinned`)
+compares *sorted vectors*, i.e. multisets, not sets — it is not indifferent
+to this. A future optional rule whose branches converge on one cell will
+put a duplicate string in `actual` with nothing to match it in `want`, and
+the test will fail until that cell gets a duplicate `ALTERNATES` row (same
+form filed twice) — or until `actual` is deliberately deduplicated at that
+point, a decision to make when it actually arises.
 
 ## Verification
 

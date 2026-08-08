@@ -1908,6 +1908,26 @@ fn every_alternate_validates_and_matches() {
     }
 }
 
+/// `derivation_set_is_exactly_pinned`'s `(r, l, c, _)` filter and
+/// `every_alternate_validates_and_matches`'s `_cell` both silently ignore a
+/// row whose `cell` is out of range or whose `(root, lakara)` is mistyped —
+/// neither assertion would ever touch the cell such a row meant to name.
+/// This closes that: every `ALTERNATES` row must name a real cell of a real
+/// `PARADIGM` block.
+#[test]
+fn every_alternate_names_a_real_cell() {
+    for (root, lakara, cell, form) in ALTERNATES {
+        assert!(
+            *cell < 9,
+            "alternate {form} ({root} {lakara}) has out-of-range cell {cell}"
+        );
+        assert!(
+            PARADIGM.iter().any(|(r, l, _)| r == root && l == lakara),
+            "alternate {form} names {root} {lakara}, which is not a PARADIGM block"
+        );
+    }
+}
+
 /// The other half of `every_form_validates_and_matches`, which only ever
 /// asks "is this form derivable?" and never "what else is?". That asymmetry
 /// is what lets alternates land without touching PARADIGM's strings, and it
@@ -1925,7 +1945,14 @@ fn derivation_set_is_exactly_pinned() {
                 .find_map(|(n, l)| (n == lakara).then_some(l))
                 .unwrap();
 
-            let mut actual: Vec<String> = derive(d, lak, d.pada, pu, va)
+            let branches = derive(d, lak, d.pada, pu, va);
+            assert_eq!(
+                branches[0].text(),
+                *expected,
+                "index 0 must be the declined derivation for {root} {lakara} cell {cell}"
+            );
+
+            let mut actual: Vec<String> = branches
                 .iter()
                 .filter(|p| !p.blocked)
                 .map(|p| p.text())

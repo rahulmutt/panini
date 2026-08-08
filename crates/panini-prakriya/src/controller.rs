@@ -12,9 +12,9 @@ pub use crate::rule::{Rule as _Rule, RuleKind};
 /// it did when the rules lived in a single array.
 ///
 /// Returns a *set* of derivations. A prakriyā forks only at a `vikalpa`
-/// rule that actually fires (see task 3); with no optional rule in play the
-/// result is always exactly one branch, byte-identical to what the
-/// single-prakriyā pipeline produced.
+/// rule that actually fires; with no optional rule in play the result is
+/// always exactly one branch, byte-identical to what the single-prakriyā
+/// pipeline produced.
 ///
 /// A blocked branch is skipped by every later rule but is still returned:
 /// callers already test `blocked` and must keep doing so, since a blocked

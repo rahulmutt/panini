@@ -1128,10 +1128,14 @@ mod tests {
     }
 
     #[test]
-    fn lopa_elides_the_u_rather_than_rewriting_shnu() {
-        // *Lopa* of the `u`, not a substitution of `n` for `nu`. The two
-        // are indistinguishable in the output string and not
-        // indistinguishable in intent.
+    fn lopa_leaves_shnu_as_n_and_records_the_step() {
+        // Pins the observable effects of 6.4.107's lopa: the resulting
+        // `SHAP.text`, the full surface, the sūtra id, and that `before` is
+        // the pre-mutation snapshot. It does NOT (and cannot) distinguish
+        // *lopa* of the `u` from a substitution of `n` for `nu` — the two
+        // are indistinguishable through `SHAP.text`, `p.text()`, and the
+        // log alike; that distinction is intent, not something this test
+        // asserts.
         let mut p = shnu_p("hi", "mas");
         assert!((rule_6_4_107().apply)(&mut p));
         assert_eq!(p.terms[SHAP].text, "n");

@@ -79,6 +79,13 @@ impl Panini {
         }
     }
 
+    /// Returns every branch of the derivation, not just one: an optional
+    /// (vikalpa) rule can fork the prakriyā, so the vec may hold more than
+    /// one entry, and any entry may be `blocked` — a blocked prakriyā's
+    /// `text()` is a partial string, not a surface form, and callers must
+    /// filter those out before using the result. Index 0 is always the
+    /// declined reading, i.e. what this method would have returned with no
+    /// optional rule in play.
     pub fn derive(
         &self,
         dhatu: &panini_data::Dhatu,

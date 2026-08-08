@@ -39,15 +39,8 @@ pub(crate) mod derivation_tests;
 /// `#[cfg(test)]` and expected to move again; routing its consumers through
 /// one re-export here means only this line needs updating, rather than N
 /// direct paths across the stage files.
-///
-/// `sole` travels the same path pre-emptively: this task's own helpers call
-/// it directly (they live in `derivation_tests` itself), so the re-export
-/// has no consumer yet. It gains one once a stage-file test needs to unwrap
-/// a single-branch derivation — starting with the fork logic in task 3 —
-/// hence the `allow`.
 #[cfg(test)]
-#[allow(unused_imports)]
-pub(in crate::tinanta) use derivation_tests::{form_g, sole};
+pub(in crate::tinanta) use derivation_tests::form_g;
 
 /// The ordered rule list, as a sequence of pipeline stages. Read the stages
 /// in order, and the rules within each stage in order: that flattened
@@ -68,6 +61,12 @@ pub fn rules() -> impl Iterator<Item = &'static Rule> {
     TINANTA_RULES.iter().flat_map(|stage| stage.iter())
 }
 
+/// Returns every branch of the derivation, not just one: an optional
+/// (vikalpa) rule can fork the prakriyā, so the vec may hold more than one
+/// entry, and any entry may be `blocked` — a blocked prakriyā's `text()` is
+/// a partial string, not a surface form, and callers must filter those out
+/// before using the result. Index 0 is always the declined reading, i.e.
+/// what this function would have returned with no optional rule in play.
 pub fn derive(
     dhatu: &Dhatu,
     lakara: Lakara,
