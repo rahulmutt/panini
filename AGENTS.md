@@ -34,7 +34,11 @@
   target under `crates/panini-lipi/fuzz` legitimately omits it, since it uses
   `#![no_main]` plus the libfuzzer harness macro).
 - Grammar changes are gated by the golden paradigm test
-  (`crates/panini/tests/paradigm.rs`, 1512 forms, six gaṇas; bhvādi/divādi/
+  (`crates/panini/tests/paradigm.rs`, 1512 forms, six gaṇas — `PARADIGM`
+    stays one-form-per-cell: a cell forked by an optional rule keeps its
+    second form in `ALTERNATES`, and `derivation_set_is_exactly_pinned`
+    asserts each cell's derivation set is exactly the union of the two;
+    bhvādi/divādi/
     tudādi are complete across laṭ/laṅ/loṭ/vidhiliṅ × parasmaipada/
     ātmanepada, and adādi (gaṇa 2) is now **complete** — √yā/√vā/√ad
     (parasmaipada) and √ās/√vas/√śī (ātmanepada) are complete across all four
@@ -69,7 +73,7 @@
     through the gaṇa is *asaṁyogapūrva* — whether śnu's `u` is preceded by a
     conjunct decides both the yaṇ alternation (6.4.87 / 6.4.77: `hinvanti`
     against `Apnuvanti`) and the hi-luk (6.4.106: `hinu` against `Apnuhi`) —
-    see `docs/superpowers/specs/2026-07-29-svadi-gana-design.md`)
+    see `docs/superpowers/specs/2026-07-29-svadi-gana-design.md`.)
   and by the ordered-trace test (`crates/panini/tests/trace.rs`), which pins
   rule order. Surface forms and trace order there are the source of truth;
   sūtra ids/names in traces must match the cited reference. In practice that
@@ -90,7 +94,40 @@
   file; tests asserting a surface form or trace go in
   `tinanta/derivation_tests.rs`. `derive` carries no grammar branches: the
   only gana-conditioned logic there is aṅga tagging (`Tag::Adadi` &c.), which
-  feeds the guarded rules rather than substituting for them.
+  feeds the guarded rules rather than substituting for them. Fixtures shared
+  across `crates/panini/tests/*.rs` integration-test binaries (e.g. `CELLS`,
+  `LAKARA_BY_NAME`) go in `crates/panini/tests/common/mod.rs`, `mod`-included
+  by each file that needs them — do not redefine them per test file.
+- **Optional (*vikalpa*) rules set `Rule.vikalpa = true`.** `run_pipeline`
+  forks there: it clones each live branch, applies to the clone, and keeps
+  the clone only if `apply` returned true, so a rule that declines its own
+  guard forks nothing. The declined branch keeps its index and the applied
+  clone is inserted immediately after it, which is why index 0 of a
+  derivation is always what the engine would have produced with no optional
+  rules at all. `derive` therefore returns `Vec<Prakriya>`, and a cell may
+  have more than one valid form. Add an optional rule exactly as any other —
+  in its stage file, with its id in `tinanta_rule_order_is_pinned` in
+  position — and also add it to
+  `exactly_the_pinned_vikalpa_rules_are_optional`, which pins the whole
+  optional set by id. **6.4.107 is currently the only one.**
+- **An optional rule must be ordered after every consumer of a predicate its
+  own mutation invalidates — unless that consumer's guard is provably
+  disjoint from the optional rule's own guard.** Nothing enforces this.
+  6.4.107 leaves `terms[SHAP].text == "n"`, which invalidates two
+  predicates: `shnu_asamyogapurva` (whose first guard is `== "nu"`) and
+  `sound_before_ending` (which reads the last char before the ending —
+  `u` before the mutation, `n` after). Both return the wrong answer for
+  the rest of the pipeline, on the forked branch only. A consumer placed
+  below it would be right on one branch and wrong on the other, which
+  surfaces as half a paradigm being wrong with both halves individually
+  plausible. Every rule that reads śnu's `nu` text must precede it — 6.4.87
+  and 6.4.106 via `shnu_asamyogapurva`, and 6.4.77, which open-codes the
+  same `text == "nu"` test — and all three do. `sound_before_ending`'s one
+  consumer below 6.4.107, 6.4.101 (`her DiH`,
+  `crates/panini-prakriya/src/tinanta/adesha.rs`), is the exception the
+  disjoint-guard escape covers: it requires `ENDING.text == "hi"`, which
+  6.4.107 already excludes by requiring an m- or v-initial ending, so the
+  two rules never contend and 6.4.101 is safe where it sits.
 - **7.3.84 and 1.2.4 each appear twice in `TINANTA_RULES`, by design — do not
   "deduplicate" them.** 1.4.13 *yasmāt pratyayavidhis tadādi pratyaye'ṅgam*
   makes the aṅga affix-relative, and a derivation with a live vikaraṇa has

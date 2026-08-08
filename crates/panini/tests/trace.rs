@@ -941,3 +941,55 @@ fn stighnute_trace_has_no_6_1_64_substitution() {
         ]
     );
 }
+
+#[test]
+fn hinvah_trace_is_hinuvah_plus_exactly_the_optional_step() {
+    // The strongest available statement that these two forms are one
+    // derivation that forked, rather than two derivations that happen both
+    // to be listed: identical rule sequences, differing by exactly the
+    // 6.4.107 step. Asserting each trace separately would pass even if the
+    // two forms reached the surface by unrelated paths.
+    let declined = trace_for("hinuvaH");
+    let applied = trace_for("hinvaH");
+
+    let applied_without: Vec<String> = applied
+        .iter()
+        .filter(|s| *s != "6.4.107")
+        .cloned()
+        .collect();
+    assert_eq!(
+        applied_without, declined,
+        "hinvaH's trace must be hinuvaH's trace plus the 6.4.107 step"
+    );
+    assert_eq!(
+        applied.iter().filter(|s| *s == "6.4.107").count(),
+        1,
+        "6.4.107 fires exactly once on the applied branch"
+    );
+    assert!(
+        !declined.contains(&"6.4.107".to_string()),
+        "the declined branch must not record the optional step"
+    );
+}
+
+#[test]
+fn ahinma_trace_shows_the_optional_lopa_after_the_augment() {
+    // The laṅ witness, and a second root: 6.4.107 is in adesha, downstream
+    // of 6.4.71's aṭ-āgama, and ṇatva (8.4.1/8.4.2, tripādī) still reaches
+    // the elided branch — ariRma, not *arinma.
+    let t = trace_for("ahinma");
+    assert!(t.contains(&"6.4.107".to_string()), "got {t:?}");
+    let i71 = t
+        .iter()
+        .position(|r| r == "6.4.71")
+        .expect("6.4.71 present");
+    let i107 = t
+        .iter()
+        .position(|r| r == "6.4.107")
+        .expect("6.4.107 present");
+    assert!(i71 < i107, "the aṭ-āgama precedes the optional lopa");
+
+    let r = trace_for("ariRma");
+    assert!(r.contains(&"6.4.107".to_string()), "got {r:?}");
+    assert!(r.contains(&"8.4.2".to_string()), "ṇatva reaches the fork");
+}

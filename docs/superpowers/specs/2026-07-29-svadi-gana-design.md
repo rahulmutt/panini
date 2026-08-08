@@ -116,7 +116,9 @@ Slice 5a derives the right-hand (un-elided) member of each pair, which is what
 the golden table pins; 5b adds the left-hand member as a second valid form.
 Until 5b lands, `hinmaH` is reported INVALID — correct under the project's
 standing reading of INVALID as "not derivable within this covered grammar," but
-recorded here as a real gap, not an accident.
+recorded here as a real gap, not an accident. (Slice 5b has since landed —
+see `docs/superpowers/specs/2026-08-08-optional-rules-6-4-107-design.md` —
+so `hinmaH` is now reported VALID, as an alternate alongside `hinumaH`.)
 
 ## Root selection
 

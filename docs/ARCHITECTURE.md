@@ -33,12 +33,12 @@ implements; `tinanta::rules()` yields that flattened sequence.
 | `vikarana.rs` | 3.1.69, 3.1.73, 3.1.77, 3.1.81, 3.1.68, 2.4.72, 3.1.83, 1.2.4 | contains 3.1.68 |
 | `anga.rs` | 6.4.71 … 7.2.81 | after 3.1.68 |
 | `guna.rs` | 7.4.21, 7.3.84, 7.3.86, 7.3.84 (again — see below), 6.4.87, 6.4.77, 6.1.78, 7.3.101, 6.4.112, 6.4.113 — vowel gradation and vikaraṇa reshaping | after 3.1.68 |
-| `adesha.rs` | 6.1.101 … 6.4.101 | after 3.1.68 |
+| `adesha.rs` | 6.1.101 … 6.4.107, 6.4.101 | after 3.1.68 |
 | `tripadi.rs` | 8.2.77 … 8.4.55, 8.4.1, 8.4.2 | after 3.1.68 |
 
 The stage boundary is file organisation, not grammar: the flattened order is
 what matters, and `tinanta_rule_order_is_pinned` in `derivation_tests.rs`
-pins all 67 ids verbatim. `tinanta/terms.rs` holds the term-index constants
+pins all 68 ids verbatim. `tinanta/terms.rs` holds the term-index constants
 and the reason 3.1.68 bisects the pipeline; `tinanta/sound.rs` holds the
 varṇa classifiers.
 
@@ -126,6 +126,37 @@ blocked prakriya's partial text never counts as a match in `Panini::check`.
 "ungrammatical in Sanskrit." Coverage of the enumerable (root × lakāra)
 space is pinned by
 `crates/panini/tests/paradigm.rs::paradigm_covers_every_enumerable_cell`.
+
+## Optional rules and the derivation set
+
+`derive` returns `Vec<Prakriya>`, not one. Most cells yield exactly one
+branch; a cell forks when an optional (*vikalpa*) rule — a sūtra saying
+*anyatarasyām* / *vā* / *vibhāṣā* — actually fires, and both readings are
+valid Sanskrit reported side by side.
+
+`run_pipeline` carries the branches as a worklist. At a `vikalpa` rule it
+clones each live branch and applies to the clone, keeping it only if
+`apply` returned true; a rule that declines its own guard therefore forks
+nothing. The declined branch keeps its index and the applied clone is
+inserted immediately after it, so index 0 is always the no-optional-rules
+derivation. Forks are collected during a rule's sweep and inserted after
+it, so no branch sees a list another branch's fork has already mutated.
+Branch count is 2^k in the number of optional rules that fire; k is 1
+today. Branches that converge on the same text are not deduplicated — one
+form with two derivations is information, not noise.
+
+**6.4.107 *lopaś cāsyānyatarasyāṁ mvoḥ*** is the only optional rule. It
+elides śnu's `u` before `m` and `v` when that `u` is *asaṁyogapūrva*,
+forking 8 cells: √hi and √ri (the gaṇa's only asaṁyogapūrva roots) in laṭ
+and laṅ uttama dvi/bahu, whose `vas`/`mas`/`va`/`ma` are the only
+m/v-initial endings in scope — `hinvaH ~ hinuvaH`, `ahinma ~ ahinuma`.
+6.4.108 *nityaṁ karoteḥ*, which makes the same lopa obligatory for √kṛ and
+is what makes this rule optional, is out of scope with √kṛ itself.
+
+`CheckResult.analyses` needed no change: it was already a `Vec<Analysis>`,
+since one surface form can already have several analyses. A fork adds
+members to a list that already existed, and no CLI or `--json` shape
+changed.
 
 ## Rule trace
 Every applied sūtra is logged as a `RuleStep { sutra, name, before, after }`.

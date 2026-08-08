@@ -21,6 +21,7 @@ pub(crate) static TIN: &[Rule] = &[
         id: "3.4.85",
         name: "loTo laNvat",
         kind: RuleKind::Atidesha,
+        vikalpa: false,
         apply: |p| {
             if !matches!(p.ctx.lakara, Lakara::Lot) || p.ctx.is_ngit_like {
                 return false;
@@ -45,6 +46,7 @@ pub(crate) static TIN: &[Rule] = &[
         id: "3.4.108",
         name: "Jer jus",
         kind: RuleKind::Vidhi,
+        vikalpa: false,
         apply: |p| {
             if !matches!(p.ctx.lakara, Lakara::VidhiLin) || p.terms[ENDING_PRE_SHAP].text != "Ji" {
                 return false;
@@ -65,6 +67,7 @@ pub(crate) static TIN: &[Rule] = &[
         id: "3.4.105",
         name: "Jasya ran",
         kind: RuleKind::Vidhi,
+        vikalpa: false,
         apply: |p| {
             if !matches!(p.ctx.lakara, Lakara::VidhiLin) || p.terms[ENDING_PRE_SHAP].text != "Ja" {
                 return false;
@@ -81,6 +84,7 @@ pub(crate) static TIN: &[Rule] = &[
         id: "3.4.106",
         name: "iwo't",
         kind: RuleKind::Vidhi,
+        vikalpa: false,
         apply: |p| {
             if !matches!(p.ctx.lakara, Lakara::VidhiLin)
                 || !matches!(p.ctx.pada, Pada::Atmanepada)
@@ -113,6 +117,7 @@ pub(crate) static TIN: &[Rule] = &[
         id: "3.4.101",
         name: "tasTasTamipAM tAMtaMtAmaH",
         kind: RuleKind::Vidhi,
+        vikalpa: false,
         apply: |p| {
             if !p.ctx.is_ngit_like || matches!(p.ctx.pada, Pada::Atmanepada) {
                 return false;
@@ -138,6 +143,7 @@ pub(crate) static TIN: &[Rule] = &[
         id: "3.4.99",
         name: "nityaM NitaH",
         kind: RuleKind::Vidhi,
+        vikalpa: false,
         apply: |p| {
             if !p.ctx.is_ngit_like
                 || !matches!(p.terms[ENDING_PRE_SHAP].text.as_str(), "vas" | "mas")
@@ -158,6 +164,7 @@ pub(crate) static TIN: &[Rule] = &[
         id: "3.4.87",
         name: "ser hyapic ca",
         kind: RuleKind::Vidhi,
+        vikalpa: false,
         apply: |p| {
             if !matches!(p.ctx.lakara, Lakara::Lot) || p.terms[ENDING_PRE_SHAP].text != "si" {
                 return false;
@@ -180,6 +187,7 @@ pub(crate) static TIN: &[Rule] = &[
         id: "3.4.89",
         name: "mer niH",
         kind: RuleKind::Vidhi,
+        vikalpa: false,
         apply: |p| {
             if !matches!(p.ctx.lakara, Lakara::Lot) || p.terms[ENDING_PRE_SHAP].text != "mi" {
                 return false;
@@ -200,6 +208,7 @@ pub(crate) static TIN: &[Rule] = &[
         id: "3.4.86",
         name: "er uH",
         kind: RuleKind::Vidhi,
+        vikalpa: false,
         apply: |p| {
             if !matches!(p.ctx.lakara, Lakara::Lot) {
                 return false;
@@ -225,6 +234,7 @@ pub(crate) static TIN: &[Rule] = &[
         id: "3.4.100",
         name: "itaS ca",
         kind: RuleKind::Vidhi,
+        vikalpa: false,
         apply: |p| {
             // ṅit lakāras generally — but NOT loṭ, whose i-finals belong to
             // the apavāda set 3.4.86/87/89 (and 3.4.87's output `hi` is
@@ -251,6 +261,7 @@ pub(crate) static TIN: &[Rule] = &[
         id: "3.4.80",
         name: "TAsas se",
         kind: RuleKind::Vidhi,
+        vikalpa: false,
         apply: |p| {
             // Guarded to the ṭit lakāras (laṭ, loṭ): in the ṅit lakāras the
             // 3.4.79 context that 3.4.80 carves out does not apply and TAs
@@ -274,6 +285,7 @@ pub(crate) static TIN: &[Rule] = &[
         id: "3.4.79",
         name: "wita AtmanepadAnAM wer e",
         kind: RuleKind::Vidhi,
+        vikalpa: false,
         apply: |p| {
             if !matches!(p.ctx.lakara, Lakara::Lat | Lakara::Lot)
                 || !matches!(p.ctx.pada, Pada::Atmanepada)
@@ -306,6 +318,7 @@ pub(crate) static TIN: &[Rule] = &[
         id: "3.4.91",
         name: "savAByAM vAmO",
         kind: RuleKind::Vidhi,
+        vikalpa: false,
         apply: |p| {
             if !matches!(p.ctx.lakara, Lakara::Lot) {
                 return false;
@@ -328,6 +341,7 @@ pub(crate) static TIN: &[Rule] = &[
         id: "3.4.93",
         name: "eta E",
         kind: RuleKind::Vidhi,
+        vikalpa: false,
         apply: |p| {
             if !matches!(p.ctx.lakara, Lakara::Lot)
                 || !matches!(p.ctx.purusha, Purusha::Uttama)
@@ -353,6 +367,7 @@ pub(crate) static TIN: &[Rule] = &[
         id: "3.4.90",
         name: "Am etaH",
         kind: RuleKind::Vidhi,
+        vikalpa: false,
         apply: |p| {
             if !matches!(p.ctx.lakara, Lakara::Lot)
                 || !matches!(p.ctx.pada, Pada::Atmanepada)
@@ -383,6 +398,7 @@ pub(crate) static TIN: &[Rule] = &[
         id: "3.4.92",
         name: "Aq uttamasya pic ca",
         kind: RuleKind::Vidhi,
+        vikalpa: false,
         apply: |p| {
             if !matches!(p.ctx.lakara, Lakara::Lot)
                 || !matches!(p.ctx.purusha, Purusha::Uttama)
@@ -412,6 +428,7 @@ pub(crate) static TIN: &[Rule] = &[
         id: "3.4.103",
         name: "yAsuw parasmEpadezUdAtto Nic ca",
         kind: RuleKind::Vidhi,
+        vikalpa: false,
         apply: |p| {
             if !matches!(p.ctx.lakara, Lakara::VidhiLin) || matches!(p.ctx.pada, Pada::Atmanepada) {
                 return false;
@@ -436,6 +453,7 @@ pub(crate) static TIN: &[Rule] = &[
         id: "3.4.102",
         name: "liNas sIyuw",
         kind: RuleKind::Vidhi,
+        vikalpa: false,
         apply: |p| {
             if !matches!(p.ctx.lakara, Lakara::VidhiLin) || !matches!(p.ctx.pada, Pada::Atmanepada)
             {

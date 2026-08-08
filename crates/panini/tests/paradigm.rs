@@ -1,3 +1,6 @@
+mod common;
+
+use common::{CELLS, LAKARA_BY_NAME};
 use panini::{Panini, Verdict};
 use panini_data::{Lakara, Pada, Purusha, Vacana, dhatus};
 use panini_prakriya::derive;
@@ -1788,9 +1791,39 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     ),
 ];
 
+/// Second valid forms, for cells where an optional (vikalpa) rule forks the
+/// derivation. `(root_id, lakara_label, cell index into the [&str; 9],
+/// alternate form)`.
+///
+/// `PARADIGM` stays one-form-per-cell and byte-identical: widening every
+/// cell to a list would rewrite all 168 blocks and 1512 strings, an
+/// enormous mechanical diff over the exact suite slice 5a froze.
+///
+/// All eight rows are 6.4.107 lopaś cāsyānyatarasyāṁ mvoḥ — the un-elided
+/// member of each pair is what `PARADIGM` pins (hinuvaH, hinumaH, ahinuva,
+/// ahinuma and the √ri counterparts), and these are the elided members.
+/// Cell order is [P.E, P.D, P.B, M.E, M.D, M.B, U.E, U.D, U.B], so 7 and 8
+/// are uttama dvi and uttama bahu.
+const ALTERNATES: &[(&str, &str, usize, &str)] = &[
+    ("hi", "laT", 7, "hinvaH"),
+    ("hi", "laT", 8, "hinmaH"),
+    ("hi", "laN", 7, "ahinva"),
+    ("hi", "laN", 8, "ahinma"),
+    ("ri", "laT", 7, "riRvaH"),
+    ("ri", "laT", 8, "riRmaH"),
+    ("ri", "laN", 7, "ariRva"),
+    ("ri", "laN", 8, "ariRma"),
+];
+
 fn lan_a_form(id: &str, pu: Purusha, va: Vacana) -> String {
     let d = dhatus().iter().find(|d| d.id == id).unwrap();
-    derive(d, Lakara::Lan, Pada::Atmanepada, pu, va).text()
+    let branches = derive(d, Lakara::Lan, Pada::Atmanepada, pu, va);
+    assert_eq!(
+        branches.len(),
+        1,
+        "{id} laṅ ātmanepada {pu:?} {va:?} forked unexpectedly"
+    );
+    branches[0].text()
 }
 
 #[test]
@@ -1846,6 +1879,99 @@ fn every_form_validates_and_matches() {
                     && a.pada == d.pada
                     && panini::lakara_name(a.lakara) == *lakara),
                 "no {lakara} analysis of {root} produced {expected}"
+            );
+        }
+    }
+}
+
+/// Every alternate must itself check out as a real form of the root and
+/// lakāra it is filed under — same `Dhatu::id` → `code` resolution
+/// `every_form_validates_and_matches` uses, since `Analysis::dhatu` reports
+/// the non-unique surface `code`.
+#[test]
+fn every_alternate_validates_and_matches() {
+    let engine = Panini::new();
+    for (root, lakara, _cell, form) in ALTERNATES {
+        let d = dhatus().iter().find(|d| d.id == *root).unwrap();
+        let r = engine.check(form);
+        assert!(
+            matches!(r.verdict, Verdict::Valid),
+            "expected VALID for alternate {form} ({root} {lakara})"
+        );
+        assert!(
+            r.analyses.iter().any(|a| a.form_slp1 == *form
+                && a.dhatu == d.code
+                && a.pada == d.pada
+                && panini::lakara_name(a.lakara) == *lakara),
+            "no {lakara} analysis of {root} produced alternate {form}"
+        );
+    }
+}
+
+/// `derivation_set_is_exactly_pinned`'s `(r, l, c, _)` filter and
+/// `every_alternate_validates_and_matches`'s `_cell` both silently ignore a
+/// row whose `cell` is out of range or whose `(root, lakara)` is mistyped —
+/// neither assertion would ever touch the cell such a row meant to name.
+/// This closes that: every `ALTERNATES` row must name a real cell of a real
+/// `PARADIGM` block.
+#[test]
+fn every_alternate_names_a_real_cell() {
+    for (root, lakara, cell, form) in ALTERNATES {
+        assert!(
+            *cell < 9,
+            "alternate {form} ({root} {lakara}) has out-of-range cell {cell}"
+        );
+        assert!(
+            PARADIGM.iter().any(|(r, l, _)| r == root && l == lakara),
+            "alternate {form} names {root} {lakara}, which is not a PARADIGM block"
+        );
+    }
+}
+
+/// The other half of `every_form_validates_and_matches`, which only ever
+/// asks "is this form derivable?" and never "what else is?". That asymmetry
+/// is what lets alternates land without touching PARADIGM's strings, and it
+/// is also a hole: an over-firing optional rule would fork cells nobody
+/// checks. This closes it — for every cell, the set of forms the engine
+/// derives must be EXACTLY its pinned form plus its pinned alternates.
+#[test]
+fn derivation_set_is_exactly_pinned() {
+    for (root, lakara, forms) in PARADIGM {
+        let d = dhatus().iter().find(|d| d.id == *root).unwrap();
+        for (cell, expected) in forms.iter().enumerate() {
+            let (pu, va) = CELLS[cell];
+            let lak = *LAKARA_BY_NAME
+                .iter()
+                .find_map(|(n, l)| (n == lakara).then_some(l))
+                .unwrap();
+
+            let branches = derive(d, lak, d.pada, pu, va);
+            assert_eq!(
+                branches[0].text(),
+                *expected,
+                "index 0 must be the declined derivation for {root} {lakara} cell {cell}"
+            );
+
+            let mut actual: Vec<String> = branches
+                .iter()
+                .filter(|p| !p.blocked)
+                .map(|p| p.text())
+                .collect();
+            actual.sort();
+
+            let mut want: Vec<String> = vec![(*expected).to_string()];
+            want.extend(
+                ALTERNATES
+                    .iter()
+                    .filter(|(r, l, c, _)| r == root && l == lakara && *c == cell)
+                    .map(|(_, _, _, f)| (*f).to_string()),
+            );
+            want.sort();
+
+            assert_eq!(
+                actual, want,
+                "derivation set for {root} {lakara} cell {cell} \
+                 (pinned {expected}) is not exactly what PARADIGM + ALTERNATES say"
             );
         }
     }
@@ -2044,10 +2170,20 @@ fn known_nonforms_are_invalid() {
         "kliSne", // 7.3.84's SECOND application (vikaraṇa-relative, svādi's
         // own addition) firing on kryādi's `nI` instead of declining by
         // 1.1.5 — real form kliSnAti
-        "hinmaH", // the deliberate slice-5b gap the spec records: the
-                  // elided-vikaraṇa alternate (hinvaH/hinmaH) is a second valid form
-                  // not yet implemented, so it stays INVALID until 5b lands — see
-                  // docs/superpowers/specs/2026-07-29-svadi-gana-design.md:117
+        // 6.4.107 over-firing. It is optional, so an over-firing guard
+        // ADDS a wrong second form rather than replacing a right one —
+        // invisible to any test that only asks whether the right form
+        // still derives. Each pin names the guard it would breach.
+        "ApnvaH",  // fired on a conjunct root — real form ApnuvaH
+        "ApnmaH",  // same, bahu — real form ApnumaH
+        "aSnvahe", // fired in the ātmanepada conjunct column, where no
+        // svādi root is asaṁyogapūrva — real form aSnuvahe
+        "hinTaH", // fired on an ending that is not m/v-initial — real
+        // form hinuTaH
+        "hinyAma", // `starts_with` mistaken for `contains`: vidhiliṅ's
+        // yAma has an `m` but does not begin with one — real form hinuyAma
+        "BavmaH", // fired where the vikaraṇa is not śnu at all, i.e. the
+                  // shnu_asamyogapurva guard dropped — real form BavAmaH
     ] {
         assert!(
             matches!(engine.check(bad).verdict, Verdict::Invalid),

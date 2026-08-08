@@ -65,6 +65,7 @@ pub(crate) static ADESHA: &[Rule] = &[
         id: "6.1.101",
         name: "akaH savarRe dIrGaH",
         kind: RuleKind::Vidhi,
+        vikalpa: false,
         apply: |p| {
             // vidhiliṅ 1sg: after 7.2.79 the ending is `yAam` (yāsuṭ ā + the
             // uttama-eka `am`). 7.2.80 would have rewritten `yA`->`iy` after
@@ -144,6 +145,7 @@ pub(crate) static ADESHA: &[Rule] = &[
         id: "6.1.96",
         name: "usyapadAntAt",
         kind: RuleKind::Vidhi,
+        vikalpa: false,
         apply: |p| {
             let e = &p.terms[ENDING].text;
             if !e.ends_with("us") {
@@ -175,6 +177,7 @@ pub(crate) static ADESHA: &[Rule] = &[
         id: "6.1.90",
         name: "AwaS ca",
         kind: RuleKind::Vidhi,
+        vikalpa: false,
         apply: |p| {
             // Aṅga arm: āṭ prefix on a vowel-initial aṅga.
             let anga: Vec<char> = p.terms[ANGA].text.chars().collect();
@@ -268,6 +271,7 @@ pub(crate) static ADESHA: &[Rule] = &[
         id: "6.1.97",
         name: "ato guRe",
         kind: RuleKind::Vidhi,
+        vikalpa: false,
         apply: |p| {
             let Some(first) = p.terms[ENDING].text.chars().next() else {
                 return false;
@@ -302,6 +306,7 @@ pub(crate) static ADESHA: &[Rule] = &[
         id: "6.1.87",
         name: "Ad guRaH",
         kind: RuleKind::Vidhi,
+        vikalpa: false,
         apply: |p| {
             let first = p.terms[ENDING].text.chars().next();
             if !p.terms[SHAP].text.ends_with('a') || !matches!(first, Some('i') | Some('I')) {
@@ -331,6 +336,7 @@ pub(crate) static ADESHA: &[Rule] = &[
         id: "6.1.66",
         name: "lopo vyor vali",
         kind: RuleKind::Vidhi,
+        vikalpa: false,
         apply: |p| {
             let mut chars = p.terms[ENDING].text.chars();
             let first = chars.next();
@@ -392,6 +398,7 @@ pub(crate) static ADESHA: &[Rule] = &[
         id: "6.4.105",
         name: "ato heH",
         kind: RuleKind::Vidhi,
+        vikalpa: false,
         apply: |p| {
             if !p.terms[SHAP].text.ends_with('a') || p.terms[ENDING].text != "hi" {
                 return false;
@@ -419,6 +426,7 @@ pub(crate) static ADESHA: &[Rule] = &[
         id: "6.4.106",
         name: "utaSca pratyayAdasaMyogapUrvAt",
         kind: RuleKind::Vidhi,
+        vikalpa: false,
         apply: |p| {
             if p.terms[ENDING].text != "hi" {
                 return false;
@@ -432,6 +440,50 @@ pub(crate) static ADESHA: &[Rule] = &[
             true
         },
     },
+    // 6.4.107 lopaś cāsyānyatarasyāṁ mvoḥ: the same `u` 6.4.106 spoke of —
+    // affix-final, asaṁyogapūrva — is OPTIONALLY elided before `m` and `v`.
+    // hi + nu + mas → hinmaH ~ hinumaH, both valid. This is the engine's
+    // first vikalpa rule: `run_pipeline` forks here, and both readings are
+    // reported by `Panini::check`.
+    //
+    // 6.4.108 nityaṁ karoteḥ is what makes this one optional — it states
+    // the same lopa as *nitya* for √kṛ, against this rule's anyatarasyām.
+    // √kṛ is out of scope (it wants 7.1.100 and the 6.4.10x kṛ-specials),
+    // so 6.4.108 is not implemented.
+    //
+    // Continues the 6.4.105 / 6.4.106 luk-and-lopa run above, which is also
+    // where sūtra order puts it. It cannot contend with 6.4.101 below,
+    // whose guard requires the ending to be `hi` — neither m- nor
+    // v-initial.
+    //
+    // ORDERING, load-bearing and invisible: this rule must stay after
+    // EVERY consumer of `shnu_asamyogapurva`. Its mutation leaves
+    // `SHAP.text == "n"`, so the helper's first guard (`== "nu"`) makes it
+    // return false for the rest of the pipeline — on the forked branch
+    // only. A consumer placed below this rule would read the wrong answer
+    // for half a paradigm, with both halves individually plausible. Every
+    // rule that reads śnu's `nu` text must precede it — 6.4.87 and 6.4.106
+    // (just above) via `shnu_asamyogapurva`, and 6.4.77 in guna.rs, which
+    // open-codes the same `text == "nu"` test — and all three do.
+    Rule {
+        id: "6.4.107",
+        name: "lopaScAsyAnyatarasyAM mvoH",
+        kind: RuleKind::Vidhi,
+        vikalpa: true,
+        apply: |p| {
+            if !p.terms[ENDING].text.starts_with(['m', 'v']) {
+                return false;
+            }
+            if !shnu_asamyogapurva(p) {
+                return false;
+            }
+            let before = p.snapshot();
+            // lopa OF THE `u` — not a rewrite of śnu's text to "n".
+            p.terms[SHAP].text.pop();
+            p.record("6.4.107", "lopaScAsyAnyatarasyAM mvoH", before);
+            true
+        },
+    },
     // 6.4.101 hujhalbhyo her dhiḥ: the loṭ 2sg `hi` becomes `Di` after a
     // jhal-final aṅga (and after √hu, out of scope). √ad: 6.4.105 ato heḥ
     // declined (its aṅga ends in `d`, not a short `a`), so `hi` survives to
@@ -441,6 +493,7 @@ pub(crate) static ADESHA: &[Rule] = &[
         id: "6.4.101",
         name: "her DiH",
         kind: RuleKind::Vidhi,
+        vikalpa: false,
         apply: |p| {
             if p.terms[ENDING].text != "hi" {
                 return false;
@@ -1008,5 +1061,91 @@ mod tests {
         p.terms[SHAP].add(Tag::Vikarana);
         let rule = rules().find(|r| r.id == "6.4.106").unwrap();
         assert!(!(rule.apply)(&mut p));
+    }
+
+    /// Build a post-3.1.68 svādi prakriyā: root, śnu, ending.
+    fn shnu_p(root: &str, ending: &str) -> Prakriya {
+        let mut p = Prakriya {
+            terms: vec![Term::new(root), Term::new("nu"), Term::new(ending)],
+            ..Default::default()
+        };
+        p.terms[SHAP].add(Tag::Vikarana);
+        p
+    }
+
+    fn rule_6_4_107() -> &'static Rule {
+        rules()
+            .find(|r| r.id == "6.4.107")
+            .expect("6.4.107 present")
+    }
+
+    #[test]
+    fn lopa_of_shnu_u_fires_only_before_m_and_v() {
+        // The sūtra's *mvoḥ*. laṭ uttama dvi/bahu (`vas`/`mas`) and laṅ
+        // uttama dvi/bahu (`va`/`ma`) are the only endings in scope that
+        // qualify — vidhiliṅ's surface as `yAva`/`yAma` (y-initial) and
+        // loṭ's āṭ-augmented as `Ava`/`Ama` (A-initial).
+        for (ending, expected) in [
+            ("vas", true),
+            ("mas", true),
+            ("va", true),
+            ("ma", true),
+            ("Tas", false),  // hinuTaH
+            ("yAma", false), // hinuyAma
+            ("Ama", false),  // loṭ's āṭ-augmented uttama bahu
+            ("anti", false), // hinvanti, which is 6.4.87's yaṇ, not this
+        ] {
+            let mut p = shnu_p("hi", ending);
+            assert_eq!(
+                (rule_6_4_107().apply)(&mut p),
+                expected,
+                "ending {ending}: 6.4.107 should fire = {expected}"
+            );
+        }
+    }
+
+    #[test]
+    fn lopa_of_shnu_u_needs_asamyogapurva() {
+        // *Asya* is 6.4.106's `u`, asaṁyogapūrva by anuvṛtti. Only √hi and
+        // √ri qualify; the other four svādi roots put a conjunct before
+        // śnu's `u`. Both ātmanepadī svādi roots are among those four,
+        // which is why the ātmanepada column never forks.
+        for (root, expected) in [
+            ("hi", true),
+            ("ri", true),
+            ("Ap", false),
+            ("Sak", false),
+            ("aS", false),
+            ("stiG", false),
+        ] {
+            let mut p = shnu_p(root, "mas");
+            assert_eq!(
+                (rule_6_4_107().apply)(&mut p),
+                expected,
+                "root {root}: 6.4.107 should fire = {expected}"
+            );
+        }
+    }
+
+    #[test]
+    fn lopa_leaves_shnu_as_n_and_records_the_step() {
+        // Pins the observable effects of 6.4.107's lopa: the resulting
+        // `SHAP.text`, the full surface, the sūtra id, and that `before` is
+        // the pre-mutation snapshot. It does NOT (and cannot) distinguish
+        // *lopa* of the `u` from a substitution of `n` for `nu` — the two
+        // are indistinguishable through `SHAP.text`, `p.text()`, and the
+        // log alike; that distinction is intent, not something this test
+        // asserts.
+        let mut p = shnu_p("hi", "mas");
+        assert!((rule_6_4_107().apply)(&mut p));
+        assert_eq!(p.terms[SHAP].text, "n");
+        assert_eq!(p.text(), "hinmas");
+        assert_eq!(p.log.last().unwrap().sutra, "6.4.107");
+        assert_eq!(p.log.last().unwrap().before, "hinumas");
+    }
+
+    #[test]
+    fn lopa_of_shnu_u_is_optional() {
+        assert!(rule_6_4_107().vikalpa, "6.4.107 is anyatarasyām");
     }
 }

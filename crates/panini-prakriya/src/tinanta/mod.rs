@@ -61,13 +61,19 @@ pub fn rules() -> impl Iterator<Item = &'static Rule> {
     TINANTA_RULES.iter().flat_map(|stage| stage.iter())
 }
 
+/// Returns every branch of the derivation, not just one: an optional
+/// (vikalpa) rule can fork the prakriyā, so the vec may hold more than one
+/// entry, and any entry may be `blocked` — a blocked prakriyā's `text()` is
+/// a partial string, not a surface form, and callers must filter those out
+/// before using the result. Index 0 is always the declined reading, i.e.
+/// what this function would have returned with no optional rule in play.
 pub fn derive(
     dhatu: &Dhatu,
     lakara: Lakara,
     pada: Pada,
     purusha: Purusha,
     vacana: Vacana,
-) -> Prakriya {
+) -> Vec<Prakriya> {
     let mut p = Prakriya {
         ctx: Context::new(lakara, pada, purusha, vacana),
         ..Default::default()
@@ -88,6 +94,5 @@ pub fn derive(
         }
         t
     });
-    run_pipeline(&mut p, TINANTA_RULES);
-    p
+    run_pipeline(p, TINANTA_RULES)
 }
