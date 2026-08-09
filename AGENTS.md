@@ -34,10 +34,18 @@
   target under `crates/panini-lipi/fuzz` legitimately omits it, since it uses
   `#![no_main]` plus the libfuzzer harness macro).
 - Grammar changes are gated by the golden paradigm test
-  (`crates/panini/tests/paradigm.rs`, 1512 forms, six gaṇas — `PARADIGM`
+  (`crates/panini/tests/paradigm.rs`, 1512 cells, six gaṇas — `PARADIGM`
     stays one-form-per-cell: a cell forked by an optional rule keeps its
-    second form in `ALTERNATES`, and `derivation_set_is_exactly_pinned`
-    asserts each cell's derivation set is exactly the union of the two;
+    other forms — a second, and for 48 cells a third — in `ALTERNATES`
+    (154 rows in all, so 1512 + 154 forms total), and
+    `derivation_set_is_exactly_pinned` asserts each cell's derivation set is
+    exactly the union of the two. The suite is no longer filtered by any
+    one-form-per-cell convention — the
+    "retiring the conventions" slice retired the last two (7.1.35 tātaṅ,
+    8.4.56 pausal cartva), and `PARADIGM`'s index 0 is now genuinely the
+    declined derivation rather than a hand-picked citation form: prathama
+    eka of laṅ and vidhiliṅ is the jaś form for parasmaipada roots
+    (`aBavad`, `Baved`), since 8.2.39 *jhalāṁ jaśo'nte* is obligatory;
     bhvādi/divādi/
     tudādi are complete across laṭ/laṅ/loṭ/vidhiliṅ × parasmaipada/
     ātmanepada, and adādi (gaṇa 2) is now **complete** — √yā/√vā/√ad
@@ -109,25 +117,43 @@
   in its stage file, with its id in `tinanta_rule_order_is_pinned` in
   position — and also add it to
   `exactly_the_pinned_vikalpa_rules_are_optional`, which pins the whole
-  optional set by id. **6.4.107 is currently the only one.**
-- **An optional rule must be ordered after every consumer of a predicate its
-  own mutation invalidates — unless that consumer's guard is provably
-  disjoint from the optional rule's own guard.** Nothing enforces this.
-  6.4.107 leaves `terms[SHAP].text == "n"`, which invalidates two
-  predicates: `shnu_asamyogapurva` (whose first guard is `== "nu"`) and
-  `sound_before_ending` (which reads the last char before the ending —
-  `u` before the mutation, `n` after). Both return the wrong answer for
-  the rest of the pipeline, on the forked branch only. A consumer placed
-  below it would be right on one branch and wrong on the other, which
-  surfaces as half a paradigm being wrong with both halves individually
-  plausible. Every rule that reads śnu's `nu` text must precede it — 6.4.87
-  and 6.4.106 via `shnu_asamyogapurva`, and 6.4.77, which open-codes the
-  same `text == "nu"` test — and all three do. `sound_before_ending`'s one
-  consumer below 6.4.107, 6.4.101 (`her DiH`,
-  `crates/panini-prakriya/src/tinanta/adesha.rs`), is the exception the
-  disjoint-guard escape covers: it requires `ENDING.text == "hi"`, which
-  6.4.107 already excludes by requiring an m- or v-initial ending, so the
-  two rules never contend and 6.4.101 is safe where it sits.
+  optional set by id. **Four rules are optional today, in pipeline order:
+  7.1.35, 3.4.111, 6.4.107, 8.4.56.** 7.1.35 and 8.4.56 can both fire on one
+  derivation, stacking into a three-branch cell — loṭ prathama eka forks
+  twice, giving `Bavatu` / `BavatAd` / `BavatAt`.
+- **An optional rule's position relative to its consumers depends on what its
+  mutation does to the predicates they read — the operative question is not
+  "does a consumer read what I wrote?" but "does my mutation make the
+  predicate lie?".** Nothing enforces either direction.
+  - If the mutation **destroys the evidence** for a predicate without
+    changing the underlying grammatical fact, the rule must sit **after**
+    every such consumer, or a consumer placed below it would be right on one
+    branch and wrong on the other — surfacing as half a paradigm being wrong
+    with both halves individually plausible. 6.4.107 leaves
+    `terms[SHAP].text == "n"`, which invalidates two predicates:
+    `shnu_asamyogapurva` (whose first guard is `== "nu"`) and
+    `sound_before_ending` (which reads the last char before the ending — `u`
+    before the mutation, `n` after) — the vikaraṇa *is* still śnu, but
+    nothing downstream can tell any more. Every rule that reads śnu's `nu`
+    text must precede it — 6.4.87 and 6.4.106 via `shnu_asamyogapurva`, and
+    6.4.77, which open-codes the same `text == "nu"` test — and all three do.
+    `sound_before_ending`'s one consumer below 6.4.107, 6.4.101 (`her DiH`,
+    `crates/panini-prakriya/src/tinanta/adesha.rs`), is the exception a
+    provably disjoint guard covers: it requires `ENDING.text == "hi"`, which
+    6.4.107 already excludes by requiring an m- or v-initial ending, so the
+    two rules never contend and 6.4.101 is safe where it sits.
+  - If instead the mutation **changes the fact itself**, the rule must sit
+    **before** every such consumer, so they read the new value rather than a
+    stale one. 7.1.35 replaces the ending `tu`/`hi` with tātaṅ, and the
+    ending genuinely is no longer `hi` — a consumer below gets the *right*
+    answer, one above gets a stale one. 3.1.83 *halaḥ śnaḥ śānac ca*, 6.4.105
+    *ato heḥ*, and 6.4.106 *utaś ca* all read `ENDING`/`ENDING_PRE_SHAP`'s
+    text directly, and 7.3.84's second (ending-relative) application reads
+    its ṅitva, so all four must sit below 7.1.35 to see the tātaṅ shape
+    rather than the pre-mutation `hi` — kryādi's tātaṅ branch would surface
+    `kliSAnatAt` instead of `kliSnItAt` if 3.1.83 ran first. 7.1.35 is
+    ordered above all of them, at the end of the tiṅ stage, and nothing
+    enforces that but the `kliSnItAt` trace pin.
 - **7.3.84 and 1.2.4 each appear twice in `TINANTA_RULES`, by design — do not
   "deduplicate" them.** 1.4.13 *yasmāt pratyayavidhis tadādi pratyaye'ṅgam*
   makes the aṅga affix-relative, and a derivation with a live vikaraṇa has

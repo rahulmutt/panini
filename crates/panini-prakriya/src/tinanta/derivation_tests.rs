@@ -27,6 +27,24 @@ pub(super) fn sole(branches: Vec<Prakriya>) -> Prakriya {
     branches.into_iter().next().unwrap()
 }
 
+/// Unwrap a derivation that IS expected to fork, asserting the branch count.
+///
+/// `sole` stays the default so an unexpected fork fails loudly; this is its
+/// counterpart for cells an optional rule legitimately forks. It returns
+/// branch 0 — the declined derivation, i.e. what the pipeline produces with
+/// no optional rule applied — and still fails if the count is not exactly
+/// what the caller expects, so an over-firing optional rule cannot hide here.
+pub(super) fn declined(branches: Vec<Prakriya>, expected: usize) -> Prakriya {
+    assert_eq!(
+        branches.len(),
+        expected,
+        "expected {expected} derivations, got {}: {:?}",
+        branches.len(),
+        branches.iter().map(|p| p.text()).collect::<Vec<_>>()
+    );
+    branches.into_iter().next().unwrap()
+}
+
 pub(super) fn form(code: &str, pu: Purusha, va: Vacana) -> String {
     let d = dhatus().iter().find(|d| d.id == code).unwrap();
     sole(derive(d, Lakara::Lat, Pada::Parasmaipada, pu, va)).text()
@@ -39,6 +57,19 @@ pub(super) fn form(code: &str, pu: Purusha, va: Vacana) -> String {
 pub(super) fn form_g(code: &str, la: Lakara, pu: Purusha, va: Vacana) -> String {
     let d = dhatus().iter().find(|d| d.id == code).unwrap();
     sole(derive(d, la, d.pada, pu, va)).text()
+}
+
+/// `form_g` for a cell an optional rule forks: same lookup, `declined`
+/// instead of `sole`.
+pub(super) fn form_g_forked(
+    code: &str,
+    la: Lakara,
+    pu: Purusha,
+    va: Vacana,
+    branches: usize,
+) -> String {
+    let d = dhatus().iter().find(|d| d.id == code).unwrap();
+    declined(derive(d, la, d.pada, pu, va), branches).text()
 }
 
 pub(super) fn lin_form(code: &str, pu: Purusha, va: Vacana) -> String {
@@ -83,12 +114,13 @@ fn tinanta_rule_order_is_pinned() {
     let expected = [
         "1.3.12", "1.3.78", "3.4.78", "1.3.9", "1.2.4", "3.4.85", "3.4.108", "3.4.105", "3.4.106",
         "3.4.101", "3.4.99", "3.4.87", "3.4.89", "3.4.86", "3.4.100", "3.4.80", "3.4.79", "3.4.91",
-        "3.4.93", "3.4.90", "3.4.92", "3.4.103", "3.4.102", "3.1.69", "3.1.73", "3.1.77", "3.1.81",
-        "3.1.68", "2.4.72", "3.1.83", "1.2.4", "6.4.71", "6.4.72", "7.3.100", "7.1.5", "7.1.6",
-        "7.1.3", "7.2.79", "7.2.80", "7.2.81", "7.4.21", "7.3.84", "7.3.86", "7.3.84", "6.4.87",
-        "6.4.77", "6.1.78", "7.3.101", "6.4.112", "6.4.113", "6.1.101", "6.1.96", "6.1.90",
-        "6.1.97", "6.1.87", "6.1.66", "6.4.105", "6.4.106", "6.4.107", "6.4.101", "8.2.77",
-        "8.2.23", "8.2.25", "8.3.15", "8.3.59", "8.4.55", "8.4.1", "8.4.2",
+        "3.4.93", "3.4.90", "3.4.92", "3.4.103", "3.4.102", "7.1.35", "3.1.69", "3.1.73", "3.1.77",
+        "3.1.81", "3.1.68", "2.4.72", "3.4.111", "3.1.83", "1.2.4", "6.4.71", "6.4.72", "7.3.100",
+        "7.1.5", "7.1.6", "7.1.3", "7.2.79", "7.2.80", "7.2.81", "7.4.21", "7.3.84", "7.3.86",
+        "7.3.84", "6.4.87", "6.4.77", "6.1.78", "7.3.101", "6.4.112", "6.4.113", "6.1.101",
+        "6.1.96", "6.1.90", "6.1.97", "6.1.87", "6.1.66", "6.4.105", "6.4.106", "6.4.107",
+        "6.4.101", "8.2.77", "8.2.23", "8.2.25", "8.2.39", "8.3.15", "8.3.59", "8.4.55", "8.4.1",
+        "8.4.2", "8.4.56",
     ];
     let actual: Vec<&str> = rules().map(|r| r.id).collect();
     assert_eq!(actual, expected);
@@ -102,7 +134,7 @@ fn tinanta_rule_order_is_pinned() {
 #[test]
 fn exactly_the_pinned_vikalpa_rules_are_optional() {
     let actual: Vec<&str> = rules().filter(|r| r.vikalpa).map(|r| r.id).collect();
-    let expected = ["6.4.107"];
+    let expected = ["7.1.35", "3.4.111", "6.4.107", "8.4.56"];
     assert_eq!(actual, expected);
 }
 
@@ -197,12 +229,12 @@ fn divadi_tudadi_vowel_sandhi_cells() {
     );
     // 7.2.80 ato yeyaH: vidhiliṅ yA→iy after śyan's `ya`.
     assert_eq!(
-        form_g("kup", Lakara::VidhiLin, Purusha::Prathama, Vacana::Eka),
-        "kupyet"
+        form_g_forked("kup", Lakara::VidhiLin, Purusha::Prathama, Vacana::Eka, 2),
+        "kupyed"
     );
     // 6.4.105 ato heH: imperative hi-elision after śyan's `ya`.
     assert_eq!(
-        form_g("naS", Lakara::Lot, Purusha::Madhyama, Vacana::Eka),
+        form_g_forked("naS", Lakara::Lot, Purusha::Madhyama, Vacana::Eka, 3),
         "naSya"
     );
 }
@@ -215,8 +247,8 @@ fn div_lengthens_before_syan() {
     );
     // laṅ: augment does not disturb the upadhā i.
     assert_eq!(
-        form_g("div", Lakara::Lan, Purusha::Prathama, Vacana::Eka),
-        "adIvyat"
+        form_g_forked("div", Lakara::Lan, Purusha::Prathama, Vacana::Eka, 2),
+        "adIvyad"
     );
 }
 
@@ -238,12 +270,12 @@ fn adadi_luk_present_no_junction_cells() {
     );
     // laṅ: aṭ-augment (yā is consonant-initial) → ayā; ending attaches.
     assert_eq!(
-        form_g("yA", Lakara::Lan, Purusha::Prathama, Vacana::Eka),
-        "ayAt"
+        form_g_forked("yA", Lakara::Lan, Purusha::Prathama, Vacana::Eka, 2),
+        "ayAd"
     );
     // loṭ 2sg: hi does NOT elide after ā (6.4.105 needs short a) → yāhi.
     assert_eq!(
-        form_g("yA", Lakara::Lot, Purusha::Madhyama, Vacana::Eka),
+        form_g_forked("yA", Lakara::Lot, Purusha::Madhyama, Vacana::Eka, 3),
         "yAhi"
     );
 }
@@ -259,8 +291,11 @@ fn adadi_root_final_a_coalesces_with_vowel_endings() {
         form_g("yA", Lakara::Lot, Purusha::Prathama, Vacana::Bahu),
         "yAntu"
     );
+    // Now forks: 3.4.111 (Task 4) adds the Śākaṭāyana jus branch (ayuH,
+    // pinned in `paradigm.rs`'s ALTERNATES). Branch 0 is still the declined
+    // derivation.
     assert_eq!(
-        form_g("yA", Lakara::Lan, Purusha::Prathama, Vacana::Bahu),
+        form_g_forked("yA", Lakara::Lan, Purusha::Prathama, Vacana::Bahu, 2),
         "ayAn"
     );
     // ā + A(ṭ) → ā : loṭ uttama-eka takes āṭ (yA + Ani → yAni).
@@ -275,11 +310,23 @@ fn adadi_vidhilin_derives_the_yas_yuh_reduction() {
     // adādi × vidhiliṅ now
     // derives through the full pipeline, running the yāsuṭ chain plus
     // the 6.1.96 / 6.1.101 junction reductions, for every cell and pada.
+    //
+    // prathama eka is the one cell in this loop whose ending is a bare
+    // pada-final `t` (yAyAt/vAyAt): 8.2.39/8.4.56 fork it into two branches,
+    // same as every other jhal-final cell this task touches. `declined`
+    // asserts the branch count directly here (rather than routing through
+    // `form_g_forked`) because this loop checks blocked/log/text-non-empty
+    // invariants across every cell, not one pinned surface form.
     for code in ["yA", "vA"] {
         let d = dhatus().iter().find(|d| d.id == code).unwrap();
         for pu in [Purusha::Prathama, Purusha::Madhyama, Purusha::Uttama] {
             for va in [Vacana::Eka, Vacana::Dvi, Vacana::Bahu] {
-                let p = sole(derive(d, Lakara::VidhiLin, d.pada, pu, va));
+                let expected = if pu == Purusha::Prathama && va == Vacana::Eka {
+                    2
+                } else {
+                    1
+                };
+                let p = declined(derive(d, Lakara::VidhiLin, d.pada, pu, va), expected);
                 assert!(!p.blocked, "{code} vidhiliṅ {pu:?} {va:?} was blocked");
                 assert!(!p.log.is_empty(), "{code} vidhiliṅ ran no rules");
                 assert!(
@@ -330,23 +377,23 @@ fn her_dhih_gives_addhi_for_consonant_root() {
     // √ad loṭ 2sg: 3.4.87 si→hi, 6.4.105 declines (d, not short a),
     // 6.4.101 hi→Di → adDi.
     assert_eq!(
-        form_g("ad", Lakara::Lot, Purusha::Madhyama, Vacana::Eka),
+        form_g_forked("ad", Lakara::Lot, Purusha::Madhyama, Vacana::Eka, 3),
         "adDi"
     );
     // Thematic root unaffected: √bhū loṭ 2sg is Bava (hi luk'd by 6.4.105).
     assert_eq!(
-        form_g("BU", Lakara::Lot, Purusha::Madhyama, Vacana::Eka),
+        form_g_forked("BU", Lakara::Lot, Purusha::Madhyama, Vacana::Eka, 3),
         "Bava"
     );
 }
 
 #[test]
 fn adadi_lan_singular_a_augment() {
-    // √ad laṅ 3sg Adat, 2sg AdaH — the inserted `a` blocks the saṃyogānta
+    // √ad laṅ 3sg Adad, 2sg AdaH — the inserted `a` blocks the saṃyogānta
     // collapse (Adt/Ads → Ad) and cartva (d now before `a`, not a khar).
     assert_eq!(
-        form_g("ad", Lakara::Lan, Purusha::Prathama, Vacana::Eka),
-        "Adat"
+        form_g_forked("ad", Lakara::Lan, Purusha::Prathama, Vacana::Eka, 2),
+        "Adad"
     );
     assert_eq!(
         form_g("ad", Lakara::Lan, Purusha::Madhyama, Vacana::Eka),
@@ -523,8 +570,14 @@ fn sutra_names_contain_no_forbidden_slp1_digraphs() {
 
 #[test]
 fn bhu_vidhilin_all_nine_cells() {
+    // Prathama eka forks (8.2.39/8.4.56, same as `kupyet`/`Bavet` elsewhere in
+    // this file), so it is pinned separately with `form_g_forked` rather than
+    // through the single-branch loop below.
+    assert_eq!(
+        form_g_forked("BU", Lakara::VidhiLin, Purusha::Prathama, Vacana::Eka, 2),
+        "Baved"
+    );
     for (pu, va, want) in [
-        (Purusha::Prathama, Vacana::Eka, "Bavet"),
         (Purusha::Prathama, Vacana::Dvi, "BavetAm"),
         (Purusha::Prathama, Vacana::Bahu, "BaveyuH"),
         (Purusha::Madhyama, Vacana::Eka, "BaveH"),
@@ -889,7 +942,7 @@ fn dhi_ca_does_not_elide_a_non_s_before_dh() {
     // `s`, so the second arm declines and the `d` survives. Dropping
     // this arm would wrongly yield *aDi.
     assert_eq!(
-        form_g("ad", Lakara::Lot, Purusha::Madhyama, Vacana::Eka),
+        form_g_forked("ad", Lakara::Lot, Purusha::Madhyama, Vacana::Eka, 3),
         "adDi"
     );
 }
@@ -950,7 +1003,7 @@ fn cartva_of_maps_each_jhal_to_its_first_varga_car() {
 fn her_dhih_guard_is_jhal_final_only() {
     // ā-final √yā loṭ 2sg keeps hi (yAhi), NOT *yADi: 6.4.101 needs a jhal.
     assert_eq!(
-        form_g("yA", Lakara::Lot, Purusha::Madhyama, Vacana::Eka),
+        form_g_forked("yA", Lakara::Lot, Purusha::Madhyama, Vacana::Eka, 3),
         "yAhi"
     );
 }

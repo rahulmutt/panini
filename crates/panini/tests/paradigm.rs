@@ -63,7 +63,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "BU",
         "laN",
         [
-            "aBavat", "aBavatAm", "aBavan", "aBavaH", "aBavatam", "aBavata", "aBavam", "aBavAva",
+            "aBavad", "aBavatAm", "aBavan", "aBavaH", "aBavatam", "aBavata", "aBavam", "aBavAva",
             "aBavAma",
         ],
     ),
@@ -71,7 +71,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "nI",
         "laN",
         [
-            "anayat", "anayatAm", "anayan", "anayaH", "anayatam", "anayata", "anayam", "anayAva",
+            "anayad", "anayatAm", "anayan", "anayaH", "anayatam", "anayata", "anayam", "anayAva",
             "anayAma",
         ],
     ),
@@ -79,7 +79,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "ji",
         "laN",
         [
-            "ajayat", "ajayatAm", "ajayan", "ajayaH", "ajayatam", "ajayata", "ajayam", "ajayAva",
+            "ajayad", "ajayatAm", "ajayan", "ajayaH", "ajayatam", "ajayata", "ajayam", "ajayAva",
             "ajayAma",
         ],
     ),
@@ -87,7 +87,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "smf",
         "laN",
         [
-            "asmarat",
+            "asmarad",
             "asmaratAm",
             "asmaran",
             "asmaraH",
@@ -102,7 +102,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "paW",
         "laN",
         [
-            "apaWat", "apaWatAm", "apaWan", "apaWaH", "apaWatam", "apaWata", "apaWam", "apaWAva",
+            "apaWad", "apaWatAm", "apaWan", "apaWaH", "apaWatam", "apaWata", "apaWam", "apaWAva",
             "apaWAma",
         ],
     ),
@@ -110,7 +110,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "vad",
         "laN",
         [
-            "avadat", "avadatAm", "avadan", "avadaH", "avadatam", "avadata", "avadam", "avadAva",
+            "avadad", "avadatAm", "avadan", "avadaH", "avadatam", "avadata", "avadam", "avadAva",
             "avadAma",
         ],
     ),
@@ -172,7 +172,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "BU",
         "viDiliN",
         [
-            "Bavet", "BavetAm", "BaveyuH", "BaveH", "Bavetam", "Baveta", "Baveyam", "Baveva",
+            "Baved", "BavetAm", "BaveyuH", "BaveH", "Bavetam", "Baveta", "Baveyam", "Baveva",
             "Bavema",
         ],
     ),
@@ -180,7 +180,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "nI",
         "viDiliN",
         [
-            "nayet", "nayetAm", "nayeyuH", "nayeH", "nayetam", "nayeta", "nayeyam", "nayeva",
+            "nayed", "nayetAm", "nayeyuH", "nayeH", "nayetam", "nayeta", "nayeyam", "nayeva",
             "nayema",
         ],
     ),
@@ -188,7 +188,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "ji",
         "viDiliN",
         [
-            "jayet", "jayetAm", "jayeyuH", "jayeH", "jayetam", "jayeta", "jayeyam", "jayeva",
+            "jayed", "jayetAm", "jayeyuH", "jayeH", "jayetam", "jayeta", "jayeyam", "jayeva",
             "jayema",
         ],
     ),
@@ -196,7 +196,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "smf",
         "viDiliN",
         [
-            "smaret", "smaretAm", "smareyuH", "smareH", "smaretam", "smareta", "smareyam",
+            "smared", "smaretAm", "smareyuH", "smareH", "smaretam", "smareta", "smareyam",
             "smareva", "smarema",
         ],
     ),
@@ -204,7 +204,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "paW",
         "viDiliN",
         [
-            "paWet", "paWetAm", "paWeyuH", "paWeH", "paWetam", "paWeta", "paWeyam", "paWeva",
+            "paWed", "paWetAm", "paWeyuH", "paWeH", "paWetam", "paWeta", "paWeyam", "paWeva",
             "paWema",
         ],
     ),
@@ -212,7 +212,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "vad",
         "viDiliN",
         [
-            "vadet", "vadetAm", "vadeyuH", "vadeH", "vadetam", "vadeta", "vadeyam", "vadeva",
+            "vaded", "vadetAm", "vadeyuH", "vadeH", "vadetam", "vadeta", "vadeyam", "vadeva",
             "vadema",
         ],
     ),
@@ -604,7 +604,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "div",
         "laN",
         [
-            "adIvyat",
+            "adIvyad",
             "adIvyatAm",
             "adIvyan",
             "adIvyaH",
@@ -619,7 +619,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "naS",
         "laN",
         [
-            "anaSyat",
+            "anaSyad",
             "anaSyatAm",
             "anaSyan",
             "anaSyaH",
@@ -634,7 +634,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "kup",
         "laN",
         [
-            "akupyat",
+            "akupyad",
             "akupyatAm",
             "akupyan",
             "akupyaH",
@@ -694,7 +694,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "tud",
         "laN",
         [
-            "atudat", "atudatAm", "atudan", "atudaH", "atudatam", "atudata", "atudam", "atudAva",
+            "atudad", "atudatAm", "atudan", "atudaH", "atudatam", "atudata", "atudam", "atudAva",
             "atudAma",
         ],
     ),
@@ -702,7 +702,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "liK",
         "laN",
         [
-            "aliKat", "aliKatAm", "aliKan", "aliKaH", "aliKatam", "aliKata", "aliKam", "aliKAva",
+            "aliKad", "aliKatAm", "aliKan", "aliKaH", "aliKatam", "aliKata", "aliKam", "aliKAva",
             "aliKAma",
         ],
     ),
@@ -710,7 +710,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "viS",
         "laN",
         [
-            "aviSat", "aviSatAm", "aviSan", "aviSaH", "aviSatam", "aviSata", "aviSam", "aviSAva",
+            "aviSad", "aviSatAm", "aviSan", "aviSaH", "aviSatam", "aviSata", "aviSam", "aviSAva",
             "aviSAma",
         ],
     ),
@@ -880,7 +880,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "div",
         "viDiliN",
         [
-            "dIvyet", "dIvyetAm", "dIvyeyuH", "dIvyeH", "dIvyetam", "dIvyeta", "dIvyeyam",
+            "dIvyed", "dIvyetAm", "dIvyeyuH", "dIvyeH", "dIvyetam", "dIvyeta", "dIvyeyam",
             "dIvyeva", "dIvyema",
         ],
     ),
@@ -888,7 +888,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "naS",
         "viDiliN",
         [
-            "naSyet", "naSyetAm", "naSyeyuH", "naSyeH", "naSyetam", "naSyeta", "naSyeyam",
+            "naSyed", "naSyetAm", "naSyeyuH", "naSyeH", "naSyetam", "naSyeta", "naSyeyam",
             "naSyeva", "naSyema",
         ],
     ),
@@ -896,7 +896,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "kup",
         "viDiliN",
         [
-            "kupyet", "kupyetAm", "kupyeyuH", "kupyeH", "kupyetam", "kupyeta", "kupyeyam",
+            "kupyed", "kupyetAm", "kupyeyuH", "kupyeH", "kupyetam", "kupyeta", "kupyeyam",
             "kupyeva", "kupyema",
         ],
     ),
@@ -949,7 +949,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "tud",
         "viDiliN",
         [
-            "tudet", "tudetAm", "tudeyuH", "tudeH", "tudetam", "tudeta", "tudeyam", "tudeva",
+            "tuded", "tudetAm", "tudeyuH", "tudeH", "tudetam", "tudeta", "tudeyam", "tudeva",
             "tudema",
         ],
     ),
@@ -957,7 +957,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "liK",
         "viDiliN",
         [
-            "liKet", "liKetAm", "liKeyuH", "liKeH", "liKetam", "liKeta", "liKeyam", "liKeva",
+            "liKed", "liKetAm", "liKeyuH", "liKeH", "liKetam", "liKeta", "liKeyam", "liKeva",
             "liKema",
         ],
     ),
@@ -965,7 +965,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "viS",
         "viDiliN",
         [
-            "viSet", "viSetAm", "viSeyuH", "viSeH", "viSetam", "viSeta", "viSeyam", "viSeva",
+            "viSed", "viSetAm", "viSeyuH", "viSeH", "viSetam", "viSeta", "viSeyam", "viSeva",
             "viSema",
         ],
     ),
@@ -1032,14 +1032,14 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "yA",
         "laN",
         [
-            "ayAt", "ayAtAm", "ayAn", "ayAH", "ayAtam", "ayAta", "ayAm", "ayAva", "ayAma",
+            "ayAd", "ayAtAm", "ayAn", "ayAH", "ayAtam", "ayAta", "ayAm", "ayAva", "ayAma",
         ],
     ),
     (
         "vA",
         "laN",
         [
-            "avAt", "avAtAm", "avAn", "avAH", "avAtam", "avAta", "avAm", "avAva", "avAma",
+            "avAd", "avAtAm", "avAn", "avAH", "avAtam", "avAta", "avAm", "avAva", "avAma",
         ],
     ),
     (
@@ -1060,14 +1060,14 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "yA",
         "viDiliN",
         [
-            "yAyAt", "yAyAtAm", "yAyuH", "yAyAH", "yAyAtam", "yAyAta", "yAyAm", "yAyAva", "yAyAma",
+            "yAyAd", "yAyAtAm", "yAyuH", "yAyAH", "yAyAtam", "yAyAta", "yAyAm", "yAyAva", "yAyAma",
         ],
     ),
     (
         "vA",
         "viDiliN",
         [
-            "vAyAt", "vAyAtAm", "vAyuH", "vAyAH", "vAyAtam", "vAyAta", "vAyAm", "vAyAva", "vAyAma",
+            "vAyAd", "vAyAtAm", "vAyuH", "vAyAH", "vAyAtam", "vAyAta", "vAyAm", "vAyAva", "vAyAma",
         ],
     ),
     (
@@ -1081,7 +1081,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "ad",
         "laN",
         [
-            "Adat", "AttAm", "Adan", "AdaH", "Attam", "Atta", "Adam", "Adva", "Adma",
+            "Adad", "AttAm", "Adan", "AdaH", "Attam", "Atta", "Adam", "Adva", "Adma",
         ],
     ),
     (
@@ -1095,7 +1095,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "ad",
         "viDiliN",
         [
-            "adyAt", "adyAtAm", "adyuH", "adyAH", "adyAtam", "adyAta", "adyAm", "adyAva", "adyAma",
+            "adyAd", "adyAtAm", "adyuH", "adyAH", "adyAtam", "adyAta", "adyAm", "adyAva", "adyAma",
         ],
     ),
     (
@@ -1222,7 +1222,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "kliS",
         "laN",
         [
-            "akliSnAt",
+            "akliSnAd",
             "akliSnItAm",
             "akliSnan",
             "akliSnAH",
@@ -1252,7 +1252,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "kliS",
         "viDiliN",
         [
-            "kliSnIyAt",
+            "kliSnIyAd",
             "kliSnIyAtAm",
             "kliSnIyuH",
             "kliSnIyAH",
@@ -1275,7 +1275,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "guD",
         "laN",
         [
-            "aguDnAt",
+            "aguDnAd",
             "aguDnItAm",
             "aguDnan",
             "aguDnAH",
@@ -1298,7 +1298,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "guD",
         "viDiliN",
         [
-            "guDnIyAt",
+            "guDnIyAd",
             "guDnIyAtAm",
             "guDnIyuH",
             "guDnIyAH",
@@ -1321,7 +1321,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "aS",
         "laN",
         [
-            "ASnAt", "ASnItAm", "ASnan", "ASnAH", "ASnItam", "ASnIta", "ASnAm", "ASnIva", "ASnIma",
+            "ASnAd", "ASnItAm", "ASnan", "ASnAH", "ASnItam", "ASnIta", "ASnAm", "ASnIva", "ASnIma",
         ],
     ),
     (
@@ -1336,7 +1336,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "aS",
         "viDiliN",
         [
-            "aSnIyAt",
+            "aSnIyAd",
             "aSnIyAtAm",
             "aSnIyuH",
             "aSnIyAH",
@@ -1359,7 +1359,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "muz",
         "laN",
         [
-            "amuzRAt",
+            "amuzRAd",
             "amuzRItAm",
             "amuzRan",
             "amuzRAH",
@@ -1382,7 +1382,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "muz",
         "viDiliN",
         [
-            "muzRIyAt",
+            "muzRIyAd",
             "muzRIyAtAm",
             "muzRIyuH",
             "muzRIyAH",
@@ -1405,7 +1405,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "vrI",
         "laN",
         [
-            "avrIRAt",
+            "avrIRAd",
             "avrIRItAm",
             "avrIRan",
             "avrIRAH",
@@ -1428,7 +1428,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "vrI",
         "viDiliN",
         [
-            "vrIRIyAt",
+            "vrIRIyAd",
             "vrIRIyAtAm",
             "vrIRIyuH",
             "vrIRIyAH",
@@ -1504,7 +1504,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "Ap",
         "laN",
         [
-            "Apnot", "ApnutAm", "Apnuvan", "ApnoH", "Apnutam", "Apnuta", "Apnavam", "Apnuva",
+            "Apnod", "ApnutAm", "Apnuvan", "ApnoH", "Apnutam", "Apnuta", "Apnavam", "Apnuva",
             "Apnuma",
         ],
     ),
@@ -1527,7 +1527,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "Ap",
         "viDiliN",
         [
-            "ApnuyAt",
+            "ApnuyAd",
             "ApnuyAtAm",
             "ApnuyuH",
             "ApnuyAH",
@@ -1557,7 +1557,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "Sak",
         "laN",
         [
-            "aSaknot",
+            "aSaknod",
             "aSaknutAm",
             "aSaknuvan",
             "aSaknoH",
@@ -1587,7 +1587,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "Sak",
         "viDiliN",
         [
-            "SaknuyAt",
+            "SaknuyAd",
             "SaknuyAtAm",
             "SaknuyuH",
             "SaknuyAH",
@@ -1610,7 +1610,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "hi",
         "laN",
         [
-            "ahinot", "ahinutAm", "ahinvan", "ahinoH", "ahinutam", "ahinuta", "ahinavam",
+            "ahinod", "ahinutAm", "ahinvan", "ahinoH", "ahinutam", "ahinuta", "ahinavam",
             "ahinuva", "ahinuma",
         ],
     ),
@@ -1626,7 +1626,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "hi",
         "viDiliN",
         [
-            "hinuyAt",
+            "hinuyAd",
             "hinuyAtAm",
             "hinuyuH",
             "hinuyAH",
@@ -1649,7 +1649,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "ri",
         "laN",
         [
-            "ariRot", "ariRutAm", "ariRvan", "ariRoH", "ariRutam", "ariRuta", "ariRavam",
+            "ariRod", "ariRutAm", "ariRvan", "ariRoH", "ariRutam", "ariRuta", "ariRavam",
             "ariRuva", "ariRuma",
         ],
     ),
@@ -1665,7 +1665,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "ri",
         "viDiliN",
         [
-            "riRuyAt",
+            "riRuyAd",
             "riRuyAtAm",
             "riRuyuH",
             "riRuyAH",
@@ -1791,28 +1791,175 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     ),
 ];
 
-/// Second valid forms, for cells where an optional (vikalpa) rule forks the
-/// derivation. `(root_id, lakara_label, cell index into the [&str; 9],
-/// alternate form)`.
+/// Second and third valid forms, for cells where an optional (vikalpa) rule
+/// forks the derivation. `(root_id, lakara_label, cell index into the
+/// [&str; 9], alternate form, vikalpa key)`.
 ///
-/// `PARADIGM` stays one-form-per-cell and byte-identical: widening every
-/// cell to a list would rewrite all 168 blocks and 1512 strings, an
-/// enormous mechanical diff over the exact suite slice 5a froze.
+/// The vikalpa key names the optional rules applied on the branch that
+/// derives this form, `+`-joined in pipeline order. It is not decoration:
+/// `every_alternate_names_the_vikalpa_rules_that_produced_it` checks it
+/// against the branch's own log, so a right form reached by the wrong rule
+/// fails here.
 ///
-/// All eight rows are 6.4.107 lopaś cāsyānyatarasyāṁ mvoḥ — the un-elided
-/// member of each pair is what `PARADIGM` pins (hinuvaH, hinumaH, ahinuva,
-/// ahinuma and the √ri counterparts), and these are the elided members.
+/// `PARADIGM` holds index 0 — the derivation with no optional rule applied —
+/// so an alternate is by construction never `PARADIGM`'s own string.
 /// Cell order is [P.E, P.D, P.B, M.E, M.D, M.B, U.E, U.D, U.B], so 7 and 8
 /// are uttama dvi and uttama bahu.
-const ALTERNATES: &[(&str, &str, usize, &str)] = &[
-    ("hi", "laT", 7, "hinvaH"),
-    ("hi", "laT", 8, "hinmaH"),
-    ("hi", "laN", 7, "ahinva"),
-    ("hi", "laN", 8, "ahinma"),
-    ("ri", "laT", 7, "riRvaH"),
-    ("ri", "laT", 8, "riRmaH"),
-    ("ri", "laN", 7, "ariRva"),
-    ("ri", "laN", 8, "ariRma"),
+const ALTERNATES: &[(&str, &str, usize, &str, &str)] = &[
+    ("hi", "laT", 7, "hinvaH", "6.4.107"),
+    ("hi", "laT", 8, "hinmaH", "6.4.107"),
+    ("hi", "laN", 7, "ahinva", "6.4.107"),
+    ("hi", "laN", 8, "ahinma", "6.4.107"),
+    ("ri", "laT", 7, "riRvaH", "6.4.107"),
+    ("ri", "laT", 8, "riRmaH", "6.4.107"),
+    ("ri", "laN", 7, "ariRva", "6.4.107"),
+    ("ri", "laN", 8, "ariRma", "6.4.107"),
+    ("BU", "laN", 0, "aBavat", "8.4.56"),
+    ("nI", "laN", 0, "anayat", "8.4.56"),
+    ("ji", "laN", 0, "ajayat", "8.4.56"),
+    ("smf", "laN", 0, "asmarat", "8.4.56"),
+    ("paW", "laN", 0, "apaWat", "8.4.56"),
+    ("vad", "laN", 0, "avadat", "8.4.56"),
+    ("BU", "viDiliN", 0, "Bavet", "8.4.56"),
+    ("nI", "viDiliN", 0, "nayet", "8.4.56"),
+    ("ji", "viDiliN", 0, "jayet", "8.4.56"),
+    ("smf", "viDiliN", 0, "smaret", "8.4.56"),
+    ("paW", "viDiliN", 0, "paWet", "8.4.56"),
+    ("vad", "viDiliN", 0, "vadet", "8.4.56"),
+    ("div", "laN", 0, "adIvyat", "8.4.56"),
+    ("naS", "laN", 0, "anaSyat", "8.4.56"),
+    ("kup", "laN", 0, "akupyat", "8.4.56"),
+    ("tud", "laN", 0, "atudat", "8.4.56"),
+    ("liK", "laN", 0, "aliKat", "8.4.56"),
+    ("viS", "laN", 0, "aviSat", "8.4.56"),
+    ("div", "viDiliN", 0, "dIvyet", "8.4.56"),
+    ("naS", "viDiliN", 0, "naSyet", "8.4.56"),
+    ("kup", "viDiliN", 0, "kupyet", "8.4.56"),
+    ("tud", "viDiliN", 0, "tudet", "8.4.56"),
+    ("liK", "viDiliN", 0, "liKet", "8.4.56"),
+    ("viS", "viDiliN", 0, "viSet", "8.4.56"),
+    ("yA", "laN", 0, "ayAt", "8.4.56"),
+    ("vA", "laN", 0, "avAt", "8.4.56"),
+    ("yA", "viDiliN", 0, "yAyAt", "8.4.56"),
+    ("vA", "viDiliN", 0, "vAyAt", "8.4.56"),
+    ("ad", "laN", 0, "Adat", "8.4.56"),
+    ("ad", "viDiliN", 0, "adyAt", "8.4.56"),
+    ("kliS", "laN", 0, "akliSnAt", "8.4.56"),
+    ("kliS", "viDiliN", 0, "kliSnIyAt", "8.4.56"),
+    ("guD", "laN", 0, "aguDnAt", "8.4.56"),
+    ("guD", "viDiliN", 0, "guDnIyAt", "8.4.56"),
+    ("aS", "laN", 0, "ASnAt", "8.4.56"),
+    ("aS", "viDiliN", 0, "aSnIyAt", "8.4.56"),
+    ("muz", "laN", 0, "amuzRAt", "8.4.56"),
+    ("muz", "viDiliN", 0, "muzRIyAt", "8.4.56"),
+    ("vrI", "laN", 0, "avrIRAt", "8.4.56"),
+    ("vrI", "viDiliN", 0, "vrIRIyAt", "8.4.56"),
+    ("Ap", "laN", 0, "Apnot", "8.4.56"),
+    ("Ap", "viDiliN", 0, "ApnuyAt", "8.4.56"),
+    ("Sak", "laN", 0, "aSaknot", "8.4.56"),
+    ("Sak", "viDiliN", 0, "SaknuyAt", "8.4.56"),
+    ("hi", "laN", 0, "ahinot", "8.4.56"),
+    ("hi", "viDiliN", 0, "hinuyAt", "8.4.56"),
+    ("ri", "laN", 0, "ariRot", "8.4.56"),
+    ("ri", "viDiliN", 0, "riRuyAt", "8.4.56"),
+    ("BU", "loT", 0, "BavatAd", "7.1.35"),
+    ("BU", "loT", 0, "BavatAt", "7.1.35+8.4.56"),
+    ("BU", "loT", 3, "BavatAd", "7.1.35"),
+    ("BU", "loT", 3, "BavatAt", "7.1.35+8.4.56"),
+    ("nI", "loT", 0, "nayatAd", "7.1.35"),
+    ("nI", "loT", 0, "nayatAt", "7.1.35+8.4.56"),
+    ("nI", "loT", 3, "nayatAd", "7.1.35"),
+    ("nI", "loT", 3, "nayatAt", "7.1.35+8.4.56"),
+    ("ji", "loT", 0, "jayatAd", "7.1.35"),
+    ("ji", "loT", 0, "jayatAt", "7.1.35+8.4.56"),
+    ("ji", "loT", 3, "jayatAd", "7.1.35"),
+    ("ji", "loT", 3, "jayatAt", "7.1.35+8.4.56"),
+    ("smf", "loT", 0, "smaratAd", "7.1.35"),
+    ("smf", "loT", 0, "smaratAt", "7.1.35+8.4.56"),
+    ("smf", "loT", 3, "smaratAd", "7.1.35"),
+    ("smf", "loT", 3, "smaratAt", "7.1.35+8.4.56"),
+    ("paW", "loT", 0, "paWatAd", "7.1.35"),
+    ("paW", "loT", 0, "paWatAt", "7.1.35+8.4.56"),
+    ("paW", "loT", 3, "paWatAd", "7.1.35"),
+    ("paW", "loT", 3, "paWatAt", "7.1.35+8.4.56"),
+    ("vad", "loT", 0, "vadatAd", "7.1.35"),
+    ("vad", "loT", 0, "vadatAt", "7.1.35+8.4.56"),
+    ("vad", "loT", 3, "vadatAd", "7.1.35"),
+    ("vad", "loT", 3, "vadatAt", "7.1.35+8.4.56"),
+    ("div", "loT", 0, "dIvyatAd", "7.1.35"),
+    ("div", "loT", 0, "dIvyatAt", "7.1.35+8.4.56"),
+    ("div", "loT", 3, "dIvyatAd", "7.1.35"),
+    ("div", "loT", 3, "dIvyatAt", "7.1.35+8.4.56"),
+    ("naS", "loT", 0, "naSyatAd", "7.1.35"),
+    ("naS", "loT", 0, "naSyatAt", "7.1.35+8.4.56"),
+    ("naS", "loT", 3, "naSyatAd", "7.1.35"),
+    ("naS", "loT", 3, "naSyatAt", "7.1.35+8.4.56"),
+    ("kup", "loT", 0, "kupyatAd", "7.1.35"),
+    ("kup", "loT", 0, "kupyatAt", "7.1.35+8.4.56"),
+    ("kup", "loT", 3, "kupyatAd", "7.1.35"),
+    ("kup", "loT", 3, "kupyatAt", "7.1.35+8.4.56"),
+    ("tud", "loT", 0, "tudatAd", "7.1.35"),
+    ("tud", "loT", 0, "tudatAt", "7.1.35+8.4.56"),
+    ("tud", "loT", 3, "tudatAd", "7.1.35"),
+    ("tud", "loT", 3, "tudatAt", "7.1.35+8.4.56"),
+    ("liK", "loT", 0, "liKatAd", "7.1.35"),
+    ("liK", "loT", 0, "liKatAt", "7.1.35+8.4.56"),
+    ("liK", "loT", 3, "liKatAd", "7.1.35"),
+    ("liK", "loT", 3, "liKatAt", "7.1.35+8.4.56"),
+    ("viS", "loT", 0, "viSatAd", "7.1.35"),
+    ("viS", "loT", 0, "viSatAt", "7.1.35+8.4.56"),
+    ("viS", "loT", 3, "viSatAd", "7.1.35"),
+    ("viS", "loT", 3, "viSatAt", "7.1.35+8.4.56"),
+    ("yA", "loT", 0, "yAtAd", "7.1.35"),
+    ("yA", "loT", 0, "yAtAt", "7.1.35+8.4.56"),
+    ("yA", "loT", 3, "yAtAd", "7.1.35"),
+    ("yA", "loT", 3, "yAtAt", "7.1.35+8.4.56"),
+    ("vA", "loT", 0, "vAtAd", "7.1.35"),
+    ("vA", "loT", 0, "vAtAt", "7.1.35+8.4.56"),
+    ("vA", "loT", 3, "vAtAd", "7.1.35"),
+    ("vA", "loT", 3, "vAtAt", "7.1.35+8.4.56"),
+    ("ad", "loT", 0, "attAd", "7.1.35"),
+    ("ad", "loT", 0, "attAt", "7.1.35+8.4.56"),
+    ("ad", "loT", 3, "attAd", "7.1.35"),
+    ("ad", "loT", 3, "attAt", "7.1.35+8.4.56"),
+    ("kliS", "loT", 0, "kliSnItAd", "7.1.35"),
+    ("kliS", "loT", 0, "kliSnItAt", "7.1.35+8.4.56"),
+    ("kliS", "loT", 3, "kliSnItAd", "7.1.35"),
+    ("kliS", "loT", 3, "kliSnItAt", "7.1.35+8.4.56"),
+    ("guD", "loT", 0, "guDnItAd", "7.1.35"),
+    ("guD", "loT", 0, "guDnItAt", "7.1.35+8.4.56"),
+    ("guD", "loT", 3, "guDnItAd", "7.1.35"),
+    ("guD", "loT", 3, "guDnItAt", "7.1.35+8.4.56"),
+    ("aS", "loT", 0, "aSnItAd", "7.1.35"),
+    ("aS", "loT", 0, "aSnItAt", "7.1.35+8.4.56"),
+    ("aS", "loT", 3, "aSnItAd", "7.1.35"),
+    ("aS", "loT", 3, "aSnItAt", "7.1.35+8.4.56"),
+    ("muz", "loT", 0, "muzRItAd", "7.1.35"),
+    ("muz", "loT", 0, "muzRItAt", "7.1.35+8.4.56"),
+    ("muz", "loT", 3, "muzRItAd", "7.1.35"),
+    ("muz", "loT", 3, "muzRItAt", "7.1.35+8.4.56"),
+    ("vrI", "loT", 0, "vrIRItAd", "7.1.35"),
+    ("vrI", "loT", 0, "vrIRItAt", "7.1.35+8.4.56"),
+    ("vrI", "loT", 3, "vrIRItAd", "7.1.35"),
+    ("vrI", "loT", 3, "vrIRItAt", "7.1.35+8.4.56"),
+    ("Ap", "loT", 0, "ApnutAd", "7.1.35"),
+    ("Ap", "loT", 0, "ApnutAt", "7.1.35+8.4.56"),
+    ("Ap", "loT", 3, "ApnutAd", "7.1.35"),
+    ("Ap", "loT", 3, "ApnutAt", "7.1.35+8.4.56"),
+    ("Sak", "loT", 0, "SaknutAd", "7.1.35"),
+    ("Sak", "loT", 0, "SaknutAt", "7.1.35+8.4.56"),
+    ("Sak", "loT", 3, "SaknutAd", "7.1.35"),
+    ("Sak", "loT", 3, "SaknutAt", "7.1.35+8.4.56"),
+    ("hi", "loT", 0, "hinutAd", "7.1.35"),
+    ("hi", "loT", 0, "hinutAt", "7.1.35+8.4.56"),
+    ("hi", "loT", 3, "hinutAd", "7.1.35"),
+    ("hi", "loT", 3, "hinutAt", "7.1.35+8.4.56"),
+    ("ri", "loT", 0, "riRutAd", "7.1.35"),
+    ("ri", "loT", 0, "riRutAt", "7.1.35+8.4.56"),
+    ("ri", "loT", 3, "riRutAd", "7.1.35"),
+    ("ri", "loT", 3, "riRutAt", "7.1.35+8.4.56"),
+    ("yA", "laN", 2, "ayuH", "3.4.111"),
+    ("vA", "laN", 2, "avuH", "3.4.111"),
 ];
 
 fn lan_a_form(id: &str, pu: Purusha, va: Vacana) -> String {
@@ -1891,7 +2038,7 @@ fn every_form_validates_and_matches() {
 #[test]
 fn every_alternate_validates_and_matches() {
     let engine = Panini::new();
-    for (root, lakara, _cell, form) in ALTERNATES {
+    for (root, lakara, _cell, form, _key) in ALTERNATES {
         let d = dhatus().iter().find(|d| d.id == *root).unwrap();
         let r = engine.check(form);
         assert!(
@@ -1908,7 +2055,7 @@ fn every_alternate_validates_and_matches() {
     }
 }
 
-/// `derivation_set_is_exactly_pinned`'s `(r, l, c, _)` filter and
+/// `derivation_set_is_exactly_pinned`'s `(r, l, c, _, _)` filter and
 /// `every_alternate_validates_and_matches`'s `_cell` both silently ignore a
 /// row whose `cell` is out of range or whose `(root, lakara)` is mistyped —
 /// neither assertion would ever touch the cell such a row meant to name.
@@ -1916,7 +2063,7 @@ fn every_alternate_validates_and_matches() {
 /// `PARADIGM` block.
 #[test]
 fn every_alternate_names_a_real_cell() {
-    for (root, lakara, cell, form) in ALTERNATES {
+    for (root, lakara, cell, form, _key) in ALTERNATES {
         assert!(
             *cell < 9,
             "alternate {form} ({root} {lakara}) has out-of-range cell {cell}"
@@ -1924,6 +2071,44 @@ fn every_alternate_names_a_real_cell() {
         assert!(
             PARADIGM.iter().any(|(r, l, _)| r == root && l == lakara),
             "alternate {form} names {root} {lakara}, which is not a PARADIGM block"
+        );
+    }
+}
+
+/// The optional rules, in pipeline order. Mirrors
+/// `exactly_the_pinned_vikalpa_rules_are_optional` in `panini-prakriya`;
+/// duplicated here rather than exported because this is an integration test
+/// and the rule table is crate-internal.
+const VIKALPA_RULES: &[&str] = &["7.1.35", "3.4.111", "6.4.107", "8.4.56"];
+
+/// `ALTERNATES` is otherwise 154 bare strings, and a string can be right for
+/// the wrong reason — `BavatAt` is a real form whether or not 8.4.56 is what
+/// produced it. This ties each row to the grammar: find the branch that
+/// derives the row's form, intersect its log with the optional-rule set, and
+/// require exactly the rules the row claims.
+#[test]
+fn every_alternate_names_the_vikalpa_rules_that_produced_it() {
+    for (root, lakara, cell, form, key) in ALTERNATES {
+        let d = dhatus().iter().find(|d| d.id == *root).unwrap();
+        let (pu, va) = CELLS[*cell];
+        let lak = *LAKARA_BY_NAME
+            .iter()
+            .find_map(|(n, l)| (n == lakara).then_some(l))
+            .unwrap();
+        let branch = derive(d, lak, d.pada, pu, va)
+            .into_iter()
+            .find(|p| !p.blocked && p.text() == *form)
+            .unwrap_or_else(|| panic!("no branch of {root} {lakara} cell {cell} derives {form}"));
+        let applied: Vec<&str> = branch
+            .log
+            .iter()
+            .map(|s| s.sutra.as_str())
+            .filter(|s| VIKALPA_RULES.contains(s))
+            .collect();
+        assert_eq!(
+            applied.join("+"),
+            *key,
+            "{form} ({root} {lakara} cell {cell})"
         );
     }
 }
@@ -1963,8 +2148,8 @@ fn derivation_set_is_exactly_pinned() {
             want.extend(
                 ALTERNATES
                     .iter()
-                    .filter(|(r, l, c, _)| r == root && l == lakara && *c == cell)
-                    .map(|(_, _, _, f)| (*f).to_string()),
+                    .filter(|(r, l, c, _, _)| r == root && l == lakara && *c == cell)
+                    .map(|(_, _, _, f, _)| (*f).to_string()),
             );
             want.sort();
 
@@ -1975,6 +2160,62 @@ fn derivation_set_is_exactly_pinned() {
             );
         }
     }
+}
+
+/// Pins the shape of the derivation set the slice produces, derived from
+/// `PARADIGM ∪ ALTERNATES` — the same union `derivation_set_is_exactly_pinned`
+/// builds — rather than from a hand-written list. These are the numbers the
+/// design-time vidyut-prakriya audit predicted for the two conventions this
+/// slice retired (7.1.35 tātaṅ, 8.4.56 pausal cartva) and the one audited
+/// divergence it resolved (3.4.111 Śākaṭāyana's jus): 1512 cells total (168
+/// root×lakāra blocks × 9), of which 1406 hold exactly one form, 58 hold two,
+/// and 48 hold three; `ALTERNATES` itself has 154 rows, keyed 48 `8.4.56`, 48
+/// `7.1.35`, 48 `7.1.35+8.4.56`, 2 `3.4.111`, and 8 `6.4.107`. The audit probe
+/// that produced these numbers ran against a vidyut-prakriya checkout during
+/// design and cannot be re-run in this workspace (no vidyut checkout here,
+/// and the probe's source lives only in the spec's prose, not in this repo's
+/// history) — this test is what keeps the numbers true now that the audit
+/// itself is unreproducible.
+#[test]
+fn derivation_set_shape_matches_the_audited_numbers() {
+    let total_cells = PARADIGM.len() * 9;
+    assert_eq!(total_cells, 1512, "168 root×lakāra blocks × 9 cells each");
+
+    let mut ones = 0usize;
+    let mut twos = 0usize;
+    let mut threes = 0usize;
+    let mut other = 0usize;
+    for (root, lakara, _forms) in PARADIGM {
+        for cell in 0..9usize {
+            let alt_count = ALTERNATES
+                .iter()
+                .filter(|(r, l, c, _, _)| r == root && l == lakara && *c == cell)
+                .count();
+            match 1 + alt_count {
+                1 => ones += 1,
+                2 => twos += 1,
+                3 => threes += 1,
+                _ => other += 1,
+            }
+        }
+    }
+    assert_eq!(other, 0, "no cell should hold more than three forms");
+    assert_eq!(ones, 1406, "one-form cells");
+    assert_eq!(twos, 58, "two-form cells");
+    assert_eq!(threes, 48, "three-form cells");
+
+    assert_eq!(ALTERNATES.len(), 154, "ALTERNATES row count");
+    let key_count = |key: &str| {
+        ALTERNATES
+            .iter()
+            .filter(|(_, _, _, _, k)| *k == key)
+            .count()
+    };
+    assert_eq!(key_count("8.4.56"), 48, "8.4.56-only alternates");
+    assert_eq!(key_count("7.1.35"), 48, "7.1.35-only alternates");
+    assert_eq!(key_count("7.1.35+8.4.56"), 48, "7.1.35+8.4.56 alternates");
+    assert_eq!(key_count("3.4.111"), 2, "3.4.111 alternates");
+    assert_eq!(key_count("6.4.107"), 8, "6.4.107 alternates");
 }
 
 /// `every_form_validates_and_matches` only walks `PARADIGM`, so a root or
@@ -2183,7 +2424,38 @@ fn known_nonforms_are_invalid() {
         "hinyAma", // `starts_with` mistaken for `contains`: vidhiliṅ's
         // yAma has an `m` but does not begin with one — real form hinuyAma
         "BavmaH", // fired where the vikaraṇa is not śnu at all, i.e. the
-                  // shnu_asamyogapurva guard dropped — real form BavAmaH
+        // shnu_asamyogapurva guard dropped — real form BavAmaH
+        // 8.2.39 jhalāṁ jaśo'nte guard pins.
+        "Bavatd", // `ends_with('t')` mistaken for `contains('t')`: fires on
+        // BU laṭ 3sg (which merely contains a medial `t`, not a pada-final
+        // one) and blindly voices whatever the actual last character is —
+        // real form Bavati
+        "aBavaD", // `s.push('d')` mistaken for `s.push('D')`: the wrong jaś
+        // substitute (aspirated, not the plain voiced stop the sūtra names)
+        // — real form aBavad
+        // 8.4.56's `is_jhal(last)` guard (Step 11 mutation 3) has since been
+        // deleted outright — it was dead code, subsumed by the `cartva_of`
+        // let-else right below it — so there is no longer a mutation for it
+        // to pin here. 8.4.56's `vikalpa: true` -> `false` (mutation 4)
+        // removes the `d`-form rather than adding a non-form, so it is
+        // caught by `derivation_set_is_exactly_pinned`'s index-0 assertion,
+        // not by a pin in this list.
+        // 7.1.35 tātaṅ. Because the rule is optional, a broken guard ADDS a
+        // wrong second form rather than replacing a right one — invisible to
+        // any test that only asks whether the right form still derives.
+        "ApnotAt", // 7.1.35 failing to set Ngit, so 7.3.84's second
+        // (vikaraṇa-relative) application guṇates śnu — real form ApnutAt
+        "kliSAnatAt", // 7.1.35 ordered AFTER 3.1.83 instead of above it, so
+        // śnā had already become śāna when the ending was still `hi` — real
+        // form kliSnItAt
+        // 3.4.110/111 Śākaṭāyana's jus. Optional, so a broken guard adds a
+        // wrong form rather than removing a right one.
+        "aBavuH", // 3.4.111 losing BOTH of its second `if`'s conjuncts (the
+        // ā-check and the SHAP-empty check together, not either alone —
+        // dropping only the ā-check still declines on SHAP being `Bava`'s
+        // live śap `a`) — real form aBavan
+        "yuH", // 3.4.111 not gated to laṅ, so laṭ's yAnti forks — real
+               // form yAnti
     ] {
         assert!(
             matches!(engine.check(bad).verdict, Verdict::Invalid),

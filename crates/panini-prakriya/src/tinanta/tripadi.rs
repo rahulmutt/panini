@@ -187,6 +187,49 @@ pub(crate) static TRIPADI: &[Rule] = &[
             true
         },
     },
+    // 8.2.39 jhalāṁ jaśo'nte: a pada-final jhal becomes its jaś (voiced
+    // unaspirated). This is what makes `aBavad` the engine's DECLINED form —
+    // it is obligatory, and 8.4.56 below optionally undoes it. Before this
+    // rule existed the pipeline simply never voiced a final, which is why
+    // the goldens read `aBavat` and the repo carried a "drop the pausal d"
+    // convention.
+    //
+    // NARROW GUARD, by design, as with 8.3.59 and 8.2.25: the only jhal
+    // reachable pada-finally in this suite is `t` (every other form ends in
+    // a vowel, `H`, `m` or `n`, none of them jhal). The other candidate is
+    // `s`, and 8.2.66 sasajuṣo ruḥ — implemented inside the rule labelled
+    // 8.3.15 just below — is its apavāda, so `s` must NOT be voiced here.
+    // Widen the moment a root lands whose pada-final sound is another jhal.
+    //
+    // No contention with 8.4.55 cartva: the shape that would collide, an
+    // aṅga-final jhal directly before a pada-final `t`, cannot arise because
+    // 8.2.23 saṁyogāntasya lopaḥ sits above and drops the second consonant
+    // first. √ad, the one root whose aṅga ends in a jhal, presents `Adat` —
+    // a vowel before the ending.
+    Rule {
+        id: "8.2.39",
+        name: "JalAM jaSo'nte",
+        kind: RuleKind::Vidhi,
+        vikalpa: false,
+        apply: |p| {
+            if !p.text().ends_with('t') {
+                return false;
+            }
+            // Read the bearing term positionally rather than as ENDING:
+            // 6.4.105 / 6.4.106 luk the ending outright (Bava, hinu), so
+            // that index is not reliably the last non-empty one.
+            let Some(idx) = p.terms.iter().rposition(|t| !t.text.is_empty()) else {
+                return false;
+            };
+            let before = p.snapshot();
+            let mut s: Vec<char> = p.terms[idx].text.chars().collect();
+            s.pop();
+            s.push('d');
+            p.terms[idx].text = s.into_iter().collect();
+            p.record("8.2.39", "JalAM jaSo'nte", before);
+            true
+        },
+    },
     // 8.2.66 sasajuṣo ruḥ + 8.3.15 kharavasānayoḥ: word-final `s` → visarga.
     Rule {
         id: "8.3.15",
@@ -387,6 +430,51 @@ pub(crate) static TRIPADI: &[Rule] = &[
                 return true;
             }
             false
+        },
+    },
+    // 8.4.56 vāvasāne: at the end of an utterance a jhal OPTIONALLY becomes
+    // its car, continuing khari ca's operation. After 8.2.39 the only
+    // reachable jhal-final is `d`, so in practice this restores the `t` that
+    // 8.2.39 voiced — which is exactly the relationship the sūtras state,
+    // and why `aBavat` is now an alternate rather than the pinned form.
+    //
+    // LAST rule in the pipeline, deliberately. Avasāna is the end of the
+    // utterance, so the rule must see the finished word; and being last, it
+    // satisfies the ordering constraint on optional rules trivially, since
+    // no consumer sits below it at all.
+    //
+    // NARROW GUARD, by design: `cartva_of` alone carries the jhal test here.
+    // There is no separate `is_jhal(last)` arm — `cartva_of`'s `Some` domain
+    // (the five vargas' stops) is already a strict subset of `is_jhal`'s (it
+    // omits the sibilants and `h`), so a standalone jhal check would be dead
+    // code, unreachable by any input that doesn't already fail the
+    // `cartva_of` let-else below. Nor is there a `sub == last` no-op check:
+    // 8.2.39 obligatorily turns every pada-final `t` into `d` upstream, and
+    // no cell in this suite ends in any other jhal, so `cartva_of(last)`
+    // never yields its argument back. Widen with a real guard, not a
+    // speculative one, the moment either assumption stops holding.
+    Rule {
+        id: "8.4.56",
+        name: "vA'vasAne",
+        kind: RuleKind::Vidhi,
+        vikalpa: true,
+        apply: |p| {
+            let Some(last) = p.text().chars().last() else {
+                return false;
+            };
+            let Some(sub) = cartva_of(last) else {
+                return false;
+            };
+            let Some(idx) = p.terms.iter().rposition(|t| !t.text.is_empty()) else {
+                return false;
+            };
+            let before = p.snapshot();
+            let mut s: Vec<char> = p.terms[idx].text.chars().collect();
+            s.pop();
+            s.push(sub);
+            p.terms[idx].text = s.into_iter().collect();
+            p.record("8.4.56", "vA'vasAne", before);
+            true
         },
     },
 ];
@@ -657,5 +745,73 @@ mod tests {
             }
             assert_eq!(p.text(), before);
         }
+    }
+
+    /// 8.2.39 voices a pada-final `t` and nothing else. The `s` case belongs
+    /// to its apavāda 8.2.66 (implemented inside the rule labelled 8.3.15),
+    /// and a `t` that is not pada-final is untouched.
+    #[test]
+    fn jhalam_jasho_ante_fires_only_on_a_pada_final_t() {
+        let rule = rules().find(|r| r.id == "8.2.39").unwrap();
+
+        let mut p = Prakriya {
+            terms: vec![Term::new("aBav"), Term::new("a"), Term::new("t")],
+            ..Default::default()
+        };
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.text(), "aBavad");
+
+        // not pada-final: the `t` is followed by more of the ending
+        let mut p = Prakriya {
+            terms: vec![Term::new("aBav"), Term::new("a"), Term::new("tAm")],
+            ..Default::default()
+        };
+        assert!(!(rule.apply)(&mut p));
+
+        // `s`-final belongs to 8.2.66/8.3.15, not here
+        let mut p = Prakriya {
+            terms: vec![Term::new("aBav"), Term::new("a"), Term::new("s")],
+            ..Default::default()
+        };
+        assert!(!(rule.apply)(&mut p));
+
+        // vowel-final
+        let mut p = Prakriya {
+            terms: vec![Term::new("Bav"), Term::new("a"), Term::new("ti")],
+            ..Default::default()
+        };
+        assert!(!(rule.apply)(&mut p));
+    }
+
+    /// 8.4.56 devoices a pada-final jhal. After 8.2.39 the only reachable
+    /// one is `d`; a vowel, a visarga and a nasal all decline.
+    #[test]
+    fn va_avasane_fires_only_on_a_pada_final_jhal() {
+        let rule = rules().find(|r| r.id == "8.4.56").unwrap();
+
+        let mut p = Prakriya {
+            terms: vec![Term::new("aBav"), Term::new("a"), Term::new("d")],
+            ..Default::default()
+        };
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.text(), "aBavat");
+
+        let mut p = Prakriya {
+            terms: vec![Term::new("aBav"), Term::new("a"), Term::new("H")],
+            ..Default::default()
+        };
+        assert!(!(rule.apply)(&mut p));
+
+        let mut p = Prakriya {
+            terms: vec![Term::new("aBav"), Term::new("a"), Term::new("m")],
+            ..Default::default()
+        };
+        assert!(!(rule.apply)(&mut p));
+
+        let mut p = Prakriya {
+            terms: vec![Term::new("Bav"), Term::new("a"), Term::new("ti")],
+            ..Default::default()
+        };
+        assert!(!(rule.apply)(&mut p));
     }
 }

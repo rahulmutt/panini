@@ -29,16 +29,16 @@ implements; `tinanta::rules()` yields that flattened sequence.
 | stage file | rules | position |
 |---|---|---|
 | `samjna.rs` | 1.3.12, 1.3.78, 3.4.78, 1.3.9, 1.2.4 | before 3.1.68 |
-| `tin.rs` | 3.4.85 … 3.4.102 | before 3.1.68 |
-| `vikarana.rs` | 3.1.69, 3.1.73, 3.1.77, 3.1.81, 3.1.68, 2.4.72, 3.1.83, 1.2.4 | contains 3.1.68 |
+| `tin.rs` | 3.4.85 … 3.4.102, 7.1.35 | before 3.1.68 |
+| `vikarana.rs` | 3.1.69, 3.1.73, 3.1.77, 3.1.81, 3.1.68, 2.4.72, 3.4.111, 3.1.83, 1.2.4 | contains 3.1.68 |
 | `anga.rs` | 6.4.71 … 7.2.81 | after 3.1.68 |
 | `guna.rs` | 7.4.21, 7.3.84, 7.3.86, 7.3.84 (again — see below), 6.4.87, 6.4.77, 6.1.78, 7.3.101, 6.4.112, 6.4.113 — vowel gradation and vikaraṇa reshaping | after 3.1.68 |
 | `adesha.rs` | 6.1.101 … 6.4.107, 6.4.101 | after 3.1.68 |
-| `tripadi.rs` | 8.2.77 … 8.4.55, 8.4.1, 8.4.2 | after 3.1.68 |
+| `tripadi.rs` | 8.2.77, 8.2.23, 8.2.25, 8.2.39, 8.3.15 … 8.4.55, 8.4.1, 8.4.2, 8.4.56 | after 3.1.68 |
 
 The stage boundary is file organisation, not grammar: the flattened order is
 what matters, and `tinanta_rule_order_is_pinned` in `derivation_tests.rs`
-pins all 68 ids verbatim. `tinanta/terms.rs` holds the term-index constants
+pins all 72 ids verbatim. `tinanta/terms.rs` holds the term-index constants
 and the reason 3.1.68 bisects the pipeline; `tinanta/sound.rs` holds the
 varṇa classifiers.
 
@@ -141,17 +141,49 @@ nothing. The declined branch keeps its index and the applied clone is
 inserted immediately after it, so index 0 is always the no-optional-rules
 derivation. Forks are collected during a rule's sweep and inserted after
 it, so no branch sees a list another branch's fork has already mutated.
-Branch count is 2^k in the number of optional rules that fire; k is 1
-today. Branches that converge on the same text are not deduplicated — one
-form with two derivations is information, not noise.
+The branch count is the number of distinct subsets of optional rules that
+actually apply on a cell, which is bounded by 2^k (k = the number of optional
+rules) and reaches it only when every optional rule fires on every branch.
+It is not always 2^k in practice: loṭ prathama eka has k = 2 (7.1.35 and
+8.4.56 both apply) but only **three** branches, not four, because 8.4.56
+declines on the vowel-final base branch (`Bavatu`) and forks only the
+tātaṅ one (`BavatAt`, alongside `Bavatu` and `BavatAd`). Branches that
+converge on the same text are not deduplicated — one form with two
+derivations is information, not noise.
 
-**6.4.107 *lopaś cāsyānyatarasyāṁ mvoḥ*** is the only optional rule. It
-elides śnu's `u` before `m` and `v` when that `u` is *asaṁyogapūrva*,
-forking 8 cells: √hi and √ri (the gaṇa's only asaṁyogapūrva roots) in laṭ
-and laṅ uttama dvi/bahu, whose `vas`/`mas`/`va`/`ma` are the only
-m/v-initial endings in scope — `hinvaH ~ hinuvaH`, `ahinma ~ ahinuma`.
-6.4.108 *nityaṁ karoteḥ*, which makes the same lopa obligatory for √kṛ and
-is what makes this rule optional, is out of scope with √kṛ itself.
+Four rules are optional: **6.4.107** *lopaś cāsyānyatarasyāṁ mvoḥ*,
+**7.1.35** *tuhyos tātaṅ āśiṣy anyatarasyām*, **3.4.111** *laṅaḥ
+śākaṭāyanasyaiva*, and **8.4.56** *vā'vasāne*.
+
+6.4.107 elides śnu's `u` before `m` and `v` when that `u` is
+*asaṁyogapūrva*, forking 8 cells: √hi and √ri (the gaṇa's only
+asaṁyogapūrva roots) in laṭ and laṅ uttama dvi/bahu, whose
+`vas`/`mas`/`va`/`ma` are the only m/v-initial endings in scope — `hinvaH ~
+hinuvaH`, `ahinma ~ ahinuma`. 6.4.108 *nityaṁ karoteḥ*, which makes the
+same lopa obligatory for √kṛ and is what makes this rule optional, is out
+of scope with √kṛ itself.
+
+7.1.35 optionally replaces the loṭ endings `tu`/`hi` with tātaṅ (then
+8.2.39 obligatorily voices its final `t` to `d`), forking 48 cells (loṭ
+prathama and madhyama eka across the 24 parasmaipada roots — `tu`/`hi` are
+parasmaipada endings, so the curated set's 18 ātmanepada roots never reach
+this guard) — `Bavatu ~ BavatAd`, `Bava ~ BavatAd`. 8.4.56 optionally
+devoices a pada-final jaś (produced by the now-obligatory 8.2.39) back to
+its car at the end of an utterance, forking 48 cells outright (laṅ and
+vidhiliṅ prathama eka, again only the 24 parasmaipada roots — 8.2.39's `d`
+is a parasmaipada-ending artifact, ātmanepada's laṅ/vidhiliṅ prathama eka
+endings are vowel-final and never reach a jhal) — `aBavad ~ aBavat`,
+`Baved ~ Bavet` — and forking a further 48 (the same loṭ cells 7.1.35 just
+forked) by devoicing the tātaṅ branch's `BavatAd` to `BavatAt`, which is
+what stacks the two rules into the three-branch loṭ cells above rather
+than a fourth branch: 8.4.56 declines on the vowel-final base branch
+(`Bavatu`), so only the tātaṅ branch forks again. 3.4.111 optionally
+applies Śākaṭāyana's jus in laṅ prathama bahu after an ā-final aṅga **with
+no live vikaraṇa** — adādi's śap is luk'd by 2.4.72, so its aṅga stands
+directly before the ending, but kryādi's ā-final śnā vikaraṇa (reduced only
+later by 6.4.112/6.4.113) would otherwise read as the same condition and
+fork a spurious form — forking 2 cells — √yā and √vā, the only roots in
+scope that meet it — `ayAn ~ ayuH`, `avAn ~ avuH`.
 
 `CheckResult.analyses` needed no change: it was already a `Vec<Analysis>`,
 since one surface form can already have several analyses. A fork adds
