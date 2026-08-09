@@ -442,6 +442,17 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // utterance, so the rule must see the finished word; and being last, it
     // satisfies the ordering constraint on optional rules trivially, since
     // no consumer sits below it at all.
+    //
+    // NARROW GUARD, by design: `cartva_of` alone carries the jhal test here.
+    // There is no separate `is_jhal(last)` arm — `cartva_of`'s `Some` domain
+    // (the five vargas' stops) is already a strict subset of `is_jhal`'s (it
+    // omits the sibilants and `h`), so a standalone jhal check would be dead
+    // code, unreachable by any input that doesn't already fail the
+    // `cartva_of` let-else below. Nor is there a `sub == last` no-op check:
+    // 8.2.39 obligatorily turns every pada-final `t` into `d` upstream, and
+    // no cell in this suite ends in any other jhal, so `cartva_of(last)`
+    // never yields its argument back. Widen with a real guard, not a
+    // speculative one, the moment either assumption stops holding.
     Rule {
         id: "8.4.56",
         name: "vA'vasAne",
@@ -451,15 +462,9 @@ pub(crate) static TRIPADI: &[Rule] = &[
             let Some(last) = p.text().chars().last() else {
                 return false;
             };
-            if !is_jhal(last) {
-                return false;
-            }
             let Some(sub) = cartva_of(last) else {
                 return false;
             };
-            if sub == last {
-                return false;
-            }
             let Some(idx) = p.terms.iter().rposition(|t| !t.text.is_empty()) else {
                 return false;
             };

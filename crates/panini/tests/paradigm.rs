@@ -2279,6 +2279,13 @@ fn known_nonforms_are_invalid() {
         "aBavaD", // `s.push('d')` mistaken for `s.push('D')`: the wrong jaś
                   // substitute (aspirated, not the plain voiced stop the sūtra names)
                   // — real form aBavad
+                  // 8.4.56's `is_jhal(last)` guard (Step 11 mutation 3) has since been
+                  // deleted outright — it was dead code, subsumed by the `cartva_of`
+                  // let-else right below it — so there is no longer a mutation for it
+                  // to pin here. 8.4.56's `vikalpa: true` -> `false` (mutation 4)
+                  // removes the `d`-form rather than adding a non-form, so it is
+                  // caught by `derivation_set_is_exactly_pinned`'s index-0 assertion,
+                  // not by a pin in this list.
     ] {
         assert!(
             matches!(engine.check(bad).verdict, Verdict::Invalid),
