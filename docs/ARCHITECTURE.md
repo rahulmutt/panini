@@ -38,7 +38,7 @@ implements; `tinanta::rules()` yields that flattened sequence.
 
 The stage boundary is file organisation, not grammar: the flattened order is
 what matters, and `tinanta_rule_order_is_pinned` in `derivation_tests.rs`
-pins all 68 ids verbatim. `tinanta/terms.rs` holds the term-index constants
+pins all 72 ids verbatim. `tinanta/terms.rs` holds the term-index constants
 and the reason 3.1.68 bisects the pipeline; `tinanta/sound.rs` holds the
 varṇa classifiers.
 
@@ -174,9 +174,12 @@ forked) by devoicing the tātaṅ branch's `BavatAd` to `BavatAt`, which is
 what stacks the two rules into the three-branch loṭ cells above rather
 than a fourth branch: 8.4.56 declines on the vowel-final base branch
 (`Bavatu`), so only the tātaṅ branch forks again. 3.4.111 optionally
-applies Śākaṭāyana's jus in laṅ prathama bahu after an ā-final aṅga,
-forking 2 cells — √yā and √vā, the only ā-final roots in scope — `ayAn ~
-ayuH`, `avAn ~ avuH`.
+applies Śākaṭāyana's jus in laṅ prathama bahu after an ā-final aṅga **with
+no live vikaraṇa** — adādi's śap is luk'd by 2.4.72, so its aṅga stands
+directly before the ending, but kryādi's ā-final śnā vikaraṇa (reduced only
+later by 6.4.112/6.4.113) would otherwise read as the same condition and
+fork a spurious form — forking 2 cells — √yā and √vā, the only roots in
+scope that meet it — `ayAn ~ ayuH`, `avAn ~ avuH`.
 
 `CheckResult.analyses` needed no change: it was already a `Vec<Analysis>`,
 since one surface form can already have several analyses. A fork adds
