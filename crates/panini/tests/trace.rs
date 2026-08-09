@@ -84,10 +84,13 @@ fn bhavamah_trace_is_exactly_the_dirgha_visarga_path() {
 #[test]
 fn abhavat_trace_is_exactly_the_lan_augment_path() {
     // BU laṅ prathama eka: tip -> ti (1.3.9) -> t (3.4.100), aṭ-āgama (6.4.71).
+    // `aBavat` now names the forked branch: 8.2.39 obligatorily voices the
+    // pada-final `t` to `d`, and 8.4.56 optionally devoices it back.
     assert_eq!(
         trace_for("aBavat"),
         vec![
-            "1.3.78", "3.4.78", "1.3.9", "3.4.100", "3.1.68", "1.3.9", "6.4.71", "7.3.84", "6.1.78"
+            "1.3.78", "3.4.78", "1.3.9", "3.4.100", "3.1.68", "1.3.9", "6.4.71", "7.3.84",
+            "6.1.78", "8.2.39", "8.4.56"
         ]
     );
 }
@@ -150,12 +153,14 @@ fn bhavani_trace_shows_aat_not_dirgha() {
 fn bhavet_trace_is_exactly_the_vidhilin_vali_lopa_path() {
     // BU vidhiliṅ prathama eka: tip -> ti (1.3.9) -> t (3.4.100, now
     // ṅit-wide), yāsuṭ (3.4.103), salopa (7.2.79), yA -> iy (7.2.80),
-    // a+i -> e (6.1.87), y dropped before t (6.1.66).
+    // a+i -> e (6.1.87), y dropped before t (6.1.66). `Bavet` now names the
+    // forked branch: 8.2.39 obligatorily voices the pada-final `t` to `d`,
+    // and 8.4.56 optionally devoices it back.
     assert_eq!(
         trace_for("Bavet"),
         vec![
             "1.3.78", "3.4.78", "1.3.9", "3.4.100", "3.4.103", "3.1.68", "1.3.9", "7.2.79",
-            "7.2.80", "7.3.84", "6.1.78", "6.1.87", "6.1.66"
+            "7.2.80", "7.3.84", "6.1.78", "6.1.87", "6.1.66", "8.2.39", "8.4.56"
         ]
     );
 }
@@ -330,12 +335,14 @@ fn jusate_trace_is_exactly_the_sa_atmanepada_block_path() {
 fn kupyet_trace_is_exactly_the_syan_vidhilin_path() {
     // kup vidhiliṅ P 3sg: bhavet's yāsuṭ chain with śyan instead of śap, the
     // second 1.2.4 (śyan ṅit), and NO 7.3.84/6.1.78 (guṇa blocked; kup has no
-    // guṇable final and its upadhā guṇa is blocked).
+    // guṇable final and its upadhā guṇa is blocked). `kupyet` now names the
+    // forked branch: 8.2.39 obligatorily voices the pada-final `t` to `d`,
+    // and 8.4.56 optionally devoices it back.
     assert_eq!(
         trace_for("kupyet"),
         vec![
             "1.3.78", "3.4.78", "1.3.9", "3.4.100", "3.4.103", "3.1.69", "1.3.9", "1.2.4",
-            "7.2.79", "7.2.80", "6.1.87", "6.1.66"
+            "7.2.79", "7.2.80", "6.1.87", "6.1.66", "8.2.39", "8.4.56"
         ]
     );
 }
@@ -438,12 +445,14 @@ fn adat_trace_a_augment_precedes_and_blocks_cartva() {
     // ending (t -> at) so the word stays vowel-final (8.2.23 declines and
     // cartva 8.4.55 never sees a khar after the aṅga's `d`), and 6.1.90 āṭaś
     // ca vṛddhi-fuses the augment `A` with the root's `a` (Aad -> Ad):
-    // Ad + at -> Adat.
+    // Ad + at -> Adat. `Adat` now names the forked branch: 8.2.39
+    // obligatorily voices the pada-final `t` to `d`, and 8.4.56 optionally
+    // devoices it back.
     assert_eq!(
         trace_for("Adat"),
         vec![
             "1.3.78", "3.4.78", "1.3.9", "3.4.100", "3.1.68", "1.3.9", "2.4.72", "6.4.72",
-            "7.3.100", "6.1.90"
+            "7.3.100", "6.1.90", "8.2.39", "8.4.56"
         ]
     );
 }
@@ -649,11 +658,14 @@ fn akupyat_trace_shows_7_3_100_declines_for_non_adadi_roots() {
     // — so the SURFACE FORM is repaired and no golden notices. Only the
     // ordered trace does: under the mutant it carries two extra steps,
     // "7.3.100" and "6.1.97", at the end.
+    // `akupyat` now names the forked branch: 8.2.39 obligatorily voices the
+    // pada-final `t` to `d`, and 8.4.56 optionally devoices it back.
     let t = trace_for("akupyat");
     assert_eq!(
         t,
         vec![
-            "1.3.78", "3.4.78", "1.3.9", "3.4.100", "3.1.69", "1.3.9", "1.2.4", "6.4.71"
+            "1.3.78", "3.4.78", "1.3.9", "3.4.100", "3.1.69", "1.3.9", "1.2.4", "6.4.71", "8.2.39",
+            "8.4.56"
         ]
     );
     assert!(

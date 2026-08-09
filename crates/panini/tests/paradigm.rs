@@ -63,7 +63,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "BU",
         "laN",
         [
-            "aBavat", "aBavatAm", "aBavan", "aBavaH", "aBavatam", "aBavata", "aBavam", "aBavAva",
+            "aBavad", "aBavatAm", "aBavan", "aBavaH", "aBavatam", "aBavata", "aBavam", "aBavAva",
             "aBavAma",
         ],
     ),
@@ -71,7 +71,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "nI",
         "laN",
         [
-            "anayat", "anayatAm", "anayan", "anayaH", "anayatam", "anayata", "anayam", "anayAva",
+            "anayad", "anayatAm", "anayan", "anayaH", "anayatam", "anayata", "anayam", "anayAva",
             "anayAma",
         ],
     ),
@@ -79,7 +79,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "ji",
         "laN",
         [
-            "ajayat", "ajayatAm", "ajayan", "ajayaH", "ajayatam", "ajayata", "ajayam", "ajayAva",
+            "ajayad", "ajayatAm", "ajayan", "ajayaH", "ajayatam", "ajayata", "ajayam", "ajayAva",
             "ajayAma",
         ],
     ),
@@ -87,7 +87,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "smf",
         "laN",
         [
-            "asmarat",
+            "asmarad",
             "asmaratAm",
             "asmaran",
             "asmaraH",
@@ -102,7 +102,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "paW",
         "laN",
         [
-            "apaWat", "apaWatAm", "apaWan", "apaWaH", "apaWatam", "apaWata", "apaWam", "apaWAva",
+            "apaWad", "apaWatAm", "apaWan", "apaWaH", "apaWatam", "apaWata", "apaWam", "apaWAva",
             "apaWAma",
         ],
     ),
@@ -110,7 +110,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "vad",
         "laN",
         [
-            "avadat", "avadatAm", "avadan", "avadaH", "avadatam", "avadata", "avadam", "avadAva",
+            "avadad", "avadatAm", "avadan", "avadaH", "avadatam", "avadata", "avadam", "avadAva",
             "avadAma",
         ],
     ),
@@ -172,7 +172,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "BU",
         "viDiliN",
         [
-            "Bavet", "BavetAm", "BaveyuH", "BaveH", "Bavetam", "Baveta", "Baveyam", "Baveva",
+            "Baved", "BavetAm", "BaveyuH", "BaveH", "Bavetam", "Baveta", "Baveyam", "Baveva",
             "Bavema",
         ],
     ),
@@ -180,7 +180,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "nI",
         "viDiliN",
         [
-            "nayet", "nayetAm", "nayeyuH", "nayeH", "nayetam", "nayeta", "nayeyam", "nayeva",
+            "nayed", "nayetAm", "nayeyuH", "nayeH", "nayetam", "nayeta", "nayeyam", "nayeva",
             "nayema",
         ],
     ),
@@ -188,7 +188,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "ji",
         "viDiliN",
         [
-            "jayet", "jayetAm", "jayeyuH", "jayeH", "jayetam", "jayeta", "jayeyam", "jayeva",
+            "jayed", "jayetAm", "jayeyuH", "jayeH", "jayetam", "jayeta", "jayeyam", "jayeva",
             "jayema",
         ],
     ),
@@ -196,7 +196,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "smf",
         "viDiliN",
         [
-            "smaret", "smaretAm", "smareyuH", "smareH", "smaretam", "smareta", "smareyam",
+            "smared", "smaretAm", "smareyuH", "smareH", "smaretam", "smareta", "smareyam",
             "smareva", "smarema",
         ],
     ),
@@ -204,7 +204,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "paW",
         "viDiliN",
         [
-            "paWet", "paWetAm", "paWeyuH", "paWeH", "paWetam", "paWeta", "paWeyam", "paWeva",
+            "paWed", "paWetAm", "paWeyuH", "paWeH", "paWetam", "paWeta", "paWeyam", "paWeva",
             "paWema",
         ],
     ),
@@ -212,7 +212,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "vad",
         "viDiliN",
         [
-            "vadet", "vadetAm", "vadeyuH", "vadeH", "vadetam", "vadeta", "vadeyam", "vadeva",
+            "vaded", "vadetAm", "vadeyuH", "vadeH", "vadetam", "vadeta", "vadeyam", "vadeva",
             "vadema",
         ],
     ),
@@ -604,7 +604,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "div",
         "laN",
         [
-            "adIvyat",
+            "adIvyad",
             "adIvyatAm",
             "adIvyan",
             "adIvyaH",
@@ -619,7 +619,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "naS",
         "laN",
         [
-            "anaSyat",
+            "anaSyad",
             "anaSyatAm",
             "anaSyan",
             "anaSyaH",
@@ -634,7 +634,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "kup",
         "laN",
         [
-            "akupyat",
+            "akupyad",
             "akupyatAm",
             "akupyan",
             "akupyaH",
@@ -694,7 +694,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "tud",
         "laN",
         [
-            "atudat", "atudatAm", "atudan", "atudaH", "atudatam", "atudata", "atudam", "atudAva",
+            "atudad", "atudatAm", "atudan", "atudaH", "atudatam", "atudata", "atudam", "atudAva",
             "atudAma",
         ],
     ),
@@ -702,7 +702,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "liK",
         "laN",
         [
-            "aliKat", "aliKatAm", "aliKan", "aliKaH", "aliKatam", "aliKata", "aliKam", "aliKAva",
+            "aliKad", "aliKatAm", "aliKan", "aliKaH", "aliKatam", "aliKata", "aliKam", "aliKAva",
             "aliKAma",
         ],
     ),
@@ -710,7 +710,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "viS",
         "laN",
         [
-            "aviSat", "aviSatAm", "aviSan", "aviSaH", "aviSatam", "aviSata", "aviSam", "aviSAva",
+            "aviSad", "aviSatAm", "aviSan", "aviSaH", "aviSatam", "aviSata", "aviSam", "aviSAva",
             "aviSAma",
         ],
     ),
@@ -880,7 +880,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "div",
         "viDiliN",
         [
-            "dIvyet", "dIvyetAm", "dIvyeyuH", "dIvyeH", "dIvyetam", "dIvyeta", "dIvyeyam",
+            "dIvyed", "dIvyetAm", "dIvyeyuH", "dIvyeH", "dIvyetam", "dIvyeta", "dIvyeyam",
             "dIvyeva", "dIvyema",
         ],
     ),
@@ -888,7 +888,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "naS",
         "viDiliN",
         [
-            "naSyet", "naSyetAm", "naSyeyuH", "naSyeH", "naSyetam", "naSyeta", "naSyeyam",
+            "naSyed", "naSyetAm", "naSyeyuH", "naSyeH", "naSyetam", "naSyeta", "naSyeyam",
             "naSyeva", "naSyema",
         ],
     ),
@@ -896,7 +896,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "kup",
         "viDiliN",
         [
-            "kupyet", "kupyetAm", "kupyeyuH", "kupyeH", "kupyetam", "kupyeta", "kupyeyam",
+            "kupyed", "kupyetAm", "kupyeyuH", "kupyeH", "kupyetam", "kupyeta", "kupyeyam",
             "kupyeva", "kupyema",
         ],
     ),
@@ -949,7 +949,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "tud",
         "viDiliN",
         [
-            "tudet", "tudetAm", "tudeyuH", "tudeH", "tudetam", "tudeta", "tudeyam", "tudeva",
+            "tuded", "tudetAm", "tudeyuH", "tudeH", "tudetam", "tudeta", "tudeyam", "tudeva",
             "tudema",
         ],
     ),
@@ -957,7 +957,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "liK",
         "viDiliN",
         [
-            "liKet", "liKetAm", "liKeyuH", "liKeH", "liKetam", "liKeta", "liKeyam", "liKeva",
+            "liKed", "liKetAm", "liKeyuH", "liKeH", "liKetam", "liKeta", "liKeyam", "liKeva",
             "liKema",
         ],
     ),
@@ -965,7 +965,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "viS",
         "viDiliN",
         [
-            "viSet", "viSetAm", "viSeyuH", "viSeH", "viSetam", "viSeta", "viSeyam", "viSeva",
+            "viSed", "viSetAm", "viSeyuH", "viSeH", "viSetam", "viSeta", "viSeyam", "viSeva",
             "viSema",
         ],
     ),
@@ -1032,14 +1032,14 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "yA",
         "laN",
         [
-            "ayAt", "ayAtAm", "ayAn", "ayAH", "ayAtam", "ayAta", "ayAm", "ayAva", "ayAma",
+            "ayAd", "ayAtAm", "ayAn", "ayAH", "ayAtam", "ayAta", "ayAm", "ayAva", "ayAma",
         ],
     ),
     (
         "vA",
         "laN",
         [
-            "avAt", "avAtAm", "avAn", "avAH", "avAtam", "avAta", "avAm", "avAva", "avAma",
+            "avAd", "avAtAm", "avAn", "avAH", "avAtam", "avAta", "avAm", "avAva", "avAma",
         ],
     ),
     (
@@ -1060,14 +1060,14 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "yA",
         "viDiliN",
         [
-            "yAyAt", "yAyAtAm", "yAyuH", "yAyAH", "yAyAtam", "yAyAta", "yAyAm", "yAyAva", "yAyAma",
+            "yAyAd", "yAyAtAm", "yAyuH", "yAyAH", "yAyAtam", "yAyAta", "yAyAm", "yAyAva", "yAyAma",
         ],
     ),
     (
         "vA",
         "viDiliN",
         [
-            "vAyAt", "vAyAtAm", "vAyuH", "vAyAH", "vAyAtam", "vAyAta", "vAyAm", "vAyAva", "vAyAma",
+            "vAyAd", "vAyAtAm", "vAyuH", "vAyAH", "vAyAtam", "vAyAta", "vAyAm", "vAyAva", "vAyAma",
         ],
     ),
     (
@@ -1081,7 +1081,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "ad",
         "laN",
         [
-            "Adat", "AttAm", "Adan", "AdaH", "Attam", "Atta", "Adam", "Adva", "Adma",
+            "Adad", "AttAm", "Adan", "AdaH", "Attam", "Atta", "Adam", "Adva", "Adma",
         ],
     ),
     (
@@ -1095,7 +1095,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "ad",
         "viDiliN",
         [
-            "adyAt", "adyAtAm", "adyuH", "adyAH", "adyAtam", "adyAta", "adyAm", "adyAva", "adyAma",
+            "adyAd", "adyAtAm", "adyuH", "adyAH", "adyAtam", "adyAta", "adyAm", "adyAva", "adyAma",
         ],
     ),
     (
@@ -1222,7 +1222,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "kliS",
         "laN",
         [
-            "akliSnAt",
+            "akliSnAd",
             "akliSnItAm",
             "akliSnan",
             "akliSnAH",
@@ -1252,7 +1252,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "kliS",
         "viDiliN",
         [
-            "kliSnIyAt",
+            "kliSnIyAd",
             "kliSnIyAtAm",
             "kliSnIyuH",
             "kliSnIyAH",
@@ -1275,7 +1275,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "guD",
         "laN",
         [
-            "aguDnAt",
+            "aguDnAd",
             "aguDnItAm",
             "aguDnan",
             "aguDnAH",
@@ -1298,7 +1298,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "guD",
         "viDiliN",
         [
-            "guDnIyAt",
+            "guDnIyAd",
             "guDnIyAtAm",
             "guDnIyuH",
             "guDnIyAH",
@@ -1321,7 +1321,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "aS",
         "laN",
         [
-            "ASnAt", "ASnItAm", "ASnan", "ASnAH", "ASnItam", "ASnIta", "ASnAm", "ASnIva", "ASnIma",
+            "ASnAd", "ASnItAm", "ASnan", "ASnAH", "ASnItam", "ASnIta", "ASnAm", "ASnIva", "ASnIma",
         ],
     ),
     (
@@ -1336,7 +1336,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "aS",
         "viDiliN",
         [
-            "aSnIyAt",
+            "aSnIyAd",
             "aSnIyAtAm",
             "aSnIyuH",
             "aSnIyAH",
@@ -1359,7 +1359,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "muz",
         "laN",
         [
-            "amuzRAt",
+            "amuzRAd",
             "amuzRItAm",
             "amuzRan",
             "amuzRAH",
@@ -1382,7 +1382,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "muz",
         "viDiliN",
         [
-            "muzRIyAt",
+            "muzRIyAd",
             "muzRIyAtAm",
             "muzRIyuH",
             "muzRIyAH",
@@ -1405,7 +1405,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "vrI",
         "laN",
         [
-            "avrIRAt",
+            "avrIRAd",
             "avrIRItAm",
             "avrIRan",
             "avrIRAH",
@@ -1428,7 +1428,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "vrI",
         "viDiliN",
         [
-            "vrIRIyAt",
+            "vrIRIyAd",
             "vrIRIyAtAm",
             "vrIRIyuH",
             "vrIRIyAH",
@@ -1504,7 +1504,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "Ap",
         "laN",
         [
-            "Apnot", "ApnutAm", "Apnuvan", "ApnoH", "Apnutam", "Apnuta", "Apnavam", "Apnuva",
+            "Apnod", "ApnutAm", "Apnuvan", "ApnoH", "Apnutam", "Apnuta", "Apnavam", "Apnuva",
             "Apnuma",
         ],
     ),
@@ -1527,7 +1527,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "Ap",
         "viDiliN",
         [
-            "ApnuyAt",
+            "ApnuyAd",
             "ApnuyAtAm",
             "ApnuyuH",
             "ApnuyAH",
@@ -1557,7 +1557,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "Sak",
         "laN",
         [
-            "aSaknot",
+            "aSaknod",
             "aSaknutAm",
             "aSaknuvan",
             "aSaknoH",
@@ -1587,7 +1587,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "Sak",
         "viDiliN",
         [
-            "SaknuyAt",
+            "SaknuyAd",
             "SaknuyAtAm",
             "SaknuyuH",
             "SaknuyAH",
@@ -1610,7 +1610,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "hi",
         "laN",
         [
-            "ahinot", "ahinutAm", "ahinvan", "ahinoH", "ahinutam", "ahinuta", "ahinavam",
+            "ahinod", "ahinutAm", "ahinvan", "ahinoH", "ahinutam", "ahinuta", "ahinavam",
             "ahinuva", "ahinuma",
         ],
     ),
@@ -1626,7 +1626,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "hi",
         "viDiliN",
         [
-            "hinuyAt",
+            "hinuyAd",
             "hinuyAtAm",
             "hinuyuH",
             "hinuyAH",
@@ -1649,7 +1649,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "ri",
         "laN",
         [
-            "ariRot", "ariRutAm", "ariRvan", "ariRoH", "ariRutam", "ariRuta", "ariRavam",
+            "ariRod", "ariRutAm", "ariRvan", "ariRoH", "ariRutam", "ariRuta", "ariRavam",
             "ariRuva", "ariRuma",
         ],
     ),
@@ -1665,7 +1665,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
         "ri",
         "viDiliN",
         [
-            "riRuyAt",
+            "riRuyAd",
             "riRuyAtAm",
             "riRuyuH",
             "riRuyAH",
@@ -1814,6 +1814,54 @@ const ALTERNATES: &[(&str, &str, usize, &str, &str)] = &[
     ("ri", "laT", 8, "riRmaH", "6.4.107"),
     ("ri", "laN", 7, "ariRva", "6.4.107"),
     ("ri", "laN", 8, "ariRma", "6.4.107"),
+    ("BU", "laN", 0, "aBavat", "8.4.56"),
+    ("nI", "laN", 0, "anayat", "8.4.56"),
+    ("ji", "laN", 0, "ajayat", "8.4.56"),
+    ("smf", "laN", 0, "asmarat", "8.4.56"),
+    ("paW", "laN", 0, "apaWat", "8.4.56"),
+    ("vad", "laN", 0, "avadat", "8.4.56"),
+    ("BU", "viDiliN", 0, "Bavet", "8.4.56"),
+    ("nI", "viDiliN", 0, "nayet", "8.4.56"),
+    ("ji", "viDiliN", 0, "jayet", "8.4.56"),
+    ("smf", "viDiliN", 0, "smaret", "8.4.56"),
+    ("paW", "viDiliN", 0, "paWet", "8.4.56"),
+    ("vad", "viDiliN", 0, "vadet", "8.4.56"),
+    ("div", "laN", 0, "adIvyat", "8.4.56"),
+    ("naS", "laN", 0, "anaSyat", "8.4.56"),
+    ("kup", "laN", 0, "akupyat", "8.4.56"),
+    ("tud", "laN", 0, "atudat", "8.4.56"),
+    ("liK", "laN", 0, "aliKat", "8.4.56"),
+    ("viS", "laN", 0, "aviSat", "8.4.56"),
+    ("div", "viDiliN", 0, "dIvyet", "8.4.56"),
+    ("naS", "viDiliN", 0, "naSyet", "8.4.56"),
+    ("kup", "viDiliN", 0, "kupyet", "8.4.56"),
+    ("tud", "viDiliN", 0, "tudet", "8.4.56"),
+    ("liK", "viDiliN", 0, "liKet", "8.4.56"),
+    ("viS", "viDiliN", 0, "viSet", "8.4.56"),
+    ("yA", "laN", 0, "ayAt", "8.4.56"),
+    ("vA", "laN", 0, "avAt", "8.4.56"),
+    ("yA", "viDiliN", 0, "yAyAt", "8.4.56"),
+    ("vA", "viDiliN", 0, "vAyAt", "8.4.56"),
+    ("ad", "laN", 0, "Adat", "8.4.56"),
+    ("ad", "viDiliN", 0, "adyAt", "8.4.56"),
+    ("kliS", "laN", 0, "akliSnAt", "8.4.56"),
+    ("kliS", "viDiliN", 0, "kliSnIyAt", "8.4.56"),
+    ("guD", "laN", 0, "aguDnAt", "8.4.56"),
+    ("guD", "viDiliN", 0, "guDnIyAt", "8.4.56"),
+    ("aS", "laN", 0, "ASnAt", "8.4.56"),
+    ("aS", "viDiliN", 0, "aSnIyAt", "8.4.56"),
+    ("muz", "laN", 0, "amuzRAt", "8.4.56"),
+    ("muz", "viDiliN", 0, "muzRIyAt", "8.4.56"),
+    ("vrI", "laN", 0, "avrIRAt", "8.4.56"),
+    ("vrI", "viDiliN", 0, "vrIRIyAt", "8.4.56"),
+    ("Ap", "laN", 0, "Apnot", "8.4.56"),
+    ("Ap", "viDiliN", 0, "ApnuyAt", "8.4.56"),
+    ("Sak", "laN", 0, "aSaknot", "8.4.56"),
+    ("Sak", "viDiliN", 0, "SaknuyAt", "8.4.56"),
+    ("hi", "laN", 0, "ahinot", "8.4.56"),
+    ("hi", "viDiliN", 0, "hinuyAt", "8.4.56"),
+    ("ri", "laN", 0, "ariRot", "8.4.56"),
+    ("ri", "viDiliN", 0, "riRuyAt", "8.4.56"),
 ];
 
 fn lan_a_form(id: &str, pu: Purusha, va: Vacana) -> String {
@@ -1933,7 +1981,7 @@ fn every_alternate_names_a_real_cell() {
 /// `exactly_the_pinned_vikalpa_rules_are_optional` in `panini-prakriya`;
 /// duplicated here rather than exported because this is an integration test
 /// and the rule table is crate-internal.
-const VIKALPA_RULES: &[&str] = &["6.4.107"];
+const VIKALPA_RULES: &[&str] = &["6.4.107", "8.4.56"];
 
 /// `ALTERNATES` is otherwise 154 bare strings, and a string can be right for
 /// the wrong reason — `BavatAt` is a real form whether or not 8.4.56 is what
@@ -2222,7 +2270,15 @@ fn known_nonforms_are_invalid() {
         "hinyAma", // `starts_with` mistaken for `contains`: vidhiliṅ's
         // yAma has an `m` but does not begin with one — real form hinuyAma
         "BavmaH", // fired where the vikaraṇa is not śnu at all, i.e. the
-                  // shnu_asamyogapurva guard dropped — real form BavAmaH
+        // shnu_asamyogapurva guard dropped — real form BavAmaH
+        // 8.2.39 jhalāṁ jaśo'nte guard pins.
+        "Bavatd", // `ends_with('t')` mistaken for `contains('t')`: fires on
+        // BU laṭ 3sg (which merely contains a medial `t`, not a pada-final
+        // one) and blindly voices whatever the actual last character is —
+        // real form Bavati
+        "aBavaD", // `s.push('d')` mistaken for `s.push('D')`: the wrong jaś
+                  // substitute (aspirated, not the plain voiced stop the sūtra names)
+                  // — real form aBavad
     ] {
         assert!(
             matches!(engine.check(bad).verdict, Verdict::Invalid),
