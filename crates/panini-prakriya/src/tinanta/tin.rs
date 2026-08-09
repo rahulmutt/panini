@@ -508,7 +508,12 @@ pub(crate) static TIN: &[Rule] = &[
             // The it-stripping is recorded separately, as 3.4.108 does for
             // jus -> us. `tu` arrived pit from 3.4.78; clear that before
             // adding the ṅit, or the term claims both — the same two-line
-            // shape 3.4.87 uses for hi.
+            // shape 3.4.87 uses for hi. This `remove(Tag::Pit)` is tag
+            // hygiene, not a load-bearing mutation: by the time this rule
+            // runs, the samjna stage's first 1.2.4 (`samjna.rs`) has already
+            // read and consumed `ENDING_PRE_SHAP`'s Pit, and nothing later
+            // reads it again. No surface form witnesses it; the guard test
+            // below (`tatan_replaces_only_tu_and_hi_and_lands_ngit`) does.
             let before = p.snapshot();
             p.terms[ENDING_PRE_SHAP].text = "tAt".into();
             p.terms[ENDING_PRE_SHAP].remove(Tag::Pit);

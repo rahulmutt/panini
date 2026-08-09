@@ -2055,7 +2055,7 @@ fn every_alternate_validates_and_matches() {
     }
 }
 
-/// `derivation_set_is_exactly_pinned`'s `(r, l, c, _)` filter and
+/// `derivation_set_is_exactly_pinned`'s `(r, l, c, _, _)` filter and
 /// `every_alternate_validates_and_matches`'s `_cell` both silently ignore a
 /// row whose `cell` is out of range or whose `(root, lakara)` is mistyped —
 /// neither assertion would ever touch the cell such a row meant to name.
@@ -2443,9 +2443,8 @@ fn known_nonforms_are_invalid() {
         // 7.1.35 tātaṅ. Because the rule is optional, a broken guard ADDS a
         // wrong second form rather than replacing a right one — invisible to
         // any test that only asks whether the right form still derives.
-        "ApnotAt", // 7.1.35 failing to clear Pit / set Ngit, so 7.3.84's
-        // second (vikaraṇa-relative) application guṇates śnu — real form
-        // ApnutAt
+        "ApnotAt", // 7.1.35 failing to set Ngit, so 7.3.84's second
+        // (vikaraṇa-relative) application guṇates śnu — real form ApnutAt
         "kliSAnatAt", // 7.1.35 ordered AFTER 3.1.83 instead of above it, so
         // śnā had already become śāna when the ending was still `hi` — real
         // form kliSnItAt

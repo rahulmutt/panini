@@ -1477,6 +1477,14 @@ git commit -m "feat(prakriya): 3.4.111 SAkawAyana's jus and 6.1.96's junction ar
 The slice's claim is that the engine's derivation set equals
 vidyut-prakriya's in all 1512 cells. This task proves it and records it.
 
+**As executed, Steps 1–2 below did not run**: this workspace has no
+vidyut-prakriya checkout, and — contrary to Step 1's claim — the probe's
+source was never actually in the spec, so it could not be reconstructed and
+re-run here either. `derivation_set_shape_matches_the_audited_numbers`
+(`crates/panini/tests/paradigm.rs`) was written in its place; see the design
+spec's Verification section for what it does and does not establish. Steps
+4–8 (the doc updates) did run, per the commits on this branch.
+
 **Files:**
 - Modify: `AGENTS.md`, `README.md`, `docs/ARCHITECTURE.md`
 - No source changes expected; if the audit finds a divergence, that is a bug

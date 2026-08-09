@@ -228,6 +228,14 @@ pub(crate) static VIKARANA: &[Rule] = &[
     // it must decline on the character check, not merely on this conjunct,
     // which is why the character check is ordered first below.
     //
+    // This reads as `is_empty()` rather than the 3.1.81 comment's own
+    // `!ends_with('a')` advice (90 lines above) — that is not an oversight.
+    // This guard needs "śap was luk'd" (true only for adādi), not
+    // "athematic" (also true of kryādi's ā-final śnā, which is exactly the
+    // over-generation this conjunct exists to rule out); `!ends_with('a')`
+    // would let kryādi's ā-final `nA` through unchanged, reintroducing the
+    // spurious fork this rule was written to prevent.
+    //
     // Must sit above 7.1.3 jho'ntaḥ, which turns a surviving `J` into `ant`.
     Rule {
         id: "3.4.111",

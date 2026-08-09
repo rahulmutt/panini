@@ -34,11 +34,13 @@
   target under `crates/panini-lipi/fuzz` legitimately omits it, since it uses
   `#![no_main]` plus the libfuzzer harness macro).
 - Grammar changes are gated by the golden paradigm test
-  (`crates/panini/tests/paradigm.rs`, 1512 forms, six gaṇas — `PARADIGM`
+  (`crates/panini/tests/paradigm.rs`, 1512 cells, six gaṇas — `PARADIGM`
     stays one-form-per-cell: a cell forked by an optional rule keeps its
-    second form in `ALTERNATES`, and `derivation_set_is_exactly_pinned`
-    asserts each cell's derivation set is exactly the union of the two. The
-    suite is no longer filtered by any one-form-per-cell convention — the
+    other forms — a second, and for 48 cells a third — in `ALTERNATES`
+    (154 rows in all, so 1512 + 154 forms total), and
+    `derivation_set_is_exactly_pinned` asserts each cell's derivation set is
+    exactly the union of the two. The suite is no longer filtered by any
+    one-form-per-cell convention — the
     "retiring the conventions" slice retired the last two (7.1.35 tātaṅ,
     8.4.56 pausal cartva), and `PARADIGM`'s index 0 is now genuinely the
     declined derivation rather than a hand-picked citation form: prathama

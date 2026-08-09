@@ -165,10 +165,14 @@ of scope with √kṛ itself.
 
 7.1.35 optionally replaces the loṭ endings `tu`/`hi` with tātaṅ (then
 8.2.39 obligatorily voices its final `t` to `d`), forking 48 cells (loṭ
-prathama and madhyama eka across all 24 roots) — `Bavatu ~ BavatAd`, `Bava
-~ BavatAd`. 8.4.56 optionally devoices a pada-final jaś (produced by the
-now-obligatory 8.2.39) back to its car at the end of an utterance, forking
-48 cells outright (laṅ and vidhiliṅ prathama eka) — `aBavad ~ aBavat`,
+prathama and madhyama eka across the 24 parasmaipada roots — `tu`/`hi` are
+parasmaipada endings, so the curated set's 18 ātmanepada roots never reach
+this guard) — `Bavatu ~ BavatAd`, `Bava ~ BavatAd`. 8.4.56 optionally
+devoices a pada-final jaś (produced by the now-obligatory 8.2.39) back to
+its car at the end of an utterance, forking 48 cells outright (laṅ and
+vidhiliṅ prathama eka, again only the 24 parasmaipada roots — 8.2.39's `d`
+is a parasmaipada-ending artifact, ātmanepada's laṅ/vidhiliṅ prathama eka
+endings are vowel-final and never reach a jhal) — `aBavad ~ aBavat`,
 `Baved ~ Bavet` — and forking a further 48 (the same loṭ cells 7.1.35 just
 forked) by devoicing the tātaṅ branch's `BavatAd` to `BavatAt`, which is
 what stacks the two rules into the three-branch loṭ cells above rather

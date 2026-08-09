@@ -35,8 +35,10 @@ Out of scope, deferred:
 ## The audit that defines the slice
 
 The slice's shape was not guessed; it was measured. A probe
-(`examples/panini_full_audit.rs`, reproduced under "Verification") derives all
-42 roots × 4 lakāras × 9 cells in vidyut-prakriya and prints the **complete
+(`examples/panini_full_audit.rs`, described but not reproduced under
+"Verification" — see that section for what does and does not survive of it)
+derives all 42 roots × 4 lakāras × 9 cells in vidyut-prakriya and prints the
+**complete
 set** of forms per cell rather than one form per cell. Comparing that against
 `PARADIGM ∪ ALTERNATES`:
 
@@ -488,6 +490,26 @@ comparison against `PARADIGM ∪ ALTERNATES` is a set equality per cell.
 The slice is done when that comparison is empty in both directions for all
 1512 cells. It is run once before implementation (its result is the table
 above) and once after.
+
+**What actually happened:** only the before run did. No vidyut-prakriya
+checkout exists in this workspace, and the probe's own source was not
+preserved anywhere this repo can reach — not in this file (the table above is
+its output, not its code), and not in this repo's git history — so the after
+run could not be reproduced here. What replaced it is a local shape test,
+`derivation_set_shape_matches_the_audited_numbers` in
+`crates/panini/tests/paradigm.rs`: it pins the cell-count and `ALTERNATES`-key
+shape this design-time audit recorded — 1406/58/48 one/two/three-form cells,
+154 `ALTERNATES` rows keyed 48/48/48/2/8 — derived from `PARADIGM ∪
+ALTERNATES` rather than hand-copied. That test composes with
+`derivation_set_is_exactly_pinned`, which independently drives the engine on
+every cell and asserts its actual derivation set equals `PARADIGM`'s pinned
+form plus exactly its `ALTERNATES` rows. Together the two guarantee the
+engine derives exactly the set this design-time audit recorded, with every
+alternate produced by the optional rule its key names. What they cannot show,
+because vidyut is unreachable in this workspace, is whether the audit table
+itself is right — that is, whether it truly matches what vidyut-prakriya
+derives. So the claim this slice can actually stand behind is "the engine's
+derivation set equals the audited set," not "equals vidyut-prakriya's set."
 
 ### `tin.rs`, `vikarana.rs`, `tripadi.rs` — per-rule guards, beside the rule
 

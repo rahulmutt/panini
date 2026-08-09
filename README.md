@@ -21,7 +21,7 @@ taken from each root's tag), over a curated 42-root set, in four lakāras:
 (optative). A cell may have more than one valid form where an optional
 (*vikalpa*) sūtra applies — `hinvaH` and `hinuvaH` are both correct — and in
 fact 106 of the 1512 cells hold more than one form, 48 of them three
-(`Bavatu`, `BavatAt`, `BavatAd`); `check` reports every derivation, each with
+(`Bavatu`, `BavatAd`, `BavatAt`); `check` reports every derivation, each with
 its own trace. `INVALID` means
 "not derivable within this covered grammar," not "ungrammatical in
 Sanskrit." See `docs/ARCHITECTURE.md`.
