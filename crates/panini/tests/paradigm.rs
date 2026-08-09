@@ -1791,28 +1791,29 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     ),
 ];
 
-/// Second valid forms, for cells where an optional (vikalpa) rule forks the
-/// derivation. `(root_id, lakara_label, cell index into the [&str; 9],
-/// alternate form)`.
+/// Second and third valid forms, for cells where an optional (vikalpa) rule
+/// forks the derivation. `(root_id, lakara_label, cell index into the
+/// [&str; 9], alternate form, vikalpa key)`.
 ///
-/// `PARADIGM` stays one-form-per-cell and byte-identical: widening every
-/// cell to a list would rewrite all 168 blocks and 1512 strings, an
-/// enormous mechanical diff over the exact suite slice 5a froze.
+/// The vikalpa key names the optional rules applied on the branch that
+/// derives this form, `+`-joined in pipeline order. It is not decoration:
+/// `every_alternate_names_the_vikalpa_rules_that_produced_it` checks it
+/// against the branch's own log, so a right form reached by the wrong rule
+/// fails here.
 ///
-/// All eight rows are 6.4.107 lopaś cāsyānyatarasyāṁ mvoḥ — the un-elided
-/// member of each pair is what `PARADIGM` pins (hinuvaH, hinumaH, ahinuva,
-/// ahinuma and the √ri counterparts), and these are the elided members.
+/// `PARADIGM` holds index 0 — the derivation with no optional rule applied —
+/// so an alternate is by construction never `PARADIGM`'s own string.
 /// Cell order is [P.E, P.D, P.B, M.E, M.D, M.B, U.E, U.D, U.B], so 7 and 8
 /// are uttama dvi and uttama bahu.
-const ALTERNATES: &[(&str, &str, usize, &str)] = &[
-    ("hi", "laT", 7, "hinvaH"),
-    ("hi", "laT", 8, "hinmaH"),
-    ("hi", "laN", 7, "ahinva"),
-    ("hi", "laN", 8, "ahinma"),
-    ("ri", "laT", 7, "riRvaH"),
-    ("ri", "laT", 8, "riRmaH"),
-    ("ri", "laN", 7, "ariRva"),
-    ("ri", "laN", 8, "ariRma"),
+const ALTERNATES: &[(&str, &str, usize, &str, &str)] = &[
+    ("hi", "laT", 7, "hinvaH", "6.4.107"),
+    ("hi", "laT", 8, "hinmaH", "6.4.107"),
+    ("hi", "laN", 7, "ahinva", "6.4.107"),
+    ("hi", "laN", 8, "ahinma", "6.4.107"),
+    ("ri", "laT", 7, "riRvaH", "6.4.107"),
+    ("ri", "laT", 8, "riRmaH", "6.4.107"),
+    ("ri", "laN", 7, "ariRva", "6.4.107"),
+    ("ri", "laN", 8, "ariRma", "6.4.107"),
 ];
 
 fn lan_a_form(id: &str, pu: Purusha, va: Vacana) -> String {
@@ -1891,7 +1892,7 @@ fn every_form_validates_and_matches() {
 #[test]
 fn every_alternate_validates_and_matches() {
     let engine = Panini::new();
-    for (root, lakara, _cell, form) in ALTERNATES {
+    for (root, lakara, _cell, form, _key) in ALTERNATES {
         let d = dhatus().iter().find(|d| d.id == *root).unwrap();
         let r = engine.check(form);
         assert!(
@@ -1916,7 +1917,7 @@ fn every_alternate_validates_and_matches() {
 /// `PARADIGM` block.
 #[test]
 fn every_alternate_names_a_real_cell() {
-    for (root, lakara, cell, form) in ALTERNATES {
+    for (root, lakara, cell, form, _key) in ALTERNATES {
         assert!(
             *cell < 9,
             "alternate {form} ({root} {lakara}) has out-of-range cell {cell}"
@@ -1924,6 +1925,44 @@ fn every_alternate_names_a_real_cell() {
         assert!(
             PARADIGM.iter().any(|(r, l, _)| r == root && l == lakara),
             "alternate {form} names {root} {lakara}, which is not a PARADIGM block"
+        );
+    }
+}
+
+/// The optional rules, in pipeline order. Mirrors
+/// `exactly_the_pinned_vikalpa_rules_are_optional` in `panini-prakriya`;
+/// duplicated here rather than exported because this is an integration test
+/// and the rule table is crate-internal.
+const VIKALPA_RULES: &[&str] = &["6.4.107"];
+
+/// `ALTERNATES` is otherwise 154 bare strings, and a string can be right for
+/// the wrong reason — `BavatAt` is a real form whether or not 8.4.56 is what
+/// produced it. This ties each row to the grammar: find the branch that
+/// derives the row's form, intersect its log with the optional-rule set, and
+/// require exactly the rules the row claims.
+#[test]
+fn every_alternate_names_the_vikalpa_rules_that_produced_it() {
+    for (root, lakara, cell, form, key) in ALTERNATES {
+        let d = dhatus().iter().find(|d| d.id == *root).unwrap();
+        let (pu, va) = CELLS[*cell];
+        let lak = *LAKARA_BY_NAME
+            .iter()
+            .find_map(|(n, l)| (n == lakara).then_some(l))
+            .unwrap();
+        let branch = derive(d, lak, d.pada, pu, va)
+            .into_iter()
+            .find(|p| !p.blocked && p.text() == *form)
+            .unwrap_or_else(|| panic!("no branch of {root} {lakara} cell {cell} derives {form}"));
+        let applied: Vec<&str> = branch
+            .log
+            .iter()
+            .map(|s| s.sutra.as_str())
+            .filter(|s| VIKALPA_RULES.contains(s))
+            .collect();
+        assert_eq!(
+            applied.join("+"),
+            *key,
+            "{form} ({root} {lakara} cell {cell})"
         );
     }
 }
@@ -1963,8 +2002,8 @@ fn derivation_set_is_exactly_pinned() {
             want.extend(
                 ALTERNATES
                     .iter()
-                    .filter(|(r, l, c, _)| r == root && l == lakara && *c == cell)
-                    .map(|(_, _, _, f)| (*f).to_string()),
+                    .filter(|(r, l, c, _, _)| r == root && l == lakara && *c == cell)
+                    .map(|(_, _, _, f, _)| (*f).to_string()),
             );
             want.sort();
 
