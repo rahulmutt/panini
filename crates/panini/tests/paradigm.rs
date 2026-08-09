@@ -2162,6 +2162,62 @@ fn derivation_set_is_exactly_pinned() {
     }
 }
 
+/// Pins the shape of the derivation set the slice produces, derived from
+/// `PARADIGM ∪ ALTERNATES` — the same union `derivation_set_is_exactly_pinned`
+/// builds — rather than from a hand-written list. These are the numbers the
+/// design-time vidyut-prakriya audit predicted for the two conventions this
+/// slice retired (7.1.35 tātaṅ, 8.4.56 pausal cartva) and the one audited
+/// divergence it resolved (3.4.111 Śākaṭāyana's jus): 1512 cells total (168
+/// root×lakāra blocks × 9), of which 1406 hold exactly one form, 58 hold two,
+/// and 48 hold three; `ALTERNATES` itself has 154 rows, keyed 48 `8.4.56`, 48
+/// `7.1.35`, 48 `7.1.35+8.4.56`, 2 `3.4.111`, and 8 `6.4.107`. The audit probe
+/// that produced these numbers ran against a vidyut-prakriya checkout during
+/// design and cannot be re-run in this workspace (no vidyut checkout here,
+/// and the probe's source lives only in the spec's prose, not in this repo's
+/// history) — this test is what keeps the numbers true now that the audit
+/// itself is unreproducible.
+#[test]
+fn derivation_set_shape_matches_the_audited_numbers() {
+    let total_cells = PARADIGM.len() * 9;
+    assert_eq!(total_cells, 1512, "168 root×lakāra blocks × 9 cells each");
+
+    let mut ones = 0usize;
+    let mut twos = 0usize;
+    let mut threes = 0usize;
+    let mut other = 0usize;
+    for (root, lakara, _forms) in PARADIGM {
+        for cell in 0..9usize {
+            let alt_count = ALTERNATES
+                .iter()
+                .filter(|(r, l, c, _, _)| r == root && l == lakara && *c == cell)
+                .count();
+            match 1 + alt_count {
+                1 => ones += 1,
+                2 => twos += 1,
+                3 => threes += 1,
+                _ => other += 1,
+            }
+        }
+    }
+    assert_eq!(other, 0, "no cell should hold more than three forms");
+    assert_eq!(ones, 1406, "one-form cells");
+    assert_eq!(twos, 58, "two-form cells");
+    assert_eq!(threes, 48, "three-form cells");
+
+    assert_eq!(ALTERNATES.len(), 154, "ALTERNATES row count");
+    let key_count = |key: &str| {
+        ALTERNATES
+            .iter()
+            .filter(|(_, _, _, _, k)| *k == key)
+            .count()
+    };
+    assert_eq!(key_count("8.4.56"), 48, "8.4.56-only alternates");
+    assert_eq!(key_count("7.1.35"), 48, "7.1.35-only alternates");
+    assert_eq!(key_count("7.1.35+8.4.56"), 48, "7.1.35+8.4.56 alternates");
+    assert_eq!(key_count("3.4.111"), 2, "3.4.111 alternates");
+    assert_eq!(key_count("6.4.107"), 8, "6.4.107 alternates");
+}
+
 /// `every_form_validates_and_matches` only walks `PARADIGM`, so a root or
 /// lakāra added to the enumerable space without golden rows would be checked
 /// by nothing at all. This test closes that hole from the other side: every
