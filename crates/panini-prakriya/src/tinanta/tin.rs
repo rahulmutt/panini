@@ -465,6 +465,58 @@ pub(crate) static TIN: &[Rule] = &[
             true
         },
     },
+    // 7.1.35 tuhyos tātaṅ āśiṣy anyatarasyām: `tu` and `hi` are OPTIONALLY
+    // replaced by tātaṅ. Both endings occur only in loṭ parasmaipada, so
+    // reading the ending is necessary and sufficient — no lakāra test.
+    //
+    // tātaṅ's ṅ is a real it-marker, not 1.2.4's atideśa, and the ṅitva is
+    // what earns the forms: Apnotu guṇates śnu through 7.3.84's second
+    // application because `tu` is pit, ApnutAt does not because 1.1.5
+    // blocks it. Bavatu -> BavatAt KEEPS its guṇa, which is śap-relative and
+    // untouched by the ending's ṅitva — the two applications of 7.3.84 that
+    // svādi forced apart, seen from the other side.
+    //
+    // ORDERING, invisible and permanent: this rule MUST sit above every rule
+    // that reads the ending `hi` — 3.1.83 halaḥ śnaḥ śānac ca (or kryādi's
+    // tātaṅ branch surfaces *kliSAnatAt instead of kliSnItAt), 6.4.105 ato
+    // heḥ, and 6.4.106 utaś ca — and above 7.3.84, whose second application
+    // reads the ending's ṅitva. It is above all of them here, at the end of
+    // the tiṅ stage, and nothing enforces that but the kliSnItAt trace pin.
+    //
+    // Note this is the opposite of 6.4.107's ordering constraint. 6.4.107
+    // destroys the EVIDENCE for a predicate without changing the fact, so
+    // its consumers must sit above it; 7.1.35 changes the fact itself — the
+    // ending genuinely is no longer `hi` — so its consumers must sit below.
+    //
+    // The sūtra's āśiṣi (benedictive sense) is a semantic condition the
+    // engine cannot evaluate and deliberately ignores: `check` answers "is
+    // this derivable within the covered grammar", not "is this the right
+    // word here". Every form admitted is a real Sanskrit form.
+    Rule {
+        id: "7.1.35",
+        name: "tuhyostAtaNNASizyanyatarasyAm",
+        kind: RuleKind::Vidhi,
+        vikalpa: true,
+        apply: |p| {
+            let e = p.terms[ENDING_PRE_SHAP].text.as_str();
+            if e != "tu" && e != "hi" {
+                return false;
+            }
+            let before = p.snapshot();
+            p.terms[ENDING_PRE_SHAP].text = "tAtaN".into();
+            p.record("7.1.35", "tuhyostAtaNNASizyanyatarasyAm", before);
+            // The it-stripping is recorded separately, as 3.4.108 does for
+            // jus -> us. `tu` arrived pit from 3.4.78; clear that before
+            // adding the ṅit, or the term claims both — the same two-line
+            // shape 3.4.87 uses for hi.
+            let before = p.snapshot();
+            p.terms[ENDING_PRE_SHAP].text = "tAt".into();
+            p.terms[ENDING_PRE_SHAP].remove(Tag::Pit);
+            p.terms[ENDING_PRE_SHAP].add(Tag::Ngit);
+            p.record("1.3.9", "tasya lopaH", before);
+            true
+        },
+    },
 ];
 
 #[cfg(test)]
@@ -746,5 +798,40 @@ mod tests {
             (rule.apply)(&mut p);
         }
         assert!(p.terms[ENDING_PRE_SHAP].has(Tag::Ngit));
+    }
+
+    /// 7.1.35 replaces `tu` and `hi` — and only those — with tātaṅ, whose
+    /// ṅ is a real it-marker. The tag work is the point: `tu` arrives pit
+    /// from 3.4.78 and must not keep that alongside the new ṅit, or 7.3.84
+    /// guṇates where 1.1.5 should block.
+    #[test]
+    fn tatan_replaces_only_tu_and_hi_and_lands_ngit() {
+        let rule = rules().find(|r| r.id == "7.1.35").unwrap();
+
+        let mut p = Prakriya {
+            terms: vec![Term::new("BU"), Term::new("tu")],
+            ..Default::default()
+        };
+        p.terms[ENDING_PRE_SHAP].add(Tag::Pit);
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.terms[ENDING_PRE_SHAP].text, "tAt");
+        assert!(p.terms[ENDING_PRE_SHAP].has(Tag::Ngit));
+        assert!(!p.terms[ENDING_PRE_SHAP].has(Tag::Pit));
+
+        let mut p = Prakriya {
+            terms: vec![Term::new("BU"), Term::new("hi")],
+            ..Default::default()
+        };
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.terms[ENDING_PRE_SHAP].text, "tAt");
+        assert!(p.terms[ENDING_PRE_SHAP].has(Tag::Ngit));
+
+        for ending in ["ti", "te", "tAm", "sva", "si", "mi", "Ji"] {
+            let mut p = Prakriya {
+                terms: vec![Term::new("BU"), Term::new(ending)],
+                ..Default::default()
+            };
+            assert!(!(rule.apply)(&mut p), "7.1.35 fired on {ending}");
+        }
     }
 }

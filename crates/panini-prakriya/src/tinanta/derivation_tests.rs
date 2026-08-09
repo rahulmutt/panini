@@ -114,12 +114,13 @@ fn tinanta_rule_order_is_pinned() {
     let expected = [
         "1.3.12", "1.3.78", "3.4.78", "1.3.9", "1.2.4", "3.4.85", "3.4.108", "3.4.105", "3.4.106",
         "3.4.101", "3.4.99", "3.4.87", "3.4.89", "3.4.86", "3.4.100", "3.4.80", "3.4.79", "3.4.91",
-        "3.4.93", "3.4.90", "3.4.92", "3.4.103", "3.4.102", "3.1.69", "3.1.73", "3.1.77", "3.1.81",
-        "3.1.68", "2.4.72", "3.1.83", "1.2.4", "6.4.71", "6.4.72", "7.3.100", "7.1.5", "7.1.6",
-        "7.1.3", "7.2.79", "7.2.80", "7.2.81", "7.4.21", "7.3.84", "7.3.86", "7.3.84", "6.4.87",
-        "6.4.77", "6.1.78", "7.3.101", "6.4.112", "6.4.113", "6.1.101", "6.1.96", "6.1.90",
-        "6.1.97", "6.1.87", "6.1.66", "6.4.105", "6.4.106", "6.4.107", "6.4.101", "8.2.77",
-        "8.2.23", "8.2.25", "8.2.39", "8.3.15", "8.3.59", "8.4.55", "8.4.1", "8.4.2", "8.4.56",
+        "3.4.93", "3.4.90", "3.4.92", "3.4.103", "3.4.102", "7.1.35", "3.1.69", "3.1.73", "3.1.77",
+        "3.1.81", "3.1.68", "2.4.72", "3.1.83", "1.2.4", "6.4.71", "6.4.72", "7.3.100", "7.1.5",
+        "7.1.6", "7.1.3", "7.2.79", "7.2.80", "7.2.81", "7.4.21", "7.3.84", "7.3.86", "7.3.84",
+        "6.4.87", "6.4.77", "6.1.78", "7.3.101", "6.4.112", "6.4.113", "6.1.101", "6.1.96",
+        "6.1.90", "6.1.97", "6.1.87", "6.1.66", "6.4.105", "6.4.106", "6.4.107", "6.4.101",
+        "8.2.77", "8.2.23", "8.2.25", "8.2.39", "8.3.15", "8.3.59", "8.4.55", "8.4.1", "8.4.2",
+        "8.4.56",
     ];
     let actual: Vec<&str> = rules().map(|r| r.id).collect();
     assert_eq!(actual, expected);
@@ -133,7 +134,7 @@ fn tinanta_rule_order_is_pinned() {
 #[test]
 fn exactly_the_pinned_vikalpa_rules_are_optional() {
     let actual: Vec<&str> = rules().filter(|r| r.vikalpa).map(|r| r.id).collect();
-    let expected = ["6.4.107", "8.4.56"];
+    let expected = ["7.1.35", "6.4.107", "8.4.56"];
     assert_eq!(actual, expected);
 }
 
@@ -233,7 +234,7 @@ fn divadi_tudadi_vowel_sandhi_cells() {
     );
     // 6.4.105 ato heH: imperative hi-elision after śyan's `ya`.
     assert_eq!(
-        form_g("naS", Lakara::Lot, Purusha::Madhyama, Vacana::Eka),
+        form_g_forked("naS", Lakara::Lot, Purusha::Madhyama, Vacana::Eka, 3),
         "naSya"
     );
 }
@@ -274,7 +275,7 @@ fn adadi_luk_present_no_junction_cells() {
     );
     // loṭ 2sg: hi does NOT elide after ā (6.4.105 needs short a) → yāhi.
     assert_eq!(
-        form_g("yA", Lakara::Lot, Purusha::Madhyama, Vacana::Eka),
+        form_g_forked("yA", Lakara::Lot, Purusha::Madhyama, Vacana::Eka, 3),
         "yAhi"
     );
 }
@@ -373,12 +374,12 @@ fn her_dhih_gives_addhi_for_consonant_root() {
     // √ad loṭ 2sg: 3.4.87 si→hi, 6.4.105 declines (d, not short a),
     // 6.4.101 hi→Di → adDi.
     assert_eq!(
-        form_g("ad", Lakara::Lot, Purusha::Madhyama, Vacana::Eka),
+        form_g_forked("ad", Lakara::Lot, Purusha::Madhyama, Vacana::Eka, 3),
         "adDi"
     );
     // Thematic root unaffected: √bhū loṭ 2sg is Bava (hi luk'd by 6.4.105).
     assert_eq!(
-        form_g("BU", Lakara::Lot, Purusha::Madhyama, Vacana::Eka),
+        form_g_forked("BU", Lakara::Lot, Purusha::Madhyama, Vacana::Eka, 3),
         "Bava"
     );
 }
@@ -938,7 +939,7 @@ fn dhi_ca_does_not_elide_a_non_s_before_dh() {
     // `s`, so the second arm declines and the `d` survives. Dropping
     // this arm would wrongly yield *aDi.
     assert_eq!(
-        form_g("ad", Lakara::Lot, Purusha::Madhyama, Vacana::Eka),
+        form_g_forked("ad", Lakara::Lot, Purusha::Madhyama, Vacana::Eka, 3),
         "adDi"
     );
 }
@@ -999,7 +1000,7 @@ fn cartva_of_maps_each_jhal_to_its_first_varga_car() {
 fn her_dhih_guard_is_jhal_final_only() {
     // ā-final √yā loṭ 2sg keeps hi (yAhi), NOT *yADi: 6.4.101 needs a jhal.
     assert_eq!(
-        form_g("yA", Lakara::Lot, Purusha::Madhyama, Vacana::Eka),
+        form_g_forked("yA", Lakara::Lot, Purusha::Madhyama, Vacana::Eka, 3),
         "yAhi"
     );
 }

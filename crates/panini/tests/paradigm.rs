@@ -1862,6 +1862,102 @@ const ALTERNATES: &[(&str, &str, usize, &str, &str)] = &[
     ("hi", "viDiliN", 0, "hinuyAt", "8.4.56"),
     ("ri", "laN", 0, "ariRot", "8.4.56"),
     ("ri", "viDiliN", 0, "riRuyAt", "8.4.56"),
+    ("BU", "loT", 0, "BavatAd", "7.1.35"),
+    ("BU", "loT", 0, "BavatAt", "7.1.35+8.4.56"),
+    ("BU", "loT", 3, "BavatAd", "7.1.35"),
+    ("BU", "loT", 3, "BavatAt", "7.1.35+8.4.56"),
+    ("nI", "loT", 0, "nayatAd", "7.1.35"),
+    ("nI", "loT", 0, "nayatAt", "7.1.35+8.4.56"),
+    ("nI", "loT", 3, "nayatAd", "7.1.35"),
+    ("nI", "loT", 3, "nayatAt", "7.1.35+8.4.56"),
+    ("ji", "loT", 0, "jayatAd", "7.1.35"),
+    ("ji", "loT", 0, "jayatAt", "7.1.35+8.4.56"),
+    ("ji", "loT", 3, "jayatAd", "7.1.35"),
+    ("ji", "loT", 3, "jayatAt", "7.1.35+8.4.56"),
+    ("smf", "loT", 0, "smaratAd", "7.1.35"),
+    ("smf", "loT", 0, "smaratAt", "7.1.35+8.4.56"),
+    ("smf", "loT", 3, "smaratAd", "7.1.35"),
+    ("smf", "loT", 3, "smaratAt", "7.1.35+8.4.56"),
+    ("paW", "loT", 0, "paWatAd", "7.1.35"),
+    ("paW", "loT", 0, "paWatAt", "7.1.35+8.4.56"),
+    ("paW", "loT", 3, "paWatAd", "7.1.35"),
+    ("paW", "loT", 3, "paWatAt", "7.1.35+8.4.56"),
+    ("vad", "loT", 0, "vadatAd", "7.1.35"),
+    ("vad", "loT", 0, "vadatAt", "7.1.35+8.4.56"),
+    ("vad", "loT", 3, "vadatAd", "7.1.35"),
+    ("vad", "loT", 3, "vadatAt", "7.1.35+8.4.56"),
+    ("div", "loT", 0, "dIvyatAd", "7.1.35"),
+    ("div", "loT", 0, "dIvyatAt", "7.1.35+8.4.56"),
+    ("div", "loT", 3, "dIvyatAd", "7.1.35"),
+    ("div", "loT", 3, "dIvyatAt", "7.1.35+8.4.56"),
+    ("naS", "loT", 0, "naSyatAd", "7.1.35"),
+    ("naS", "loT", 0, "naSyatAt", "7.1.35+8.4.56"),
+    ("naS", "loT", 3, "naSyatAd", "7.1.35"),
+    ("naS", "loT", 3, "naSyatAt", "7.1.35+8.4.56"),
+    ("kup", "loT", 0, "kupyatAd", "7.1.35"),
+    ("kup", "loT", 0, "kupyatAt", "7.1.35+8.4.56"),
+    ("kup", "loT", 3, "kupyatAd", "7.1.35"),
+    ("kup", "loT", 3, "kupyatAt", "7.1.35+8.4.56"),
+    ("tud", "loT", 0, "tudatAd", "7.1.35"),
+    ("tud", "loT", 0, "tudatAt", "7.1.35+8.4.56"),
+    ("tud", "loT", 3, "tudatAd", "7.1.35"),
+    ("tud", "loT", 3, "tudatAt", "7.1.35+8.4.56"),
+    ("liK", "loT", 0, "liKatAd", "7.1.35"),
+    ("liK", "loT", 0, "liKatAt", "7.1.35+8.4.56"),
+    ("liK", "loT", 3, "liKatAd", "7.1.35"),
+    ("liK", "loT", 3, "liKatAt", "7.1.35+8.4.56"),
+    ("viS", "loT", 0, "viSatAd", "7.1.35"),
+    ("viS", "loT", 0, "viSatAt", "7.1.35+8.4.56"),
+    ("viS", "loT", 3, "viSatAd", "7.1.35"),
+    ("viS", "loT", 3, "viSatAt", "7.1.35+8.4.56"),
+    ("yA", "loT", 0, "yAtAd", "7.1.35"),
+    ("yA", "loT", 0, "yAtAt", "7.1.35+8.4.56"),
+    ("yA", "loT", 3, "yAtAd", "7.1.35"),
+    ("yA", "loT", 3, "yAtAt", "7.1.35+8.4.56"),
+    ("vA", "loT", 0, "vAtAd", "7.1.35"),
+    ("vA", "loT", 0, "vAtAt", "7.1.35+8.4.56"),
+    ("vA", "loT", 3, "vAtAd", "7.1.35"),
+    ("vA", "loT", 3, "vAtAt", "7.1.35+8.4.56"),
+    ("ad", "loT", 0, "attAd", "7.1.35"),
+    ("ad", "loT", 0, "attAt", "7.1.35+8.4.56"),
+    ("ad", "loT", 3, "attAd", "7.1.35"),
+    ("ad", "loT", 3, "attAt", "7.1.35+8.4.56"),
+    ("kliS", "loT", 0, "kliSnItAd", "7.1.35"),
+    ("kliS", "loT", 0, "kliSnItAt", "7.1.35+8.4.56"),
+    ("kliS", "loT", 3, "kliSnItAd", "7.1.35"),
+    ("kliS", "loT", 3, "kliSnItAt", "7.1.35+8.4.56"),
+    ("guD", "loT", 0, "guDnItAd", "7.1.35"),
+    ("guD", "loT", 0, "guDnItAt", "7.1.35+8.4.56"),
+    ("guD", "loT", 3, "guDnItAd", "7.1.35"),
+    ("guD", "loT", 3, "guDnItAt", "7.1.35+8.4.56"),
+    ("aS", "loT", 0, "aSnItAd", "7.1.35"),
+    ("aS", "loT", 0, "aSnItAt", "7.1.35+8.4.56"),
+    ("aS", "loT", 3, "aSnItAd", "7.1.35"),
+    ("aS", "loT", 3, "aSnItAt", "7.1.35+8.4.56"),
+    ("muz", "loT", 0, "muzRItAd", "7.1.35"),
+    ("muz", "loT", 0, "muzRItAt", "7.1.35+8.4.56"),
+    ("muz", "loT", 3, "muzRItAd", "7.1.35"),
+    ("muz", "loT", 3, "muzRItAt", "7.1.35+8.4.56"),
+    ("vrI", "loT", 0, "vrIRItAd", "7.1.35"),
+    ("vrI", "loT", 0, "vrIRItAt", "7.1.35+8.4.56"),
+    ("vrI", "loT", 3, "vrIRItAd", "7.1.35"),
+    ("vrI", "loT", 3, "vrIRItAt", "7.1.35+8.4.56"),
+    ("Ap", "loT", 0, "ApnutAd", "7.1.35"),
+    ("Ap", "loT", 0, "ApnutAt", "7.1.35+8.4.56"),
+    ("Ap", "loT", 3, "ApnutAd", "7.1.35"),
+    ("Ap", "loT", 3, "ApnutAt", "7.1.35+8.4.56"),
+    ("Sak", "loT", 0, "SaknutAd", "7.1.35"),
+    ("Sak", "loT", 0, "SaknutAt", "7.1.35+8.4.56"),
+    ("Sak", "loT", 3, "SaknutAd", "7.1.35"),
+    ("Sak", "loT", 3, "SaknutAt", "7.1.35+8.4.56"),
+    ("hi", "loT", 0, "hinutAd", "7.1.35"),
+    ("hi", "loT", 0, "hinutAt", "7.1.35+8.4.56"),
+    ("hi", "loT", 3, "hinutAd", "7.1.35"),
+    ("hi", "loT", 3, "hinutAt", "7.1.35+8.4.56"),
+    ("ri", "loT", 0, "riRutAd", "7.1.35"),
+    ("ri", "loT", 0, "riRutAt", "7.1.35+8.4.56"),
+    ("ri", "loT", 3, "riRutAd", "7.1.35"),
+    ("ri", "loT", 3, "riRutAt", "7.1.35+8.4.56"),
 ];
 
 fn lan_a_form(id: &str, pu: Purusha, va: Vacana) -> String {
@@ -1981,7 +2077,7 @@ fn every_alternate_names_a_real_cell() {
 /// `exactly_the_pinned_vikalpa_rules_are_optional` in `panini-prakriya`;
 /// duplicated here rather than exported because this is an integration test
 /// and the rule table is crate-internal.
-const VIKALPA_RULES: &[&str] = &["6.4.107", "8.4.56"];
+const VIKALPA_RULES: &[&str] = &["7.1.35", "6.4.107", "8.4.56"];
 
 /// `ALTERNATES` is otherwise 154 bare strings, and a string can be right for
 /// the wrong reason — `BavatAt` is a real form whether or not 8.4.56 is what
@@ -2277,15 +2373,24 @@ fn known_nonforms_are_invalid() {
         // one) and blindly voices whatever the actual last character is —
         // real form Bavati
         "aBavaD", // `s.push('d')` mistaken for `s.push('D')`: the wrong jaś
-                  // substitute (aspirated, not the plain voiced stop the sūtra names)
-                  // — real form aBavad
-                  // 8.4.56's `is_jhal(last)` guard (Step 11 mutation 3) has since been
-                  // deleted outright — it was dead code, subsumed by the `cartva_of`
-                  // let-else right below it — so there is no longer a mutation for it
-                  // to pin here. 8.4.56's `vikalpa: true` -> `false` (mutation 4)
-                  // removes the `d`-form rather than adding a non-form, so it is
-                  // caught by `derivation_set_is_exactly_pinned`'s index-0 assertion,
-                  // not by a pin in this list.
+        // substitute (aspirated, not the plain voiced stop the sūtra names)
+        // — real form aBavad
+        // 8.4.56's `is_jhal(last)` guard (Step 11 mutation 3) has since been
+        // deleted outright — it was dead code, subsumed by the `cartva_of`
+        // let-else right below it — so there is no longer a mutation for it
+        // to pin here. 8.4.56's `vikalpa: true` -> `false` (mutation 4)
+        // removes the `d`-form rather than adding a non-form, so it is
+        // caught by `derivation_set_is_exactly_pinned`'s index-0 assertion,
+        // not by a pin in this list.
+        // 7.1.35 tātaṅ. Because the rule is optional, a broken guard ADDS a
+        // wrong second form rather than replacing a right one — invisible to
+        // any test that only asks whether the right form still derives.
+        "ApnotAt", // 7.1.35 failing to clear Pit / set Ngit, so 7.3.84's
+        // second (vikaraṇa-relative) application guṇates śnu — real form
+        // ApnutAt
+        "kliSAnatAt", // 7.1.35 ordered AFTER 3.1.83 instead of above it, so
+                      // śnā had already become śāna when the ending was still `hi` — real
+                      // form kliSnItAt
     ] {
         assert!(
             matches!(engine.check(bad).verdict, Verdict::Invalid),

@@ -1005,3 +1005,51 @@ fn ahinma_trace_shows_the_optional_lopa_after_the_augment() {
     assert!(r.contains(&"6.4.107".to_string()), "got {r:?}");
     assert!(r.contains(&"8.4.2".to_string()), "ṇatva reaches the fork");
 }
+
+#[test]
+fn klishnitat_trace_pins_tatan_above_3_1_83() {
+    // kliś loṭ madhyama eka, tātaṅ branch. 7.1.35 replaces `hi` BEFORE
+    // 3.1.83 can see it, so śnā is never reshaped to śāna; 6.4.113 then
+    // gives nI. This is the pin that fails if 7.1.35 is ever moved down —
+    // the absence of 3.1.83 is the assertion, not the surface form, because
+    // the wrong order still produces a plausible-looking word.
+    let t = trace_for("kliSnItAt");
+    assert!(t.contains(&"7.1.35".to_string()), "got {t:?}");
+    assert!(!t.contains(&"3.1.83".to_string()), "got {t:?}");
+    assert!(t.contains(&"6.4.113".to_string()), "got {t:?}");
+    assert!(t.contains(&"8.4.56".to_string()), "got {t:?}");
+}
+
+#[test]
+fn apnutat_trace_shows_tatan_blocking_the_vikarana_guna() {
+    // Ap loṭ prathama eka, tātaṅ branch. `tu` is pit and guṇates śnu
+    // (Apnotu); tātaṅ is ṅit and 1.1.5 blocks the same application, so the
+    // vikaraṇa stays `nu`. 7.3.84 must be absent entirely: the first
+    // (root-relative) application never fires in svādi either.
+    let t = trace_for("ApnutAt");
+    assert!(t.contains(&"7.1.35".to_string()), "got {t:?}");
+    assert!(!t.contains(&"7.3.84".to_string()), "got {t:?}");
+}
+
+#[test]
+fn bhavatu_forks_twice_into_three_branches() {
+    // The first derivation in the engine on which TWO optional rules stack.
+    // 7.1.35 forks Bavatu into a tātaṅ branch; 8.2.39 then voices that
+    // branch's final t obligatorily; 8.4.56 forks it again. Index 0 is
+    // still the declined derivation.
+    let engine = Panini::new();
+    let mut forms: Vec<String> = engine
+        .check("BavatAt")
+        .analyses
+        .iter()
+        .map(|a| a.form_slp1.clone())
+        .collect();
+    forms.sort();
+    forms.dedup();
+    assert_eq!(forms, vec!["BavatAt".to_string()]);
+
+    let t = trace_for("BavatAd");
+    assert!(t.contains(&"7.1.35".to_string()), "got {t:?}");
+    assert!(t.contains(&"8.2.39".to_string()), "got {t:?}");
+    assert!(!t.contains(&"8.4.56".to_string()), "got {t:?}");
+}
