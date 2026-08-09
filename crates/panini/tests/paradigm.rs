@@ -2395,9 +2395,12 @@ fn known_nonforms_are_invalid() {
         // form kliSnItAt
         // 3.4.110/111 Śākaṭāyana's jus. Optional, so a broken guard adds a
         // wrong form rather than removing a right one.
-        "aBavuH", // 3.4.111 firing after a non-ā aṅga — real form aBavan
-        "yuH",    // 3.4.111 not gated to laṅ, so laṭ's yAnti forks — real
-                  // form yAnti
+        "aBavuH", // 3.4.111 losing BOTH of its second `if`'s conjuncts (the
+        // ā-check and the SHAP-empty check together, not either alone —
+        // dropping only the ā-check still declines on SHAP being `Bava`'s
+        // live śap `a`) — real form aBavan
+        "yuH", // 3.4.111 not gated to laṅ, so laṭ's yAnti forks — real
+               // form yAnti
     ] {
         assert!(
             matches!(engine.check(bad).verdict, Verdict::Invalid),

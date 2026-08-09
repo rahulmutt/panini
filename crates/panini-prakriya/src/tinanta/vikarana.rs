@@ -206,23 +206,27 @@ pub(crate) static VIKARANA: &[Rule] = &[
     // the tiṅ stage (laṅ is ṅit-like and this is parasmaipada). The term is
     // still jhi — 3.4.110/111 replace the whole of it — but its text is not.
     //
-    // The ā is read AFFIX-RELATIVELY via sound_before_ending, not from the
-    // dhātu. For adādi the two agree, because śap is luk'd; they diverge the
-    // moment a thematic ā-final root lands, whose śap would stand between
-    // the ā and the ending and defeat 3.4.110's condition. Reading the dhātu
-    // would over-fire there, silently, on a branch nobody inspects. Placing
-    // the rule after 2.4.72 is what makes the affix-relative reading
-    // available at all — and it is also what forces the `J` guard above.
+    // The ā is read AFFIX-RELATIVELY via sound_before_ending, rather than by
+    // hardcoding a term position, so it keeps working if a future gaṇa's
+    // vikaraṇa is luk'd the same way adādi's śap is. Placing the rule after
+    // 2.4.72 is what makes that reading available at all — and it is also
+    // what forces the `J` guard above.
     //
-    // `sound_before_ending` alone is not enough: kryādi's śnā vikaraṇa is
-    // itself `A`-final ("nA"), so it satisfies the same character test
-    // without the DHĀTU being ā-final at all (kliS ends in `S`) — akliSnan
-    // was forking into a spurious akliSnuH until this was added. The extra
-    // `SHAP.text.is_empty()` conjunct confirms the sound sound_before_ending
-    // found really is the aṅga's own — true for adādi (śap luk'd) and false
-    // for any live vikaraṇa, kryādi's śnā included — without reading the ā
-    // itself from the dhātu (which is what the guard test's 4th case, a
-    // thematic ā-final root with a live vikaraṇa, is there to keep honest).
+    // But sound_before_ending alone is not enough to gate this to adādi: it
+    // reports whatever sound truly precedes the ending, and kryādi's śnā
+    // vikaraṇa is itself `A`-final ("nA", reduced to n/nI only later by
+    // 6.4.112/6.4.113) — so it reports the same `A` the adādi witnesses do,
+    // even though the DHĀTU there (kliS) is a consonant-final root with no
+    // claim on 3.4.110 at all. The brief's literal guard, lacking the extra
+    // conjunct below, forked `akliSnan` into a spurious `akliSnan`/`akliSnuH`
+    // for exactly this reason. `SHAP.text.is_empty()` is what excludes it: it
+    // holds only when nothing but the aṅga itself could be the sound
+    // sound_before_ending found — true for adādi (śap luk'd by 2.4.72),
+    // false for any live vikaraṇa, kryādi's śnā included. The guard test's
+    // 4th case (a live vikaraṇa standing between a thematic ā-final aṅga and
+    // the ending) is what witnesses sound_before_ending's own contribution —
+    // it must decline on the character check, not merely on this conjunct,
+    // which is why the character check is ordered first below.
     //
     // Must sit above 7.1.3 jho'ntaḥ, which turns a surviving `J` into `ant`.
     Rule {
@@ -234,7 +238,7 @@ pub(crate) static VIKARANA: &[Rule] = &[
             if !matches!(p.ctx.lakara, Lakara::Lan) || p.terms[ENDING].text != "J" {
                 return false;
             }
-            if !p.terms[SHAP].text.is_empty() || sound_before_ending(p) != Some('A') {
+            if sound_before_ending(p) != Some('A') || !p.terms[SHAP].text.is_empty() {
                 return false;
             }
             let before = p.snapshot();
