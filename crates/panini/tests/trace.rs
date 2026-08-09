@@ -1053,3 +1053,16 @@ fn bhavatu_forks_twice_into_three_branches() {
     assert!(t.contains(&"8.2.39".to_string()), "got {t:?}");
     assert!(!t.contains(&"8.4.56".to_string()), "got {t:?}");
 }
+
+#[test]
+fn ayuh_trace_is_the_shakatayana_jus_path() {
+    // yā laṅ prathama bahu, Śākaṭāyana branch. 3.4.111 replaces jhi with
+    // jus before 7.1.3 can turn it into `ant`; 6.1.96's junction arm then
+    // elides the aṅga's ā across the boundary (ayA + us -> ay + us), and
+    // 8.3.15 gives the visarga.
+    let t = trace_for("ayuH");
+    assert!(t.contains(&"3.4.111".to_string()), "got {t:?}");
+    assert!(!t.contains(&"7.1.3".to_string()), "got {t:?}");
+    assert!(t.contains(&"6.1.96".to_string()), "got {t:?}");
+    assert!(t.contains(&"8.3.15".to_string()), "got {t:?}");
+}

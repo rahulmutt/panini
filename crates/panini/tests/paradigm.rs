@@ -1958,6 +1958,8 @@ const ALTERNATES: &[(&str, &str, usize, &str, &str)] = &[
     ("ri", "loT", 0, "riRutAt", "7.1.35+8.4.56"),
     ("ri", "loT", 3, "riRutAd", "7.1.35"),
     ("ri", "loT", 3, "riRutAt", "7.1.35+8.4.56"),
+    ("yA", "laN", 2, "ayuH", "3.4.111"),
+    ("vA", "laN", 2, "avuH", "3.4.111"),
 ];
 
 fn lan_a_form(id: &str, pu: Purusha, va: Vacana) -> String {
@@ -2077,7 +2079,7 @@ fn every_alternate_names_a_real_cell() {
 /// `exactly_the_pinned_vikalpa_rules_are_optional` in `panini-prakriya`;
 /// duplicated here rather than exported because this is an integration test
 /// and the rule table is crate-internal.
-const VIKALPA_RULES: &[&str] = &["7.1.35", "6.4.107", "8.4.56"];
+const VIKALPA_RULES: &[&str] = &["7.1.35", "3.4.111", "6.4.107", "8.4.56"];
 
 /// `ALTERNATES` is otherwise 154 bare strings, and a string can be right for
 /// the wrong reason — `BavatAt` is a real form whether or not 8.4.56 is what
@@ -2389,8 +2391,13 @@ fn known_nonforms_are_invalid() {
         // second (vikaraṇa-relative) application guṇates śnu — real form
         // ApnutAt
         "kliSAnatAt", // 7.1.35 ordered AFTER 3.1.83 instead of above it, so
-                      // śnā had already become śāna when the ending was still `hi` — real
-                      // form kliSnItAt
+        // śnā had already become śāna when the ending was still `hi` — real
+        // form kliSnItAt
+        // 3.4.110/111 Śākaṭāyana's jus. Optional, so a broken guard adds a
+        // wrong form rather than removing a right one.
+        "aBavuH", // 3.4.111 firing after a non-ā aṅga — real form aBavan
+        "yuH",    // 3.4.111 not gated to laṅ, so laṭ's yAnti forks — real
+                  // form yAnti
     ] {
         assert!(
             matches!(engine.check(bad).verdict, Verdict::Invalid),

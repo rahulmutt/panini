@@ -136,11 +136,20 @@ pub(crate) static ADESHA: &[Rule] = &[
         },
     },
     // 6.1.96 usyapadāntāt: an a/ā immediately before the ending `us` is
-    // elided (a single substitution in the ekaḥ pūrvaparayoḥ section). Fires
-    // only for adādi vidhiliṅ 3pl: after 7.2.79 strips yāsuṭ's s, the ending
-    // is `yAus`, and here the ā before `us` drops -> `yus` -> yA + yuH.
-    // Inert for the thematic gaṇas: 7.2.80 has already rewritten their liṅ
-    // 3pl ending to `iyus`, whose segment before `us` is `y`, not a/ā.
+    // elided (a single substitution in the ekaḥ pūrvaparayoḥ section). Two
+    // arms, one sūtra:
+    // - Ending arm: the a/ā sits INSIDE the ending. Fires for adādi vidhiliṅ
+    //   3pl — after 7.2.79 strips yāsuṭ's s the ending is `yAus`, and the ā
+    //   before `us` drops -> `yus` -> yA + yuH. Inert for the thematic
+    //   gaṇas: 7.2.80 has already rewritten their liṅ 3pl ending to `iyus`,
+    //   whose segment before `us` is `y`, not a/ā.
+    // - Junction arm: the ending is a bare `us`, so the a/ā to elide is the
+    //   aṅga's final sound. ayA + us -> ay + us -> ayuH. Reachable ONLY via
+    //   3.4.111, which is its sole witness today: 3.4.108 jher jus is
+    //   vidhiliṅ-only, and by the time this rule runs in vidhiliṅ the yāsuṭ
+    //   of 3.4.103 has already made the ending `yAus` (or `yus`, if the
+    //   ending arm fired). Every other cell reaches here with an ending that
+    //   is not `us` at all.
     Rule {
         id: "6.1.96",
         name: "usyapadAntAt",
@@ -155,12 +164,32 @@ pub(crate) static ADESHA: &[Rule] = &[
             // the char immediately before the final `us` (None if the ending
             // is just "us", which wrapping_sub keeps panic-free)
             let pre = e.chars().nth(n.wrapping_sub(3));
-            if !matches!(pre, Some('a') | Some('A')) {
+            if matches!(pre, Some('a') | Some('A')) {
+                let before = p.snapshot();
+                let kept: String = e.chars().take(n - 3).collect();
+                p.terms[ENDING].text = format!("{kept}us");
+                p.record("6.1.96", "usyapadAntAt", before);
+                return true;
+            }
+            if pre.is_some() {
+                return false;
+            }
+            // Junction arm: nothing precedes `us` inside the ending, so look
+            // to the nearest non-empty term before it.
+            let Some(prev) = p.terms[..ENDING].iter().rposition(|t| !t.text.is_empty()) else {
+                return false;
+            };
+            // `prev`'s text is non-empty by the `rposition` predicate above,
+            // so `.last()` is always `Some`; a second `let-else` here would
+            // be dead code no input could ever reach.
+            let last = p.terms[prev].text.chars().last().unwrap();
+            if !matches!(last, 'a' | 'A') {
                 return false;
             }
             let before = p.snapshot();
-            let kept: String = e.chars().take(n - 3).collect();
-            p.terms[ENDING].text = format!("{kept}us");
+            let mut s: Vec<char> = p.terms[prev].text.chars().collect();
+            s.pop();
+            p.terms[prev].text = s.into_iter().collect();
             p.record("6.1.96", "usyapadAntAt", before);
             true
         },
@@ -796,6 +825,53 @@ mod tests {
         let rule = rules().find(|r| r.id == "6.1.96").unwrap();
         assert!((rule.apply)(&mut p));
         assert_eq!(p.terms[ENDING].text, "yAus");
+    }
+
+    /// 6.1.96 has two arms. The original elides an a/ā that sits INSIDE the
+    /// ending, before its final `us` (the yāsuṭ case, yAus -> yus). The
+    /// junction arm elides the aṅga's final a/ā when the ending is a bare
+    /// `us`, reachable only via 3.4.111, which is its sole witness today.
+    #[test]
+    fn usyapadantat_has_an_ending_arm_and_a_junction_arm() {
+        let rule = rules().find(|r| r.id == "6.1.96").unwrap();
+
+        // junction arm: ayA + us -> ay + us
+        let mut p = Prakriya {
+            terms: vec![Term::new("ayA"), Term::new(""), Term::new("us")],
+            ..Default::default()
+        };
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.text(), "ayus");
+
+        // ending arm, unchanged: the a/ā is inside the ending
+        let mut p = Prakriya {
+            terms: vec![Term::new("yA"), Term::new(""), Term::new("yAus")],
+            ..Default::default()
+        };
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.terms[ENDING].text, "yus");
+
+        // junction arm declines when the aṅga is not a/ā-final
+        let mut p = Prakriya {
+            terms: vec![Term::new("yAy"), Term::new(""), Term::new("us")],
+            ..Default::default()
+        };
+        assert!(!(rule.apply)(&mut p));
+    }
+
+    #[test]
+    fn usyapadantat_junction_arm_declines_when_nothing_precedes_us() {
+        // No non-empty term stands before a bare `us` ending. This state
+        // never arises from any real derivation (the aṅga always carries
+        // text), but the junction arm's own `rposition` guard must still
+        // decline rather than panic on it — pinned directly so that guard
+        // has a witness under mutation testing.
+        let mut p = Prakriya {
+            terms: vec![Term::new(""), Term::new(""), Term::new("us")],
+            ..Default::default()
+        };
+        let rule = rules().find(|r| r.id == "6.1.96").unwrap();
+        assert!(!(rule.apply)(&mut p));
     }
 
     // --- 6.1.101 adAdi arm: `len() > ENDING` boundary pin ------------------

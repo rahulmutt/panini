@@ -15,7 +15,8 @@ use crate::it_samjna::run_it_samjna;
 use crate::rule::{Rule, RuleKind};
 use crate::term::{Tag, Term};
 use crate::tinanta::sound::is_vowel;
-use crate::tinanta::terms::{ANGA, ENDING, SHAP};
+use crate::tinanta::terms::{ANGA, ENDING, SHAP, sound_before_ending};
+use panini_data::Lakara;
 
 pub(crate) static VIKARANA: &[Rule] = &[
     // 3.1.69 divādibhyaḥ śyan: divādi (gaṇa 4) takes śyan, not śap. Apavāda
@@ -193,6 +194,58 @@ pub(crate) static VIKARANA: &[Rule] = &[
             true
         },
     },
+    // 3.4.110 ātaḥ / 3.4.111 laṅaḥ śākaṭāyanasyaiva: after an ā-final aṅga,
+    // jhi is replaced by jus — and in laṅ that replacement is Śākaṭāyana's,
+    // i.e. OPTIONAL. One rule implements the pair, cited under 3.4.111,
+    // because 3.4.110 supplies only the condition and is never separately
+    // observable here; vidyut-prakriya records the single step the same way.
+    // Its witnesses are the two ā-final adādi roots: ayAn / ayuH, avAn /
+    // avuH.
+    //
+    // `J`, not `Ji`: 3.4.100 itaś ca has already dropped jhi's final `i` in
+    // the tiṅ stage (laṅ is ṅit-like and this is parasmaipada). The term is
+    // still jhi — 3.4.110/111 replace the whole of it — but its text is not.
+    //
+    // The ā is read AFFIX-RELATIVELY via sound_before_ending, not from the
+    // dhātu. For adādi the two agree, because śap is luk'd; they diverge the
+    // moment a thematic ā-final root lands, whose śap would stand between
+    // the ā and the ending and defeat 3.4.110's condition. Reading the dhātu
+    // would over-fire there, silently, on a branch nobody inspects. Placing
+    // the rule after 2.4.72 is what makes the affix-relative reading
+    // available at all — and it is also what forces the `J` guard above.
+    //
+    // `sound_before_ending` alone is not enough: kryādi's śnā vikaraṇa is
+    // itself `A`-final ("nA"), so it satisfies the same character test
+    // without the DHĀTU being ā-final at all (kliS ends in `S`) — akliSnan
+    // was forking into a spurious akliSnuH until this was added. The extra
+    // `SHAP.text.is_empty()` conjunct confirms the sound sound_before_ending
+    // found really is the aṅga's own — true for adādi (śap luk'd) and false
+    // for any live vikaraṇa, kryādi's śnā included — without reading the ā
+    // itself from the dhātu (which is what the guard test's 4th case, a
+    // thematic ā-final root with a live vikaraṇa, is there to keep honest).
+    //
+    // Must sit above 7.1.3 jho'ntaḥ, which turns a surviving `J` into `ant`.
+    Rule {
+        id: "3.4.111",
+        name: "laNaH SAkawAyanasyEva",
+        kind: RuleKind::Vidhi,
+        vikalpa: true,
+        apply: |p| {
+            if !matches!(p.ctx.lakara, Lakara::Lan) || p.terms[ENDING].text != "J" {
+                return false;
+            }
+            if !p.terms[SHAP].text.is_empty() || sound_before_ending(p) != Some('A') {
+                return false;
+            }
+            let before = p.snapshot();
+            p.terms[ENDING].text = "jus".into();
+            p.record("3.4.111", "laNaH SAkawAyanasyEva", before);
+            let before = p.snapshot();
+            p.terms[ENDING].text = "us".into();
+            p.record("1.3.9", "tasya lopaH", before);
+            true
+        },
+    },
     // 3.1.83 halaḥ śnaḥ śānac: after a CONSONANT-final root, with `hi`
     // following, śnā is replaced wholesale by śānac. it-samjña strips the
     // leading S (1.3.8) and the final c (1.3.3), leaving `Ana`; the existing
@@ -275,9 +328,11 @@ pub(crate) static VIKARANA: &[Rule] = &[
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::context::Context;
     use crate::prakriya::Prakriya;
     use crate::term::Term;
     use crate::tinanta::rules;
+    use panini_data::{Lakara, Pada, Purusha, Vacana};
 
     #[test]
     fn svadibhyah_shnu_inserts_nu_for_svadi_only() {
@@ -505,6 +560,55 @@ mod tests {
             ..Default::default()
         };
         let rule = rules().find(|r| r.id == "3.1.83").unwrap();
+        assert!(!(rule.apply)(&mut p));
+    }
+
+    /// A laṅ prakriyā `[ANGA, SHAP, ENDING]` with the given texts. The ctx
+    /// matters here: 3.4.111 is one of the few vikaraṇa-stage rules that
+    /// reads the lakāra.
+    fn lan_prakriya(anga: &str, shap: &str, ending: &str) -> Prakriya {
+        Prakriya {
+            terms: vec![Term::new(anga), Term::new(shap), Term::new(ending)],
+            ctx: Context::new(
+                Lakara::Lan,
+                Pada::Parasmaipada,
+                Purusha::Prathama,
+                Vacana::Bahu,
+            ),
+            ..Default::default()
+        }
+    }
+
+    /// 3.4.111 replaces jhi with jus in laṅ after an ā — optionally, per
+    /// Śākaṭāyana. The ending's text at this point is `J`, not `Ji`: 3.4.100
+    /// itaś ca has already dropped the final `i` in the tiṅ stage.
+    #[test]
+    fn shakatayana_jus_needs_lan_a_and_jhi() {
+        let rule = rules().find(|r| r.id == "3.4.111").unwrap();
+
+        let mut p = lan_prakriya("yA", "", "J");
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.terms[ENDING].text, "us");
+
+        // not ā-final
+        let mut p = lan_prakriya("Bava", "", "J");
+        assert!(!(rule.apply)(&mut p));
+
+        // not jhi
+        let mut p = lan_prakriya("yA", "", "t");
+        assert!(!(rule.apply)(&mut p));
+
+        // a live vikaraṇa stands between the ā and the ending, so the ā is
+        // not what precedes the ending — the affix-relative reading
+        let mut p = lan_prakriya("yA", "a", "J");
+        assert!(!(rule.apply)(&mut p));
+
+        // kryādi's śnā vikaraṇa is itself `A`-final ("nA"), so
+        // sound_before_ending alone would find the same character the aṅga
+        // arm looks for — even though the DHĀTU (kliS) is a consonant-final
+        // root and 3.4.110's ātaḥ has nothing to do with this cell. The
+        // `SHAP.text.is_empty()` conjunct is what still declines here.
+        let mut p = lan_prakriya("kliS", "nA", "J");
         assert!(!(rule.apply)(&mut p));
     }
 }
