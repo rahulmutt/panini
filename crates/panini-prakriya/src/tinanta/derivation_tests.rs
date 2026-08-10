@@ -119,8 +119,8 @@ fn tinanta_rule_order_is_pinned() {
         "7.3.100", "7.1.5", "7.1.6", "7.1.3", "7.2.79", "7.2.80", "7.2.81", "6.4.23", "7.4.21",
         "7.3.84", "7.3.86", "7.3.84", "6.4.87", "6.4.77", "6.1.78", "7.3.101", "6.4.112",
         "6.4.113", "6.1.101", "6.1.96", "6.1.90", "6.1.97", "6.1.87", "6.1.66", "6.4.105",
-        "6.4.106", "6.4.107", "6.4.101", "8.2.77", "8.2.23", "8.2.25", "8.2.39", "8.3.15",
-        "8.3.59", "8.4.55", "8.4.1", "8.4.2", "8.4.56",
+        "6.4.106", "6.4.107", "6.4.101", "6.4.111", "8.2.77", "8.2.23", "8.2.25", "8.2.39",
+        "8.3.15", "8.3.59", "8.4.55", "8.4.1", "8.4.2", "8.4.56",
     ];
     let actual: Vec<&str> = rules().map(|r| r.id).collect();
     assert_eq!(actual, expected);
@@ -1153,5 +1153,28 @@ fn rudhadi_strong_cells() {
     assert_eq!(
         form_g("Kid", Lakara::Lot, Purusha::Uttama, Vacana::Eka),
         "KinadE"
+    );
+}
+
+#[test]
+fn rudhadi_weak_cells_lose_shnams_a() {
+    // 6.4.111 fires before a kṅit sārvadhātuka and makes the strong/weak
+    // split visible. These are the cells 8.4.65 does NOT fork, so they are
+    // safe to assert with `form_g` at this stage.
+    assert_eq!(
+        form_g("kft", Lakara::Lat, Purusha::Prathama, Vacana::Bahu),
+        "kfntanti"
+    );
+    assert_eq!(
+        form_g("kft", Lakara::Lat, Purusha::Uttama, Vacana::Dvi),
+        "kfntvaH"
+    );
+    assert_eq!(
+        form_g("Kid", Lakara::Lat, Purusha::Uttama, Vacana::Eka),
+        "Kinde"
+    );
+    assert_eq!(
+        form_g("Kid", Lakara::VidhiLin, Purusha::Prathama, Vacana::Eka),
+        "KindIta"
     );
 }
