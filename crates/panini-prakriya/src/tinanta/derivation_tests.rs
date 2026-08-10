@@ -120,7 +120,8 @@ fn tinanta_rule_order_is_pinned() {
         "7.3.84", "7.3.86", "7.3.84", "6.4.87", "6.4.77", "6.1.78", "7.3.101", "6.4.112",
         "6.4.113", "6.1.101", "6.1.96", "6.1.90", "6.1.97", "6.1.87", "6.1.66", "6.4.105",
         "6.4.106", "6.4.107", "6.4.101", "6.4.111", "8.2.77", "8.2.23", "8.2.25", "8.2.39",
-        "8.3.15", "8.3.24", "8.3.59", "8.4.53", "8.4.55", "8.4.1", "8.4.2", "8.4.58", "8.4.56",
+        "8.3.15", "8.3.24", "8.3.59", "8.4.53", "8.4.55", "8.4.1", "8.4.2", "8.4.58", "8.4.65",
+        "8.4.56",
     ];
     let actual: Vec<&str> = rules().map(|r| r.id).collect();
     assert_eq!(actual, expected);
@@ -134,7 +135,7 @@ fn tinanta_rule_order_is_pinned() {
 #[test]
 fn exactly_the_pinned_vikalpa_rules_are_optional() {
     let actual: Vec<&str> = rules().filter(|r| r.vikalpa).map(|r| r.id).collect();
-    let expected = ["7.1.35", "3.4.111", "6.4.107", "8.4.56"];
+    let expected = ["7.1.35", "3.4.111", "6.4.107", "8.4.65", "8.4.56"];
     assert_eq!(actual, expected);
 }
 
@@ -1211,8 +1212,18 @@ fn rudhadi_lot_madhyama_eka_takes_jashtva() {
     // 7.1.35 tātaṅ optionally forks this cell (parasmaipada loṭ madhyama
     // eka), independently of anything in this slice; branch 0 is the
     // derivation with no optional rule applied.
+    //
+    // 8.4.65 jharo jhari savarṇe (Task 7) stacks on top of that fork: it
+    // optionally elides the weak stem's `n` before `D`/`t` wherever a jhal
+    // precedes it, on both the tātaṅ and non-tātaṅ branches. 8.4.56
+    // vāvasāne then optionally forks the tātaṅ branches' pada-final vowel-
+    // adjacent `t`/`d` at pause but declines on the two vowel-final
+    // non-tātaṅ branches (kfndDi, kfnDi) — so k = 3 optional forks give six
+    // derivations, not eight: kfndDi, kfnDi (8.4.65), kfnttAd (7.1.35),
+    // kfntAd (7.1.35+8.4.65), kfnttAt (7.1.35+8.4.56), kfntAt
+    // (7.1.35+8.4.65+8.4.56).
     assert_eq!(
-        form_g_forked("kft", Lakara::Lot, Purusha::Madhyama, Vacana::Eka, 3),
+        form_g_forked("kft", Lakara::Lot, Purusha::Madhyama, Vacana::Eka, 6),
         "kfndDi"
     );
     // √hiṃs reaches the same cell through 8.2.25 instead: its stem-final
@@ -1222,4 +1233,38 @@ fn rudhadi_lot_madhyama_eka_takes_jashtva() {
         form_g_forked("his", Lakara::Lot, Purusha::Madhyama, Vacana::Eka, 3),
         "hinDi"
     );
+}
+
+#[test]
+fn rudhadi_savarna_elision_forks() {
+    // The declined branch keeps both consonants and is index 0.
+    assert_eq!(
+        form_g_forked("kft", Lakara::Lat, Purusha::Prathama, Vacana::Dvi, 2),
+        "kfnttaH"
+    );
+    assert_eq!(
+        form_g_forked("Kid", Lakara::Lat, Purusha::Prathama, Vacana::Eka, 2),
+        "Kintte"
+    );
+    // √hiṃs never forks here: `s` and `t` are not savarṇa.
+    assert_eq!(
+        form_g("his", Lakara::Lat, Purusha::Prathama, Vacana::Dvi),
+        "hiMstaH"
+    );
+}
+
+#[test]
+fn rudhadi_savarna_elision_derives_both_members() {
+    let d = dhatus().iter().find(|d| d.id == "kft").unwrap();
+    let forms: Vec<String> = derive(
+        d,
+        Lakara::Lat,
+        Pada::Parasmaipada,
+        Purusha::Prathama,
+        Vacana::Dvi,
+    )
+    .iter()
+    .map(|p| p.text())
+    .collect();
+    assert_eq!(forms, vec!["kfnttaH".to_string(), "kfntaH".to_string()]);
 }

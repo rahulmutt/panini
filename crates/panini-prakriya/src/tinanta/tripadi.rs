@@ -8,8 +8,8 @@ use crate::prakriya::Prakriya;
 use crate::rule::{Rule, RuleKind};
 use crate::term::Tag;
 use crate::tinanta::sound::{
-    cartva_of, is_jhal, is_khar, is_natva_intervener, is_natva_trigger, is_vowel, jashtva_of,
-    parasavarna_of,
+    cartva_of, is_jhal, is_khar, is_natva_intervener, is_natva_trigger, is_savarna, is_vowel,
+    jashtva_of, parasavarna_of,
 };
 use crate::tinanta::terms::{ANGA, ENDING, SHAP};
 
@@ -29,6 +29,14 @@ fn word_chars(p: &Prakriya) -> Vec<(usize, usize, char)> {
 fn set_char(p: &mut Prakriya, term: usize, idx: usize, to: char) {
     let mut s: Vec<char> = p.terms[term].text.chars().collect();
     s[idx] = to;
+    p.terms[term].text = s.into_iter().collect();
+}
+
+/// Delete one character of one term, addressed as `word_chars` reports it.
+/// Companion to `set_char`, for the rules that elide rather than substitute.
+fn remove_char(p: &mut Prakriya, term: usize, idx: usize) {
+    let mut s: Vec<char> = p.terms[term].text.chars().collect();
+    s.remove(idx);
     p.terms[term].text = s.into_iter().collect();
 }
 
@@ -411,26 +419,53 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // unaspirated). √ad's d before ti/tas/si/tha → t: atti, attaH, atsi, atTa.
     // The engine's first internal junction sandhi; general, reused by every
     // later gaṇa/subanta slice. Placed last: latest tripādī rule (8.4 > 8.3).
+    //
+    // FIXED for rudhādi's ANGA/SHAP split (Task 7, √khid's Kintte the
+    // witness). This rule predates gaṇa 7 and originally read
+    // `p.terms[ANGA]` directly for both "the aṅga's final sound" and, via
+    // "the first non-empty term after ANGA", for "the ending's first
+    // sound" — sound reasoning only while ANGA held the whole root and
+    // SHAP was either empty (adādi's luk) or a genuine vikaraṇa. rudhādi's
+    // śnam-split root (3.1.78) puts the root's OWN tail in SHAP (`Ki` /
+    // `nd` for Kid's weak stem), so the old code asked about `i` (ANGA's
+    // vowel) meeting `n` (SHAP's own first char) — never the real
+    // boundary, SHAP's `d` meeting the ending's `t`. Kindte, not Kintte,
+    // was the result. Now the target is the last non-empty term's final
+    // char before `ENDING` (matching `sound_before_ending`'s reasoning in
+    // `terms.rs`; open-coded rather than calling it, joining 8.3.59 and
+    // 7.1.5 as the enumerated duplicates that helper's doc comment tracks,
+    // because this rule also needs the term index to write back into), and
+    // the trigger is `ENDING`'s own first sound directly, since tripādī
+    // rules always run after 3.1.68 and `ENDING` is always the pada's last
+    // term. √ad is unaffected: SHAP is empty there, so both reads reduce
+    // to exactly what they were.
     Rule {
         id: "8.4.55",
         name: "Kari ca",
         kind: RuleKind::Vidhi,
         vikalpa: false,
         apply: |p| {
-            // The following segment is the first char of the first non-empty
-            // term after the aṅga (the ending; śap, if present, is luk'd/empty).
-            let next = p
-                .terms
-                .iter()
-                .skip(ANGA + 1)
-                .find_map(|t| t.text.chars().next());
+            let next = p.terms.get(ENDING).and_then(|t| t.text.chars().next());
             let Some(next) = next else { return false };
             if !is_khar(next) {
                 return false;
             }
-            let Some(last) = p.terms[ANGA].text.chars().last() else {
+            let Some((term, idx)) =
+                p.terms[..ENDING]
+                    .iter()
+                    .enumerate()
+                    .rev()
+                    .find_map(|(ti, t)| {
+                        if t.text.is_empty() {
+                            None
+                        } else {
+                            Some((ti, t.text.chars().count() - 1))
+                        }
+                    })
+            else {
                 return false;
             };
+            let last = p.terms[term].text.chars().nth(idx).unwrap();
             if !is_jhal(last) {
                 return false;
             }
@@ -441,10 +476,7 @@ pub(crate) static TRIPADI: &[Rule] = &[
                 return false;
             }
             let before = p.snapshot();
-            let mut s: Vec<char> = p.terms[ANGA].text.chars().collect();
-            s.pop();
-            s.push(sub);
-            p.terms[ANGA].text = s.into_iter().collect();
+            set_char(p, term, idx, sub);
             p.record("8.4.55", "Kari ca", before);
             true
         },
@@ -567,6 +599,57 @@ pub(crate) static TRIPADI: &[Rule] = &[
             let before = p.snapshot();
             set_char(p, term, idx, nasal);
             p.record("8.4.58", "anusvArasya yayi parasavarRaH", before);
+            true
+        },
+    },
+    // 8.4.65 jharo jhari savarṇe (vikalpa): a jhar is optionally elided
+    // before a savarṇa jhar. kfnttaH ~ kfntaH, kfndDi ~ kfnDi,
+    // Kintte ~ Kinte.
+    //
+    // GUARD CARRIES 8.4.64's `halaḥ` BY ANUVṚTTI. 8.4.64 halo yamāṁ yami
+    // lopaḥ sits immediately above this sūtra in the tripādī (verified
+    // against vidyut-prakriya's data/sutrapatha.tsv) and its `halaḥ` —
+    // "when preceded by a consonant" — carries down. Without it this rule
+    // over-applies to kfRatti's `tt`, whose first `t` follows the vowel
+    // `a`, and forks it to *kfRati — contradicting the pinned
+    // `kfRatti` golden. With the guard, kfnttaH's `t` (after `n`) and
+    // kfndDi's `d` (after `n`) fire, while kfRatti's `t` (after `a`)
+    // declines, exactly matching the ALTERNATES table.
+    //
+    // The scan starts at index 1, not 0: index 0 has no preceding sound, so
+    // `halaḥ` cannot be satisfied there and `w[i - 1]` would underflow.
+    //
+    // PLACEMENT AGAINST 8.4.56 IS LOAD-BEARING and unenforceable by the
+    // compiler. Both rules are optional and both sit at the end of the
+    // tripādī. This one must run FIRST: 8.4.56 vāvasāne forks a pada-final
+    // `d` to `t` at pause, and if it ran first only one of this rule's two
+    // branches would receive that fork — kfnttAt would never be derived.
+    // The `kfntAt` trace pin in `super::derivation_tests` is the guard.
+    //
+    // It is also the rule that takes √kṛt's loṭ eka cells to five and six
+    // forms, stacking with 7.1.35 and 8.4.56. That is the deepest fork the
+    // engine produces, and the witness for ARCHITECTURE.md's branch-count
+    // claim: k = 3 gives six branches, not eight, because 8.4.56 declines on
+    // the vowel-final non-tātaṅ branch.
+    Rule {
+        id: "8.4.65",
+        name: "Jaro Jari savarRe",
+        kind: RuleKind::Vidhi,
+        vikalpa: true,
+        apply: |p| {
+            let w = word_chars(p);
+            let Some(pos) = (1..w.len().saturating_sub(1)).find(|i| {
+                !is_vowel(w[i - 1].2)
+                    && is_jhal(w[*i].2)
+                    && is_jhal(w[i + 1].2)
+                    && is_savarna(w[*i].2, w[i + 1].2)
+            }) else {
+                return false;
+            };
+            let (term, idx, _) = w[pos];
+            let before = p.snapshot();
+            remove_char(p, term, idx);
+            p.record("8.4.65", "Jaro Jari savarRe", before);
             true
         },
     },

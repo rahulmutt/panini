@@ -148,6 +148,26 @@ pub(crate) fn parasavarna_of(c: char) -> Option<char> {
     })
 }
 
+/// Are the two sounds *savarṇa* — same place and same manner of closure?
+/// For 8.4.65's purposes that reduces to sharing a stop series: `t` and
+/// `T` are savarṇa, `s` and `t` are not.
+pub(crate) fn is_savarna(a: char, b: char) -> bool {
+    fn series(c: char) -> Option<u8> {
+        Some(match c {
+            'k' | 'K' | 'g' | 'G' => 0,
+            'c' | 'C' | 'j' | 'J' => 1,
+            'w' | 'W' | 'q' | 'Q' => 2,
+            't' | 'T' | 'd' | 'D' => 3,
+            'p' | 'P' | 'b' | 'B' => 4,
+            _ => return None,
+        })
+    }
+    match (series(a), series(b)) {
+        (Some(x), Some(y)) => x == y,
+        _ => false,
+    }
+}
+
 /// 1.3.4 na vibhaktau tusmāḥ: a final tu-varga (t/T/d/D/n), `s`, or `m` of a
 /// vibhakti is NOT an it, so the shared halantyam elision must be suppressed
 /// for such tiṅ endings (e.g. tas, Tas, vas, mas keep their final `s`).
@@ -256,6 +276,39 @@ mod tests {
         for c in ['s', 'S', 'z', 'h'] {
             assert_eq!(jashtva_of(c), None, "{c} should not jashtva");
         }
+    }
+
+    #[test]
+    fn is_savarna_stop_series_all_arms() {
+        // 8.4.65 jharo jhari savarṇe: pin every varga's stop-series directly,
+        // since only the dental arm (t/T/d/D) is reachable from 7a's golden
+        // forms (kfnttaH, kfndDi, Kintte) -- a mutant collapsing the velar,
+        // palatal, retroflex or labial series into the dental one would be
+        // invisible to the whole suite without this. Mirrors
+        // parasavarna_of_stops_all_arms above.
+        for (a, b) in [('k', 'K'), ('g', 'G'), ('k', 'g'), ('K', 'G')] {
+            assert!(is_savarna(a, b), "{a}/{b} should be savarRa (ka-varga)");
+        }
+        for (a, b) in [('c', 'C'), ('j', 'J'), ('c', 'j'), ('C', 'J')] {
+            assert!(is_savarna(a, b), "{a}/{b} should be savarRa (ca-varga)");
+        }
+        for (a, b) in [('w', 'W'), ('q', 'Q'), ('w', 'q'), ('W', 'Q')] {
+            assert!(is_savarna(a, b), "{a}/{b} should be savarRa (wa-varga)");
+        }
+        for (a, b) in [('t', 'T'), ('d', 'D'), ('t', 'd'), ('T', 'D')] {
+            assert!(is_savarna(a, b), "{a}/{b} should be savarRa (ta-varga)");
+        }
+        for (a, b) in [('p', 'P'), ('b', 'B'), ('p', 'b'), ('P', 'B')] {
+            assert!(is_savarna(a, b), "{a}/{b} should be savarRa (pa-varga)");
+        }
+        // s/t are NOT savarRa -- 8.4.65's real guard case (hiMstaH never
+        // forks).
+        assert!(!is_savarna('s', 't'), "s/t should not be savarRa");
+        // A vowel or a sibilant against a stop is never savarRa either.
+        assert!(!is_savarna('a', 't'), "a/t should not be savarRa");
+        assert!(!is_savarna('S', 'c'), "S/c should not be savarRa");
+        // Different stop series are not savarRa with each other.
+        assert!(!is_savarna('t', 'k'), "t/k should not be savarRa");
     }
 
     #[test]
