@@ -275,23 +275,34 @@ gains the ids in these positions:
 
 ```
 8.2.77, 8.2.23, 8.2.25, 8.2.39, 8.2.74, 8.2.73, 8.2.75, 8.3.15, 8.3.24,
-8.3.59, 8.4.53, 8.4.55, 8.4.58, 8.4.1, 8.4.2, 8.4.65, 8.4.56
+8.3.59, 8.4.53, 8.4.55, 8.4.1, 8.4.2, 8.4.58, 8.4.65, 8.4.56
 ```
 
 `exactly_the_pinned_vikalpa_rules_are_optional` goes from four ids to seven:
 `7.1.35, 3.4.111, 6.4.107, 8.4.65, 8.2.74, 8.2.75, 8.4.56`.
 
-### 8.4.58's order against ṇatva is unconstrained
+### 8.4.58 must sit after ṇatva, because of a fold already in the code
 
-No 7a cell takes both 8.4.58's parasavarṇa and 8.4.1's ṇatva: the cells that
-take ṇatva are the strong ones (`kfRatti`), and the ones that take parasavarṇa
-are the weak ones (`kfntaH`). The order above puts 8.4.58 immediately after
-8.4.55 and so before 8.4.1 / 8.4.2, but **no test constrains that**, and the
-placement will look decided when it is not.
+`tripadi.rs`'s `is_natva_target` — the shared precondition for 8.4.1 and 8.4.2
+— **already folds 8.3.24 in as a guard**, with the comment that "a non-padānta
+n before a jhal has ALREADY become an anusvāra by the time the 8.4 rules run,
+and 8.4.58 restores it afterwards", and the note "retire both in favour of the
+real rules when liṭ/luṅ bring 8.3.24 in". It was a simplification taken when
+the engine had no anusvāra machinery.
 
-Record it as open in the code comment. 7b's √bhañj (`BaNktaH`, where 8.2.30
-*coḥ kuḥ* turns `j` to `k` and the preceding nasal must become `N`) is the
-first form likely to constrain it.
+This slice brings the real 8.3.24, but **guarded to rudhādi**, so the fold does
+not become retirable: `BAzante`'s `n` is still an `n` when ṇatva runs, and
+without the fold 8.4.1 would derive `*BAzaRte`. The fold stays.
+
+Given that it stays, 8.4.58's position is *constrained*, not free. Placed
+before ṇatva, `kfMt` would already be `kfnt` when 8.4.1 looks, and the weak
+stem would decline only by falling through the stale fold. Placed after,
+`kfntaH` declines for the right reason — its nasal is genuinely an anusvāra —
+while `kfRatti`, whose `n` precedes a vowel so 8.3.24 never fired, still takes
+ṇatva. **8.4.58 is ordered after 8.4.2.**
+
+The constraint is retired together with the fold, whenever a slice widens
+8.3.24 past rudhādi.
 
 ## What PARADIGM and ALTERNATES become
 
@@ -554,8 +565,9 @@ the test grow.
   rewriting all of them. It is recorded above with its alternatives and the
   reason each was rejected, so a later reader can tell it was chosen rather
   than fallen into.
-- **8.4.58's order against ṇatva is unconstrained by any test in 7a.** Flagged
-  in the code, not just here.
+- **8.4.58's order against ṇatva turned out to be constrained**, by a fold in
+  `is_natva_target` rather than by any sūtra. The fold and the constraint are
+  retired together, and the rule comment says so.
 - **8.2.73's guard is widened past its sūtra's stated *tipi*** to cover sip as
   well, because 8.2.74's *vā* presupposes the `d` as its alternant. A
   deliberate divergence, recorded so it is not later mistaken for a bug — the
