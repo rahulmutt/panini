@@ -43,6 +43,15 @@ fn trace_for(word: &str) -> Vec<String> {
     a.trace.iter().map(|s| s.sutra.clone()).collect()
 }
 
+/// Index of a sūtra in a trace, for the pins that must assert ORDER rather
+/// than mere presence.
+fn at(trace: &[String], sutra: &str) -> usize {
+    trace
+        .iter()
+        .position(|s| s == sutra)
+        .unwrap_or_else(|| panic!("{sutra} absent from {trace:?}"))
+}
+
 #[test]
 fn bhavati_trace_is_exactly_the_base_path() {
     // BU prathama eka: base path, ending `tip` -> `ti`.
@@ -477,15 +486,18 @@ fn adhve_trace_ends_in_dhi_ca() {
     // √ās adādi ātmanepada laṭ 2pl: Dvam → Dve (3.4.79), śap luk'd (2.4.72),
     // then 8.2.25 dhi ca ELIDES the aṅga-final `s` before the `Dh` of Dve:
     // As + Dve -> A + Dve -> ADve. Slice 5d pinned *AdDve here via 8.4.53
-    // jaśtva; that rule is asiddha to this one and has been removed.
+    // jaśtva, before 8.2.25 existed to bleed it on this branch; 8.4.53 itself
+    // is back in the grammar (restored in rudhādi 7a's Task 6), it simply
+    // never gets a chance to fire once 8.2.25 has already removed the `s`.
     assert_eq!(
         trace_for("ADve"),
         vec![
             "1.3.12", "3.4.78", "1.2.4", "3.4.79", "3.1.68", "1.3.9", "2.4.72", "8.2.25"
         ]
     );
-    // Neither junction rule may fire: 8.4.53 is gone, and cartva (8.4.55) is
-    // the voiceless junction, which a `Dh` never triggers.
+    // Neither junction rule may fire: 8.2.25 already elided the aṅga-final
+    // `s` above, so 8.4.53 jaśtva has nothing left to voice, and cartva
+    // (8.4.55) is the voiceless junction, which a `Dh` never triggers.
     assert!(!trace_for("ADve").contains(&"8.4.53".to_string()));
     assert!(!trace_for("ADve").contains(&"8.4.55".to_string()));
 }
@@ -1065,4 +1077,51 @@ fn ayuh_trace_is_the_shakatayana_jus_path() {
     assert!(!t.contains(&"7.1.3".to_string()), "got {t:?}");
     assert!(t.contains(&"6.1.96".to_string()), "got {t:?}");
     assert!(t.contains(&"8.3.15".to_string()), "got {t:?}");
+}
+
+#[test]
+fn krnatti_trace_shows_the_infix_then_natva() {
+    // 3.1.78 splits the root; 8.4.1 then fires across the ANGA/SHAP
+    // junction it created, exactly as it does for kryādi's vf + nA.
+    let t = trace_for("kfRatti");
+    assert!(at(&t, "3.1.78") < at(&t, "8.4.1"), "got {t:?}");
+}
+
+#[test]
+fn hindi_trace_shows_dhi_ca_bleeding_jashtva() {
+    // 6.4.101 rewrites the ending BEFORE 6.4.111 strips śnam's `a`; 8.2.25
+    // then ELIDES the stem-final `s` rather than voicing it, which is why
+    // this cell reaches no 8.4.53 where its sibling kfndDi does.
+    let t = trace_for("hinDi");
+    assert!(at(&t, "6.4.101") < at(&t, "6.4.111"), "got {t:?}");
+    assert!(at(&t, "6.4.111") < at(&t, "8.2.25"), "got {t:?}");
+    assert!(!t.contains(&"8.4.53".to_string()), "got {t:?}");
+}
+
+#[test]
+fn krntat_trace_shows_savarna_elision_above_pausal() {
+    // Three optional rules on one branch. The reverse of 8.4.65 / 8.4.56
+    // derives kfnttAt and kfntAd but never this form, so the surface alone
+    // does not catch it.
+    let t = trace_for("kfntAt");
+    assert!(at(&t, "7.1.35") < at(&t, "8.4.65"), "got {t:?}");
+    assert!(at(&t, "8.4.65") < at(&t, "8.4.56"), "got {t:?}");
+}
+
+#[test]
+fn ahinah_trace_shows_ru_fires_on_the_dhatus_own_final() {
+    // 8.2.74 must act on `ahinas`. Below 8.2.73 it would find `ahinad` and
+    // this branch would not exist at all.
+    let t = trace_for("ahinaH");
+    assert!(t.contains(&"8.2.74".to_string()), "got {t:?}");
+    assert!(!t.contains(&"8.2.73".to_string()), "got {t:?}");
+}
+
+#[test]
+fn kndhi_trace_shows_jashtva_where_dhi_ca_declines() {
+    // The counterpart to hinDi: kft's stem-final `t` is not an `s`, so
+    // 8.2.25 declines and the junction is genuinely 8.4.53's.
+    let t = trace_for("kfndDi");
+    assert!(t.contains(&"8.4.53".to_string()), "got {t:?}");
+    assert!(!t.contains(&"8.2.25".to_string()), "got {t:?}");
 }
