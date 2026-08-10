@@ -13,7 +13,7 @@ adds the consonant families (√bhañj, √piṣ, √indh) and closes the gaṇa
 
 ## Scope
 
-New: three roots, `Gana::Rudhadi`, nine sūtras, three of them optional. 108 new
+New: three roots, `Gana::Rudhadi`, ten sūtras, three of them optional. 108 new
 cells, 145 new forms. `PARADIGM` goes 1512 → 1620 cells and 42 → 45 roots;
 `ALTERNATES` goes 154 → 191 rows.
 
@@ -66,7 +66,7 @@ else. Each earns its place differently:
 
 ## The rules
 
-Nine sūtras. Five are universal to the gaṇa, two are optional, two are narrow.
+Ten sūtras. Five are universal to the gaṇa, three are optional, two are narrow.
 
 ### 3.1.78 `ruDAdiByaH Snam`
 
@@ -145,31 +145,58 @@ savarṇa).
 at the end of `TRIPADI`. If 8.4.56 ran first, only one of 8.4.65's two branches
 would receive the pausal fork and `kfnttAt` would never be derived.
 
-### 8.2.74 `sipi DAto rurvA` and 8.2.75 `daSca` (vikalpa)
+### 8.2.73 `tipyanasteH` (obligatory), 8.2.74 `sipi DAto rurvA` and 8.2.75 `daSca` (vikalpa)
 
-Before sip, the dhātu's final optionally becomes *ru*, yielding a visarga where
-the ordinary derivation yields a stop: `ahinad` ~ `ahinaH`, `akfRad` ~
-`akfRaH`. 8.2.74 states it for an s-final dhātu (√hiṃs), 8.2.75 *daś ca*
-extends it to a d-final one (√kṛt, whose `t` is already `d` by 8.2.39). Both are
-needed in 7a; both are optional.
+These three are one alternation, and getting them apart is the fiddliest part
+of the slice. Before tip and sip, a consonant-final stem surfaces either with a
+stop or with a visarga: `ahinad` ~ `ahinaH`, `akfRad` ~ `akfRaH`.
 
-Ordered in `TRIPADI` after 8.2.39 and before 8.3.15, which the `akfRaH` trace
-pins.
+**√kṛt is already served by an existing rule.** `akfRat` + tip `t` gives the
+conjunct `akfRatt`; 8.2.23 *saṁyogāntasya lopaḥ* — already in the pipeline, and
+guarded generally on the word's last two characters — drops the second `t`, and
+8.2.39 *jhalāṁ jaśo'nte* voices the survivor to `akfRad`. So √kṛt needs only
+the optional half.
 
-**A modelling decision this slice must make explicitly.** vidyut is internally
-inconsistent about which branch of this alternation is the base one: for √kṛt
-it attributes `akfRaH` to 8.2.75 and leaves `akfRad` ruleless, but for √hiṃs it
-attributes `ahinad` to 8.2.74 and leaves `ahinaH` ruleless. The same alternation
-comes out with opposite bases.
+**√hiṃs is not**, and this is the gap. `ahinas` + tip `t` reduces the same way
+to `ahinas`, but **8.2.39 declines**: its guard is narrow to a final `t` by
+design, because a final `s` must become a visarga through 8.2.66 / 8.3.15,
+which is 8.2.39's apavāda. Left alone the engine would derive `*ahinaH` for
+laṅ prathama eka. **8.2.73 *tipy anasteḥ* is what supplies the `d`** — before
+tip, a dhātu other than √as takes `d` for its final — and nothing currently in
+the engine does that job.
 
-The engine cannot inherit that, because index 0 of a derivation is *defined* as
-the branch with no optional rule applied, and it decides which string lands in
-`PARADIGM`. **This slice pins the stop-final branch as the base for both
-roots** — `akfRad` and `ahinad` in `PARADIGM`, `akfRaH` and `ahinaH` in
-`ALTERNATES` — on the grammatical reading that *vā* offers *ru* as the
-alternative to the ordinary derivation, not the other way round. The tables
-below reflect that, and it is the one place where they diverge from what a
-naive read of vidyut's trace would produce.
+So the three divide as:
+
+| rule | kind | supplies | witness |
+| --- | --- | --- | --- |
+| 8.2.73 | obligatory | `s` → `d` before **tip or sip** | `ahinad` |
+| 8.2.74 | vikalpa | `s` → *ru* before sip | `ahinaH` |
+| 8.2.75 | vikalpa | `d` → *ru* before sip | `akfRaH` |
+
+**8.2.74 is ordered before 8.2.73**, which is non-numeric and deliberate. 8.2.74
+replaces the *dhātu's own final* — the `s` — so it must see `ahinas`, not the
+`ahinad` that 8.2.73 would already have produced. The declined branch then falls
+through to 8.2.73 and gets its `d`. Ordering them numerically instead would
+leave 8.2.74 with no `s` to act on, and `ahinaH` would never be derived.
+
+8.2.73's guard must cover **sip as well as tip**, even though the sūtra says
+*tipi*. That is a deliberate widening, and the reason is structural: 8.2.74's
+*vā* presupposes the `d` as the alternant it is optional against, so the
+declined branch has to reach it somehow. Record it in the rule comment as an
+over-application of the stated condition, in the shape the previous slice used
+for 7.1.35's *āśiṣi*.
+
+The whole group is ordered in `TRIPADI` after 8.2.39 and before 8.3.15 — before
+8.3.15 because otherwise `ahinas` becomes a visarga before 8.2.73 can reach it.
+
+**This also settles which branch is index 0.** vidyut is internally
+inconsistent here — for √kṛt it attributes `akfRaH` to 8.2.75 and leaves
+`akfRad` ruleless, but for √hiṃs it attributes `ahinad` to 8.2.74 and leaves
+`ahinaH` ruleless, the same alternation with opposite bases. Under the model
+above the question does not arise: the `d` comes from an **obligatory** rule in
+both roots (8.2.39 for √kṛt, 8.2.73 for √hiṃs), so `akfRad` and `ahinad` are
+index 0 by construction, and the visarga forms are the vikalpa branches. The
+tables below reflect that.
 
 ### Reuses that gain witnesses
 
@@ -238,7 +265,7 @@ gains the ids in these positions:
 | 3.1.78 | `VIKARANA` | between 3.1.77 and 3.1.81, before 3.1.68 |
 | 6.4.23 | `ANGA` | before 6.4.111 |
 | 6.4.111 | `ADESHA` | after 6.4.101 — pinned by `hinDi` |
-| 8.2.74, 8.2.75 | `TRIPADI` | after 8.2.39, before 8.3.15 — pinned by `akfRaH` |
+| 8.2.74, 8.2.73, 8.2.75 | `TRIPADI` | after 8.2.39, before 8.3.15; **8.2.74 before 8.2.73** — pinned by `ahinaH` / `ahinad` |
 | 8.3.24 | `TRIPADI` | between 8.3.15 and 8.3.59 |
 | 8.4.53 | `TRIPADI` | before 8.4.55 |
 | 8.4.58 | `TRIPADI` | immediately after 8.4.55 — see the caveat below |
@@ -247,8 +274,8 @@ gains the ids in these positions:
 `TRIPADI` therefore reads, in full:
 
 ```
-8.2.77, 8.2.23, 8.2.25, 8.2.39, 8.2.74, 8.2.75, 8.3.15, 8.3.24, 8.3.59,
-8.4.53, 8.4.55, 8.4.58, 8.4.1, 8.4.2, 8.4.65, 8.4.56
+8.2.77, 8.2.23, 8.2.25, 8.2.39, 8.2.74, 8.2.73, 8.2.75, 8.3.15, 8.3.24,
+8.3.59, 8.4.53, 8.4.55, 8.4.58, 8.4.1, 8.4.2, 8.4.65, 8.4.56
 ```
 
 `exactly_the_pinned_vikalpa_rules_are_optional` goes from four ids to seven:
@@ -457,9 +484,11 @@ rather than one form. The claim it has to sustain is the one the previous slice
 established: the engine's derivation set equals vidyut's, in every cell,
 exactly — no over-generation and no under-generation.
 
-The one cell where the comparison needs a stated exception is √hiṃs laṅ
-madhyama eka, per the 8.2.74 modelling decision above: the *set* matches, but
-which member vidyut treats as ruleless does not.
+√hiṃs laṅ madhyama eka is the one cell where the *sets* match but the
+attribution does not: vidyut treats `ahinaH` as ruleless there and `ahinad` as
+8.2.74's, where the engine has it the other way round. The audit compares sets,
+so it passes; the difference is confined to `ALTERNATES`' key column, which is
+checked against the engine's own log rather than vidyut's.
 
 ### Per-rule guard tests
 
@@ -472,6 +501,9 @@ need enumeration rather than a single case:
 - **8.4.65's *savarṇa* condition**, enumerated over `kfntt` / `KindD` (fires)
   and `hiMst` (declines).
 - **6.4.111's kṅit condition**, over a strong cell and a weak one.
+- **8.2.73's ending condition**, enumerated over tip and sip (both fire) and a
+  third ending such as `tas` (declines) — the widened guard is a stated
+  divergence and needs its boundary pinned, not just its positive case.
 
 ### `terms.rs`
 
@@ -489,6 +521,9 @@ surface form:
 - **`hinDi`** — 6.4.101 before 6.4.111, and 8.2.25 on a new stem shape.
 - **`kfntAt`** — 8.4.65 before 8.4.56, asserting the presence of both. The
   wrong order yields a real word, just not this one.
+- **`ahinaH`** — 8.2.74 firing above 8.2.73, on `ahinas` rather than `ahinad`.
+  The numeric order still derives `ahinad`, so only an order assertion catches
+  it.
 
 ### `roundtrip.rs`
 
@@ -521,15 +556,21 @@ the test grow.
   than fallen into.
 - **8.4.58's order against ṇatva is unconstrained by any test in 7a.** Flagged
   in the code, not just here.
-- **The 8.2.74 / 8.2.75 base-branch decision diverges from vidyut's own
-  bookkeeping.** It is a deliberate divergence, recorded so it is not later
-  mistaken for a bug — the same treatment the previous slice gave 7.1.35's
-  *āśiṣi* over-application.
-- **6.1.68 `halNyAbByo dIrGAt sutisyapfktaM hal` is unverified.** It appears in
-  vidyut's `akfRat` trace and is not in the engine's pinned order. The engine
-  derives √ad's matching cell (`Adad`) correctly today, so either 8.2.23
-  already covers the case or 6.1.68 is a tenth new rule. **Planning must settle
-  this before task decomposition**; it is the one number in this spec that was
-  not confirmed against the engine.
+- **8.2.73's guard is widened past its sūtra's stated *tipi*** to cover sip as
+  well, because 8.2.74's *vā* presupposes the `d` as its alternant. A
+  deliberate divergence, recorded so it is not later mistaken for a bug — the
+  same treatment the previous slice gave 7.1.35's *āśiṣi* over-application.
+- **8.2.74 sits above 8.2.73, against sūtra order.** Nothing in the code
+  enforces it; the `ahinaH` trace pin is the guard, and it must assert that
+  8.2.74 fired on `ahinas` rather than merely that the surface is right — the
+  numeric order still produces a real word (`ahinad` on both branches), it just
+  never produces `ahinaH`.
+- **6.1.68 `halNyAbByo dIrGAt sutisyapfktaM hal` was investigated and is not
+  needed.** It appears in vidyut's `akfRat` trace, but the engine reaches the
+  same result through 8.2.23 *saṁyogāntasya lopaḥ*, whose guard is written
+  generally on the word's last two characters and already covers `akfRatt` and
+  `ahinast`. The reason it has never fired before is that √ad — the only
+  consonant-final aṅga in the current set — takes 7.3.100 *adaḥ sarveṣām*,
+  which inserts the `a` of `Adat` and leaves the ending with a vowel before it.
 - **√hiṃs stored as `hins`** is a stated simplification, not a derivation
   step. If it is later read as one, 7.1.58 looks implemented when it is not.
