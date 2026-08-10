@@ -114,6 +114,20 @@ pub(crate) fn cartva_of(c: char) -> Option<char> {
     }
 }
 
+/// The homorganic nasal of a *yay* — every stop and semivowel. Returns
+/// `None` for a sound outside yay (the sibilants and `h`), which is exactly
+/// 8.4.58's declining case.
+pub(crate) fn parasavarna_of(c: char) -> Option<char> {
+    Some(match c {
+        'k' | 'K' | 'g' | 'G' | 'N' => 'N',
+        'c' | 'C' | 'j' | 'J' | 'Y' => 'Y',
+        'w' | 'W' | 'q' | 'Q' | 'R' => 'R',
+        't' | 'T' | 'd' | 'D' | 'n' => 'n',
+        'p' | 'P' | 'b' | 'B' | 'm' => 'm',
+        _ => return None,
+    })
+}
+
 /// 1.3.4 na vibhaktau tusmāḥ: a final tu-varga (t/T/d/D/n), `s`, or `m` of a
 /// vibhakti is NOT an it, so the shared halantyam elision must be suppressed
 /// for such tiṅ endings (e.g. tas, Tas, vas, mas keep their final `s`).

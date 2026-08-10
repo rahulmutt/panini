@@ -6,8 +6,9 @@
 
 use crate::prakriya::Prakriya;
 use crate::rule::{Rule, RuleKind};
+use crate::term::Tag;
 use crate::tinanta::sound::{
-    cartva_of, is_jhal, is_khar, is_natva_intervener, is_natva_trigger, is_vowel,
+    cartva_of, is_jhal, is_khar, is_natva_intervener, is_natva_trigger, is_vowel, parasavarna_of,
 };
 use crate::tinanta::terms::{ANGA, SHAP};
 
@@ -250,6 +251,47 @@ pub(crate) static TRIPADI: &[Rule] = &[
             true
         },
     },
+    // 8.3.24 naścāpadāntasya jhali: a non-pada-final `n` becomes an
+    // anusvāra before a jhal. In this suite that `n` is always śnam's, and
+    // the jhal is whatever the weak stem's tail or the ending supplies.
+    //
+    // Paired with 8.4.58 below, which usually turns the anusvāra straight
+    // back into the same `n`. The pair is not a no-op, and √hiṃs is why:
+    // hiMs + taH stops here, because 8.4.58 needs a YAY to follow and what
+    // follows is the root's own `s`, which is śal. hiMstaH keeps its
+    // anusvāra where kfntaH does not.
+    //
+    // NARROW GUARD: rudhādi only. The `n` of 7.1.3 jho'ntaH (aBavan,
+    // kfntan) is pada-final and out of scope by the sūtra's own
+    // `apadāntasya`; guarding on the gaṇa keeps this rule away from it
+    // without needing a pada-boundary notion the engine does not have.
+    Rule {
+        id: "8.3.24",
+        name: "naScApadAntasya Jali",
+        kind: RuleKind::Vidhi,
+        vikalpa: false,
+        apply: |p| {
+            if !p.terms[ANGA].has(Tag::Rudhadi) {
+                return false;
+            }
+            let w = word_chars(p);
+            let Some(pos) = w.iter().position(|(_, _, c)| *c == 'n') else {
+                return false;
+            };
+            // `apadāntasya`: something must follow, and it must be a jhal.
+            let Some((_, _, next)) = w.get(pos + 1) else {
+                return false;
+            };
+            if !is_jhal(*next) {
+                return false;
+            }
+            let (term, idx, _) = w[pos];
+            let before = p.snapshot();
+            set_char(p, term, idx, 'M');
+            p.record("8.3.24", "naScApadAntasya Jali", before);
+            true
+        },
+    },
     // 8.3.59 ādeśapratyayayoḥ: the `s` of an ādeśa or a pratyaya, when not
     // word-final, retroflexes to `z` after iṇ-koḥ. The engine's first
     // retroflexion rule, and general grammar rather than a √śī special — √śī
@@ -432,6 +474,52 @@ pub(crate) static TRIPADI: &[Rule] = &[
             false
         },
     },
+    // 8.4.58 anusvārasya yayi parasavarṇaḥ: an anusvāra becomes the
+    // following sound's homorganic nasal, before a YAY only. This is the
+    // return leg of the 8.3.24 pair — kfMt → kfnt — and it declines for
+    // hiMs + taH, whose anusvāra is followed by śal `s`.
+    //
+    // ORDERED AFTER 8.4.1 / 8.4.2, and this is constrained — contrary to
+    // what the spec assumed. `is_natva_target` in this file FOLDS 8.3.24 in
+    // as a guard ("a non-padānta n before a jhal has ALREADY become an
+    // anusvāra by the time the 8.4 rules run"), a simplification taken when
+    // the engine had no anusvāra machinery. It does now, but only for
+    // rudhādi: 8.3.24 above is gaṇa-guarded, so BAzante's `n` is still an
+    // `n` when ṇatva runs and the fold is still load-bearing for every
+    // other root. The fold therefore stays.
+    //
+    // Given that, this rule must run AFTER ṇatva. Placed before it, kfMt
+    // would already be kfnt when 8.4.1 looks, and the weak stem would
+    // decline only by falling through the stale fold rather than because
+    // its nasal is genuinely an anusvāra. Placed here, kfntaH declines for
+    // the right reason (`M` is not `n`) while kfRatti — whose `n` precedes
+    // a vowel, so 8.3.24 never fired — still takes ṇatva.
+    //
+    // Retire the fold, and this constraint with it, when a slice widens
+    // 8.3.24 past rudhādi.
+    Rule {
+        id: "8.4.58",
+        name: "anusvArasya yayi parasavarRaH",
+        kind: RuleKind::Vidhi,
+        vikalpa: false,
+        apply: |p| {
+            let w = word_chars(p);
+            let Some(pos) = w.iter().position(|(_, _, c)| *c == 'M') else {
+                return false;
+            };
+            let Some((_, _, next)) = w.get(pos + 1) else {
+                return false;
+            };
+            let Some(nasal) = parasavarna_of(*next) else {
+                return false;
+            };
+            let (term, idx, _) = w[pos];
+            let before = p.snapshot();
+            set_char(p, term, idx, nasal);
+            p.record("8.4.58", "anusvArasya yayi parasavarRaH", before);
+            true
+        },
+    },
     // 8.4.56 vāvasāne: at the end of an utterance a jhal OPTIONALLY becomes
     // its car, continuing khari ca's operation. After 8.2.39 the only
     // reachable jhal-final is `d`, so in practice this restores the `t` that
@@ -488,8 +576,10 @@ mod tests {
     use crate::tinanta::terms::ENDING;
     // `form_g` lives in `derivation_tests.rs`; `mod.rs` re-exports it, so
     // this import stays on the stable `crate::tinanta::form_g` path.
+    use crate::tinanta::derivation_tests::sole;
+    use crate::tinanta::derive;
     use crate::tinanta::form_g;
-    use panini_data::{Lakara, Purusha, Vacana};
+    use panini_data::{Lakara, Purusha, Vacana, dhatus};
 
     // --- 8.2.77 hali ca: guard-edge pin -----------------------------------
     //
@@ -813,5 +903,28 @@ mod tests {
             ..Default::default()
         };
         assert!(!(rule.apply)(&mut p));
+    }
+
+    #[test]
+    fn parasavarna_requires_a_yay() {
+        // Enumerated rather than golden-driven: a predicate that fired
+        // unconditionally still produces plausible Sanskrit for two of the
+        // three 7a roots, and only √hiṃs catches it.
+        for (id, la, pu, va, has_anusvara) in [
+            ("his", Lakara::Lat, Purusha::Prathama, Vacana::Dvi, true),
+            ("kft", Lakara::Lat, Purusha::Prathama, Vacana::Bahu, false),
+        ] {
+            let d = dhatus().iter().find(|d| d.id == id).unwrap();
+            let p = sole(derive(d, la, d.pada, pu, va));
+            assert!(
+                p.log.iter().any(|s| s.sutra == "8.3.24"),
+                "{id}: 8.3.24 should always fire on a weak rudhādi cell"
+            );
+            assert_eq!(
+                p.text().contains('M'),
+                has_anusvara,
+                "{id}: anusvāra retention"
+            );
+        }
     }
 }

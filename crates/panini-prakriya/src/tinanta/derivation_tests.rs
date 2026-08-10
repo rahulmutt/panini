@@ -120,7 +120,7 @@ fn tinanta_rule_order_is_pinned() {
         "7.3.84", "7.3.86", "7.3.84", "6.4.87", "6.4.77", "6.1.78", "7.3.101", "6.4.112",
         "6.4.113", "6.1.101", "6.1.96", "6.1.90", "6.1.97", "6.1.87", "6.1.66", "6.4.105",
         "6.4.106", "6.4.107", "6.4.101", "6.4.111", "8.2.77", "8.2.23", "8.2.25", "8.2.39",
-        "8.3.15", "8.3.59", "8.4.55", "8.4.1", "8.4.2", "8.4.56",
+        "8.3.15", "8.3.24", "8.3.59", "8.4.55", "8.4.1", "8.4.2", "8.4.58", "8.4.56",
     ];
     let actual: Vec<&str> = rules().map(|r| r.id).collect();
     assert_eq!(actual, expected);
@@ -1176,5 +1176,27 @@ fn rudhadi_weak_cells_lose_shnams_a() {
     assert_eq!(
         form_g("Kid", Lakara::VidhiLin, Purusha::Prathama, Vacana::Eka),
         "KindIta"
+    );
+}
+
+#[test]
+fn rudhadi_anusvara_round_trip_is_conditional() {
+    // 8.3.24 turns śnam's n into an anusvāra before a jhal; 8.4.58 turns it
+    // back into the following sound's homorganic nasal — but only before a
+    // YAY. √hiṃs is the witness that the return leg is conditional: the
+    // anusvāra there is followed by the ROOT's own `s`, which is śal, not
+    // yay, so it survives. Folding the two rules into one operation would
+    // derive *hintaH.
+    assert_eq!(
+        form_g("his", Lakara::Lat, Purusha::Prathama, Vacana::Dvi),
+        "hiMstaH"
+    );
+    assert_eq!(
+        form_g("his", Lakara::VidhiLin, Purusha::Prathama, Vacana::Bahu),
+        "hiMsyuH"
+    );
+    assert_eq!(
+        form_g("kft", Lakara::Lat, Purusha::Prathama, Vacana::Bahu),
+        "kfntanti"
     );
 }
