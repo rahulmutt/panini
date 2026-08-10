@@ -8,9 +8,10 @@ use crate::prakriya::Prakriya;
 use crate::rule::{Rule, RuleKind};
 use crate::term::Tag;
 use crate::tinanta::sound::{
-    cartva_of, is_jhal, is_khar, is_natva_intervener, is_natva_trigger, is_vowel, parasavarna_of,
+    cartva_of, is_jhal, is_khar, is_natva_intervener, is_natva_trigger, is_vowel, jashtva_of,
+    parasavarna_of,
 };
-use crate::tinanta::terms::{ANGA, SHAP};
+use crate::tinanta::terms::{ANGA, ENDING, SHAP};
 
 /// The assembled word as `(term index, char index, char)`, so a tripādī rule
 /// can reason over the whole pada and still write back into the right term.
@@ -146,29 +147,30 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // some other neighbour. The search is written generally on purpose, for
     // the multi-term layouts a later slice will bring — mirroring
     // vidyut-prakriya's own `prev_not_empty`.
+    //
+    // FIX (Task 6, rudhādi): the "which term is the Dh-initial affix" arm
+    // used to be a FORWARD search from the aṅga for the first non-empty
+    // term. That only located the ending because adādi's śap is luk'd to
+    // an empty string (2.4.72) — for adādi, ANGA's very next non-empty
+    // neighbour IS the ending. rudhādi's SHAP is never empty (śnam's infix
+    // residue always sits there; see terms.rs), so that forward search
+    // stopped at SHAP and declined even when the ending genuinely was
+    // Dh-initial (kfnt/hins + Di → kfndDi/hinDi). The Dh-initial affix in
+    // this grammar is always the ending itself — no vikaraṇa ever begins
+    // with `D` — so it is addressed directly via `ENDING`, the same way
+    // 6.4.101 above reads it, and only the backward search (already
+    // general) is kept.
     Rule {
         id: "8.2.25",
         name: "Di ca",
         kind: RuleKind::Vidhi,
         vikalpa: false,
         apply: |p| {
-            // The first non-empty term after the aṅga (śap, if present, is
-            // luk'd/empty for adādi) must be the Dh-initial affix.
-            let next_idx = p
-                .terms
-                .iter()
-                .enumerate()
-                .skip(ANGA + 1)
-                .find(|(_, t)| !t.text.is_empty())
-                .map(|(i, _)| i);
-            let Some(next_idx) = next_idx else {
-                return false;
-            };
-            if !p.terms[next_idx].text.starts_with('D') {
+            if !p.terms[ENDING].text.starts_with('D') {
                 return false;
             }
-            // The nearest non-empty term before it must end in `s`.
-            let prev_idx = p.terms[..next_idx]
+            // The nearest non-empty term before the ending must end in `s`.
+            let prev_idx = p.terms[..ENDING]
                 .iter()
                 .enumerate()
                 .rev()
@@ -353,6 +355,48 @@ pub(crate) static TRIPADI: &[Rule] = &[
             let rest: String = p.terms[next_idx].text.chars().skip(1).collect();
             p.terms[next_idx].text = format!("z{rest}");
             p.record("8.3.59", "AdeSapratyayayoH", before);
+            true
+        },
+    },
+    // 8.4.53 jhalāṁ jaś jhaśi: a jhal becomes its jaś before a jhaś (a
+    // voiced aspirate). kfnt + Di → kfnd + Di → kfndDi.
+    //
+    // RESTORED, not reverted. This rule was removed in 9b7adee as
+    // unreachable: slice 5d had analysed the ās/vas junction as jaśtva and
+    // shipped *AdDve, and 8.2.25 dhi ca — which ELIDES the `s` rather than
+    // voicing it, and sits in 8.2, asiddha to all of 8.4 — bled it
+    // completely. Nothing else in the suite reached it. rudhādi does: √kṛt's
+    // stem-final `t` is not an `s`, so 8.2.25 declines and this junction is
+    // genuinely jaśtva's.
+    //
+    // 8.2.25 still bleeds it for √hiṃs, which is why hinDi and kfndDi differ
+    // in shape — the same cell of the same gaṇa, reached by two different
+    // rules. Both are asserted in `super::derivation_tests`.
+    Rule {
+        id: "8.4.53",
+        name: "JalAM jaS JaSi",
+        kind: RuleKind::Vidhi,
+        vikalpa: false,
+        apply: |p| {
+            let w = word_chars(p);
+            let Some(pos) = w.len().checked_sub(2) else {
+                return false;
+            };
+            // The jhaś that conditions it: in this suite always the `D` of
+            // 6.4.101's Di, at the last position.
+            if w.last().map(|(_, _, c)| *c) != Some('i') || w[pos].2 != 'D' {
+                return false;
+            }
+            let Some(target) = pos.checked_sub(1) else {
+                return false;
+            };
+            let Some(jash) = jashtva_of(w[target].2) else {
+                return false;
+            };
+            let (term, idx, _) = w[target];
+            let before = p.snapshot();
+            set_char(p, term, idx, jash);
+            p.record("8.4.53", "JalAM jaS JaSi", before);
             true
         },
     },
@@ -573,7 +617,6 @@ mod tests {
     use crate::prakriya::Prakriya;
     use crate::term::Term;
     use crate::tinanta::rules;
-    use crate::tinanta::terms::ENDING;
     // `form_g` lives in `derivation_tests.rs`; `mod.rs` re-exports it, so
     // this import stays on the stable `crate::tinanta::form_g` path.
     use crate::tinanta::derivation_tests::sole;

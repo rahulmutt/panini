@@ -120,7 +120,7 @@ fn tinanta_rule_order_is_pinned() {
         "7.3.84", "7.3.86", "7.3.84", "6.4.87", "6.4.77", "6.1.78", "7.3.101", "6.4.112",
         "6.4.113", "6.1.101", "6.1.96", "6.1.90", "6.1.97", "6.1.87", "6.1.66", "6.4.105",
         "6.4.106", "6.4.107", "6.4.101", "6.4.111", "8.2.77", "8.2.23", "8.2.25", "8.2.39",
-        "8.3.15", "8.3.24", "8.3.59", "8.4.55", "8.4.1", "8.4.2", "8.4.58", "8.4.56",
+        "8.3.15", "8.3.24", "8.3.59", "8.4.53", "8.4.55", "8.4.1", "8.4.2", "8.4.58", "8.4.56",
     ];
     let actual: Vec<&str> = rules().map(|r| r.id).collect();
     assert_eq!(actual, expected);
@@ -1198,5 +1198,28 @@ fn rudhadi_anusvara_round_trip_is_conditional() {
     assert_eq!(
         form_g("kft", Lakara::Lat, Purusha::Prathama, Vacana::Bahu),
         "kfntanti"
+    );
+}
+
+#[test]
+fn rudhadi_lot_madhyama_eka_takes_jashtva() {
+    // 6.4.101 her DiH makes the ending `Di`; the weak stem's final `t`
+    // meets it and is voiced-aspirated to `d` by 8.4.53. This is the rule
+    // commit 9b7adee deleted as unreachable once 8.2.25 dhi ca replaced
+    // slice 5d's analysis — √kṛt is its first genuine witness.
+    //
+    // 7.1.35 tātaṅ optionally forks this cell (parasmaipada loṭ madhyama
+    // eka), independently of anything in this slice; branch 0 is the
+    // derivation with no optional rule applied.
+    assert_eq!(
+        form_g_forked("kft", Lakara::Lot, Purusha::Madhyama, Vacana::Eka, 3),
+        "kfndDi"
+    );
+    // √hiṃs reaches the same cell through 8.2.25 instead: its stem-final
+    // `s` is ELIDED before the Dh-initial ending, not voiced. Third witness
+    // for that rule, on a stem shape it has not seen.
+    assert_eq!(
+        form_g_forked("his", Lakara::Lot, Purusha::Madhyama, Vacana::Eka, 3),
+        "hinDi"
     );
 }

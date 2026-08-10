@@ -114,6 +114,19 @@ pub(crate) fn cartva_of(c: char) -> Option<char> {
     }
 }
 
+/// The *jaś* (voiced unaspirated) counterpart of a jhal, by place of
+/// articulation. `None` for a sound with no jaś — the sibilants and `h`.
+pub(crate) fn jashtva_of(c: char) -> Option<char> {
+    Some(match c {
+        'k' | 'K' | 'g' | 'G' => 'g',
+        'c' | 'C' | 'j' | 'J' => 'j',
+        'w' | 'W' | 'q' | 'Q' => 'q',
+        't' | 'T' | 'd' | 'D' => 'd',
+        'p' | 'P' | 'b' | 'B' => 'b',
+        _ => return None,
+    })
+}
+
 /// The homorganic nasal of a *yay*. Covers only the stops — yay's
 /// semivowel arm (`y v r l`) is unreached while 8.3.24 fires solely before
 /// a jhal, and jhal excludes semivowels, so no anusvāra this engine
@@ -213,6 +226,35 @@ mod tests {
         // guard case (hiMs + taH keeps its anusvAra before `s`).
         for c in ['s', 'S', 'z', 'h'] {
             assert_eq!(parasavarna_of(c), None, "{c} should not parasavarna");
+        }
+    }
+
+    #[test]
+    fn jashtva_of_stops_all_arms() {
+        // 8.4.53 JalAM jaS JaSi: pin every varga's stop-arm directly, since
+        // only the dental arm (t/T/d/D -> d) is reachable from 7a's golden
+        // forms (kfnt + Di -> kfndDi) -- a mutant rewriting the velar,
+        // palatal, retroflex or labial arm to any other jaś would be
+        // invisible to the whole suite without this. Mirrors
+        // parasavarna_of_stops_all_arms above.
+        for c in ['k', 'K', 'g', 'G'] {
+            assert_eq!(jashtva_of(c), Some('g'), "{c} should jashtva to g");
+        }
+        for c in ['c', 'C', 'j', 'J'] {
+            assert_eq!(jashtva_of(c), Some('j'), "{c} should jashtva to j");
+        }
+        for c in ['w', 'W', 'q', 'Q'] {
+            assert_eq!(jashtva_of(c), Some('q'), "{c} should jashtva to q");
+        }
+        for c in ['t', 'T', 'd', 'D'] {
+            assert_eq!(jashtva_of(c), Some('d'), "{c} should jashtva to d");
+        }
+        for c in ['p', 'P', 'b', 'B'] {
+            assert_eq!(jashtva_of(c), Some('b'), "{c} should jashtva to b");
+        }
+        // The sibilants and h have no jaś counterpart.
+        for c in ['s', 'S', 'z', 'h'] {
+            assert_eq!(jashtva_of(c), None, "{c} should not jashtva");
         }
     }
 
