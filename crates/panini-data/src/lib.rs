@@ -40,11 +40,16 @@ pub enum Vacana {
 
 #[derive(Debug, Clone, Copy)]
 pub struct Dhatu {
-    /// Unique lookup key. Equal to `code`, except when a later gaṇa's root
-    /// collides with an SLP1 form already in use: the incumbent keeps its
-    /// bare `code` as its id, and only the newcomer's id is gaṇa-qualified
-    /// (kryādi's `aS` keeps the bare id `aS`; svādi's colliding root is
-    /// `aS.5`, not `aS.9`). Never hand this to `Term::new`.
+    /// Unique lookup key. Usually equal to `code`. Exceptions:
+    /// (1) **Collision handling**: when a later gaṇa's root collides with an
+    /// SLP1 form already in use, the incumbent keeps its bare `code` as id,
+    /// and only the newcomer's id is gaṇa-qualified as `{code}.{gana}`
+    /// (kryādi's `aS` keeps id `aS`; svādi's colliding root gets id `aS.5`).
+    /// (2) **Rule-driven storage**: id is a bare lookup key, code carries a
+    /// rule-driven stored augment (e.g., rudhādi's `his` is the lookup key,
+    /// but `hins` is stored because 7.1.58 idito num dhātoH is not derivable
+    /// and the num is kept as a stated simplification). Never hand this to
+    /// `Term::new`.
     pub id: &'static str,
     /// The root's SLP1 text, as it enters the derivation.
     pub code: &'static str,
@@ -555,20 +560,20 @@ mod tests {
         sorted.sort_unstable();
         sorted.dedup();
         assert_eq!(sorted.len(), ids.len(), "dhatu ids must be unique");
-        // svādi's aS.5 is the first id that differs from its code (aS) — the
-        // kryādi/svādi collision the field exists for. rudhādi's his/hins is
-        // the second: the id is the lookup key (his), the code is the stored
-        // form (hins, with num). Every other dhatu's id equals its code.
-        // Assert the actual relation: `id == code`, or `id` qualified as
-        // `{code}.{gana}`, or `id == his` and `code == hins` (post-7.1.58).
+        // Verify the contract stated in `Dhatu::id`'s doc: id equals code,
+        // except for two known exceptions: (1) collision-qualified ids like
+        // svādi's aS.5 for the kryādi/svādi aS collision; (2) rule-driven
+        // storage exceptions like rudhādi's his/hins, where id is the lookup
+        // key but code carries the rule-enforced augment (7.1.58 num here).
         for d in dhatus() {
-            let is_his_exception = d.id == "his" && d.code == "hins";
+            let is_collision_qualified = d.id.starts_with(&format!("{}.", d.code));
+            let is_rule_driven_storage = d.id == "his" && d.code == "hins";
             assert!(
-                d.id == d.code || d.id.starts_with(&format!("{}.", d.code)) || is_his_exception,
-                "id {:?} must equal code {:?} or be gaṇa-qualified as \
-                 {{code}}.{{gana}}",
-                d.id,
-                d.code
+                d.id == d.code || is_collision_qualified || is_rule_driven_storage,
+                "id {:?} must follow Dhatu::id contract: equal to code, \
+                 or gaṇa-qualified as {{code}}.{{gana}} (collision), \
+                 or a known rule-driven storage exception",
+                d.id
             );
         }
     }
