@@ -134,39 +134,39 @@ pub(crate) static TRIPADI: &[Rule] = &[
     //
     // Placement is the whole point: 8.2 is asiddha to 8.4, so this fires
     // before any 8.4 junction rule and the `s` never survives to take a jaś
-    // substitute. Slice 5d analysed this junction as 8.4.53 jaśtva (s → d)
-    // and shipped *AdDve; 8.2.25 bleeds that rule completely, which is why
-    // 8.4.53 has no reachable witness and was removed.
+    // substitute. Slice 5d analysed the ās/vas junction as 8.4.53 jaśtva
+    // (s → d) and shipped *AdDve; 8.2.25 bleeds that rule completely for
+    // every s-final stem it reaches. rudhādi's kft is the first stem this
+    // junction sees whose final consonant is NOT an `s` — 8.2.25 declines
+    // there and 8.4.53 (restored below) is what fires instead. See 8.4.53's
+    // own comment for that history.
     //
-    // The guard walks backward from the Dh-initial affix to the nearest
-    // non-empty term rather than reading ANGA by index. In today's three-term
-    // `[ANGA, SHAP, ENDING]` layout that search always resolves to ANGA
-    // whenever the forward arm passes (SHAP is luk'd for adādi), so AsIDvam /
-    // vasIDvam (asserted in `super::derivation_tests`) decline at the forward
-    // (`D`-initial) arm, not because the guard distinguishes the aṅga from
-    // some other neighbour. The search is written generally on purpose, for
-    // the multi-term layouts a later slice will bring — mirroring
-    // vidyut-prakriya's own `prev_not_empty`.
-    //
-    // FIX (Task 6, rudhādi): the "which term is the Dh-initial affix" arm
-    // used to be a FORWARD search from the aṅga for the first non-empty
-    // term. That only located the ending because adādi's śap is luk'd to
-    // an empty string (2.4.72) — for adādi, ANGA's very next non-empty
-    // neighbour IS the ending. rudhādi's SHAP is never empty (śnam's infix
-    // residue always sits there; see terms.rs), so that forward search
-    // stopped at SHAP and declined even when the ending genuinely was
-    // Dh-initial (kfnt/hins + Di → kfndDi/hinDi). The Dh-initial affix in
-    // this grammar is always the ending itself — no vikaraṇa ever begins
-    // with `D` — so it is addressed directly via `ENDING`, the same way
-    // 6.4.101 above reads it, and only the backward search (already
-    // general) is kept.
+    // The guard reads the Dh-initial affix as `ENDING` directly, the same
+    // way 6.4.101 above reads it — no vikaraṇa in this grammar ever begins
+    // with `D`, so `ENDING` is the only place one can be. It then walks
+    // BACKWARD from `ENDING` to the nearest non-empty term, which must end
+    // in `s`; that backward search is written generally (rather than
+    // reading ANGA by index) for the multi-term layouts a later slice will
+    // bring, mirroring vidyut-prakriya's own `prev_not_empty`. For adādi it
+    // resolves to ANGA (SHAP is luk'd empty there); for rudhādi's √hiṃs it
+    // resolves to SHAP instead (`ns`, śnam's infix residue) — the case a
+    // forward search from the aṅga cannot see, since a forward "first
+    // non-empty term after ANGA" search only ever lands on the ending when
+    // SHAP itself is empty, and rudhādi's SHAP never is (hins + Di →
+    // hinDi, only reachable once the affix is read as `ENDING` directly).
+    // AsIDvam / vasIDvam (asserted in `super::derivation_tests`) still
+    // decline correctly: their ending is `IDvam`, which does not start
+    // with `D`.
     Rule {
         id: "8.2.25",
         name: "Di ca",
         kind: RuleKind::Vidhi,
         vikalpa: false,
         apply: |p| {
-            if !p.terms[ENDING].text.starts_with('D') {
+            let Some(ending) = p.terms.get(ENDING) else {
+                return false;
+            };
+            if !ending.text.starts_with('D') {
                 return false;
             }
             // The nearest non-empty term before the ending must end in `s`.
@@ -393,6 +393,12 @@ pub(crate) static TRIPADI: &[Rule] = &[
             let Some(jash) = jashtva_of(w[target].2) else {
                 return false;
             };
+            // No-op guard, as 8.4.55 below takes for the identical reason:
+            // a target that is already its own jaś (√ad's `d`, adDi) must
+            // not record a vacuous step.
+            if jash == w[target].2 {
+                return false;
+            }
             let (term, idx, _) = w[target];
             let before = p.snapshot();
             set_char(p, term, idx, jash);
