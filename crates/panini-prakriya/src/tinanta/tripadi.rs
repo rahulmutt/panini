@@ -45,19 +45,40 @@ fn remove_char(p: &mut Prakriya, term: usize, idx: usize) {
 ///
 /// Shared guard for 8.2.73–8.2.75: those rules touch the dhātu's OWN final
 /// letter, and may only do so when that letter is actually pada-final. In
-/// every laṅ prathama/madhyama cell they target, it is — 8.2.23
+/// every laṅ prathama/madhyama eka cell they target, it is — 8.2.23
 /// saṁyogāntasya lopaḥ has already eaten tip/sip's own letter, leaving
-/// `ENDING` empty and the dhātu's letter as the true word end. But 7.1.35's
-/// tātaṅ (loṭ madhyama eka) substitutes real material — `tAt` — into
-/// `ENDING`, leaving the dhātu word-medial; without this guard the
-/// `rposition` search below still finds *some* non-empty final (now
-/// `ENDING`'s own, already jaśtva-voiced `d`) and mutates it, spuriously
-/// deriving `kfnttAr`/`kfntAr`. Checked against vidyut-prakriya: its loṭ
-/// madhyama eka set for kft is exactly six forms — `kfntAt`, `kfnttAt`,
-/// `kfntAd`, `kfnttAd`, `kfnDi`, `kfndDi` — never eight, confirming these
-/// two are not real Sanskrit and the leak must be closed here.
+/// `ENDING` empty and the dhātu's letter as the true word end. Two DIFFERENT
+/// shapes of counterexample show why the guard has to be positive (checking
+/// `ENDING` is empty) rather than checked in some narrower, single-cell way:
+///
+/// - 7.1.35's tātaṅ (loṭ madhyama eka) substitutes real material — `tAt` —
+///   into `ENDING`, leaving the dhātu word-medial; without this guard the
+///   `rposition` search below still finds *some* non-empty final (now
+///   `ENDING`'s own, already jaśtva-voiced `d`) and mutates it, spuriously
+///   deriving `kfnttAr`/`kfntAr`. Checked against vidyut-prakriya: its loṭ
+///   madhyama eka set for kft is exactly six forms — `kfntAt`, `kfnttAt`,
+///   `kfntAd`, `kfnttAd`, `kfnDi`, `kfndDi` — never eight.
+/// - `is_tip`/`is_sip` are lakāra-blind slot predicates (parasmaipada
+///   prathama/madhyama eka, regardless of lakāra), so vidhiliṅ madhyama eka
+///   — ending `yAs`, which 8.2.23 leaves untouched because a vowel (`A`)
+///   precedes the `s`, not a conjunct — ALSO satisfies `is_sip()` with
+///   `ENDING` genuinely holding `yAs`/`yAd`. Without this guard, 8.2.73
+///   (obligatory) rewrites that `s` too, corrupting the cell's PRIMARY
+///   output to `kfntyAd`/`hiMsyAd` instead of leaving it to reduce via
+///   6.1.68 to `kfntyAH`/`hiMsyAH`.
+///   `rudhadi_vidhilin_madhyama_eka_is_untouched_by_the_ru_alternation` in
+///   `super::derivation_tests` is the witness.
 fn dhatu_is_pada_final(p: &Prakriya) -> bool {
-    p.terms[ENDING..].iter().all(|t| t.text.is_empty())
+    // Defensive rather than a bare `p.terms[ENDING..]`: every call site
+    // guards on `Tag::Rudhadi` first, so a hand-built two-term `Prakriya`
+    // never actually reaches here today, but this helper is file-scoped and
+    // a future caller might not carry that guard. `p.terms.get(ENDING)` at
+    // 8.2.25 above is the same defensive idiom for a single index; `None`
+    // here (fewer than `ENDING` terms at all) means there is nothing past
+    // the dhātu to hold it back, so the dhātu counts as pada-final.
+    p.terms
+        .get(ENDING..)
+        .is_none_or(|rest| rest.iter().all(|t| t.text.is_empty()))
 }
 
 /// Shared precondition for 8.4.1 and 8.4.2: the `n` at `i` is a legal target.
