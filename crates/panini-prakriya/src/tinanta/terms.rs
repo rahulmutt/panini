@@ -42,6 +42,17 @@ pub(crate) const ENDING: usize = 2;
 // that reads "the segment after the aṅga" must therefore handle an empty
 // string — `ends_with` / `is_empty` / `chars().next()` matched as an Option
 // are safe, while `chars().next().unwrap()` (or indexing byte 0) panics.
+//
+// A SECOND caveat since rudhādi (gaṇa 7) landed: `terms[SHAP].text` is not
+// always the vikaraṇa's own text. śnam is an infix (3.1.78 with 1.1.47), and
+// the only way to seat an infix in a three-slot layout is to split the root
+// across ANGA and SHAP: ANGA keeps the head through its last vowel, SHAP
+// holds `na` followed by the root's tail. So for rudhādi, SHAP reads `nat`
+// (kft), `nans` (hins) or `nad` (Kid) — never a bare `na`. A rule that reads
+// SHAP expecting the vikaraṇa alone must guard on the gaṇa. This is a
+// stronger form of a hazard the file already carries: 6.4.107 leaves
+// `terms[SHAP].text == "n"` for svādi, which is why `shnu_asamyogapurva` and
+// `sound_before_ending` both have ordering constraints written around them.
 
 /// The sārvadhātuka that immediately follows the aṅga — the term **1.1.5
 /// *kṅiti ca*** interrogates when it asks whether guṇa is blocked.
@@ -170,5 +181,20 @@ mod tests {
                 "{root}: asaṁyogapūrva should be {expected}"
             );
         }
+    }
+
+    #[test]
+    fn shap_holds_shnam_plus_the_roots_tail_for_rudhadi() {
+        // The load-bearing consequence of the infix representation: for
+        // rudhādi, terms[SHAP].text is NOT the vikaraṇa's own text. Any
+        // rule that reads SHAP expecting `na` must guard on the gaṇa.
+        let mut p = Prakriya {
+            terms: vec![Term::new("hi"), Term::new("nans"), Term::new("ti")],
+            ..Default::default()
+        };
+        p.terms[SHAP].add(Tag::Vikarana);
+        assert_ne!(p.terms[SHAP].text, "na");
+        assert!(p.terms[SHAP].text.starts_with("na"));
+        assert_eq!(sound_before_ending(&p), Some('s'));
     }
 }
