@@ -116,11 +116,11 @@ fn tinanta_rule_order_is_pinned() {
         "3.4.101", "3.4.99", "3.4.87", "3.4.89", "3.4.86", "3.4.100", "3.4.80", "3.4.79", "3.4.91",
         "3.4.93", "3.4.90", "3.4.92", "3.4.103", "3.4.102", "7.1.35", "3.1.69", "3.1.73", "3.1.77",
         "3.1.78", "3.1.81", "3.1.68", "2.4.72", "3.4.111", "3.1.83", "1.2.4", "6.4.71", "6.4.72",
-        "7.3.100", "7.1.5", "7.1.6", "7.1.3", "7.2.79", "7.2.80", "7.2.81", "7.4.21", "7.3.84",
-        "7.3.86", "7.3.84", "6.4.87", "6.4.77", "6.1.78", "7.3.101", "6.4.112", "6.4.113",
-        "6.1.101", "6.1.96", "6.1.90", "6.1.97", "6.1.87", "6.1.66", "6.4.105", "6.4.106",
-        "6.4.107", "6.4.101", "8.2.77", "8.2.23", "8.2.25", "8.2.39", "8.3.15", "8.3.59", "8.4.55",
-        "8.4.1", "8.4.2", "8.4.56",
+        "7.3.100", "7.1.5", "7.1.6", "7.1.3", "7.2.79", "7.2.80", "7.2.81", "6.4.23", "7.4.21",
+        "7.3.84", "7.3.86", "7.3.84", "6.4.87", "6.4.77", "6.1.78", "7.3.101", "6.4.112",
+        "6.4.113", "6.1.101", "6.1.96", "6.1.90", "6.1.97", "6.1.87", "6.1.66", "6.4.105",
+        "6.4.106", "6.4.107", "6.4.101", "8.2.77", "8.2.23", "8.2.25", "8.2.39", "8.3.15",
+        "8.3.59", "8.4.55", "8.4.1", "8.4.2", "8.4.56",
     ];
     let actual: Vec<&str> = rules().map(|r| r.id).collect();
     assert_eq!(actual, expected);
@@ -1123,5 +1123,35 @@ fn shatva_retroflexes_the_endings_s_after_shings_e() {
     assert_eq!(
         form_g("SI", Lakara::Lot, Purusha::Madhyama, Vacana::Eka),
         "Sezva"
+    );
+}
+
+#[test]
+fn rudhadi_strong_cells() {
+    // The strong stem is śnam with its `a` intact. kft needs no new rule at
+    // all beyond 3.1.78 — 8.4.1 ṇatva already fires across the ANGA/SHAP
+    // junction, exactly as it does for kryādi's vf + nA → vfRAti.
+    assert_eq!(
+        form_g("kft", Lakara::Lat, Purusha::Prathama, Vacana::Eka),
+        "kfRatti"
+    );
+    assert_eq!(
+        form_g("kft", Lakara::Lat, Purusha::Uttama, Vacana::Eka),
+        "kfRatmi"
+    );
+    // √hiṃs needs 6.4.23: hins + śnam is hinans, and the root's own n comes
+    // back out.
+    assert_eq!(
+        form_g("his", Lakara::Lat, Purusha::Prathama, Vacana::Eka),
+        "hinasti"
+    );
+    assert_eq!(
+        form_g("his", Lakara::Lot, Purusha::Uttama, Vacana::Eka),
+        "hinasAni"
+    );
+    // The ātmanepada arm's strong cells keep śnam's `a` too.
+    assert_eq!(
+        form_g("Kid", Lakara::Lot, Purusha::Uttama, Vacana::Eka),
+        "KinadE"
     );
 }
