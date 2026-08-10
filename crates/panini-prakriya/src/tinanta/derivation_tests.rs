@@ -120,8 +120,8 @@ fn tinanta_rule_order_is_pinned() {
         "7.3.84", "7.3.86", "7.3.84", "6.4.87", "6.4.77", "6.1.78", "7.3.101", "6.4.112",
         "6.4.113", "6.1.101", "6.1.96", "6.1.90", "6.1.97", "6.1.87", "6.1.66", "6.4.105",
         "6.4.106", "6.4.107", "6.4.101", "6.4.111", "8.2.77", "8.2.23", "8.2.25", "8.2.39",
-        "8.3.15", "8.3.24", "8.3.59", "8.4.53", "8.4.55", "8.4.1", "8.4.2", "8.4.58", "8.4.65",
-        "8.4.56",
+        "8.2.74", "8.2.73", "8.2.75", "8.3.15", "8.3.24", "8.3.59", "8.4.53", "8.4.55", "8.4.1",
+        "8.4.2", "8.4.58", "8.4.65", "8.4.56",
     ];
     let actual: Vec<&str> = rules().map(|r| r.id).collect();
     assert_eq!(actual, expected);
@@ -135,7 +135,9 @@ fn tinanta_rule_order_is_pinned() {
 #[test]
 fn exactly_the_pinned_vikalpa_rules_are_optional() {
     let actual: Vec<&str> = rules().filter(|r| r.vikalpa).map(|r| r.id).collect();
-    let expected = ["7.1.35", "3.4.111", "6.4.107", "8.4.65", "8.4.56"];
+    let expected = [
+        "7.1.35", "3.4.111", "6.4.107", "8.2.74", "8.2.75", "8.4.65", "8.4.56",
+    ];
     assert_eq!(actual, expected);
 }
 
@@ -1268,4 +1270,70 @@ fn rudhadi_savarna_elision_derives_both_members() {
     .map(|p| p.text())
     .collect();
     assert_eq!(forms, vec!["kfnttaH".to_string(), "kfntaH".to_string()]);
+}
+
+#[test]
+fn rudhadi_lan_eka_cells() {
+    // prathama eka: √kṛt's `d` comes from the existing 8.2.39, √hiṃs's from
+    // the new 8.2.73 — 8.2.39 declines on a final `s` by design.
+    assert_eq!(
+        form_g_forked("kft", Lakara::Lan, Purusha::Prathama, Vacana::Eka, 2),
+        "akfRad"
+    );
+    assert_eq!(
+        form_g_forked("his", Lakara::Lan, Purusha::Prathama, Vacana::Eka, 2),
+        "ahinad"
+    );
+    // madhyama eka forks three ways: the stop, its pausal variant, and ru.
+    assert_eq!(
+        form_g_forked("kft", Lakara::Lan, Purusha::Madhyama, Vacana::Eka, 3),
+        "akfRad"
+    );
+    assert_eq!(
+        form_g_forked("his", Lakara::Lan, Purusha::Madhyama, Vacana::Eka, 3),
+        "ahinad"
+    );
+}
+
+#[test]
+fn ru_branch_derives_the_visarga_forms() {
+    for (id, expected) in [("kft", "akfRaH"), ("his", "ahinaH")] {
+        let d = dhatus().iter().find(|d| d.id == id).unwrap();
+        let forms: Vec<String> = derive(
+            d,
+            Lakara::Lan,
+            Pada::Parasmaipada,
+            Purusha::Madhyama,
+            Vacana::Eka,
+        )
+        .iter()
+        .map(|p| p.text())
+        .collect();
+        assert!(forms.contains(&expected.to_string()), "{id}: {forms:?}");
+    }
+}
+
+#[test]
+fn shnams_ru_fires_on_the_dhatus_own_final() {
+    // 8.2.74 must see `ahinas`, not the `ahinad` 8.2.73 would already have
+    // produced — which is why it is ordered ABOVE 8.2.73, against sūtra
+    // order. Assert the order, not just the surface: numeric order still
+    // derives ahinad on both branches, it simply never derives ahinaH.
+    let d = dhatus().iter().find(|d| d.id == "his").unwrap();
+    let p = derive(
+        d,
+        Lakara::Lan,
+        Pada::Parasmaipada,
+        Purusha::Madhyama,
+        Vacana::Eka,
+    )
+    .into_iter()
+    .find(|p| p.text() == "ahinaH")
+    .expect("ahinaH branch");
+    let ids: Vec<&str> = p.log.iter().map(|s| s.sutra.as_str()).collect();
+    let ru = ids.iter().position(|s| *s == "8.2.74").expect("8.2.74");
+    assert!(
+        !ids[..ru].contains(&"8.2.73"),
+        "8.2.73 must not precede 8.2.74: {ids:?}"
+    );
 }

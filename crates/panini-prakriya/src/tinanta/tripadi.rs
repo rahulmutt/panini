@@ -40,6 +40,26 @@ fn remove_char(p: &mut Prakriya, term: usize, idx: usize) {
     p.terms[term].text = s.into_iter().collect();
 }
 
+/// Whether the dhātu — held across `ANGA`/`SHAP` — still sits at the pada
+/// boundary, i.e. nothing with real text occupies `ENDING` or beyond.
+///
+/// Shared guard for 8.2.73–8.2.75: those rules touch the dhātu's OWN final
+/// letter, and may only do so when that letter is actually pada-final. In
+/// every laṅ prathama/madhyama cell they target, it is — 8.2.23
+/// saṁyogāntasya lopaḥ has already eaten tip/sip's own letter, leaving
+/// `ENDING` empty and the dhātu's letter as the true word end. But 7.1.35's
+/// tātaṅ (loṭ madhyama eka) substitutes real material — `tAt` — into
+/// `ENDING`, leaving the dhātu word-medial; without this guard the
+/// `rposition` search below still finds *some* non-empty final (now
+/// `ENDING`'s own, already jaśtva-voiced `d`) and mutates it, spuriously
+/// deriving `kfnttAr`/`kfntAr`. Checked against vidyut-prakriya: its loṭ
+/// madhyama eka set for kft is exactly six forms — `kfntAt`, `kfnttAt`,
+/// `kfntAd`, `kfnttAd`, `kfnDi`, `kfndDi` — never eight, confirming these
+/// two are not real Sanskrit and the leak must be closed here.
+fn dhatu_is_pada_final(p: &Prakriya) -> bool {
+    p.terms[ENDING..].iter().all(|t| t.text.is_empty())
+}
+
 /// Shared precondition for 8.4.1 and 8.4.2: the `n` at `i` is a legal target.
 ///
 /// Two sūtras are folded in here as guards rather than modelled as rules,
@@ -241,18 +261,168 @@ pub(crate) static TRIPADI: &[Rule] = &[
             true
         },
     },
+    // 8.2.74 sipi dhāto rur vā (vikalpa): before sip, the dhātu's final
+    // optionally becomes ru, which 8.3.15 then takes to a visarga.
+    // ahinas + s → ahinaH.
+    //
+    // ORDERED ABOVE 8.2.73, against sūtra order, and this is load-bearing.
+    // This rule replaces the DHĀTU'S OWN FINAL — the `s` — so it must see
+    // `ahinas`. Below 8.2.73 it would find `ahinad` and have no `s` to act
+    // on, and ahinaH would never be derived. Nothing in the code enforces
+    // the order; `shnams_ru_fires_on_the_dhatus_own_final` in
+    // `super::derivation_tests` is the guard, and it asserts the ORDER,
+    // because the wrong one still produces a real word.
+    Rule {
+        id: "8.2.74",
+        name: "sipi DAto rurvA",
+        kind: RuleKind::Vidhi,
+        vikalpa: true,
+        apply: |p| {
+            if !p.terms[ANGA].has(Tag::Rudhadi) || !p.ctx.is_sip() {
+                return false;
+            }
+            if !dhatu_is_pada_final(p) {
+                return false;
+            }
+            if !p.text().ends_with('s') {
+                return false;
+            }
+            let before = p.snapshot();
+            let Some(idx) = p.terms.iter().rposition(|t| !t.text.is_empty()) else {
+                return false;
+            };
+            let mut s: Vec<char> = p.terms[idx].text.chars().collect();
+            s.pop();
+            s.push('r');
+            p.terms[idx].text = s.into_iter().collect();
+            p.record("8.2.74", "sipi DAto rurvA", before);
+            true
+        },
+    },
+    // 8.2.73 tipy anasteḥ: before tip, a dhātu other than √as takes `d` for
+    // its final. ahinas + t → ahinad.
+    //
+    // This is what fills the hole 8.2.39 leaves. 8.2.39 jhalāṁ jaśo'nte is
+    // guarded narrowly to a final `t`, and correctly so — a final `s` is
+    // 8.2.66 / 8.3.15's, not jaśtva's — so without this rule √hiṃs would
+    // surface as *ahinaH in laṅ prathama eka. √kṛt needs nothing here: its
+    // final really is a `t` and 8.2.39 handles it.
+    //
+    // DELIBERATE OVER-APPLICATION, recorded so it is not later read as a
+    // bug: the sūtra says *tipi*, and this guard covers sip as well. The
+    // reason is structural — 8.2.74 above is optional *against* the `d`,
+    // so its declined branch has to be able to reach one. Same treatment
+    // the previous slice gave 7.1.35's āśiṣi condition.
+    Rule {
+        id: "8.2.73",
+        name: "tipyanasteH",
+        kind: RuleKind::Vidhi,
+        vikalpa: false,
+        apply: |p| {
+            if !p.terms[ANGA].has(Tag::Rudhadi) {
+                return false;
+            }
+            if !(p.ctx.is_tip() || p.ctx.is_sip()) {
+                return false;
+            }
+            if !dhatu_is_pada_final(p) {
+                return false;
+            }
+            if !p.text().ends_with('s') {
+                return false;
+            }
+            let before = p.snapshot();
+            let Some(idx) = p.terms.iter().rposition(|t| !t.text.is_empty()) else {
+                return false;
+            };
+            let mut s: Vec<char> = p.terms[idx].text.chars().collect();
+            s.pop();
+            s.push('d');
+            p.terms[idx].text = s.into_iter().collect();
+            p.record("8.2.73", "tipyanasteH", before);
+            true
+        },
+    },
+    // 8.2.75 daś ca (vikalpa): and a final `d` likewise becomes ru before
+    // sip. akfRad + s → akfRaH. The counterpart of 8.2.74 for a stem whose
+    // final is already a stop — √kṛt's, voiced by 8.2.39 just above.
+    //
+    // MUST DECLINE ON A `d` THAT CAME FROM 8.2.73, not just any pada-final
+    // `d`: for √hiṃs, 8.2.74 declining leaves `ahinas`, which 8.2.73 (its
+    // sip over-application) then voices to `ahinad`. If this rule read that
+    // `d` too it would offer a second, redundant route to the SAME surface
+    // `ahinaH` — verified empirically, by removing this clause and
+    // rerunning `rudhadi_lan_eka_cells`/`shnams_ru_fires_on_the_dhatus_own_final`:
+    // laṅ madhyama eka for √hiṃs forked into four branches, not three, two
+    // of them the identical text `ahinar` (one via 8.2.74 directly, one via
+    // 8.2.73 then this rule) — a real duplicate, not merely two equally
+    // valid derivations, and `shnams_ru_fires_on_the_dhatus_own_final`
+    // failed because `.find` could land on the 8.2.73-then-8.2.75 branch,
+    // whose trace never mentions 8.2.74 at all. √kṛt is untouched: its `d`
+    // is always 8.2.39 jaśtva's, and 8.2.73 never fires on it (kft's own
+    // final is never `s`), so the log never has "8.2.73" to check for.
+    Rule {
+        id: "8.2.75",
+        name: "daSca",
+        kind: RuleKind::Vidhi,
+        vikalpa: true,
+        apply: |p| {
+            if !p.terms[ANGA].has(Tag::Rudhadi) || !p.ctx.is_sip() {
+                return false;
+            }
+            if !dhatu_is_pada_final(p) {
+                return false;
+            }
+            if p.log.iter().any(|s| s.sutra == "8.2.73") {
+                return false;
+            }
+            if !p.text().ends_with('d') {
+                return false;
+            }
+            let before = p.snapshot();
+            let Some(idx) = p.terms.iter().rposition(|t| !t.text.is_empty()) else {
+                return false;
+            };
+            let mut s: Vec<char> = p.terms[idx].text.chars().collect();
+            s.pop();
+            s.push('r');
+            p.terms[idx].text = s.into_iter().collect();
+            p.record("8.2.75", "daSca", before);
+            true
+        },
+    },
     // 8.2.66 sasajuṣo ruḥ + 8.3.15 kharavasānayoḥ: word-final `s` → visarga.
+    // Widened to a final `r` as of this slice: 8.2.74/8.2.75 above now
+    // produce a genuine intermediate ru (`r`) for √hiṃs and √kṛt, and this
+    // is what finishes it to `H` — no other rule in this suite ever leaves
+    // a word-final `r` for it to misfire on (grep confirms `push('r')` has
+    // exactly those two call sites).
+    //
+    // The bearing term is now found the same way 8.2.39 finds it —
+    // `rposition`, not a fixed `terms.len() - 1` — for the same reason:
+    // in `hiMstaH` (an existing, pre-slice golden) `ENDING` genuinely holds
+    // the final `s` and the fixed index already worked, but in this
+    // slice's own laṅ prathama/madhyama cells `ENDING` is empty (8.2.23
+    // consumed it) and the fixed index would silently write `H` onto an
+    // empty term while leaving the real `s`/`r` untouched, producing
+    // `ahinasH` instead of `ahinaH`. This is a pure widening, not a
+    // behaviour change, for every case this rule was previously reachable
+    // in: this pipeline's tinanta terms are always exactly
+    // `[ANGA, SHAP, ENDING]`, so `rposition` degrades to the old
+    // `terms.len() - 1` whenever `ENDING` is non-empty, e.g. `hiMstaH`.
     Rule {
         id: "8.3.15",
         name: "KaravasAnayor visarjanIyaH",
         kind: RuleKind::Vidhi,
         vikalpa: false,
         apply: |p| {
-            if !p.text().ends_with('s') {
+            if !matches!(p.text().chars().last(), Some('s') | Some('r')) {
                 return false;
             }
+            let Some(idx) = p.terms.iter().rposition(|t| !t.text.is_empty()) else {
+                return false;
+            };
             let before = p.snapshot();
-            let idx = p.terms.len() - 1;
             let mut s: Vec<char> = p.terms[idx].text.chars().collect();
             s.pop();
             s.push('H');

@@ -33,6 +33,20 @@ impl Context {
             is_ngit_like: matches!(lakara, Lakara::Lan | Lakara::VidhiLin),
         }
     }
+
+    /// Is the ending tip — parasmaipada prathama eka?
+    pub(crate) fn is_tip(&self) -> bool {
+        matches!(self.pada, Pada::Parasmaipada)
+            && matches!(self.purusha, Purusha::Prathama)
+            && matches!(self.vacana, Vacana::Eka)
+    }
+
+    /// Is the ending sip — parasmaipada madhyama eka?
+    pub(crate) fn is_sip(&self) -> bool {
+        matches!(self.pada, Pada::Parasmaipada)
+            && matches!(self.purusha, Purusha::Madhyama)
+            && matches!(self.vacana, Vacana::Eka)
+    }
 }
 
 impl Default for Context {
