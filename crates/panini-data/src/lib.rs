@@ -8,6 +8,7 @@ pub enum Gana {
     Adadi,
     Kryadi,
     Svadi,
+    Rudhadi,
 }
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Pada {
@@ -362,6 +363,39 @@ static DHATUS: &[Dhatu] = &[
         pada: Pada::Atmanepada,
         artha: "Askandane",
     },
+    Dhatu {
+        // 07.0010 kftI~ vezwane. rudhādi's √kṛt, distinct from tudādi's
+        // √kṛnt — not in the root set, so no id qualification is needed.
+        id: "kft",
+        code: "kft",
+        gana: Gana::Rudhadi,
+        pada: Pada::Parasmaipada,
+        artha: "vezwane",
+    },
+    Dhatu {
+        // 07.0019 hisi~ hiMsAyAm. Stored post-7.1.58 idito num dhātoH: the
+        // root is idit and takes num, but the engine models no it-markers
+        // at all (every root here is stored post-it-elision), so 7.1.58 is
+        // not derivable and the num is stored. A stated simplification, not
+        // a derivation step — exactly as `stiG` is stored post-6.1.64.
+        // This is the root that makes 6.4.23 SnAnnalopaH reachable: śnam
+        // gives hinans, and 6.4.23 takes the root's own n back out.
+        id: "his",
+        code: "hins",
+        gana: Gana::Rudhadi,
+        pada: Pada::Parasmaipada,
+        artha: "hiMsAyAm",
+    },
+    Dhatu {
+        // 07.0012 Ki\da~\ dEnye. The gaṇa's ātmanepada arm. rudhādi offers
+        // only three ānudātta roots (√indh, √khid, √vid); √khid is the one
+        // that needs no rule beyond the gaṇa's own.
+        id: "Kid",
+        code: "Kid",
+        gana: Gana::Rudhadi,
+        pada: Pada::Atmanepada,
+        artha: "dEnye",
+    },
 ];
 
 pub fn dhatus() -> &'static [Dhatu] {
@@ -403,7 +437,7 @@ mod tests {
 
     #[test]
     fn curated_roots_have_expected_ganas_and_padas() {
-        assert_eq!(dhatus().len(), 42);
+        assert_eq!(dhatus().len(), 45);
         let bu = dhatus().iter().find(|d| d.id == "BU").unwrap();
         assert!(matches!(bu.pada, Pada::Parasmaipada));
         let labh = dhatus().iter().find(|d| d.id == "laB").unwrap();
@@ -522,14 +556,15 @@ mod tests {
         sorted.dedup();
         assert_eq!(sorted.len(), ids.len(), "dhatu ids must be unique");
         // svādi's aS.5 is the first id that differs from its code (aS) — the
-        // kryādi/svādi collision the field exists for. Every other dhatu's id
-        // still equals its code. Assert the actual relation `Dhatu::id`'s doc
-        // promises (`id == code`, or `id` qualified as `{code}.{gana}`), not
-        // just non-emptiness — a stray literal like `"x"` would satisfy the
-        // old assertion without ever being a real id/code pair.
+        // kryādi/svādi collision the field exists for. rudhādi's his/hins is
+        // the second: the id is the lookup key (his), the code is the stored
+        // form (hins, with num). Every other dhatu's id equals its code.
+        // Assert the actual relation: `id == code`, or `id` qualified as
+        // `{code}.{gana}`, or `id == his` and `code == hins` (post-7.1.58).
         for d in dhatus() {
+            let is_his_exception = d.id == "his" && d.code == "hins";
             assert!(
-                d.id == d.code || d.id.starts_with(&format!("{}.", d.code)),
+                d.id == d.code || d.id.starts_with(&format!("{}.", d.code)) || is_his_exception,
                 "id {:?} must equal code {:?} or be gaṇa-qualified as \
                  {{code}}.{{gana}}",
                 d.id,
@@ -549,5 +584,41 @@ mod tests {
         // Same surface text, different rows. If ids ever collapse, one of these
         // roots silently stops being derivable.
         assert_eq!(svadi.code, kryadi.code);
+    }
+
+    #[test]
+    fn rudhadi_holds_exactly_the_slice_7a_roots() {
+        // Three roots, and the pada split that decides which arm each
+        // exercises. √hiṃs is stored `hins`, NOT `his`: see its row comment.
+        let rows: Vec<_> = dhatus()
+            .iter()
+            .filter(|d| d.gana == Gana::Rudhadi)
+            .map(|d| (d.id, d.code, d.pada))
+            .collect();
+        assert_eq!(
+            rows,
+            vec![
+                ("kft", "kft", Pada::Parasmaipada),
+                ("his", "hins", Pada::Parasmaipada),
+                ("Kid", "Kid", Pada::Atmanepada),
+            ]
+        );
+    }
+
+    #[test]
+    fn slice_7a_ids_do_not_collide() {
+        // rudhādi also holds `vi\da~\` and `o~vijI~`, which WOULD collide
+        // with divādi's `vid` and tudādi's `vij` — neither is in 7a, and
+        // when 7b lands them they need the `aS.5` qualification. These
+        // three do not, so id == code for all of them.
+        for id in ["kft", "his", "Kid"] {
+            let d = dhatus().iter().find(|d| d.id == id).unwrap();
+            assert_eq!(
+                dhatus().iter().filter(|x| x.code == d.code).count(),
+                1,
+                "{id}: code {} is not unique",
+                d.code
+            );
+        }
     }
 }
