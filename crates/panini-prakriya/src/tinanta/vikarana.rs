@@ -1,5 +1,5 @@
-//! Vikaraṇa selection and luk: 3.1.69, 3.1.73, 3.1.77, 3.1.81, 3.1.68,
-//! 2.4.72, 3.1.83, 1.2.4.
+//! Vikaraṇa selection and luk: 3.1.69, 3.1.73, 3.1.77, 3.1.78, 3.1.81,
+//! 3.1.68, 2.4.72, 3.1.83, 1.2.4.
 //!
 //! **This stage contains the 3.1.68 boundary.** Rules before 3.1.68 in this
 //! file address the ending as `ENDING_PRE_SHAP` (index 1); rules after it use
@@ -9,7 +9,9 @@
 //!
 //! 2.4.72 luks śap by emptying its text in place rather than removing the
 //! term, which is what keeps every later index valid — and what makes
-//! `terms[SHAP].text` possibly empty for the rest of the pipeline.
+//! `terms[SHAP].text` possibly empty for the rest of the pipeline. 3.1.78
+//! carries a second SHAP hazard of its own — `terms[SHAP].text` may hold the
+//! root's tail, not just the vikaraṇa — see `super::terms`'s second caveat.
 
 use crate::it_samjna::run_it_samjna;
 use crate::rule::{Rule, RuleKind};
@@ -128,11 +130,24 @@ pub(crate) static VIKARANA: &[Rule] = &[
     // to locate a character by position inside a merged string, which is the
     // failure mode this file's header exists to warn about.
     //
-    // ORDERING WITHIN THE RULE: the it-saṁjñā runs BEFORE the root's tail is
+    // ORDERING WITHIN THE RULE: the OPERATION order is unchanged from a
+    // plain apavāda — the it-saṁjñā still runs BEFORE the root's tail is
     // appended. With the tail already in place, 1.3.3 halantyam would strip
-    // the ROOT's final consonant instead of śnam's mit `m`. That is why this
-    // rule records 3.1.78 after run_it_samjna rather than before it, unlike
-    // its siblings — the recorded step is the whole operation, split and all.
+    // the ROOT's final consonant instead of śnam's mit `m`.
+    //
+    // But `run_it_samjna` is not silent: it takes its own snapshot and
+    // records its own `1.3.9 tasya lopaH` step. Recording 3.1.78 only once,
+    // after it-saṁjñā and the 1.1.47 placement both ran, would invert that
+    // step against 3.1.78 in the trace (1.3.9 would appear to precede the
+    // rule that introduces what it elides) and rewind the before/after
+    // chain. So the RECORD is split into two 3.1.78 entries around the
+    // it-saṁjñā call, even though the operation itself is not: the first
+    // records the insertion (kftti → kftSnamti), then it-saṁjñā logs its own
+    // 1.3.9 (kftSnamti → kftnati), then the second 3.1.78 entry records the
+    // 1.1.47 placement (kftnati → kfnatti). The trace then reads 3.1.78,
+    // 1.3.9, 3.1.78 — in sūtra order, chain continuous — with the placement
+    // attributed to 3.1.78 rather than to 1.1.47, matching what
+    // vidyut-prakriya's trace does.
     Rule {
         id: "3.1.78",
         name: "ruDAdiByaH Snam",
@@ -153,11 +168,13 @@ pub(crate) static VIKARANA: &[Rule] = &[
             s.add(Tag::Vikarana);
             s.add(Tag::Sarvadhatuka);
             p.terms.insert(SHAP, s);
+            p.record("3.1.78", "ruDAdiByaH Snam", before);
             // 1.3.8 laSakvataddhite strips S; 1.3.3 halantyam strips the
-            // mit m. Leaves `na`.
+            // mit m. Leaves `na`. Logs its own 1.3.9 step.
             let mut s = p.terms[SHAP].clone();
             run_it_samjna(&mut s, p, SHAP);
             p.terms[SHAP] = s;
+            let before = p.snapshot();
             // 1.1.47, cited above.
             p.terms[ANGA].text = head;
             p.terms[SHAP].text.push_str(&tail);
@@ -708,16 +725,35 @@ mod tests {
         for (id, stem) in [("kft", "kfnat"), ("his", "hinans"), ("Kid", "Kinad")] {
             let d = dhatus().iter().find(|d| d.id == id).unwrap();
             let branches = derive(d, Lakara::Lat, d.pada, Purusha::Prathama, Vacana::Eka);
+            assert!(!branches.is_empty());
             for p in &branches {
+                // 3.1.78 is recorded TWICE, around 1.3.9 (see the rule's
+                // ORDERING comment): once for the insertion, once for the
+                // 1.1.47 placement that actually produces the stem. Take the
+                // LAST 3.1.78 entry, not the first — the first's `after` is
+                // still Snam-shaped (e.g. kftSnamti), not the stem.
                 let step = p
                     .log
                     .iter()
+                    .rev()
                     .find(|s| s.sutra == "3.1.78")
                     .unwrap_or_else(|| panic!("{id}: 3.1.78 never fired"));
                 assert!(
                     step.after.starts_with(stem),
                     "{id}: expected stem {stem}, got {}",
                     step.after
+                );
+                // The chain stays continuous and in sūtra order: 1.3.9 sits
+                // strictly between the two 3.1.78 entries, not before both.
+                let first = p.log.iter().position(|s| s.sutra == "3.1.78").unwrap();
+                let last = p.log.iter().rposition(|s| s.sutra == "3.1.78").unwrap();
+                assert!(
+                    first < last,
+                    "{id}: expected two 3.1.78 entries (insertion, placement)"
+                );
+                assert!(
+                    p.log[first + 1..last].iter().any(|s| s.sutra == "1.3.9"),
+                    "{id}: 1.3.9 does not fall between the two 3.1.78 entries"
                 );
             }
         }
