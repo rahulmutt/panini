@@ -114,9 +114,13 @@ pub(crate) fn cartva_of(c: char) -> Option<char> {
     }
 }
 
-/// The homorganic nasal of a *yay* — every stop and semivowel. Returns
-/// `None` for a sound outside yay (the sibilants and `h`), which is exactly
-/// 8.4.58's declining case.
+/// The homorganic nasal of a *yay*. Covers only the stops — yay's
+/// semivowel arm (`y v r l`) is unreached while 8.3.24 fires solely before
+/// a jhal, and jhal excludes semivowels, so no anusvāra this engine
+/// produces is ever followed by one. `None` covers both śal (the
+/// sibilants and `h`, 8.4.58's real declining case) and that unreached
+/// semivowel gap — widen the match, not this comment, if a future slice
+/// lets 8.3.24 leave an anusvāra before `y v r l`.
 pub(crate) fn parasavarna_of(c: char) -> Option<char> {
     Some(match c {
         'k' | 'K' | 'g' | 'G' | 'N' => 'N',
@@ -124,6 +128,9 @@ pub(crate) fn parasavarna_of(c: char) -> Option<char> {
         'w' | 'W' | 'q' | 'Q' | 'R' => 'R',
         't' | 'T' | 'd' | 'D' | 'n' => 'n',
         'p' | 'P' | 'b' | 'B' | 'm' => 'm',
+        // Semivowels are yay too, but unreached (see doc comment above);
+        // no arm returns a value for them, so they fall to `None` below
+        // along with śal.
         _ => return None,
     })
 }
@@ -177,6 +184,36 @@ mod tests {
         // Non-ac letters (consonants) have no vRddhi substitute.
         assert_eq!(vrddhi_of('t'), None);
         assert_eq!(vrddhi_of('f'), None);
+    }
+
+    #[test]
+    fn parasavarna_of_stops_all_arms() {
+        // 8.4.58 anusvArasya yayi parasavarRaH: pin every varga's stop-arm
+        // directly, since only the dental arm (t/d -> n) is reachable from
+        // 7a's golden forms, and both reachable inputs (hiMs + taH's `t`,
+        // kfMt + a's `t`) map to that same `n` -- a mutant rewriting the
+        // velar, palatal, retroflex or labial arm to any other nasal would
+        // be invisible to the whole suite without this.
+        for c in ['k', 'K', 'g', 'G', 'N'] {
+            assert_eq!(parasavarna_of(c), Some('N'), "{c} should parasavarna to N");
+        }
+        for c in ['c', 'C', 'j', 'J', 'Y'] {
+            assert_eq!(parasavarna_of(c), Some('Y'), "{c} should parasavarna to Y");
+        }
+        for c in ['w', 'W', 'q', 'Q', 'R'] {
+            assert_eq!(parasavarna_of(c), Some('R'), "{c} should parasavarna to R");
+        }
+        for c in ['t', 'T', 'd', 'D', 'n'] {
+            assert_eq!(parasavarna_of(c), Some('n'), "{c} should parasavarna to n");
+        }
+        for c in ['p', 'P', 'b', 'B', 'm'] {
+            assert_eq!(parasavarna_of(c), Some('m'), "{c} should parasavarna to m");
+        }
+        // Sal (the sibilants and h) declines -- this is 8.4.58's real
+        // guard case (hiMs + taH keeps its anusvAra before `s`).
+        for c in ['s', 'S', 'z', 'h'] {
+            assert_eq!(parasavarna_of(c), None, "{c} should not parasavarna");
+        }
     }
 
     #[test]
