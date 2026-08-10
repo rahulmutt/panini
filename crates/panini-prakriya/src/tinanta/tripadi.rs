@@ -1,4 +1,4 @@
-//! Tripādī: 8.2.77 … 8.4.55.
+//! Tripādī: 8.2.77 … 8.4.56.
 //!
 //! Ordered AFTER 3.1.68, so the ending is at `ENDING` (index 2) and śap at
 //! `SHAP` (index 1); `terms[SHAP].text` may be empty (2.4.72). See
@@ -414,11 +414,13 @@ pub(crate) static TRIPADI: &[Rule] = &[
             true
         },
     },
-    // 8.4.55 khari ca (cartva): a jhal at the aṅga's final position, meeting a
-    // khar across the root+ending junction, becomes its car (voiceless
-    // unaspirated). √ad's d before ti/tas/si/tha → t: atti, attaH, atsi, atTa.
-    // The engine's first internal junction sandhi; general, reused by every
-    // later gaṇa/subanta slice. Placed last: latest tripādī rule (8.4 > 8.3).
+    // 8.4.55 khari ca (cartva): a jhal immediately before the ending, meeting
+    // a khar across that junction, becomes its car (voiceless unaspirated).
+    // √ad's d before ti/tas/si/tha → t: atti, attaH, atsi, atTa. The engine's
+    // first internal junction sandhi; general, reused by every later
+    // gaṇa/subanta slice. No longer the pipeline's last rule — 8.4.65 and
+    // 8.4.56 both follow it now — but still ordered after every other 8.3/8.4
+    // rule that precedes it.
     //
     // FIXED for rudhādi's ANGA/SHAP split (Task 7, √khid's Kintte the
     // witness). This rule predates gaṇa 7 and originally read
@@ -619,12 +621,27 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // The scan starts at index 1, not 0: index 0 has no preceding sound, so
     // `halaḥ` cannot be satisfied there and `w[i - 1]` would underflow.
     //
+    // NO SEPARATE JHAL ARM, by design, as 8.4.56 below states for the
+    // analogous case: `is_savarna`'s `series()` recognises exactly the 20
+    // varga stops, and every one of them is already in `is_jhal`'s set — so
+    // `is_savarna`'s series test IS the jhal test, and a standalone
+    // `is_jhal` conjunct on either side would be dead code. This also lines
+    // up with the sūtra's own *jharaḥ*, which excludes `h` from *jhal* —
+    // `series()` already rejects `h` (it has no varga), so the narrower
+    // `is_savarna` alone tracks *jhar*, not merely *jhal*.
+    //
     // PLACEMENT AGAINST 8.4.56 IS LOAD-BEARING and unenforceable by the
-    // compiler. Both rules are optional and both sit at the end of the
-    // tripādī. This one must run FIRST: 8.4.56 vāvasāne forks a pada-final
-    // `d` to `t` at pause, and if it ran first only one of this rule's two
-    // branches would receive that fork — kfnttAt would never be derived.
-    // The `kfntAt` trace pin in `super::derivation_tests` is the guard.
+    // compiler, but it governs TRACE ORDER within a branch, not WHICH forms
+    // exist: both rules are optional and both sit at the end of the tripādī,
+    // and running 8.4.56 first would still reach every member this rule
+    // does — e.g. 8.4.56 could fork kfnttAd to kfnttAt directly, and this
+    // rule would then fire on that pada-final `tt` just as readily, since
+    // both `t`s are savarṇa either way. What the stated order fixes is the
+    // sequence each branch's trace records the two rules in — 8.4.65 before
+    // 8.4.56 — which Task 9's `kfntAt` trace pin in
+    // `crates/panini/tests/trace.rs` asserts directly
+    // (`at(&t, "8.4.65") < at(&t, "8.4.56")`). `tinanta_rule_order_is_pinned`
+    // in `super::derivation_tests` is what holds this file's order today.
     //
     // It is also the rule that takes √kṛt's loṭ eka cells to five and six
     // forms, stacking with 7.1.35 and 8.4.56. That is the deepest fork the
@@ -638,12 +655,9 @@ pub(crate) static TRIPADI: &[Rule] = &[
         vikalpa: true,
         apply: |p| {
             let w = word_chars(p);
-            let Some(pos) = (1..w.len().saturating_sub(1)).find(|i| {
-                !is_vowel(w[i - 1].2)
-                    && is_jhal(w[*i].2)
-                    && is_jhal(w[i + 1].2)
-                    && is_savarna(w[*i].2, w[i + 1].2)
-            }) else {
+            let Some(pos) = (1..w.len().saturating_sub(1))
+                .find(|i| !is_vowel(w[i - 1].2) && is_savarna(w[*i].2, w[i + 1].2))
+            else {
                 return false;
             };
             let (term, idx, _) = w[pos];

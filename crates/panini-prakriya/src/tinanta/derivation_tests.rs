@@ -1214,8 +1214,9 @@ fn rudhadi_lot_madhyama_eka_takes_jashtva() {
     // derivation with no optional rule applied.
     //
     // 8.4.65 jharo jhari savarṇe (Task 7) stacks on top of that fork: it
-    // optionally elides the weak stem's `n` before `D`/`t` wherever a jhal
-    // precedes it, on both the tātaṅ and non-tātaṅ branches. 8.4.56
+    // optionally elides the weak stem's final `t`/`d` before a savarṇa
+    // `D`/`t` (the `n` before it survives in every branch), on both the
+    // tātaṅ and non-tātaṅ branches. 8.4.56
     // vāvasāne then optionally forks the tātaṅ branches' pada-final vowel-
     // adjacent `t`/`d` at pause but declines on the two vowel-final
     // non-tātaṅ branches (kfndDi, kfnDi) — so k = 3 optional forks give six
