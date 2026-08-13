@@ -516,10 +516,11 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // pratyāhāra (every vowel but a/ā, plus h y v r l) and `k`; this
     // implements only the reachable slice of it — an aṅga-final vowel other
     // than a/ā — so every arm is executed by a test and the mutation gate
-    // stays clean. Same discipline that removed 8.4.53 and 6.1.78's E/O arms
-    // in slice 5e, and the same shape as 8.2.25's narrow guard. Widen it the
-    // moment a root lands whose aṅga ends in h/y/v/r/l or k before an
-    // s-initial affix.
+    // stays clean. Same discipline that removed 6.1.78's E/O arms in slice
+    // 5e (and 8.4.53 itself, in `9fa8e5f` — since restored below, rudhādi
+    // having supplied it a witness the discipline still required), and the
+    // same shape as 8.2.25's narrow guard. Widen it the moment a root lands
+    // whose aṅga ends in h/y/v/r/l or k before an s-initial affix.
     //
     // No conflict with 8.3.15 above: that rule is word-final
     // (kharavasānayoḥ), this one is apadāntasya. It also declines for every
@@ -572,7 +573,7 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // 8.4.53 jhalāṁ jaś jhaśi: a jhal becomes its jaś before a jhaś (a
     // voiced aspirate). kfnt + Di → kfnd + Di → kfndDi.
     //
-    // RESTORED, not reverted. This rule was removed in 9b7adee as
+    // RESTORED, not reverted. This rule was removed in 9fa8e5f as
     // unreachable: slice 5d had analysed the ās/vas junction as jaśtva and
     // shipped *AdDve, and 8.2.25 dhi ca — which ELIDES the `s` rather than
     // voicing it, and sits in 8.2, asiddha to all of 8.4 — bled it

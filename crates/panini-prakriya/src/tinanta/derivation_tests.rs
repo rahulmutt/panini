@@ -1208,7 +1208,7 @@ fn rudhadi_anusvara_round_trip_is_conditional() {
 fn rudhadi_lot_madhyama_eka_takes_jashtva() {
     // 6.4.101 her DiH makes the ending `Di`; the weak stem's final `t`
     // meets it and is voiced-aspirated to `d` by 8.4.53. This is the rule
-    // commit 9b7adee deleted as unreachable once 8.2.25 dhi ca replaced
+    // commit 9fa8e5f deleted as unreachable once 8.2.25 dhi ca replaced
     // slice 5d's analysis — √kṛt is its first genuine witness.
     //
     // 7.1.35 tātaṅ optionally forks this cell (parasmaipada loṭ madhyama

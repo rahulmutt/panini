@@ -2338,19 +2338,27 @@ fn derivation_set_is_exactly_pinned() {
 /// design-time vidyut-prakriya audit predicted for the two conventions the
 /// svādi slice retired (7.1.35 tātaṅ, 8.4.56 pausal cartva), the one audited
 /// divergence it resolved (3.4.111 Śākaṭāyana's jus), and — new in rudhādi
-/// 7a — the three roots (kft, his, Kid) whose loṭ and laṅ cells fork on
-/// 8.4.65, 8.2.74 and 8.2.75 as well: 1620 cells total (180 root×lakāra
+/// 7a — the three roots (kft, his, Kid), whose cells fork in all four
+/// lakāras, not just loṭ and laṅ: laṭ (kft cells 1/4/5 and Kid cells 0/5,
+/// on 8.4.65), laṅ (on 8.4.65 and the 8.2.74/8.2.75 ru alternation), loṭ
+/// (on 7.1.35/8.4.65/8.4.56, stacking up to three deep), and vidhiliṅ
+/// (kft/his cell 0, on 8.4.56): 1620 cells total (180 root×lakāra
 /// blocks × 9), of which 1488 hold exactly one form, 78 hold two, 52 hold
 /// three, and — the sharpest branch-count witness in the repo, per
 /// `docs/ARCHITECTURE.md` — exactly one holds five (√kṛt's loṭ prathama eka)
 /// and one holds six (√kṛt's loṭ madhyama eka, `kfndDi`/`kfnDi`'s cell).
 /// `ALTERNATES` itself has 191 rows, keyed 54 `8.4.56`, 52 `7.1.35`, 52
-/// `7.1.35+8.4.56`, 2 `3.4.111`, and 8 `6.4.107`. The audit probe that
-/// produced these numbers ran against a vidyut-prakriya checkout during
-/// design and cannot be re-run in this workspace (no vidyut checkout here,
-/// and the probe's source lives only in the spec's prose, not in this repo's
-/// history) — this test is what keeps the numbers true now that the audit
-/// itself is unreproducible.
+/// `7.1.35+8.4.56`, 2 `3.4.111`, 8 `6.4.107`, 17 `8.4.65`, 1 `8.2.75`, 1
+/// `8.2.74`, 2 `7.1.35+8.4.65`, and 2 `7.1.35+8.4.65+8.4.56` — the
+/// assertions below are complete; this prose list previously omitted the
+/// five rudhādi keys and undercounted the total by 23. The audit probe that
+/// produced the original 168-row numbers ran against a vidyut-prakriya
+/// checkout during design; slice 9's cross-implementation audit re-ran the
+/// full check against a scratchpad vidyut-prakriya checkout across all 1620
+/// cells with zero differences, so the numbers are re-verified as well as
+/// pinned, even though that probe's source is deliberately not committed to
+/// this repo (it is throwaway verification tooling, not shipped code) —
+/// this test is what keeps the numbers true day to day.
 #[test]
 fn derivation_set_shape_matches_the_audited_numbers() {
     let total_cells = PARADIGM.len() * 9;

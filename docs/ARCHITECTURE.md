@@ -30,17 +30,18 @@ implements; `tinanta::rules()` yields that flattened sequence.
 |---|---|---|
 | `samjna.rs` | 1.3.12, 1.3.78, 3.4.78, 1.3.9, 1.2.4 | before 3.1.68 |
 | `tin.rs` | 3.4.85 … 3.4.102, 7.1.35 | before 3.1.68 |
-| `vikarana.rs` | 3.1.69, 3.1.73, 3.1.77, 3.1.81, 3.1.68, 2.4.72, 3.4.111, 3.1.83, 1.2.4 | contains 3.1.68 |
-| `anga.rs` | 6.4.71 … 7.2.81 | after 3.1.68 |
+| `vikarana.rs` | 3.1.69, 3.1.73, 3.1.77, 3.1.78, 3.1.81, 3.1.68, 2.4.72, 3.4.111, 3.1.83, 1.2.4 | contains 3.1.68 |
+| `anga.rs` | 6.4.71 … 7.2.81, 6.4.23 | after 3.1.68 |
 | `guna.rs` | 7.4.21, 7.3.84, 7.3.86, 7.3.84 (again — see below), 6.4.87, 6.4.77, 6.1.78, 7.3.101, 6.4.112, 6.4.113 — vowel gradation and vikaraṇa reshaping | after 3.1.68 |
-| `adesha.rs` | 6.1.101 … 6.4.107, 6.4.101 | after 3.1.68 |
-| `tripadi.rs` | 8.2.77, 8.2.23, 8.2.25, 8.2.39, 8.3.15 … 8.4.55, 8.4.1, 8.4.2, 8.4.56 | after 3.1.68 |
+| `adesha.rs` | 6.1.101 … 6.4.107, 6.4.101, 6.4.111 | after 3.1.68 |
+| `tripadi.rs` | 8.2.77, 8.2.23, 8.2.25, 8.2.39, 8.2.74, 8.2.73, 8.2.75, 8.3.15 … 8.4.55, 8.4.1, 8.4.2, 8.4.58, 8.4.65, 8.4.56 | after 3.1.68 |
 
 The stage boundary is file organisation, not grammar: the flattened order is
 what matters, and `tinanta_rule_order_is_pinned` in `derivation_tests.rs`
-pins all 72 ids verbatim. `tinanta/terms.rs` holds the term-index constants
-and the reason 3.1.68 bisects the pipeline; `tinanta/sound.rs` holds the
-varṇa classifiers.
+pins all 82 ids verbatim (72 pre-rudhādi, plus the ten rudhādi added: 3.1.78,
+6.4.23, 6.4.111, 8.2.74, 8.2.73, 8.2.75, 8.3.24, 8.4.53, 8.4.58, 8.4.65).
+`tinanta/terms.rs` holds the term-index constants and the reason 3.1.68
+bisects the pipeline; `tinanta/sound.rs` holds the varṇa classifiers.
 
 Rule order is load-bearing and several orderings are non-obvious; the
 constraints and their justifications are documented in the design specs
@@ -48,18 +49,31 @@ under `docs/superpowers/specs/`. The exact ordered traces in
 `crates/panini/tests/trace.rs` are what pin them.
 
 Six gaṇas are covered: bhvādi (1), divādi (4), tudādi (6), adādi (2), kryādi
-(9), svādi (5). gaṇa is carried as a tag on the aṅga term (`Tag::Divadi` /
-`Tag::Tudadi` / `Tag::Adadi` / `Tag::Kryadi` / `Tag::Svadi`, mirroring how
-`Tag::Atmanepadin` carries pada), read by 3.1.69, 3.1.73, 3.1.77, 3.1.81, and
-2.4.72. The vikaraṇa itself is selected by 3.1.68 (śap, bhvādi and adādi),
-3.1.69 (śyan, divādi), 3.1.73 (śnu, svādi), 3.1.77 (śa, tudādi), and 3.1.81
-(śnā, kryādi).
+(9), svādi (5) — plus rudhādi (7), **partial** (see below). gaṇa is carried
+as a tag on the aṅga term (`Tag::Divadi` / `Tag::Tudadi` / `Tag::Adadi` /
+`Tag::Kryadi` / `Tag::Svadi` / `Tag::Rudhadi`, mirroring how
+`Tag::Atmanepadin` carries pada), read by 3.1.69, 3.1.73, 3.1.77, 3.1.78,
+3.1.81, and 2.4.72. The vikaraṇa itself is selected by 3.1.68 (śap, bhvādi
+and adādi), 3.1.69 (śyan, divādi), 3.1.73 (śnu, svādi), 3.1.77 (śa, tudādi),
+3.1.78 (śnam, rudhādi), and 3.1.81 (śnā, kryādi).
 
 adādi (gaṇa 2) is the only gaṇa where the vikaraṇa is *luk'd*: 3.1.68 still
 inserts śap (bhvādi and adādi share the same vikaraṇa rule), and **2.4.72
 *adiprabhṛtibhyaḥ śapaḥ*** then empties it for adādi roots. The śap term is
 kept in place with empty text rather than removed, so the `ANGA`/`SHAP`/
 `ENDING` term indices stay stable for downstream rules.
+
+rudhādi (gaṇa 7) stretches the same three fixed slots the other way: its
+vikaraṇa, śnam (3.1.78), is the engine's first **infix** rather than a
+suffix, and there is no fourth slot to hold one. The root is instead split
+across `ANGA` and `SHAP` — `ANGA` keeps the head through the root's last
+vowel, `SHAP` holds śnam followed by whatever text of the root followed
+that vowel (`kft` → `[kf, nat, ti]`; `hins` → `[hi, nans, ti]`) — so
+`terms[SHAP].text` is no longer purely the vikaraṇa's own text for this
+gaṇa, the way `terms[SHAP].text` may be empty for adādi. A rule reading
+`SHAP` to detect "the vikaraṇa's own shape" must guard on `Tag::Rudhadi`
+accordingly; see the "REPRESENTATION" note on 3.1.78 in
+`tinanta/vikarana.rs` and the caveat in `tinanta/terms.rs`.
 
 adādi is now **complete** across all four lakāras: √yā and √vā, √ad
 (parasmaipada), and √ās, √vas and √śī (ātmanepada) each derive in laṭ, laṅ,
@@ -147,13 +161,25 @@ rules) and reaches it only when every optional rule fires on every branch.
 It is not always 2^k in practice: loṭ prathama eka has k = 2 (7.1.35 and
 8.4.56 both apply) but only **three** branches, not four, because 8.4.56
 declines on the vowel-final base branch (`Bavatu`) and forks only the
-tātaṅ one (`BavatAt`, alongside `Bavatu` and `BavatAd`). Branches that
+tātaṅ one (`BavatAt`, alongside `Bavatu` and `BavatAd`). rudhādi's √kṛt loṭ
+madhyama eka sharpens the same gap: k = 3 there (7.1.35, 8.4.65 and 8.4.56
+all apply), for a 2³ bound of eight, but only **six** branches result
+(`kfndDi`, `kfnDi`, `kfnttAd`, `kfntAd`, `kfnttAt`, `kfntAt`) — again
+because 8.4.56 declines on the vowel-final, non-tātaṅ branches (`kfndDi`
+and its 8.4.65 fork `kfnDi`), so only the two tātaṅ branches (7.1.35 alone,
+and 7.1.35+8.4.65) go on to fork a third time. Branches that
 converge on the same text are not deduplicated — one form with two
 derivations is information, not noise.
 
-Four rules are optional: **6.4.107** *lopaś cāsyānyatarasyāṁ mvoḥ*,
-**7.1.35** *tuhyos tātaṅ āśiṣy anyatarasyām*, **3.4.111** *laṅaḥ
-śākaṭāyanasyaiva*, and **8.4.56** *vā'vasāne*.
+Seven rules are optional, in pipeline order: **7.1.35** *tuhyos tātaṅ āśiṣy
+anyatarasyām*, **3.4.111** *laṅaḥ śākaṭāyanasyaiva*, **6.4.107** *lopaś
+cāsyānyatarasyāṁ mvoḥ*, **8.2.74** *sipi dhāto rur vā*, **8.2.75** *daś ca*,
+**8.4.65** *jharo jhari savarṇe*, and **8.4.56** *vā'vasāne*. Three of the
+seven are new this slice, rudhādi's own: 8.2.74 and 8.2.75 the *ru*
+alternation on √hiṃs's own final before sip, and 8.4.65 the savarṇa elision
+that also produces the six-branch witness above. See
+`exactly_the_pinned_vikalpa_rules_are_optional` in `derivation_tests.rs`,
+which pins the whole set by id.
 
 6.4.107 elides śnu's `u` before `m` and `v` when that `u` is
 *asaṁyogapūrva*, forking 8 cells: √hi and √ri (the gaṇa's only

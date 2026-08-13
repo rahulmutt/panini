@@ -21,7 +21,20 @@ run = "cargo fmt --all --check"
 # running only the mutated package's own tests, which misses the
 # `panini` crate's golden paradigm/trace/roundtrip tests that are the
 # actual gate on the guarded rules in panini-prakriya.
-run = "cargo mutants --package panini-prakriya --test-workspace=true --timeout 300"
+#
+# --timeout must clear a FULL, UNCAUGHT run of that workspace suite, not
+# just a typical one. A caught mutant fails fast and is recorded quickly;
+# an uncaught mutant runs the entire suite to completion before
+# cargo-mutants can conclude nothing failed. At 1620 cells that full run
+# (paradigm ~140s + roundtrip ~157s + trace, back to back) is itself close
+# to 300s, so a 300s cap no longer has headroom over the thing it is
+# supposed to bound — it starts reclassifying genuine survivors as
+# TIMEOUT instead of MISSED, which is the same vacuity a too-short cap
+# always causes, just reached by suite growth instead of by an unset
+# timeout. 1200s is comfortable headroom over the ~300s uncaught-run floor
+# measured at slice 7a. Re-check this margin whenever the golden suite
+# grows again.
+run = "cargo mutants --package panini-prakriya --test-workspace=true --timeout 1200"
 
 [tasks.audit]
 run = "cargo audit && cargo deny check"

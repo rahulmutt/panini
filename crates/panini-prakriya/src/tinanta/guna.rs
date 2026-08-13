@@ -271,10 +271,12 @@ pub(crate) static GUNA: &[Rule] = &[
     // a single SLP1 character, so the aṅga arm's tail slice is never empty
     // either. And the order is decisive on its own: 6.1.90 is the only caller
     // of `vrddhi_of`, and it runs *after* 6.1.78 in the single-pass rule
-    // array, so any E/O it produces can never be seen by 6.1.78 at all. Per
-    // the mutation gate's own rule (same rationale as 8.4.53's removal in
-    // `super::tripadi`), unexecutable arms cannot be kept under the mutation
-    // gate.
+    // array, so any E/O it produces can never be seen by 6.1.78 at all.
+    // Unexecutable arms cannot be kept under the mutation gate — the same
+    // discipline that removed 8.4.53 in `super::tripadi` as unreachable in
+    // `9fa8e5f` (it was later RESTORED, once rudhādi supplied a witness —
+    // see 8.4.53's own comment — so that removal is precedent for the
+    // discipline, not a standing state of the code).
     // Restore the E/O arms (and re-add their coverage in the golden/mutation
     // suites) the moment a root lands whose aṅga can end in a vṛddhi vowel
     // before a vowel-initial ending. √śī (slice 5f) is NOT that root: 7.4.21
