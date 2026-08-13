@@ -171,7 +171,22 @@ pub(crate) static TRIPADI: &[Rule] = &[
                 return false;
             }
             let before = p.snapshot();
-            let idx = p.terms.len() - 1;
+            // Read the bearing term as the last NON-EMPTY one, not a fixed
+            // `terms.len() - 1`: the same fix 8.3.15 needed below, for the
+            // same reason. A fixed last index is only safe while `ENDING`
+            // is always the true word end; the moment some rule can leave
+            // `ENDING` empty (6.4.105 / 6.4.106 luk it outright) while an
+            // earlier term still holds the word-final letters, the fixed
+            // index writes onto the empty term instead and leaves the real
+            // target untouched. This is exactly the shape that bit 8.3.15's
+            // twin during this slice and produced `ahinasH`; nothing here
+            // currently exercises it (this guard needs two word-final
+            // consonants, and every path that empties `ENDING` before the
+            // tripādī also leaves a vowel-final word), so this is a
+            // preventive match to 8.2.39/8.3.15's shape, not a live fix.
+            let Some(idx) = p.terms.iter().rposition(|t| !t.text.is_empty()) else {
+                return false;
+            };
             let mut s: Vec<char> = p.terms[idx].text.chars().collect();
             s.pop();
             p.terms[idx].text = s.into_iter().collect();
@@ -349,6 +364,18 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // itself, which had no other caller. `Context::is_sip` stays: 8.2.74 and
     // 8.2.75 both still guard on it directly, and those two really are
     // sip-only (8.2.74) or downstream of a sip-only branch (8.2.75).
+    //
+    // WHY tip/sip is what falls out: `ENDING` is only ever empty because
+    // 8.2.23 saṁyogāntasya lopaḥ collapsed a word-final consonant conjunct,
+    // and in this grammar that happens at exactly one slot family — laṅ
+    // prathama/madhyama eka, i.e. tip and sip. `dhatu_is_pada_final` is
+    // testing for that emptiness, not for tip/sip directly, so it inherits
+    // the restriction only as long as that fact holds. This rule is
+    // OBLIGATORY (`vikalpa: false`), so if a future slice's root set ever
+    // makes `ENDING` empty at some other slot (a different saṁyoga shape,
+    // or another rule that luks the ending), this guard would over-fire
+    // there silently — no test failure until a golden happens to catch it.
+    // Re-verify this invariant before widening the root set.
     Rule {
         id: "8.2.73",
         name: "tipyanasteH",
