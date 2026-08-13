@@ -42,6 +42,7 @@
 //! independent mutation pins into one.
 
 use crate::rule::{Rule, RuleKind};
+use crate::term::Tag;
 use crate::tinanta::sound::{is_jhal, is_vowel, vrddhi_of};
 use crate::tinanta::terms::{ANGA, ENDING, SHAP, shnu_asamyogapurva, sound_before_ending};
 use panini_data::Lakara;
@@ -545,6 +546,55 @@ pub(crate) static ADESHA: &[Rule] = &[
             true
         },
     },
+    // 6.4.111 śnasor allopaḥ: śnam's `a` is elided before a kṅit
+    // sārvadhātuka. This is what produces rudhādi's weak stem, and the
+    // strong/weak split the gaṇa is built around: kfnat + ti (strong,
+    // tip is pit) against kfnt + anti (weak, Ji is ṅit by 1.2.4).
+    //
+    // The `a` deleted is always SHAP's second character — śnam's own — never
+    // a vowel of the root, because 3.1.78 put everything of the root that
+    // follows its last vowel behind śnam. That is the whole payoff of the
+    // representation: this is a term-local edit rather than a positional
+    // search inside a merged string.
+    //
+    // PLACEMENT, pinned by `hinDi`: 6.4.101 her dhiH runs FIRST and rewrites
+    // the ending hi → Di, and only then does this rule strip the `a`
+    // (hinas + Di → hins + Di → 8.2.25 → hinDi). Ordered last in this stage
+    // for that reason; the sūtra number is not what decides it.
+    //
+    // The sūtra's `sa` — the `a` of √as — is out of scope: √as is not in the
+    // root set. Guarded to the rudhādi arm accordingly, per the narrow-guard
+    // discipline that landed 8.3.59 and 8.2.25.
+    Rule {
+        id: "6.4.111",
+        name: "SnasorallopaH",
+        kind: RuleKind::Vidhi,
+        vikalpa: false,
+        apply: |p| {
+            if !p.terms[ANGA].has(Tag::Rudhadi) {
+                return false;
+            }
+            // 1.1.5 kṅiti ca: the sārvadhātuka that immediately follows must
+            // be ṅit. For rudhādi SHAP is never empty, so the follower is
+            // always the ending.
+            let Some(ending) = p.terms.get(ENDING) else {
+                return false;
+            };
+            if !ending.has(Tag::Ngit) {
+                return false;
+            }
+            let shap: Vec<char> = p.terms[SHAP].text.chars().collect();
+            if shap.get(1) != Some(&'a') {
+                return false;
+            }
+            let before = p.snapshot();
+            let mut s = shap;
+            s.remove(1);
+            p.terms[SHAP].text = s.into_iter().collect();
+            p.record("6.4.111", "SnasorallopaH", before);
+            true
+        },
+    },
 ];
 
 #[cfg(test)]
@@ -553,8 +603,10 @@ mod tests {
     use crate::context::Context;
     use crate::prakriya::Prakriya;
     use crate::term::{Tag, Term};
+    use crate::tinanta::derivation_tests::sole;
+    use crate::tinanta::derive;
     use crate::tinanta::rules;
-    use panini_data::{Pada, Purusha, Vacana};
+    use panini_data::{Pada, Purusha, Vacana, dhatus};
 
     #[test]
     fn vali_lopa_spares_a_following_vowel() {
@@ -1223,5 +1275,31 @@ mod tests {
     #[test]
     fn lopa_of_shnu_u_is_optional() {
         assert!(rule_6_4_107().vikalpa, "6.4.107 is anyatarasyām");
+    }
+
+    #[test]
+    fn shnasor_allopah_fires_only_before_a_knit_sarvadhatuka() {
+        // Strong cell (tip is pit, not ṅit) keeps the `a`; weak cell (Ji is
+        // apit → ṅit by 1.2.4) loses it. A guard that ignored ṅitva would
+        // derive *kfnttanti and *kfRatvaH, both plausible-looking.
+        let d = dhatus().iter().find(|d| d.id == "kft").unwrap();
+        let strong = sole(derive(
+            d,
+            Lakara::Lat,
+            Pada::Parasmaipada,
+            Purusha::Prathama,
+            Vacana::Eka,
+        ));
+        assert!(!strong.log.iter().any(|s| s.sutra == "6.4.111"));
+        let weak = sole(derive(
+            d,
+            Lakara::Lat,
+            Pada::Parasmaipada,
+            Purusha::Prathama,
+            Vacana::Bahu,
+        ));
+        let step = weak.log.iter().find(|s| s.sutra == "6.4.111").unwrap();
+        assert_eq!(step.before, "kfnatanti");
+        assert_eq!(step.after, "kfntanti");
     }
 }

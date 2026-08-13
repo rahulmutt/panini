@@ -115,12 +115,13 @@ fn tinanta_rule_order_is_pinned() {
         "1.3.12", "1.3.78", "3.4.78", "1.3.9", "1.2.4", "3.4.85", "3.4.108", "3.4.105", "3.4.106",
         "3.4.101", "3.4.99", "3.4.87", "3.4.89", "3.4.86", "3.4.100", "3.4.80", "3.4.79", "3.4.91",
         "3.4.93", "3.4.90", "3.4.92", "3.4.103", "3.4.102", "7.1.35", "3.1.69", "3.1.73", "3.1.77",
-        "3.1.81", "3.1.68", "2.4.72", "3.4.111", "3.1.83", "1.2.4", "6.4.71", "6.4.72", "7.3.100",
-        "7.1.5", "7.1.6", "7.1.3", "7.2.79", "7.2.80", "7.2.81", "7.4.21", "7.3.84", "7.3.86",
-        "7.3.84", "6.4.87", "6.4.77", "6.1.78", "7.3.101", "6.4.112", "6.4.113", "6.1.101",
-        "6.1.96", "6.1.90", "6.1.97", "6.1.87", "6.1.66", "6.4.105", "6.4.106", "6.4.107",
-        "6.4.101", "8.2.77", "8.2.23", "8.2.25", "8.2.39", "8.3.15", "8.3.59", "8.4.55", "8.4.1",
-        "8.4.2", "8.4.56",
+        "3.1.78", "3.1.81", "3.1.68", "2.4.72", "3.4.111", "3.1.83", "1.2.4", "6.4.71", "6.4.72",
+        "7.3.100", "7.1.5", "7.1.6", "7.1.3", "7.2.79", "7.2.80", "7.2.81", "6.4.23", "7.4.21",
+        "7.3.84", "7.3.86", "7.3.84", "6.4.87", "6.4.77", "6.1.78", "7.3.101", "6.4.112",
+        "6.4.113", "6.1.101", "6.1.96", "6.1.90", "6.1.97", "6.1.87", "6.1.66", "6.4.105",
+        "6.4.106", "6.4.107", "6.4.101", "6.4.111", "8.2.77", "8.2.23", "8.2.25", "8.2.39",
+        "8.2.74", "8.2.73", "8.2.75", "8.3.15", "8.3.24", "8.3.59", "8.4.53", "8.4.55", "8.4.1",
+        "8.4.2", "8.4.58", "8.4.65", "8.4.56",
     ];
     let actual: Vec<&str> = rules().map(|r| r.id).collect();
     assert_eq!(actual, expected);
@@ -134,7 +135,9 @@ fn tinanta_rule_order_is_pinned() {
 #[test]
 fn exactly_the_pinned_vikalpa_rules_are_optional() {
     let actual: Vec<&str> = rules().filter(|r| r.vikalpa).map(|r| r.id).collect();
-    let expected = ["7.1.35", "3.4.111", "6.4.107", "8.4.56"];
+    let expected = [
+        "7.1.35", "3.4.111", "6.4.107", "8.2.74", "8.2.75", "8.4.65", "8.4.56",
+    ];
     assert_eq!(actual, expected);
 }
 
@@ -1123,5 +1126,240 @@ fn shatva_retroflexes_the_endings_s_after_shings_e() {
     assert_eq!(
         form_g("SI", Lakara::Lot, Purusha::Madhyama, Vacana::Eka),
         "Sezva"
+    );
+}
+
+#[test]
+fn rudhadi_strong_cells() {
+    // The strong stem is śnam with its `a` intact. kft needs no new rule at
+    // all beyond 3.1.78 — 8.4.1 ṇatva already fires across the ANGA/SHAP
+    // junction, exactly as it does for kryādi's vf + nA → vfRAti.
+    assert_eq!(
+        form_g("kft", Lakara::Lat, Purusha::Prathama, Vacana::Eka),
+        "kfRatti"
+    );
+    assert_eq!(
+        form_g("kft", Lakara::Lat, Purusha::Uttama, Vacana::Eka),
+        "kfRatmi"
+    );
+    // √hiṃs needs 6.4.23: hins + śnam is hinans, and the root's own n comes
+    // back out.
+    assert_eq!(
+        form_g("his", Lakara::Lat, Purusha::Prathama, Vacana::Eka),
+        "hinasti"
+    );
+    assert_eq!(
+        form_g("his", Lakara::Lot, Purusha::Uttama, Vacana::Eka),
+        "hinasAni"
+    );
+    // The ātmanepada arm's strong cells keep śnam's `a` too.
+    assert_eq!(
+        form_g("Kid", Lakara::Lot, Purusha::Uttama, Vacana::Eka),
+        "KinadE"
+    );
+}
+
+#[test]
+fn rudhadi_weak_cells_lose_shnams_a() {
+    // 6.4.111 fires before a kṅit sārvadhātuka and makes the strong/weak
+    // split visible. These are the cells 8.4.65 does NOT fork, so they are
+    // safe to assert with `form_g` at this stage.
+    assert_eq!(
+        form_g("kft", Lakara::Lat, Purusha::Prathama, Vacana::Bahu),
+        "kfntanti"
+    );
+    assert_eq!(
+        form_g("kft", Lakara::Lat, Purusha::Uttama, Vacana::Dvi),
+        "kfntvaH"
+    );
+    assert_eq!(
+        form_g("Kid", Lakara::Lat, Purusha::Uttama, Vacana::Eka),
+        "Kinde"
+    );
+    assert_eq!(
+        form_g("Kid", Lakara::VidhiLin, Purusha::Prathama, Vacana::Eka),
+        "KindIta"
+    );
+}
+
+#[test]
+fn rudhadi_anusvara_round_trip_is_conditional() {
+    // 8.3.24 turns śnam's n into an anusvāra before a jhal; 8.4.58 turns it
+    // back into the following sound's homorganic nasal — but only before a
+    // YAY. √hiṃs is the witness that the return leg is conditional: the
+    // anusvāra there is followed by the ROOT's own `s`, which is śal, not
+    // yay, so it survives. Folding the two rules into one operation would
+    // derive *hintaH.
+    assert_eq!(
+        form_g("his", Lakara::Lat, Purusha::Prathama, Vacana::Dvi),
+        "hiMstaH"
+    );
+    assert_eq!(
+        form_g("his", Lakara::VidhiLin, Purusha::Prathama, Vacana::Bahu),
+        "hiMsyuH"
+    );
+    assert_eq!(
+        form_g("kft", Lakara::Lat, Purusha::Prathama, Vacana::Bahu),
+        "kfntanti"
+    );
+}
+
+#[test]
+fn rudhadi_lot_madhyama_eka_takes_jashtva() {
+    // 6.4.101 her DiH makes the ending `Di`; the weak stem's final `t`
+    // meets it and is voiced-aspirated to `d` by 8.4.53. This is the rule
+    // commit 9fa8e5f deleted as unreachable once 8.2.25 dhi ca replaced
+    // slice 5d's analysis — √kṛt is its first genuine witness.
+    //
+    // 7.1.35 tātaṅ optionally forks this cell (parasmaipada loṭ madhyama
+    // eka), independently of anything in this slice; branch 0 is the
+    // derivation with no optional rule applied.
+    //
+    // 8.4.65 jharo jhari savarṇe (Task 7) stacks on top of that fork: it
+    // optionally elides the weak stem's final `t`/`d` before a savarṇa
+    // `D`/`t` (the `n` before it survives in every branch), on both the
+    // tātaṅ and non-tātaṅ branches. 8.4.56
+    // vāvasāne then optionally forks the tātaṅ branches' pada-final vowel-
+    // adjacent `t`/`d` at pause but declines on the two vowel-final
+    // non-tātaṅ branches (kfndDi, kfnDi) — so k = 3 optional forks give six
+    // derivations, not eight: kfndDi, kfnDi (8.4.65), kfnttAd (7.1.35),
+    // kfntAd (7.1.35+8.4.65), kfnttAt (7.1.35+8.4.56), kfntAt
+    // (7.1.35+8.4.65+8.4.56).
+    assert_eq!(
+        form_g_forked("kft", Lakara::Lot, Purusha::Madhyama, Vacana::Eka, 6),
+        "kfndDi"
+    );
+    // √hiṃs reaches the same cell through 8.2.25 instead: its stem-final
+    // `s` is ELIDED before the Dh-initial ending, not voiced. Third witness
+    // for that rule, on a stem shape it has not seen.
+    assert_eq!(
+        form_g_forked("his", Lakara::Lot, Purusha::Madhyama, Vacana::Eka, 3),
+        "hinDi"
+    );
+}
+
+#[test]
+fn rudhadi_savarna_elision_forks() {
+    // The declined branch keeps both consonants and is index 0.
+    assert_eq!(
+        form_g_forked("kft", Lakara::Lat, Purusha::Prathama, Vacana::Dvi, 2),
+        "kfnttaH"
+    );
+    assert_eq!(
+        form_g_forked("Kid", Lakara::Lat, Purusha::Prathama, Vacana::Eka, 2),
+        "Kintte"
+    );
+    // √hiṃs never forks here: `s` and `t` are not savarṇa.
+    assert_eq!(
+        form_g("his", Lakara::Lat, Purusha::Prathama, Vacana::Dvi),
+        "hiMstaH"
+    );
+}
+
+#[test]
+fn rudhadi_savarna_elision_derives_both_members() {
+    let d = dhatus().iter().find(|d| d.id == "kft").unwrap();
+    let forms: Vec<String> = derive(
+        d,
+        Lakara::Lat,
+        Pada::Parasmaipada,
+        Purusha::Prathama,
+        Vacana::Dvi,
+    )
+    .iter()
+    .map(|p| p.text())
+    .collect();
+    assert_eq!(forms, vec!["kfnttaH".to_string(), "kfntaH".to_string()]);
+}
+
+#[test]
+fn rudhadi_lan_eka_cells() {
+    // prathama eka: √kṛt's `d` comes from the existing 8.2.39, √hiṃs's from
+    // the new 8.2.73 — 8.2.39 declines on a final `s` by design.
+    assert_eq!(
+        form_g_forked("kft", Lakara::Lan, Purusha::Prathama, Vacana::Eka, 2),
+        "akfRad"
+    );
+    assert_eq!(
+        form_g_forked("his", Lakara::Lan, Purusha::Prathama, Vacana::Eka, 2),
+        "ahinad"
+    );
+    // madhyama eka forks three ways: the stop, its pausal variant, and ru.
+    assert_eq!(
+        form_g_forked("kft", Lakara::Lan, Purusha::Madhyama, Vacana::Eka, 3),
+        "akfRad"
+    );
+    assert_eq!(
+        form_g_forked("his", Lakara::Lan, Purusha::Madhyama, Vacana::Eka, 3),
+        "ahinad"
+    );
+}
+
+#[test]
+fn ru_branch_derives_the_visarga_forms() {
+    for (id, expected) in [("kft", "akfRaH"), ("his", "ahinaH")] {
+        let d = dhatus().iter().find(|d| d.id == id).unwrap();
+        let forms: Vec<String> = derive(
+            d,
+            Lakara::Lan,
+            Pada::Parasmaipada,
+            Purusha::Madhyama,
+            Vacana::Eka,
+        )
+        .iter()
+        .map(|p| p.text())
+        .collect();
+        assert!(forms.contains(&expected.to_string()), "{id}: {forms:?}");
+    }
+}
+
+#[test]
+fn shnams_ru_fires_on_the_dhatus_own_final() {
+    // 8.2.74 must see `ahinas`, not the `ahinad` 8.2.73 would already have
+    // produced — which is why it is ordered ABOVE 8.2.73, against sūtra
+    // order. Assert the order, not just the surface: numeric order still
+    // derives ahinad on both branches, it simply never derives ahinaH.
+    let d = dhatus().iter().find(|d| d.id == "his").unwrap();
+    let p = derive(
+        d,
+        Lakara::Lan,
+        Pada::Parasmaipada,
+        Purusha::Madhyama,
+        Vacana::Eka,
+    )
+    .into_iter()
+    .find(|p| p.text() == "ahinaH")
+    .expect("ahinaH branch");
+    let ids: Vec<&str> = p.log.iter().map(|s| s.sutra.as_str()).collect();
+    let ru = ids.iter().position(|s| *s == "8.2.74").expect("8.2.74");
+    assert!(
+        !ids[..ru].contains(&"8.2.73"),
+        "8.2.73 must not precede 8.2.74: {ids:?}"
+    );
+}
+
+#[test]
+fn rudhadi_vidhilin_madhyama_eka_is_untouched_by_the_ru_alternation() {
+    // `Context::is_sip` (8.2.74's guard) is a lakāra-blind slot predicate
+    // (parasmaipada madhyama eka, regardless of lakāra), so this cell —
+    // ending `yAs`, which 8.2.23 saṁyogāntasya lopaḥ leaves fully intact
+    // because a VOWEL (`A`) precedes the `s`, not a consonant conjunct —
+    // ALSO satisfies `is_sip()`, with `ENDING` genuinely holding `yAs`/`yAd`.
+    // `dhatu_is_pada_final` is what keeps 8.2.73/8.2.74 off it: without that
+    // guard, 8.2.73 (OBLIGATORY, not optional, and no longer guarded by any
+    // slot predicate at all — mutation testing showed `is_tip`/`is_sip`
+    // wasn't load-bearing on it, so it was dropped) rewrites `ENDING`'s own
+    // `s` to `d`, corrupting the cell's single, primary surface form to
+    // `kfntyAd`/`hiMsyAd` instead of the correct `kfntyAH`/`hiMsyAH`
+    // (6.1.68 reduces `yAs` to `yAH`). `form_g` goes through `sole`, so this
+    // also pins the branch count at exactly one — witnessing that 8.2.74's
+    // copy of the guard declines here too, not just 8.2.73's.
+    assert_eq!(
+        form_g("kft", Lakara::VidhiLin, Purusha::Madhyama, Vacana::Eka),
+        "kfntyAH"
+    );
+    assert_eq!(
+        form_g("his", Lakara::VidhiLin, Purusha::Madhyama, Vacana::Eka),
+        "hiMsyAH"
     );
 }

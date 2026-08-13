@@ -35,6 +35,9 @@ pub enum Tag {
     /// The dhātu belongs to svādi (gaṇa 5), whose vikaraṇa is śnu. Read by
     /// 3.1.73 alone. Mirrors Divadi/Tudadi/Adadi/Kryadi.
     Svadi,
+    /// The dhātu belongs to rudhādi (gaṇa 7), whose vikaraṇa is śnam. Read
+    /// by 3.1.78 alone. Mirrors Divadi/Tudadi/Adadi/Kryadi/Svadi.
+    Rudhadi,
 }
 
 #[derive(Debug, Clone)]

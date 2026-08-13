@@ -274,6 +274,47 @@ pub(crate) static ANGA_RULES: &[Rule] = &[
             true
         },
     },
+    // 6.4.23 śnān nalopaḥ: after śnam, the root's own nasal is elided.
+    // hins + śnam gives hinans (3.1.78 seats `na` after the last vowel and
+    // pushes the root's `ns` behind it); 6.4.23 takes the root's `n` out,
+    // leaving hinas, whence hinasti.
+    //
+    // NARROW GUARD, by design. The nasal this rule deletes lives in SHAP,
+    // not ANGA — an artefact of the infix representation (see
+    // `super::vikarana`'s 3.1.78 and `super::terms`), and the reason the
+    // rule reads SHAP at all. In 7a the only reachable witness is √hiṃs,
+    // whose tail is `ns`; the guard therefore looks for a nasal immediately
+    // after śnam's own `na` and does nothing otherwise. 7b widens it for
+    // √bhañj, √und and √indh, whose tails are `fj`, `nd` and `nD`.
+    //
+    // Ordered before 6.4.111: the trace order is 6.4.23 then 6.4.111, and
+    // reversing them elides śnam's `a` first, after which this rule can no
+    // longer tell śnam's `n` from the root's.
+    Rule {
+        id: "6.4.23",
+        name: "SnAnnalopaH",
+        kind: RuleKind::Vidhi,
+        vikalpa: false,
+        apply: |p| {
+            if !p.terms[ANGA].has(Tag::Rudhadi) {
+                return false;
+            }
+            let Some(shap) = p.terms.get(SHAP) else {
+                return false;
+            };
+            // śnam's own `na`, then the root's tail. Only a tail whose first
+            // sound is `n` is in scope in 7a.
+            let rest: String = shap.text.chars().skip(2).collect();
+            if !rest.starts_with('n') {
+                return false;
+            }
+            let before = p.snapshot();
+            let head: String = p.terms[SHAP].text.chars().take(2).collect();
+            p.terms[SHAP].text = format!("{head}{}", &rest[1..]);
+            p.record("6.4.23", "SnAnnalopaH", before);
+            true
+        },
+    },
 ];
 
 #[cfg(test)]
@@ -282,9 +323,11 @@ mod tests {
     use crate::context::Context;
     use crate::prakriya::Prakriya;
     use crate::term::Term;
+    use crate::tinanta::derivation_tests::sole;
+    use crate::tinanta::derive;
     use crate::tinanta::form_g;
     use crate::tinanta::rules;
-    use panini_data::{Purusha, Vacana};
+    use panini_data::{Purusha, Vacana, dhatus};
 
     #[test]
     fn salopa_elides_only_the_non_final_s() {
@@ -415,5 +458,39 @@ mod tests {
         let rule = rules().find(|r| r.id == "7.1.6").unwrap();
         assert!(!(rule.apply)(&mut p));
         assert_eq!(p.terms[ENDING].text, "ate");
+    }
+
+    #[test]
+    fn nalopa_removes_only_the_roots_own_nasal() {
+        // 6.4.23 deletes the nasal the ROOT contributed, which after 3.1.78
+        // sits in SHAP behind śnam's `na`. It must not touch śnam's own `n`:
+        // hinans → hinas, never *hias or *hins.
+        let d = dhatus().iter().find(|d| d.id == "his").unwrap();
+        let p = sole(derive(
+            d,
+            Lakara::Lat,
+            Pada::Parasmaipada,
+            Purusha::Prathama,
+            Vacana::Eka,
+        ));
+        let step = p.log.iter().find(|s| s.sutra == "6.4.23").unwrap();
+        assert_eq!(step.before, "hinansti");
+        assert_eq!(step.after, "hinasti");
+    }
+
+    #[test]
+    fn nalopa_declines_where_the_tail_has_no_nasal() {
+        // kft's tail is `t` and Kid's is `d`. A guard that fired on any
+        // rudhādi root would produce *kfRatti from a mangled stem.
+        for id in ["kft", "Kid"] {
+            let d = dhatus().iter().find(|d| d.id == id).unwrap();
+            let branches = derive(d, Lakara::Lat, d.pada, Purusha::Prathama, Vacana::Eka);
+            for p in &branches {
+                assert!(
+                    !p.log.iter().any(|s| s.sutra == "6.4.23"),
+                    "{id}: 6.4.23 fired with no root nasal"
+                );
+            }
+        }
     }
 }

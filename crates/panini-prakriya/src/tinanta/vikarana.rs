@@ -1,5 +1,5 @@
-//! Vikaraṇa selection and luk: 3.1.69, 3.1.73, 3.1.77, 3.1.81, 3.1.68,
-//! 2.4.72, 3.1.83, 1.2.4.
+//! Vikaraṇa selection and luk: 3.1.69, 3.1.73, 3.1.77, 3.1.78, 3.1.81,
+//! 3.1.68, 2.4.72, 3.1.83, 1.2.4.
 //!
 //! **This stage contains the 3.1.68 boundary.** Rules before 3.1.68 in this
 //! file address the ending as `ENDING_PRE_SHAP` (index 1); rules after it use
@@ -9,7 +9,9 @@
 //!
 //! 2.4.72 luks śap by emptying its text in place rather than removing the
 //! term, which is what keeps every later index valid — and what makes
-//! `terms[SHAP].text` possibly empty for the rest of the pipeline.
+//! `terms[SHAP].text` possibly empty for the rest of the pipeline. 3.1.78
+//! carries a second SHAP hazard of its own — `terms[SHAP].text` may hold the
+//! root's tail, not just the vikaraṇa — see `super::terms`'s second caveat.
 
 use crate::it_samjna::run_it_samjna;
 use crate::rule::{Rule, RuleKind};
@@ -98,6 +100,86 @@ pub(crate) static VIKARANA: &[Rule] = &[
             run_it_samjna(&mut s, p, SHAP); // 1.3.8 strips S → a
             p.terms[SHAP] = s;
             p.terms[ANGA].add(Tag::Anga);
+            true
+        },
+    },
+    // 3.1.78 rudhādibhyaḥ śnam: rudhādi (gaṇa 7) takes śnam, not śap.
+    // Apavāda to 3.1.68, ordered before it exactly as 3.1.69, 3.1.73,
+    // 3.1.77 and 3.1.81 are.
+    //
+    // Unlike every other vikaraṇa, śnam is NOT a suffix. It is **mit**, and
+    // 1.1.47 mid aco'ntyāt paraḥ places a mit affix after the last vowel of
+    // what it attaches to: kft + śnam is `kfnat`, not kft + na. 1.1.47 is a
+    // paribhāṣā and is cited here rather than implemented as its own Rule —
+    // the treatment 1.4.13 and 1.1.5 already get, and what vidyut-prakriya's
+    // trace does (it emits 3.1.78 and never 1.1.47).
+    //
+    // REPRESENTATION, load-bearing. The pipeline's three fixed slots
+    // [ANGA, SHAP, ENDING] have nowhere to put an infix, so the root is
+    // split across the first two: ANGA keeps the head through its last
+    // vowel, SHAP holds śnam followed by whatever the root had after it.
+    // kft → [kf, nat, ti]; hins → [hi, nans, ti].
+    //
+    // The consequence — recorded in `super::terms` too — is that
+    // terms[SHAP].text is no longer purely the vikaraṇa for this gaṇa.
+    // 6.4.23 deletes a nasal that came from the ROOT but now lives in SHAP,
+    // and 6.4.111 deletes śnam's own `a` from the same term.
+    //
+    // The alternative — ANGA holding the whole infixed stem with SHAP empty,
+    // the adādi śap-luk shape — was rejected: it forces 6.4.23 and 6.4.111
+    // to locate a character by position inside a merged string, which is the
+    // failure mode this file's header exists to warn about.
+    //
+    // ORDERING WITHIN THE RULE: the OPERATION order is unchanged from a
+    // plain apavāda — the it-saṁjñā still runs BEFORE the root's tail is
+    // appended. With the tail already in place, 1.3.3 halantyam would strip
+    // the ROOT's final consonant instead of śnam's mit `m`.
+    //
+    // But `run_it_samjna` is not silent: it takes its own snapshot and
+    // records its own `1.3.9 tasya lopaH` step. Recording 3.1.78 only once,
+    // after it-saṁjñā and the 1.1.47 placement both ran, would invert that
+    // step against 3.1.78 in the trace (1.3.9 would appear to precede the
+    // rule that introduces what it elides) and rewind the before/after
+    // chain. So the RECORD is split into two 3.1.78 entries around the
+    // it-saṁjñā call, even though the operation itself is not: the first
+    // records the insertion (kftti → kftSnamti), then it-saṁjñā logs its own
+    // 1.3.9 (kftSnamti → kftnati), then the second 3.1.78 entry records the
+    // 1.1.47 placement (kftnati → kfnatti). The trace then reads 3.1.78,
+    // 1.3.9, 3.1.78 — in sūtra order, chain continuous — with the placement
+    // attributed to 3.1.78 rather than to 1.1.47, matching what
+    // vidyut-prakriya's trace does.
+    Rule {
+        id: "3.1.78",
+        name: "ruDAdiByaH Snam",
+        kind: RuleKind::Vidhi,
+        vikalpa: false,
+        apply: |p| {
+            if !p.terms[ANGA].has(Tag::Rudhadi) {
+                return false;
+            }
+            let root: Vec<char> = p.terms[ANGA].text.chars().collect();
+            let Some(last_vowel) = root.iter().rposition(|c| is_vowel(*c)) else {
+                return false;
+            };
+            let head: String = root[..=last_vowel].iter().collect();
+            let tail: String = root[last_vowel + 1..].iter().collect();
+            let before = p.snapshot();
+            let mut s = Term::new("Snam");
+            s.add(Tag::Vikarana);
+            s.add(Tag::Sarvadhatuka);
+            p.terms.insert(SHAP, s);
+            p.record("3.1.78", "ruDAdiByaH Snam", before);
+            // 1.3.8 laSakvataddhite strips S; 1.3.3 halantyam strips the
+            // mit m. Leaves `na`. Logs its own 1.3.9 step.
+            let mut s = p.terms[SHAP].clone();
+            run_it_samjna(&mut s, p, SHAP);
+            p.terms[SHAP] = s;
+            let before = p.snapshot();
+            // 1.1.47, cited above.
+            p.terms[ANGA].text = head;
+            p.terms[SHAP].text.push_str(&tail);
+            p.terms[ANGA].add(Tag::Anga);
+            p.record("3.1.78", "ruDAdiByaH Snam", before);
             true
         },
     },
@@ -343,8 +425,9 @@ mod tests {
     use crate::context::Context;
     use crate::prakriya::Prakriya;
     use crate::term::Term;
+    use crate::tinanta::derive;
     use crate::tinanta::rules;
-    use panini_data::{Lakara, Pada, Purusha, Vacana};
+    use panini_data::{Lakara, Pada, Purusha, Vacana, dhatus};
 
     #[test]
     fn svadibhyah_shnu_inserts_nu_for_svadi_only() {
@@ -622,5 +705,73 @@ mod tests {
         // `SHAP.text.is_empty()` conjunct is what still declines here.
         let mut p = lan_prakriya("kliS", "nA", "J");
         assert!(!(rule.apply)(&mut p));
+    }
+
+    #[test]
+    fn shnam_lands_after_the_roots_last_vowel() {
+        // 1.1.47's placement, enumerated. `RuleStep` records only the word
+        // before and after, so assert on the stem the step produces: a
+        // suffix model would give kftnati, not kfnatti.
+        //
+        // √hiṃs is the row that matters: its tail is TWO consonants, so a
+        // rule that assumed a one-character tail passes on kft and Kid and
+        // fails only here.
+        //
+        // Adjusted from the brief: this cannot use `sole()`, because Task 7
+        // (8.4.65) forks Kid's laṭ prathama eka cell into an optional pair.
+        // Asserting the 3.1.78 step over every branch is strictly stronger
+        // than asserting it on a single derivation and stays valid once that
+        // fork exists.
+        for (id, stem) in [("kft", "kfnat"), ("his", "hinans"), ("Kid", "Kinad")] {
+            let d = dhatus().iter().find(|d| d.id == id).unwrap();
+            let branches = derive(d, Lakara::Lat, d.pada, Purusha::Prathama, Vacana::Eka);
+            assert!(!branches.is_empty());
+            for p in &branches {
+                // 3.1.78 is recorded TWICE, around 1.3.9 (see the rule's
+                // ORDERING comment): once for the insertion, once for the
+                // 1.1.47 placement that actually produces the stem. Take the
+                // LAST 3.1.78 entry, not the first — the first's `after` is
+                // still Snam-shaped (e.g. kftSnamti), not the stem.
+                let step = p
+                    .log
+                    .iter()
+                    .rev()
+                    .find(|s| s.sutra == "3.1.78")
+                    .unwrap_or_else(|| panic!("{id}: 3.1.78 never fired"));
+                assert!(
+                    step.after.starts_with(stem),
+                    "{id}: expected stem {stem}, got {}",
+                    step.after
+                );
+                // The chain stays continuous and in sūtra order: 1.3.9 sits
+                // strictly between the two 3.1.78 entries, not before both.
+                let first = p.log.iter().position(|s| s.sutra == "3.1.78").unwrap();
+                let last = p.log.iter().rposition(|s| s.sutra == "3.1.78").unwrap();
+                assert!(
+                    first < last,
+                    "{id}: expected two 3.1.78 entries (insertion, placement)"
+                );
+                assert!(
+                    p.log[first + 1..last].iter().any(|s| s.sutra == "1.3.9"),
+                    "{id}: 1.3.9 does not fall between the two 3.1.78 entries"
+                );
+            }
+        }
+    }
+
+    #[test]
+    fn shnam_declines_outside_rudhadi() {
+        // The guard is a gaṇa tag, not a shape test. √kliś would split
+        // perfectly well after its `i`, and must not.
+        for id in ["BU", "kliS", "Ap", "ad"] {
+            let d = dhatus().iter().find(|d| d.id == id).unwrap();
+            let branches = derive(d, Lakara::Lat, d.pada, Purusha::Prathama, Vacana::Eka);
+            for p in &branches {
+                assert!(
+                    !p.log.iter().any(|s| s.sutra == "3.1.78"),
+                    "{id}: 3.1.78 fired outside rudhādi"
+                );
+            }
+        }
     }
 }
