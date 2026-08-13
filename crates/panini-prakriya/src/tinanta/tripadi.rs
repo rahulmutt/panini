@@ -58,14 +58,18 @@ fn remove_char(p: &mut Prakriya, term: usize, idx: usize) {
 ///   deriving `kfnttAr`/`kfntAr`. Checked against vidyut-prakriya: its loṭ
 ///   madhyama eka set for kft is exactly six forms — `kfntAt`, `kfnttAt`,
 ///   `kfntAd`, `kfnttAd`, `kfnDi`, `kfndDi` — never eight.
-/// - `is_tip`/`is_sip` are lakāra-blind slot predicates (parasmaipada
-///   prathama/madhyama eka, regardless of lakāra), so vidhiliṅ madhyama eka
-///   — ending `yAs`, which 8.2.23 leaves untouched because a vowel (`A`)
-///   precedes the `s`, not a conjunct — ALSO satisfies `is_sip()` with
-///   `ENDING` genuinely holding `yAs`/`yAd`. Without this guard, 8.2.73
-///   (obligatory) rewrites that `s` too, corrupting the cell's PRIMARY
-///   output to `kfntyAd`/`hiMsyAd` instead of leaving it to reduce via
-///   6.1.68 to `kfntyAH`/`hiMsyAH`.
+/// - `Context::is_sip` (8.2.74's guard) is a lakāra-blind slot predicate
+///   (parasmaipada madhyama eka, regardless of lakāra), so vidhiliṅ madhyama
+///   eka — ending `yAs`, which 8.2.23 leaves untouched because a vowel (`A`)
+///   precedes the `s`, not a conjunct — ALSO satisfies `is_sip()`, with
+///   `ENDING` genuinely holding `yAs`/`yAd`. `dhatu_is_pada_final` is what
+///   keeps 8.2.74 off it there (`ENDING` is non-empty). 8.2.73 has no slot
+///   predicate at all — the mutation gate showed one wasn't load-bearing and
+///   it was removed — so `dhatu_is_pada_final` is doing the ENTIRE job of
+///   keeping it off this cell too: without it, 8.2.73 (obligatory) would
+///   rewrite `ENDING`'s own `s` regardless of what ending it belonged to,
+///   corrupting the cell's PRIMARY output to `kfntyAd`/`hiMsyAd` instead of
+///   leaving it to reduce via 6.1.68 to `kfntyAH`/`hiMsyAH`.
 ///   `rudhadi_vidhilin_madhyama_eka_is_untouched_by_the_ru_alternation` in
 ///   `super::derivation_tests` is the witness.
 fn dhatu_is_pada_final(p: &Prakriya) -> bool {
@@ -334,6 +338,17 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // reason is structural — 8.2.74 above is optional *against* the `d`,
     // so its declined branch has to be able to reach one. Same treatment
     // the previous slice gave 7.1.35's āśiṣi condition.
+    //
+    // NOT a slot predicate: `dhatu_is_pada_final` plus the `s`-final check
+    // below are what actually select the cells this rule fires on, and in
+    // this grammar those happen to be exactly tip and sip — no separate
+    // `is_tip() || is_sip()` clause is needed to say so. There WAS one; the
+    // mutation gate proved it had no witness (mutating `is_tip` to always
+    // return `true` survived, because the clause was already true wherever
+    // this rule could fire), so it was removed along with `Context::is_tip`
+    // itself, which had no other caller. `Context::is_sip` stays: 8.2.74 and
+    // 8.2.75 both still guard on it directly, and those two really are
+    // sip-only (8.2.74) or downstream of a sip-only branch (8.2.75).
     Rule {
         id: "8.2.73",
         name: "tipyanasteH",
@@ -341,9 +356,6 @@ pub(crate) static TRIPADI: &[Rule] = &[
         vikalpa: false,
         apply: |p| {
             if !p.terms[ANGA].has(Tag::Rudhadi) {
-                return false;
-            }
-            if !(p.ctx.is_tip() || p.ctx.is_sip()) {
                 return false;
             }
             if !dhatu_is_pada_final(p) {

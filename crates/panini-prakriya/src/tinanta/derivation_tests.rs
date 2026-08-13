@@ -1340,14 +1340,16 @@ fn shnams_ru_fires_on_the_dhatus_own_final() {
 
 #[test]
 fn rudhadi_vidhilin_madhyama_eka_is_untouched_by_the_ru_alternation() {
-    // `is_tip`/`is_sip` are lakāra-blind slot predicates (parasmaipada
-    // prathama/madhyama eka, regardless of lakāra), so this cell — ending
-    // `yAs`, which 8.2.23 saṁyogāntasya lopaḥ leaves fully intact because a
-    // VOWEL (`A`) precedes the `s`, not a consonant conjunct — ALSO
-    // satisfies `is_sip()`, with `ENDING` genuinely holding `yAs`/`yAd`.
+    // `Context::is_sip` (8.2.74's guard) is a lakāra-blind slot predicate
+    // (parasmaipada madhyama eka, regardless of lakāra), so this cell —
+    // ending `yAs`, which 8.2.23 saṁyogāntasya lopaḥ leaves fully intact
+    // because a VOWEL (`A`) precedes the `s`, not a consonant conjunct —
+    // ALSO satisfies `is_sip()`, with `ENDING` genuinely holding `yAs`/`yAd`.
     // `dhatu_is_pada_final` is what keeps 8.2.73/8.2.74 off it: without that
-    // guard, 8.2.73 (OBLIGATORY, not optional) rewrites `ENDING`'s own `s`
-    // to `d`, corrupting the cell's single, primary surface form to
+    // guard, 8.2.73 (OBLIGATORY, not optional, and no longer guarded by any
+    // slot predicate at all — mutation testing showed `is_tip`/`is_sip`
+    // wasn't load-bearing on it, so it was dropped) rewrites `ENDING`'s own
+    // `s` to `d`, corrupting the cell's single, primary surface form to
     // `kfntyAd`/`hiMsyAd` instead of the correct `kfntyAH`/`hiMsyAH`
     // (6.1.68 reduces `yAs` to `yAH`). `form_g` goes through `sole`, so this
     // also pins the branch count at exactly one — witnessing that 8.2.74's
