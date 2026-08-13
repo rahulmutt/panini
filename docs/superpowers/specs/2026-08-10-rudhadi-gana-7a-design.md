@@ -1,5 +1,14 @@
 # rudhādi (gaṇa 7), slice 7a — śnam and the infix
 
+> **Correction (post-merge fix wave, 2026-08-10):** Line ~127 below cites
+> `9b7adee` as the commit that deleted 8.4.53 as unreachable. That hash is
+> wrong — `9b7adee` is "fix(prakriya): delete 8.4.56's two unreachable
+> guard arms". The commit that actually dropped 8.4.53 is `9fa8e5f`,
+> "refactor(prakriya): drop 8.4.53 jaśtva — unreachable once 8.2.25 bleeds
+> it". This is a historical design artifact and is left uncorrected below
+> to preserve the original record; all shipped-code citations were already
+> fixed during the slice.
+
 Every vikaraṇa the engine knows is a suffix. śap, śyan, śa, śnā, śnu all sit
 between the aṅga and the ending, in the term slot the pipeline calls `SHAP`.
 rudhādi's is not: 3.1.78 *ruḍhādibhyaḥ śnam* introduces a **mit** affix, and

@@ -1,5 +1,14 @@
 # rudhādi gaṇa, slice 7a — Implementation Plan
 
+> **Correction (post-merge fix wave, 2026-08-10):** This document cites
+> `9b7adee` as the commit that removed 8.4.53 jaśtva as unreachable (see the
+> occurrences below). That is the wrong hash — `9b7adee` is
+> "fix(prakriya): delete 8.4.56's two unreachable guard arms". The commit
+> that actually dropped 8.4.53 is `9fa8e5f`, "refactor(prakriya): drop
+> 8.4.53 jaśtva — unreachable once 8.2.25 bleeds it". This is a historical
+> planning artifact and is left uncorrected below to preserve the original
+> record; all shipped-code citations were already fixed during the slice.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Land rudhādi (gaṇa 7) on three roots — √kṛt, √hiṃs (parasmaipada) and √khid (ātmanepada) — teaching the engine its first *infix* vikaraṇa, śnam.

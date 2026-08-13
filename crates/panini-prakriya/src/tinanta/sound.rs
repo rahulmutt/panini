@@ -33,8 +33,11 @@ pub(crate) fn is_vowel(c: char) -> bool {
     )
 }
 
-/// A jhal (obstruent) — the set 8.4.55's target ranges over. For this slice
-/// only `d` is exercised, but the classifier is written generally.
+/// A jhal (obstruent) — the set 8.4.55's target ranges over. `d` was the
+/// only member this suite exercised when that comment was first written;
+/// rudhādi has since brought `t`, `s` and `D` into play too (via 8.3.24,
+/// 8.4.53 and 6.4.101 respectively), but the classifier was written
+/// generally from the start and needed no change for any of them.
 pub(crate) fn is_jhal(c: char) -> bool {
     matches!(
         c,
