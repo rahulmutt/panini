@@ -120,8 +120,8 @@ fn tinanta_rule_order_is_pinned() {
         "7.3.84", "7.3.86", "7.3.84", "6.4.87", "6.4.77", "6.1.78", "7.3.101", "6.4.112",
         "6.4.113", "6.1.101", "6.1.96", "6.1.90", "6.1.97", "6.1.87", "6.1.66", "6.4.105",
         "6.4.106", "6.4.107", "6.4.101", "6.4.111", "8.2.77", "8.2.23", "8.2.25", "8.2.30",
-        "8.2.39", "8.2.74", "8.2.73", "8.2.75", "8.3.15", "8.3.24", "8.3.59", "8.4.41", "8.4.53",
-        "8.4.55", "8.4.1", "8.4.2", "8.4.58", "8.4.65", "8.4.56",
+        "8.2.39", "8.2.41", "8.2.74", "8.2.73", "8.2.75", "8.3.15", "8.3.24", "8.3.59", "8.4.41",
+        "8.4.53", "8.4.55", "8.4.1", "8.4.2", "8.4.58", "8.4.65", "8.4.56",
     ];
     let actual: Vec<&str> = rules().map(|r| r.id).collect();
     assert_eq!(actual, expected);
@@ -1500,4 +1500,33 @@ fn pish_vidhilin_all_nine_cells() {
     for (pu, va, want) in cells {
         assert_eq!(form_g("piz", Lakara::VidhiLin, pu, va), want);
     }
+}
+
+#[test]
+fn pish_lat_madhyama_eka_is_pinakshi() {
+    // 8.2.41 ṣaḍhoḥ kaḥ si takes the ṣ to `k` before the ending's `s`,
+    // and 8.3.59 then retroflexes that `s` after the new `k` — the
+    // widening this cell forces, and the one 8.3.59's own comment
+    // predicted ("h/y/v/r/l or k").
+    assert_eq!(
+        form_g("piz", Lakara::Lat, Purusha::Madhyama, Vacana::Eka),
+        "pinakzi"
+    );
+}
+
+#[test]
+fn shadhoh_kah_si_declines_when_8_2_23_ate_the_s_first() {
+    // THE LOAD-BEARING ORDER of this slice. At laṅ madhyama eka the
+    // ending is a bare `s`, so 8.2.23 saṁyogāntasya lopaḥ elides it
+    // before 8.2.41 can see it, and the cell reduces exactly as laṅ
+    // prathama eka does. Run 8.2.41 above 8.2.23 and you get `apinak`
+    // instead — a plausible-looking form that splits madhyama eka from
+    // prathama eka and that no guard test would flag.
+    //
+    // Asserted here on the intermediate `apinaz`: 8.2.39's widening (the
+    // next task) is what carries it on to apinaq/apinaw.
+    assert_eq!(
+        form_g("piz", Lakara::Lan, Purusha::Madhyama, Vacana::Eka),
+        "apinaz"
+    );
 }
