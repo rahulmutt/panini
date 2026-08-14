@@ -26,14 +26,22 @@ run = "cargo fmt --all --check"
 # just a typical one. A caught mutant fails fast and is recorded quickly;
 # an uncaught mutant runs the entire suite to completion before
 # cargo-mutants can conclude nothing failed. At 1620 cells that full run
-# (paradigm ~140s + roundtrip ~157s + trace, back to back) is itself close
+# (paradigm ~140s + roundtrip ~157s + trace, back to back) was already close
 # to 300s, so a 300s cap no longer has headroom over the thing it is
 # supposed to bound — it starts reclassifying genuine survivors as
 # TIMEOUT instead of MISSED, which is the same vacuity a too-short cap
 # always causes, just reached by suite growth instead of by an unset
-# timeout. 1200s is comfortable headroom over the ~300s uncaught-run floor
-# measured at slice 7a. Re-check this margin whenever the golden suite
-# grows again.
+# timeout. At 1728 cells (slice 7b) the same full uncaught run measures
+# ~380s (paradigm ~183s + roundtrip ~196s + trace), so 1200s has better
+# than 3x headroom -- AT LOW PARALLELISM. The cap must clear a full
+# uncaught run at the parallelism actually used, and this line pins none:
+# cargo-mutants reads -j from CARGO_MUTANTS_JOBS, so the environment can
+# defeat the cap on its own. Slice 7b ran this gate at -j 16 on 24 cores
+# and got 43 timeouts where one was expected; re-running exactly those at
+# -j 4 --timeout 2400 caught 43 of 44 in 389-449s. -j 16 on 24 cores does
+# not clear 1200s; -j 4 does. Keep -j <= 4 with this cap, or raise the cap
+# in step. Re-check both the floor and the margin whenever the golden
+# suite grows again.
 run = "cargo mutants --package panini-prakriya --test-workspace=true --timeout 1200"
 
 [tasks.audit]

@@ -16,18 +16,31 @@
     `--timeout` is required for the same asymmetry: cargo-mutants calibrates
     its per-mutant timeout from the baseline's runtime, but the baseline here
     (`panini-prakriya`'s unit tests, ~2s) is far faster than an actual mutant
-    run (the full `panini` golden suite, ~140s at 1620 cells, when the
-    mutant is caught and the run aborts early — but close to 300s when it is
-    NOT caught and the suite runs to completion). Under a cap that doesn't
-    clear that uncaught-run floor — or auto-derived timing, which falls back
-    to a 20s floor — a mutant that survives is recorded as a **timeout
-    rather than a survivor**, so a reported zero-survivor run (checking only
-    `missed.txt`) can be vacuous instead of clean: slice 7a's own mutation
-    run hit this exactly, with `--timeout 300` producing 9 timeouts once the
-    suite grew to 1620 cells — a cap that no longer had headroom over a full
-    uncaught run, not merely over a caught-and-aborted one. Always pass an
-    explicit `--timeout` with headroom over a full uncaught run of the
-    workspace suite, and always check `timeout.txt` alongside `missed.txt`.
+    run (the full `panini` golden suite, ~183s at 1728 cells when the mutant
+    is caught in the paradigm binary and the run aborts there — but ~380s
+    when it is NOT caught and the suite runs to completion; both re-measured
+    in slice 7b, and ~140s / ~300s at 1620 cells before it). Under a cap
+    that doesn't clear that uncaught-run floor — or auto-derived timing,
+    which falls back to a 20s floor — a mutant that survives is recorded
+    as a **timeout rather than a survivor**, so a reported zero-survivor
+    run (checking only `missed.txt`) can be vacuous instead of clean:
+    slice 7a's own mutation run hit this exactly, with `--timeout 300`
+    producing 9 timeouts once the suite grew to 1620 cells — a cap that no
+    longer had headroom over a full uncaught run, not merely over a
+    caught-and-aborted one. Always pass an explicit `--timeout` with
+    headroom over a full uncaught run of the workspace suite, and always
+    check `timeout.txt` alongside `missed.txt`. **The cap must clear a full
+    uncaught run at the parallelism you actually use, not just at `-j 1`.**
+    1200s clears the ~380s floor measured at 1728 cells only while
+    contention stays low: slice 7b ran the gate at `-j 16` on 24 cores and
+    got **43 timeouts** where one was expected — the same vacuity, reached
+    through parallelism instead of suite growth. Re-running exactly those
+    at `-j 4 --timeout 2400` caught 43 of 44 in 389–449s, i.e. the mutants
+    were never survivors and never hung; `-j 16` was. `cargo mutants` also
+    reads `-j` from `CARGO_MUTANTS_JOBS`, so an unqualified cap can be
+    defeated by the environment alone. Keep `-j` at or below 4 with the
+    1200s cap, or raise the cap in step, and re-measure both the floor and
+    the margin the next time the golden suite grows.
     Re-running those 9 at `--timeout 1200` resolved them into two different
     outcomes, both worth knowing about: **3 were genuine survivors** — all
     three mutants of `Context::is_tip`, whose only caller was 8.2.73's
@@ -62,13 +75,14 @@
   target under `crates/panini-lipi/fuzz` legitimately omits it, since it uses
   `#![no_main]` plus the libfuzzer harness macro).
 - Grammar changes are gated by the golden paradigm test
-  (`crates/panini/tests/paradigm.rs`, 1620 cells, six complete gaṇas plus
+  (`crates/panini/tests/paradigm.rs`, 1728 cells, six complete gaṇas plus
   rudhādi partial — `PARADIGM`
     stays one-form-per-cell: a cell forked by an optional rule keeps its
-    other forms — a second (78 cells), a third (52 cells), and — rudhādi's
-    √kṛt loṭ cells, the sharpest forks in the suite — a fourth and fifth
-    (prathama eka) or a fourth through sixth (madhyama eka) — in
-    `ALTERNATES` (191 rows in all, so 1620 + 191 = 1811 forms total), and
+    other forms — a second (91 cells), a third (55 cells), a fourth (1 cell,
+    rudhādi's √piṣ loṭ madhyama eka) and — rudhādi's √kṛt loṭ cells, the
+    sharpest forks in the suite — a fourth and fifth (prathama eka) or a
+    fourth through sixth (madhyama eka) — in
+    `ALTERNATES` (213 rows in all, so 1728 + 213 = 1941 forms total), and
     `derivation_set_is_exactly_pinned` asserts each cell's derivation set is
     exactly the union of the two. The suite is no longer filtered by any
     one-form-per-cell convention — the
@@ -118,31 +132,77 @@
     (`~^`-marked) and 1.3.72 *svaritañitaḥ* is still deferred, so √rudh,
     √bhid, √chid and √yuj are absent and the gaṇa lacks its own eponymous
     root; slice 7a lands three roots that need nothing beyond the gaṇa's own
-    spine (√kṛt, √hiṃs — stored `hins` — and √khid), and 7b (√bhañj, √piṣ,
-    √indh) closes what is reachable without 1.3.72. śnam is the engine's
-    first **infix**: unlike every other vikaraṇa it is not a suffix, and the
-    pipeline's fixed `[ANGA, SHAP, ENDING]` slots have nowhere to put one,
-    so 3.1.78 splits the root across the first two instead —
-    `terms[SHAP].text` for rudhādi is śnam followed by the root's own tail,
-    not the vikaraṇa alone (`kft` → `[kf, nat, ti]`); see the
+    spine (√kṛt, √hiṃs — stored `hins` — and √khid), and 7b adds three
+    more, one per consonant family: √bhañj (cu-class final), √piṣ
+    (ṣ-final) and √indh (jhaṣ-final, the gaṇa's second ātmanepada root).
+    That does **not** close what is reachable without 1.3.72, and the gaṇa
+    is not complete at six: six is the size every completed gaṇa *after
+    bhvādi* has here (bhvādi, the first, has twelve). Nine reachable
+    rudhādi roots remain out — √śiṣ, √tṛh, √und, √añj, √tañc, √vij, √vṛj,
+    √pṛc and √vid — each bringing machinery of its own (7.1.58 *idito num
+    dhātoḥ* for √und, 6.4.24 *aniditāṁ hala upadhāyāḥ kṅiti* for √añj and
+    √tañc, and two `Dhatu::id` collisions). √bhuj (`07.0017 Bu\ja~`) is the
+    twenty-fifth entry and out on different grounds again: 1.3.66
+    *bhujo'navane* forks its pada on **sense**, not on an axis this engine
+    models. 9 ubhayapadī + 6 curated + 9 reachable + √bhuj = 25.
+    The gaṇa stays partial for the reason it always has:
+    1.3.72, not the root count. √indh's pada was **verified, not inferred
+    from its ñi**: `YiinDI~\`'s ñi it-marker is one of the two things
+    1.3.72 reads, which would have deferred the root alongside √rudh, so it
+    was checked against vidyut-prakriya — which derives √indh in ātmanepada
+    only, against a `~^r` control (√rudh) that does derive both padas — and
+    the root's own anudātta settles its pada by 1.3.12 *anudāttaṅita
+    ātmanepadam*. śnam is
+    the engine's first **infix**: unlike every other vikaraṇa it is not a
+    suffix, and the pipeline's fixed `[ANGA, SHAP, ENDING]` slots have
+    nowhere to put one, so 3.1.78 splits the root across the first two
+    instead — `terms[SHAP].text` for rudhādi is śnam followed by the root's
+    own tail, not the vikaraṇa alone (`kft` → `[kf, nat, ti]`); see the
     "REPRESENTATION" note on 3.1.78 in `tinanta/vikarana.rs` and the caveat
-    in `tinanta/terms.rs`. 8.4.53 *jhalāṁ jaś jhaśi* is restored this slice,
+    in `tinanta/terms.rs`. 8.4.53 *jhalāṁ jaś jhaśi* was restored in 7a,
     with `kfndDi` as its witness, after `9fa8e5f` removed it as
     unreachable — 8.2.25 *dhi ca* bled every path that used to reach it, but
-    √kṛt's stem-final `t` (not an `s`) is genuinely jaśtva's. The vikalpa
-    set is now **seven** rules, in pipeline order: 7.1.35, 3.4.111, 6.4.107,
-    8.2.74, 8.2.75, 8.4.65, 8.4.56. Two orderings within it are deliberate
-    and against sūtra order, but differ in what they pin: **8.2.74 above
-    8.2.73** is a *derivation* constraint — 8.2.74 replaces the dhātu's own
-    final `s`, so run below 8.2.73 it would find `d` instead and never
-    derive `ahinaH`; reversing the two was tried and empirically fails four
-    tests, and the order is pinned by
-    `shnams_ru_fires_on_the_dhatus_own_final` plus
-    `tinanta_rule_order_is_pinned`. **8.4.65 above 8.4.56**, by contrast, is
-    only a *trace-order* constraint — both orderings derive the same six
-    forms for the cell that exercises them, and the wrong order only
-    changes which intermediate form each optional branch's trace passes
-    through (`krntat_trace_shows_savarna_elision_above_pausal` in
+    √kṛt's stem-final `t` (not an `s`) is genuinely jaśtva's; 7b generalised
+    its guard from the one shape 7a's witnesses reached it through (a
+    word-final `Di`) to the sūtra's own condition — any jhal before any
+    jhaś, anywhere in the word — which is what carries √piṣ's loṭ madhyama
+    eka to `piMqQi` (`piRqQi` after 8.4.58) and lets √indh's mid-word `D`s
+    reach the rule at all. 7b's own four sūtras are one per family: 8.2.30
+    *coḥ kuḥ* (√bhañj's `j` → `g`), 8.4.41 *ṣṭunā ṣṭuḥ* and 8.2.41 *ṣaḍhoḥ
+    kaḥ si* (√piṣ), and 8.2.40 *jhaṣas tathor dho'ḍhaḥ* (√indh). The vikalpa
+    set is unchanged at **seven** rules, in pipeline order: 7.1.35, 3.4.111,
+    6.4.107, 8.2.74, 8.2.75, 8.4.65, 8.4.56 — 7b is the first gaṇa slice
+    since the `vikalpa` flag landed (`53e03e7`) to add none; kryādi and
+    svādi predate the flag rather than having declined to use it. Four
+    orderings in the tripādī are deliberate, and they differ in what they
+    pin. **8.2.74 and 8.2.75 above 8.2.73**, against sūtra order, are
+    *derivation* constraints — both replace the dhātu's own final, and
+    8.2.73 manufactures a `d` from that final, so 8.2.74 run below it would
+    find `d` where it needs `s` and never derive `ahinaH`; reversing 8.2.74
+    and 8.2.73 was tried and empirically fails four tests, and the order is
+    pinned by `shnams_ru_fires_on_the_dhatus_own_final` plus
+    `tinanta_rule_order_is_pinned` (7b moved 8.2.75 above 8.2.73 for the
+    same structural reason, which made its `p.log` read unreachable and let
+    it be deleted). **8.2.41 below
+    8.2.23** is a *derivation* constraint too, and the sharpest one this
+    slice adds: at laṅ madhyama eka the ending is a bare `s`, and 8.2.23
+    *saṁyogāntasya lopaḥ* elides it before 8.2.41 can see it, so the cell
+    reduces exactly as laṅ prathama eka does. Reversed, √piṣ surfaces
+    `apinak` instead of `apinaq`/`apinaw` — a real-looking form that splits
+    madhyama eka from prathama eka and that no guard test would flag; only
+    `shadhoh_kah_si_declines_when_8_2_23_ate_the_s_first` and
+    `apinaq_trace_pins_8_2_23_above_8_2_41` catch it.
+    **8.4.41 above 8.4.53** is sūtra order, and it is
+    load-bearing *as this engine implements them*: 8.4.41's trigger set is
+    narrowed to `z` alone, so reversed, 8.4.53's `z → q` jaśtva consumes
+    the trigger first and √piṣ stalls at `piMqDi`. Widening that trigger to
+    the ṭ-varga stops the sūtra also names (`w W q Q R`) would restore
+    convergence and make the placement sūtra order only. **8.4.65 above
+    8.4.56**, by contrast, is only a *trace-order* constraint — both
+    orderings derive the same six forms for the cell that exercises them,
+    and the wrong order only changes which intermediate form each optional
+    branch's trace passes through
+    (`krntat_trace_shows_savarna_elision_above_pausal` in
     `crates/panini/tests/trace.rs` is the sole pin; no surface-form golden
     catches a reversal).
   and by the ordered-trace test (`crates/panini/tests/trace.rs`), which pins
@@ -163,12 +223,23 @@
   `ENDING` (index 2), and `terms[SHAP].text` may be empty for adādi. See
   `tinanta/terms.rs`. Per-rule guard tests go beside the rule in its stage
   file; tests asserting a surface form or trace go in
-  `tinanta/derivation_tests.rs`. `derive` carries no grammar branches: the
-  only gana-conditioned logic there is aṅga tagging (`Tag::Adadi` &c.), which
-  feeds the guarded rules rather than substituting for them. Fixtures shared
-  across `crates/panini/tests/*.rs` integration-test binaries (e.g. `CELLS`,
-  `LAKARA_BY_NAME`) go in `crates/panini/tests/common/mod.rs`, `mod`-included
-  by each file that needs them — do not redefine them per test file.
+  `tinanta/derivation_tests.rs`. **Write a per-rule guard test where the
+  rule's precondition can be built directly on a hand-built `Prakriya`.
+  Where it cannot — because only an upstream rule chain produces that
+  state — cite the covering derivation or trace test in the rule's own
+  comment instead.** That is narrower than "every rule gets a guard test",
+  and it is not the blanket exemption 7a's deferred #5 asked for ("per-rule
+  guard tests for tripādī rules are not achievable"): `tripadi.rs` carries
+  eighteen of them today, including
+  `jhalam_jasho_ante_fires_only_on_a_pada_final_t_or_sh` and
+  `va_avasane_fires_only_on_a_pada_final_jhal`. Whole-word scope is not what
+  blocks a guard test; an unconstructible precondition is. `derive` carries
+  no grammar branches: the only gana-conditioned logic there is aṅga tagging
+  (`Tag::Adadi` &c.), which feeds the guarded rules rather than substituting
+  for them. Fixtures shared across `crates/panini/tests/*.rs`
+  integration-test binaries (e.g. `CELLS`, `LAKARA_BY_NAME`) go in
+  `crates/panini/tests/common/mod.rs`, `mod`-included by each file that
+  needs them — do not redefine them per test file.
 - **Optional (*vikalpa*) rules set `Rule.vikalpa = true`.** `run_pipeline`
   forks there: it clones each live branch, applies to the clone, and keeps
   the clone only if `apply` returned true, so a rule that declines its own
