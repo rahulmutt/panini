@@ -1127,19 +1127,33 @@ fn kndhi_trace_shows_jashtva_where_dhi_ca_declines() {
 }
 
 #[test]
-fn apinad_trace_pins_8_2_23_above_8_2_41() {
-    // THE LOAD-BEARING NEW ORDER in this slice. At laṅ madhyama eka the
-    // ending is a bare `s`; 8.2.23 saṃyogāntasya lopaḥ elides it — as the
-    // second member of a word-final conjunct — before 8.2.41 ṣaḍhoḥ kaḥ si
-    // ever runs, so 8.2.41 finds no trigger and declines, and the cell
-    // reduces exactly as laṅ prathama eka does (both give `apinaq`).
-    // Reversed, 8.2.41 would fire on the still-live `z`/`s` pair before the
-    // `s` is elided, and the cell would surface `apinak`: a real-word-
-    // looking form that splits madhyama eka from prathama eka and that no
-    // guard test would catch — only this pin and the golden do.
-    let t = trace_for("apinaq");
-    assert!(t.contains(&"8.2.23".to_string()), "got {t:?}");
-    assert!(!t.contains(&"8.2.41".to_string()), "got {t:?}");
+fn apinaq_trace_pins_8_2_23_above_8_2_41() {
+    // THE LOAD-BEARING NEW ORDER in this slice, and BOTH laṅ eka cells
+    // must be checked, not just one: `apinaq` is what prathama eka AND
+    // madhyama eka both reduce to, and `trace_for`'s `.find()` would
+    // silently settle for whichever analysis `candidates()` enumerates
+    // first — prathama eka, whose ending is a bare `t`. That derivation
+    // never presents an `s` for 8.2.41 ṣaḍhoḥ kaḥ si to see at all, so a
+    // pin built on `trace_for` alone would hold "8.2.23 present, 8.2.41
+    // absent" vacuously, for a reason unrelated to the order this pin
+    // exists to guard, and would keep passing even after that order broke.
+    // Go around `trace_for` and inspect every analysis `apinaq` produces
+    // instead, asserting the COUNT along with each trace's content: at
+    // laṅ madhyama eka the ending IS a bare `s`, and 8.2.23 saṃyogāntasya
+    // lopaḥ elides it — as the second member of a word-final conjunct —
+    // before 8.2.41 ever runs, so 8.2.41 finds no trigger and declines,
+    // and the cell reduces exactly as laṅ prathama eka does. Reversed,
+    // 8.2.41 would fire on the still-live `z`/`s` pair before the `s` is
+    // elided; madhyama eka would surface `apinak` instead — a real-word-
+    // looking form that no guard test would flag — and drop out of this
+    // check entirely, so the analysis count below would no longer be 2.
+    let r = Panini::new().check("apinaq");
+    assert_eq!(r.analyses.len(), 2, "both laṅ eka cells reduce to apinaq");
+    for a in &r.analyses {
+        let t: Vec<String> = a.trace.iter().map(|s| s.sutra.clone()).collect();
+        assert!(t.contains(&"8.2.23".to_string()), "got {t:?}");
+        assert!(!t.contains(&"8.2.41".to_string()), "got {t:?}");
+    }
 }
 
 #[test]
@@ -1154,9 +1168,12 @@ fn bhanakti_trace_shows_8_2_30_then_8_4_55() {
 #[test]
 fn indhe_trace_shows_8_2_40_then_8_4_53() {
     // inD + te -> inD + De (8.2.40 jhaṣas tathor dho'ḍhaḥ turns the
-    // ending's `t` into `D` after the stem's jhaṣ) -> indDe (8.4.53
-    // jhalāṁ jaś jhaśi voices the stem's own `D` to `d` before the new
-    // `D`).
+    // ending's `t` into `D` after the stem's jhaṣ), then the anusvāra
+    // round trip runs across it: iMDDe (8.3.24 naścāpadāntasya jhali
+    // turns śnam's `n` into an anusvāra before the jhaṣ `D`) -> iMdDe
+    // (8.4.53 jhalāṁ jaś jhaśi voices the stem's own `D` to `d` before
+    // that `D`) -> indDe (8.4.58 anusvārasya yayi parasavarṇaḥ turns the
+    // anusvāra back into the homorganic `n`).
     let t = trace_for("indDe");
     assert!(at(&t, "8.2.40") < at(&t, "8.4.53"), "got {t:?}");
 }

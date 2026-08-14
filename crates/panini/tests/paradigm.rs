@@ -2485,8 +2485,8 @@ fn derivation_set_is_exactly_pinned() {
 /// loṭ madhyama eka, which stacks 8.4.65 alongside 7.1.35/8.4.56 four deep),
 /// and vidhiliṅ (kft/his/Banj/piz cell 0, on 8.4.56): 1728 cells total (192
 /// root×lakāra blocks × 9), of which 1579 hold exactly one form, 91 hold
-/// two, 55 hold three, one holds four (piṣ's loṭ madhyama eka, the new
-/// deepest fork in the slice), and — the sharpest branch-count witness in
+/// two, 55 hold three, one holds four (piṣ's loṭ madhyama eka, the
+/// deepest fork added in 7b), and — the sharpest branch-count witness in
 /// the repo, per `docs/ARCHITECTURE.md` — exactly one holds five (√kṛt's
 /// loṭ prathama eka) and one holds six (√kṛt's loṭ madhyama eka,
 /// `kfndDi`/`kfnDi`'s cell). `ALTERNATES` itself has 213 rows, keyed 60
