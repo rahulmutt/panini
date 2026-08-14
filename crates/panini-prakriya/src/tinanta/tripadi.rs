@@ -650,15 +650,22 @@ pub(crate) static TRIPADI: &[Rule] = &[
     },
     // 8.4.41 ṣṭunā ṣṭuḥ: a dental (`s`, or a t-varga stop) retroflexes when
     // it immediately neighbours `ṣ` (z) or a ṭ-varga stop. pinaz + ti →
-    // pinaz + wi → pinazwi; piMz + tas → piMzwaH; piMz + Di, in the loṭ
-    // madhyama eka cell a later task finishes, reaches piRqQi the same way.
+    // pinaz + wi → pinazwi; piMz + tas → piMzwaH; piMz + Di — in the loṭ
+    // madhyama eka cell, which is DELIBERATELY LEFT INTERMEDIATE this task
+    // (it currently reaches piMzQi, not the finished piRqQi) — takes the
+    // same D → Q step; Task 6 is what finishes the cell around it.
     //
-    // SŪTRA ORDER, NOT LOAD-BEARING ORDER. It sits above 8.4.53 because
-    // that is where vidyut-prakriya's data/sutrapatha.tsv places it, and for
-    // no other reason: ṣṭutva and jaśtva touch different sounds (piMz's `z`
-    // is untouched by jaśtva; Di's `D` is untouched by ṣṭutva), so this
+    // SŪTRA ORDER, NOT LOAD-BEARING ORDER, TODAY. It sits above 8.4.53
+    // because that is where vidyut-prakriya's data/sutrapatha.tsv places it,
+    // and for no other reason: as long as jaśtva declines on `z` (true of
+    // `jashtva_of` today), ṣṭutva and jaśtva touch different sounds (piMz's
+    // `z` is untouched by jaśtva; Di's `D` is untouched by ṣṭutva), so this
     // rule reaches piRqQi identically whichever side of 8.4.53 it runs on.
-    // Do not read this placement as a constraint a later rule may depend on.
+    // This is a fact about the CURRENT root set, not a structural
+    // invariant: Task 5 gives `jashtva_of` a `z → q` arm, at which point a
+    // root reaching that arm on this same junction would make the order
+    // load-bearing. Do not read today's placement as a constraint a later
+    // rule may depend on without re-checking this note.
     //
     // STRICT ADJACENCY is the load-bearing part of the guard: only the
     // IMMEDIATELY preceding character is read, never scanned past. A
@@ -1404,6 +1411,15 @@ mod tests {
         };
         assert!((rule.apply)(&mut p));
         assert_eq!(p.text(), "pizwi");
+
+        // the D arm, whose only derivation-level cell (loṭ madhyama eka) a
+        // later task finishes; pinned here so the arm is not witness-free.
+        let mut p = Prakriya {
+            terms: vec![Term::new("piz"), Term::new(""), Term::new("Di")],
+            ..Default::default()
+        };
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.text(), "pizQi");
 
         // one character between the `z` and the dental: no contact, decline.
         let mut p = Prakriya {
