@@ -120,8 +120,8 @@ fn tinanta_rule_order_is_pinned() {
         "7.3.84", "7.3.86", "7.3.84", "6.4.87", "6.4.77", "6.1.78", "7.3.101", "6.4.112",
         "6.4.113", "6.1.101", "6.1.96", "6.1.90", "6.1.97", "6.1.87", "6.1.66", "6.4.105",
         "6.4.106", "6.4.107", "6.4.101", "6.4.111", "8.2.77", "8.2.23", "8.2.25", "8.2.30",
-        "8.2.39", "8.2.74", "8.2.73", "8.2.75", "8.3.15", "8.3.24", "8.3.59", "8.4.53", "8.4.55",
-        "8.4.1", "8.4.2", "8.4.58", "8.4.65", "8.4.56",
+        "8.2.39", "8.2.74", "8.2.73", "8.2.75", "8.3.15", "8.3.24", "8.3.59", "8.4.41", "8.4.53",
+        "8.4.55", "8.4.1", "8.4.2", "8.4.58", "8.4.65", "8.4.56",
     ];
     let actual: Vec<&str> = rules().map(|r| r.id).collect();
     assert_eq!(actual, expected);
@@ -1428,4 +1428,76 @@ fn coh_kuh_declines_before_a_non_jhal_non_final() {
         form_g("Banj", Lakara::Lat, Purusha::Uttama, Vacana::Dvi),
         "BaYjvaH"
     );
+}
+
+#[test]
+fn pish_lat_retroflexes_around_the_shnam_stem() {
+    // 8.4.41 ṣṭunā ṣṭuḥ: the ending's dental retroflexes in contact with
+    // the root's ṣ. Madhyama eka (pinakzi) is deliberately absent — it
+    // needs 8.2.41, which lands in the next task.
+    let cells = [
+        (Purusha::Prathama, Vacana::Eka, "pinazwi"),
+        (Purusha::Prathama, Vacana::Dvi, "piMzwaH"),
+        (Purusha::Prathama, Vacana::Bahu, "piMzanti"),
+        (Purusha::Madhyama, Vacana::Dvi, "piMzWaH"),
+        (Purusha::Madhyama, Vacana::Bahu, "piMzWa"),
+        (Purusha::Uttama, Vacana::Eka, "pinazmi"),
+        (Purusha::Uttama, Vacana::Dvi, "piMzvaH"),
+        (Purusha::Uttama, Vacana::Bahu, "piMzmaH"),
+    ];
+    for (pu, va, want) in cells {
+        assert_eq!(form_g("piz", Lakara::Lat, pu, va), want);
+    }
+}
+
+#[test]
+fn pish_weak_stem_keeps_its_anusvara() {
+    // The SECOND witness that 8.3.24 and 8.4.58 are not a no-op pair.
+    // 8.4.58 needs a yay to follow; what follows here is the root's own
+    // `z`, which is śal — so piMzwaH keeps the anusvāra that kfntaH
+    // resolves. √hiṃs's hiMstaH was the first witness, in 7a.
+    assert_eq!(
+        form_g("piz", Lakara::Lat, Purusha::Prathama, Vacana::Dvi),
+        "piMzwaH"
+    );
+}
+
+#[test]
+fn shtutva_requires_strict_adjacency() {
+    // piMzanti keeps a DENTAL n: the `a` between the ṣ and the n breaks
+    // the contact 8.4.41 requires. pinazARi's retroflex ṇ is a different
+    // rule's — ṇatva (8.4.1 / 8.4.2), which 8.4.2 explicitly lets an aṭ
+    // intervene in. Conflating the two would retroflex piMzanti as well.
+    assert_eq!(
+        form_g("piz", Lakara::Lat, Purusha::Prathama, Vacana::Bahu),
+        "piMzanti"
+    );
+    assert_eq!(
+        form_g("piz", Lakara::Lot, Purusha::Uttama, Vacana::Eka),
+        "pinazARi"
+    );
+}
+
+#[test]
+fn pish_vidhilin_all_nine_cells() {
+    // The optative's `y` is neither dental stop nor `s`, so 8.4.41 has
+    // nothing to do here; the cells are pure weak stem plus 8.4.56 on
+    // prathama eka.
+    assert_eq!(
+        form_g_forked("piz", Lakara::VidhiLin, Purusha::Prathama, Vacana::Eka, 2),
+        "piMzyAd"
+    );
+    let cells = [
+        (Purusha::Prathama, Vacana::Dvi, "piMzyAtAm"),
+        (Purusha::Prathama, Vacana::Bahu, "piMzyuH"),
+        (Purusha::Madhyama, Vacana::Eka, "piMzyAH"),
+        (Purusha::Madhyama, Vacana::Dvi, "piMzyAtam"),
+        (Purusha::Madhyama, Vacana::Bahu, "piMzyAta"),
+        (Purusha::Uttama, Vacana::Eka, "piMzyAm"),
+        (Purusha::Uttama, Vacana::Dvi, "piMzyAva"),
+        (Purusha::Uttama, Vacana::Bahu, "piMzyAma"),
+    ];
+    for (pu, va, want) in cells {
+        assert_eq!(form_g("piz", Lakara::VidhiLin, pu, va), want);
+    }
 }

@@ -648,6 +648,59 @@ pub(crate) static TRIPADI: &[Rule] = &[
             true
         },
     },
+    // 8.4.41 ṣṭunā ṣṭuḥ: a dental (`s`, or a t-varga stop) retroflexes when
+    // it immediately neighbours `ṣ` (z) or a ṭ-varga stop. pinaz + ti →
+    // pinaz + wi → pinazwi; piMz + tas → piMzwaH; piMz + Di, in the loṭ
+    // madhyama eka cell a later task finishes, reaches piRqQi the same way.
+    //
+    // SŪTRA ORDER, NOT LOAD-BEARING ORDER. It sits above 8.4.53 because
+    // that is where vidyut-prakriya's data/sutrapatha.tsv places it, and for
+    // no other reason: ṣṭutva and jaśtva touch different sounds (piMz's `z`
+    // is untouched by jaśtva; Di's `D` is untouched by ṣṭutva), so this
+    // rule reaches piRqQi identically whichever side of 8.4.53 it runs on.
+    // Do not read this placement as a constraint a later rule may depend on.
+    //
+    // STRICT ADJACENCY is the load-bearing part of the guard: only the
+    // IMMEDIATELY preceding character is read, never scanned past. A
+    // forward scan for "some dental after a z" would wrongly retroflex
+    // piMzanti's `n` (across the intervening `a`) into *piMzaRti; that
+    // retroflexion is ṇatva's (8.4.1 / 8.4.2), which 8.4.2 explicitly lets
+    // an aṭ intervene in — `shtutva_requires_strict_adjacency` in
+    // `super::derivation_tests` is the witness that the two rules stay
+    // disjoint.
+    //
+    // NARROW GUARD, by design, matching 8.3.59's discipline just above: the
+    // only trigger √piṣ ever presents is its own `z`, so only `z` is checked
+    // here — no curated root reaches a ṭ-varga-stop trigger yet. The
+    // correspondence match below is narrowed the same way: only t/T/D have
+    // a witness (d/n/s do not). Widen both the moment a root or a junction
+    // reaches the wider cases.
+    Rule {
+        id: "8.4.41",
+        name: "zwunA zwuH",
+        kind: RuleKind::Vidhi,
+        vikalpa: false,
+        apply: |p| {
+            let w = word_chars(p);
+            for i in 1..w.len() {
+                if w[i - 1].2 != 'z' {
+                    continue;
+                }
+                let sub = match w[i].2 {
+                    't' => 'w',
+                    'T' => 'W',
+                    'D' => 'Q',
+                    _ => continue,
+                };
+                let (term, idx, _) = w[i];
+                let before = p.snapshot();
+                set_char(p, term, idx, sub);
+                p.record("8.4.41", "zwunA zwuH", before);
+                return true;
+            }
+            false
+        },
+    },
     // 8.4.53 jhalāṁ jaś jhaśi: a jhal becomes its jaś before a jhaś (a
     // voiced aspirate). kfnt + Di → kfnd + Di → kfndDi.
     //
@@ -1334,6 +1387,42 @@ mod tests {
             ..Default::default()
         };
         assert!(!(rule.apply)(&mut p));
+    }
+
+    /// 8.4.41 retroflexes a dental immediately after `z`, and declines both
+    /// when a character intervenes and when the neighbour is not a dental
+    /// at all — the shape `shtutva_requires_strict_adjacency` pins at the
+    /// derivation level, here pinned directly against the rule.
+    #[test]
+    fn shtutva_fires_only_on_an_adjacent_dental() {
+        let rule = rules().find(|r| r.id == "8.4.41").unwrap();
+
+        // immediately adjacent: the `t` retroflexes to `w`.
+        let mut p = Prakriya {
+            terms: vec![Term::new("piz"), Term::new(""), Term::new("ti")],
+            ..Default::default()
+        };
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.text(), "pizwi");
+
+        // one character between the `z` and the dental: no contact, decline.
+        let mut p = Prakriya {
+            terms: vec![Term::new("piz"), Term::new("a"), Term::new("nti")],
+            ..Default::default()
+        };
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.text(), "pizanti");
+
+        // a non-dental neighbour: y, v and m are none of them shtutva's
+        // target, so the rule declines on each.
+        for ending in ["ya", "va", "ma"] {
+            let mut p = Prakriya {
+                terms: vec![Term::new("piz"), Term::new(""), Term::new(ending)],
+                ..Default::default()
+            };
+            assert!(!(rule.apply)(&mut p), "fired before {ending}");
+            assert_eq!(p.text(), format!("piz{ending}"));
+        }
     }
 
     /// 8.4.56 devoices a pada-final jhal. After 8.2.39 the only reachable
