@@ -733,14 +733,21 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // instead of piMzQi.
     //
     // The two orders fail to converge for an implementation reason, not a
-    // sūtra one: THIS rule's trigger set is `z` only (see NARROW GUARD
-    // below), not the full ṭ-varga ṣṭunā ṣṭuḥ names (`w W q Q R`). Widen the
-    // trigger to include `q` and both orders reach the same piMqQi — 8.4.53
-    // running first would hand 8.4.41 a `q` it could still retroflex D
-    // against. So this ordering is load-bearing for THIS IMPLEMENTATION's
-    // narrowed trigger set, not a structural fact about the two sūtras
-    // themselves. Do not reorder these two rules without re-deriving this
-    // cell, and re-check this note the moment the trigger set widens.
+    // sūtra one — but TODAY two separate narrowings hold them apart, not
+    // one. THIS rule's trigger set is `z` only (see NARROW GUARD below), not
+    // the full ṭ-varga ṣṭunā ṣṭuḥ names (`w W q Q R`); and 8.4.53's guard
+    // just below checks for a literal penult `D`, not "any jhaś." Widening
+    // 8.4.41's trigger to include `q` converges the 8.4.53-first order
+    // (z → q, then a q-triggered 8.4.41 retroflexes D → Q, giving piMqQi),
+    // but NOT the 8.4.41-first order: 8.4.41 still turns D → Q immediately
+    // (z was already a trigger), and 8.4.53's literal-`D` check then fails
+    // to see it, stalling at piMzQi. Task 6 generalises 8.4.53 from
+    // literal-`D` to jhal-before-jhaś (Q qualifies), which removes 8.4.53's
+    // narrowing — at that point 8.4.41-first also converges (8.4.53 catches
+    // z-before-Q and voices z → q, reaching piMqQi the way the finished
+    // cell actually does), and 8.4.41's `z`-only trigger becomes the one
+    // narrowing left standing, restorable by widening it to `w W q Q R`. Do
+    // not reorder these two rules without re-deriving this cell.
     //
     // STRICT ADJACENCY is the load-bearing part of the guard: only the
     // IMMEDIATELY preceding character is read, never scanned past. A
