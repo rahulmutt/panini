@@ -75,6 +75,14 @@ pub(crate) fn is_khar(c: char) -> bool {
     )
 }
 
+/// A jhaś (voiced aspirated stop) — the five vargas' fourth member, `G J Q D
+/// B`. 8.4.53's conditioning class: a jhal immediately before a jhaś becomes
+/// its own jaś (`jashtva_of`) — the conditioning jhaś's place plays no part
+/// in the substitute.
+pub(crate) fn is_jhash(c: char) -> bool {
+    matches!(c, 'G' | 'J' | 'Q' | 'D' | 'B')
+}
+
 /// 8.4.1's trigger set: `r`, `z`, and the r-vowels `f`/`F`, which contain the
 /// r-sound by 1.1.51 *uraṇ raparaḥ*. `S` (the palatal śa) is deliberately
 /// absent — it is not `z` (the retroflex ṣa) despite the visual similarity,
@@ -324,6 +332,18 @@ mod tests {
         assert!(!is_savarna('S', 'c'), "S/c should not be savarRa");
         // Different stop series are not savarRa with each other.
         assert!(!is_savarna('t', 'k'), "t/k should not be savarRa");
+    }
+
+    #[test]
+    fn is_jhash_covers_exactly_the_voiced_aspirates() {
+        for c in ['G', 'J', 'Q', 'D', 'B'] {
+            assert!(is_jhash(c), "{c} is a jhaś");
+        }
+        for c in [
+            'g', 'j', 'q', 'd', 'b', 'k', 'c', 'w', 't', 'p', 's', 'z', 'S', 'h', 'a',
+        ] {
+            assert!(!is_jhash(c), "{c} is not a jhaś");
+        }
     }
 
     #[test]

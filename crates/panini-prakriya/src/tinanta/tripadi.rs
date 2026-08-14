@@ -8,8 +8,8 @@ use crate::prakriya::Prakriya;
 use crate::rule::{Rule, RuleKind};
 use crate::term::Tag;
 use crate::tinanta::sound::{
-    cartva_of, is_jhal, is_khar, is_natva_intervener, is_natva_trigger, is_savarna, is_vowel,
-    jashtva_of, parasavarna_of,
+    cartva_of, is_jhal, is_jhash, is_khar, is_natva_intervener, is_natva_trigger, is_savarna,
+    is_vowel, jashtva_of, parasavarna_of,
 };
 use crate::tinanta::terms::{ANGA, ENDING, SHAP};
 
@@ -716,38 +716,37 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // 8.4.41 ṣṭunā ṣṭuḥ: a dental (`s`, or a t-varga stop) retroflexes when
     // it immediately neighbours `ṣ` (z) or a ṭ-varga stop. pinaz + ti →
     // pinaz + wi → pinazwi; piMz + tas → piMzwaH; piMz + Di — in the loṭ
-    // madhyama eka cell, which is DELIBERATELY LEFT INTERMEDIATE until Task 6
-    // (it currently reaches piMzQi, not the finished piRqQi) — takes the
-    // same D → Q step; Task 6 is what finishes the cell around it.
+    // madhyama eka cell — takes the same D → Q step, and 8.4.53 below
+    // carries it the rest of the way to the paradigm's finished piRqQi
+    // (Task 6).
     //
     // SŪTRA ORDER; LOAD-BEARING AS IMPLEMENTED. It sits above 8.4.53 because
     // that is where vidyut-prakriya's data/sutrapatha.tsv places it — but
     // since Task 5 gave `jashtva_of` a `z → q` arm, the two rules no longer
     // touch disjoint sounds on this junction: piMz + Di's `z` is now exactly
     // what jaśtva would take if it saw it first. With 8.4.41 above, it fires
-    // on the `z`/`D` pair before 8.4.53 runs, retroflexing D → Q and leaving
-    // 8.4.53 nothing to see (its guard requires a literal `D` at that
-    // position, which is gone). Run 8.4.53 first instead and it would read
-    // piMz + Di's `z` as the jaśtva target — jashtva_of('z') is no longer a
-    // no-op — and rewrite it to `q` before 8.4.41 ever ran, giving piMqDi
-    // instead of piMzQi.
+    // on the `z`/`D` pair before 8.4.53 runs, retroflexing D → Q; 8.4.53
+    // then voices that same `z` to `q` before the new `Q`, giving piMqQi.
+    // Run 8.4.53 first instead and it would read piMz + Di's `z` as the
+    // jaśtva target — jashtva_of('z') is no longer a no-op — and rewrite it
+    // to `q` before 8.4.41 ever ran; with 8.4.41's trigger still `z`-only,
+    // that `z` is gone by the time 8.4.41 runs and it has nothing left to
+    // fire on, giving piMqDi instead.
     //
     // The two orders fail to converge for an implementation reason, not a
-    // sūtra one — but TODAY two separate narrowings hold them apart, not
-    // one. THIS rule's trigger set is `z` only (see NARROW GUARD below), not
-    // the full ṭ-varga ṣṭunā ṣṭuḥ names (`w W q Q R`); and 8.4.53's guard
-    // just below checks for a literal penult `D`, not "any jhaś." Widening
-    // 8.4.41's trigger to include `q` converges the 8.4.53-first order
-    // (z → q, then a q-triggered 8.4.41 retroflexes D → Q, giving piMqQi),
-    // but NOT the 8.4.41-first order: 8.4.41 still turns D → Q immediately
-    // (z was already a trigger), and 8.4.53's literal-`D` check then fails
-    // to see it, stalling at piMzQi. Task 6 generalises 8.4.53 from
-    // literal-`D` to jhal-before-jhaś (Q qualifies), which removes 8.4.53's
-    // narrowing — at that point 8.4.41-first also converges (8.4.53 catches
-    // z-before-Q and voices z → q, reaching piMqQi the way the finished
-    // cell actually does), and 8.4.41's `z`-only trigger becomes the one
-    // narrowing left standing, restorable by widening it to `w W q Q R`. Do
-    // not reorder these two rules without re-deriving this cell.
+    // sūtra one. BEFORE Task 6, two separate narrowings held them apart:
+    // THIS rule's trigger set is `z` only (see NARROW GUARD below), not the
+    // full ṭ-varga ṣṭunā ṣṭuḥ names (`w W q Q R`); and 8.4.53's guard used
+    // to check for a literal penult `D`, not "any jhaś." Task 6 generalised
+    // 8.4.53 from literal-`D` to jhal-before-jhaś (Q qualifies), which
+    // removed 8.4.53's narrowing — the AS-IMPLEMENTED order (8.4.41 above
+    // 8.4.53) now converges correctly to piMqQi, as traced above and pinned
+    // by `pish_lot_madhyama_eka_is_pinddhi`'s piRqQi. THIS rule's `z`-only
+    // trigger is now the ONE narrowing left standing: reorder the two rules
+    // (8.4.53 above 8.4.41) and it still stalls at piMqDi, restorable only
+    // by also widening this trigger to include `q` — the full `w W q Q R`
+    // — so a q-triggered 8.4.41 can still retroflex D → Q afterward. Do not
+    // reorder these two rules without re-deriving this cell.
     //
     // STRICT ADJACENCY is the load-bearing part of the guard: only the
     // IMMEDIATELY preceding character is read, never scanned past. A
@@ -791,7 +790,8 @@ pub(crate) static TRIPADI: &[Rule] = &[
         },
     },
     // 8.4.53 jhalāṁ jaś jhaśi: a jhal becomes its jaś before a jhaś (a
-    // voiced aspirate). kfnt + Di → kfnd + Di → kfndDi.
+    // voiced aspirate), anywhere the two sit adjacent in the word — not
+    // only at the word's own end. kfnt + Di → kfnd + Di → kfndDi.
     //
     // RESTORED, not reverted. This rule was removed in 9fa8e5f as
     // unreachable: slice 5d had analysed the ās/vas junction as jaśtva and
@@ -804,6 +804,60 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // 8.2.25 still bleeds it for √hiṃs, which is why hinDi and kfndDi differ
     // in shape — the same cell of the same gaṇa, reached by two different
     // rules. Both are asserted in `super::derivation_tests`.
+    //
+    // GENERALISED (Task 6). The guard used to read "the word ends in `i`
+    // and the penult is `D`" — the only shape 7a's two witnesses (kfndDi,
+    // hinDi) ever reached it through, so it was never written wider than
+    // that. It stops being true here: √piṣ's piRqQi conditions this rule
+    // on a `Q` — 8.4.41 just above has already retroflexed 6.4.101's `Di`
+    // to `Qi` before this rule ever runs — and √indh (Task 7) conditions
+    // it on a `D` that sits mid-word, in `De`, `Da`, `DAm`, `Dve`, `DAH`
+    // and `Dvam`, never at the word's own end. Four of those six (`De`,
+    // `Da`, `DAm`, `DAH`) are newly created by the upcoming 8.2.40 jaṣas
+    // tathor dho'ḍhaḥ (t/th → D after a stem's jhaṣ); `Dve`/`Dvam` are not
+    // — see NOT NARROWED below for why they still need this rule. The
+    // guard now reads the sūtra's actual condition instead: `is_jhash`
+    // locates the jhaś, `jashtva_of` on the sound immediately before it
+    // supplies the substitute, checked at every adjacent pair
+    // `word_chars` reports.
+    //
+    // NOT NARROWED THE WAY 8.4.41 ABOVE IS. 8.4.41's trigger is
+    // deliberately `z`-only, pending a later root; this rule instead
+    // implements the full jhalāṁ jaś jhaśi condition, with no positional
+    // restriction and no restriction on which jhal or which jhaś. What
+    // keeps it from over-firing is upstream, not in this guard, in two
+    // separate ways for the two kinds of jhaś-initial affix in this
+    // grammar:
+    //
+    // 8.2.40 (Task 7) is the only NEW source of a D-initial ending —
+    // besides the pre-existing 6.4.101 her dhiḥ — and it requires a jhaṣ
+    // already abutting the ending, which no thematic root ever presents
+    // (the vikaraṇa intervenes: laBate, yuDyate, guDnAti), and no other
+    // athematic stem in the suite ends in a jhaṣ either (vaste, Aste,
+    // Sete end in `s`, `s` and `e`). √indh is alone in reaching it.
+    //
+    // `Dve`/`Dvam` (and the iṭ-augmented `IDvam`) are a SEPARATE case: no
+    // rule creates them at all. `Dvam` is the raw ātmanepada
+    // madhyama-bahu pratyaya straight out of `panini-data`'s `tin_ending`
+    // table, and 3.4.79 wita AtmanepadAnAM wer e — a general ṭi
+    // substitution with no jhaṣ condition of its own — turns it to `Dve`
+    // for laṭ/loṭ. What keeps THIS rule from over-firing there is a fact
+    // about the STEMS that reach them, not the endings: every Dve/Dvam
+    // cell pinned in this suite puts either a vowel (laBaDve, ADve,
+    // vaDve, AsIDvam, laBaDvam) or an already-jaś `d` (KindDve)
+    // immediately before the `D` — never an untreated jhal — so this rule
+    // either has nothing to see or the no-op guard declines it. √indh's
+    // own indDve/indDvam (Task 7) are the one cell where a stem-final
+    // jhaṣ genuinely meets this native `D`, and that is exactly where
+    // this rule is supposed to fire.
+    //
+    // One real scope limit remains, inherited from the engine rather than
+    // written into this guard: `apply` runs at most once per branch per
+    // pipeline pass (see `controller::run_pipeline`), so this loop returns
+    // on the FIRST qualifying pair it finds and never revisits the word
+    // for a second one. No form in this suite needs two — verify before
+    // relying on it for a future root with more than one jhaś-initial
+    // affix boundary.
     Rule {
         id: "8.4.53",
         name: "JalAM jaS JaSi",
@@ -811,31 +865,26 @@ pub(crate) static TRIPADI: &[Rule] = &[
         vikalpa: false,
         apply: |p| {
             let w = word_chars(p);
-            let Some(pos) = w.len().checked_sub(2) else {
-                return false;
-            };
-            // The jhaś that conditions it: in this suite always the `D` of
-            // 6.4.101's Di, at the last position.
-            if w.last().map(|(_, _, c)| *c) != Some('i') || w[pos].2 != 'D' {
-                return false;
+            for i in 1..w.len() {
+                if !is_jhash(w[i].2) {
+                    continue;
+                }
+                let Some(jash) = jashtva_of(w[i - 1].2) else {
+                    continue;
+                };
+                // No-op guard, as 8.4.55 below takes for the identical
+                // reason: a target that is already its own jaś (√ad's
+                // `d`, adDi) must not record a vacuous step.
+                if jash == w[i - 1].2 {
+                    continue;
+                }
+                let (term, idx, _) = w[i - 1];
+                let before = p.snapshot();
+                set_char(p, term, idx, jash);
+                p.record("8.4.53", "JalAM jaS JaSi", before);
+                return true;
             }
-            let Some(target) = pos.checked_sub(1) else {
-                return false;
-            };
-            let Some(jash) = jashtva_of(w[target].2) else {
-                return false;
-            };
-            // No-op guard, as 8.4.55 below takes for the identical reason:
-            // a target that is already its own jaś (√ad's `d`, adDi) must
-            // not record a vacuous step.
-            if jash == w[target].2 {
-                return false;
-            }
-            let (term, idx, _) = w[target];
-            let before = p.snapshot();
-            set_char(p, term, idx, jash);
-            p.record("8.4.53", "JalAM jaS JaSi", before);
-            true
+            false
         },
     },
     // 8.4.55 khari ca (cartva): a jhal immediately before the ending, meeting
@@ -1580,6 +1629,39 @@ mod tests {
             assert!(!(rule.apply)(&mut p), "fired before {ending}");
             assert_eq!(p.text(), format!("piz{ending}"));
         }
+    }
+
+    /// 8.4.53 turns a jhal into its jaś before a jhaś, anywhere the two are
+    /// adjacent — not only at the word's own end, the shape both of 7a's
+    /// witnesses (kfndDi, hinDi) happened to share. Pinned directly against
+    /// the rule since neither witness exercises the non-final case.
+    #[test]
+    fn jhalam_jash_jhashi_fires_anywhere_not_just_word_finally() {
+        let rule = rules().find(|r| r.id == "8.4.53").unwrap();
+
+        // non-final: the jhaś sits mid-word, with more of the affix after it.
+        let mut p = Prakriya {
+            terms: vec![Term::new("kfnt"), Term::new(""), Term::new("Deva")],
+            ..Default::default()
+        };
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.text(), "kfndDeva");
+
+        // a jhal before a non-jhaś: nothing for the rule to see.
+        let mut p = Prakriya {
+            terms: vec![Term::new("kfnt"), Term::new(""), Term::new("ati")],
+            ..Default::default()
+        };
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.text(), "kfntati");
+
+        // a target already its own jaś: the no-op guard declines.
+        let mut p = Prakriya {
+            terms: vec![Term::new("kfnd"), Term::new(""), Term::new("Di")],
+            ..Default::default()
+        };
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.text(), "kfndDi");
     }
 
     /// 8.4.56 devoices a pada-final jhal. After 8.2.39 the only reachable

@@ -1547,3 +1547,53 @@ fn pish_lan_all_nine_cells() {
         assert_eq!(form_g("piz", Lakara::Lan, pu, va), want);
     }
 }
+
+#[test]
+fn pish_lot_madhyama_eka_is_pinddhi() {
+    // The deepest cell in this slice: four branches. 6.4.101 her dhiH
+    // gives the `Di`; 8.4.41 retroflexes it to `Qi`; 8.4.53 (widened to
+    // any jhaś, not just `D`) voices the ṣ to `q` before it; 8.4.58 takes
+    // the anusvāra to `R` as that `q`'s parasavarṇa; and 8.4.65 optionally
+    // elides the `q` before the savarṇa `Q`. 7.1.35's tātaṅ and its 8.4.56
+    // fork supply the other two branches.
+    assert_eq!(
+        form_g_forked("piz", Lakara::Lot, Purusha::Madhyama, Vacana::Eka, 4),
+        "piRqQi"
+    );
+}
+
+#[test]
+fn pish_lot_all_nine_cells() {
+    assert_eq!(
+        form_g_forked("piz", Lakara::Lot, Purusha::Prathama, Vacana::Eka, 3),
+        "pinazwu"
+    );
+    let cells = [
+        (Purusha::Prathama, Vacana::Dvi, "piMzwAm"),
+        (Purusha::Prathama, Vacana::Bahu, "piMzantu"),
+        (Purusha::Madhyama, Vacana::Dvi, "piMzwam"),
+        (Purusha::Madhyama, Vacana::Bahu, "piMzwa"),
+        (Purusha::Uttama, Vacana::Eka, "pinazARi"),
+        (Purusha::Uttama, Vacana::Dvi, "pinazAva"),
+        (Purusha::Uttama, Vacana::Bahu, "pinazAma"),
+    ];
+    for (pu, va, want) in cells {
+        assert_eq!(form_g("piz", Lakara::Lot, pu, va), want);
+    }
+}
+
+#[test]
+fn jhalam_jash_jhashi_still_declines_on_its_two_pre_existing_shapes() {
+    // The widening must not disturb either 7a cell. √khid's KindDve
+    // presents a `d` that is already its own jaś — the NO-OP GUARD
+    // declines it. √hiṃs's hinDi presents an `n`, for which jashtva_of
+    // returns None — a DIFFERENT clause. Both remain branch 0.
+    assert_eq!(
+        form_g_forked("Kid", Lakara::Lat, Purusha::Madhyama, Vacana::Bahu, 2),
+        "KindDve"
+    );
+    assert_eq!(
+        form_g_forked("his", Lakara::Lot, Purusha::Madhyama, Vacana::Eka, 3),
+        "hinDi"
+    );
+}
