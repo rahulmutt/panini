@@ -480,6 +480,55 @@ pub(crate) static TRIPADI: &[Rule] = &[
             true
         },
     },
+    // 8.2.75 daś ca (vikalpa): and a final `d` likewise becomes ru before
+    // sip. akfRad + s → akfRaH. The counterpart of 8.2.74 for a stem whose
+    // final is already a stop — √kṛt's, voiced by 8.2.39 just above.
+    //
+    // ORDERED ABOVE 8.2.73 (Task 8), against sūtra order, for the same
+    // structural reason as 8.2.74 just above: this rule needs to see the
+    // dhātu's OWN `d`, not one 8.2.73 manufactured from an `s`.
+    //
+    // Until this move, that meant reading the log — declining whenever
+    // `p.log` already showed an "8.2.73" step, on the reasoning that 8.2.73
+    // is the ONLY source of a `d` this rule must not double-count (√hiṃs's
+    // `ahinas`, via 8.2.73's sip over-application, becoming `ahinad`; √kṛt
+    // is untouched by that concern, since its `d` is always 8.2.39
+    // jaśtva's and 8.2.73 never fires on it). At the new position that
+    // clause is unreachable by construction — 8.2.73 has not run yet — so
+    // it has been deleted, and the guard now rests on phonology instead:
+    // √hiṃs presents `ahinas` here, which fails this rule's own
+    // `ends_with('d')` check outright and falls through to 8.2.73/8.2.74
+    // unchanged; √kṛt presents `akfRad` (8.2.39 having already voiced its
+    // `t`) and this rule fires on it directly. Forms are unchanged by the
+    // move: `shnams_ru_fires_on_the_dhatus_own_final` and the 7a laṅ cell
+    // tests in `super::derivation_tests` are the witnesses.
+    Rule {
+        id: "8.2.75",
+        name: "daSca",
+        kind: RuleKind::Vidhi,
+        vikalpa: true,
+        apply: |p| {
+            if !p.terms[ANGA].has(Tag::Rudhadi) || !p.ctx.is_sip() {
+                return false;
+            }
+            if !dhatu_is_pada_final(p) {
+                return false;
+            }
+            if !p.text().ends_with('d') {
+                return false;
+            }
+            let before = p.snapshot();
+            let Some(idx) = p.terms.iter().rposition(|t| !t.text.is_empty()) else {
+                return false;
+            };
+            let mut s: Vec<char> = p.terms[idx].text.chars().collect();
+            s.pop();
+            s.push('r');
+            p.terms[idx].text = s.into_iter().collect();
+            p.record("8.2.75", "daSca", before);
+            true
+        },
+    },
     // 8.2.73 tipy anasteḥ: before tip, a dhātu other than √as takes `d` for
     // its final. ahinas + t → ahinad.
     //
@@ -511,12 +560,23 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // and in this grammar that happens at exactly one slot family — laṅ
     // prathama/madhyama eka, i.e. tip and sip. `dhatu_is_pada_final` is
     // testing for that emptiness, not for tip/sip directly, so it inherits
-    // the restriction only as long as that fact holds. This rule is
-    // OBLIGATORY (`vikalpa: false`), so if a future slice's root set ever
-    // makes `ENDING` empty at some other slot (a different saṁyoga shape,
-    // or another rule that luks the ending), this guard would over-fire
-    // there silently — no test failure until a golden happens to catch it.
-    // Re-verify this invariant before widening the root set.
+    // the restriction only as long as that fact holds.
+    //
+    // RE-VERIFIED (Task 8), against the deferred hazard above. √bhañj and
+    // √piṣ (Task 6/7) are the first roots after √hiṃs to empty `ENDING`
+    // under 8.2.23, and they do so at exactly the same slot family — laṅ
+    // prathama/madhyama eka — so the invariant holds. This rule still
+    // declines on both anyway, on its own `s`-final check: `aBanaj` and
+    // `apinaz` end in `j`/`z`, not `s`. `the_ru_alternation_stays_off_the_
+    // new_roots` and `no_8_2_73_step_appears_for_bhanj_or_pish` in
+    // `super::derivation_tests` are the witnesses.
+    //
+    // This rule is OBLIGATORY (`vikalpa: false`), so the hazard is only
+    // narrowed, not closed: if a future slice's root set ever makes
+    // `ENDING` empty at some other slot (a different saṁyoga shape, or
+    // another rule that luks the ending), this guard would over-fire there
+    // silently — no test failure until a golden happens to catch it.
+    // Re-verify this invariant again before widening the root set further.
     Rule {
         id: "8.2.73",
         name: "tipyanasteH",
@@ -541,54 +601,6 @@ pub(crate) static TRIPADI: &[Rule] = &[
             s.push('d');
             p.terms[idx].text = s.into_iter().collect();
             p.record("8.2.73", "tipyanasteH", before);
-            true
-        },
-    },
-    // 8.2.75 daś ca (vikalpa): and a final `d` likewise becomes ru before
-    // sip. akfRad + s → akfRaH. The counterpart of 8.2.74 for a stem whose
-    // final is already a stop — √kṛt's, voiced by 8.2.39 just above.
-    //
-    // MUST DECLINE ON A `d` THAT CAME FROM 8.2.73, not just any pada-final
-    // `d`: for √hiṃs, 8.2.74 declining leaves `ahinas`, which 8.2.73 (its
-    // sip over-application) then voices to `ahinad`. If this rule read that
-    // `d` too it would offer a second, redundant route to the SAME surface
-    // `ahinaH` — verified empirically, by removing this clause and
-    // rerunning `rudhadi_lan_eka_cells`/`shnams_ru_fires_on_the_dhatus_own_final`:
-    // laṅ madhyama eka for √hiṃs forked into four branches, not three, two
-    // of them the identical text `ahinar` (one via 8.2.74 directly, one via
-    // 8.2.73 then this rule) — a real duplicate, not merely two equally
-    // valid derivations, and `shnams_ru_fires_on_the_dhatus_own_final`
-    // failed because `.find` could land on the 8.2.73-then-8.2.75 branch,
-    // whose trace never mentions 8.2.74 at all. √kṛt is untouched: its `d`
-    // is always 8.2.39 jaśtva's, and 8.2.73 never fires on it (kft's own
-    // final is never `s`), so the log never has "8.2.73" to check for.
-    Rule {
-        id: "8.2.75",
-        name: "daSca",
-        kind: RuleKind::Vidhi,
-        vikalpa: true,
-        apply: |p| {
-            if !p.terms[ANGA].has(Tag::Rudhadi) || !p.ctx.is_sip() {
-                return false;
-            }
-            if !dhatu_is_pada_final(p) {
-                return false;
-            }
-            if p.log.iter().any(|s| s.sutra == "8.2.73") {
-                return false;
-            }
-            if !p.text().ends_with('d') {
-                return false;
-            }
-            let before = p.snapshot();
-            let Some(idx) = p.terms.iter().rposition(|t| !t.text.is_empty()) else {
-                return false;
-            };
-            let mut s: Vec<char> = p.terms[idx].text.chars().collect();
-            s.pop();
-            s.push('r');
-            p.terms[idx].text = s.into_iter().collect();
-            p.record("8.2.75", "daSca", before);
             true
         },
     },
@@ -877,9 +889,11 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // 8.2.40 (Task 7) is the only NEW source of a D-initial ending —
     // besides the pre-existing 6.4.101 her dhiḥ — and it requires a jhaṣ
     // already abutting the ending, which no thematic root ever presents
-    // (the vikaraṇa intervenes: laBate, yuDyate, guDnAti), and no other
-    // athematic stem in the suite ends in a jhaṣ either (vaste, Aste,
-    // Sete end in `s`, `s` and `e`). √indh is alone in reaching it.
+    // (the vikaraṇa intervenes: laBate, yuDyate, guDnAti). Every OTHER
+    // jhaṣ-final stem in the suite — svādi's stiG, kryādi's guD included —
+    // has a live vikaraṇa between the jhaṣ and the ending too, so this
+    // rule — and hence a fresh D-initial ending — is reachable only
+    // through √indh.
     //
     // `Dve`/`Dvam` (and the iṭ-augmented `IDvam`) are a SEPARATE case: no
     // rule creates them at all. `Dvam` is the raw ātmanepada

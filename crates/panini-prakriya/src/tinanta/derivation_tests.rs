@@ -120,7 +120,7 @@ fn tinanta_rule_order_is_pinned() {
         "7.3.84", "7.3.86", "7.3.84", "6.4.87", "6.4.77", "6.1.78", "7.3.101", "6.4.112",
         "6.4.113", "6.1.101", "6.1.96", "6.1.90", "6.1.97", "6.1.87", "6.1.66", "6.4.105",
         "6.4.106", "6.4.107", "6.4.101", "6.4.111", "8.2.77", "8.2.23", "8.2.25", "8.2.30",
-        "8.2.39", "8.2.40", "8.2.41", "8.2.74", "8.2.73", "8.2.75", "8.3.15", "8.3.24", "8.3.59",
+        "8.2.39", "8.2.40", "8.2.41", "8.2.74", "8.2.75", "8.2.73", "8.3.15", "8.3.24", "8.3.59",
         "8.4.41", "8.4.53", "8.4.55", "8.4.1", "8.4.2", "8.4.58", "8.4.65", "8.4.56",
     ];
     let actual: Vec<&str> = rules().map(|r| r.id).collect();
@@ -1336,6 +1336,44 @@ fn shnams_ru_fires_on_the_dhatus_own_final() {
         !ids[..ru].contains(&"8.2.73"),
         "8.2.73 must not precede 8.2.74: {ids:?}"
     );
+}
+
+#[test]
+fn the_ru_alternation_stays_off_the_new_roots() {
+    // 8.2.73's deferred re-verification, discharged. √bhañj and √piṣ are
+    // the first roots other than √hiṃs to empty ENDING under 8.2.23, so
+    // they are the first live test of the invariant 8.2.73 leans on in
+    // place of a slot predicate.
+    //
+    // The invariant HOLDS: both empty it at laṅ prathama/madhyama eka,
+    // i.e. still tip and sip. And 8.2.73 declines on them regardless,
+    // because its `s`-final check does not match `aBanaj` or `apinaz`.
+    // If it over-fired, these cells would surface a `d` and then a
+    // visarga via 8.2.75 and 8.3.15.
+    for (root, want) in [("Banj", "aBanag"), ("piz", "apinaq")] {
+        for pu in [Purusha::Prathama, Purusha::Madhyama] {
+            assert_eq!(
+                form_g_forked(root, Lakara::Lan, pu, Vacana::Eka, 2),
+                want,
+                "{root} laṅ eka took the ru alternation"
+            );
+        }
+    }
+}
+
+#[test]
+fn no_8_2_73_step_appears_for_bhanj_or_pish() {
+    for root in ["Banj", "piz"] {
+        for pu in [Purusha::Prathama, Purusha::Madhyama] {
+            let d = dhatus().iter().find(|d| d.id == root).unwrap();
+            for p in derive(d, Lakara::Lan, d.pada, pu, Vacana::Eka) {
+                assert!(
+                    !p.log.iter().any(|s| s.sutra == "8.2.73"),
+                    "{root}: 8.2.73 fired outside √hiṃs"
+                );
+            }
+        }
+    }
 }
 
 #[test]
