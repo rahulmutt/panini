@@ -356,17 +356,22 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // `d` before it: indDe. 8.4.65 optionally elides that `d` before the
     // savarṇa `D`, which is where inDe comes from.
     //
-    // The ONLY NEW source of a D-initial ending in this suite — see
-    // 8.4.53's comment below for why that bounds its widening: no thematic
-    // root ever presents a jhaṣ immediately before its ending (the
-    // vikaraṇa intervenes), and no other athematic stem in the suite ends
-    // in a jhaṣ either, so this rule — and hence a fresh D-initial ending —
-    // is reachable only through √indh.
+    // The ONLY NEW source of a D-initial ending in this suite besides the
+    // pre-existing 6.4.101 her dhiḥ (which already supplies one: √hiṃs's
+    // hinDi) — see 8.4.53's comment below for why that bounds its
+    // widening: no thematic root ever presents a jhaṣ immediately before
+    // its ending (the vikaraṇa intervenes: laBate, yuDyate, guDnAti), and
+    // every OTHER jhaṣ-final stem in the suite — svādi's stiG, kryādi's
+    // guD included — has a live vikaraṇa between the jhaṣ and the ending
+    // too, so this rule — and hence a fresh D-initial ending — is
+    // reachable only through √indh.
     //
-    // DECLINES wherever the ending does not begin with a dental stop:
-    // intse (`s`), inDvahe (`v`) and inDmahe (`m`) all fail the `t`/`T`
-    // match, leaving 8.4.55 khari ca to devoice the stem's `D` to `t`
-    // instead.
+    // DECLINES wherever the ending does not begin with a `t`/`T`: intse
+    // (`s`), inDvahe (`v`) and inDmahe (`m`) all fail that match. Only
+    // `intse` then feeds 8.4.55 khari ca afterward — `s` is khar
+    // (sound.rs's is_khar), so the stem's `D` devoices to `t`. `v` and `m`
+    // are NOT khar, so 8.4.55 declines too and inDvahe/inDmahe keep their
+    // stem `D` untouched.
     Rule {
         id: "8.2.40",
         name: "JazastaTorDo'DaH",
