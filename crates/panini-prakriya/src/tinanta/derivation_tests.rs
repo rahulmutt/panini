@@ -120,8 +120,8 @@ fn tinanta_rule_order_is_pinned() {
         "7.3.84", "7.3.86", "7.3.84", "6.4.87", "6.4.77", "6.1.78", "7.3.101", "6.4.112",
         "6.4.113", "6.1.101", "6.1.96", "6.1.90", "6.1.97", "6.1.87", "6.1.66", "6.4.105",
         "6.4.106", "6.4.107", "6.4.101", "6.4.111", "8.2.77", "8.2.23", "8.2.25", "8.2.30",
-        "8.2.39", "8.2.41", "8.2.74", "8.2.73", "8.2.75", "8.3.15", "8.3.24", "8.3.59", "8.4.41",
-        "8.4.53", "8.4.55", "8.4.1", "8.4.2", "8.4.58", "8.4.65", "8.4.56",
+        "8.2.39", "8.2.40", "8.2.41", "8.2.74", "8.2.73", "8.2.75", "8.3.15", "8.3.24", "8.3.59",
+        "8.4.41", "8.4.53", "8.4.55", "8.4.1", "8.4.2", "8.4.58", "8.4.65", "8.4.56",
     ];
     let actual: Vec<&str> = rules().map(|r| r.id).collect();
     assert_eq!(actual, expected);
@@ -1596,4 +1596,120 @@ fn jhalam_jash_jhashi_still_declines_on_its_two_pre_existing_shapes() {
         form_g_forked("his", Lakara::Lot, Purusha::Madhyama, Vacana::Eka, 3),
         "hinDi"
     );
+}
+
+#[test]
+fn indh_lat_all_nine_cells() {
+    // 8.2.40 turns the ending's `t` into `D` after the stem's jhaṣ, and
+    // the widened 8.4.53 then voices the stem's own `D` to `d` before it:
+    // inD + te -> inD + De -> indDe. 8.4.65 optionally elides that `d`
+    // before the savarṇa `D`, which is where inDe comes from.
+    assert_eq!(
+        form_g_forked("inD", Lakara::Lat, Purusha::Prathama, Vacana::Eka, 2),
+        "indDe"
+    );
+    assert_eq!(
+        form_g_forked("inD", Lakara::Lat, Purusha::Madhyama, Vacana::Bahu, 2),
+        "indDve"
+    );
+    let cells = [
+        (Purusha::Prathama, Vacana::Dvi, "inDAte"),
+        (Purusha::Prathama, Vacana::Bahu, "inDate"),
+        (Purusha::Madhyama, Vacana::Eka, "intse"),
+        (Purusha::Madhyama, Vacana::Dvi, "inDATe"),
+        (Purusha::Uttama, Vacana::Eka, "inDe"),
+        (Purusha::Uttama, Vacana::Dvi, "inDvahe"),
+        (Purusha::Uttama, Vacana::Bahu, "inDmahe"),
+    ];
+    for (pu, va, want) in cells {
+        assert_eq!(form_g("inD", Lakara::Lat, pu, va), want);
+    }
+}
+
+#[test]
+fn jhashas_tathor_dhodhah_declines_before_a_non_dental() {
+    // intse is the witness that 8.2.40 is not simply "voice everything
+    // after the stem". sip's `se` begins with `s`, not `t`/`th`, so the
+    // rule declines and 8.4.55 khari ca devoices the stem's `D` to `t`
+    // instead. inDvahe and inDmahe make the same point for `v` and `m`.
+    assert_eq!(
+        form_g("inD", Lakara::Lat, Purusha::Madhyama, Vacana::Eka),
+        "intse"
+    );
+    assert_eq!(
+        form_g("inD", Lakara::Lot, Purusha::Madhyama, Vacana::Eka),
+        "intsva"
+    );
+}
+
+#[test]
+fn indh_strong_stem_appears_only_in_lot_uttama() {
+    // The ātmanepada endings are ṅit throughout except loṭ uttama, where
+    // the strong stem inaD survives 6.4.111 and shows śnam's `a`.
+    assert_eq!(
+        form_g("inD", Lakara::Lot, Purusha::Uttama, Vacana::Eka),
+        "inaDE"
+    );
+    assert_eq!(
+        form_g("inD", Lakara::Lot, Purusha::Uttama, Vacana::Dvi),
+        "inaDAvahE"
+    );
+    assert_eq!(
+        form_g("inD", Lakara::Lot, Purusha::Uttama, Vacana::Bahu),
+        "inaDAmahE"
+    );
+}
+
+#[test]
+fn indh_lan_and_lot_and_vidhilin_cells() {
+    // laṅ takes the āṭ augment, which 6.1.90 āṭaś ca raises to `E`.
+    for (pu, va, want) in [
+        (Purusha::Prathama, Vacana::Eka, "EndDa"),
+        (Purusha::Madhyama, Vacana::Eka, "EndDAH"),
+        (Purusha::Madhyama, Vacana::Bahu, "EndDvam"),
+    ] {
+        assert_eq!(form_g_forked("inD", Lakara::Lan, pu, va, 2), want);
+    }
+    for (pu, va, want) in [
+        (Purusha::Prathama, Vacana::Dvi, "EnDAtAm"),
+        (Purusha::Prathama, Vacana::Bahu, "EnData"),
+        (Purusha::Madhyama, Vacana::Dvi, "EnDATAm"),
+        (Purusha::Uttama, Vacana::Eka, "EnDi"),
+        (Purusha::Uttama, Vacana::Dvi, "EnDvahi"),
+        (Purusha::Uttama, Vacana::Bahu, "EnDmahi"),
+    ] {
+        assert_eq!(form_g("inD", Lakara::Lan, pu, va), want);
+    }
+
+    assert_eq!(
+        form_g_forked("inD", Lakara::Lot, Purusha::Prathama, Vacana::Eka, 2),
+        "indDAm"
+    );
+    assert_eq!(
+        form_g_forked("inD", Lakara::Lot, Purusha::Madhyama, Vacana::Bahu, 2),
+        "indDvam"
+    );
+    for (pu, va, want) in [
+        (Purusha::Prathama, Vacana::Dvi, "inDAtAm"),
+        (Purusha::Prathama, Vacana::Bahu, "inDatAm"),
+        (Purusha::Madhyama, Vacana::Dvi, "inDATAm"),
+    ] {
+        assert_eq!(form_g("inD", Lakara::Lot, pu, va), want);
+    }
+
+    // vidhiliṅ takes no fork at all: the optative `I` is neither a jhal
+    // nor pada-final, so neither 8.4.65 nor 8.4.56 reaches these cells.
+    for (pu, va, want) in [
+        (Purusha::Prathama, Vacana::Eka, "inDIta"),
+        (Purusha::Prathama, Vacana::Dvi, "inDIyAtAm"),
+        (Purusha::Prathama, Vacana::Bahu, "inDIran"),
+        (Purusha::Madhyama, Vacana::Eka, "inDITAH"),
+        (Purusha::Madhyama, Vacana::Dvi, "inDIyATAm"),
+        (Purusha::Madhyama, Vacana::Bahu, "inDIDvam"),
+        (Purusha::Uttama, Vacana::Eka, "inDIya"),
+        (Purusha::Uttama, Vacana::Dvi, "inDIvahi"),
+        (Purusha::Uttama, Vacana::Bahu, "inDImahi"),
+    ] {
+        assert_eq!(form_g("inD", Lakara::VidhiLin, pu, va), want);
+    }
 }

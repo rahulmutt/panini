@@ -350,6 +350,46 @@ pub(crate) static TRIPADI: &[Rule] = &[
             true
         },
     },
+    // 8.2.40 jhaṣas tathor dho'ḍhaḥ: after a jhaṣ (voiced aspirated stop),
+    // the ending's `t` or `T` (th) becomes `D`. inD + te -> inD + De, and
+    // the widened 8.4.53 (Task 6, below) then voices the stem's own `D` to
+    // `d` before it: indDe. 8.4.65 optionally elides that `d` before the
+    // savarṇa `D`, which is where inDe comes from.
+    //
+    // The ONLY NEW source of a D-initial ending in this suite — see
+    // 8.4.53's comment below for why that bounds its widening: no thematic
+    // root ever presents a jhaṣ immediately before its ending (the
+    // vikaraṇa intervenes), and no other athematic stem in the suite ends
+    // in a jhaṣ either, so this rule — and hence a fresh D-initial ending —
+    // is reachable only through √indh.
+    //
+    // DECLINES wherever the ending does not begin with a dental stop:
+    // intse (`s`), inDvahe (`v`) and inDmahe (`m`) all fail the `t`/`T`
+    // match, leaving 8.4.55 khari ca to devoice the stem's `D` to `t`
+    // instead.
+    Rule {
+        id: "8.2.40",
+        name: "JazastaTorDo'DaH",
+        kind: RuleKind::Vidhi,
+        vikalpa: false,
+        apply: |p| {
+            let w = word_chars(p);
+            for i in 1..w.len() {
+                if !matches!(w[i].2, 't' | 'T') {
+                    continue;
+                }
+                if !is_jhash(w[i - 1].2) {
+                    continue;
+                }
+                let (term, idx, _) = w[i];
+                let before = p.snapshot();
+                set_char(p, term, idx, 'D');
+                p.record("8.2.40", "JazastaTorDo'DaH", before);
+                return true;
+            }
+            false
+        },
+    },
     // 8.2.41 zaQoH kaH si: `ṣ` (z) or `ḍh` (Q) becomes `k` when the
     // immediately following sound is `s`. pinaz + si → pinak + si, and
     // 8.3.59 (widened below) then retroflexes that `s` back to `z` after
@@ -1557,6 +1597,40 @@ mod tests {
             ..Default::default()
         };
         assert!(!(rule.apply)(&mut p));
+    }
+
+    /// 8.2.40 takes a `t` or `T` to `D` immediately after a jhaṣ, and
+    /// declines both when the preceding sound is not a jhaṣ and when the
+    /// following sound is not a dental stop at all.
+    #[test]
+    fn jhashas_tathor_dhodhah_fires_only_on_a_dental_after_a_jhash() {
+        let rule = rules().find(|r| r.id == "8.2.40").unwrap();
+
+        // a `t` immediately after a jhaṣ (`D`) becomes `D`.
+        let mut p = Prakriya {
+            terms: vec![Term::new("inD"), Term::new(""), Term::new("te")],
+            ..Default::default()
+        };
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.text(), "inDDe");
+
+        // a `t` after a non-jhaṣ: the rule declines.
+        for stem in ["ind", "inn", "ins"] {
+            let mut p = Prakriya {
+                terms: vec![Term::new(stem), Term::new(""), Term::new("te")],
+                ..Default::default()
+            };
+            assert!(!(rule.apply)(&mut p), "fired after {stem}");
+            assert_eq!(p.text(), format!("{stem}te"));
+        }
+
+        // an `s` after a jhaṣ: not a dental stop, so the rule declines.
+        let mut p = Prakriya {
+            terms: vec![Term::new("inD"), Term::new(""), Term::new("se")],
+            ..Default::default()
+        };
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.text(), "inDse");
     }
 
     /// 8.2.41 takes `z` to `k` immediately before an `s`, and declines
