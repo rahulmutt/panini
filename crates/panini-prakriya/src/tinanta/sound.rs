@@ -118,12 +118,17 @@ pub(crate) fn cartva_of(c: char) -> Option<char> {
 }
 
 /// The *jaś* (voiced unaspirated) counterpart of a jhal, by place of
-/// articulation. `None` for a sound with no jaś — the sibilants and `h`.
+/// articulation. `ṣ` (z) is the one sibilant with a jaś here: it has none by
+/// place-and-manner correspondence (the sibilants are not stops), but 1.1.50
+/// sthāne'ntaratamaḥ selects the nearest substitute, which for retroflex ṣ is
+/// retroflex ḍ (q). `S` and `s` deliberately stay `None` — `S` is unreached by
+/// any curated root, and a word-final `s` is 8.2.66 / 8.3.15's business, not
+/// jaśtva's. `h` also has no jaś.
 pub(crate) fn jashtva_of(c: char) -> Option<char> {
     Some(match c {
         'k' | 'K' | 'g' | 'G' => 'g',
         'c' | 'C' | 'j' | 'J' => 'j',
-        'w' | 'W' | 'q' | 'Q' => 'q',
+        'w' | 'W' | 'q' | 'Q' | 'z' => 'q',
         't' | 'T' | 'd' | 'D' => 'd',
         'p' | 'P' | 'b' | 'B' => 'b',
         _ => return None,
@@ -275,10 +280,17 @@ mod tests {
         for c in ['p', 'P', 'b', 'B'] {
             assert_eq!(jashtva_of(c), Some('b'), "{c} should jashtva to b");
         }
-        // The sibilants and h have no jaś counterpart.
-        for c in ['s', 'S', 'z', 'h'] {
+        // h has no jaś counterpart.
+        for c in ['s', 'h'] {
             assert_eq!(jashtva_of(c), None, "{c} should not jashtva");
         }
+        // ṣ has no jaś by place alone — the sibilants are not stops. 1.1.50
+        // sthAne'ntaratamaH selects the nearest, which for retroflex ṣ is
+        // retroflex ḍ. `S` and `s` stay absent: `S` is unreachable here,
+        // and a word-final `s` is 8.2.66 / 8.3.15's, not jaśtva's.
+        assert_eq!(jashtva_of('z'), Some('q'));
+        assert_eq!(jashtva_of('S'), None);
+        assert_eq!(jashtva_of('s'), None);
     }
 
     #[test]

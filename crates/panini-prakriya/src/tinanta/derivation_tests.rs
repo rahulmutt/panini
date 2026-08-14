@@ -1518,15 +1518,32 @@ fn pish_lat_madhyama_eka_is_pinakshi() {
 fn shadhoh_kah_si_declines_when_8_2_23_ate_the_s_first() {
     // THE LOAD-BEARING ORDER of this slice. At laṅ madhyama eka the
     // ending is a bare `s`, so 8.2.23 saṁyogāntasya lopaḥ elides it
-    // before 8.2.41 can see it, and the cell reduces exactly as laṅ
-    // prathama eka does. Run 8.2.41 above 8.2.23 and you get `apinak`
-    // instead — a plausible-looking form that splits madhyama eka from
-    // prathama eka and that no guard test would flag.
-    //
-    // Asserted here on the intermediate `apinaz`: 8.2.39's widening (the
-    // next task) is what carries it on to apinaq/apinaw.
+    // before 8.2.41 can see it, and the cell reduces through 8.2.39 and
+    // 8.4.56 to exactly what laṅ prathama eka gives. Run 8.2.41 above
+    // 8.2.23 and you get `apinak` instead — a plausible-looking form that
+    // splits madhyama eka from prathama eka.
     assert_eq!(
-        form_g("piz", Lakara::Lan, Purusha::Madhyama, Vacana::Eka),
-        "apinaz"
+        form_g_forked("piz", Lakara::Lan, Purusha::Madhyama, Vacana::Eka, 2),
+        "apinaq"
     );
+    assert_eq!(
+        form_g_forked("piz", Lakara::Lan, Purusha::Prathama, Vacana::Eka, 2),
+        "apinaq"
+    );
+}
+
+#[test]
+fn pish_lan_all_nine_cells() {
+    let cells = [
+        (Purusha::Prathama, Vacana::Dvi, "apiMzwAm"),
+        (Purusha::Prathama, Vacana::Bahu, "apiMzan"),
+        (Purusha::Madhyama, Vacana::Dvi, "apiMzwam"),
+        (Purusha::Madhyama, Vacana::Bahu, "apiMzwa"),
+        (Purusha::Uttama, Vacana::Eka, "apinazam"),
+        (Purusha::Uttama, Vacana::Dvi, "apiMzva"),
+        (Purusha::Uttama, Vacana::Bahu, "apiMzma"),
+    ];
+    for (pu, va, want) in cells {
+        assert_eq!(form_g("piz", Lakara::Lan, pu, va), want);
+    }
 }

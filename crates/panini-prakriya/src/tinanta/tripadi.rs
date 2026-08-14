@@ -308,11 +308,16 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // convention.
     //
     // NARROW GUARD, by design, as with 8.3.59 and 8.2.25: the only jhal
-    // reachable pada-finally in this suite is `t` (every other form ends in
-    // a vowel, `H`, `m` or `n`, none of them jhal). The other candidate is
-    // `s`, and 8.2.66 sasajuṣo ruḥ — implemented inside the rule labelled
-    // 8.3.15 just below — is its apavāda, so `s` must NOT be voiced here.
-    // Widen the moment a root lands whose pada-final sound is another jhal.
+    // sounds reachable pada-finally in this suite are `t` and `z` (every
+    // other form ends in a vowel, `H`, `m` or `n`, none of them jhal). The
+    // guard names those two characters rather than calling `is_jhal`: the
+    // other candidate is `s`, and 8.2.66 sasajuṣo ruḥ — implemented inside
+    // the rule labelled 8.3.15 just below — is its apavāda, so `s` must NOT
+    // be voiced here. A blanket widening to every jhal would rewrite √hiṃs's
+    // `ahinas` to `ahinad` before 8.2.74 and 8.2.73 could act on it,
+    // destroying the ru alternation and the `ahinaH` branch. Widen the
+    // guard's character set the moment a root lands whose pada-final sound
+    // is some other jhal.
     //
     // No contention with 8.4.55 cartva: the shape that would collide, an
     // aṅga-final jhal directly before a pada-final `t`, cannot arise because
@@ -325,7 +330,8 @@ pub(crate) static TRIPADI: &[Rule] = &[
         kind: RuleKind::Vidhi,
         vikalpa: false,
         apply: |p| {
-            if !p.text().ends_with('t') {
+            let last = p.text().chars().last();
+            if !matches!(last, Some('t') | Some('z')) {
                 return false;
             }
             // Read the bearing term positionally rather than as ENDING:
@@ -334,10 +340,11 @@ pub(crate) static TRIPADI: &[Rule] = &[
             let Some(idx) = p.terms.iter().rposition(|t| !t.text.is_empty()) else {
                 return false;
             };
+            let jash = jashtva_of(last.unwrap()).expect("t and z both have a jaS");
             let before = p.snapshot();
             let mut s: Vec<char> = p.terms[idx].text.chars().collect();
             s.pop();
-            s.push('d');
+            s.push(jash);
             p.terms[idx].text = s.into_iter().collect();
             p.record("8.2.39", "JalAM jaSo'nte", before);
             true
@@ -713,17 +720,18 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // (it currently reaches piMzQi, not the finished piRqQi) — takes the
     // same D → Q step; Task 6 is what finishes the cell around it.
     //
-    // SŪTRA ORDER, NOT LOAD-BEARING ORDER, TODAY. It sits above 8.4.53
-    // because that is where vidyut-prakriya's data/sutrapatha.tsv places it,
-    // and for no other reason: as long as jaśtva declines on `z` (true of
-    // `jashtva_of` today), ṣṭutva and jaśtva touch different sounds (piMz's
-    // `z` is untouched by jaśtva; Di's `D` is untouched by ṣṭutva), so this
-    // rule reaches piRqQi identically whichever side of 8.4.53 it runs on.
-    // This is a fact about the CURRENT root set, not a structural
-    // invariant: Task 5 gives `jashtva_of` a `z → q` arm, at which point a
-    // root reaching that arm on this same junction would make the order
-    // load-bearing. Do not read today's placement as a constraint a later
-    // rule may depend on without re-checking this note.
+    // SŪTRA ORDER, AND NOW ALSO LOAD-BEARING ORDER. It sits above 8.4.53
+    // because that is where vidyut-prakriya's data/sutrapatha.tsv places it
+    // — but since Task 5 gave `jashtva_of` a `z → q` arm, the two rules no
+    // longer touch disjoint sounds on this junction: piMz + Di's `z` is now
+    // exactly what jaśtva would take if it saw it first. With 8.4.41 above,
+    // it fires on the `z`/`D` pair before 8.4.53 runs, retroflexing D → Q
+    // and leaving 8.4.53 nothing to see (its guard requires a literal `D` at
+    // that position, which is gone). Run 8.4.53 first instead and it would
+    // read piMz + Di's `z` as the jaśtva target — jashtva_of('z') is no
+    // longer a no-op — and rewrite it to `q` before 8.4.41 ever saw its `z`
+    // trigger, giving piMqDi instead of piMzQi. Do not reorder these two
+    // rules without re-deriving this cell.
     //
     // STRICT ADJACENCY is the load-bearing part of the guard: only the
     // IMMEDIATELY preceding character is read, never scanned past. A
@@ -1441,11 +1449,11 @@ mod tests {
         assert_eq!(p.text(), "Banjanti");
     }
 
-    /// 8.2.39 voices a pada-final `t` and nothing else. The `s` case belongs
-    /// to its apavāda 8.2.66 (implemented inside the rule labelled 8.3.15),
-    /// and a `t` that is not pada-final is untouched.
+    /// 8.2.39 voices a pada-final `t` or `z` and nothing else. The `s` case
+    /// belongs to its apavāda 8.2.66 (implemented inside the rule labelled
+    /// 8.3.15), and a `t` that is not pada-final is untouched.
     #[test]
-    fn jhalam_jasho_ante_fires_only_on_a_pada_final_t() {
+    fn jhalam_jasho_ante_fires_only_on_a_pada_final_t_or_sh() {
         let rule = rules().find(|r| r.id == "8.2.39").unwrap();
 
         let mut p = Prakriya {
@@ -1461,6 +1469,15 @@ mod tests {
             ..Default::default()
         };
         assert!(!(rule.apply)(&mut p));
+
+        // word-final `z`: jashtva_of('z') is `q` (1.1.50 nearest-substitute,
+        // not place-and-manner correspondence).
+        let mut p = Prakriya {
+            terms: vec![Term::new("apina"), Term::new("z")],
+            ..Default::default()
+        };
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.text(), "apinaq");
 
         // `s`-final belongs to 8.2.66/8.3.15, not here
         let mut p = Prakriya {
