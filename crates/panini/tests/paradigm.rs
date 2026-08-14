@@ -1920,6 +1920,122 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
             "KindImahi",
         ],
     ),
+    (
+        "Banj",
+        "laT",
+        [
+            "Banakti", "BaNktaH", "BaYjanti", "Banakzi", "BaNkTaH", "BaNkTa", "Banajmi", "BaYjvaH",
+            "BaYjmaH",
+        ],
+    ),
+    (
+        "Banj",
+        "laN",
+        [
+            "aBanag", "aBaNktAm", "aBaYjan", "aBanag", "aBaNktam", "aBaNkta", "aBanajam",
+            "aBaYjva", "aBaYjma",
+        ],
+    ),
+    (
+        "Banj",
+        "loT",
+        [
+            "Banaktu", "BaNktAm", "BaYjantu", "BaNgDi", "BaNktam", "BaNkta", "BanajAni",
+            "BanajAva", "BanajAma",
+        ],
+    ),
+    (
+        "Banj",
+        "viDiliN",
+        [
+            "BaYjyAd",
+            "BaYjyAtAm",
+            "BaYjyuH",
+            "BaYjyAH",
+            "BaYjyAtam",
+            "BaYjyAta",
+            "BaYjyAm",
+            "BaYjyAva",
+            "BaYjyAma",
+        ],
+    ),
+    (
+        "piz",
+        "laT",
+        [
+            "pinazwi", "piMzwaH", "piMzanti", "pinakzi", "piMzWaH", "piMzWa", "pinazmi", "piMzvaH",
+            "piMzmaH",
+        ],
+    ),
+    (
+        "piz",
+        "laN",
+        [
+            "apinaq", "apiMzwAm", "apiMzan", "apinaq", "apiMzwam", "apiMzwa", "apinazam",
+            "apiMzva", "apiMzma",
+        ],
+    ),
+    (
+        "piz",
+        "loT",
+        [
+            "pinazwu", "piMzwAm", "piMzantu", "piRqQi", "piMzwam", "piMzwa", "pinazARi",
+            "pinazAva", "pinazAma",
+        ],
+    ),
+    (
+        "piz",
+        "viDiliN",
+        [
+            "piMzyAd",
+            "piMzyAtAm",
+            "piMzyuH",
+            "piMzyAH",
+            "piMzyAtam",
+            "piMzyAta",
+            "piMzyAm",
+            "piMzyAva",
+            "piMzyAma",
+        ],
+    ),
+    (
+        "inD",
+        "laT",
+        [
+            "indDe", "inDAte", "inDate", "intse", "inDATe", "indDve", "inDe", "inDvahe", "inDmahe",
+        ],
+    ),
+    (
+        "inD",
+        "laN",
+        [
+            "EndDa", "EnDAtAm", "EnData", "EndDAH", "EnDATAm", "EndDvam", "EnDi", "EnDvahi",
+            "EnDmahi",
+        ],
+    ),
+    (
+        "inD",
+        "loT",
+        [
+            "indDAm", "inDAtAm", "inDatAm", "intsva", "inDATAm", "indDvam", "inaDE", "inaDAvahE",
+            "inaDAmahE",
+        ],
+    ),
+    (
+        "inD",
+        "viDiliN",
+        [
+            "inDIta",
+            "inDIyAtAm",
+            "inDIran",
+            "inDITAH",
+            "inDIyATAm",
+            "inDIDvam",
+            "inDIya",
+            "inDIvahi",
+            "inDImahi",
+        ],
+    ),
 ];
 
 /// Second and third valid forms, for cells where an optional (vikalpa) rule
@@ -2128,6 +2244,28 @@ const ALTERNATES: &[(&str, &str, usize, &str, &str)] = &[
     ("Kid", "laN", 5, "aKinDvam", "8.4.65"),
     ("Kid", "loT", 0, "KintAm", "8.4.65"),
     ("Kid", "loT", 5, "KinDvam", "8.4.65"),
+    ("Banj", "laN", 0, "aBanak", "8.4.56"),
+    ("Banj", "laN", 3, "aBanak", "8.4.56"),
+    ("Banj", "loT", 0, "BaNktAd", "7.1.35"),
+    ("Banj", "loT", 0, "BaNktAt", "7.1.35+8.4.56"),
+    ("Banj", "loT", 3, "BaNktAd", "7.1.35"),
+    ("Banj", "loT", 3, "BaNktAt", "7.1.35+8.4.56"),
+    ("Banj", "viDiliN", 0, "BaYjyAt", "8.4.56"),
+    ("piz", "laN", 0, "apinaw", "8.4.56"),
+    ("piz", "laN", 3, "apinaw", "8.4.56"),
+    ("piz", "loT", 0, "piMzwAd", "7.1.35"),
+    ("piz", "loT", 0, "piMzwAt", "7.1.35+8.4.56"),
+    ("piz", "loT", 3, "piRQi", "8.4.65"),
+    ("piz", "loT", 3, "piMzwAd", "7.1.35"),
+    ("piz", "loT", 3, "piMzwAt", "7.1.35+8.4.56"),
+    ("piz", "viDiliN", 0, "piMzyAt", "8.4.56"),
+    ("inD", "laT", 0, "inDe", "8.4.65"),
+    ("inD", "laT", 5, "inDve", "8.4.65"),
+    ("inD", "laN", 0, "EnDa", "8.4.65"),
+    ("inD", "laN", 3, "EnDAH", "8.4.65"),
+    ("inD", "laN", 5, "EnDvam", "8.4.65"),
+    ("inD", "loT", 0, "inDAm", "8.4.65"),
+    ("inD", "loT", 5, "inDvam", "8.4.65"),
 ];
 
 fn lan_a_form(id: &str, pu: Purusha, va: Vacana) -> String {
@@ -2337,36 +2475,41 @@ fn derivation_set_is_exactly_pinned() {
 /// builds — rather than from a hand-written list. These are the numbers the
 /// design-time vidyut-prakriya audit predicted for the two conventions the
 /// svādi slice retired (7.1.35 tātaṅ, 8.4.56 pausal cartva), the one audited
-/// divergence it resolved (3.4.111 Śākaṭāyana's jus), and — new in rudhādi
-/// 7a — the three roots (kft, his, Kid), whose cells fork in all four
-/// lakāras, not just loṭ and laṅ: laṭ (kft cells 1/4/5 and Kid cells 0/5,
-/// on 8.4.65), laṅ (on 8.4.65 and the 8.2.74/8.2.75 ru alternation), loṭ
-/// (on 7.1.35/8.4.65/8.4.56, stacking up to three deep), and vidhiliṅ
-/// (kft/his cell 0, on 8.4.56): 1620 cells total (180 root×lakāra
-/// blocks × 9), of which 1488 hold exactly one form, 78 hold two, 52 hold
-/// three, and — the sharpest branch-count witness in the repo, per
-/// `docs/ARCHITECTURE.md` — exactly one holds five (√kṛt's loṭ prathama eka)
-/// and one holds six (√kṛt's loṭ madhyama eka, `kfndDi`/`kfnDi`'s cell).
-/// `ALTERNATES` itself has 191 rows, keyed 54 `8.4.56`, 52 `7.1.35`, 52
-/// `7.1.35+8.4.56`, 2 `3.4.111`, 8 `6.4.107`, 17 `8.4.65`, 1 `8.2.75`, 1
-/// `8.2.74`, 2 `7.1.35+8.4.65`, and 2 `7.1.35+8.4.65+8.4.56` — the
-/// assertions below are complete; this prose list previously omitted the
-/// five rudhādi keys and undercounted the total by 23. The audit probe that
-/// produced the original 168-row numbers ran against a vidyut-prakriya
+/// divergence it resolved (3.4.111 Śākaṭāyana's jus), the three roots added
+/// in rudhādi 7a (kft, his, Kid), and — new in rudhādi 7b — three more
+/// (Banj, piz, inD), all six of which fork in all four lakāras, not just
+/// loṭ and laṅ: laṭ (kft cells 1/4/5, Kid cells 0/5, and inD cells 0/5, on
+/// 8.4.65), laṅ (on 8.4.65, the 8.2.74/8.2.75 ru alternation, and — new in
+/// 7b — the 8.2.23-above-8.2.41 śa-luk jaśtva 8.4.56 branch), loṭ (on
+/// 7.1.35/8.4.65/8.4.56, stacking up to three deep, and — new in 7b — piṣ's
+/// loṭ madhyama eka, which stacks 8.4.65 alongside 7.1.35/8.4.56 four deep),
+/// and vidhiliṅ (kft/his/Banj/piz cell 0, on 8.4.56): 1728 cells total (192
+/// root×lakāra blocks × 9), of which 1579 hold exactly one form, 91 hold
+/// two, 55 hold three, one holds four (piṣ's loṭ madhyama eka, the new
+/// deepest fork in the slice), and — the sharpest branch-count witness in
+/// the repo, per `docs/ARCHITECTURE.md` — exactly one holds five (√kṛt's
+/// loṭ prathama eka) and one holds six (√kṛt's loṭ madhyama eka,
+/// `kfndDi`/`kfnDi`'s cell). `ALTERNATES` itself has 213 rows, keyed 60
+/// `8.4.56`, 56 `7.1.35`, 56 `7.1.35+8.4.56`, 2 `3.4.111`, 8 `6.4.107`, 25
+/// `8.4.65`, 1 `8.2.75`, 1 `8.2.74`, 2 `7.1.35+8.4.65`, and 2
+/// `7.1.35+8.4.65+8.4.56` — the assertions below are complete. The audit
+/// probe that produced the original numbers ran against a vidyut-prakriya
 /// checkout during design; slice 9's cross-implementation audit re-ran the
 /// full check against a scratchpad vidyut-prakriya checkout across all 1620
-/// cells with zero differences, so the numbers are re-verified as well as
-/// pinned, even though that probe's source is deliberately not committed to
-/// this repo (it is throwaway verification tooling, not shipped code) —
-/// this test is what keeps the numbers true day to day.
+/// pre-7b cells with zero differences, and every 7b form was cross-checked
+/// the same way during this slice's design, so the numbers are re-verified
+/// as well as pinned, even though that probe's source is deliberately not
+/// committed to this repo (it is throwaway verification tooling, not
+/// shipped code) — this test is what keeps the numbers true day to day.
 #[test]
 fn derivation_set_shape_matches_the_audited_numbers() {
     let total_cells = PARADIGM.len() * 9;
-    assert_eq!(total_cells, 1620, "180 root×lakāra blocks × 9 cells each");
+    assert_eq!(total_cells, 1728, "192 root×lakāra blocks × 9 cells each");
 
     let mut ones = 0usize;
     let mut twos = 0usize;
     let mut threes = 0usize;
+    let mut fours = 0usize;
     let mut fives = 0usize;
     let mut sixes = 0usize;
     for (root, lakara, _forms) in PARADIGM {
@@ -2379,31 +2522,33 @@ fn derivation_set_shape_matches_the_audited_numbers() {
                 1 => ones += 1,
                 2 => twos += 1,
                 3 => threes += 1,
+                4 => fours += 1,
                 5 => fives += 1,
                 6 => sixes += 1,
                 n => panic!("unexpected {n}-form cell in ({root}, {lakara}, {cell})"),
             }
         }
     }
-    assert_eq!(ones, 1488, "one-form cells");
-    assert_eq!(twos, 78, "two-form cells");
-    assert_eq!(threes, 52, "three-form cells");
+    assert_eq!(ones, 1579, "one-form cells");
+    assert_eq!(twos, 91, "two-form cells");
+    assert_eq!(threes, 55, "three-form cells");
+    assert_eq!(fours, 1, "four-form cells — piṣ's loṭ madhyama eka");
     assert_eq!(fives, 1, "five-form cells — kft loṭ prathama eka");
     assert_eq!(sixes, 1, "six-form cells — kft loṭ madhyama eka");
 
-    assert_eq!(ALTERNATES.len(), 191, "ALTERNATES row count");
+    assert_eq!(ALTERNATES.len(), 213, "ALTERNATES row count");
     let key_count = |key: &str| {
         ALTERNATES
             .iter()
             .filter(|(_, _, _, _, k)| *k == key)
             .count()
     };
-    assert_eq!(key_count("8.4.56"), 54, "8.4.56-only alternates");
-    assert_eq!(key_count("7.1.35"), 52, "7.1.35-only alternates");
-    assert_eq!(key_count("7.1.35+8.4.56"), 52, "7.1.35+8.4.56 alternates");
+    assert_eq!(key_count("8.4.56"), 60, "8.4.56-only alternates");
+    assert_eq!(key_count("7.1.35"), 56, "7.1.35-only alternates");
+    assert_eq!(key_count("7.1.35+8.4.56"), 56, "7.1.35+8.4.56 alternates");
     assert_eq!(key_count("3.4.111"), 2, "3.4.111 alternates");
     assert_eq!(key_count("6.4.107"), 8, "6.4.107 alternates");
-    assert_eq!(key_count("8.4.65"), 17, "8.4.65-only alternates");
+    assert_eq!(key_count("8.4.65"), 25, "8.4.65-only alternates");
     assert_eq!(key_count("8.2.75"), 1, "8.2.75-only alternates");
     assert_eq!(key_count("8.2.74"), 1, "8.2.74-only alternates");
     assert_eq!(key_count("7.1.35+8.4.65"), 2, "7.1.35+8.4.65 alternates");
