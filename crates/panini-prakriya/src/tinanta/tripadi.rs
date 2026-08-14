@@ -716,22 +716,31 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // 8.4.41 ṣṭunā ṣṭuḥ: a dental (`s`, or a t-varga stop) retroflexes when
     // it immediately neighbours `ṣ` (z) or a ṭ-varga stop. pinaz + ti →
     // pinaz + wi → pinazwi; piMz + tas → piMzwaH; piMz + Di — in the loṭ
-    // madhyama eka cell, which is DELIBERATELY LEFT INTERMEDIATE this task
+    // madhyama eka cell, which is DELIBERATELY LEFT INTERMEDIATE until Task 6
     // (it currently reaches piMzQi, not the finished piRqQi) — takes the
     // same D → Q step; Task 6 is what finishes the cell around it.
     //
-    // SŪTRA ORDER, AND NOW ALSO LOAD-BEARING ORDER. It sits above 8.4.53
-    // because that is where vidyut-prakriya's data/sutrapatha.tsv places it
-    // — but since Task 5 gave `jashtva_of` a `z → q` arm, the two rules no
-    // longer touch disjoint sounds on this junction: piMz + Di's `z` is now
-    // exactly what jaśtva would take if it saw it first. With 8.4.41 above,
-    // it fires on the `z`/`D` pair before 8.4.53 runs, retroflexing D → Q
-    // and leaving 8.4.53 nothing to see (its guard requires a literal `D` at
-    // that position, which is gone). Run 8.4.53 first instead and it would
-    // read piMz + Di's `z` as the jaśtva target — jashtva_of('z') is no
-    // longer a no-op — and rewrite it to `q` before 8.4.41 ever saw its `z`
-    // trigger, giving piMqDi instead of piMzQi. Do not reorder these two
-    // rules without re-deriving this cell.
+    // SŪTRA ORDER; LOAD-BEARING AS IMPLEMENTED. It sits above 8.4.53 because
+    // that is where vidyut-prakriya's data/sutrapatha.tsv places it — but
+    // since Task 5 gave `jashtva_of` a `z → q` arm, the two rules no longer
+    // touch disjoint sounds on this junction: piMz + Di's `z` is now exactly
+    // what jaśtva would take if it saw it first. With 8.4.41 above, it fires
+    // on the `z`/`D` pair before 8.4.53 runs, retroflexing D → Q and leaving
+    // 8.4.53 nothing to see (its guard requires a literal `D` at that
+    // position, which is gone). Run 8.4.53 first instead and it would read
+    // piMz + Di's `z` as the jaśtva target — jashtva_of('z') is no longer a
+    // no-op — and rewrite it to `q` before 8.4.41 ever ran, giving piMqDi
+    // instead of piMzQi.
+    //
+    // The two orders fail to converge for an implementation reason, not a
+    // sūtra one: THIS rule's trigger set is `z` only (see NARROW GUARD
+    // below), not the full ṭ-varga ṣṭunā ṣṭuḥ names (`w W q Q R`). Widen the
+    // trigger to include `q` and both orders reach the same piMqQi — 8.4.53
+    // running first would hand 8.4.41 a `q` it could still retroflex D
+    // against. So this ordering is load-bearing for THIS IMPLEMENTATION's
+    // narrowed trigger set, not a structural fact about the two sūtras
+    // themselves. Do not reorder these two rules without re-deriving this
+    // cell, and re-check this note the moment the trigger set widens.
     //
     // STRICT ADJACENCY is the load-bearing part of the guard: only the
     // IMMEDIATELY preceding character is read, never scanned past. A

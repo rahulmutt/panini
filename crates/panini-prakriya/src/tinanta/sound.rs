@@ -285,7 +285,7 @@ mod tests {
             assert_eq!(jashtva_of(c), None, "{c} should not jashtva");
         }
         // ṣ has no jaś by place alone — the sibilants are not stops. 1.1.50
-        // sthAne'ntaratamaH selects the nearest, which for retroflex ṣ is
+        // sthāne'ntaratamaḥ selects the nearest, which for retroflex ṣ is
         // retroflex ḍ. `S` and `s` stay absent: `S` is unreachable here,
         // and a word-final `s` is 8.2.66 / 8.3.15's, not jaśtva's.
         assert_eq!(jashtva_of('z'), Some('q'));
