@@ -401,6 +401,42 @@ static DHATUS: &[Dhatu] = &[
         pada: Pada::Atmanepada,
         artha: "dEnye",
     },
+    Dhatu {
+        // 07.0016 Ba\njo~ Amardane. Witnesses 8.2.30 coH kuH: the root's
+        // cu-class final (j) becomes the matching velar (g) word-finally
+        // or before a jhal-initial affix.
+        id: "Banj",
+        code: "Banj",
+        gana: Gana::Rudhadi,
+        pada: Pada::Parasmaipada,
+        artha: "Amardane",
+    },
+    Dhatu {
+        // 07.0015 pi\zx~ saYcUrRane hiMsAyAM ca. Witnesses 8.4.41 (zwutva:
+        // an adjacent dental assimilates to retroflex next to the root's
+        // z) and 8.2.41 (the root's final z is itself replaced by k
+        // before an s-initial affix).
+        id: "piz",
+        code: "piz",
+        gana: Gana::Rudhadi,
+        pada: Pada::Parasmaipada,
+        artha: "saYcUrRane hiMsAyAM ca",
+    },
+    Dhatu {
+        // 07.0011 YiinDI~\ dIptO. Witnesses 8.2.40 Jazas taTor Do'DaH: a
+        // Jaz-class final (voiced aspirated stop, here D) aṅga turns a
+        // following t/T-initial affix into D. Looks ubhayapadī too: the
+        // ñi it-marker is read by 1.3.72 svaritaYitaH, alongside its own
+        // svarita. It is not — the anudAtta `~\` on top of the ñi settles
+        // pada by 1.3.12 anudAttaNita Atmanepadam, and vidyut-prakriya
+        // derives it ātmanepada-only, checked against a `~^r` control
+        // (√rudh) that does derive both padas.
+        id: "inD",
+        code: "inD",
+        gana: Gana::Rudhadi,
+        pada: Pada::Atmanepada,
+        artha: "dIptO",
+    },
 ];
 
 pub fn dhatus() -> &'static [Dhatu] {
@@ -442,7 +478,7 @@ mod tests {
 
     #[test]
     fn curated_roots_have_expected_ganas_and_padas() {
-        assert_eq!(dhatus().len(), 45);
+        assert_eq!(dhatus().len(), 48);
         let bu = dhatus().iter().find(|d| d.id == "BU").unwrap();
         assert!(matches!(bu.pada, Pada::Parasmaipada));
         let labh = dhatus().iter().find(|d| d.id == "laB").unwrap();
@@ -592,9 +628,12 @@ mod tests {
     }
 
     #[test]
-    fn rudhadi_holds_exactly_the_slice_7a_roots() {
-        // Three roots, and the pada split that decides which arm each
-        // exercises. √hiṃs is stored `hins`, NOT `his`: see its row comment.
+    fn rudhadi_holds_exactly_the_slice_7b_roots() {
+        // Six roots, in table order. √hiṃs is stored `hins`, NOT `his`:
+        // see its row comment. The gaṇa is still PARTIAL — nine of its 25
+        // dhātupāṭha roots are ubhayapadī (`~^r`) and 1.3.72 is deferred,
+        // so √rudh, the eponym, is absent. More roots would not change
+        // that; only 1.3.72 will.
         let rows: Vec<_> = dhatus()
             .iter()
             .filter(|d| d.gana == Gana::Rudhadi)
@@ -606,24 +645,31 @@ mod tests {
                 ("kft", "kft", Pada::Parasmaipada),
                 ("his", "hins", Pada::Parasmaipada),
                 ("Kid", "Kid", Pada::Atmanepada),
+                ("Banj", "Banj", Pada::Parasmaipada),
+                ("piz", "piz", Pada::Parasmaipada),
+                ("inD", "inD", Pada::Atmanepada),
             ]
         );
     }
 
     #[test]
-    fn slice_7a_ids_do_not_collide() {
+    fn slice_7b_ids_do_not_collide() {
         // rudhādi also holds `vi\da~\` and `o~vijI~`, which WOULD collide
-        // with divādi's `vid` and tudādi's `vij` — neither is in 7a, and
-        // when 7b lands them they need the `aS.5` qualification. These
-        // three do not, so id == code for all of them.
-        for id in ["kft", "his", "Kid"] {
-            let d = dhatus().iter().find(|d| d.id == id).unwrap();
-            assert_eq!(
-                dhatus().iter().filter(|x| x.code == d.code).count(),
-                1,
-                "{id}: code {} is not unique",
-                d.code
-            );
+        // with divādi's `vid` and tudādi's `vij`. Neither is in 7b — the
+        // slice stops at six roots — so every rudhādi id is still its own
+        // unqualified SLP1 code and the `aS.5` qualification mechanism
+        // stays at exactly one user. 7a's spec predicted this would not
+        // survive 7b; it does, because that prediction assumed a root set
+        // including √vid.
+        for d in dhatus().iter().filter(|d| d.gana == Gana::Rudhadi) {
+            let n = dhatus().iter().filter(|o| o.id == d.id).count();
+            assert_eq!(n, 1, "rudhādi id {} is not unique in DHATUS", d.id);
         }
+        let qualified: Vec<_> = dhatus()
+            .iter()
+            .filter(|d| d.id.contains('.'))
+            .map(|d| d.id)
+            .collect();
+        assert_eq!(qualified, vec!["aS.5"]);
     }
 }
