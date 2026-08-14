@@ -359,12 +359,12 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // The ONLY NEW source of a D-initial ending in this suite besides the
     // pre-existing 6.4.101 her dhiḥ (which already supplies one: √hiṃs's
     // hinDi) — see 8.4.53's comment below for why that bounds its
-    // widening: no thematic root ever presents a jhaṣ immediately before
-    // its ending (the vikaraṇa intervenes: laBate, yuDyate, guDnAti), and
-    // every OTHER jhaṣ-final stem in the suite — svādi's stiG, kryādi's
-    // guD included — has a live vikaraṇa between the jhaṣ and the ending
-    // too, so this rule — and hence a fresh D-initial ending — is
-    // reachable only through √indh.
+    // widening: no root in the suite besides √indh ever presents a jhaṣ
+    // immediately before its ending, because every OTHER gaṇa represented
+    // here inserts a real vikaraṇa syllable between the two — bhvādi's
+    // laBate, divādi's yuDyate, svādi's stiG, kryādi's guDnAti — so this
+    // rule, and hence a fresh D-initial ending, is reachable only through
+    // √indh.
     //
     // DECLINES wherever the ending does not begin with a `t`/`T`: intse
     // (`s`), inDvahe (`v`) and inDmahe (`m`) all fail that match. Only
@@ -497,11 +497,13 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // clause is unreachable by construction — 8.2.73 has not run yet — so
     // it has been deleted, and the guard now rests on phonology instead:
     // √hiṃs presents `ahinas` here, which fails this rule's own
-    // `ends_with('d')` check outright and falls through to 8.2.73/8.2.74
-    // unchanged; √kṛt presents `akfRad` (8.2.39 having already voiced its
-    // `t`) and this rule fires on it directly. Forms are unchanged by the
-    // move: `shnams_ru_fires_on_the_dhatus_own_final` and the 7a laṅ cell
-    // tests in `super::derivation_tests` are the witnesses.
+    // `ends_with('d')` check outright and falls through to 8.2.73
+    // unchanged (8.2.74 above has already run by this point, and either
+    // took the branch or declined); √kṛt presents `akfRad` (8.2.39 having
+    // already voiced its `t`) and this rule fires on it directly. Forms
+    // are unchanged by the move: `shnams_ru_fires_on_the_dhatus_own_final`
+    // and the 7a laṅ cell tests in `super::derivation_tests` are the
+    // witnesses.
     Rule {
         id: "8.2.75",
         name: "daSca",
@@ -563,12 +565,20 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // the restriction only as long as that fact holds.
     //
     // RE-VERIFIED (Task 8), against the deferred hazard above. √bhañj and
-    // √piṣ (Task 6/7) are the first roots after √hiṃs to empty `ENDING`
-    // under 8.2.23, and they do so at exactly the same slot family — laṅ
-    // prathama/madhyama eka — so the invariant holds. This rule still
-    // declines on both anyway, on its own `s`-final check: `aBanaj` and
-    // `apinaz` end in `j`/`z`, not `s`. `the_ru_alternation_stays_off_the_
-    // new_roots` and `no_8_2_73_step_appears_for_bhanj_or_pish` in
+    // √piṣ are the first roots ADDED SINCE THE WARNING WAS WRITTEN to
+    // empty `ENDING` under 8.2.23 — NOT the first roots after √hiṃs to do
+    // so at all: √kṛt has emptied it at these same cells since 7a too
+    // (8.2.75 fires for it there — `crates/panini/tests/paradigm.rs` pins
+    // `("kft", "laN", 3, "akfRaH", "8.2.75")` — and firing requires
+    // `dhatu_is_pada_final`). The warning was about widening the root set
+    // beyond 7a's two, not about a single prior witness. √bhañj and √piṣ
+    // do so at exactly the same slot family — laṅ prathama/madhyama eka —
+    // so the invariant holds. This rule still declines on both anyway, on
+    // its own `s`-final check: by the time this rule runs, 8.2.30 has
+    // already velarised √bhañj's stem to `aBanag` and 8.2.39 has already
+    // voiced √piṣ's to `apinaq`, and neither ends in `s`.
+    // `the_ru_alternation_stays_off_the_new_roots` and
+    // `no_8_2_73_step_appears_for_bhanj_or_pish` in
     // `super::derivation_tests` are the witnesses.
     //
     // This rule is OBLIGATORY (`vikalpa: false`), so the hazard is only
@@ -888,10 +898,10 @@ pub(crate) static TRIPADI: &[Rule] = &[
     //
     // 8.2.40 (Task 7) is the only NEW source of a D-initial ending —
     // besides the pre-existing 6.4.101 her dhiḥ — and it requires a jhaṣ
-    // already abutting the ending, which no thematic root ever presents
-    // (the vikaraṇa intervenes: laBate, yuDyate, guDnAti). Every OTHER
-    // jhaṣ-final stem in the suite — svādi's stiG, kryādi's guD included —
-    // has a live vikaraṇa between the jhaṣ and the ending too, so this
+    // already abutting the ending, which no root in the suite besides
+    // √indh ever presents: every OTHER gaṇa represented here inserts a
+    // real vikaraṇa syllable between the root and the ending — bhvādi's
+    // laBate, divādi's yuDyate, svādi's stiG, kryādi's guDnAti — so this
     // rule — and hence a fresh D-initial ending — is reachable only
     // through √indh.
     //

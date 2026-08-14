@@ -1341,15 +1341,19 @@ fn shnams_ru_fires_on_the_dhatus_own_final() {
 #[test]
 fn the_ru_alternation_stays_off_the_new_roots() {
     // 8.2.73's deferred re-verification, discharged. √bhañj and √piṣ are
-    // the first roots other than √hiṃs to empty ENDING under 8.2.23, so
-    // they are the first live test of the invariant 8.2.73 leans on in
-    // place of a slot predicate.
+    // the first roots ADDED SINCE THE WARNING WAS WRITTEN to empty ENDING
+    // under 8.2.23 — NOT the first roots after √hiṃs to do so at all:
+    // √kṛt has emptied it at these same cells since 7a too (8.2.75 fires
+    // for it there, which requires `dhatu_is_pada_final`). √bhañj and
+    // √piṣ are the first live test of the invariant since the warning
+    // was written, i.e. since the root set was last widened.
     //
     // The invariant HOLDS: both empty it at laṅ prathama/madhyama eka,
-    // i.e. still tip and sip. And 8.2.73 declines on them regardless,
-    // because its `s`-final check does not match `aBanaj` or `apinaz`.
-    // If it over-fired, these cells would surface a `d` and then a
-    // visarga via 8.2.75 and 8.3.15.
+    // i.e. still tip and sip. And 8.2.73 declines on them regardless: by
+    // the time it runs, 8.2.30 has already velarised √bhañj's stem to
+    // `aBanag` and 8.2.39 has already voiced √piṣ's to `apinaq`, and its
+    // `s`-final check does not match either. If it over-fired, these
+    // cells would surface a `d` and then a visarga via 8.2.75 and 8.3.15.
     for (root, want) in [("Banj", "aBanag"), ("piz", "apinaq")] {
         for pu in [Purusha::Prathama, Purusha::Madhyama] {
             assert_eq!(
