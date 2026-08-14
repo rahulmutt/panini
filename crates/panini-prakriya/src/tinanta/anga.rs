@@ -282,10 +282,25 @@ pub(crate) static ANGA_RULES: &[Rule] = &[
     // NARROW GUARD, by design. The nasal this rule deletes lives in SHAP,
     // not ANGA — an artefact of the infix representation (see
     // `super::vikarana`'s 3.1.78 and `super::terms`), and the reason the
-    // rule reads SHAP at all. In 7a the only reachable witness is √hiṃs,
-    // whose tail is `ns`; the guard therefore looks for a nasal immediately
-    // after śnam's own `na` and does nothing otherwise. 7b widens it for
-    // √bhañj, √und and √indh, whose tails are `fj`, `nd` and `nD`.
+    // rule reads SHAP at all. The guard looks for a nasal immediately after
+    // śnam's own `na` (`rest.starts_with('n')`) and does nothing otherwise.
+    // In 7a the only reachable witness was √hiṃs, whose tail is `ns`. 7b
+    // brings √bhañj and √indh: the guard is UNCHANGED, since both roots'
+    // tails also begin with `n` (`nj`, `nD`) — they are new witnesses for
+    // the existing guard, not a widening of it.
+    //
+    // √bhañj concretely: `Banj` splits (3.1.78) as `Ba | na | nj` — head
+    // through the last vowel in ANGA, śnam's `na` plus the root's own tail
+    // `nj` in SHAP. This rule removes the root's own `n`, leaving
+    // `Ba | na | j`; 6.4.111 below then removes śnam's own `a` in the weak
+    // cells, leaving `Ba | n | j` — the `n` that survives there is śnam's,
+    // not the root's.
+    //
+    // This is also why 6.4.24 aniditāṁ hala upadhāyāḥ kṅiti is not needed in
+    // this slice: it governs the PENULTIMATE nasal of roots like √añj and
+    // √tañc (out of scope here), whereas the nasal 6.4.23 removes sits
+    // immediately behind śnam's `na` and is already this rule's by its own
+    // terms.
     //
     // Ordered before 6.4.111: the trace order is 6.4.23 then 6.4.111, and
     // reversing them elides śnam's `a` first, after which this rule can no

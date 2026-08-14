@@ -119,9 +119,9 @@ fn tinanta_rule_order_is_pinned() {
         "7.3.100", "7.1.5", "7.1.6", "7.1.3", "7.2.79", "7.2.80", "7.2.81", "6.4.23", "7.4.21",
         "7.3.84", "7.3.86", "7.3.84", "6.4.87", "6.4.77", "6.1.78", "7.3.101", "6.4.112",
         "6.4.113", "6.1.101", "6.1.96", "6.1.90", "6.1.97", "6.1.87", "6.1.66", "6.4.105",
-        "6.4.106", "6.4.107", "6.4.101", "6.4.111", "8.2.77", "8.2.23", "8.2.25", "8.2.39",
-        "8.2.74", "8.2.73", "8.2.75", "8.3.15", "8.3.24", "8.3.59", "8.4.53", "8.4.55", "8.4.1",
-        "8.4.2", "8.4.58", "8.4.65", "8.4.56",
+        "6.4.106", "6.4.107", "6.4.101", "6.4.111", "8.2.77", "8.2.23", "8.2.25", "8.2.30",
+        "8.2.39", "8.2.74", "8.2.73", "8.2.75", "8.3.15", "8.3.24", "8.3.59", "8.4.53", "8.4.55",
+        "8.4.1", "8.4.2", "8.4.58", "8.4.65", "8.4.56",
     ];
     let actual: Vec<&str> = rules().map(|r| r.id).collect();
     assert_eq!(actual, expected);
@@ -1361,5 +1361,71 @@ fn rudhadi_vidhilin_madhyama_eka_is_untouched_by_the_ru_alternation() {
     assert_eq!(
         form_g("his", Lakara::VidhiLin, Purusha::Madhyama, Vacana::Eka),
         "hiMsyAH"
+    );
+}
+
+#[test]
+fn bhanj_lat_all_nine_cells() {
+    // The strong stem velarises (Banaj + ti -> Banag + ti -> Banakti, via
+    // 8.2.30 then 8.4.55); the weak stem does the same across the anusvāra
+    // round trip (Banj + taH -> Bang + taH -> BaMgtaH -> BaMktaH ->
+    // BaNktaH). The `n` that survives in BaNktaH is śnam's: 6.4.23 already
+    // took the root's own `n` out.
+    let cells = [
+        (Purusha::Prathama, Vacana::Eka, "Banakti"),
+        (Purusha::Prathama, Vacana::Dvi, "BaNktaH"),
+        (Purusha::Prathama, Vacana::Bahu, "BaYjanti"),
+        (Purusha::Madhyama, Vacana::Eka, "Banakzi"),
+        (Purusha::Madhyama, Vacana::Dvi, "BaNkTaH"),
+        (Purusha::Madhyama, Vacana::Bahu, "BaNkTa"),
+        (Purusha::Uttama, Vacana::Eka, "Banajmi"),
+        (Purusha::Uttama, Vacana::Dvi, "BaYjvaH"),
+        (Purusha::Uttama, Vacana::Bahu, "BaYjmaH"),
+    ];
+    for (pu, va, want) in cells {
+        assert_eq!(form_g("Banj", Lakara::Lat, pu, va), want);
+    }
+}
+
+#[test]
+fn bhanj_lan_eka_velarises_word_finally() {
+    // 8.2.23 eats tip's own `t` (and sip's own `s`), leaving the dhātu's
+    // `j` as the true word end; 8.2.30 then applies word-finally rather
+    // than before a jhal. Both eka cells fork on 8.4.56 alone.
+    assert_eq!(
+        form_g_forked("Banj", Lakara::Lan, Purusha::Prathama, Vacana::Eka, 2),
+        "aBanag"
+    );
+    assert_eq!(
+        form_g_forked("Banj", Lakara::Lan, Purusha::Madhyama, Vacana::Eka, 2),
+        "aBanag"
+    );
+}
+
+#[test]
+fn bhanj_lot_madhyama_eka_is_bhangdhi() {
+    // 6.4.101 her dhiH gives the `Di`; 8.2.30 velarises the `j` before it
+    // (a jhal), and 8.4.53 declines because `g` is already its own jaś.
+    // Three branches: the declined one plus 7.1.35's tātaṅ and its 8.4.56
+    // pausal fork.
+    assert_eq!(
+        form_g_forked("Banj", Lakara::Lot, Purusha::Madhyama, Vacana::Eka, 3),
+        "BaNgDi"
+    );
+}
+
+#[test]
+fn coh_kuh_declines_before_a_non_jhal_non_final() {
+    // The witnesses that keep 8.2.30's guard from being written too wide.
+    // In BaYjanti what follows the `j` is `a`, and in BaYjvaH it is `v` —
+    // neither a jhal nor a word end — so the `j` survives to take 8.3.24's
+    // anusvāra and 8.4.58's palatal parasavarṇa instead.
+    assert_eq!(
+        form_g("Banj", Lakara::Lat, Purusha::Prathama, Vacana::Bahu),
+        "BaYjanti"
+    );
+    assert_eq!(
+        form_g("Banj", Lakara::Lat, Purusha::Uttama, Vacana::Dvi),
+        "BaYjvaH"
     );
 }

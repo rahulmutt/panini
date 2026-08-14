@@ -258,6 +258,48 @@ pub(crate) static TRIPADI: &[Rule] = &[
             true
         },
     },
+    // 8.2.30 coH kuH: a cu sound (c C j J) is replaced by its ku counterpart
+    // (the nearest velar by 1.1.50 sthāne'ntaratamaḥ, so voicing and
+    // aspiration are preserved) when it is either word-final or immediately
+    // followed by a jhal. Banaj + ti -> Banag + ti (before the jhal `t`,
+    // then 8.4.55 khari ca devoices to Banakti); aBanaj -> aBanag
+    // word-finally.
+    //
+    // NARROW GUARD, by design, as with 8.2.39 just below: only `j` -> `g`
+    // is reachable this slice (rudhādi's one cu-final curated root is
+    // √bhañj). Widen the match the moment a `c`-tailed root lands.
+    //
+    // Read via `word_chars`, not a term-boundary check: the target `j` sits
+    // at the END of a non-final term (śnam's infix leaves the root's own
+    // tail — the `j` — in `SHAP`, one term short of the actual word end,
+    // e.g. `Ba | naj | ti`), so the jhal that conditions it can be the
+    // FIRST character of the NEXT term rather than anything in the bearing
+    // term itself. `word_chars` already flattens exactly this cross-term
+    // adjacency for the same reason 8.3.24 above reads it. Word-final falls
+    // out of the same scan for free: `i + 1 == w.len()` after 8.2.23 has
+    // eaten tip/sip's own letter, leaving `ENDING` empty and the dhātu's
+    // `j` as the last entry `word_chars` reports.
+    Rule {
+        id: "8.2.30",
+        name: "coH kuH",
+        kind: RuleKind::Vidhi,
+        vikalpa: false,
+        apply: |p| {
+            let w = word_chars(p);
+            let Some(i) = w.iter().position(|(_, _, c)| *c == 'j') else {
+                return false;
+            };
+            let word_final = i + 1 == w.len();
+            if !word_final && !is_jhal(w[i + 1].2) {
+                return false;
+            }
+            let (term, idx, _) = w[i];
+            let before = p.snapshot();
+            set_char(p, term, idx, 'g');
+            p.record("8.2.30", "coH kuH", before);
+            true
+        },
+    },
     // 8.2.39 jhalāṁ jaśo'nte: a pada-final jhal becomes its jaś (voiced
     // unaspirated). This is what makes `aBavad` the engine's DECLINED form —
     // it is obligatory, and 8.4.56 below optionally undoes it. Before this
@@ -542,12 +584,20 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // NARROW GUARD, by design. The sūtra's trigger is the whole iṇ
     // pratyāhāra (every vowel but a/ā, plus h y v r l) and `k`; this
     // implements only the reachable slice of it — an aṅga-final vowel other
-    // than a/ā — so every arm is executed by a test and the mutation gate
-    // stays clean. Same discipline that removed 6.1.78's E/O arms in slice
-    // 5e (and 8.4.53 itself, in `9fa8e5f` — since restored below, rudhādi
-    // having supplied it a witness the discipline still required), and the
-    // same shape as 8.2.25's narrow guard. Widen it the moment a root lands
-    // whose aṅga ends in h/y/v/r/l or k before an s-initial affix.
+    // than a/ā, plus (as of this slice) `g` — so every arm is executed by a
+    // test and the mutation gate stays clean. Same discipline that removed
+    // 6.1.78's E/O arms in slice 5e (and 8.4.53 itself, in `9fa8e5f` — since
+    // restored below, rudhādi having supplied it a witness the discipline
+    // still required), and the same shape as 8.2.25's narrow guard. Widen
+    // further the moment a root lands whose aṅga ends in h/y/v/r/l or
+    // another ku sound (k/K/G/N) before an s-initial affix.
+    //
+    // The `g` arm is √bhañj's: coH kuH (8.2.30, above in this file's
+    // pipeline order) has already turned the dhātu's final `j` into `g`
+    // before this rule runs (bhanaj + si → bhanag + si), so what precedes
+    // `si` here is the ku sound `g`, not yet devoiced to `k` — khari ca
+    // (8.4.55) sits below this rule and does that afterwards. bhanakzi
+    // (`super::derivation_tests::bhanj_lat_all_nine_cells`) is the witness.
     //
     // No conflict with 8.3.15 above: that rule is word-final
     // (kharavasānayoḥ), this one is apadāntasya. It also declines for every
@@ -587,7 +637,8 @@ pub(crate) static TRIPADI: &[Rule] = &[
             else {
                 return false;
             };
-            if !is_vowel(prev) || matches!(prev, 'a' | 'A') {
+            let is_in_trigger = is_vowel(prev) && !matches!(prev, 'a' | 'A');
+            if !is_in_trigger && prev != 'g' {
                 return false;
             }
             let before = p.snapshot();
@@ -1212,6 +1263,41 @@ mod tests {
             }
             assert_eq!(p.text(), before);
         }
+    }
+
+    /// 8.2.30 velarises a `j` that is word-final or immediately followed by
+    /// a jhal, and declines otherwise. Only the `j` -> `g` arm is reachable
+    /// this slice, so this pins that guard rather than the wider cu/ku set.
+    #[test]
+    fn coh_kuh_fires_only_word_finally_or_before_a_jhal() {
+        let rule = rules().find(|r| r.id == "8.2.30").unwrap();
+
+        // before a jhal: the `j` sits at the end of a non-final term (śnam's
+        // infix leaves it in SHAP), and the jhal that conditions it is the
+        // first character of the term after — the cross-term adjacency
+        // `word_chars` exists for.
+        let mut p = Prakriya {
+            terms: vec![Term::new("Ba"), Term::new("naj"), Term::new("ti")],
+            ..Default::default()
+        };
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.text(), "Banagti");
+
+        // word-final: nothing follows the `j` at all.
+        let mut p = Prakriya {
+            terms: vec![Term::new("Ba"), Term::new("naj")],
+            ..Default::default()
+        };
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.text(), "Banag");
+
+        // before a vowel: neither jhal nor word-final, so the rule declines.
+        let mut p = Prakriya {
+            terms: vec![Term::new("Ba"), Term::new("nj"), Term::new("anti")],
+            ..Default::default()
+        };
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.text(), "Banjanti");
     }
 
     /// 8.2.39 voices a pada-final `t` and nothing else. The `s` case belongs
