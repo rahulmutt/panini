@@ -668,6 +668,15 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // kfntan) is pada-final and out of scope by the sūtra's own
     // `apadāntasya`; guarding on the gaṇa keeps this rule away from it
     // without needing a pada-boundary notion the engine does not have.
+    //
+    // The `apadāntasya` / jhal test lives INSIDE the search, not after it:
+    // the rule finds the first `n` that is genuinely followed by a jhal
+    // rather than the first `n` in the word full stop, so a non-applicable
+    // `n` earlier in the word can never hide a later, applicable one. No
+    // cell in this suite has more than one `n` candidate to distinguish —
+    // every curated root's weak stem carries exactly one — so this is
+    // hardening against a shape no witness here exercises, not a fix for
+    // one observed.
     Rule {
         id: "8.3.24",
         name: "naScApadAntasya Jali",
@@ -678,16 +687,11 @@ pub(crate) static TRIPADI: &[Rule] = &[
                 return false;
             }
             let w = word_chars(p);
-            let Some(pos) = w.iter().position(|(_, _, c)| *c == 'n') else {
+            let Some(pos) = w.iter().enumerate().position(|(i, (_, _, c))| {
+                *c == 'n' && w.get(i + 1).is_some_and(|(_, _, next)| is_jhal(*next))
+            }) else {
                 return false;
             };
-            // `apadāntasya`: something must follow, and it must be a jhal.
-            let Some((_, _, next)) = w.get(pos + 1) else {
-                return false;
-            };
-            if !is_jhal(*next) {
-                return false;
-            }
             let (term, idx, _) = w[pos];
             let before = p.snapshot();
             set_char(p, term, idx, 'M');
@@ -1123,6 +1127,15 @@ pub(crate) static TRIPADI: &[Rule] = &[
     //
     // Retire the fold, and this constraint with it, when a slice widens
     // 8.3.24 past rudhādi.
+    //
+    // The `yayi` / parasavarṇa test lives INSIDE the search, not after it:
+    // the rule finds the first anusvāra that actually HAS a parasavarṇa
+    // (i.e. is genuinely followed by a yay), rather than the first anusvāra
+    // in the word full stop, so a non-applicable anusvāra earlier in the
+    // word can never hide a later, applicable one. No cell in this suite
+    // has more than one anusvāra candidate to distinguish, so this is
+    // hardening against a shape no witness here exercises, not a fix for
+    // one observed.
     Rule {
         id: "8.4.58",
         name: "anusvArasya yayi parasavarRaH",
@@ -1130,13 +1143,14 @@ pub(crate) static TRIPADI: &[Rule] = &[
         vikalpa: false,
         apply: |p| {
             let w = word_chars(p);
-            let Some(pos) = w.iter().position(|(_, _, c)| *c == 'M') else {
-                return false;
-            };
-            let Some((_, _, next)) = w.get(pos + 1) else {
-                return false;
-            };
-            let Some(nasal) = parasavarna_of(*next) else {
+            let found = w.iter().enumerate().find_map(|(i, (_, _, c))| {
+                if *c != 'M' {
+                    return None;
+                }
+                let next = w.get(i + 1)?.2;
+                parasavarna_of(next).map(|nasal| (i, nasal))
+            });
+            let Some((pos, nasal)) = found else {
                 return false;
             };
             let (term, idx, _) = w[pos];

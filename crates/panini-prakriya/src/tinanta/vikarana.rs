@@ -37,6 +37,7 @@ pub(crate) static VIKARANA: &[Rule] = &[
             let mut s = Term::new("Syan");
             s.add(Tag::Vikarana);
             s.add(Tag::Sarvadhatuka);
+            s.add(Tag::Thematic); // a-final after it-lopa: Syan -> ya
             p.terms.insert(SHAP, s);
             p.record("3.1.69", "divAdiByaH Syan", before);
             let mut s = p.terms[SHAP].clone();
@@ -94,6 +95,7 @@ pub(crate) static VIKARANA: &[Rule] = &[
             let mut s = Term::new("Sa");
             s.add(Tag::Vikarana);
             s.add(Tag::Sarvadhatuka);
+            s.add(Tag::Thematic); // a-final after it-lopa: Sa -> a
             p.terms.insert(SHAP, s);
             p.record("3.1.77", "tudAdiByaH SaH", before);
             let mut s = p.terms[SHAP].clone();
@@ -195,9 +197,14 @@ pub(crate) static VIKARANA: &[Rule] = &[
     // also non-`a`-final, so `is_empty()` misses it exactly where an
     // athematic arm is needed. 6.1.66 (`adesha.rs`) learned this the hard
     // way — its old emptiness guard produced *vfRIyta instead of vfRIta
-    // until it was widened to `!SHAP.ends_with('a')`, which is the correct
-    // test. Any new rule reading terms[SHAP] to distinguish the athematic
-    // path from the thematic one should use that test, not emptiness.
+    // until it was widened to `!SHAP.ends_with('a')`. That text test was
+    // itself later found unsound — rudhādi's śnam-infix split (3.1.78)
+    // leaves SHAP as the a-final `"na"`, which is not śap — and Task 9
+    // replaced it with `!SHAP.has(Tag::Thematic)`, the tag set at each
+    // a-final vikaraṇa's own insertion (3.1.68/3.1.69/3.1.77, above). Any
+    // new rule reading terms[SHAP] to distinguish the athematic path from
+    // the thematic one should test `Tag::Thematic`, not text shape or
+    // emptiness.
     Rule {
         id: "3.1.81",
         name: "kryAdiByaH SnA",
@@ -240,6 +247,7 @@ pub(crate) static VIKARANA: &[Rule] = &[
             s.add(Tag::Vikarana);
             s.add(Tag::Sarvadhatuka);
             s.add(Tag::Pit); // p-anubandha: śap is pit, so 1.2.4 leaves it alone
+            s.add(Tag::Thematic); // a-final after it-lopa: Sap -> a
             p.terms.insert(SHAP, s);
             p.record("3.1.68", "kartari Sap", before);
             let mut s = p.terms[SHAP].clone();
@@ -255,6 +263,15 @@ pub(crate) static VIKARANA: &[Rule] = &[
     // and text() = root + "" + ending). Guarded on Tag::Adadi and on a real
     // śap being present, so it never touches divādi/tudādi (śyan/śa) or bhvādi
     // that has already been processed differently.
+    //
+    // Also drops Tag::Thematic, which 3.1.68 just set: luk (1.1.61
+    // pratyayasya lopa ādarśanam) makes the affix's own SHAPE disappear, and
+    // Tag::Thematic tracks exactly that shape ("is SHAP currently a visible
+    // a-final vikaraṇa"), not śap's grammatical identity — Tag::Vikarana
+    // stays for that. Leaving the tag set here would let the five `adesha.rs`
+    // rules that read it treat adādi's empty, luk'd śap as still thematic,
+    // which the text test they replaced never did (`"".ends_with('a')` is
+    // false).
     Rule {
         id: "2.4.72",
         name: "adipraBftiByaH SapaH",
@@ -272,6 +289,7 @@ pub(crate) static VIKARANA: &[Rule] = &[
             }
             let before = p.snapshot();
             p.terms[SHAP].text = String::new();
+            p.terms[SHAP].remove(Tag::Thematic);
             p.record("2.4.72", "adipraBftiByaH SapaH", before);
             true
         },

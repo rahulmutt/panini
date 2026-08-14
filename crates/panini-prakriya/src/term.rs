@@ -38,6 +38,16 @@ pub enum Tag {
     /// The dhātu belongs to rudhādi (gaṇa 7), whose vikaraṇa is śnam. Read
     /// by 3.1.78 alone. Mirrors Divadi/Tudadi/Adadi/Kryadi/Svadi.
     Rudhadi,
+    /// The vikaraṇa (at `SHAP`) is a-final: śap (3.1.68), śyan (3.1.69) or
+    /// śa (3.1.77), after their own it-lopa leaves them "a"/"ya"/"a". Set at
+    /// the same three insertion points, cleared by 2.4.72 when it luks śap
+    /// (the tag tracks SHAP's live shape, not śap's grammatical identity —
+    /// `Tag::Vikarana` covers that), and read in `adesha.rs` wherever the
+    /// grammar's real question is "is the vikaraṇa thematic śap" rather than
+    /// "does SHAP's text currently end in `a`" — the two agree for śap/śyan/śa
+    /// but not for rudhādi's śnam, whose infix split (3.1.78) leaves SHAP as
+    /// `"na"`, an a-final string produced by a non-thematic vikaraṇa.
+    Thematic,
 }
 
 #[derive(Debug, Clone)]
