@@ -672,11 +672,15 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // The `apadāntasya` / jhal test lives INSIDE the search, not after it:
     // the rule finds the first `n` that is genuinely followed by a jhal
     // rather than the first `n` in the word full stop, so a non-applicable
-    // `n` earlier in the word can never hide a later, applicable one. No
-    // cell in this suite has more than one `n` candidate to distinguish —
-    // every curated root's weak stem carries exactly one — so this is
-    // hardening against a shape no witness here exercises, not a fix for
-    // one observed.
+    // `n` earlier in the word can never hide a later, applicable one. Some
+    // cells DO have more than one `n` candidate — Banjanti reaches this
+    // rule as `B a n j a n t i`, and both `n`s (before `j` and before `t`)
+    // are jhal-adjacent — but every cell traced for this suite has its
+    // first candidate already be the applicable one (SHAP's own `n`, not a
+    // later root- or ending-supplied one), so widening the search from
+    // "first `n`" to "first APPLICABLE `n`" changes no trace here. This is
+    // hardening against an ordering no witness here exercises, not a fix
+    // for one observed.
     Rule {
         id: "8.3.24",
         name: "naScApadAntasya Jali",

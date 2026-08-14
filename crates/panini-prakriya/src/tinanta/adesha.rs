@@ -73,13 +73,19 @@ pub(crate) static ADESHA: &[Rule] = &[
         vikalpa: false,
         apply: |p| {
             // vidhiliṅ 1sg: after 7.2.79 the ending is `yAam` (yāsuṭ ā + the
-            // uttama-eka `am`). 7.2.80 would have rewritten `yA`->`iy` after
-            // an a-final śap, but it requires SHAP to end in short `a`; here
-            // it declined (adādi's SHAP is empty, kryādi's is the śnā
+            // uttama-eka `am`). 7.2.80 (`super::anga`) would have rewritten
+            // `yA`->`iy` after a thematic śap, but it requires SHAP to end
+            // in short `a` — a TEXT test, unchanged by Task 9 — and here it
+            // declined (adādi's SHAP is empty, kryādi's is the śnā
             // vikaraṇa's `A`-final nA/nI), so the yāsuṭ ā and the ending a
-            // are savarṇa -> a single ā: yAam -> yAm. Guard mirrors 7.2.80's
-            // own negated condition, plus a tight ending shape (never
-            // `yAt`/`yAs`/... whose yA is followed by a consonant).
+            // are savarṇa -> a single ā: yAam -> yAm. This guard's own
+            // negation, `!SHAP.has(Tag::Thematic)`, asks the IDENTITY
+            // question instead (see `Tag::Thematic`'s comment) — the two
+            // agree for every root this arm actually reaches (śānac never
+            // coexists with vidhiliṅ: it requires the `hi` ending, which is
+            // loṭ-only), but they are not the same test and must not be
+            // assumed interchangeable elsewhere. Plus a tight ending shape
+            // (never `yAt`/`yAs`/... whose yA is followed by a consonant).
             if p.terms.len() > ENDING
                 && matches!(p.ctx.lakara, Lakara::VidhiLin)
                 && !p.terms[SHAP].has(Tag::Thematic)
@@ -422,15 +428,23 @@ pub(crate) static ADESHA: &[Rule] = &[
             false
         },
     },
-    // 6.4.105 ato heḥ: `hi` is elided after a short `a` (the śap).
-    // Bav + a + hi → Bava.
+    // 6.4.105 ato heḥ: `hi` is elided after a short `a`. Bav + a + hi →
+    // Bava. The sūtra's condition is a short `a` at SHAP, full stop — it is
+    // NOT specific to śap: any vikaraṇa that happens to leave SHAP `a`-final
+    // qualifies, and śānac (3.1.83) is the other one this suite reaches —
+    // kliS + Ana + hi → kliSAna, per that rule's own comment.
     //
     // Deliberately reads `Tag::Thematic` rather than `sound_before_ending`:
-    // the sūtra's own condition is specifically about śap's `a`, not
-    // "whatever sound precedes the ending" in general. This is what makes it
-    // decline outright for svādi — the stem there ends in śnu's `u`, never a
-    // short `a`, and śnu never carries the tag — leaving 6.4.106 below as
-    // the rule that must handle (or deliberately not handle) the `hi`
+    // the sūtra's own condition is about the VIKARAṆA's `a` specifically
+    // (SHAP), not "whatever sound precedes the ending" in general — that
+    // distinction is what keeps 6.4.101 her dhiḥ (below) as the separate
+    // rule for a jhal-final ANGA. Within that, `Tag::Thematic` reads "is
+    // SHAP one of the four a-final vikaraṇas" rather than re-testing SHAP's
+    // current text, for the same reason the other four rules in this file
+    // do (see `Tag::Thematic`'s own comment). This is what makes 6.4.105
+    // decline outright for svādi — the stem there ends in śnu's `u`, never
+    // a short `a`, and śnu is not one of the four — leaving 6.4.106 below
+    // as the rule that must handle (or deliberately not handle) the `hi`
     // ending for that gaṇa.
     Rule {
         id: "6.4.105",

@@ -38,15 +38,44 @@ pub enum Tag {
     /// The dhātu belongs to rudhādi (gaṇa 7), whose vikaraṇa is śnam. Read
     /// by 3.1.78 alone. Mirrors Divadi/Tudadi/Adadi/Kryadi/Svadi.
     Rudhadi,
-    /// The vikaraṇa (at `SHAP`) is a-final: śap (3.1.68), śyan (3.1.69) or
-    /// śa (3.1.77), after their own it-lopa leaves them "a"/"ya"/"a". Set at
-    /// the same three insertion points, cleared by 2.4.72 when it luks śap
-    /// (the tag tracks SHAP's live shape, not śap's grammatical identity —
-    /// `Tag::Vikarana` covers that), and read in `adesha.rs` wherever the
-    /// grammar's real question is "is the vikaraṇa thematic śap" rather than
-    /// "does SHAP's text currently end in `a`" — the two agree for śap/śyan/śa
-    /// but not for rudhādi's śnam, whose infix split (3.1.78) leaves SHAP as
-    /// `"na"`, an a-final string produced by a non-thematic vikaraṇa.
+    /// The term at `SHAP` IS one of the four a-final vikaraṇas — śap
+    /// (3.1.68), śyan (3.1.69), śa (3.1.77) or śānac (3.1.83) — each
+    /// a-final once its own it-lopa runs ("a"/"ya"/"a"/"Ana"). This is an
+    /// IDENTITY tag, not a live-shape one: it answers "is the term
+    /// currently occupying SHAP one of these four vikaraṇas", not "does
+    /// SHAP's text happen to end in `a` right now". The two questions
+    /// coincide at the moment each of the four is inserted, and still
+    /// coincide at every point this tag is read as a PATH GUARD (deciding
+    /// which of a rule's arms applies) — but they are not the same
+    /// question, and a rule whose job is vowel SANDHI on SHAP's own `a`
+    /// must keep testing the text directly, not this tag: 7.3.101
+    /// (`super::guna`) guards on `SHAP.text.ends_with('a')` for exactly
+    /// that reason. 6.1.101, 6.1.97 and 6.1.87 (`super::adesha`) guard on
+    /// this tag (a path decision) and THEN mutate SHAP's last character —
+    /// that mutation runs only once the tag has already confirmed the
+    /// path, and is safe because no rule between vikaraṇa insertion and
+    /// any of these reaches the same SHAP with a shape already drifted
+    /// from `a`-final (7.3.101 is disjoint with all of them on the
+    /// ending's leading sound). Giving a rule like 7.3.101 this tag
+    /// instead of the text test would be wrong the moment a prior rule has
+    /// rewritten SHAP's ending away from `a`.
+    ///
+    /// Set at the four insertion points above. Cleared by 2.4.72, which
+    /// luks śap for adādi: luk removes the vikaraṇa itself (1.1.61
+    /// pratyayasya lopa ādarśanam), so the term is no longer śap at all —
+    /// an identity fact, not a shape one; `Tag::Vikarana` still marks that
+    /// a vikaraṇa-shaped term occupies the slot. NOT cleared or re-set by
+    /// any rule that only rewrites SHAP's text (7.3.101, 6.1.101's bhvādi
+    /// arm, 6.1.97, 6.1.87): those rules change what SHAP spells, never
+    /// which vikaraṇa is there, so the identity this tag tracks is
+    /// unaffected and doing so would be witness-free dead code.
+    ///
+    /// Read in `adesha.rs` (6.1.101's two arms, 6.1.97, 6.1.87, 6.1.66's
+    /// athematic arm, 6.4.105) wherever the grammar's real question is "is
+    /// the vikaraṇa one of the thematic four" — which is what distinguishes
+    /// rudhādi's śnam from them: śnam is not in the four, even though its
+    /// infix split (3.1.78) can leave SHAP `a`-final too, e.g. `"na"` for a
+    /// vowel-final root.
     Thematic,
 }
 
