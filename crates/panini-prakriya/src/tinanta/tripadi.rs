@@ -275,7 +275,8 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // e.g. `Ba | naj | ti`), so the jhal that conditions it can be the
     // FIRST character of the NEXT term rather than anything in the bearing
     // term itself. `word_chars` already flattens exactly this cross-term
-    // adjacency for the same reason 8.3.24 above reads it. Word-final falls
+    // adjacency for the same reason 8.3.24 further down this array reads
+    // it. Word-final falls
     // out of the same scan for free — there is simply no next entry to test
     // (`w.get(i + 1)` is `None`) after 8.2.23 has eaten tip/sip's own letter,
     // leaving `ENDING` empty and the dhātu's `j` as the last entry

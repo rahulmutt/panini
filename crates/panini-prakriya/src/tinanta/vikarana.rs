@@ -223,13 +223,13 @@ pub(crate) static VIKARANA: &[Rule] = &[
     //   check already confirmed this cell's SHAP is thematic. Identity and
     //   shape do NOT stay coincident once that stage is running: √bhū loṭ
     //   uttama eka takes `Bav + a + Ani` to `Bav + A + ni` at 6.1.101's
-    //   bhvādi arm, so 6.1.97 two rules later reads this tag on a SHAP
+    //   bhvādi arm, so 6.1.97 three rules later reads this tag on a SHAP
     //   already drifted from `a`-final (7.3.101 drifts it the same way one
     //   stage earlier, before an m/v-initial ending). What keeps those
     //   mutations sound is the ENDING test each of the five carries
     //   alongside the tag — an `A`-, guṇa- or `i`/`I`-initial ending, or
     //   the bare `hi` — which the leftover ending never satisfies once the
-    //   drift has happened (`ni`/`va`/`ma`, `m`/`v`). See `Tag::Thematic`'s
+    //   drift has happened (`ni`/`va`/`ma`/`vahE`/`mahE`, `m`/`v`). See `Tag::Thematic`'s
     //   own comment in `crate::term` for the worked trace.
     Rule {
         id: "3.1.81",

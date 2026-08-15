@@ -66,8 +66,8 @@ pub enum Tag {
     /// one, 6.1.87 an `i`/`I`-initial one, 6.4.105 the exact text `hi`.
     /// Whatever drifts SHAP has already consumed the ending's leading
     /// vowel, and what is left satisfies none of the later tests — after
-    /// 6.1.101's bhvādi arm the ending is `ni`/`va`/`ma` (or, ātmanepada,
-    /// the `E` that 6.1.90 absorbs before 6.1.97 looks), and after 7.3.101
+    /// 6.1.101's bhvādi arm the ending is `ni`/`va`/`ma`/`vahE`/`mahE` (or,
+    /// ātmanepada, the `E` that 6.1.90 absorbs before 6.1.97 looks), and after 7.3.101
     /// it begins `m`/`v`. So the pop-and-push only ever runs on a SHAP
     /// that is still `a`-final. Giving a rule like 7.3.101 this tag
     /// instead of the text test would be wrong the moment a prior rule has
