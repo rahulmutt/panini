@@ -112,16 +112,16 @@ pub(super) fn lin_a_form(code: &str, pu: Purusha, va: Vacana) -> String {
 #[test]
 fn tinanta_rule_order_is_pinned() {
     let expected = [
-        "1.3.12", "1.3.78", "3.4.78", "1.3.9", "1.2.4", "3.4.85", "3.4.108", "3.4.105", "3.4.106",
-        "3.4.101", "3.4.99", "3.4.87", "3.4.89", "3.4.86", "3.4.100", "3.4.80", "3.4.79", "3.4.91",
-        "3.4.93", "3.4.90", "3.4.92", "3.4.103", "3.4.102", "7.1.35", "3.1.69", "3.1.73", "3.1.77",
-        "3.1.78", "3.1.81", "3.1.68", "2.4.72", "3.4.111", "3.1.83", "1.2.4", "6.4.71", "6.4.72",
-        "7.3.100", "7.1.5", "7.1.6", "7.1.3", "7.2.79", "7.2.80", "7.2.81", "6.4.23", "7.4.21",
-        "7.3.84", "7.3.86", "7.3.84", "6.4.87", "6.4.77", "6.1.78", "7.3.101", "6.4.112",
-        "6.4.113", "6.1.101", "6.1.96", "6.1.90", "6.1.97", "6.1.87", "6.1.66", "6.4.105",
-        "6.4.106", "6.4.107", "6.4.101", "6.4.111", "8.2.77", "8.2.23", "8.2.25", "8.2.30",
-        "8.2.39", "8.2.40", "8.2.41", "8.2.74", "8.2.75", "8.2.73", "8.3.15", "8.3.24", "8.3.59",
-        "8.4.41", "8.4.53", "8.4.55", "8.4.1", "8.4.2", "8.4.58", "8.4.65", "8.4.56",
+        "1.3.12", "1.3.72", "1.3.78", "3.4.78", "1.3.9", "1.2.4", "3.4.85", "3.4.108", "3.4.105",
+        "3.4.106", "3.4.101", "3.4.99", "3.4.87", "3.4.89", "3.4.86", "3.4.100", "3.4.80",
+        "3.4.79", "3.4.91", "3.4.93", "3.4.90", "3.4.92", "3.4.103", "3.4.102", "7.1.35", "3.1.69",
+        "3.1.73", "3.1.77", "3.1.78", "3.1.81", "3.1.68", "2.4.72", "3.4.111", "3.1.83", "1.2.4",
+        "6.4.71", "6.4.72", "7.3.100", "7.1.5", "7.1.6", "7.1.3", "7.2.79", "7.2.80", "7.2.81",
+        "6.4.23", "7.4.21", "7.3.84", "7.3.86", "7.3.84", "6.4.87", "6.4.77", "6.1.78", "7.3.101",
+        "6.4.112", "6.4.113", "6.1.101", "6.1.96", "6.1.90", "6.1.97", "6.1.87", "6.1.66",
+        "6.4.105", "6.4.106", "6.4.107", "6.4.101", "6.4.111", "8.2.77", "8.2.23", "8.2.25",
+        "8.2.30", "8.2.39", "8.2.40", "8.2.41", "8.2.74", "8.2.75", "8.2.73", "8.3.15", "8.3.24",
+        "8.3.59", "8.4.41", "8.4.53", "8.4.55", "8.4.1", "8.4.2", "8.4.58", "8.4.65", "8.4.56",
     ];
     let actual: Vec<&str> = rules().map(|r| r.id).collect();
     assert_eq!(actual, expected);
@@ -645,6 +645,121 @@ fn pada_sanction_records_the_sanctioning_sutra() {
         Vacana::Eka,
     ));
     assert_eq!(p.log.first().unwrap().sutra, "1.3.12");
+}
+
+#[test]
+fn rudh_derives_in_both_padas() {
+    // The slice's witness. √rudh is the first root DHATUS marks
+    // PadaAssignment::Ubhayapada, so BOTH pada cells must derive: neither
+    // is a wrong-pada request, and neither may block. 1.3.78 sanctions the
+    // parasmaipada cell, 1.3.72 the ātmanepada one, and the trace says which.
+    //
+    // This is also the end-to-end pin on `derive`'s Ubhayapada → Ubhayapadin
+    // tagging arm: with that arm missing, the ātmanepada cell would block.
+    let rudh = dhatus().iter().find(|d| d.id == "ruD").unwrap();
+
+    let p = sole(derive(
+        rudh,
+        Lakara::Lat,
+        Pada::Parasmaipada,
+        Purusha::Prathama,
+        Vacana::Eka,
+    ));
+    assert!(!p.blocked, "an ubhayapadī root must derive in parasmaipada");
+    assert_eq!(p.text(), "ruRadDi");
+    assert_eq!(p.log.first().unwrap().sutra, "1.3.78");
+
+    // 8.4.65 jharo jhari savarṇe optionally elides the `d` of rundDe, so
+    // the ātmanepada cell forks in two; branch 0 is the declined reading.
+    let branches = derive(
+        rudh,
+        Lakara::Lat,
+        Pada::Atmanepada,
+        Purusha::Prathama,
+        Vacana::Eka,
+    );
+    assert_eq!(
+        branches.iter().map(|p| p.text()).collect::<Vec<_>>(),
+        vec!["rundDe", "runDe"]
+    );
+    for b in &branches {
+        assert!(!b.blocked, "an ubhayapadī root must derive in ātmanepada");
+        assert_eq!(b.log.first().unwrap().sutra, "1.3.72");
+    }
+}
+
+#[test]
+fn indh_is_atmanepada_only_despite_its_nit() {
+    // This test is what protects the whole data-model choice, so it is worth
+    // stating why. √indh's upadeśa is `YiinDI~\`: it carries a ñi, and 1.3.72
+    // svaritaYitaH reads ñit — so a tag named for 1.3.72's *marker* would
+    // have to be true on √indh, and √indh would silently grow a parasmaipada
+    // column. It must not: the anudātta `~\` on top of the ñi settles pada by
+    // 1.3.12, and vidyut-prakriya derives √indh ātmanepada-only.
+    //
+    // Tag::Ubhayapadin is therefore named for the RESIDUE — 1.3.72's
+    // condition holds *and* 1.3.12's does not — which is exactly why √indh
+    // does not carry it. If the tag ever drifts back toward "has a ñi
+    // marker", this test is the one that fails.
+    let indh = dhatus().iter().find(|d| d.id == "inD").unwrap();
+    let p = sole(derive(
+        indh,
+        Lakara::Lat,
+        Pada::Parasmaipada,
+        Purusha::Prathama,
+        Vacana::Eka,
+    ));
+    assert!(
+        p.blocked,
+        "√indh is ñit but not ubhayapadī: 1.3.12 settles it"
+    );
+    assert!(p.log.is_empty(), "a blocked derivation records nothing");
+
+    for b in derive(
+        indh,
+        Lakara::Lat,
+        Pada::Atmanepada,
+        Purusha::Prathama,
+        Vacana::Eka,
+    ) {
+        assert!(!b.blocked);
+        assert_eq!(b.log.first().unwrap().sutra, "1.3.12");
+    }
+}
+
+#[test]
+fn parasmaipada_only_root_still_blocks_atmanepada() {
+    // 1.3.72's guard declines on an aṅga with no Ubhayapadin tag, leaving
+    // 1.3.78's ātmanepada arm to block as it always did. Widening that arm
+    // to decline unconditionally would surface *BavatE here.
+    let bhu = dhatus().iter().find(|d| d.id == "BU").unwrap();
+    let p = sole(derive(
+        bhu,
+        Lakara::Lat,
+        Pada::Atmanepada,
+        Purusha::Prathama,
+        Vacana::Eka,
+    ));
+    assert!(p.blocked, "√bhū carries no Ubhayapadin tag");
+    assert!(p.log.is_empty());
+}
+
+#[test]
+fn atmanepada_only_root_still_blocks_parasmaipada() {
+    // The mirror image, inside the gaṇa 1.3.72 just opened: √khid is
+    // rudhādi and ātmanepadin, so 1.3.72 declines on its guard and 1.3.12
+    // blocks the parasmaipada request. Being a rudhādi root is not what
+    // makes √rudh ubhayapadī.
+    let khid = dhatus().iter().find(|d| d.id == "Kid").unwrap();
+    let p = sole(derive(
+        khid,
+        Lakara::Lat,
+        Pada::Parasmaipada,
+        Purusha::Prathama,
+        Vacana::Eka,
+    ));
+    assert!(p.blocked, "√khid carries Atmanepadin, not Ubhayapadin");
+    assert!(p.log.is_empty());
 }
 
 #[test]

@@ -81,8 +81,10 @@ pub fn derive(
     p.terms.push({
         let mut t = Term::new(dhatu.code);
         t.add(Tag::Dhatu);
-        if matches!(dhatu.pada, PadaAssignment::Atmanepada) {
-            t.add(Tag::Atmanepadin);
+        match dhatu.pada {
+            PadaAssignment::Parasmaipada => {}
+            PadaAssignment::Atmanepada => t.add(Tag::Atmanepadin),
+            PadaAssignment::Ubhayapada => t.add(Tag::Ubhayapadin),
         }
         match dhatu.gana {
             Gana::Divadi => t.add(Tag::Divadi),

@@ -468,6 +468,27 @@ static DHATUS: &[Dhatu] = &[
         pada: PadaAssignment::Atmanepada,
         artha: "dIptO",
     },
+    Dhatu {
+        // 07.0001 ru\Di~^r AvaraRe. The gaṇa's EPONYM, and the engine's
+        // first ubhayapadī root: the `~^r` svarita is what 1.3.72
+        // svaritaYitaH reads, and with no anudātta on top of it 1.3.12 does
+        // not pre-empt the parasmaipada reading, so both pada cells derive.
+        //
+        // It needs no new phonology at all. Its ātmanepada arm is
+        // structurally √indh's (8.2.40 JaSas taTor Do'DaH, then 8.4.65
+        // optionally eliding the `d`), and its strong parasmaipada arm is
+        // √bhañj's and √piṣ's.
+        //
+        // It is also the first root where a live ṇatva trigger and the
+        // folded 8.3.24 guard coexist, so ṇatva fires on the strong stem
+        // (ruRadDi) and declines on the weak (runDanti) — the first direct
+        // regression test for `is_natva_target`'s jhal condition.
+        id: "ruD",
+        code: "ruD",
+        gana: Gana::Rudhadi,
+        pada: PadaAssignment::Ubhayapada,
+        artha: "AvaraRe",
+    },
 ];
 
 pub fn dhatus() -> &'static [Dhatu] {
@@ -509,7 +530,7 @@ mod tests {
 
     #[test]
     fn curated_roots_have_expected_ganas_and_padas() {
-        assert_eq!(dhatus().len(), 48);
+        assert_eq!(dhatus().len(), 49);
         let bu = dhatus().iter().find(|d| d.id == "BU").unwrap();
         assert!(matches!(bu.pada, PadaAssignment::Parasmaipada));
         let labh = dhatus().iter().find(|d| d.id == "laB").unwrap();
@@ -669,12 +690,16 @@ mod tests {
     }
 
     #[test]
-    fn rudhadi_holds_exactly_the_slice_7b_roots() {
-        // Six roots, in table order. √hiṃs is stored `hins`, NOT `his`:
-        // see its row comment. The gaṇa is still PARTIAL — nine of its 25
-        // dhātupāṭha roots are ubhayapadī (`~^r`) and 1.3.72 is deferred,
-        // so √rudh, the eponym, is absent. More roots would not change
-        // that; only 1.3.72 will.
+    fn rudhadi_holds_seven_roots_including_its_eponym() {
+        // Seven roots, in table order. √hiṃs is stored `hins`, NOT `his`:
+        // see its row comment. √rudh, the eponym, arrived with 1.3.72
+        // svaritaYitaH and PadaAssignment::Ubhayapada — the machinery that
+        // 7b recorded as the one thing its absence was waiting on.
+        //
+        // The gaṇa is still PARTIAL (7 of its 25 dhātupāṭha roots), but the
+        // remaining eight `~^r` roots are now deferred by CURATION, not by
+        // missing machinery: each is one row away, and adding one is an
+        // audit, not an engine change.
         let rows: Vec<_> = dhatus()
             .iter()
             .filter(|d| d.gana == Gana::Rudhadi)
@@ -689,6 +714,7 @@ mod tests {
                 ("Banj", "Banj", PadaAssignment::Parasmaipada),
                 ("piz", "piz", PadaAssignment::Parasmaipada),
                 ("inD", "inD", PadaAssignment::Atmanepada),
+                ("ruD", "ruD", PadaAssignment::Ubhayapada),
             ]
         );
     }
@@ -723,14 +749,15 @@ mod tests {
     }
 
     #[test]
-    fn slice_7b_ids_do_not_collide() {
+    fn rudhadi_ids_do_not_collide() {
         // rudhādi also holds `vi\da~\` and `o~vijI~`, which WOULD collide
-        // with divādi's `vid` and tudādi's `vij`. Neither is in 7b — the
-        // slice stops at six roots — so every rudhādi id is still its own
+        // with divādi's `vid` and tudādi's `vij`. Neither is curated — the
+        // gaṇa stops at seven roots — so every rudhādi id is still its own
         // unqualified SLP1 code and the `aS.5` qualification mechanism
         // stays at exactly one user. 7a's spec predicted this would not
         // survive 7b; it does, because that prediction assumed a root set
-        // including √vid.
+        // including √vid. √rudh does not change it either: `ruD` collides
+        // with nothing in the table.
         for d in dhatus().iter().filter(|d| d.gana == Gana::Rudhadi) {
             let n = dhatus().iter().filter(|o| o.id == d.id).count();
             assert_eq!(n, 1, "rudhādi id {} is not unique in DHATUS", d.id);
