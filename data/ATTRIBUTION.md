@@ -15,7 +15,9 @@ recorded below.
   Dhātupāṭha numbers 09.0066 (`muza~`), 09.0040 (`vrI\`) and 09.0045
   (`vfN`). √vṛṅ (`vf`) is the only pure-ātmanepadī root in the gaṇa; every
   other ātmanepada form attested in kryādi belongs to an ubhayapadī root,
-  which the one-pada-per-root model in `panini-data` does not carry.
+  and no kryādi ubhayapadī root is curated. `panini-data` carries
+  `PadaAssignment::Ubhayapada` since the 1.3.72 slice, so that is a curation
+  gap, not a limit of the model.
 - Cross-reference: the rudhādi gaṇa (gaṇa 7), slice 7a, entries correspond to
   Dhātupāṭha numbers 07.0010 (`kftI~`), 07.0019 (`hisi~`) and 07.0012
   (`Ki\da~\`). √hiṃs is stored as `hins` — post-7.1.58 *idito num dhātoḥ* —
@@ -29,6 +31,11 @@ recorded below.
   suggest ubhayapadī. The `~\` anudātta settles it by 1.3.12, and
   vidyut-prakriya derives the root in ātmanepada only — checked against a
   `~^r` control (07.0001 `ru\Di~^r`) that does derive both padas.
+- Cross-reference: the rudhādi gaṇa (gaṇa 7), ubhayapada slice, adds
+  Dhātupāṭha number 07.0001 (`ru\Di~^r`) — the gaṇa's eponym, and the first
+  entry recorded as **ubhayapada**. Its `~^r` svarita is what 1.3.72
+  *svaritañitaḥ* reads, and with no anudātta on top of it the entry settles
+  as ubhayapadī; vidyut-prakriya derives it in both padas.
 - The gaṇa is **partial**: nine of rudhādi's 25 entries are ubhayapadī
-  (`~^r`-marked) and are deferred with 1.3.72, √rudh among them, so the
-  curated set has no entry for the gaṇa's own eponym.
+  (`~^r`-marked), and the eight other than √rudh are deferred by curation
+  rather than by 1.3.72, which is now implemented.

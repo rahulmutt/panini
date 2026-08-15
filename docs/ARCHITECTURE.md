@@ -12,7 +12,8 @@ Data flow for `check`:
   and `TINANTA_RULES`, the ordered rule list that `tinanta::derive` runs via
   `run_pipeline`. Pure SLP1, no I/O.
 - `panini-analyze` — proposes candidate `(root, lakāra, pada, puruṣa, vacana)`
-  inputs, with the pada taken from the root's tag.
+  inputs, one per pada the root admits (`PadaAssignment::padas()`), so an
+  ubhayapadī root proposes both.
 - `panini` — facade: `Panini::check` / `Panini::derive`, `Verdict`, `Analysis`.
 - `panini-cli` — the `panini` binary (`check` subcommand; `--trace`, `--json`,
   `--out`, validity exit codes).
@@ -28,7 +29,7 @@ implements; `tinanta::rules()` yields that flattened sequence.
 
 | stage file | rules | position |
 |---|---|---|
-| `samjna.rs` | 1.3.12, 1.3.78, 3.4.78, 1.3.9, 1.2.4 | before 3.1.68 |
+| `samjna.rs` | 1.3.12, 1.3.72, 1.3.78, 3.4.78, 1.3.9, 1.2.4 | before 3.1.68 |
 | `tin.rs` | 3.4.85 … 3.4.102, 7.1.35 | before 3.1.68 |
 | `vikarana.rs` | 3.1.69, 3.1.73, 3.1.77, 3.1.78, 3.1.81, 3.1.68, 2.4.72, 3.4.111, 3.1.83, 1.2.4 | contains 3.1.68 |
 | `anga.rs` | 6.4.71 … 7.2.81, 6.4.23 | after 3.1.68 |
@@ -38,9 +39,10 @@ implements; `tinanta::rules()` yields that flattened sequence.
 
 The stage boundary is file organisation, not grammar: the flattened order is
 what matters, and `tinanta_rule_order_is_pinned` in `derivation_tests.rs`
-pins all 86 ids verbatim (72 pre-rudhādi, plus the fourteen rudhādi added:
+pins all 87 ids verbatim (72 pre-rudhādi, the fourteen rudhādi added:
 3.1.78, 6.4.23, 6.4.111, 8.2.74, 8.2.75, 8.2.73, 8.3.24, 8.4.53, 8.4.58 and
-8.4.65 in slice 7a, then 8.2.30, 8.2.40, 8.2.41 and 8.4.41 in 7b).
+8.4.65 in slice 7a, then 8.2.30, 8.2.40, 8.2.41 and 8.4.41 in 7b, and
+1.3.72 *svaritañitaḥ*, which arrived with √rudh in the ubhayapada slice).
 `tinanta/terms.rs` holds the term-index constants and the reason 3.1.68
 bisects the pipeline; `tinanta/sound.rs` holds the varṇa classifiers.
 
@@ -53,7 +55,8 @@ Six gaṇas are covered: bhvādi (1), divādi (4), tudādi (6), adādi (2), kry�
 (9), svādi (5) — plus rudhādi (7), **partial** (see below). gaṇa is carried
 as a tag on the aṅga term (`Tag::Divadi` / `Tag::Tudadi` / `Tag::Adadi` /
 `Tag::Kryadi` / `Tag::Svadi` / `Tag::Rudhadi`, mirroring how
-`Tag::Atmanepadin` carries pada), read by 3.1.69, 3.1.73, 3.1.77, 3.1.78,
+`Tag::Atmanepadin` and `Tag::Ubhayapadin` carry pada), read by 3.1.69,
+3.1.73, 3.1.77, 3.1.78,
 3.1.81, and 2.4.72. The vikaraṇa itself is selected by 3.1.68 (śap, bhvādi
 and adādi), 3.1.69 (śyan, divādi), 3.1.73 (śnu, svādi), 3.1.77 (śa, tudādi),
 3.1.78 (śnam, rudhādi), and 3.1.81 (śnā, kryādi).
@@ -76,16 +79,34 @@ gaṇa, the way `terms[SHAP].text` may be empty for adādi. A rule reading
 accordingly; see the "REPRESENTATION" note on 3.1.78 in
 `tinanta/vikarana.rs` and the caveat in `tinanta/terms.rs`.
 
-The gaṇa carries six roots — √kṛt, √hiṃs and √khid (slice 7a), √bhañj, √piṣ
-and √indh (7b) — and stays **partial**: nine of rudhādi's 25 dhātupāṭha
-roots are ubhayapadī and wait on 1.3.72 *svaritañitaḥ*, √rudh among them, so
-the gaṇa lacks its own eponym; nine further reachable roots (√śiṣ, √tṛh,
+The gaṇa carries seven roots — √kṛt, √hiṃs and √khid (slice 7a), √bhañj, √piṣ
+and √indh (7b), and √rudh (`07.0001`), the gaṇa's own eponym, which arrived
+with 1.3.72 *svaritañitaḥ* in the ubhayapada slice as the engine's first
+ubhayapadī root — and stays **partial**: nine of rudhādi's 25 dhātupāṭha
+roots are ubhayapadī, and the eight other than √rudh (√bhid, √chid, √ric,
+√vic, √kṣud, √yuj, √chṛd, √tṛd) are now held back by **curation** rather
+than by missing machinery — the engine derives them, and each is an audited
+table row away; nine further reachable non-ubhayapadī roots (√śiṣ, √tṛh,
 √und, √añj, √tañc, √vij, √vṛj, √pṛc, √vid) are simply not curated yet; and
 the twenty-fifth, √bhuj (`07.0017`), is out on different grounds again —
 1.3.66 *bhujo'navane* forks its pada on sense rather than on an axis this
 engine models. Six roots is the size every completed gaṇa *after bhvādi*
 has here — bhvādi, the first, has twelve — so the root count is not what
-makes this one partial. 1.3.72 is.
+makes this one partial; rudhādi is already past it at seven. Nor is 1.3.72
+any longer: what is left is curation, plus √bhuj's sense axis.
+
+Pada is a **context coordinate**, not a branch: an ubhayapadī root
+contributes *two* `PARADIGM` blocks per lakāra, one per pada, so a
+(root, lakāra, puruṣa, vacana) of such a root names two distinct cells
+rather than two readings of one cell. That is why
+1.3.72 is deliberately absent from the vikalpa set — an optional rule forks
+one cell into several forms, whereas 1.3.72 sanctions a second cell that the
+harness enumerates in its own right. `Dhatu.pada` is a `PadaAssignment`
+(`Parasmaipada` / `Atmanepada` / `Ubhayapada`) and `padas()` expands it;
+`Context.pada` stays the two-valued `Pada`, because no derivation may request
+an "ubhayapada" cell — no such cell exists. 1.3.72's semantic condition
+(*kartrabhiprāye kriyāphale*) is not modelled: both padas derive, and the
+reader selects by sense.
 
 adādi is now **complete** across all four lakāras: √yā and √vā, √ad
 (parasmaipada), and √ās, √vas and √śī (ātmanepada) each derive in laṭ, laṅ,
@@ -144,10 +165,14 @@ are the goldens that pin it.
 
 `derive` itself carries no scope gate — it only tags the dhātu and
 runs `TINANTA_RULES` (see `panini_prakriya::tinanta::derive`). A wrong-pada
-derivation is instead blocked by the pada-sanction rule (1.3.12 *anudāttaṅita
-ātmanepadam* / 1.3.78 *śeṣāt kartari parasmaipadam*), which sets
+derivation is instead blocked by the pada-sanction rules (1.3.12 *anudāttaṅita
+ātmanepadam* / 1.3.78 *śeṣāt kartari parasmaipadam*), which set
 `Prakriya.blocked` when the requested pada doesn't match the root's tag; a
 blocked prakriya's partial text never counts as a match in `Panini::check`.
+1.3.72 *svaritañitaḥ* is the third of them and the only one that never
+blocks: it sanctions the ātmanepada of a root tagged `Tag::Ubhayapadin`, and
+1.3.78's ātmanepada arm declines rather than blocks for such a root, so both
+padas derive.
 `INVALID` means "not derivable within the covered grammar," not
 "ungrammatical in Sanskrit." Coverage of the enumerable (root × lakāra)
 space is pinned by
@@ -179,8 +204,15 @@ all apply), for a 2³ bound of eight, but only **six** branches result
 (`kfndDi`, `kfnDi`, `kfnttAd`, `kfntAd`, `kfnttAt`, `kfntAt`) — again
 because 8.4.56 declines on the vowel-final, non-tātaṅ branches (`kfndDi`
 and its 8.4.65 fork `kfnDi`), so only the two tātaṅ branches (7.1.35 alone,
-and 7.1.35+8.4.65) go on to fork a third time. That six-form cell is still
-the suite's deepest. The deepest cell slice 7b adds is shallower: √piṣ's
+and 7.1.35+8.4.65) go on to fork a third time. That six-form cell is no
+longer alone at the top: √rudh's loṭ **parasmaipada** madhyama eka ties it,
+with the same k = 3 (7.1.35, 8.4.65, 8.4.56), the same 2³ bound of eight,
+and the same six branches — `rundDi`, `runDi`, `rundDAd`, `runDAd`,
+`rundDAt`, `runDAt` — stopping at six for exactly the reason √kṛt's does:
+8.4.56 declines on `rundDi` and its 8.4.65 fork `runDi`, and only the two
+tātaṅ branches fork a third time. (Its loṭ parasmaipada *prathama* eka is
+the second five-form cell, alongside √kṛt's.) The deepest cell slice 7b
+adds is shallower: √piṣ's
 loṭ madhyama eka holds **four** forms — `piRqQi`, `piRQi`, `piMzwAd`,
 `piMzwAt` — with the same k = 3 (7.1.35, 8.4.65 and 8.4.56 all apply) and
 the same 2³ bound of eight. It stops at four because 8.4.65 and 8.4.56 never
@@ -212,19 +244,23 @@ same lopa obligatory for √kṛ and is what makes this rule optional, is out
 of scope with √kṛ itself.
 
 7.1.35 optionally replaces the loṭ endings `tu`/`hi` with tātaṅ (then
-8.2.39 obligatorily voices its final `t` to `d`), forking 56 cells (loṭ
-prathama and madhyama eka across the 28 parasmaipada roots — `tu`/`hi` are
-parasmaipada endings, so the curated set's 20 ātmanepada roots never reach
-this guard) — `Bavatu ~ BavatAd`, `Bava ~ BavatAd`. 8.4.56 optionally
+8.2.39 obligatorily voices its final `t` to `d`), forking 58 cells (loṭ
+prathama and madhyama eka across the 29 roots with a parasmaipada column —
+`tu`/`hi` are parasmaipada endings, so the curated set's 20 ātmanepada-only
+roots never reach this guard, and ubhayapadī √rudh reaches it in its
+parasmaipada cells only) — `Bavatu ~ BavatAd`, `Bava ~ BavatAd`. 8.4.56
+optionally
 devoices a pada-final jaś (produced by the now-obligatory 8.2.39) back to
-its car at the end of an utterance, forking 60 cells outright: laṅ and
-vidhiliṅ prathama eka across those same 28 parasmaipada roots (56 of them
+its car at the end of an utterance, forking 63 cells outright: laṅ and
+vidhiliṅ prathama eka across those same 29 parasmaipada columns (58 of them
 — 8.2.39's `d` is a parasmaipada-ending artifact, ātmanepada's laṅ/vidhiliṅ
-prathama eka endings are vowel-final and never reach a jhal), plus four
-rudhādi laṅ *madhyama* eka cells (√kṛt, √hiṃs, √bhañj, √piṣ), where 8.2.23
+prathama eka endings are vowel-final and never reach a jhal), plus five
+rudhādi laṅ *madhyama* eka cells (√kṛt, √hiṃs, √bhañj, √piṣ, √rudh), where
+8.2.23
 *saṁyogāntasya lopaḥ* has eaten the ending's own `s` and left the stem's
 jaś pada-final after all — `aBavad ~ aBavat`, `Baved ~ Bavet`,
-`apinaq ~ apinaw` — and forking a further 56 (the same loṭ cells 7.1.35
+`apinaq ~ apinaw`, `aruRad ~ aruRat` — and forking a further 58 (the same
+loṭ cells 7.1.35
 just forked) by devoicing the tātaṅ branch's `BavatAd` to `BavatAt`, which is
 what stacks the two rules into the three-branch loṭ cells above rather
 than a fourth branch: 8.4.56 declines on the vowel-final base branch

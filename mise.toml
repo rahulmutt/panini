@@ -41,7 +41,10 @@ run = "cargo fmt --all --check"
 # -j 4 --timeout 2400 caught 43 of 44 in 389-449s. -j 16 on 24 cores does
 # not clear 1200s; -j 4 does. Keep -j <= 4 with this cap, or raise the cap
 # in step. Re-check both the floor and the margin whenever the golden
-# suite grows again.
+# suite grows again. It has: the ubhayapada 1.3.72 slice took the suite to
+# 1800 cells, and `mise run test` there measured paradigm ~207s + roundtrip
+# ~240s + trace ~2s, an uncaught floor of ~450s -- more than the ~395s a
+# 4%-growth scaling predicts. 1200s still clears it, at -j <= 4.
 run = "cargo mutants --package panini-prakriya --test-workspace=true --timeout 1200"
 
 [tasks.audit]
