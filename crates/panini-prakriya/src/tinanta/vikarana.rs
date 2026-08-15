@@ -220,13 +220,17 @@ pub(crate) static VIKARANA: &[Rule] = &[
     //   6.1.101, 6.1.97 and 6.1.87 each ALSO mutate SHAP's last character
     //   once their (now identity-gated) guard passes — but that mutation
     //   code is not itself a second guard; it runs only after the identity
-    //   check already confirmed this cell's SHAP is thematic, and no rule
-    //   between vikaraṇa insertion and any of these five reaches that same
-    //   SHAP with a shape that has already drifted from `a`-final (the
-    //   only rule that could, 7.3.101, is disjoint with all five on
-    //   ENDING's leading sound — see the byte-identity note in Task 9's
-    //   report). Identity and shape happen to still coincide there; that is
-    //   not the same as the guard being a shape test.
+    //   check already confirmed this cell's SHAP is thematic. Identity and
+    //   shape do NOT stay coincident once that stage is running: √bhū loṭ
+    //   uttama eka takes `Bav + a + Ani` to `Bav + A + ni` at 6.1.101's
+    //   bhvādi arm, so 6.1.97 two rules later reads this tag on a SHAP
+    //   already drifted from `a`-final (7.3.101 drifts it the same way one
+    //   stage earlier, before an m/v-initial ending). What keeps those
+    //   mutations sound is the ENDING test each of the five carries
+    //   alongside the tag — an `A`-, guṇa- or `i`/`I`-initial ending, or
+    //   the bare `hi` — which the leftover ending never satisfies once the
+    //   drift has happened (`ni`/`va`/`ma`, `m`/`v`). See `Tag::Thematic`'s
+    //   own comment in `crate::term` for the worked trace.
     Rule {
         id: "3.1.81",
         name: "kryAdiByaH SnA",

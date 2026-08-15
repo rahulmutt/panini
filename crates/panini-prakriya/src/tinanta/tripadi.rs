@@ -276,9 +276,24 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // FIRST character of the NEXT term rather than anything in the bearing
     // term itself. `word_chars` already flattens exactly this cross-term
     // adjacency for the same reason 8.3.24 above reads it. Word-final falls
-    // out of the same scan for free: `i + 1 == w.len()` after 8.2.23 has
-    // eaten tip/sip's own letter, leaving `ENDING` empty and the dhātu's
-    // `j` as the last entry `word_chars` reports.
+    // out of the same scan for free — there is simply no next entry to test
+    // (`w.get(i + 1)` is `None`) after 8.2.23 has eaten tip/sip's own letter,
+    // leaving `ENDING` empty and the dhātu's `j` as the last entry
+    // `word_chars` reports.
+    //
+    // The word-final / jhal test lives INSIDE the search, not after it, the
+    // way 8.3.24's and 8.4.58's own searches further down this array do: the
+    // rule finds the first `j` that is genuinely word-final or jhal-followed
+    // rather than the first `j` in the word full stop, so a non-applicable
+    // `j` earlier in the word can never hide a later, applicable one. No cell
+    // in this suite has two `j`s to distinguish: √bhañj carries the only one
+    // that ever qualifies, and the other j-bearing roots (√ji, √juṣ, √vij)
+    // always present theirs before a vowel — √bhañj's own 3pl does too,
+    // reaching this rule as `Banjanti` (the `Y` of BaYjanti is 8.3.24 +
+    // 8.4.58's later work) and declining for exactly that reason.
+    // The scan is therefore deliberately NOT narrowed to √bhañj's known
+    // position: this is hardening against an ordering no witness here
+    // exercises, not a fix for one observed.
     Rule {
         id: "8.2.30",
         name: "coH kuH",
@@ -286,14 +301,12 @@ pub(crate) static TRIPADI: &[Rule] = &[
         vikalpa: false,
         apply: |p| {
             let w = word_chars(p);
-            let Some(i) = w.iter().position(|(_, _, c)| *c == 'j') else {
+            let Some(pos) = w.iter().enumerate().position(|(i, (_, _, c))| {
+                *c == 'j' && w.get(i + 1).is_none_or(|(_, _, next)| is_jhal(*next))
+            }) else {
                 return false;
             };
-            let word_final = i + 1 == w.len();
-            if !word_final && !is_jhal(w[i + 1].2) {
-                return false;
-            }
-            let (term, idx, _) = w[i];
+            let (term, idx, _) = w[pos];
             let before = p.snapshot();
             set_char(p, term, idx, 'g');
             p.record("8.2.30", "coH kuH", before);
@@ -350,9 +363,9 @@ pub(crate) static TRIPADI: &[Rule] = &[
             true
         },
     },
-    // 8.2.40 jhaṣas tathor dho'ḍhaḥ: after a jhaṣ (voiced aspirated stop),
+    // 8.2.40 jhaṣas tathor dho'dhaḥ: after a jhaṣ (voiced aspirated stop),
     // the ending's `t` or `T` (th) becomes `D`. inD + te -> inD + De, and
-    // the widened 8.4.53 (Task 6, below) then voices the stem's own `D` to
+    // the widened 8.4.53 (7b Task 6, below) then voices the stem's own `D` to
     // `d` before it: indDe. 8.4.65 optionally elides that `d` before the
     // savarṇa `D`, which is where inDe comes from.
     //
@@ -372,6 +385,12 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // (sound.rs's is_khar), so the stem's `D` devoices to `t`. `v` and `m`
     // are NOT khar, so 8.4.55 declines too and inDvahe/inDmahe keep their
     // stem `D` untouched.
+    //
+    // The jhaṣ test lives INSIDE the scan (the loop `continue`s rather than
+    // bailing), so a `t`/`T` earlier in the word that is not jhaṣ-preceded
+    // can never hide a later one that is; √indh's only candidate is its
+    // ending's own `t` either way, so the scan is a deliberate
+    // non-narrowing, hardening against a shape no witness here exercises.
     Rule {
         id: "8.2.40",
         name: "JazastaTorDo'DaH",
@@ -484,7 +503,7 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // sip. akfRad + s → akfRaH. The counterpart of 8.2.74 for a stem whose
     // final is already a stop — √kṛt's, voiced by 8.2.39 just above.
     //
-    // ORDERED ABOVE 8.2.73 (Task 8), against sūtra order, for the same
+    // ORDERED ABOVE 8.2.73 (7b Task 8), against sūtra order, for the same
     // structural reason as 8.2.74 just above: this rule needs to see the
     // dhātu's OWN `d`, not one 8.2.73 manufactured from an `s`.
     //
@@ -564,7 +583,7 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // testing for that emptiness, not for tip/sip directly, so it inherits
     // the restriction only as long as that fact holds.
     //
-    // RE-VERIFIED (Task 8), against the deferred hazard above. √bhañj and
+    // RE-VERIFIED (7b Task 8), against the deferred hazard above. √bhañj and
     // √piṣ are the first roots ADDED SINCE THE WARNING WAS WRITTEN to
     // empty `ENDING` under 8.2.23 — NOT the first roots after √hiṃs to do
     // so at all: √kṛt has emptied it at these same cells since 7a too
@@ -726,9 +745,9 @@ pub(crate) static TRIPADI: &[Rule] = &[
     //
     // The `g` arm is √bhañj's: coH kuH (8.2.30, above in this file's
     // pipeline order) has already turned the dhātu's final `j` into `g`
-    // before this rule runs (bhanaj + si → bhanag + si), so what precedes
+    // before this rule runs (Banaj + si → Banag + si), so what precedes
     // `si` here is the ku sound `g`, not yet devoiced to `k` — khari ca
-    // (8.4.55) sits below this rule and does that afterwards. bhanakzi
+    // (8.4.55) sits below this rule and does that afterwards. Banakzi
     // (`super::derivation_tests::bhanj_lat_all_nine_cells`) is the witness.
     //
     // The `k` arm is √piṣ's: zaQoH kaH si (8.2.41, above in this file's
@@ -793,11 +812,11 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // pinaz + wi → pinazwi; piMz + tas → piMzwaH; piMz + Di — in the loṭ
     // madhyama eka cell — takes the same D → Q step, and 8.4.53 below
     // carries it the rest of the way to the paradigm's finished piRqQi
-    // (Task 6).
+    // (7b Task 6).
     //
     // SŪTRA ORDER; LOAD-BEARING AS IMPLEMENTED. It sits above 8.4.53 because
     // that is where vidyut-prakriya's data/sutrapatha.tsv places it — but
-    // since Task 5 gave `jashtva_of` a `z → q` arm, the two rules no longer
+    // since 7b Task 5 gave `jashtva_of` a `z → q` arm, the two rules no longer
     // touch disjoint sounds on this junction: piMz + Di's `z` is now exactly
     // what jaśtva would take if it saw it first. With 8.4.41 above, it fires
     // on the `z`/`D` pair before 8.4.53 runs, retroflexing D → Q; 8.4.53
@@ -809,10 +828,10 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // fire on, giving piMqDi instead.
     //
     // The two orders fail to converge for an implementation reason, not a
-    // sūtra one. BEFORE Task 6, two separate narrowings held them apart:
+    // sūtra one. BEFORE 7b Task 6, two separate narrowings held them apart:
     // THIS rule's trigger set is `z` only (see NARROW GUARD below), not the
     // full ṭ-varga ṣṭunā ṣṭuḥ names (`w W q Q R`); and 8.4.53's guard used
-    // to check for a literal penult `D`, not "any jhaś." Task 6 generalised
+    // to check for a literal penult `D`, not "any jhaś." 7b Task 6 generalised
     // 8.4.53 from literal-`D` to jhal-before-jhaś (Q qualifies), which
     // removed 8.4.53's narrowing — the AS-IMPLEMENTED order (8.4.41 above
     // 8.4.53) now converges correctly to piMqQi, as traced above and pinned
@@ -880,16 +899,16 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // in shape — the same cell of the same gaṇa, reached by two different
     // rules. Both are asserted in `super::derivation_tests`.
     //
-    // GENERALISED (Task 6). The guard used to read "the word ends in `i`
+    // GENERALISED (7b Task 6). The guard used to read "the word ends in `i`
     // and the penult is `D`" — the only shape 7a's two witnesses (kfndDi,
     // hinDi) ever reached it through, so it was never written wider than
     // that. It stops being true here: √piṣ's piRqQi conditions this rule
     // on a `Q` — 8.4.41 just above has already retroflexed 6.4.101's `Di`
-    // to `Qi` before this rule ever runs — and √indh (Task 7) conditions
+    // to `Qi` before this rule ever runs — and √indh (7b Task 7) conditions
     // it on a `D` that sits mid-word, in `De`, `Da`, `DAm`, `Dve`, `DAH`
     // and `Dvam`, never at the word's own end. Four of those six (`De`,
-    // `Da`, `DAm`, `DAH`) are newly created by the upcoming 8.2.40 jaṣas
-    // tathor dho'ḍhaḥ (t/th → D after a stem's jhaṣ); `Dve`/`Dvam` are not
+    // `Da`, `DAm`, `DAH`) are newly created by the upcoming 8.2.40 jhaṣas
+    // tathor dho'dhaḥ (t/th → D after a stem's jhaṣ); `Dve`/`Dvam` are not
     // — see NOT NARROWED below for why they still need this rule. The
     // guard now reads the sūtra's actual condition instead: `is_jhash`
     // locates the jhaś, `jashtva_of` on the sound immediately before it
@@ -904,7 +923,7 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // separate ways for the two kinds of jhaś-initial affix in this
     // grammar:
     //
-    // 8.2.40 (Task 7) is the only NEW source of a D-initial ending —
+    // 8.2.40 (7b Task 7) is the only NEW source of a D-initial ending —
     // besides the pre-existing 6.4.101 her dhiḥ — and it requires a jhaṣ
     // already abutting the ending, which no root in the suite besides
     // √indh ever presents: every OTHER gaṇa represented here inserts a
@@ -914,7 +933,7 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // through √indh.
     //
     // `Dve`/`Dvam` (and the iṭ-augmented `IDvam`) are a SEPARATE case: no
-    // rule creates them at all. `Dvam` is the raw ātmanepada
+    // rule creates their `D`. `Dvam` is the raw ātmanepada
     // madhyama-bahu pratyaya straight out of `panini-data`'s `tin_ending`
     // table, and 3.4.79 wita AtmanepadAnAM wer e — a general ṭi
     // substitution with no jhaṣ condition of its own — turns it to `Dve`
@@ -924,7 +943,7 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // vaDve, AsIDvam, laBaDvam) or an already-jaś `d` (KindDve)
     // immediately before the `D` — never an untreated jhal — so this rule
     // either has nothing to see or the no-op guard declines it. √indh's
-    // own indDve/indDvam (Task 7) are the one cell where a stem-final
+    // own indDve/indDvam (7b Task 7) are the one cell where a stem-final
     // jhaṣ genuinely meets this native `D`, and that is exactly where
     // this rule is supposed to fire.
     //
@@ -972,7 +991,7 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // 8.4.56 both follow it now — but still ordered after every other 8.3/8.4
     // rule that precedes it.
     //
-    // FIXED for rudhādi's ANGA/SHAP split (Task 7, √khid's Kintte the
+    // FIXED for rudhādi's ANGA/SHAP split (7a Task 7, √khid's Kintte the
     // witness). This rule predates gaṇa 7 and originally read
     // `p.terms[ANGA]` directly for both "the aṅga's final sound" and, via
     // "the first non-empty term after ANGA", for "the ending's first
@@ -1198,7 +1217,7 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // rule would then fire on that pada-final `tt` just as readily, since
     // both `t`s are savarṇa either way. What the stated order fixes is the
     // sequence each branch's trace records the two rules in — 8.4.65 before
-    // 8.4.56 — which Task 9's `kfntAt` trace pin in
+    // 8.4.56 — which 7a Task 9's `kfntAt` trace pin in
     // `crates/panini/tests/trace.rs` asserts directly
     // (`at(&t, "8.4.65") < at(&t, "8.4.56")`). `tinanta_rule_order_is_pinned`
     // in `super::derivation_tests` is what holds this file's order today.

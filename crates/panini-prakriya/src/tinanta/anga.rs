@@ -318,7 +318,8 @@ pub(crate) static ANGA_RULES: &[Rule] = &[
                 return false;
             };
             // śnam's own `na`, then the root's tail. Only a tail whose first
-            // sound is `n` is in scope in 7a.
+            // sound is `n` is in scope — √hiṃs's `ns`, √bhañj's `nj` and
+            // √indh's `nD`; see the NARROW GUARD note above.
             let rest: String = shap.text.chars().skip(2).collect();
             if !rest.starts_with('n') {
                 return false;

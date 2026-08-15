@@ -169,7 +169,7 @@
     eka to `piMqQi` (`piRqQi` after 8.4.58) and lets √indh's mid-word `D`s
     reach the rule at all. 7b's own four sūtras are one per family: 8.2.30
     *coḥ kuḥ* (√bhañj's `j` → `g`), 8.4.41 *ṣṭunā ṣṭuḥ* and 8.2.41 *ṣaḍhoḥ
-    kaḥ si* (√piṣ), and 8.2.40 *jhaṣas tathor dho'ḍhaḥ* (√indh). The vikalpa
+    kaḥ si* (√piṣ), and 8.2.40 *jhaṣas tathor dho'dhaḥ* (√indh). The vikalpa
     set is unchanged at **seven** rules, in pipeline order: 7.1.35, 3.4.111,
     6.4.107, 8.2.74, 8.2.75, 8.4.65, 8.4.56 — 7b is the first gaṇa slice
     since the `vikalpa` flag landed (`53e03e7`) to add none; kryādi and
@@ -212,6 +212,18 @@
   (ashtadhyayi.com is a JS single-page app that cannot be fetched
   programmatically), and that is what specs, plans, and verification in this
   repo actually check ids/names against.
+  Each gaṇa slice also runs a **whole-corpus cross-implementation audit**
+  against that same vendored checkout — an out-of-repo harness under its
+  `examples/`, comparing derivation sets cell by cell (7b: 1728 cells, 1941
+  forms, zero differences). One residual circularity is known and unfixed:
+  the harness resolves each root to a `data/dhatupatha.tsv` entry by
+  requiring vidyut to reproduce **this engine's own pinned laṭ prathama eka
+  form**, so for a root whose new sūtra shapes exactly that cell — √bhañj's
+  `Banakti`, √piṣ's `pinazwi`, √indh's `indDe` — the anchoring cell is the
+  one cell the audit cannot independently validate. The next slice should key
+  entry selection on the dhātupāṭha number instead (`07.0016` for √bhañj);
+  that number currently sits only in a comment above eight of the 48 `Dhatu`
+  rows, so doing so means promoting it to a real field on `Dhatu` first.
 - New grammar goes in `TINANTA_RULES` as a self-guarding `Rule`, not as a
   branch inside `derive`. `TINANTA_RULES` is a list of seven stage arrays,
   each living in its own file under `crates/panini-prakriya/src/tinanta/`; add

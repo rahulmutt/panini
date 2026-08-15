@@ -1167,7 +1167,7 @@ fn bhanakti_trace_shows_8_2_30_then_8_4_55() {
 
 #[test]
 fn indhe_trace_shows_8_2_40_then_8_4_53() {
-    // inD + te -> inD + De (8.2.40 jhaṣas tathor dho'ḍhaḥ turns the
+    // inD + te -> inD + De (8.2.40 jhaṣas tathor dho'dhaḥ turns the
     // ending's `t` into `D` after the stem's jhaṣ), then the anusvāra
     // round trip runs across it: iMDDe (8.3.24 naścāpadāntasya jhali
     // turns śnam's `n` into an anusvāra before the jhaṣ `D`) -> iMdDe
