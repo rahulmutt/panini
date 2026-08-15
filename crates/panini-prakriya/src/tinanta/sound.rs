@@ -75,6 +75,14 @@ pub(crate) fn is_khar(c: char) -> bool {
     )
 }
 
+/// A jhaś (voiced aspirated stop) — the five vargas' fourth member, `G J Q D
+/// B`. 8.4.53's conditioning class: a jhal immediately before a jhaś becomes
+/// its own jaś (`jashtva_of`) — the conditioning jhaś's place plays no part
+/// in the substitute.
+pub(crate) fn is_jhash(c: char) -> bool {
+    matches!(c, 'G' | 'J' | 'Q' | 'D' | 'B')
+}
+
 /// 8.4.1's trigger set: `r`, `z`, and the r-vowels `f`/`F`, which contain the
 /// r-sound by 1.1.51 *uraṇ raparaḥ*. `S` (the palatal śa) is deliberately
 /// absent — it is not `z` (the retroflex ṣa) despite the visual similarity,
@@ -118,12 +126,17 @@ pub(crate) fn cartva_of(c: char) -> Option<char> {
 }
 
 /// The *jaś* (voiced unaspirated) counterpart of a jhal, by place of
-/// articulation. `None` for a sound with no jaś — the sibilants and `h`.
+/// articulation. `ṣ` (z) is the one sibilant with a jaś here: it has none by
+/// place-and-manner correspondence (the sibilants are not stops), but 1.1.50
+/// sthāne'ntaratamaḥ selects the nearest substitute, which for retroflex ṣ is
+/// retroflex ḍ (q). `S` and `s` deliberately stay `None` — `S` is unreached by
+/// any curated root, and a word-final `s` is 8.2.66 / 8.3.15's business, not
+/// jaśtva's. `h` also has no jaś.
 pub(crate) fn jashtva_of(c: char) -> Option<char> {
     Some(match c {
         'k' | 'K' | 'g' | 'G' => 'g',
         'c' | 'C' | 'j' | 'J' => 'j',
-        'w' | 'W' | 'q' | 'Q' => 'q',
+        'w' | 'W' | 'q' | 'Q' | 'z' => 'q',
         't' | 'T' | 'd' | 'D' => 'd',
         'p' | 'P' | 'b' | 'B' => 'b',
         _ => return None,
@@ -275,10 +288,17 @@ mod tests {
         for c in ['p', 'P', 'b', 'B'] {
             assert_eq!(jashtva_of(c), Some('b'), "{c} should jashtva to b");
         }
-        // The sibilants and h have no jaś counterpart.
-        for c in ['s', 'S', 'z', 'h'] {
+        // h has no jaś counterpart.
+        for c in ['s', 'h'] {
             assert_eq!(jashtva_of(c), None, "{c} should not jashtva");
         }
+        // ṣ has no jaś by place alone — the sibilants are not stops. 1.1.50
+        // sthāne'ntaratamaḥ selects the nearest, which for retroflex ṣ is
+        // retroflex ḍ. `S` and `s` stay absent: `S` is unreachable here,
+        // and a word-final `s` is 8.2.66 / 8.3.15's, not jaśtva's.
+        assert_eq!(jashtva_of('z'), Some('q'));
+        assert_eq!(jashtva_of('S'), None);
+        assert_eq!(jashtva_of('s'), None);
     }
 
     #[test]
@@ -312,6 +332,18 @@ mod tests {
         assert!(!is_savarna('S', 'c'), "S/c should not be savarRa");
         // Different stop series are not savarRa with each other.
         assert!(!is_savarna('t', 'k'), "t/k should not be savarRa");
+    }
+
+    #[test]
+    fn is_jhash_covers_exactly_the_voiced_aspirates() {
+        for c in ['G', 'J', 'Q', 'D', 'B'] {
+            assert!(is_jhash(c), "{c} is a jhaś");
+        }
+        for c in [
+            'g', 'j', 'q', 'd', 'b', 'k', 'c', 'w', 't', 'p', 's', 'z', 'S', 'h', 'a',
+        ] {
+            assert!(!is_jhash(c), "{c} is not a jhaś");
+        }
     }
 
     #[test]

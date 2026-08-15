@@ -37,6 +37,7 @@ pub(crate) static VIKARANA: &[Rule] = &[
             let mut s = Term::new("Syan");
             s.add(Tag::Vikarana);
             s.add(Tag::Sarvadhatuka);
+            s.add(Tag::Thematic); // a-final after it-lopa: Syan -> ya
             p.terms.insert(SHAP, s);
             p.record("3.1.69", "divAdiByaH Syan", before);
             let mut s = p.terms[SHAP].clone();
@@ -94,6 +95,7 @@ pub(crate) static VIKARANA: &[Rule] = &[
             let mut s = Term::new("Sa");
             s.add(Tag::Vikarana);
             s.add(Tag::Sarvadhatuka);
+            s.add(Tag::Thematic); // a-final after it-lopa: Sa -> a
             p.terms.insert(SHAP, s);
             p.record("3.1.77", "tudAdiByaH SaH", before);
             let mut s = p.terms[SHAP].clone();
@@ -195,9 +197,40 @@ pub(crate) static VIKARANA: &[Rule] = &[
     // also non-`a`-final, so `is_empty()` misses it exactly where an
     // athematic arm is needed. 6.1.66 (`adesha.rs`) learned this the hard
     // way — its old emptiness guard produced *vfRIyta instead of vfRIta
-    // until it was widened to `!SHAP.ends_with('a')`, which is the correct
-    // test. Any new rule reading terms[SHAP] to distinguish the athematic
-    // path from the thematic one should use that test, not emptiness.
+    // until it was widened to `!SHAP.ends_with('a')`.
+    //
+    // That text test was itself later found unsound, but not simply
+    // "replace it with the tag" unsound — the two are different questions,
+    // and a rule must pick the one it actually means:
+    //   - "IS SHAP one of the four a-final vikaraṇas (śap/śyan/śa/śānac)":
+    //     `Tag::Thematic` (its own comment in `term.rs`). This is what an
+    //     athematic-vs-thematic PATH GUARD wants — deciding WHICH of a
+    //     rule's arms applies — and it is what 6.1.101, 6.1.97, 6.1.87,
+    //     6.1.66's athematic arm and 6.4.105 (`adesha.rs`) all guard on
+    //     now. rudhādi's śnam-infix split (3.1.78) leaves SHAP as the
+    //     a-final `"na"`, which is not one of the four; the text test could
+    //     not tell the difference and silently mistreated śnam as śap.
+    //   - "DOES SHAP's text currently end in short `a`": plain
+    //     `SHAP.text.ends_with('a')`, unchanged, still the guard for
+    //     7.3.101 (`super::guna`) — a rule doing vowel SANDHI on that `a`,
+    //     which needs the current surface shape, not the vikaraṇa's
+    //     identity, and for which the two CAN differ (a thematic vikaraṇa
+    //     whose `a` an earlier rule already rewrote is still thematic by
+    //     identity, but is no longer `a`-final by shape).
+    //   6.1.101, 6.1.97 and 6.1.87 each ALSO mutate SHAP's last character
+    //   once their (now identity-gated) guard passes — but that mutation
+    //   code is not itself a second guard; it runs only after the identity
+    //   check already confirmed this cell's SHAP is thematic. Identity and
+    //   shape do NOT stay coincident once that stage is running: √bhū loṭ
+    //   uttama eka takes `Bav + a + Ani` to `Bav + A + ni` at 6.1.101's
+    //   bhvādi arm, so 6.1.97 three rules later reads this tag on a SHAP
+    //   already drifted from `a`-final (7.3.101 drifts it the same way one
+    //   stage earlier, before an m/v-initial ending). What keeps those
+    //   mutations sound is the ENDING test each of the five carries
+    //   alongside the tag — an `A`-, guṇa- or `i`/`I`-initial ending, or
+    //   the bare `hi` — which the leftover ending never satisfies once the
+    //   drift has happened (`ni`/`va`/`ma`/`vahE`/`mahE`, `m`/`v`). See `Tag::Thematic`'s
+    //   own comment in `crate::term` for the worked trace.
     Rule {
         id: "3.1.81",
         name: "kryAdiByaH SnA",
@@ -240,6 +273,7 @@ pub(crate) static VIKARANA: &[Rule] = &[
             s.add(Tag::Vikarana);
             s.add(Tag::Sarvadhatuka);
             s.add(Tag::Pit); // p-anubandha: śap is pit, so 1.2.4 leaves it alone
+            s.add(Tag::Thematic); // a-final after it-lopa: Sap -> a
             p.terms.insert(SHAP, s);
             p.record("3.1.68", "kartari Sap", before);
             let mut s = p.terms[SHAP].clone();
@@ -255,6 +289,19 @@ pub(crate) static VIKARANA: &[Rule] = &[
     // and text() = root + "" + ending). Guarded on Tag::Adadi and on a real
     // śap being present, so it never touches divādi/tudādi (śyan/śa) or bhvādi
     // that has already been processed differently.
+    //
+    // Also drops Tag::Thematic, which 3.1.68 just set: even though
+    // `Tag::Thematic` is an IDENTITY tag ("this term IS one of the four
+    // a-final vikaraṇas"), not a live-shape one — see its own comment —
+    // luk (1.1.61 pratyayasya lopa ādarśanam) removes the vikaraṇa ITSELF,
+    // so after this rule the term is no longer śap at any level, identity
+    // included. `Tag::Vikarana` stays: it marks that a vikaraṇa-shaped term
+    // occupies the slot at all (needed for sthānivadbhāva / apavāda
+    // bookkeeping elsewhere), which luk does not undo. Leaving
+    // `Tag::Thematic` set here would let the five `adesha.rs` rules that
+    // read it treat adādi's empty, luk'd śap as still one of the thematic
+    // four, which the text test they replaced never did
+    // (`"".ends_with('a')` is false).
     Rule {
         id: "2.4.72",
         name: "adipraBftiByaH SapaH",
@@ -272,6 +319,7 @@ pub(crate) static VIKARANA: &[Rule] = &[
             }
             let before = p.snapshot();
             p.terms[SHAP].text = String::new();
+            p.terms[SHAP].remove(Tag::Thematic);
             p.record("2.4.72", "adipraBftiByaH SapaH", before);
             true
         },
@@ -344,7 +392,10 @@ pub(crate) static VIKARANA: &[Rule] = &[
     // following, śnā is replaced wholesale by śānac. it-samjña strips the
     // leading S (1.3.8) and the final c (1.3.3), leaving `Ana`; the existing
     // 6.4.105 ato heḥ then elides the hi after śāna's short `a`, giving
-    // kliSAna. No new rule is needed for the hi-lopa.
+    // kliSAna. No new rule is needed for the hi-lopa. śānac is the FOURTH
+    // a-final vikaraṇa (with śap, śyan, śa) and carries `Tag::Thematic` for
+    // exactly that reason — 6.4.105 reads the tag, not śāna's text, to
+    // decide whether it applies.
     //
     // Placement carries two constraints, both failing visibly:
     //   - BEFORE 6.4.113 (anga stage, later): that rule would otherwise turn
@@ -383,6 +434,7 @@ pub(crate) static VIKARANA: &[Rule] = &[
             let mut s = Term::new("SAnac");
             s.add(Tag::Vikarana);
             s.add(Tag::Sarvadhatuka);
+            s.add(Tag::Thematic); // a-final after it-lopa: SAnac -> Ana
             p.terms[SHAP] = s;
             p.record("3.1.83", "halaH SnaH SAnajJO", before);
             let mut s = p.terms[SHAP].clone();

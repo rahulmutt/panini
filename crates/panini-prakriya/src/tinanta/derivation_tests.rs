@@ -119,9 +119,9 @@ fn tinanta_rule_order_is_pinned() {
         "7.3.100", "7.1.5", "7.1.6", "7.1.3", "7.2.79", "7.2.80", "7.2.81", "6.4.23", "7.4.21",
         "7.3.84", "7.3.86", "7.3.84", "6.4.87", "6.4.77", "6.1.78", "7.3.101", "6.4.112",
         "6.4.113", "6.1.101", "6.1.96", "6.1.90", "6.1.97", "6.1.87", "6.1.66", "6.4.105",
-        "6.4.106", "6.4.107", "6.4.101", "6.4.111", "8.2.77", "8.2.23", "8.2.25", "8.2.39",
-        "8.2.74", "8.2.73", "8.2.75", "8.3.15", "8.3.24", "8.3.59", "8.4.53", "8.4.55", "8.4.1",
-        "8.4.2", "8.4.58", "8.4.65", "8.4.56",
+        "6.4.106", "6.4.107", "6.4.101", "6.4.111", "8.2.77", "8.2.23", "8.2.25", "8.2.30",
+        "8.2.39", "8.2.40", "8.2.41", "8.2.74", "8.2.75", "8.2.73", "8.3.15", "8.3.24", "8.3.59",
+        "8.4.41", "8.4.53", "8.4.55", "8.4.1", "8.4.2", "8.4.58", "8.4.65", "8.4.56",
     ];
     let actual: Vec<&str> = rules().map(|r| r.id).collect();
     assert_eq!(actual, expected);
@@ -1339,6 +1339,48 @@ fn shnams_ru_fires_on_the_dhatus_own_final() {
 }
 
 #[test]
+fn the_ru_alternation_stays_off_the_new_roots() {
+    // 8.2.73's deferred re-verification, discharged. √bhañj and √piṣ are
+    // the first roots ADDED SINCE THE WARNING WAS WRITTEN to empty ENDING
+    // under 8.2.23 — NOT the first roots after √hiṃs to do so at all:
+    // √kṛt has emptied it at these same cells since 7a too (8.2.75 fires
+    // for it there, which requires `dhatu_is_pada_final`). √bhañj and
+    // √piṣ are the first live test of the invariant since the warning
+    // was written, i.e. since the root set was last widened.
+    //
+    // The invariant HOLDS: both empty it at laṅ prathama/madhyama eka,
+    // i.e. still tip and sip. And 8.2.73 declines on them regardless: by
+    // the time it runs, 8.2.30 has already velarised √bhañj's stem to
+    // `aBanag` and 8.2.39 has already voiced √piṣ's to `apinaq`, and its
+    // `s`-final check does not match either. If it over-fired, these
+    // cells would surface a `d` and then a visarga via 8.2.75 and 8.3.15.
+    for (root, want) in [("Banj", "aBanag"), ("piz", "apinaq")] {
+        for pu in [Purusha::Prathama, Purusha::Madhyama] {
+            assert_eq!(
+                form_g_forked(root, Lakara::Lan, pu, Vacana::Eka, 2),
+                want,
+                "{root} laṅ eka took the ru alternation"
+            );
+        }
+    }
+}
+
+#[test]
+fn no_8_2_73_step_appears_for_bhanj_or_pish() {
+    for root in ["Banj", "piz"] {
+        for pu in [Purusha::Prathama, Purusha::Madhyama] {
+            let d = dhatus().iter().find(|d| d.id == root).unwrap();
+            for p in derive(d, Lakara::Lan, d.pada, pu, Vacana::Eka) {
+                assert!(
+                    !p.log.iter().any(|s| s.sutra == "8.2.73"),
+                    "{root}: 8.2.73 fired outside √hiṃs"
+                );
+            }
+        }
+    }
+}
+
+#[test]
 fn rudhadi_vidhilin_madhyama_eka_is_untouched_by_the_ru_alternation() {
     // `Context::is_sip` (8.2.74's guard) is a lakāra-blind slot predicate
     // (parasmaipada madhyama eka, regardless of lakāra), so this cell —
@@ -1362,4 +1404,354 @@ fn rudhadi_vidhilin_madhyama_eka_is_untouched_by_the_ru_alternation() {
         form_g("his", Lakara::VidhiLin, Purusha::Madhyama, Vacana::Eka),
         "hiMsyAH"
     );
+}
+
+#[test]
+fn bhanj_lat_all_nine_cells() {
+    // The strong stem velarises (Banaj + ti -> Banag + ti -> Banakti, via
+    // 8.2.30 then 8.4.55); the weak stem does the same across the anusvāra
+    // round trip (Banj + taH -> Bang + taH -> BaMgtaH -> BaMktaH ->
+    // BaNktaH). The `n` that survives in BaNktaH is śnam's: 6.4.23 already
+    // took the root's own `n` out.
+    let cells = [
+        (Purusha::Prathama, Vacana::Eka, "Banakti"),
+        (Purusha::Prathama, Vacana::Dvi, "BaNktaH"),
+        (Purusha::Prathama, Vacana::Bahu, "BaYjanti"),
+        (Purusha::Madhyama, Vacana::Eka, "Banakzi"),
+        (Purusha::Madhyama, Vacana::Dvi, "BaNkTaH"),
+        (Purusha::Madhyama, Vacana::Bahu, "BaNkTa"),
+        (Purusha::Uttama, Vacana::Eka, "Banajmi"),
+        (Purusha::Uttama, Vacana::Dvi, "BaYjvaH"),
+        (Purusha::Uttama, Vacana::Bahu, "BaYjmaH"),
+    ];
+    for (pu, va, want) in cells {
+        assert_eq!(form_g("Banj", Lakara::Lat, pu, va), want);
+    }
+}
+
+#[test]
+fn bhanj_lan_eka_velarises_word_finally() {
+    // 8.2.23 eats tip's own `t` (and sip's own `s`), leaving the dhātu's
+    // `j` as the true word end; 8.2.30 then applies word-finally rather
+    // than before a jhal. Both eka cells fork on 8.4.56 alone.
+    assert_eq!(
+        form_g_forked("Banj", Lakara::Lan, Purusha::Prathama, Vacana::Eka, 2),
+        "aBanag"
+    );
+    assert_eq!(
+        form_g_forked("Banj", Lakara::Lan, Purusha::Madhyama, Vacana::Eka, 2),
+        "aBanag"
+    );
+}
+
+#[test]
+fn bhanj_lot_madhyama_eka_is_bhangdhi() {
+    // 6.4.101 her dhiH gives the `Di`; 8.2.30 velarises the `j` before it
+    // (a jhal), and 8.4.53 declines because `g` is already its own jaś.
+    // Three branches: the declined one plus 7.1.35's tātaṅ and its 8.4.56
+    // pausal fork.
+    assert_eq!(
+        form_g_forked("Banj", Lakara::Lot, Purusha::Madhyama, Vacana::Eka, 3),
+        "BaNgDi"
+    );
+}
+
+#[test]
+fn coh_kuh_declines_before_a_non_jhal_non_final() {
+    // The witnesses that keep 8.2.30's guard from being written too wide.
+    // In BaYjanti what follows the `j` is `a`, and in BaYjvaH it is `v` —
+    // neither a jhal nor a word end — so the `j` survives to take 8.3.24's
+    // anusvāra and 8.4.58's palatal parasavarṇa instead.
+    assert_eq!(
+        form_g("Banj", Lakara::Lat, Purusha::Prathama, Vacana::Bahu),
+        "BaYjanti"
+    );
+    assert_eq!(
+        form_g("Banj", Lakara::Lat, Purusha::Uttama, Vacana::Dvi),
+        "BaYjvaH"
+    );
+}
+
+#[test]
+fn pish_lat_retroflexes_around_the_shnam_stem() {
+    // 8.4.41 ṣṭunā ṣṭuḥ: the ending's dental retroflexes in contact with
+    // the root's ṣ. Madhyama eka (pinakzi) is deliberately absent — it
+    // needs 8.2.41, which lands in the next task.
+    let cells = [
+        (Purusha::Prathama, Vacana::Eka, "pinazwi"),
+        (Purusha::Prathama, Vacana::Dvi, "piMzwaH"),
+        (Purusha::Prathama, Vacana::Bahu, "piMzanti"),
+        (Purusha::Madhyama, Vacana::Dvi, "piMzWaH"),
+        (Purusha::Madhyama, Vacana::Bahu, "piMzWa"),
+        (Purusha::Uttama, Vacana::Eka, "pinazmi"),
+        (Purusha::Uttama, Vacana::Dvi, "piMzvaH"),
+        (Purusha::Uttama, Vacana::Bahu, "piMzmaH"),
+    ];
+    for (pu, va, want) in cells {
+        assert_eq!(form_g("piz", Lakara::Lat, pu, va), want);
+    }
+}
+
+#[test]
+fn pish_weak_stem_keeps_its_anusvara() {
+    // The SECOND witness that 8.3.24 and 8.4.58 are not a no-op pair.
+    // 8.4.58 needs a yay to follow; what follows here is the root's own
+    // `z`, which is śal — so piMzwaH keeps the anusvāra that kfntaH
+    // resolves. √hiṃs's hiMstaH was the first witness, in 7a.
+    assert_eq!(
+        form_g("piz", Lakara::Lat, Purusha::Prathama, Vacana::Dvi),
+        "piMzwaH"
+    );
+}
+
+#[test]
+fn shtutva_requires_strict_adjacency() {
+    // piMzanti keeps a DENTAL n: the `a` between the ṣ and the n breaks
+    // the contact 8.4.41 requires. pinazARi's retroflex ṇ is a different
+    // rule's — ṇatva (8.4.1 / 8.4.2), which 8.4.2 explicitly lets an aṭ
+    // intervene in. Conflating the two would retroflex piMzanti as well.
+    assert_eq!(
+        form_g("piz", Lakara::Lat, Purusha::Prathama, Vacana::Bahu),
+        "piMzanti"
+    );
+    assert_eq!(
+        form_g("piz", Lakara::Lot, Purusha::Uttama, Vacana::Eka),
+        "pinazARi"
+    );
+}
+
+#[test]
+fn pish_vidhilin_all_nine_cells() {
+    // The optative's `y` is neither dental stop nor `s`, so 8.4.41 has
+    // nothing to do here; the cells are pure weak stem plus 8.4.56 on
+    // prathama eka.
+    assert_eq!(
+        form_g_forked("piz", Lakara::VidhiLin, Purusha::Prathama, Vacana::Eka, 2),
+        "piMzyAd"
+    );
+    let cells = [
+        (Purusha::Prathama, Vacana::Dvi, "piMzyAtAm"),
+        (Purusha::Prathama, Vacana::Bahu, "piMzyuH"),
+        (Purusha::Madhyama, Vacana::Eka, "piMzyAH"),
+        (Purusha::Madhyama, Vacana::Dvi, "piMzyAtam"),
+        (Purusha::Madhyama, Vacana::Bahu, "piMzyAta"),
+        (Purusha::Uttama, Vacana::Eka, "piMzyAm"),
+        (Purusha::Uttama, Vacana::Dvi, "piMzyAva"),
+        (Purusha::Uttama, Vacana::Bahu, "piMzyAma"),
+    ];
+    for (pu, va, want) in cells {
+        assert_eq!(form_g("piz", Lakara::VidhiLin, pu, va), want);
+    }
+}
+
+#[test]
+fn pish_lat_madhyama_eka_is_pinakshi() {
+    // 8.2.41 ṣaḍhoḥ kaḥ si takes the ṣ to `k` before the ending's `s`,
+    // and 8.3.59 then retroflexes that `s` after the new `k` — the
+    // widening this cell forces, and the one 8.3.59's own comment
+    // predicted ("h/y/v/r/l or k").
+    assert_eq!(
+        form_g("piz", Lakara::Lat, Purusha::Madhyama, Vacana::Eka),
+        "pinakzi"
+    );
+}
+
+#[test]
+fn shadhoh_kah_si_declines_when_8_2_23_ate_the_s_first() {
+    // THE LOAD-BEARING ORDER of this slice. At laṅ madhyama eka the
+    // ending is a bare `s`, so 8.2.23 saṁyogāntasya lopaḥ elides it
+    // before 8.2.41 can see it, and the cell reduces through 8.2.39 and
+    // 8.4.56 to exactly what laṅ prathama eka gives. Run 8.2.41 above
+    // 8.2.23 and you get `apinak` instead — a plausible-looking form that
+    // splits madhyama eka from prathama eka.
+    assert_eq!(
+        form_g_forked("piz", Lakara::Lan, Purusha::Madhyama, Vacana::Eka, 2),
+        "apinaq"
+    );
+    assert_eq!(
+        form_g_forked("piz", Lakara::Lan, Purusha::Prathama, Vacana::Eka, 2),
+        "apinaq"
+    );
+}
+
+#[test]
+fn pish_lan_all_nine_cells() {
+    let cells = [
+        (Purusha::Prathama, Vacana::Dvi, "apiMzwAm"),
+        (Purusha::Prathama, Vacana::Bahu, "apiMzan"),
+        (Purusha::Madhyama, Vacana::Dvi, "apiMzwam"),
+        (Purusha::Madhyama, Vacana::Bahu, "apiMzwa"),
+        (Purusha::Uttama, Vacana::Eka, "apinazam"),
+        (Purusha::Uttama, Vacana::Dvi, "apiMzva"),
+        (Purusha::Uttama, Vacana::Bahu, "apiMzma"),
+    ];
+    for (pu, va, want) in cells {
+        assert_eq!(form_g("piz", Lakara::Lan, pu, va), want);
+    }
+}
+
+#[test]
+fn pish_lot_madhyama_eka_is_pinddhi() {
+    // The deepest cell in this slice: four branches. 6.4.101 her dhiH
+    // gives the `Di`; 8.4.41 retroflexes it to `Qi`; 8.4.53 (widened to
+    // any jhaś, not just `D`) voices the ṣ to `q` before it; 8.4.58 takes
+    // the anusvāra to `R` as that `q`'s parasavarṇa; and 8.4.65 optionally
+    // elides the `q` before the savarṇa `Q`. 7.1.35's tātaṅ and its 8.4.56
+    // fork supply the other two branches.
+    assert_eq!(
+        form_g_forked("piz", Lakara::Lot, Purusha::Madhyama, Vacana::Eka, 4),
+        "piRqQi"
+    );
+}
+
+#[test]
+fn pish_lot_all_nine_cells() {
+    assert_eq!(
+        form_g_forked("piz", Lakara::Lot, Purusha::Prathama, Vacana::Eka, 3),
+        "pinazwu"
+    );
+    let cells = [
+        (Purusha::Prathama, Vacana::Dvi, "piMzwAm"),
+        (Purusha::Prathama, Vacana::Bahu, "piMzantu"),
+        (Purusha::Madhyama, Vacana::Dvi, "piMzwam"),
+        (Purusha::Madhyama, Vacana::Bahu, "piMzwa"),
+        (Purusha::Uttama, Vacana::Eka, "pinazARi"),
+        (Purusha::Uttama, Vacana::Dvi, "pinazAva"),
+        (Purusha::Uttama, Vacana::Bahu, "pinazAma"),
+    ];
+    for (pu, va, want) in cells {
+        assert_eq!(form_g("piz", Lakara::Lot, pu, va), want);
+    }
+}
+
+#[test]
+fn jhalam_jash_jhashi_still_declines_on_its_two_pre_existing_shapes() {
+    // The widening must not disturb either 7a cell. √khid's KindDve
+    // presents a `d` that is already its own jaś — the NO-OP GUARD
+    // declines it. √hiṃs's hinDi presents an `n`, for which jashtva_of
+    // returns None — a DIFFERENT clause. Both remain branch 0.
+    assert_eq!(
+        form_g_forked("Kid", Lakara::Lat, Purusha::Madhyama, Vacana::Bahu, 2),
+        "KindDve"
+    );
+    assert_eq!(
+        form_g_forked("his", Lakara::Lot, Purusha::Madhyama, Vacana::Eka, 3),
+        "hinDi"
+    );
+}
+
+#[test]
+fn indh_lat_all_nine_cells() {
+    // 8.2.40 turns the ending's `t` into `D` after the stem's jhaṣ, and
+    // the widened 8.4.53 then voices the stem's own `D` to `d` before it:
+    // inD + te -> inD + De -> indDe. 8.4.65 optionally elides that `d`
+    // before the savarṇa `D`, which is where inDe comes from.
+    assert_eq!(
+        form_g_forked("inD", Lakara::Lat, Purusha::Prathama, Vacana::Eka, 2),
+        "indDe"
+    );
+    assert_eq!(
+        form_g_forked("inD", Lakara::Lat, Purusha::Madhyama, Vacana::Bahu, 2),
+        "indDve"
+    );
+    let cells = [
+        (Purusha::Prathama, Vacana::Dvi, "inDAte"),
+        (Purusha::Prathama, Vacana::Bahu, "inDate"),
+        (Purusha::Madhyama, Vacana::Eka, "intse"),
+        (Purusha::Madhyama, Vacana::Dvi, "inDATe"),
+        (Purusha::Uttama, Vacana::Eka, "inDe"),
+        (Purusha::Uttama, Vacana::Dvi, "inDvahe"),
+        (Purusha::Uttama, Vacana::Bahu, "inDmahe"),
+    ];
+    for (pu, va, want) in cells {
+        assert_eq!(form_g("inD", Lakara::Lat, pu, va), want);
+    }
+}
+
+#[test]
+fn jhashas_tathor_dhodhah_declines_before_a_non_dental() {
+    // intse is the witness that 8.2.40 is not simply "voice everything
+    // after the stem". sip's `se` begins with `s`, not `t`/`th`, so the
+    // rule declines and 8.4.55 khari ca devoices the stem's `D` to `t`
+    // instead. inDvahe and inDmahe make the same point for `v` and `m`.
+    assert_eq!(
+        form_g("inD", Lakara::Lat, Purusha::Madhyama, Vacana::Eka),
+        "intse"
+    );
+    assert_eq!(
+        form_g("inD", Lakara::Lot, Purusha::Madhyama, Vacana::Eka),
+        "intsva"
+    );
+}
+
+#[test]
+fn indh_strong_stem_appears_only_in_lot_uttama() {
+    // The ātmanepada endings are ṅit throughout except loṭ uttama, where
+    // the strong stem inaD survives 6.4.111 and shows śnam's `a`.
+    assert_eq!(
+        form_g("inD", Lakara::Lot, Purusha::Uttama, Vacana::Eka),
+        "inaDE"
+    );
+    assert_eq!(
+        form_g("inD", Lakara::Lot, Purusha::Uttama, Vacana::Dvi),
+        "inaDAvahE"
+    );
+    assert_eq!(
+        form_g("inD", Lakara::Lot, Purusha::Uttama, Vacana::Bahu),
+        "inaDAmahE"
+    );
+}
+
+#[test]
+fn indh_lan_and_lot_and_vidhilin_cells() {
+    // laṅ takes the āṭ augment, which 6.1.90 āṭaś ca raises to `E`.
+    for (pu, va, want) in [
+        (Purusha::Prathama, Vacana::Eka, "EndDa"),
+        (Purusha::Madhyama, Vacana::Eka, "EndDAH"),
+        (Purusha::Madhyama, Vacana::Bahu, "EndDvam"),
+    ] {
+        assert_eq!(form_g_forked("inD", Lakara::Lan, pu, va, 2), want);
+    }
+    for (pu, va, want) in [
+        (Purusha::Prathama, Vacana::Dvi, "EnDAtAm"),
+        (Purusha::Prathama, Vacana::Bahu, "EnData"),
+        (Purusha::Madhyama, Vacana::Dvi, "EnDATAm"),
+        (Purusha::Uttama, Vacana::Eka, "EnDi"),
+        (Purusha::Uttama, Vacana::Dvi, "EnDvahi"),
+        (Purusha::Uttama, Vacana::Bahu, "EnDmahi"),
+    ] {
+        assert_eq!(form_g("inD", Lakara::Lan, pu, va), want);
+    }
+
+    assert_eq!(
+        form_g_forked("inD", Lakara::Lot, Purusha::Prathama, Vacana::Eka, 2),
+        "indDAm"
+    );
+    assert_eq!(
+        form_g_forked("inD", Lakara::Lot, Purusha::Madhyama, Vacana::Bahu, 2),
+        "indDvam"
+    );
+    for (pu, va, want) in [
+        (Purusha::Prathama, Vacana::Dvi, "inDAtAm"),
+        (Purusha::Prathama, Vacana::Bahu, "inDatAm"),
+        (Purusha::Madhyama, Vacana::Dvi, "inDATAm"),
+    ] {
+        assert_eq!(form_g("inD", Lakara::Lot, pu, va), want);
+    }
+
+    // vidhiliṅ takes no fork at all: the optative `I` is neither a jhal
+    // nor pada-final, so neither 8.4.65 nor 8.4.56 reaches these cells.
+    for (pu, va, want) in [
+        (Purusha::Prathama, Vacana::Eka, "inDIta"),
+        (Purusha::Prathama, Vacana::Dvi, "inDIyAtAm"),
+        (Purusha::Prathama, Vacana::Bahu, "inDIran"),
+        (Purusha::Madhyama, Vacana::Eka, "inDITAH"),
+        (Purusha::Madhyama, Vacana::Dvi, "inDIyATAm"),
+        (Purusha::Madhyama, Vacana::Bahu, "inDIDvam"),
+        (Purusha::Uttama, Vacana::Eka, "inDIya"),
+        (Purusha::Uttama, Vacana::Dvi, "inDIvahi"),
+        (Purusha::Uttama, Vacana::Bahu, "inDImahi"),
+    ] {
+        assert_eq!(form_g("inD", Lakara::VidhiLin, pu, va), want);
+    }
 }

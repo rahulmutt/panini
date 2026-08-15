@@ -1125,3 +1125,95 @@ fn kndhi_trace_shows_jashtva_where_dhi_ca_declines() {
     assert!(t.contains(&"8.4.53".to_string()), "got {t:?}");
     assert!(!t.contains(&"8.2.25".to_string()), "got {t:?}");
 }
+
+#[test]
+fn apinaq_trace_pins_8_2_23_above_8_2_41() {
+    // THE LOAD-BEARING NEW ORDER in this slice, and BOTH laṅ eka cells
+    // must be checked, not just one: `apinaq` is what prathama eka AND
+    // madhyama eka both reduce to, and `trace_for`'s `.find()` would
+    // silently settle for whichever analysis `candidates()` enumerates
+    // first — prathama eka, whose ending is a bare `t`. That derivation
+    // never presents an `s` for 8.2.41 ṣaḍhoḥ kaḥ si to see at all, so a
+    // pin built on `trace_for` alone would hold "8.2.23 present, 8.2.41
+    // absent" vacuously, for a reason unrelated to the order this pin
+    // exists to guard, and would keep passing even after that order broke.
+    // Go around `trace_for` and inspect every analysis `apinaq` produces
+    // instead, asserting the COUNT along with each trace's content: at
+    // laṅ madhyama eka the ending IS a bare `s`, and 8.2.23 saṃyogāntasya
+    // lopaḥ elides it — as the second member of a word-final conjunct —
+    // before 8.2.41 ever runs, so 8.2.41 finds no trigger and declines,
+    // and the cell reduces exactly as laṅ prathama eka does. Reversed,
+    // 8.2.41 would fire on the still-live `z`/`s` pair before the `s` is
+    // elided; madhyama eka would surface `apinak` instead — a real-word-
+    // looking form that no guard test would flag — and drop out of this
+    // check entirely, so the analysis count below would no longer be 2.
+    let r = Panini::new().check("apinaq");
+    assert_eq!(r.analyses.len(), 2, "both laṅ eka cells reduce to apinaq");
+    for a in &r.analyses {
+        let t: Vec<String> = a.trace.iter().map(|s| s.sutra.clone()).collect();
+        assert!(t.contains(&"8.2.23".to_string()), "got {t:?}");
+        assert!(!t.contains(&"8.2.41".to_string()), "got {t:?}");
+    }
+}
+
+#[test]
+fn bhanakti_trace_shows_8_2_30_then_8_4_55() {
+    // Banaj + ti -> Banag + ti (8.2.30 coḥ kuḥ turns the root-final `j`
+    // into its ku counterpart `g` before the jhal `t`) -> Banakti (8.4.55
+    // khari ca then devoices that `g` to `k` before the same khar `t`).
+    let t = trace_for("Banakti");
+    assert!(at(&t, "8.2.30") < at(&t, "8.4.55"), "got {t:?}");
+}
+
+#[test]
+fn indhe_trace_shows_8_2_40_then_8_4_53() {
+    // inD + te -> inD + De (8.2.40 jhaṣas tathor dho'dhaḥ turns the
+    // ending's `t` into `D` after the stem's jhaṣ), then the anusvāra
+    // round trip runs across it: iMDDe (8.3.24 naścāpadāntasya jhali
+    // turns śnam's `n` into an anusvāra before the jhaṣ `D`) -> iMdDe
+    // (8.4.53 jhalāṁ jaś jhaśi voices the stem's own `D` to `d` before
+    // that `D`) -> indDe (8.4.58 anusvārasya yayi parasavarṇaḥ turns the
+    // anusvāra back into the homorganic `n`).
+    let t = trace_for("indDe");
+    assert!(at(&t, "8.2.40") < at(&t, "8.4.53"), "got {t:?}");
+}
+
+#[test]
+fn pinakshi_trace_shows_8_2_41_then_8_3_59() {
+    // pinaz + si -> pinak + si (8.2.41 ṣaḍhoḥ kaḥ si turns the root-final
+    // `z` into `k` before the `s`) -> pinakzi (8.3.59 ādeśapratyayayoḥ
+    // retroflexes that same `s` back to `z` after the new `k`, a ku
+    // sound).
+    let t = trace_for("pinakzi");
+    assert!(at(&t, "8.2.41") < at(&t, "8.3.59"), "got {t:?}");
+}
+
+#[test]
+fn pimzwah_trace_is_the_round_trips_second_witness() {
+    // 8.3.24 naścāpadāntasya jhali turns the śnam infix's `n` into an
+    // anusvāra `M` before the jhal `z`. The return leg (8.4.58) DECLINES
+    // here — its trigger needs a yay to follow, but what follows the
+    // anusvāra is the root's own `z`, which is śal — so the anusvāra
+    // survives to the surface in piMzwaH. √hiṃs's hiMstaH was the first
+    // witness that 8.3.24/8.4.58 are not a no-op pair, in 7a; this is the
+    // second.
+    let t = trace_for("piMzwaH");
+    assert!(t.contains(&"8.3.24".to_string()), "got {t:?}");
+    assert!(!t.contains(&"8.4.58".to_string()), "got {t:?}");
+}
+
+#[test]
+fn pindhi_trace_is_the_full_8_4_41_chain() {
+    // The deepest new chain in the slice, on top of the anusvāra 8.3.24
+    // already gave śnam's `n`: piMzDi -> piMzQi (8.4.41 ṣṭunā ṣṭuḥ
+    // retroflexes the ending's `D` to `Q` after the stem's `z`) -> piMqQi
+    // (8.4.53 jhalāṁ jaś jhaśi voices that `z` to `q` before the new `Q`)
+    // -> piRqQi (8.4.58 anusvārasya yayi parasavarṇaḥ turns the anusvāra
+    // into the homorganic `R` before `Q`, completing this cell's declined
+    // form) -> piRQi, this cell's alternate: optional 8.4.65 jharo jhari
+    // savarṇe elides the penultimate `q` before the savarṇa `Q`.
+    let t = trace_for("piRQi");
+    assert!(at(&t, "8.4.41") < at(&t, "8.4.53"), "got {t:?}");
+    assert!(at(&t, "8.4.53") < at(&t, "8.4.58"), "got {t:?}");
+    assert!(at(&t, "8.4.58") < at(&t, "8.4.65"), "got {t:?}");
+}

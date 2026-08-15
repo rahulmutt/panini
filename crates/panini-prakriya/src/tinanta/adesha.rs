@@ -5,17 +5,23 @@
 //!
 //! Three rules here (6.1.90 āṭaś ca, 6.1.66 lopo vyor vali, and 6.1.78 over
 //! in `super::guna`) carry explicit *athematic arms*, and each now sits at a
-//! different point after slice 9b/Task 9 widened two of them:
-//!   - 6.1.66 guards its athematic arm on `!SHAP.ends_with('a')`, which
+//! different point after slice 9b (kryādi) and the svādi slice's Task 9
+//! widened two of them:
+//!   - 6.1.66 guards its athematic arm on `!SHAP.has(Tag::Thematic)`, which
 //!     covers BOTH athematic paths — adādi's śap-luk'd empty SHAP and
 //!     kryādi's śnā, reduced by 6.4.112/6.4.113 to a non-empty, non-`a`-final
 //!     `n`/`nI`. It was widened from `SHAP.is_empty()` in slice 9b, which
 //!     silently declined for kryādi's non-empty SHAP and produced *vfRIyta
-//!     instead of vfRIta; see its own comment.
+//!     instead of vfRIta; slice 7b's Task 9 widened it again, from
+//!     `!SHAP.ends_with('a')` to the tag test, once a hypothetical
+//!     vowel-final rudhādi root (śnam's infix can itself leave SHAP
+//!     `a`-final, e.g. `"na"`) showed the text test conflated SHAP's shape
+//!     with the vikaraṇa's actual identity; see its own comment.
 //!   - 6.1.90's athematic arm (below) guards on "SHAP ends in neither `a`
-//!     nor `A`", widened from `is_empty()` in Task 9 to admit svādi's `nav`
-//!     (Task 5), which is non-empty but also neither `a`- nor `A`-final.
-//!     Kryādi's `A`-final `nA` is still excluded by the same guard — 6.1.101's
+//!     nor `A`", widened from `is_empty()` in the svādi slice's Task 9 to
+//!     admit svādi's `nav` (that slice's Task 5), which is non-empty but
+//!     also neither `a`- nor `A`-final. Kryādi's `A`-final `nA` is still
+//!     excluded by the same guard — 6.1.101's
 //!     kryādi arm has already elided the ending's redundant leading vowel
 //!     against SHAP's pre-existing `A`, routing the result through 6.1.90's
 //!     *thematic* arm instead (nA + AE → nA + E → nE → vfRE). Kryādi's
@@ -27,12 +33,12 @@
 //!     never coexists with a reduced `n`/`nI` SHAP. See the athematic arm's
 //!     own comment below for the mechanics, and `vikarana.rs`'s 3.1.81
 //!     comment for the general correction this widening implements.
-//!   - 6.1.78's athematic arm (`super::guna`) is UNCHANGED by Task 9 and
+//!   - 6.1.78's athematic arm (`super::guna`) is UNCHANGED by that Task 9 and
 //!     still guards on `SHAP.is_empty()`, staying adādi-only correctly:
 //!     kryādi never guṇates its aṅga (the ṅit śnā blocks 7.3.84/7.3.86 via
 //!     1.1.5), so an `e`/`o`-final aṅga — that arm's whole precondition — is
 //!     unreachable for it regardless of SHAP shape. Svādi reaches 6.1.78 by
-//!     an entirely separate, THIRD arm added in this slice (Task 5): a
+//!     an entirely separate, THIRD arm added in the svādi slice (its Task 5): a
 //!     vikaraṇa arm that reads an `e`/`o`-final SHAP directly (`no` → `nav`),
 //!     never touching the athematic arm's `is_empty()` guard at all.
 //!
@@ -69,16 +75,22 @@ pub(crate) static ADESHA: &[Rule] = &[
         vikalpa: false,
         apply: |p| {
             // vidhiliṅ 1sg: after 7.2.79 the ending is `yAam` (yāsuṭ ā + the
-            // uttama-eka `am`). 7.2.80 would have rewritten `yA`->`iy` after
-            // an a-final śap, but it requires SHAP to end in short `a`; here
-            // it declined (adādi's SHAP is empty, kryādi's is the śnā
+            // uttama-eka `am`). 7.2.80 (`super::anga`) would have rewritten
+            // `yA`->`iy` after a thematic śap, but it requires SHAP to end
+            // in short `a` — a TEXT test, unchanged by 7b Task 9 — and here it
+            // declined (adādi's SHAP is empty, kryādi's is the śnā
             // vikaraṇa's `A`-final nA/nI), so the yāsuṭ ā and the ending a
-            // are savarṇa -> a single ā: yAam -> yAm. Guard mirrors 7.2.80's
-            // own negated condition, plus a tight ending shape (never
-            // `yAt`/`yAs`/... whose yA is followed by a consonant).
+            // are savarṇa -> a single ā: yAam -> yAm. This guard's own
+            // negation, `!SHAP.has(Tag::Thematic)`, asks the IDENTITY
+            // question instead (see `Tag::Thematic`'s comment) — the two
+            // agree for every root this arm actually reaches (śānac never
+            // coexists with vidhiliṅ: it requires the `hi` ending, which is
+            // loṭ-only), but they are not the same test and must not be
+            // assumed interchangeable elsewhere. Plus a tight ending shape
+            // (never `yAt`/`yAs`/... whose yA is followed by a consonant).
             if p.terms.len() > ENDING
                 && matches!(p.ctx.lakara, Lakara::VidhiLin)
-                && !p.terms[SHAP].text.ends_with('a')
+                && !p.terms[SHAP].has(Tag::Thematic)
                 && p.terms[ENDING].text.starts_with("yA")
                 && matches!(p.terms[ENDING].text.chars().nth(2), Some('a') | Some('A'))
             {
@@ -123,7 +135,7 @@ pub(crate) static ADESHA: &[Rule] = &[
                 p.record("6.1.101", "akaH savarRe dIrGaH", before);
                 return true;
             }
-            if !p.terms[SHAP].text.ends_with('a') || !p.terms[ENDING].text.starts_with('A') {
+            if !p.terms[SHAP].has(Tag::Thematic) || !p.terms[ENDING].text.starts_with('A') {
                 return false;
             }
             let before = p.snapshot();
@@ -197,8 +209,8 @@ pub(crate) static ADESHA: &[Rule] = &[
     },
     // 6.1.90 āṭaś ca: āṭ + a following vowel yield a single vṛddhi. Two
     // shapes, one sūtra:
-    // - Aṅga arm (laṅ, Task 8): 6.4.72's āṭ + the root's initial vowel.
-    //   AeD → ED, AIkz → Ekz.
+    // - Aṅga arm (laṅ, the ātmanepada slice's Task 8): 6.4.72's āṭ + the
+    //   root's initial vowel. AeD → ED, AIkz → Ekz.
     // - Ending arm (loṭ uttama eka, ātmanepada): after 6.1.101 has coalesced
     //   śap a + āṭ A into śap A, that A + the ending's E merge to E
     //   (laB+A+E → laBE). MUST follow 6.1.101 — before it the shape is
@@ -242,12 +254,13 @@ pub(crate) static ADESHA: &[Rule] = &[
                 return true;
             }
             // Athematic ending arm (śap luk'd, e.g. adādi √ās loṭ uttama-eka,
-            // or svādi's `nav`, Task 5): with no thematic coalescence having
-            // consumed the āṭ A into SHAP, the āṭ A still leads the ending as
-            // `A ec` (ENDING == "AE"). Coalesce the two into the single
-            // vṛddhi — A + E → E — dropping the A and vṛddhi-ing the ec:
-            // As + AE → AsE. Mirrors the thematic arm's mechanics with the
-            // vowel sitting at the front of ENDING instead of in SHAP.
+            // or svādi's `nav`, that slice's Task 5): with no thematic
+            // coalescence having consumed the āṭ A into SHAP, the āṭ A still
+            // leads the ending as `A ec` (ENDING == "AE"). Coalesce the two
+            // into the single vṛddhi — A + E → E — dropping the A and
+            // vṛddhi-ing the ec: As + AE → AsE. Mirrors the thematic arm's
+            // mechanics with the vowel sitting at the front of ENDING instead
+            // of in SHAP.
             //
             // Widened from `is_empty()` for svādi. The arm's job is "the
             // coalescence rules never consumed the āṭ A into SHAP, so it
@@ -306,7 +319,7 @@ pub(crate) static ADESHA: &[Rule] = &[
             let Some(first) = p.terms[ENDING].text.chars().next() else {
                 return false;
             };
-            if !p.terms[SHAP].text.ends_with('a') || !matches!(first, 'a' | 'e' | 'o') {
+            if !p.terms[SHAP].has(Tag::Thematic) || !matches!(first, 'a' | 'e' | 'o') {
                 return false;
             }
             let before = p.snapshot();
@@ -339,7 +352,7 @@ pub(crate) static ADESHA: &[Rule] = &[
         vikalpa: false,
         apply: |p| {
             let first = p.terms[ENDING].text.chars().next();
-            if !p.terms[SHAP].text.ends_with('a') || !matches!(first, Some('i') | Some('I')) {
+            if !p.terms[SHAP].has(Tag::Thematic) || !matches!(first, Some('i') | Some('I')) {
                 return false;
             }
             let before = p.snapshot();
@@ -385,20 +398,23 @@ pub(crate) static ADESHA: &[Rule] = &[
                 p.record("6.1.66", "lopo vyor vali", before);
                 return true;
             }
-            // Athematic arm (SHAP not `a`-final: empty for adādi's śap-luk'd
+            // Athematic arm (SHAP not thematic: empty for adādi's śap-luk'd
             // path, or kryādi's śnā-vikaraṇa reduced to `n`/`nI` by
-            // 6.4.112/6.4.113): 6.1.87 only fires when SHAP ends in short
-            // `a`, so whenever it doesn't, the retained optative I still
-            // leads the ending as `I y val` (Iyta). The y is still elided
-            // before the val — the long I survives as the stem vowel
-            // (āsī-, vfRI-): Iyta → Ita. Only the y is dropped, and (as in
-            // the thematic arm) never before a vowel, so IyAtAm / IyATAm /
-            // Iya keep their y. The guard mirrors 6.1.101's own
-            // `!ends_with('a')` idiom (rather than testing emptiness, which
-            // only covered adādi and silently declined for kryādi's
-            // non-empty, non-`a`-final SHAP — vfRIta surfaced as *vfRIyta
-            // until this was widened).
-            if !p.terms[SHAP].text.ends_with('a')
+            // 6.4.112/6.4.113): 6.1.87 only fires on a thematic SHAP, so
+            // whenever it isn't, the retained optative I still leads the
+            // ending as `I y val` (Iyta). The y is still elided before the
+            // val — the long I survives as the stem vowel (āsī-, vfRI-):
+            // Iyta → Ita. Only the y is dropped, and (as in the thematic
+            // arm) never before a vowel, so IyAtAm / IyATAm / Iya keep their
+            // y. The guard reads `Tag::Thematic` (rather than testing
+            // emptiness, which only covered adādi and silently declined for
+            // kryādi's non-empty, non-`a`-final SHAP — vfRIta surfaced as
+            // *vfRIyta until this was widened to a text test, and later a
+            // tag test: rudhādi's śnam-infixed SHAP can itself be `a`-final
+            // — `"na"` for a vowel-final root — without being thematic, a
+            // shape no curated root in this suite happens to produce, since
+            // every one leaves a consonant tail after śnam's `na`).
+            if !p.terms[SHAP].has(Tag::Thematic)
                 && first == Some('I')
                 && chars.next() == Some('y')
                 && let Some(third) = chars.next()
@@ -415,22 +431,32 @@ pub(crate) static ADESHA: &[Rule] = &[
             false
         },
     },
-    // 6.4.105 ato heḥ: `hi` is elided after a short `a` (the śap).
-    // Bav + a + hi → Bava.
+    // 6.4.105 ato heḥ: `hi` is elided after a short `a`. Bav + a + hi →
+    // Bava. The sūtra's condition is a short `a` at SHAP, full stop — it is
+    // NOT specific to śap. With the guard reading `Tag::Thematic`, all four
+    // thematic vikaraṇas reach it, and this suite witnesses all four: śap
+    // (Bav + a + hi → Bava), śyan (dIvya), śa (tuda) and śānac
+    // (kliS + Ana + hi → kliSAna, per 3.1.83's own comment).
     //
-    // Deliberately reads `SHAP.ends_with('a')` by index rather than via
-    // `sound_before_ending`: the sūtra's own condition is specifically about
-    // śap's `a`, not "whatever sound precedes the ending" in general. This is
-    // what makes it decline outright for svādi — the stem there ends in śnu's
-    // `u`, never a short `a` — leaving 6.4.106 below as the rule that must
-    // handle (or deliberately not handle) the `hi` ending for that gaṇa.
+    // Deliberately reads `Tag::Thematic` rather than `sound_before_ending`:
+    // the sūtra's own condition is about the VIKARAṆA's `a` specifically
+    // (SHAP), not "whatever sound precedes the ending" in general — that
+    // distinction is what keeps 6.4.101 her dhiḥ (below) as the separate
+    // rule for a jhal-final ANGA. Within that, `Tag::Thematic` reads "is
+    // SHAP one of the four a-final vikaraṇas" rather than re-testing SHAP's
+    // current text, for the same reason the other four rules in this file
+    // do (see `Tag::Thematic`'s own comment). This is what makes 6.4.105
+    // decline outright for svādi — the stem there ends in śnu's `u`, never
+    // a short `a`, and śnu is not one of the four — leaving 6.4.106 below
+    // as the rule that must handle (or deliberately not handle) the `hi`
+    // ending for that gaṇa.
     Rule {
         id: "6.4.105",
         name: "ato heH",
         kind: RuleKind::Vidhi,
         vikalpa: false,
         apply: |p| {
-            if !p.terms[SHAP].text.ends_with('a') || p.terms[ENDING].text != "hi" {
+            if !p.terms[SHAP].has(Tag::Thematic) || p.terms[ENDING].text != "hi" {
                 return false;
             }
             let before = p.snapshot();
@@ -634,16 +660,19 @@ mod tests {
     fn lopo_vyor_vali_athematic_arm_requires_a_non_a_final_shap() {
         // 6.1.66's athematic arm elides the optative y in an `I y val`
         // ending (Iyta -> Ita), keeping the long I as the stem vowel. It
-        // must fire ONLY when SHAP does NOT end in short `a` — that is
-        // exactly the condition under which 6.1.87 (which requires an
-        // `a`-final SHAP) could NOT already have consumed the I. Here the
-        // śap is the thematic "a" and the ending is "Iyta": the athematic
-        // arm must decline (leaving "Iyta" untouched), and the thematic arm
-        // also declines (the ending's first char is 'I', not 'y'). The
-        // mutant that drops the `!ends_with('a')` guard would elide the y
-        // regardless of śap and wrongly yield "Ita".
+        // must fire ONLY when SHAP is not thematic — that is exactly the
+        // condition under which 6.1.87 (which requires a thematic SHAP)
+        // could NOT already have consumed the I. Here the śap is the
+        // thematic "a" (tagged, as 3.1.68 would tag it) and the ending is
+        // "Iyta": the athematic arm must decline (leaving "Iyta"
+        // untouched), and the thematic arm also declines (the ending's
+        // first char is 'I', not 'y'). The mutant that drops the
+        // `!has(Tag::Thematic)` guard would elide the y regardless of śap
+        // and wrongly yield "Ita".
+        let mut shap = Term::new("a");
+        shap.add(Tag::Thematic);
         let mut p = Prakriya {
-            terms: vec![Term::new("laB"), Term::new("a"), Term::new("Iyta")],
+            terms: vec![Term::new("laB"), shap, Term::new("Iyta")],
             log: vec![],
             ..Default::default()
         };
@@ -716,19 +745,19 @@ mod tests {
 
     #[test]
     fn awas_ca_athematic_arm_declines_for_an_a_final_shap() {
-        // Task 9 widened the athematic arm's guard from `SHAP.is_empty()` to
-        // "SHAP ends in neither `a` nor `A`", so it is no longer the empty
-        // śap that gates this arm — an `a`-final śap (the ordinary thematic
-        // śap `a`, not yet widened to `A` by 6.1.101) must ALSO decline, and
-        // for the same reason as an `A`-final one: 6.1.97 (ato guṇe) is that
-        // shape's business, not this arm's. Here the śap is the non-empty
-        // "a" and the ending is "AE" (A + ec): the thematic arm declines
-        // (its own guard is SHAP.ends_with('A'), and "a" does not), and the
-        // athematic arm must ALSO decline because "a" ends in `a`, leaving
-        // "AE" untouched. The `&&` -> `||` mutant on the length check
-        // (`len() > ENDING`) makes the guard always true regardless of the
-        // two `ends_with` conjuncts short-circuiting it, so the mutant fires
-        // and wrongly coalesces "AE" -> "E".
+        // The svādi slice's Task 9 widened the athematic arm's guard from
+        // `SHAP.is_empty()` to "SHAP ends in neither `a` nor `A`", so it is
+        // no longer the empty śap that gates this arm — an `a`-final śap
+        // (the ordinary thematic śap `a`, not yet widened to `A` by 6.1.101)
+        // must ALSO decline, and for the same reason as an `A`-final one:
+        // 6.1.97 (ato guṇe) is that shape's business, not this arm's. Here
+        // the śap is the non-empty "a" and the ending is "AE" (A + ec): the
+        // thematic arm declines (its own guard is SHAP.ends_with('A'), and
+        // "a" does not), and the athematic arm must ALSO decline because "a"
+        // ends in `a`, leaving "AE" untouched. The `&&` -> `||` mutant on the
+        // length check (`len() > ENDING`) makes the guard always true
+        // regardless of the two `ends_with` conjuncts short-circuiting it, so
+        // the mutant fires and wrongly coalesces "AE" -> "E".
         let mut p = Prakriya {
             terms: vec![Term::new("laB"), Term::new("a"), Term::new("AE")],
             log: vec![],

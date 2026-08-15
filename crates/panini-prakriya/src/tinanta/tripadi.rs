@@ -8,8 +8,8 @@ use crate::prakriya::Prakriya;
 use crate::rule::{Rule, RuleKind};
 use crate::term::Tag;
 use crate::tinanta::sound::{
-    cartva_of, is_jhal, is_khar, is_natva_intervener, is_natva_trigger, is_savarna, is_vowel,
-    jashtva_of, parasavarna_of,
+    cartva_of, is_jhal, is_jhash, is_khar, is_natva_intervener, is_natva_trigger, is_savarna,
+    is_vowel, jashtva_of, parasavarna_of,
 };
 use crate::tinanta::terms::{ANGA, ENDING, SHAP};
 
@@ -258,6 +258,62 @@ pub(crate) static TRIPADI: &[Rule] = &[
             true
         },
     },
+    // 8.2.30 coH kuH: a cu sound (c C j J) is replaced by its ku counterpart
+    // (the nearest velar by 1.1.50 sthāne'ntaratamaḥ, so voicing and
+    // aspiration are preserved) when it is either word-final or immediately
+    // followed by a jhal. Banaj + ti -> Banag + ti (before the jhal `t`,
+    // then 8.4.55 khari ca devoices to Banakti); aBanaj -> aBanag
+    // word-finally.
+    //
+    // NARROW GUARD, by design, as with 8.2.39 just below: only `j` -> `g`
+    // is reachable this slice (rudhādi's one cu-final curated root is
+    // √bhañj). Widen the match the moment a `c`-tailed root lands.
+    //
+    // Read via `word_chars`, not a term-boundary check: the target `j` sits
+    // at the END of a non-final term (śnam's infix leaves the root's own
+    // tail — the `j` — in `SHAP`, one term short of the actual word end,
+    // e.g. `Ba | naj | ti`), so the jhal that conditions it can be the
+    // FIRST character of the NEXT term rather than anything in the bearing
+    // term itself. `word_chars` already flattens exactly this cross-term
+    // adjacency for the same reason 8.3.24 further down this array reads
+    // it. Word-final falls
+    // out of the same scan for free — there is simply no next entry to test
+    // (`w.get(i + 1)` is `None`) after 8.2.23 has eaten tip/sip's own letter,
+    // leaving `ENDING` empty and the dhātu's `j` as the last entry
+    // `word_chars` reports.
+    //
+    // The word-final / jhal test lives INSIDE the search, not after it, the
+    // way 8.3.24's and 8.4.58's own searches further down this array do: the
+    // rule finds the first `j` that is genuinely word-final or jhal-followed
+    // rather than the first `j` in the word full stop, so a non-applicable
+    // `j` earlier in the word can never hide a later, applicable one. No cell
+    // in this suite has two `j`s to distinguish: √bhañj carries the only one
+    // that ever qualifies, and the other j-bearing roots (√ji, √juṣ, √vij)
+    // always present theirs before a vowel — √bhañj's own 3pl does too,
+    // reaching this rule as `Banjanti` (the `Y` of BaYjanti is 8.3.24 +
+    // 8.4.58's later work) and declining for exactly that reason.
+    // The scan is therefore deliberately NOT narrowed to √bhañj's known
+    // position: this is hardening against an ordering no witness here
+    // exercises, not a fix for one observed.
+    Rule {
+        id: "8.2.30",
+        name: "coH kuH",
+        kind: RuleKind::Vidhi,
+        vikalpa: false,
+        apply: |p| {
+            let w = word_chars(p);
+            let Some(pos) = w.iter().enumerate().position(|(i, (_, _, c))| {
+                *c == 'j' && w.get(i + 1).is_none_or(|(_, _, next)| is_jhal(*next))
+            }) else {
+                return false;
+            };
+            let (term, idx, _) = w[pos];
+            let before = p.snapshot();
+            set_char(p, term, idx, 'g');
+            p.record("8.2.30", "coH kuH", before);
+            true
+        },
+    },
     // 8.2.39 jhalāṁ jaśo'nte: a pada-final jhal becomes its jaś (voiced
     // unaspirated). This is what makes `aBavad` the engine's DECLINED form —
     // it is obligatory, and 8.4.56 below optionally undoes it. Before this
@@ -266,11 +322,16 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // convention.
     //
     // NARROW GUARD, by design, as with 8.3.59 and 8.2.25: the only jhal
-    // reachable pada-finally in this suite is `t` (every other form ends in
-    // a vowel, `H`, `m` or `n`, none of them jhal). The other candidate is
-    // `s`, and 8.2.66 sasajuṣo ruḥ — implemented inside the rule labelled
-    // 8.3.15 just below — is its apavāda, so `s` must NOT be voiced here.
-    // Widen the moment a root lands whose pada-final sound is another jhal.
+    // sounds reachable pada-finally in this suite are `t` and `z` (every
+    // other form ends in a vowel, `H`, `m` or `n`, none of them jhal). The
+    // guard names those two characters rather than calling `is_jhal`: the
+    // other candidate is `s`, and 8.2.66 sasajuṣo ruḥ — implemented inside
+    // the rule labelled 8.3.15 just below — is its apavāda, so `s` must NOT
+    // be voiced here. A blanket widening to every jhal would rewrite √hiṃs's
+    // `ahinas` to `ahinad` before 8.2.74 and 8.2.73 could act on it,
+    // destroying the ru alternation and the `ahinaH` branch. Widen the
+    // guard's character set the moment a root lands whose pada-final sound
+    // is some other jhal.
     //
     // No contention with 8.4.55 cartva: the shape that would collide, an
     // aṅga-final jhal directly before a pada-final `t`, cannot arise because
@@ -283,7 +344,8 @@ pub(crate) static TRIPADI: &[Rule] = &[
         kind: RuleKind::Vidhi,
         vikalpa: false,
         apply: |p| {
-            if !p.text().ends_with('t') {
+            let last = p.text().chars().last();
+            if !matches!(last, Some('t') | Some('z')) {
                 return false;
             }
             // Read the bearing term positionally rather than as ENDING:
@@ -292,13 +354,112 @@ pub(crate) static TRIPADI: &[Rule] = &[
             let Some(idx) = p.terms.iter().rposition(|t| !t.text.is_empty()) else {
                 return false;
             };
+            let jash = jashtva_of(last.unwrap()).expect("t and z both have a jaS");
             let before = p.snapshot();
             let mut s: Vec<char> = p.terms[idx].text.chars().collect();
             s.pop();
-            s.push('d');
+            s.push(jash);
             p.terms[idx].text = s.into_iter().collect();
             p.record("8.2.39", "JalAM jaSo'nte", before);
             true
+        },
+    },
+    // 8.2.40 jhaṣas tathor dho'dhaḥ: after a jhaṣ (voiced aspirated stop),
+    // the ending's `t` or `T` (th) becomes `D`. inD + te -> inD + De, and
+    // the widened 8.4.53 (7b Task 6, below) then voices the stem's own `D` to
+    // `d` before it: indDe. 8.4.65 optionally elides that `d` before the
+    // savarṇa `D`, which is where inDe comes from.
+    //
+    // The ONLY NEW source of a D-initial ending in this suite besides the
+    // pre-existing 6.4.101 her dhiḥ (which already supplies one: √hiṃs's
+    // hinDi) — see 8.4.53's comment below for why that bounds its
+    // widening: no root in the suite besides √indh ever presents a jhaṣ
+    // immediately before its ending, because every OTHER gaṇa represented
+    // here inserts a real vikaraṇa syllable between the two — bhvādi's
+    // laBate, divādi's yuDyate, svādi's stiG, kryādi's guDnAti — so this
+    // rule, and hence a fresh D-initial ending, is reachable only through
+    // √indh.
+    //
+    // DECLINES wherever the ending does not begin with a `t`/`T`: intse
+    // (`s`), inDvahe (`v`) and inDmahe (`m`) all fail that match. Only
+    // `intse` then feeds 8.4.55 khari ca afterward — `s` is khar
+    // (sound.rs's is_khar), so the stem's `D` devoices to `t`. `v` and `m`
+    // are NOT khar, so 8.4.55 declines too and inDvahe/inDmahe keep their
+    // stem `D` untouched.
+    //
+    // The jhaṣ test lives INSIDE the scan (the loop `continue`s rather than
+    // bailing), so a `t`/`T` earlier in the word that is not jhaṣ-preceded
+    // can never hide a later one that is; √indh's only candidate is its
+    // ending's own `t` either way, so the scan is a deliberate
+    // non-narrowing, hardening against a shape no witness here exercises.
+    Rule {
+        id: "8.2.40",
+        name: "JazastaTorDo'DaH",
+        kind: RuleKind::Vidhi,
+        vikalpa: false,
+        apply: |p| {
+            let w = word_chars(p);
+            for i in 1..w.len() {
+                if !matches!(w[i].2, 't' | 'T') {
+                    continue;
+                }
+                if !is_jhash(w[i - 1].2) {
+                    continue;
+                }
+                let (term, idx, _) = w[i];
+                let before = p.snapshot();
+                set_char(p, term, idx, 'D');
+                p.record("8.2.40", "JazastaTorDo'DaH", before);
+                return true;
+            }
+            false
+        },
+    },
+    // 8.2.41 zaQoH kaH si: `ṣ` (z) or `ḍh` (Q) becomes `k` when the
+    // immediately following sound is `s`. pinaz + si → pinak + si, and
+    // 8.3.59 (widened below) then retroflexes that `s` back to `z` after
+    // the new `k`: pinakzi.
+    //
+    // NARROW GUARD, by design, matching 8.2.30/8.4.41's discipline: only the
+    // `z` arm is reachable this slice (rudhādi's one z-final curated root is
+    // √piṣ; no curated root's aṅga ends in `Q`). Widen the match the moment
+    // a Q-tailed root lands.
+    //
+    // Read via `word_chars`, not a term-boundary check, for the same reason
+    // 8.2.30/8.4.41 do: śnam's infix leaves √piṣ's own tail — the `z` — at
+    // the end of a non-final term (SHAP), one term short of the actual word
+    // end (pi | naz | si), so the `s` that conditions it is the FIRST
+    // character of the NEXT term.
+    //
+    // BELOW 8.2.23, and that is load-bearing. At laṅ madhyama eka the ending
+    // is a bare `s`; 8.2.23 saṁyogāntasya lopaḥ, above in this file, elides
+    // that `s` as the second member of a word-final conjunct before this
+    // rule ever runs, so 8.2.41 finds no trigger here and the cell reduces
+    // exactly as laṅ prathama eka does
+    // (`shadhoh_kah_si_declines_when_8_2_23_ate_the_s_first` in
+    // `super::derivation_tests`). Reversed — this rule above 8.2.23 — the
+    // `z` becomes `k` before the `s` is elided, and the cell surfaces
+    // `apinak`: a real-word-looking form that splits madhyama eka from
+    // prathama eka and that no guard test would flag; only the golden and
+    // the trace pin catch it.
+    Rule {
+        id: "8.2.41",
+        name: "zaQoH kaH si",
+        kind: RuleKind::Vidhi,
+        vikalpa: false,
+        apply: |p| {
+            let w = word_chars(p);
+            for i in 1..w.len() {
+                if w[i].2 != 's' || w[i - 1].2 != 'z' {
+                    continue;
+                }
+                let (term, idx, _) = w[i - 1];
+                let before = p.snapshot();
+                set_char(p, term, idx, 'k');
+                p.record("8.2.41", "zaQoH kaH si", before);
+                return true;
+            }
+            false
         },
     },
     // 8.2.74 sipi dhāto rur vā (vikalpa): before sip, the dhātu's final
@@ -339,6 +500,57 @@ pub(crate) static TRIPADI: &[Rule] = &[
             true
         },
     },
+    // 8.2.75 daś ca (vikalpa): and a final `d` likewise becomes ru before
+    // sip. akfRad + s → akfRaH. The counterpart of 8.2.74 for a stem whose
+    // final is already a stop — √kṛt's, voiced by 8.2.39 just above.
+    //
+    // ORDERED ABOVE 8.2.73 (7b Task 8), against sūtra order, for the same
+    // structural reason as 8.2.74 just above: this rule needs to see the
+    // dhātu's OWN `d`, not one 8.2.73 manufactured from an `s`.
+    //
+    // Until this move, that meant reading the log — declining whenever
+    // `p.log` already showed an "8.2.73" step, on the reasoning that 8.2.73
+    // is the ONLY source of a `d` this rule must not double-count (√hiṃs's
+    // `ahinas`, via 8.2.73's sip over-application, becoming `ahinad`; √kṛt
+    // is untouched by that concern, since its `d` is always 8.2.39
+    // jaśtva's and 8.2.73 never fires on it). At the new position that
+    // clause is unreachable by construction — 8.2.73 has not run yet — so
+    // it has been deleted, and the guard now rests on phonology instead:
+    // √hiṃs presents `ahinas` here, which fails this rule's own
+    // `ends_with('d')` check outright and falls through to 8.2.73
+    // unchanged (8.2.74 above has already run by this point, and either
+    // took the branch or declined); √kṛt presents `akfRad` (8.2.39 having
+    // already voiced its `t`) and this rule fires on it directly. Forms
+    // are unchanged by the move: `shnams_ru_fires_on_the_dhatus_own_final`
+    // and the 7a laṅ cell tests in `super::derivation_tests` are the
+    // witnesses.
+    Rule {
+        id: "8.2.75",
+        name: "daSca",
+        kind: RuleKind::Vidhi,
+        vikalpa: true,
+        apply: |p| {
+            if !p.terms[ANGA].has(Tag::Rudhadi) || !p.ctx.is_sip() {
+                return false;
+            }
+            if !dhatu_is_pada_final(p) {
+                return false;
+            }
+            if !p.text().ends_with('d') {
+                return false;
+            }
+            let before = p.snapshot();
+            let Some(idx) = p.terms.iter().rposition(|t| !t.text.is_empty()) else {
+                return false;
+            };
+            let mut s: Vec<char> = p.terms[idx].text.chars().collect();
+            s.pop();
+            s.push('r');
+            p.terms[idx].text = s.into_iter().collect();
+            p.record("8.2.75", "daSca", before);
+            true
+        },
+    },
     // 8.2.73 tipy anasteḥ: before tip, a dhātu other than √as takes `d` for
     // its final. ahinas + t → ahinad.
     //
@@ -370,12 +582,31 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // and in this grammar that happens at exactly one slot family — laṅ
     // prathama/madhyama eka, i.e. tip and sip. `dhatu_is_pada_final` is
     // testing for that emptiness, not for tip/sip directly, so it inherits
-    // the restriction only as long as that fact holds. This rule is
-    // OBLIGATORY (`vikalpa: false`), so if a future slice's root set ever
-    // makes `ENDING` empty at some other slot (a different saṁyoga shape,
-    // or another rule that luks the ending), this guard would over-fire
-    // there silently — no test failure until a golden happens to catch it.
-    // Re-verify this invariant before widening the root set.
+    // the restriction only as long as that fact holds.
+    //
+    // RE-VERIFIED (7b Task 8), against the deferred hazard above. √bhañj and
+    // √piṣ are the first roots ADDED SINCE THE WARNING WAS WRITTEN to
+    // empty `ENDING` under 8.2.23 — NOT the first roots after √hiṃs to do
+    // so at all: √kṛt has emptied it at these same cells since 7a too
+    // (8.2.75 fires for it there — `crates/panini/tests/paradigm.rs` pins
+    // `("kft", "laN", 3, "akfRaH", "8.2.75")` — and firing requires
+    // `dhatu_is_pada_final`). The warning was about widening the root set
+    // beyond 7a's two, not about a single prior witness. √bhañj and √piṣ
+    // do so at exactly the same slot family — laṅ prathama/madhyama eka —
+    // so the invariant holds. This rule still declines on both anyway, on
+    // its own `s`-final check: by the time this rule runs, 8.2.30 has
+    // already velarised √bhañj's stem to `aBanag` and 8.2.39 has already
+    // voiced √piṣ's to `apinaq`, and neither ends in `s`.
+    // `the_ru_alternation_stays_off_the_new_roots` and
+    // `no_8_2_73_step_appears_for_bhanj_or_pish` in
+    // `super::derivation_tests` are the witnesses.
+    //
+    // This rule is OBLIGATORY (`vikalpa: false`), so the hazard is only
+    // narrowed, not closed: if a future slice's root set ever makes
+    // `ENDING` empty at some other slot (a different saṁyoga shape, or
+    // another rule that luks the ending), this guard would over-fire there
+    // silently — no test failure until a golden happens to catch it.
+    // Re-verify this invariant again before widening the root set further.
     Rule {
         id: "8.2.73",
         name: "tipyanasteH",
@@ -400,54 +631,6 @@ pub(crate) static TRIPADI: &[Rule] = &[
             s.push('d');
             p.terms[idx].text = s.into_iter().collect();
             p.record("8.2.73", "tipyanasteH", before);
-            true
-        },
-    },
-    // 8.2.75 daś ca (vikalpa): and a final `d` likewise becomes ru before
-    // sip. akfRad + s → akfRaH. The counterpart of 8.2.74 for a stem whose
-    // final is already a stop — √kṛt's, voiced by 8.2.39 just above.
-    //
-    // MUST DECLINE ON A `d` THAT CAME FROM 8.2.73, not just any pada-final
-    // `d`: for √hiṃs, 8.2.74 declining leaves `ahinas`, which 8.2.73 (its
-    // sip over-application) then voices to `ahinad`. If this rule read that
-    // `d` too it would offer a second, redundant route to the SAME surface
-    // `ahinaH` — verified empirically, by removing this clause and
-    // rerunning `rudhadi_lan_eka_cells`/`shnams_ru_fires_on_the_dhatus_own_final`:
-    // laṅ madhyama eka for √hiṃs forked into four branches, not three, two
-    // of them the identical text `ahinar` (one via 8.2.74 directly, one via
-    // 8.2.73 then this rule) — a real duplicate, not merely two equally
-    // valid derivations, and `shnams_ru_fires_on_the_dhatus_own_final`
-    // failed because `.find` could land on the 8.2.73-then-8.2.75 branch,
-    // whose trace never mentions 8.2.74 at all. √kṛt is untouched: its `d`
-    // is always 8.2.39 jaśtva's, and 8.2.73 never fires on it (kft's own
-    // final is never `s`), so the log never has "8.2.73" to check for.
-    Rule {
-        id: "8.2.75",
-        name: "daSca",
-        kind: RuleKind::Vidhi,
-        vikalpa: true,
-        apply: |p| {
-            if !p.terms[ANGA].has(Tag::Rudhadi) || !p.ctx.is_sip() {
-                return false;
-            }
-            if !dhatu_is_pada_final(p) {
-                return false;
-            }
-            if p.log.iter().any(|s| s.sutra == "8.2.73") {
-                return false;
-            }
-            if !p.text().ends_with('d') {
-                return false;
-            }
-            let before = p.snapshot();
-            let Some(idx) = p.terms.iter().rposition(|t| !t.text.is_empty()) else {
-                return false;
-            };
-            let mut s: Vec<char> = p.terms[idx].text.chars().collect();
-            s.pop();
-            s.push('r');
-            p.terms[idx].text = s.into_iter().collect();
-            p.record("8.2.75", "daSca", before);
             true
         },
     },
@@ -505,6 +688,19 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // kfntan) is pada-final and out of scope by the sūtra's own
     // `apadāntasya`; guarding on the gaṇa keeps this rule away from it
     // without needing a pada-boundary notion the engine does not have.
+    //
+    // The `apadāntasya` / jhal test lives INSIDE the search, not after it:
+    // the rule finds the first `n` that is genuinely followed by a jhal
+    // rather than the first `n` in the word full stop, so a non-applicable
+    // `n` earlier in the word can never hide a later, applicable one. Some
+    // cells DO have more than one `n` candidate — Banjanti reaches this
+    // rule as `B a n j a n t i`, and both `n`s (before `j` and before `t`)
+    // are jhal-adjacent — but every cell traced for this suite has its
+    // first candidate already be the applicable one (SHAP's own `n`, not a
+    // later root- or ending-supplied one), so widening the search from
+    // "first `n`" to "first APPLICABLE `n`" changes no trace here. This is
+    // hardening against an ordering no witness here exercises, not a fix
+    // for one observed.
     Rule {
         id: "8.3.24",
         name: "naScApadAntasya Jali",
@@ -515,16 +711,11 @@ pub(crate) static TRIPADI: &[Rule] = &[
                 return false;
             }
             let w = word_chars(p);
-            let Some(pos) = w.iter().position(|(_, _, c)| *c == 'n') else {
+            let Some(pos) = w.iter().enumerate().position(|(i, (_, _, c))| {
+                *c == 'n' && w.get(i + 1).is_some_and(|(_, _, next)| is_jhal(*next))
+            }) else {
                 return false;
             };
-            // `apadāntasya`: something must follow, and it must be a jhal.
-            let Some((_, _, next)) = w.get(pos + 1) else {
-                return false;
-            };
-            if !is_jhal(*next) {
-                return false;
-            }
             let (term, idx, _) = w[pos];
             let before = p.snapshot();
             set_char(p, term, idx, 'M');
@@ -542,12 +733,31 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // NARROW GUARD, by design. The sūtra's trigger is the whole iṇ
     // pratyāhāra (every vowel but a/ā, plus h y v r l) and `k`; this
     // implements only the reachable slice of it — an aṅga-final vowel other
-    // than a/ā — so every arm is executed by a test and the mutation gate
-    // stays clean. Same discipline that removed 6.1.78's E/O arms in slice
-    // 5e (and 8.4.53 itself, in `9fa8e5f` — since restored below, rudhādi
-    // having supplied it a witness the discipline still required), and the
-    // same shape as 8.2.25's narrow guard. Widen it the moment a root lands
-    // whose aṅga ends in h/y/v/r/l or k before an s-initial affix.
+    // than a/ā, plus (as of this slice) `g` and `k` — so every arm is
+    // executed by a test and the mutation gate stays clean. Same discipline
+    // that removed 6.1.78's E/O arms in slice 5e (and 8.4.53 itself, in
+    // `9fa8e5f` — since restored below, rudhādi having supplied it a witness
+    // the discipline still required), and the same shape as 8.2.25's narrow
+    // guard. Widen further the moment a root lands whose aṅga ends in
+    // h/y/v/r/l or another ku sound (K/G/N) before an s-initial affix.
+    //
+    // Two ku triggers have now landed, each widening this rule once, and
+    // both are inside 8.3.57 iṇ-koḥ's own scope:
+    //
+    // The `g` arm is √bhañj's: coH kuH (8.2.30, above in this file's
+    // pipeline order) has already turned the dhātu's final `j` into `g`
+    // before this rule runs (Banaj + si → Banag + si), so what precedes
+    // `si` here is the ku sound `g`, not yet devoiced to `k` — khari ca
+    // (8.4.55) sits below this rule and does that afterwards. Banakzi
+    // (`super::derivation_tests::bhanj_lat_all_nine_cells`) is the witness.
+    //
+    // The `k` arm is √piṣ's: zaQoH kaH si (8.2.41, above in this file's
+    // pipeline order) has already turned the dhātu's own `z` into `k` before
+    // this rule runs (pinak + si), so what precedes `si` here is the ku
+    // sound `k` directly — not an aṅga-final sound at all, since rudhādi's
+    // śnam split (3.1.78) puts √piṣ's tail in SHAP, one term short of ANGA.
+    // pinakzi (`super::derivation_tests::pish_lat_madhyama_eka_is_pinakshi`)
+    // is the witness.
     //
     // No conflict with 8.3.15 above: that rule is word-final
     // (kharavasānayoḥ), this one is apadāntasya. It also declines for every
@@ -587,7 +797,8 @@ pub(crate) static TRIPADI: &[Rule] = &[
             else {
                 return false;
             };
-            if !is_vowel(prev) || matches!(prev, 'a' | 'A') {
+            let is_in_trigger = is_vowel(prev) && !matches!(prev, 'a' | 'A');
+            if !is_in_trigger && !matches!(prev, 'g' | 'k') {
                 return false;
             }
             let before = p.snapshot();
@@ -597,8 +808,85 @@ pub(crate) static TRIPADI: &[Rule] = &[
             true
         },
     },
+    // 8.4.41 ṣṭunā ṣṭuḥ: a dental (`s`, or a t-varga stop) retroflexes when
+    // it immediately neighbours `ṣ` (z) or a ṭ-varga stop. pinaz + ti →
+    // pinaz + wi → pinazwi; piMz + tas → piMzwaH; piMz + Di — in the loṭ
+    // madhyama eka cell — takes the same D → Q step, and 8.4.53 below
+    // carries it the rest of the way to the paradigm's finished piRqQi
+    // (7b Task 6).
+    //
+    // SŪTRA ORDER; LOAD-BEARING AS IMPLEMENTED. It sits above 8.4.53 because
+    // that is where vidyut-prakriya's data/sutrapatha.tsv places it — but
+    // since 7b Task 5 gave `jashtva_of` a `z → q` arm, the two rules no longer
+    // touch disjoint sounds on this junction: piMz + Di's `z` is now exactly
+    // what jaśtva would take if it saw it first. With 8.4.41 above, it fires
+    // on the `z`/`D` pair before 8.4.53 runs, retroflexing D → Q; 8.4.53
+    // then voices that same `z` to `q` before the new `Q`, giving piMqQi.
+    // Run 8.4.53 first instead and it would read piMz + Di's `z` as the
+    // jaśtva target — jashtva_of('z') is no longer a no-op — and rewrite it
+    // to `q` before 8.4.41 ever ran; with 8.4.41's trigger still `z`-only,
+    // that `z` is gone by the time 8.4.41 runs and it has nothing left to
+    // fire on, giving piMqDi instead.
+    //
+    // The two orders fail to converge for an implementation reason, not a
+    // sūtra one. BEFORE 7b Task 6, two separate narrowings held them apart:
+    // THIS rule's trigger set is `z` only (see NARROW GUARD below), not the
+    // full ṭ-varga ṣṭunā ṣṭuḥ names (`w W q Q R`); and 8.4.53's guard used
+    // to check for a literal penult `D`, not "any jhaś." 7b Task 6 generalised
+    // 8.4.53 from literal-`D` to jhal-before-jhaś (Q qualifies), which
+    // removed 8.4.53's narrowing — the AS-IMPLEMENTED order (8.4.41 above
+    // 8.4.53) now converges correctly to piMqQi, as traced above and pinned
+    // by `pish_lot_madhyama_eka_is_pinddhi`'s piRqQi. THIS rule's `z`-only
+    // trigger is now the ONE narrowing left standing: reorder the two rules
+    // (8.4.53 above 8.4.41) and it still stalls at piMqDi, restorable only
+    // by also widening this trigger to include `q` — the full `w W q Q R`
+    // — so a q-triggered 8.4.41 can still retroflex D → Q afterward. Do not
+    // reorder these two rules without re-deriving this cell.
+    //
+    // STRICT ADJACENCY is the load-bearing part of the guard: only the
+    // IMMEDIATELY preceding character is read, never scanned past. A
+    // forward scan for "some dental after a z" would wrongly retroflex
+    // piMzanti's `n` (across the intervening `a`) into *piMzaRti; that
+    // retroflexion is ṇatva's (8.4.1 / 8.4.2), which 8.4.2 explicitly lets
+    // an aṭ intervene in — `shtutva_requires_strict_adjacency` in
+    // `super::derivation_tests` is the witness that the two rules stay
+    // disjoint.
+    //
+    // NARROW GUARD, by design, matching 8.3.59's discipline just above: the
+    // only trigger √piṣ ever presents is its own `z`, so only `z` is checked
+    // here — no curated root reaches a ṭ-varga-stop trigger yet. The
+    // correspondence match below is narrowed the same way: only t/T/D have
+    // a witness (d/n/s do not). Widen both the moment a root or a junction
+    // reaches the wider cases.
+    Rule {
+        id: "8.4.41",
+        name: "zwunA zwuH",
+        kind: RuleKind::Vidhi,
+        vikalpa: false,
+        apply: |p| {
+            let w = word_chars(p);
+            for i in 1..w.len() {
+                if w[i - 1].2 != 'z' {
+                    continue;
+                }
+                let sub = match w[i].2 {
+                    't' => 'w',
+                    'T' => 'W',
+                    'D' => 'Q',
+                    _ => continue,
+                };
+                let (term, idx, _) = w[i];
+                let before = p.snapshot();
+                set_char(p, term, idx, sub);
+                p.record("8.4.41", "zwunA zwuH", before);
+                return true;
+            }
+            false
+        },
+    },
     // 8.4.53 jhalāṁ jaś jhaśi: a jhal becomes its jaś before a jhaś (a
-    // voiced aspirate). kfnt + Di → kfnd + Di → kfndDi.
+    // voiced aspirate), anywhere the two sit adjacent in the word — not
+    // only at the word's own end. kfnt + Di → kfnd + Di → kfndDi.
     //
     // RESTORED, not reverted. This rule was removed in 9fa8e5f as
     // unreachable: slice 5d had analysed the ās/vas junction as jaśtva and
@@ -611,6 +899,62 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // 8.2.25 still bleeds it for √hiṃs, which is why hinDi and kfndDi differ
     // in shape — the same cell of the same gaṇa, reached by two different
     // rules. Both are asserted in `super::derivation_tests`.
+    //
+    // GENERALISED (7b Task 6). The guard used to read "the word ends in `i`
+    // and the penult is `D`" — the only shape 7a's two witnesses (kfndDi,
+    // hinDi) ever reached it through, so it was never written wider than
+    // that. It stops being true here: √piṣ's piRqQi conditions this rule
+    // on a `Q` — 8.4.41 just above has already retroflexed 6.4.101's `Di`
+    // to `Qi` before this rule ever runs — and √indh (7b Task 7) conditions
+    // it on a `D` that sits mid-word, in `De`, `Da`, `DAm`, `Dve`, `DAH`
+    // and `Dvam`, never at the word's own end. Four of those six (`De`,
+    // `Da`, `DAm`, `DAH`) are newly created by the upcoming 8.2.40 jhaṣas
+    // tathor dho'dhaḥ (t/th → D after a stem's jhaṣ); `Dve`/`Dvam` are not
+    // — see NOT NARROWED below for why they still need this rule. The
+    // guard now reads the sūtra's actual condition instead: `is_jhash`
+    // locates the jhaś, `jashtva_of` on the sound immediately before it
+    // supplies the substitute, checked at every adjacent pair
+    // `word_chars` reports.
+    //
+    // NOT NARROWED THE WAY 8.4.41 ABOVE IS. 8.4.41's trigger is
+    // deliberately `z`-only, pending a later root; this rule instead
+    // implements the full jhalāṁ jaś jhaśi condition, with no positional
+    // restriction and no restriction on which jhal or which jhaś. What
+    // keeps it from over-firing is upstream, not in this guard, in two
+    // separate ways for the two kinds of jhaś-initial affix in this
+    // grammar:
+    //
+    // 8.2.40 (7b Task 7) is the only NEW source of a D-initial ending —
+    // besides the pre-existing 6.4.101 her dhiḥ — and it requires a jhaṣ
+    // already abutting the ending, which no root in the suite besides
+    // √indh ever presents: every OTHER gaṇa represented here inserts a
+    // real vikaraṇa syllable between the root and the ending — bhvādi's
+    // laBate, divādi's yuDyate, svādi's stiG, kryādi's guDnAti — so this
+    // rule — and hence a fresh D-initial ending — is reachable only
+    // through √indh.
+    //
+    // `Dve`/`Dvam` (and the iṭ-augmented `IDvam`) are a SEPARATE case: no
+    // rule creates their `D`. `Dvam` is the raw ātmanepada
+    // madhyama-bahu pratyaya straight out of `panini-data`'s `tin_ending`
+    // table, and 3.4.79 wita AtmanepadAnAM wer e — a general ṭi
+    // substitution with no jhaṣ condition of its own — turns it to `Dve`
+    // for laṭ/loṭ. What keeps THIS rule from over-firing there is a fact
+    // about the STEMS that reach them, not the endings: every Dve/Dvam
+    // cell pinned in this suite puts either a vowel (laBaDve, ADve,
+    // vaDve, AsIDvam, laBaDvam) or an already-jaś `d` (KindDve)
+    // immediately before the `D` — never an untreated jhal — so this rule
+    // either has nothing to see or the no-op guard declines it. √indh's
+    // own indDve/indDvam (7b Task 7) are the one cell where a stem-final
+    // jhaṣ genuinely meets this native `D`, and that is exactly where
+    // this rule is supposed to fire.
+    //
+    // One real scope limit remains, inherited from the engine rather than
+    // written into this guard: `apply` runs at most once per branch per
+    // pipeline pass (see `controller::run_pipeline`), so this loop returns
+    // on the FIRST qualifying pair it finds and never revisits the word
+    // for a second one. No form in this suite needs two — verify before
+    // relying on it for a future root with more than one jhaś-initial
+    // affix boundary.
     Rule {
         id: "8.4.53",
         name: "JalAM jaS JaSi",
@@ -618,31 +962,26 @@ pub(crate) static TRIPADI: &[Rule] = &[
         vikalpa: false,
         apply: |p| {
             let w = word_chars(p);
-            let Some(pos) = w.len().checked_sub(2) else {
-                return false;
-            };
-            // The jhaś that conditions it: in this suite always the `D` of
-            // 6.4.101's Di, at the last position.
-            if w.last().map(|(_, _, c)| *c) != Some('i') || w[pos].2 != 'D' {
-                return false;
+            for i in 1..w.len() {
+                if !is_jhash(w[i].2) {
+                    continue;
+                }
+                let Some(jash) = jashtva_of(w[i - 1].2) else {
+                    continue;
+                };
+                // No-op guard, as 8.4.55 below takes for the identical
+                // reason: a target that is already its own jaś (√ad's
+                // `d`, adDi) must not record a vacuous step.
+                if jash == w[i - 1].2 {
+                    continue;
+                }
+                let (term, idx, _) = w[i - 1];
+                let before = p.snapshot();
+                set_char(p, term, idx, jash);
+                p.record("8.4.53", "JalAM jaS JaSi", before);
+                return true;
             }
-            let Some(target) = pos.checked_sub(1) else {
-                return false;
-            };
-            let Some(jash) = jashtva_of(w[target].2) else {
-                return false;
-            };
-            // No-op guard, as 8.4.55 below takes for the identical reason:
-            // a target that is already its own jaś (√ad's `d`, adDi) must
-            // not record a vacuous step.
-            if jash == w[target].2 {
-                return false;
-            }
-            let (term, idx, _) = w[target];
-            let before = p.snapshot();
-            set_char(p, term, idx, jash);
-            p.record("8.4.53", "JalAM jaS JaSi", before);
-            true
+            false
         },
     },
     // 8.4.55 khari ca (cartva): a jhal immediately before the ending, meeting
@@ -653,7 +992,7 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // 8.4.56 both follow it now — but still ordered after every other 8.3/8.4
     // rule that precedes it.
     //
-    // FIXED for rudhādi's ANGA/SHAP split (Task 7, √khid's Kintte the
+    // FIXED for rudhādi's ANGA/SHAP split (7a Task 7, √khid's Kintte the
     // witness). This rule predates gaṇa 7 and originally read
     // `p.terms[ANGA]` directly for both "the aṅga's final sound" and, via
     // "the first non-empty term after ANGA", for "the ending's first
@@ -812,6 +1151,15 @@ pub(crate) static TRIPADI: &[Rule] = &[
     //
     // Retire the fold, and this constraint with it, when a slice widens
     // 8.3.24 past rudhādi.
+    //
+    // The `yayi` / parasavarṇa test lives INSIDE the search, not after it:
+    // the rule finds the first anusvāra that actually HAS a parasavarṇa
+    // (i.e. is genuinely followed by a yay), rather than the first anusvāra
+    // in the word full stop, so a non-applicable anusvāra earlier in the
+    // word can never hide a later, applicable one. No cell in this suite
+    // has more than one anusvāra candidate to distinguish, so this is
+    // hardening against a shape no witness here exercises, not a fix for
+    // one observed.
     Rule {
         id: "8.4.58",
         name: "anusvArasya yayi parasavarRaH",
@@ -819,13 +1167,14 @@ pub(crate) static TRIPADI: &[Rule] = &[
         vikalpa: false,
         apply: |p| {
             let w = word_chars(p);
-            let Some(pos) = w.iter().position(|(_, _, c)| *c == 'M') else {
-                return false;
-            };
-            let Some((_, _, next)) = w.get(pos + 1) else {
-                return false;
-            };
-            let Some(nasal) = parasavarna_of(*next) else {
+            let found = w.iter().enumerate().find_map(|(i, (_, _, c))| {
+                if *c != 'M' {
+                    return None;
+                }
+                let next = w.get(i + 1)?.2;
+                parasavarna_of(next).map(|nasal| (i, nasal))
+            });
+            let Some((pos, nasal)) = found else {
                 return false;
             };
             let (term, idx, _) = w[pos];
@@ -869,7 +1218,7 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // rule would then fire on that pada-final `tt` just as readily, since
     // both `t`s are savarṇa either way. What the stated order fixes is the
     // sequence each branch's trace records the two rules in — 8.4.65 before
-    // 8.4.56 — which Task 9's `kfntAt` trace pin in
+    // 8.4.56 — which 7a Task 9's `kfntAt` trace pin in
     // `crates/panini/tests/trace.rs` asserts directly
     // (`at(&t, "8.4.65") < at(&t, "8.4.56")`). `tinanta_rule_order_is_pinned`
     // in `super::derivation_tests` is what holds this file's order today.
@@ -1056,6 +1405,18 @@ mod tests {
         };
         assert!(!(rule.apply)(&mut p));
         assert_eq!(p.terms[ENDING].text, "se");
+
+        // No current root reaches a `K` trigger — only `g` and `k` are
+        // widened in. This case pins that the guard checks the exact chars
+        // `g`/`k`, not the whole ku set (K/G/N), per the comment's own
+        // "widen further" note.
+        let mut p = Prakriya {
+            terms: vec![Term::new("pi"), Term::new("naK"), Term::new("si")],
+            log: vec![],
+            ..Default::default()
+        };
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[ENDING].text, "si");
     }
 
     #[test]
@@ -1070,6 +1431,17 @@ mod tests {
         let rule = rules().find(|r| r.id == "8.3.59").unwrap();
         assert!((rule.apply)(&mut p));
         assert_eq!(p.text(), "vfnIzva");
+        // pi + nak + si: the iN trigger is SHAP's `k` (8.2.41's zaQoH kaH si
+        // having already turned piz's own `z` into `k`), not the anga's `i`
+        // -- and not even an anga-final sound at all, since rudhAdi's Snam
+        // split (3.1.78) puts piz's tail in SHAP, one term short of ANGA.
+        let mut p = Prakriya {
+            terms: vec![Term::new("pi"), Term::new("nak"), Term::new("si")],
+            log: vec![],
+            ..Default::default()
+        };
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.text(), "pinakzi");
         // And the thematic case still declines on the vikaraNa's `a`, which
         // is what keeps laBasva intact.
         let mut p = Prakriya {
@@ -1214,11 +1586,46 @@ mod tests {
         }
     }
 
-    /// 8.2.39 voices a pada-final `t` and nothing else. The `s` case belongs
-    /// to its apavāda 8.2.66 (implemented inside the rule labelled 8.3.15),
-    /// and a `t` that is not pada-final is untouched.
+    /// 8.2.30 velarises a `j` that is word-final or immediately followed by
+    /// a jhal, and declines otherwise. Only the `j` -> `g` arm is reachable
+    /// this slice, so this pins that guard rather than the wider cu/ku set.
     #[test]
-    fn jhalam_jasho_ante_fires_only_on_a_pada_final_t() {
+    fn coh_kuh_fires_only_word_finally_or_before_a_jhal() {
+        let rule = rules().find(|r| r.id == "8.2.30").unwrap();
+
+        // before a jhal: the `j` sits at the end of a non-final term (śnam's
+        // infix leaves it in SHAP), and the jhal that conditions it is the
+        // first character of the term after — the cross-term adjacency
+        // `word_chars` exists for.
+        let mut p = Prakriya {
+            terms: vec![Term::new("Ba"), Term::new("naj"), Term::new("ti")],
+            ..Default::default()
+        };
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.text(), "Banagti");
+
+        // word-final: nothing follows the `j` at all.
+        let mut p = Prakriya {
+            terms: vec![Term::new("Ba"), Term::new("naj")],
+            ..Default::default()
+        };
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.text(), "Banag");
+
+        // before a vowel: neither jhal nor word-final, so the rule declines.
+        let mut p = Prakriya {
+            terms: vec![Term::new("Ba"), Term::new("nj"), Term::new("anti")],
+            ..Default::default()
+        };
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.text(), "Banjanti");
+    }
+
+    /// 8.2.39 voices a pada-final `t` or `z` and nothing else. The `s` case
+    /// belongs to its apavāda 8.2.66 (implemented inside the rule labelled
+    /// 8.3.15), and a `t` that is not pada-final is untouched.
+    #[test]
+    fn jhalam_jasho_ante_fires_only_on_a_pada_final_t_or_sh() {
         let rule = rules().find(|r| r.id == "8.2.39").unwrap();
 
         let mut p = Prakriya {
@@ -1235,6 +1642,15 @@ mod tests {
         };
         assert!(!(rule.apply)(&mut p));
 
+        // word-final `z`: jashtva_of('z') is `q` (1.1.50 nearest-substitute,
+        // not place-and-manner correspondence).
+        let mut p = Prakriya {
+            terms: vec![Term::new("apina"), Term::new("z")],
+            ..Default::default()
+        };
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.text(), "apinaq");
+
         // `s`-final belongs to 8.2.66/8.3.15, not here
         let mut p = Prakriya {
             terms: vec![Term::new("aBav"), Term::new("a"), Term::new("s")],
@@ -1248,6 +1664,145 @@ mod tests {
             ..Default::default()
         };
         assert!(!(rule.apply)(&mut p));
+    }
+
+    /// 8.2.40 takes a `t` or `T` to `D` immediately after a jhaṣ, and
+    /// declines both when the preceding sound is not a jhaṣ and when the
+    /// following sound is not a dental stop at all.
+    #[test]
+    fn jhashas_tathor_dhodhah_fires_only_on_a_dental_after_a_jhash() {
+        let rule = rules().find(|r| r.id == "8.2.40").unwrap();
+
+        // a `t` immediately after a jhaṣ (`D`) becomes `D`.
+        let mut p = Prakriya {
+            terms: vec![Term::new("inD"), Term::new(""), Term::new("te")],
+            ..Default::default()
+        };
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.text(), "inDDe");
+
+        // a `t` after a non-jhaṣ: the rule declines.
+        for stem in ["ind", "inn", "ins"] {
+            let mut p = Prakriya {
+                terms: vec![Term::new(stem), Term::new(""), Term::new("te")],
+                ..Default::default()
+            };
+            assert!(!(rule.apply)(&mut p), "fired after {stem}");
+            assert_eq!(p.text(), format!("{stem}te"));
+        }
+
+        // an `s` after a jhaṣ: not a dental stop, so the rule declines.
+        let mut p = Prakriya {
+            terms: vec![Term::new("inD"), Term::new(""), Term::new("se")],
+            ..Default::default()
+        };
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.text(), "inDse");
+    }
+
+    /// 8.2.41 takes `z` to `k` immediately before an `s`, and declines
+    /// otherwise. Only the `z` arm is reachable this slice (no curated root
+    /// ends in `Q`), so this pins that guard rather than the wider zaQoH set.
+    #[test]
+    fn shadhoh_kah_si_fires_only_before_an_s() {
+        let rule = rules().find(|r| r.id == "8.2.41").unwrap();
+
+        // before an s: the `z` sits at the end of a non-final term (śnam's
+        // infix leaves it in SHAP), and the `s` that conditions it is the
+        // first character of the term after — the cross-term adjacency
+        // `word_chars` exists for.
+        let mut p = Prakriya {
+            terms: vec![Term::new("pi"), Term::new("naz"), Term::new("si")],
+            ..Default::default()
+        };
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.text(), "pinaksi");
+
+        // before any other sound: the rule declines.
+        let mut p = Prakriya {
+            terms: vec![Term::new("pi"), Term::new("naz"), Term::new("ti")],
+            ..Default::default()
+        };
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.text(), "pinazti");
+    }
+
+    /// 8.4.41 retroflexes a dental immediately after `z`, and declines both
+    /// when a character intervenes and when the neighbour is not a dental
+    /// at all — the shape `shtutva_requires_strict_adjacency` pins at the
+    /// derivation level, here pinned directly against the rule.
+    #[test]
+    fn shtutva_fires_only_on_an_adjacent_dental() {
+        let rule = rules().find(|r| r.id == "8.4.41").unwrap();
+
+        // immediately adjacent: the `t` retroflexes to `w`.
+        let mut p = Prakriya {
+            terms: vec![Term::new("piz"), Term::new(""), Term::new("ti")],
+            ..Default::default()
+        };
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.text(), "pizwi");
+
+        // the D arm, whose only derivation-level cell (loṭ madhyama eka) a
+        // later task finishes; pinned here so the arm is not witness-free.
+        let mut p = Prakriya {
+            terms: vec![Term::new("piz"), Term::new(""), Term::new("Di")],
+            ..Default::default()
+        };
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.text(), "pizQi");
+
+        // one character between the `z` and the dental: no contact, decline.
+        let mut p = Prakriya {
+            terms: vec![Term::new("piz"), Term::new("a"), Term::new("nti")],
+            ..Default::default()
+        };
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.text(), "pizanti");
+
+        // a non-dental neighbour: y, v and m are none of them shtutva's
+        // target, so the rule declines on each.
+        for ending in ["ya", "va", "ma"] {
+            let mut p = Prakriya {
+                terms: vec![Term::new("piz"), Term::new(""), Term::new(ending)],
+                ..Default::default()
+            };
+            assert!(!(rule.apply)(&mut p), "fired before {ending}");
+            assert_eq!(p.text(), format!("piz{ending}"));
+        }
+    }
+
+    /// 8.4.53 turns a jhal into its jaś before a jhaś, anywhere the two are
+    /// adjacent — not only at the word's own end, the shape both of 7a's
+    /// witnesses (kfndDi, hinDi) happened to share. Pinned directly against
+    /// the rule since neither witness exercises the non-final case.
+    #[test]
+    fn jhalam_jash_jhashi_fires_anywhere_not_just_word_finally() {
+        let rule = rules().find(|r| r.id == "8.4.53").unwrap();
+
+        // non-final: the jhaś sits mid-word, with more of the affix after it.
+        let mut p = Prakriya {
+            terms: vec![Term::new("kfnt"), Term::new(""), Term::new("Deva")],
+            ..Default::default()
+        };
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.text(), "kfndDeva");
+
+        // a jhal before a non-jhaś: nothing for the rule to see.
+        let mut p = Prakriya {
+            terms: vec![Term::new("kfnt"), Term::new(""), Term::new("ati")],
+            ..Default::default()
+        };
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.text(), "kfntati");
+
+        // a target already its own jaś: the no-op guard declines.
+        let mut p = Prakriya {
+            terms: vec![Term::new("kfnd"), Term::new(""), Term::new("Di")],
+            ..Default::default()
+        };
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.text(), "kfndDi");
     }
 
     /// 8.4.56 devoices a pada-final jhal. After 8.2.39 the only reachable
