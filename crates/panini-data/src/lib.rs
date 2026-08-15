@@ -474,10 +474,14 @@ static DHATUS: &[Dhatu] = &[
         // svaritaYitaH reads, and with no anudātta on top of it 1.3.12 does
         // not pre-empt the parasmaipada reading, so both pada cells derive.
         //
-        // It needs no new phonology at all. Its ātmanepada arm is
-        // structurally √indh's (8.2.40 JaSas taTor Do'DaH, then 8.4.65
-        // optionally eliding the `d`), and its strong parasmaipada arm is
-        // √bhañj's and √piṣ's.
+        // It needs no new sūtra. Its ātmanepada arm is structurally
+        // √indh's (8.2.40 JaSas taTor Do'DaH, then 8.4.65 optionally
+        // eliding the `d`), and its strong parasmaipada arm is √bhañj's and
+        // √piṣ's — but it does reach one arm of existing phonology no
+        // curated root had reached before: laṅ prathama/madhyama eka expose
+        // the dhātu's own final `D` pada-finally (8.2.23 having eaten
+        // tip/sip's own consonant), which is 8.2.39 JalAM jaSo'nte's newly
+        // widened `D` arm, not new phonology of its own.
         //
         // It is also the first root where a live ṇatva trigger and the
         // folded 8.3.24 guard coexist, so ṇatva fires on the strong stem
