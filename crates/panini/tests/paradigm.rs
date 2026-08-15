@@ -2237,6 +2237,106 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
             "inDImahi",
         ],
     ),
+    (
+        "ruD",
+        "laT",
+        Pada::Parasmaipada,
+        [
+            "ruRadDi", "rundDaH", "runDanti", "ruRatsi", "rundDaH", "rundDa", "ruRaDmi", "runDvaH",
+            "runDmaH",
+        ],
+    ),
+    (
+        "ruD",
+        "laN",
+        Pada::Parasmaipada,
+        [
+            "aruRad", "arundDAm", "arunDan", "aruRad", "arundDam", "arundDa", "aruRaDam",
+            "arunDva", "arunDma",
+        ],
+    ),
+    (
+        "ruD",
+        "loT",
+        Pada::Parasmaipada,
+        [
+            "ruRadDu", "rundDAm", "runDantu", "rundDi", "rundDam", "rundDa", "ruRaDAni",
+            "ruRaDAva", "ruRaDAma",
+        ],
+    ),
+    (
+        "ruD",
+        "viDiliN",
+        Pada::Parasmaipada,
+        [
+            "runDyAd",
+            "runDyAtAm",
+            "runDyuH",
+            "runDyAH",
+            "runDyAtam",
+            "runDyAta",
+            "runDyAm",
+            "runDyAva",
+            "runDyAma",
+        ],
+    ),
+    (
+        "ruD",
+        "laT",
+        Pada::Atmanepada,
+        [
+            "rundDe", "runDAte", "runDate", "runtse", "runDATe", "rundDve", "runDe", "runDvahe",
+            "runDmahe",
+        ],
+    ),
+    (
+        "ruD",
+        "laN",
+        Pada::Atmanepada,
+        [
+            "arundDa",
+            "arunDAtAm",
+            "arunData",
+            "arundDAH",
+            "arunDATAm",
+            "arundDvam",
+            "arunDi",
+            "arunDvahi",
+            "arunDmahi",
+        ],
+    ),
+    (
+        "ruD",
+        "loT",
+        Pada::Atmanepada,
+        [
+            "rundDAm",
+            "runDAtAm",
+            "runDatAm",
+            "runtsva",
+            "runDATAm",
+            "rundDvam",
+            "ruRaDE",
+            "ruRaDAvahE",
+            "ruRaDAmahE",
+        ],
+    ),
+    (
+        "ruD",
+        "viDiliN",
+        Pada::Atmanepada,
+        [
+            "runDIta",
+            "runDIyAtAm",
+            "runDIran",
+            "runDITAH",
+            "runDIyATAm",
+            "runDIDvam",
+            "runDIya",
+            "runDIvahi",
+            "runDImahi",
+        ],
+    ),
 ];
 
 /// Second and third valid forms, for cells where an optional (vikalpa) rule
@@ -2888,6 +2988,77 @@ const ALTERNATES: &[(&str, &str, Pada, usize, &str, &str)] = &[
     ("inD", "laN", Pada::Atmanepada, 5, "EnDvam", "8.4.65"),
     ("inD", "loT", Pada::Atmanepada, 0, "inDAm", "8.4.65"),
     ("inD", "loT", Pada::Atmanepada, 5, "inDvam", "8.4.65"),
+    ("ruD", "laT", Pada::Parasmaipada, 1, "runDaH", "8.4.65"),
+    ("ruD", "laT", Pada::Parasmaipada, 4, "runDaH", "8.4.65"),
+    ("ruD", "laT", Pada::Parasmaipada, 5, "runDa", "8.4.65"),
+    ("ruD", "laN", Pada::Parasmaipada, 0, "aruRat", "8.4.56"),
+    ("ruD", "laN", Pada::Parasmaipada, 1, "arunDAm", "8.4.65"),
+    ("ruD", "laN", Pada::Parasmaipada, 3, "aruRat", "8.4.56"),
+    ("ruD", "laN", Pada::Parasmaipada, 3, "aruRaH", "8.2.75"),
+    ("ruD", "laN", Pada::Parasmaipada, 4, "arunDam", "8.4.65"),
+    ("ruD", "laN", Pada::Parasmaipada, 5, "arunDa", "8.4.65"),
+    ("ruD", "loT", Pada::Parasmaipada, 0, "rundDAd", "7.1.35"),
+    (
+        "ruD",
+        "loT",
+        Pada::Parasmaipada,
+        0,
+        "runDAd",
+        "7.1.35+8.4.65",
+    ),
+    (
+        "ruD",
+        "loT",
+        Pada::Parasmaipada,
+        0,
+        "rundDAt",
+        "7.1.35+8.4.56",
+    ),
+    (
+        "ruD",
+        "loT",
+        Pada::Parasmaipada,
+        0,
+        "runDAt",
+        "7.1.35+8.4.65+8.4.56",
+    ),
+    ("ruD", "loT", Pada::Parasmaipada, 1, "runDAm", "8.4.65"),
+    ("ruD", "loT", Pada::Parasmaipada, 3, "runDi", "8.4.65"),
+    ("ruD", "loT", Pada::Parasmaipada, 3, "rundDAd", "7.1.35"),
+    (
+        "ruD",
+        "loT",
+        Pada::Parasmaipada,
+        3,
+        "runDAd",
+        "7.1.35+8.4.65",
+    ),
+    (
+        "ruD",
+        "loT",
+        Pada::Parasmaipada,
+        3,
+        "rundDAt",
+        "7.1.35+8.4.56",
+    ),
+    (
+        "ruD",
+        "loT",
+        Pada::Parasmaipada,
+        3,
+        "runDAt",
+        "7.1.35+8.4.65+8.4.56",
+    ),
+    ("ruD", "loT", Pada::Parasmaipada, 4, "runDam", "8.4.65"),
+    ("ruD", "loT", Pada::Parasmaipada, 5, "runDa", "8.4.65"),
+    ("ruD", "viDiliN", Pada::Parasmaipada, 0, "runDyAt", "8.4.56"),
+    ("ruD", "laT", Pada::Atmanepada, 0, "runDe", "8.4.65"),
+    ("ruD", "laT", Pada::Atmanepada, 5, "runDve", "8.4.65"),
+    ("ruD", "laN", Pada::Atmanepada, 0, "arunDa", "8.4.65"),
+    ("ruD", "laN", Pada::Atmanepada, 3, "arunDAH", "8.4.65"),
+    ("ruD", "laN", Pada::Atmanepada, 5, "arunDvam", "8.4.65"),
+    ("ruD", "loT", Pada::Atmanepada, 0, "runDAm", "8.4.65"),
+    ("ruD", "loT", Pada::Atmanepada, 5, "runDvam", "8.4.65"),
 ];
 
 fn lan_a_form(id: &str, pu: Purusha, va: Vacana) -> String {
@@ -3107,35 +3278,42 @@ fn derivation_set_is_exactly_pinned() {
 /// design-time vidyut-prakriya audit predicted for the two conventions the
 /// svādi slice retired (7.1.35 tātaṅ, 8.4.56 pausal cartva), the one audited
 /// divergence it resolved (3.4.111 Śākaṭāyana's jus), the three roots added
-/// in rudhādi 7a (kft, his, Kid), and — new in rudhādi 7b — three more
-/// (Banj, piz, inD), all six of which fork in all four lakāras, not just
-/// loṭ and laṅ: laṭ (kft cells 1/4/5, Kid cells 0/5, and inD cells 0/5, on
-/// 8.4.65), laṅ (on 8.4.65, the 8.2.74/8.2.75 ru alternation, and — new in
-/// 7b — the 8.2.23-above-8.2.41 śa-luk jaśtva 8.4.56 branch), loṭ (on
-/// 7.1.35/8.4.65/8.4.56, stacking up to three deep, and — new in 7b — piṣ's
-/// loṭ madhyama eka, which stacks 8.4.65 alongside 7.1.35/8.4.56 four deep),
-/// and vidhiliṅ (kft/his/Banj/piz cell 0, on 8.4.56): 1728 cells total (192
-/// root×lakāra blocks × 9), of which 1579 hold exactly one form, 91 hold
-/// two, 55 hold three, one holds four (piṣ's loṭ madhyama eka, the
-/// deepest fork added in 7b), and — the sharpest branch-count witness in
-/// the repo, per `docs/ARCHITECTURE.md` — exactly one holds five (√kṛt's
-/// loṭ prathama eka) and one holds six (√kṛt's loṭ madhyama eka,
-/// `kfndDi`/`kfnDi`'s cell). `ALTERNATES` itself has 213 rows, keyed 60
-/// `8.4.56`, 56 `7.1.35`, 56 `7.1.35+8.4.56`, 2 `3.4.111`, 8 `6.4.107`, 25
-/// `8.4.65`, 1 `8.2.75`, 1 `8.2.74`, 2 `7.1.35+8.4.65`, and 2
-/// `7.1.35+8.4.65+8.4.56` — the assertions below are complete. The audit
-/// probe that produced the original numbers ran against a vidyut-prakriya
-/// checkout during design; slice 9's cross-implementation audit re-ran the
-/// full check against a scratchpad vidyut-prakriya checkout across all 1620
-/// pre-7b cells with zero differences, and every 7b form was cross-checked
-/// the same way during this slice's design, so the numbers are re-verified
-/// as well as pinned, even though that probe's source is deliberately not
-/// committed to this repo (it is throwaway verification tooling, not
-/// shipped code) — this test is what keeps the numbers true day to day.
+/// in rudhādi 7a (kft, his, Kid), three more added in rudhādi 7b (Banj, piz,
+/// inD), and — new in the ubhayapada 1.3.72 slice — √rudh (ruD), pinned in
+/// both padas: all seven of the rudhādi roots fork in all four lakāras, not
+/// just loṭ and laṅ: laṭ (kft cells 1/4/5, Kid cells 0/5, inD cells 0/5, and
+/// — new in this slice — ruD parasmaipada cells 1/4/5 and ātmanepada cells
+/// 0/5, all on 8.4.65), laṅ (on 8.4.65, the 8.2.74/8.2.75 ru alternation, and
+/// the 8.2.23-above-8.2.41 śa-luk jaśtva 8.4.56 branch), loṭ (on
+/// 7.1.35/8.4.65/8.4.56, stacking up to three deep, and piṣ's loṭ madhyama
+/// eka, which stacks 8.4.65 alongside 7.1.35/8.4.56 four deep), and vidhiliṅ
+/// (kft/his/Banj/piz cell 0, on 8.4.56): 1800 cells total (200 root×lakāra
+/// blocks × 9), of which 1630 hold exactly one form, 109 hold two, 56 hold
+/// three, one holds four (piṣ's loṭ madhyama eka, the deepest fork), and —
+/// the sharpest branch-count witnesses in the repo, per
+/// `docs/ARCHITECTURE.md` — exactly two hold five (√kṛt's loṭ prathama eka,
+/// and ruD's loṭ parasmaipada prathama eka) and two hold six (√kṛt's loṭ
+/// madhyama eka, `kfndDi`/`kfnDi`'s cell, and — new in this slice — ruD's
+/// loṭ parasmaipada madhyama eka, `rundDi`/`runDi`/`rundDAd`/`runDAd`/
+/// `rundDAt`/`runDAt`, tying √kṛt's record with the same k = 3
+/// (7.1.35, 8.4.65, 8.4.56) against a 2³ bound of eight). `ALTERNATES`
+/// itself has 242 rows, keyed 63 `8.4.56`, 58 `7.1.35`, 58 `7.1.35+8.4.56`,
+/// 2 `3.4.111`, 8 `6.4.107`, 42 `8.4.65`, 2 `8.2.75`, 1 `8.2.74`, 4
+/// `7.1.35+8.4.65`, and 4 `7.1.35+8.4.65+8.4.56` — the assertions below are
+/// complete. The audit probe that produced the original numbers ran against
+/// a vidyut-prakriya checkout during design; slice 9's cross-implementation
+/// audit re-ran the full check against a scratchpad vidyut-prakriya checkout
+/// across all 1620 pre-7b cells with zero differences, every 7b form was
+/// cross-checked the same way during that slice's design, and this slice's
+/// √rudh forms were audited against a vidyut-prakriya checkout at commit
+/// 8da2f90 the same way, so the numbers are re-verified as well as pinned,
+/// even though that probe's source is deliberately not committed to this
+/// repo (it is throwaway verification tooling, not shipped code) — this
+/// test is what keeps the numbers true day to day.
 #[test]
 fn derivation_set_shape_matches_the_audited_numbers() {
     let total_cells = PARADIGM.len() * 9;
-    assert_eq!(total_cells, 1728, "192 root×lakāra blocks × 9 cells each");
+    assert_eq!(total_cells, 1800, "200 root×lakāra blocks × 9 cells each");
 
     let mut ones = 0usize;
     let mut twos = 0usize;
@@ -3162,32 +3340,35 @@ fn derivation_set_shape_matches_the_audited_numbers() {
             }
         }
     }
-    assert_eq!(ones, 1579, "one-form cells");
-    assert_eq!(twos, 91, "two-form cells");
-    assert_eq!(threes, 55, "three-form cells");
+    assert_eq!(ones, 1630, "one-form cells");
+    assert_eq!(twos, 109, "two-form cells");
+    assert_eq!(threes, 56, "three-form cells");
     assert_eq!(fours, 1, "four-form cells — piṣ's loṭ madhyama eka");
-    assert_eq!(fives, 1, "five-form cells — kft loṭ prathama eka");
-    assert_eq!(sixes, 1, "six-form cells — kft loṭ madhyama eka");
+    assert_eq!(fives, 2, "five-form cells — kft loṭ prathama eka");
+    assert_eq!(
+        sixes, 2,
+        "six-form cells — kft loṭ madhyama eka and ruD loṭ parasmaipada madhyama eka"
+    );
 
-    assert_eq!(ALTERNATES.len(), 213, "ALTERNATES row count");
+    assert_eq!(ALTERNATES.len(), 242, "ALTERNATES row count");
     let key_count = |key: &str| {
         ALTERNATES
             .iter()
             .filter(|(_, _, _, _, _, k)| *k == key)
             .count()
     };
-    assert_eq!(key_count("8.4.56"), 60, "8.4.56-only alternates");
-    assert_eq!(key_count("7.1.35"), 56, "7.1.35-only alternates");
-    assert_eq!(key_count("7.1.35+8.4.56"), 56, "7.1.35+8.4.56 alternates");
+    assert_eq!(key_count("8.4.56"), 63, "8.4.56-only alternates");
+    assert_eq!(key_count("7.1.35"), 58, "7.1.35-only alternates");
+    assert_eq!(key_count("7.1.35+8.4.56"), 58, "7.1.35+8.4.56 alternates");
     assert_eq!(key_count("3.4.111"), 2, "3.4.111 alternates");
     assert_eq!(key_count("6.4.107"), 8, "6.4.107 alternates");
-    assert_eq!(key_count("8.4.65"), 25, "8.4.65-only alternates");
-    assert_eq!(key_count("8.2.75"), 1, "8.2.75-only alternates");
+    assert_eq!(key_count("8.4.65"), 42, "8.4.65-only alternates");
+    assert_eq!(key_count("8.2.75"), 2, "8.2.75-only alternates");
     assert_eq!(key_count("8.2.74"), 1, "8.2.74-only alternates");
-    assert_eq!(key_count("7.1.35+8.4.65"), 2, "7.1.35+8.4.65 alternates");
+    assert_eq!(key_count("7.1.35+8.4.65"), 4, "7.1.35+8.4.65 alternates");
     assert_eq!(
         key_count("7.1.35+8.4.65+8.4.56"),
-        2,
+        4,
         "7.1.35+8.4.65+8.4.56 alternates"
     );
 }
