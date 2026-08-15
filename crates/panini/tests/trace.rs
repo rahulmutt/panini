@@ -1217,3 +1217,94 @@ fn pindhi_trace_is_the_full_8_4_41_chain() {
     assert!(at(&t, "8.4.53") < at(&t, "8.4.58"), "got {t:?}");
     assert!(at(&t, "8.4.58") < at(&t, "8.4.65"), "got {t:?}");
 }
+
+#[test]
+fn rudh_lat_prathama_eka_credits_both_pada_sutras() {
+    // One root, one cell, two padas -- the sharpest available test of the
+    // whole three-rule pada-sanction table. ruD is Ubhayapadin: parasmaipada
+    // `ruRadDi` must be sanctioned by 1.3.78 (which now DECLINES on the
+    // ātmanepada arm rather than blocking, since the aṅga is Ubhayapadin),
+    // and ātmanepada `rundDe` must be sanctioned by 1.3.72 svaritañitaḥ
+    // instead. The negative halves are the load-bearing assertions: they are
+    // what would catch 1.3.78 blocking outright instead of declining (which
+    // would silently drop the ātmanepada cell entirely), or 1.3.72 firing on
+    // the parasmaipada arm it must not touch. This single pair pins the
+    // entire three-rule table (1.3.12 / 1.3.72 / 1.3.78) at once.
+    let parasmaipada = trace_for("ruRadDi");
+    assert!(
+        parasmaipada.contains(&"1.3.78".to_string()),
+        "got {parasmaipada:?}"
+    );
+    assert!(
+        !parasmaipada.contains(&"1.3.72".to_string()),
+        "got {parasmaipada:?}"
+    );
+
+    let atmanepada = trace_for("rundDe");
+    assert!(
+        atmanepada.contains(&"1.3.72".to_string()),
+        "got {atmanepada:?}"
+    );
+    assert!(
+        !atmanepada.contains(&"1.3.78".to_string()),
+        "got {atmanepada:?}"
+    );
+}
+
+#[test]
+fn rudh_natva_follows_stem_strength_not_pada() {
+    // The claim that √rudh needs no new phonology rests on this, so pin it
+    // directly. `ruRadDi`'s trigger `r` and target `n` are separated by the
+    // aṭ vowel `u`, so 8.4.2 (not the adjacent-trigger 8.4.1) fires.
+    let ruraddhi = trace_for("ruRadDi");
+    assert!(ruraddhi.contains(&"8.4.2".to_string()), "got {ruraddhi:?}");
+    assert!(!ruraddhi.contains(&"8.4.1".to_string()), "got {ruraddhi:?}");
+
+    // `runDanti` is the interesting witness: it is PARASMAIPADA and has no
+    // ṇ at all (the `n` stays dental) -- so this split is strong-stem vs.
+    // weak-stem, not pada vs. pada. The `n` is followed by a jhal (Jayi
+    // `D` of `runDanti`'s `nD`), so `is_natva_target` declines before either
+    // ṇatva rule can see it: 8.3.24 naścāpadāntasya jhali has already bled
+    // the trigger by turning the n into an anusvāra. √rudh is the first root
+    // in the suite where a live ṇatva trigger (the `r`) and the folded
+    // 8.3.24 guard coexist in the same derivation, which makes this the
+    // first direct regression test for that guard itself, rather than for
+    // the ṇatva trigger scan that the other pins in this file already cover.
+    let rundanti = trace_for("runDanti");
+    assert!(!rundanti.contains(&"8.4.1".to_string()), "got {rundanti:?}");
+    assert!(!rundanti.contains(&"8.4.2".to_string()), "got {rundanti:?}");
+}
+
+#[test]
+fn runde_is_ambiguous_within_atmanepada() {
+    // `runDe` is a genuine same-pada ambiguity: the appendix lists it in
+    // both the ātmanepada laṭ prathama eka cell (as `rundDe`'s optional
+    // 8.4.65 alternate) and the ātmanepada laṭ uttama eka cell (as that
+    // cell's own base form). No existing root in this suite produces two
+    // analyses that share BOTH lakāra and pada, only differing in purusha /
+    // vacana -- every prior multi-analysis pin (e.g. `bhavatu_forks_...`,
+    // `apinaq_trace_pins_...`) splits across padas, optional-rule forks, or
+    // different cells that happen to reduce to the same surface form. This
+    // exercises the multi-analysis path against that harder case.
+    use panini_data::{Lakara, Pada, Purusha, Vacana};
+
+    let r = Panini::new().check("runDe");
+    let cells: Vec<(Lakara, Pada, Purusha, Vacana)> = r
+        .analyses
+        .iter()
+        .map(|a| (a.lakara, a.pada, a.purusha, a.vacana))
+        .collect();
+    assert!(
+        cells.contains(&(
+            Lakara::Lat,
+            Pada::Atmanepada,
+            Purusha::Prathama,
+            Vacana::Eka
+        )),
+        "expected an ātmanepada laṭ prathama eka analysis, got {cells:?}"
+    );
+    assert!(
+        cells.contains(&(Lakara::Lat, Pada::Atmanepada, Purusha::Uttama, Vacana::Eka)),
+        "expected an ātmanepada laṭ uttama eka analysis, got {cells:?}"
+    );
+}
