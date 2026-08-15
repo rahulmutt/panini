@@ -3280,17 +3280,18 @@ fn derivation_set_is_exactly_pinned() {
 /// divergence it resolved (3.4.111 Śākaṭāyana's jus), the three roots added
 /// in rudhādi 7a (kft, his, Kid), three more added in rudhādi 7b (Banj, piz,
 /// inD), and — new in the ubhayapada 1.3.72 slice — √rudh (ruD), pinned in
-/// both padas: all seven of the rudhādi roots fork in all four lakāras, not
-/// just loṭ and laṅ: laṭ (kft cells 1/4/5, Kid cells 0/5, inD cells 0/5, and
-/// — new in this slice — ruD parasmaipada cells 1/4/5 and ātmanepada cells
-/// 0/5, all on 8.4.65), laṅ (on 8.4.65, the 8.2.74/8.2.75 ru alternation, and
-/// the 8.2.23-above-8.2.41 śa-luk jaśtva 8.4.56 branch), loṭ (on
-/// 7.1.35/8.4.65/8.4.56, stacking up to three deep, and piṣ's loṭ madhyama
-/// eka, which stacks 8.4.65 alongside 7.1.35/8.4.56 four deep), and vidhiliṅ
-/// (kft/his/Banj/piz cell 0, on 8.4.56): 1800 cells total (200 root×lakāra
+/// both padas: every one of the seven rudhādi roots forks in both loṭ and
+/// laṅ, and two of them — kft and ruD — fork in all four lakāras: laṭ (kft
+/// cells 1/4/5, Kid cells 0/5, inD cells 0/5, and — new in this slice — ruD
+/// parasmaipada cells 1/4/5 and ātmanepada cells 0/5, all on 8.4.65), laṅ (on
+/// 8.4.65, the 8.2.74/8.2.75 ru alternation, and the 8.2.23-above-8.2.41
+/// śa-luk jaśtva 8.4.56 branch), loṭ (on 7.1.35/8.4.65/8.4.56, stacking up to
+/// three deep, and piṣ's loṭ madhyama eka, which stacks 8.4.65 alongside
+/// 7.1.35/8.4.56 four deep), and vidhiliṅ (kft/his/Banj/piz/ruD cell 0, on
+/// 8.4.56 — Kid and inD do not fork here): 1800 cells total (200 root×lakāra
 /// blocks × 9), of which 1630 hold exactly one form, 109 hold two, 56 hold
-/// three, one holds four (piṣ's loṭ madhyama eka, the deepest fork), and —
-/// the sharpest branch-count witnesses in the repo, per
+/// three, one holds four (piṣ's loṭ madhyama eka, the deepest fork added in
+/// 7b), and — the sharpest branch-count witnesses in the repo, per
 /// `docs/ARCHITECTURE.md` — exactly two hold five (√kṛt's loṭ prathama eka,
 /// and ruD's loṭ parasmaipada prathama eka) and two hold six (√kṛt's loṭ
 /// madhyama eka, `kfndDi`/`kfnDi`'s cell, and — new in this slice — ruD's
@@ -3344,7 +3345,10 @@ fn derivation_set_shape_matches_the_audited_numbers() {
     assert_eq!(twos, 109, "two-form cells");
     assert_eq!(threes, 56, "three-form cells");
     assert_eq!(fours, 1, "four-form cells — piṣ's loṭ madhyama eka");
-    assert_eq!(fives, 2, "five-form cells — kft loṭ prathama eka");
+    assert_eq!(
+        fives, 2,
+        "five-form cells — kft loṭ prathama eka and ruD loṭ parasmaipada prathama eka"
+    );
     assert_eq!(
         sixes, 2,
         "six-form cells — kft loṭ madhyama eka and ruD loṭ parasmaipada madhyama eka"
