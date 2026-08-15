@@ -30,13 +30,15 @@ pub fn candidates(surface_slp1: &str) -> Vec<Candidate> {
     for d in dhatus() {
         for &lakara in LAKARAS {
             for &(purusha, vacana) in CELLS {
-                out.push(Candidate {
-                    dhatu: d,
-                    lakara,
-                    pada: d.pada,
-                    purusha,
-                    vacana,
-                });
+                for &pada in d.pada.padas() {
+                    out.push(Candidate {
+                        dhatu: d,
+                        lakara,
+                        pada,
+                        purusha,
+                        vacana,
+                    });
+                }
             }
         }
     }

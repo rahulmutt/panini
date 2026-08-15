@@ -56,7 +56,7 @@ pub(super) fn form(code: &str, pu: Purusha, va: Vacana) -> String {
 // module can import any of them the same way.
 pub(super) fn form_g(code: &str, la: Lakara, pu: Purusha, va: Vacana) -> String {
     let d = dhatus().iter().find(|d| d.id == code).unwrap();
-    sole(derive(d, la, d.pada, pu, va)).text()
+    sole(derive(d, la, d.pada.padas()[0], pu, va)).text()
 }
 
 /// `form_g` for a cell an optional rule forks: same lookup, `declined`
@@ -69,7 +69,7 @@ pub(super) fn form_g_forked(
     branches: usize,
 ) -> String {
     let d = dhatus().iter().find(|d| d.id == code).unwrap();
-    declined(derive(d, la, d.pada, pu, va), branches).text()
+    declined(derive(d, la, d.pada.padas()[0], pu, va), branches).text()
 }
 
 pub(super) fn lin_form(code: &str, pu: Purusha, va: Vacana) -> String {
@@ -329,7 +329,10 @@ fn adadi_vidhilin_derives_the_yas_yuh_reduction() {
                 } else {
                     1
                 };
-                let p = declined(derive(d, Lakara::VidhiLin, d.pada, pu, va), expected);
+                let p = declined(
+                    derive(d, Lakara::VidhiLin, d.pada.padas()[0], pu, va),
+                    expected,
+                );
                 assert!(!p.blocked, "{code} vidhiliṅ {pu:?} {va:?} was blocked");
                 assert!(!p.log.is_empty(), "{code} vidhiliṅ ran no rules");
                 assert!(
@@ -510,7 +513,7 @@ fn recorded_step_names_match_tinanta_rules_for_every_id() {
         for &lakara in &lakaras {
             for &purusha in &purushas {
                 for &vacana in &vacanas {
-                    for p in derive(d, lakara, d.pada, purusha, vacana) {
+                    for p in derive(d, lakara, d.pada.padas()[0], purusha, vacana) {
                         for step in &p.log {
                             let rule = rules().find(|r| r.id == step.sutra).unwrap_or_else(|| {
                                 panic!(
@@ -1370,7 +1373,7 @@ fn no_8_2_73_step_appears_for_bhanj_or_pish() {
     for root in ["Banj", "piz"] {
         for pu in [Purusha::Prathama, Purusha::Madhyama] {
             let d = dhatus().iter().find(|d| d.id == root).unwrap();
-            for p in derive(d, Lakara::Lan, d.pada, pu, Vacana::Eka) {
+            for p in derive(d, Lakara::Lan, d.pada.padas()[0], pu, Vacana::Eka) {
                 assert!(
                     !p.log.iter().any(|s| s.sutra == "8.2.73"),
                     "{root}: 8.2.73 fired outside √hiṃs"

@@ -2336,7 +2336,7 @@ fn every_form_validates_and_matches() {
             assert!(
                 r.analyses.iter().any(|a| a.form_slp1 == *expected
                     && a.dhatu == d.code
-                    && a.pada == d.pada
+                    && a.pada == d.pada.padas()[0]
                     && panini::lakara_name(a.lakara) == *lakara),
                 "no {lakara} analysis of {root} produced {expected}"
             );
@@ -2361,7 +2361,7 @@ fn every_alternate_validates_and_matches() {
         assert!(
             r.analyses.iter().any(|a| a.form_slp1 == *form
                 && a.dhatu == d.code
-                && a.pada == d.pada
+                && a.pada == d.pada.padas()[0]
                 && panini::lakara_name(a.lakara) == *lakara),
             "no {lakara} analysis of {root} produced alternate {form}"
         );
@@ -2410,21 +2410,25 @@ fn every_alternate_names_the_vikalpa_rules_that_produced_it() {
             .iter()
             .find_map(|(n, l)| (n == lakara).then_some(l))
             .unwrap();
-        let branch = derive(d, lak, d.pada, pu, va)
-            .into_iter()
-            .find(|p| !p.blocked && p.text() == *form)
-            .unwrap_or_else(|| panic!("no branch of {root} {lakara} cell {cell} derives {form}"));
-        let applied: Vec<&str> = branch
-            .log
-            .iter()
-            .map(|s| s.sutra.as_str())
-            .filter(|s| VIKALPA_RULES.contains(s))
-            .collect();
-        assert_eq!(
-            applied.join("+"),
-            *key,
-            "{form} ({root} {lakara} cell {cell})"
-        );
+        for &pada in d.pada.padas() {
+            let branch = derive(d, lak, pada, pu, va)
+                .into_iter()
+                .find(|p| !p.blocked && p.text() == *form)
+                .unwrap_or_else(|| {
+                    panic!("no branch of {root} {lakara} cell {cell} derives {form}")
+                });
+            let applied: Vec<&str> = branch
+                .log
+                .iter()
+                .map(|s| s.sutra.as_str())
+                .filter(|s| VIKALPA_RULES.contains(s))
+                .collect();
+            assert_eq!(
+                applied.join("+"),
+                *key,
+                "{form} ({root} {lakara} cell {cell})"
+            );
+        }
     }
 }
 
@@ -2445,34 +2449,36 @@ fn derivation_set_is_exactly_pinned() {
                 .find_map(|(n, l)| (n == lakara).then_some(l))
                 .unwrap();
 
-            let branches = derive(d, lak, d.pada, pu, va);
-            assert_eq!(
-                branches[0].text(),
-                *expected,
-                "index 0 must be the declined derivation for {root} {lakara} cell {cell}"
-            );
+            for &pada in d.pada.padas() {
+                let branches = derive(d, lak, pada, pu, va);
+                assert_eq!(
+                    branches[0].text(),
+                    *expected,
+                    "index 0 must be the declined derivation for {root} {lakara} cell {cell}"
+                );
 
-            let mut actual: Vec<String> = branches
-                .iter()
-                .filter(|p| !p.blocked)
-                .map(|p| p.text())
-                .collect();
-            actual.sort();
-
-            let mut want: Vec<String> = vec![(*expected).to_string()];
-            want.extend(
-                ALTERNATES
+                let mut actual: Vec<String> = branches
                     .iter()
-                    .filter(|(r, l, c, _, _)| r == root && l == lakara && *c == cell)
-                    .map(|(_, _, _, f, _)| (*f).to_string()),
-            );
-            want.sort();
+                    .filter(|p| !p.blocked)
+                    .map(|p| p.text())
+                    .collect();
+                actual.sort();
 
-            assert_eq!(
-                actual, want,
-                "derivation set for {root} {lakara} cell {cell} \
-                 (pinned {expected}) is not exactly what PARADIGM + ALTERNATES say"
-            );
+                let mut want: Vec<String> = vec![(*expected).to_string()];
+                want.extend(
+                    ALTERNATES
+                        .iter()
+                        .filter(|(r, l, c, _, _)| r == root && l == lakara && *c == cell)
+                        .map(|(_, _, _, f, _)| (*f).to_string()),
+                );
+                want.sort();
+
+                assert_eq!(
+                    actual, want,
+                    "derivation set for {root} {lakara} cell {cell} \
+                     (pinned {expected}) is not exactly what PARADIGM + ALTERNATES say"
+                );
+            }
         }
     }
 }

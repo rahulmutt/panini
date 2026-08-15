@@ -500,7 +500,13 @@ mod tests {
         // rudhādi root would produce *kfRatti from a mangled stem.
         for id in ["kft", "Kid"] {
             let d = dhatus().iter().find(|d| d.id == id).unwrap();
-            let branches = derive(d, Lakara::Lat, d.pada, Purusha::Prathama, Vacana::Eka);
+            let branches = derive(
+                d,
+                Lakara::Lat,
+                d.pada.padas()[0],
+                Purusha::Prathama,
+                Vacana::Eka,
+            );
             for p in &branches {
                 assert!(
                     !p.log.iter().any(|s| s.sutra == "6.4.23"),

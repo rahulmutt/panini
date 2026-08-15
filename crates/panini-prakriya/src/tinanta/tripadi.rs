@@ -1847,7 +1847,7 @@ mod tests {
             ("kft", Lakara::Lat, Purusha::Prathama, Vacana::Bahu, false),
         ] {
             let d = dhatus().iter().find(|d| d.id == id).unwrap();
-            let p = sole(derive(d, la, d.pada, pu, va));
+            let p = sole(derive(d, la, d.pada.padas()[0], pu, va));
             assert!(
                 p.log.iter().any(|s| s.sutra == "8.3.24"),
                 "{id}: 8.3.24 should always fire on a weak rudhādi cell"

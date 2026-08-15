@@ -15,6 +15,29 @@ pub enum Pada {
     Parasmaipada,
     Atmanepada,
 }
+/// What a root *admits*, as distinct from `Context.pada`, which says what is
+/// *being derived*. `Context.pada` stays the two-valued `Pada` on purpose:
+/// no derivation may request an "ubhayapada" cell, because no such cell
+/// exists — a root sanctioned in both padas is derived as two ordinary
+/// single-pada cells, one per entry of `padas()`.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum PadaAssignment {
+    Parasmaipada,
+    Atmanepada,
+    Ubhayapada,
+}
+impl PadaAssignment {
+    /// The padas this assignment derives. `Ubhayapada` lists parasmaipada
+    /// first — pinned, not incidental; see
+    /// `ubhayapada_padas_are_parasmaipada_first` for why.
+    pub fn padas(&self) -> &'static [Pada] {
+        match self {
+            PadaAssignment::Parasmaipada => &[Pada::Parasmaipada],
+            PadaAssignment::Atmanepada => &[Pada::Atmanepada],
+            PadaAssignment::Ubhayapada => &[Pada::Parasmaipada, Pada::Atmanepada],
+        }
+    }
+}
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Lakara {
     Lat,
@@ -54,9 +77,17 @@ pub struct Dhatu {
     /// The root's SLP1 text, as it enters the derivation.
     pub code: &'static str,
     pub gana: Gana,
-    /// Which pada this root takes. Ubhayapadi roots are out of scope; each
-    /// curated root has exactly one pada.
-    pub pada: Pada,
+    /// Which pada(s) this engine derives for this root — a curated verdict,
+    /// not the upadeśa it-markers (`anudatta_ngit`, `svarita_nit`) that the
+    /// sūtras actually read. Reading real markers here would make 1.3.72
+    /// fire on every root whose markers satisfy it, and √tud's do; holding
+    /// this slice's non-ubhayapada scope would then require writing a false
+    /// marker on √tud, which the public data API refuses to do — the same
+    /// refusal `Context::default`'s doc states for claiming a "default
+    /// lakāra". A documented deferral in one field, lifted root-by-root as
+    /// sūtras are implemented, is honest about what it is; see "The pada
+    /// model" in `docs/superpowers/specs/2026-08-15-ubhayapada-1-3-72-design.md`.
+    pub pada: PadaAssignment,
     pub artha: &'static str,
 }
 
@@ -65,84 +96,84 @@ static DHATUS: &[Dhatu] = &[
         id: "BU",
         code: "BU",
         gana: Gana::Bhvadi,
-        pada: Pada::Parasmaipada,
+        pada: PadaAssignment::Parasmaipada,
         artha: "sattAyAm",
     },
     Dhatu {
         id: "nI",
         code: "nI",
         gana: Gana::Bhvadi,
-        pada: Pada::Parasmaipada,
+        pada: PadaAssignment::Parasmaipada,
         artha: "prApaRe",
     },
     Dhatu {
         id: "ji",
         code: "ji",
         gana: Gana::Bhvadi,
-        pada: Pada::Parasmaipada,
+        pada: PadaAssignment::Parasmaipada,
         artha: "jaye",
     },
     Dhatu {
         id: "smf",
         code: "smf",
         gana: Gana::Bhvadi,
-        pada: Pada::Parasmaipada,
+        pada: PadaAssignment::Parasmaipada,
         artha: "cintAyAm",
     },
     Dhatu {
         id: "paW",
         code: "paW",
         gana: Gana::Bhvadi,
-        pada: Pada::Parasmaipada,
+        pada: PadaAssignment::Parasmaipada,
         artha: "vyaktAyAM vAci",
     },
     Dhatu {
         id: "vad",
         code: "vad",
         gana: Gana::Bhvadi,
-        pada: Pada::Parasmaipada,
+        pada: PadaAssignment::Parasmaipada,
         artha: "vyaktAyAM vAci",
     },
     Dhatu {
         id: "eD",
         code: "eD",
         gana: Gana::Bhvadi,
-        pada: Pada::Atmanepada,
+        pada: PadaAssignment::Atmanepada,
         artha: "vfdDO",
     },
     Dhatu {
         id: "laB",
         code: "laB",
         gana: Gana::Bhvadi,
-        pada: Pada::Atmanepada,
+        pada: PadaAssignment::Atmanepada,
         artha: "prAptO",
     },
     Dhatu {
         id: "sev",
         code: "sev",
         gana: Gana::Bhvadi,
-        pada: Pada::Atmanepada,
+        pada: PadaAssignment::Atmanepada,
         artha: "sevane",
     },
     Dhatu {
         id: "vft",
         code: "vft",
         gana: Gana::Bhvadi,
-        pada: Pada::Atmanepada,
+        pada: PadaAssignment::Atmanepada,
         artha: "vartane",
     },
     Dhatu {
         id: "BAz",
         code: "BAz",
         gana: Gana::Bhvadi,
-        pada: Pada::Atmanepada,
+        pada: PadaAssignment::Atmanepada,
         artha: "vyaktAyAM vAci",
     },
     Dhatu {
         id: "Ikz",
         code: "Ikz",
         gana: Gana::Bhvadi,
-        pada: Pada::Atmanepada,
+        pada: PadaAssignment::Atmanepada,
         artha: "darSane",
     },
     // divādi (gaṇa 4) — vikaraṇa śyan (3.1.69)
@@ -150,42 +181,42 @@ static DHATUS: &[Dhatu] = &[
         id: "div",
         code: "div",
         gana: Gana::Divadi,
-        pada: Pada::Parasmaipada,
+        pada: PadaAssignment::Parasmaipada,
         artha: "krIqAyAm",
     },
     Dhatu {
         id: "naS",
         code: "naS",
         gana: Gana::Divadi,
-        pada: Pada::Parasmaipada,
+        pada: PadaAssignment::Parasmaipada,
         artha: "adarSane",
     },
     Dhatu {
         id: "kup",
         code: "kup",
         gana: Gana::Divadi,
-        pada: Pada::Parasmaipada,
+        pada: PadaAssignment::Parasmaipada,
         artha: "kroDe",
     },
     Dhatu {
         id: "man",
         code: "man",
         gana: Gana::Divadi,
-        pada: Pada::Atmanepada,
+        pada: PadaAssignment::Atmanepada,
         artha: "jYAne",
     },
     Dhatu {
         id: "yuD",
         code: "yuD",
         gana: Gana::Divadi,
-        pada: Pada::Atmanepada,
+        pada: PadaAssignment::Atmanepada,
         artha: "samprahAre",
     },
     Dhatu {
         id: "vid",
         code: "vid",
         gana: Gana::Divadi,
-        pada: Pada::Atmanepada,
+        pada: PadaAssignment::Atmanepada,
         artha: "sattAyAm",
     },
     // tudādi (gaṇa 6) — vikaraṇa śa (3.1.77)
@@ -193,42 +224,42 @@ static DHATUS: &[Dhatu] = &[
         id: "tud",
         code: "tud",
         gana: Gana::Tudadi,
-        pada: Pada::Parasmaipada,
+        pada: PadaAssignment::Parasmaipada,
         artha: "vyaTane",
     },
     Dhatu {
         id: "liK",
         code: "liK",
         gana: Gana::Tudadi,
-        pada: Pada::Parasmaipada,
+        pada: PadaAssignment::Parasmaipada,
         artha: "akzaravinyAse",
     },
     Dhatu {
         id: "viS",
         code: "viS",
         gana: Gana::Tudadi,
-        pada: Pada::Parasmaipada,
+        pada: PadaAssignment::Parasmaipada,
         artha: "praveSane",
     },
     Dhatu {
         id: "juz",
         code: "juz",
         gana: Gana::Tudadi,
-        pada: Pada::Atmanepada,
+        pada: PadaAssignment::Atmanepada,
         artha: "prItisevanayoH",
     },
     Dhatu {
         id: "vij",
         code: "vij",
         gana: Gana::Tudadi,
-        pada: Pada::Atmanepada,
+        pada: PadaAssignment::Atmanepada,
         artha: "BayacalanayoH",
     },
     Dhatu {
         id: "gur",
         code: "gur",
         gana: Gana::Tudadi,
-        pada: Pada::Atmanepada,
+        pada: PadaAssignment::Atmanepada,
         artha: "udyamane",
     },
     // adādi (gaṇa 2) — śap luk (2.4.72). √ad/√yā/√vā parasmaipada; √ās/√vas
@@ -239,84 +270,84 @@ static DHATUS: &[Dhatu] = &[
         id: "yA",
         code: "yA",
         gana: Gana::Adadi,
-        pada: Pada::Parasmaipada,
+        pada: PadaAssignment::Parasmaipada,
         artha: "prApaRe",
     },
     Dhatu {
         id: "vA",
         code: "vA",
         gana: Gana::Adadi,
-        pada: Pada::Parasmaipada,
+        pada: PadaAssignment::Parasmaipada,
         artha: "gatigandhanayoH",
     },
     Dhatu {
         id: "ad",
         code: "ad",
         gana: Gana::Adadi,
-        pada: Pada::Parasmaipada,
+        pada: PadaAssignment::Parasmaipada,
         artha: "BakzaRe",
     },
     Dhatu {
         id: "As",
         code: "As",
         gana: Gana::Adadi,
-        pada: Pada::Atmanepada,
+        pada: PadaAssignment::Atmanepada,
         artha: "upaveSane",
     },
     Dhatu {
         id: "vas",
         code: "vas",
         gana: Gana::Adadi,
-        pada: Pada::Atmanepada,
+        pada: PadaAssignment::Atmanepada,
         artha: "AcCAdane",
     },
     Dhatu {
         id: "SI",
         code: "SI",
         gana: Gana::Adadi,
-        pada: Pada::Atmanepada,
+        pada: PadaAssignment::Atmanepada,
         artha: "svapne",
     },
     Dhatu {
         id: "kliS",
         code: "kliS",
         gana: Gana::Kryadi,
-        pada: Pada::Parasmaipada,
+        pada: PadaAssignment::Parasmaipada,
         artha: "vibADane",
     },
     Dhatu {
         id: "guD",
         code: "guD",
         gana: Gana::Kryadi,
-        pada: Pada::Parasmaipada,
+        pada: PadaAssignment::Parasmaipada,
         artha: "roze",
     },
     Dhatu {
         id: "aS",
         code: "aS",
         gana: Gana::Kryadi,
-        pada: Pada::Parasmaipada,
+        pada: PadaAssignment::Parasmaipada,
         artha: "Bojane",
     },
     Dhatu {
         id: "muz",
         code: "muz",
         gana: Gana::Kryadi,
-        pada: Pada::Parasmaipada,
+        pada: PadaAssignment::Parasmaipada,
         artha: "steye",
     },
     Dhatu {
         id: "vrI",
         code: "vrI",
         gana: Gana::Kryadi,
-        pada: Pada::Parasmaipada,
+        pada: PadaAssignment::Parasmaipada,
         artha: "varaRe",
     },
     Dhatu {
         id: "vf",
         code: "vf",
         gana: Gana::Kryadi,
-        pada: Pada::Atmanepada,
+        pada: PadaAssignment::Atmanepada,
         artha: "samBaktO",
     },
     // svādi (gaṇa 5) — vikaraṇa śnu (3.1.73)
@@ -324,28 +355,28 @@ static DHATUS: &[Dhatu] = &[
         id: "Ap",
         code: "Ap",
         gana: Gana::Svadi,
-        pada: Pada::Parasmaipada,
+        pada: PadaAssignment::Parasmaipada,
         artha: "vyAptO",
     },
     Dhatu {
         id: "Sak",
         code: "Sak",
         gana: Gana::Svadi,
-        pada: Pada::Parasmaipada,
+        pada: PadaAssignment::Parasmaipada,
         artha: "SaktO",
     },
     Dhatu {
         id: "hi",
         code: "hi",
         gana: Gana::Svadi,
-        pada: Pada::Parasmaipada,
+        pada: PadaAssignment::Parasmaipada,
         artha: "gatO vfdDO ca",
     },
     Dhatu {
         id: "ri",
         code: "ri",
         gana: Gana::Svadi,
-        pada: Pada::Parasmaipada,
+        pada: PadaAssignment::Parasmaipada,
         artha: "hiMsAyAm",
     },
     Dhatu {
@@ -355,7 +386,7 @@ static DHATUS: &[Dhatu] = &[
         id: "aS.5",
         code: "aS",
         gana: Gana::Svadi,
-        pada: Pada::Atmanepada,
+        pada: PadaAssignment::Atmanepada,
         artha: "vyAptO saNGAte ca",
     },
     Dhatu {
@@ -365,7 +396,7 @@ static DHATUS: &[Dhatu] = &[
         id: "stiG",
         code: "stiG",
         gana: Gana::Svadi,
-        pada: Pada::Atmanepada,
+        pada: PadaAssignment::Atmanepada,
         artha: "Askandane",
     },
     Dhatu {
@@ -374,7 +405,7 @@ static DHATUS: &[Dhatu] = &[
         id: "kft",
         code: "kft",
         gana: Gana::Rudhadi,
-        pada: Pada::Parasmaipada,
+        pada: PadaAssignment::Parasmaipada,
         artha: "vezwane",
     },
     Dhatu {
@@ -388,7 +419,7 @@ static DHATUS: &[Dhatu] = &[
         id: "his",
         code: "hins",
         gana: Gana::Rudhadi,
-        pada: Pada::Parasmaipada,
+        pada: PadaAssignment::Parasmaipada,
         artha: "hiMsAyAm",
     },
     Dhatu {
@@ -398,7 +429,7 @@ static DHATUS: &[Dhatu] = &[
         id: "Kid",
         code: "Kid",
         gana: Gana::Rudhadi,
-        pada: Pada::Atmanepada,
+        pada: PadaAssignment::Atmanepada,
         artha: "dEnye",
     },
     Dhatu {
@@ -408,7 +439,7 @@ static DHATUS: &[Dhatu] = &[
         id: "Banj",
         code: "Banj",
         gana: Gana::Rudhadi,
-        pada: Pada::Parasmaipada,
+        pada: PadaAssignment::Parasmaipada,
         artha: "Amardane",
     },
     Dhatu {
@@ -419,7 +450,7 @@ static DHATUS: &[Dhatu] = &[
         id: "piz",
         code: "piz",
         gana: Gana::Rudhadi,
-        pada: Pada::Parasmaipada,
+        pada: PadaAssignment::Parasmaipada,
         artha: "saYcUrRane hiMsAyAM ca",
     },
     Dhatu {
@@ -434,7 +465,7 @@ static DHATUS: &[Dhatu] = &[
         id: "inD",
         code: "inD",
         gana: Gana::Rudhadi,
-        pada: Pada::Atmanepada,
+        pada: PadaAssignment::Atmanepada,
         artha: "dIptO",
     },
 ];
@@ -480,9 +511,9 @@ mod tests {
     fn curated_roots_have_expected_ganas_and_padas() {
         assert_eq!(dhatus().len(), 48);
         let bu = dhatus().iter().find(|d| d.id == "BU").unwrap();
-        assert!(matches!(bu.pada, Pada::Parasmaipada));
+        assert!(matches!(bu.pada, PadaAssignment::Parasmaipada));
         let labh = dhatus().iter().find(|d| d.id == "laB").unwrap();
-        assert!(matches!(labh.pada, Pada::Atmanepada));
+        assert!(matches!(labh.pada, PadaAssignment::Atmanepada));
         // Both vowel-initial atmanepadi roots must be present (they exercise
         // the AT-augment path 6.4.72/6.1.90).
         assert!(dhatus().iter().any(|d| d.id == "eD"));
@@ -494,46 +525,56 @@ mod tests {
         assert!(matches!(tud.gana, Gana::Tudadi));
         // New: adadi (gaṇa 2), both ā-final parasmaipada.
         let ya = dhatus().iter().find(|d| d.id == "yA").unwrap();
-        assert!(matches!(ya.gana, Gana::Adadi) && matches!(ya.pada, Pada::Parasmaipada));
+        assert!(matches!(ya.gana, Gana::Adadi) && matches!(ya.pada, PadaAssignment::Parasmaipada));
         let va = dhatus().iter().find(|d| d.id == "vA").unwrap();
-        assert!(matches!(va.gana, Gana::Adadi) && matches!(va.pada, Pada::Parasmaipada));
+        assert!(matches!(va.gana, Gana::Adadi) && matches!(va.pada, PadaAssignment::Parasmaipada));
         // adādi ātmanepada: √ās (slice 5d), √vas (slice 5e), and √śī (this slice) closes gaṇa.
         let as_ = dhatus().iter().find(|d| d.id == "As").unwrap();
-        assert!(matches!(as_.gana, Gana::Adadi) && matches!(as_.pada, Pada::Atmanepada));
+        assert!(matches!(as_.gana, Gana::Adadi) && matches!(as_.pada, PadaAssignment::Atmanepada));
         let vas = dhatus().iter().find(|d| d.id == "vas").unwrap();
-        assert!(matches!(vas.gana, Gana::Adadi) && matches!(vas.pada, Pada::Atmanepada));
+        assert!(matches!(vas.gana, Gana::Adadi) && matches!(vas.pada, PadaAssignment::Atmanepada));
         // √vas ācchādane (2Ā), not √vas nivāse (1P) — artha disambiguates.
         assert_eq!(vas.artha, "AcCAdane");
         // adādi ātmanepada: √śī (this slice) closes the gaṇa.
         let shi = dhatus().iter().find(|d| d.id == "SI").unwrap();
-        assert!(matches!(shi.gana, Gana::Adadi) && matches!(shi.pada, Pada::Atmanepada));
+        assert!(matches!(shi.gana, Gana::Adadi) && matches!(shi.pada, PadaAssignment::Atmanepada));
         assert_eq!(shi.artha, "svapne");
         // kryādi (gaṇa 9), slice 9a: kliS/guD/aS, all parasmaipada.
         let klis = dhatus().iter().find(|d| d.id == "kliS").unwrap();
-        assert!(matches!(klis.gana, Gana::Kryadi) && matches!(klis.pada, Pada::Parasmaipada));
+        assert!(
+            matches!(klis.gana, Gana::Kryadi) && matches!(klis.pada, PadaAssignment::Parasmaipada)
+        );
         assert_eq!(klis.artha, "vibADane");
         let gud = dhatus().iter().find(|d| d.id == "guD").unwrap();
-        assert!(matches!(gud.gana, Gana::Kryadi) && matches!(gud.pada, Pada::Parasmaipada));
+        assert!(
+            matches!(gud.gana, Gana::Kryadi) && matches!(gud.pada, PadaAssignment::Parasmaipada)
+        );
         assert_eq!(gud.artha, "roze");
         let ash = dhatus().iter().find(|d| d.id == "aS").unwrap();
-        assert!(matches!(ash.gana, Gana::Kryadi) && matches!(ash.pada, Pada::Parasmaipada));
+        assert!(
+            matches!(ash.gana, Gana::Kryadi) && matches!(ash.pada, PadaAssignment::Parasmaipada)
+        );
         assert_eq!(ash.artha, "Bojane");
         // kryādi, slice 9b: muz/vrI parasmaipada, vf (√vṛṅ) atmanepada --
         // the gaṇa's only pure-atmanepadi root.
         let muz = dhatus().iter().find(|d| d.id == "muz").unwrap();
-        assert!(matches!(muz.gana, Gana::Kryadi) && matches!(muz.pada, Pada::Parasmaipada));
+        assert!(
+            matches!(muz.gana, Gana::Kryadi) && matches!(muz.pada, PadaAssignment::Parasmaipada)
+        );
         assert_eq!(muz.artha, "steye");
         let vri = dhatus().iter().find(|d| d.id == "vrI").unwrap();
-        assert!(matches!(vri.gana, Gana::Kryadi) && matches!(vri.pada, Pada::Parasmaipada));
+        assert!(
+            matches!(vri.gana, Gana::Kryadi) && matches!(vri.pada, PadaAssignment::Parasmaipada)
+        );
         assert_eq!(vri.artha, "varaRe");
         let vf = dhatus().iter().find(|d| d.id == "vf").unwrap();
-        assert!(matches!(vf.gana, Gana::Kryadi) && matches!(vf.pada, Pada::Atmanepada));
+        assert!(matches!(vf.gana, Gana::Kryadi) && matches!(vf.pada, PadaAssignment::Atmanepada));
         assert_eq!(vf.artha, "samBaktO");
         // New: svādi (gaṇa 5), all four parasmaipadī.
         for id in ["Ap", "Sak", "hi", "ri"] {
             let d = dhatus().iter().find(|d| d.id == id).unwrap();
             assert!(matches!(d.gana, Gana::Svadi));
-            assert!(matches!(d.pada, Pada::Parasmaipada));
+            assert!(matches!(d.pada, PadaAssignment::Parasmaipada));
         }
     }
 
@@ -577,7 +618,7 @@ mod tests {
     fn ad_is_registered_as_adadi_parasmaipada() {
         let ad = dhatus().iter().find(|d| d.id == "ad").expect("√ad present");
         assert!(matches!(ad.gana, Gana::Adadi));
-        assert!(matches!(ad.pada, Pada::Parasmaipada));
+        assert!(matches!(ad.pada, PadaAssignment::Parasmaipada));
         assert_eq!(ad.artha, "BakzaRe");
     }
 
@@ -585,7 +626,7 @@ mod tests {
     fn as_is_registered_as_adadi_atmanepada() {
         let as_ = dhatus().iter().find(|d| d.id == "As").expect("√ās present");
         assert!(matches!(as_.gana, Gana::Adadi));
-        assert!(matches!(as_.pada, Pada::Atmanepada));
+        assert!(matches!(as_.pada, PadaAssignment::Atmanepada));
         assert_eq!(as_.artha, "upaveSane");
     }
 
@@ -620,8 +661,8 @@ mod tests {
         let kryadi = dhatus().iter().find(|d| d.id == "aS").unwrap();
         assert!(matches!(svadi.gana, Gana::Svadi));
         assert!(matches!(kryadi.gana, Gana::Kryadi));
-        assert!(matches!(svadi.pada, Pada::Atmanepada));
-        assert!(matches!(kryadi.pada, Pada::Parasmaipada));
+        assert!(matches!(svadi.pada, PadaAssignment::Atmanepada));
+        assert!(matches!(kryadi.pada, PadaAssignment::Parasmaipada));
         // Same surface text, different rows. If ids ever collapse, one of these
         // roots silently stops being derivable.
         assert_eq!(svadi.code, kryadi.code);
@@ -642,14 +683,43 @@ mod tests {
         assert_eq!(
             rows,
             vec![
-                ("kft", "kft", Pada::Parasmaipada),
-                ("his", "hins", Pada::Parasmaipada),
-                ("Kid", "Kid", Pada::Atmanepada),
-                ("Banj", "Banj", Pada::Parasmaipada),
-                ("piz", "piz", Pada::Parasmaipada),
-                ("inD", "inD", Pada::Atmanepada),
+                ("kft", "kft", PadaAssignment::Parasmaipada),
+                ("his", "hins", PadaAssignment::Parasmaipada),
+                ("Kid", "Kid", PadaAssignment::Atmanepada),
+                ("Banj", "Banj", PadaAssignment::Parasmaipada),
+                ("piz", "piz", PadaAssignment::Parasmaipada),
+                ("inD", "inD", PadaAssignment::Atmanepada),
             ]
         );
+    }
+
+    #[test]
+    fn padas_maps_each_assignment_to_its_derivable_padas() {
+        assert_eq!(PadaAssignment::Parasmaipada.padas(), &[Pada::Parasmaipada]);
+        assert_eq!(PadaAssignment::Atmanepada.padas(), &[Pada::Atmanepada]);
+        assert_eq!(
+            PadaAssignment::Ubhayapada.padas(),
+            &[Pada::Parasmaipada, Pada::Atmanepada]
+        );
+    }
+
+    #[test]
+    fn ubhayapada_padas_are_parasmaipada_first() {
+        // Pinned, not incidental: the paradigm and roundtrip harnesses loop
+        // over the whole `padas()` slice, so they can't see its order, and
+        // every `d.pada.padas()[0]` call site (the in-crate unit-test
+        // helpers across the workspace) only ever sees single-pada roots
+        // today. A mutant that reversed this slice would survive with no
+        // test able to catch it — the same shape as the three `Context::is_tip`
+        // survivors slice 7b found — so the order is asserted directly here.
+        assert_eq!(PadaAssignment::Ubhayapada.padas()[0], Pada::Parasmaipada);
+    }
+
+    #[test]
+    fn every_curated_root_admits_at_least_one_pada() {
+        for d in dhatus() {
+            assert!(!d.pada.padas().is_empty(), "{} admits no pada at all", d.id);
+        }
     }
 
     #[test]
