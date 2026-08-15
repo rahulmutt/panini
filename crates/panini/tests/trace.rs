@@ -1260,16 +1260,30 @@ fn rudh_natva_follows_stem_strength_not_pada() {
     assert!(ruraddhi.contains(&"8.4.2".to_string()), "got {ruraddhi:?}");
     assert!(!ruraddhi.contains(&"8.4.1".to_string()), "got {ruraddhi:?}");
 
-    // `runDanti` is the interesting witness: it is PARASMAIPADA and has no
-    // ṇ at all (the `n` stays dental) -- so this split is strong-stem vs.
-    // weak-stem, not pada vs. pada. The `n` is followed by a jhal (Jayi
-    // `D` of `runDanti`'s `nD`), so `is_natva_target` declines before either
-    // ṇatva rule can see it: 8.3.24 naścāpadāntasya jhali has already bled
-    // the trigger by turning the n into an anusvāra. √rudh is the first root
-    // in the suite where a live ṇatva trigger (the `r`) and the folded
-    // 8.3.24 guard coexist in the same derivation, which makes this the
-    // first direct regression test for that guard itself, rather than for
-    // the ṇatva trigger scan that the other pins in this file already cover.
+    // `ruRaDE` is what makes the test's name honest. Both witnesses above
+    // and below are parasmaipada, so on their own they cannot distinguish
+    // "ṇatva follows stem strength" from "ṇatva follows pada". This one is
+    // ĀTMANEPADA (loṭ uttama eka, reached through 1.3.72, not 1.3.78) and
+    // strong-stemmed, and ṇatva fires there too -- so the split really is
+    // strong vs. weak, not pada vs. pada.
+    let runadhai = trace_for("ruRaDE");
+    assert!(runadhai.contains(&"1.3.72".to_string()), "got {runadhai:?}");
+    assert!(runadhai.contains(&"8.4.2".to_string()), "got {runadhai:?}");
+
+    // `runDanti` is the weak-stem witness: PARASMAIPADA like `ruRadDi`, but
+    // with no ṇ at all (the `n` stays dental). 6.4.111 śnasor allopaḥ elides
+    // śnam's `a`, which leaves the nasal directly before the jhal `D`, and
+    // 8.3.24 naścāpadāntasya jhali -- a real rule here, gaṇa-guarded to
+    // rudhādi and ordered above ṇatva in the tripādī -- then turns it into
+    // an anusvāra. By the time 8.4.1 / 8.4.2 look there is no `n` left to
+    // retroflex, so `is_natva_target` declines on the character itself, not
+    // on its folded-8.3.24 jhal clause. That clause's own witness is
+    // BAzante (√bhāṣ is not rudhādi, so the real 8.3.24 never fires for
+    // it), pinned directly by
+    // `natva_declines_before_a_jhal_because_8_3_24_bleeds_it` in
+    // `tripadi.rs`; nothing in √rudh's paradigm exercises it -- `anti`'s
+    // surviving `n` is the only one the clause still rejects here, and the
+    // backward scan would break on the `D` before it anyway.
     let rundanti = trace_for("runDanti");
     assert!(!rundanti.contains(&"8.4.1".to_string()), "got {rundanti:?}");
     assert!(!rundanti.contains(&"8.4.2".to_string()), "got {rundanti:?}");
@@ -1289,6 +1303,7 @@ fn runde_is_ambiguous_within_atmanepada() {
     use panini_data::{Lakara, Pada, Purusha, Vacana};
 
     let r = Panini::new().check("runDe");
+    assert_eq!(r.analyses.len(), 2, "exactly two ātmanepada readings");
     let cells: Vec<(Lakara, Pada, Purusha, Vacana)> = r
         .analyses
         .iter()

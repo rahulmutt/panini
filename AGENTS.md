@@ -75,6 +75,14 @@
     `timeout.txt` entry of this shape is the correct, permanent verdict —
     do not chase it with a bigger `--timeout` or a code change; the loop
     itself is correct, working code.
+    **The ubhayapada 1.3.72 slice's own campaign did not use the 1200s
+    default.** It ran by hand at `-j 4 --timeout 2400` — 522 mutants, 482
+    caught, 0 missed, 39 unviable, and the one known-permanent timeout
+    above — doubling the cap precisely because the ~450s uncontended floor
+    times an unverified `-j 4` contention factor left no margin worth
+    reading a `timeout.txt` entry against. `mise.toml`'s default is
+    deliberately left at 1200; pass `--timeout 2400` explicitly until
+    someone actually measures a `-j 4` run against the 1800-cell suite.
   - `cargo-deny` + `cargo-audit` (supply-chain checks) — `mise run audit` runs
     `cargo audit && cargo deny check` and is expected to pass, including
     `cargo deny check advisories`.
@@ -157,10 +165,17 @@
     narrower, root-specific reasons, verified cell by cell against
     vidyut-prakriya. **√bhid, √kṣud, √yuj and √tṛd are curation-only** — the
     engine already derives all 72 cells of each, byte-identical to vidyut.
-    **√ric and √vic** need no new sūtra but do need one guard widened: they
-    are c-final, and 8.2.30 *coḥ kuḥ*'s match reads `j` alone (its own
-    comment says "widen the match the moment a `c`-tailed root lands"), so
-    today they surface `riRacti` for `riRakti`. **√chid and √chṛd** need two
+    **√ric and √vic** need no new sūtra, but the work in 8.2.30 *coḥ kuḥ* is
+    more than the one-line guard widening it looks like: they are c-final,
+    and the rule is hardcoded to a single `j` → `g` pair — its match reads
+    `j` alone AND its substitute is a literal `'g'`, while its comment
+    claims a 1.1.50 *sthāne'ntaratamaḥ* nearest-velar substitution (voicing
+    and aspiration preserved) that the code does not implement. So today
+    they surface `riRacti` for `riRakti`; widening the match alone would
+    reach the right surface — 8.4.55 *khari ca* devoices the `g` to `k`
+    before `ti` — but through a wrong intermediate (`riRagti` for
+    `riRakti`), which is why the substitute has to be generalised in the
+    same slice rather than left to the next one. **√chid and √chṛd** need two
     sūtras the engine does not have — 6.1.73 *che ca*, the tuk augment
     before a `C` after a short vowel, and 8.4.40 *stoḥ ścunā ścuḥ*, the
     ścutva that follows it — without which their laṅ cells surface

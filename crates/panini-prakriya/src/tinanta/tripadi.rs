@@ -267,7 +267,13 @@ pub(crate) static TRIPADI: &[Rule] = &[
     //
     // NARROW GUARD, by design, as with 8.2.39 just below: only `j` -> `g`
     // is reachable this slice (rudhādi's one cu-final curated root is
-    // √bhañj). Widen the match the moment a `c`-tailed root lands.
+    // √bhañj), so the pair is hardcoded at both ends — the match tests `j`
+    // and the substitute is the literal `'g'`. The 1.1.50 nearest-velar
+    // account above is therefore a description of the sūtra, NOT of this
+    // code. When a `c`-tailed root lands (√ric, √vic), widen the match AND
+    // replace the hardcoded substitute with a real cu -> ku map; widening
+    // only the match would substitute `g` for a `c` and reach the right
+    // surface by accident, 8.4.55 khari ca devoicing it to `k` afterwards.
     //
     // Read via `word_chars`, not a term-boundary check: the target `j` sits
     // at the END of a non-final term (śnam's infix leaves the root's own
@@ -569,9 +575,11 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // its final. ahinas + t → ahinad.
     //
     // This is what fills the hole 8.2.39 leaves. 8.2.39 jhalāṁ jaśo'nte is
-    // guarded narrowly to a final `t`, and correctly so — a final `s` is
-    // 8.2.66 / 8.3.15's, not jaśtva's — so without this rule √hiṃs would
-    // surface as *ahinaH in laṅ prathama eka. √kṛt needs nothing here: its
+    // guarded narrowly to a final `t`, `z` or `D` (the `z` arm since slice
+    // 7b, the `D` arm since the ubhayapada slice's √rudh), and correctly so
+    // — a final `s` is 8.2.66 / 8.3.15's, not jaśtva's, and is deliberately
+    // outside that set — so without this rule √hiṃs would surface as
+    // *ahinaH in laṅ prathama eka. √kṛt needs nothing here: its
     // final really is a `t` and 8.2.39 handles it.
     //
     // DELIBERATE OVER-APPLICATION, recorded so it is not later read as a

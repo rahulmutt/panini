@@ -49,7 +49,14 @@ run = "cargo fmt --all --check"
 # been measured against that suite; applying 7b's 2.1-2.5x contention
 # factor puts an uncaught mutant near 950-1100s, i.e. under this cap but
 # without the ~3x margin the 1728-cell numbers showed. Adequate, not
-# comfortable -- re-measure before trusting it further.
+# comfortable -- re-measure before trusting it further. That slice's own
+# gate declined to trust it: its campaign (522 mutants, 482 caught, 0
+# missed, 39 unviable, 1 known-permanent timeout) was run by hand at
+# `-j 4 --timeout 2400`, doubling this default precisely because the
+# ~450s uncontended floor times an unverified -j 4 factor left too thin a
+# margin to read a `timeout.txt` entry as anything. The default below is
+# unchanged and still 1200; pass 2400 explicitly until someone measures a
+# -j 4 run against the 1800-cell suite.
 run = "cargo mutants --package panini-prakriya --test-workspace=true --timeout 1200"
 
 [tasks.audit]

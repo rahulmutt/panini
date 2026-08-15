@@ -3472,10 +3472,21 @@ fn known_nonforms_are_invalid() {
         "todati",  // tud guṇa'd — 7.3.86 must be blocked by śa's ṅit
         "jozate",  // juṣ guṇa'd — block under ātmanepada too
         "devyati", // div guṇa'd (before 8.2.77): guṇa must be blocked
-        // Wrong pada: the root's pada tag gates the whole derivation.
+        // Wrong pada: the root's curated pada verdict gates the whole
+        // derivation.
         "manyati", // atmanepadin divādi root with a parasmaipada ending
         "vidyati", // atmanepadin divādi root, parasmaipada ending
-        "tudate",  // parasmaipada tudādi root with an atmanepada ending
+        // `tudate` is a REAL Sanskrit form -- √tud is ubhayapadī
+        // (`06.0001 tu\da~^`), and since 1.3.72 svaritañitaḥ landed, the
+        // engine could derive it. It is INVALID here only because
+        // `Dhatu.pada` records a curated verdict (which padas this engine
+        // claims for the root) and √tud's row still says parasmaipada --
+        // a curation choice with a known audit behind it, not an engine
+        // limit. Auditing the whole table for mis-assigned pada is its own
+        // slice; until then this entry pins the documented meaning of
+        // INVALID ("not derivable within the covered grammar"), not a
+        // claim about Sanskrit.
+        "tudate",
         // adādi (gaṇa 2): śap is luk'd (2.4.72). A retained-śap surface must
         // not derive, and the parasmaipada roots reject ātmanepada endings.
         "yAyati", // yā with a spurious y-śap — no derivation yields it

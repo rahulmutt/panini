@@ -87,10 +87,14 @@ roots are ubhayapadī. The ubhayapada deferral itself is discharged — 1.3.72
 holds none of the other eight back any more — but they are not all alike.
 **√bhid, √kṣud, √yuj and √tṛd** are curation-only: the engine derives all
 72 cells of each today, byte-identical to vidyut-prakriya. **√ric and √vic**
-are c-final, and 8.2.30 *coḥ kuḥ*'s match names `j` alone, so they need that
-guard widened to the rest of the cu-varga — no new sūtra, and the rule's own
-comment already anticipates it. **√chid and √chṛd** need two sūtras this
-engine does not implement, 6.1.73 *che ca* (the tuk augment before a `C`
+are c-final, and 8.2.30 *coḥ kuḥ* is hardcoded to a single `j` → `g` pair —
+its match names `j` alone, and its substitute is a literal `'g'` rather than
+the 1.1.50 nearest velar its own comment describes. They therefore need no new
+sūtra but more than a widened guard: the substitute has to be generalised
+alongside the match. Widening only the match would still reach the right
+surface (`riRakti`, since 8.4.55 *khari ca* devoices the `g`), through a wrong
+intermediate. **√chid and √chṛd** need two sūtras this engine does not
+implement, 6.1.73 *che ca* (the tuk augment before a `C`
 after a short vowel) and 8.4.40 *stoḥ ścunā ścuḥ* (the ścutva that follows),
 without which their laṅ cells surface `aCinat` where vidyut has `acCinat`.
 Nine further reachable non-ubhayapadī roots (√śiṣ, √tṛh, √und, √añj, √tañc,
