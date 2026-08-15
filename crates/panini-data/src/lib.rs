@@ -700,10 +700,14 @@ mod tests {
         // svaritaYitaH and PadaAssignment::Ubhayapada — the machinery that
         // 7b recorded as the one thing its absence was waiting on.
         //
-        // The gaṇa is still PARTIAL (7 of its 25 dhātupāṭha roots), but the
-        // remaining eight `~^r` roots are now deferred by CURATION, not by
-        // missing machinery: each is one row away, and adding one is an
-        // audit, not an engine change.
+        // The gaṇa is still PARTIAL (7 of its 25 dhātupāṭha roots). 1.3.72
+        // no longer holds any of the remaining eight `~^r` roots back, but
+        // they do not all cost the same: √bhid, √kṣud, √yuj and √tṛd are a
+        // table row and an audit apiece (the engine already derives all 72
+        // cells of each, byte-identical to vidyut-prakriya), √ric and √vic
+        // want 8.2.30 coH kuH widened past `j`, and √chid and √chṛd want
+        // 6.1.73 Ce ca plus 8.4.40 stoH ScunA ScuH, which this engine does
+        // not have.
         let rows: Vec<_> = dhatus()
             .iter()
             .filter(|d| d.gana == Gana::Rudhadi)

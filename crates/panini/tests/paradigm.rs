@@ -3445,8 +3445,10 @@ fn known_nonforms_are_invalid() {
         "gacCati",
         "Bavati123",
         "tiRRati",
-        // Wrong pada: the root's pada tag gates the whole derivation
-        // (1.3.12 / 1.3.78) and the analyzer proposes only the tagged pada.
+        // Wrong pada: the root's pada assignment gates the whole derivation
+        // (1.3.12 / 1.3.72 / 1.3.78) and the analyzer proposes exactly the
+        // padas that assignment admits — one each for the single-pada roots
+        // below, both for an ubhayapadī root like √rudh.
         "laBati", // atmanepadin root with a parasmaipada ending
         "Bavate", // parasmaipada root with an atmanepada ending
         "eDati",  // vowel-initial atmanepadin root, parasmaipada ending
