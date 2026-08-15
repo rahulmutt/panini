@@ -267,7 +267,13 @@ pub(crate) static TRIPADI: &[Rule] = &[
     //
     // NARROW GUARD, by design, as with 8.2.39 just below: only `j` -> `g`
     // is reachable this slice (rudhādi's one cu-final curated root is
-    // √bhañj). Widen the match the moment a `c`-tailed root lands.
+    // √bhañj), so the pair is hardcoded at both ends — the match tests `j`
+    // and the substitute is the literal `'g'`. The 1.1.50 nearest-velar
+    // account above is therefore a description of the sūtra, NOT of this
+    // code. When a `c`-tailed root lands (√ric, √vic), widen the match AND
+    // replace the hardcoded substitute with a real cu -> ku map; widening
+    // only the match would substitute `g` for a `c` and reach the right
+    // surface by accident, 8.4.55 khari ca devoicing it to `k` afterwards.
     //
     // Read via `word_chars`, not a term-boundary check: the target `j` sits
     // at the END of a non-final term (śnam's infix leaves the root's own
@@ -322,16 +328,30 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // convention.
     //
     // NARROW GUARD, by design, as with 8.3.59 and 8.2.25: the only jhal
-    // sounds reachable pada-finally in this suite are `t` and `z` (every
-    // other form ends in a vowel, `H`, `m` or `n`, none of them jhal). The
-    // guard names those two characters rather than calling `is_jhal`: the
-    // other candidate is `s`, and 8.2.66 sasajuṣo ruḥ — implemented inside
-    // the rule labelled 8.3.15 just below — is its apavāda, so `s` must NOT
-    // be voiced here. A blanket widening to every jhal would rewrite √hiṃs's
-    // `ahinas` to `ahinad` before 8.2.74 and 8.2.73 could act on it,
-    // destroying the ru alternation and the `ahinaH` branch. Widen the
-    // guard's character set the moment a root lands whose pada-final sound
-    // is some other jhal.
+    // sounds reachable pada-finally in this suite are `t`, `z`, and — since
+    // the ubhayapada 1.3.72 slice's √rudh (`ruD`) — `D` (every other form
+    // ends in a vowel, `H`, `m` or `n`, none of them jhal). The guard names
+    // these characters rather than calling `is_jhal`: the other candidate is
+    // `s`, and 8.2.66 sasajuṣo ruḥ — implemented inside the rule labelled
+    // 8.3.15 just below — is its apavāda, so `s` must NOT be voiced here. A
+    // blanket widening to every jhal would rewrite √hiṃs's `ahinas` to
+    // `ahinad` before 8.2.74 and 8.2.73 could act on it, destroying the ru
+    // alternation and the `ahinaH` branch. Widen the guard's character set
+    // the moment a root lands whose pada-final sound is some other jhal.
+    //
+    // `D` is that moment. √rudh's laṅ prathama/madhyama eka expose the
+    // dhātu's OWN final — `D`, not an ending's `t` — once 8.2.23
+    // saṁyogāntasya lopaḥ elides tip/sip's own consonant, and without this
+    // arm the pipeline left it un-voiced, surfacing `aruRaD`/`aruRat`
+    // instead of the golden `aruRad`/`aruRat`. The golden `aruRad`
+    // (`crates/panini/tests/paradigm.rs`, `ruD laN Parasmaipada` cell 0) is
+    // the witness that made this arm reachable, and 8.2.75 daś ca's own
+    // `ends_with('d')` guard depends on it too: without the `D` arm here,
+    // 8.2.75 never sees a `d` to act on and the `aruRaH` branch (cell 3)
+    // never derives at all. `jashtva_of` already maps `D` to `d` (it covers
+    // every varga); only the arm actually reached by a curated root is
+    // admitted here, so the velar/palatal/labial arms stay unwitnessed and
+    // unadmitted until a root reaches them too.
     //
     // No contention with 8.4.55 cartva: the shape that would collide, an
     // aṅga-final jhal directly before a pada-final `t`, cannot arise because
@@ -345,7 +365,7 @@ pub(crate) static TRIPADI: &[Rule] = &[
         vikalpa: false,
         apply: |p| {
             let last = p.text().chars().last();
-            if !matches!(last, Some('t') | Some('z')) {
+            if !matches!(last, Some('t') | Some('z') | Some('D')) {
                 return false;
             }
             // Read the bearing term positionally rather than as ENDING:
@@ -354,7 +374,7 @@ pub(crate) static TRIPADI: &[Rule] = &[
             let Some(idx) = p.terms.iter().rposition(|t| !t.text.is_empty()) else {
                 return false;
             };
-            let jash = jashtva_of(last.unwrap()).expect("t and z both have a jaS");
+            let jash = jashtva_of(last.unwrap()).expect("t, z, and D all have a jaS");
             let before = p.snapshot();
             let mut s: Vec<char> = p.terms[idx].text.chars().collect();
             s.pop();
@@ -555,9 +575,11 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // its final. ahinas + t → ahinad.
     //
     // This is what fills the hole 8.2.39 leaves. 8.2.39 jhalāṁ jaśo'nte is
-    // guarded narrowly to a final `t`, and correctly so — a final `s` is
-    // 8.2.66 / 8.3.15's, not jaśtva's — so without this rule √hiṃs would
-    // surface as *ahinaH in laṅ prathama eka. √kṛt needs nothing here: its
+    // guarded narrowly to a final `t`, `z` or `D` (the `z` arm since slice
+    // 7b, the `D` arm since the ubhayapada slice's √rudh), and correctly so
+    // — a final `s` is 8.2.66 / 8.3.15's, not jaśtva's, and is deliberately
+    // outside that set — so without this rule √hiṃs would surface as
+    // *ahinaH in laṅ prathama eka. √kṛt needs nothing here: its
     // final really is a `t` and 8.2.39 handles it.
     //
     // DELIBERATE OVER-APPLICATION, recorded so it is not later read as a
@@ -1621,11 +1643,14 @@ mod tests {
         assert_eq!(p.text(), "Banjanti");
     }
 
-    /// 8.2.39 voices a pada-final `t` or `z` and nothing else. The `s` case
-    /// belongs to its apavāda 8.2.66 (implemented inside the rule labelled
-    /// 8.3.15), and a `t` that is not pada-final is untouched.
+    /// 8.2.39 voices a pada-final `t`, `z`, or `D` and nothing else. The `s`
+    /// case belongs to its apavāda 8.2.66 (implemented inside the rule
+    /// labelled 8.3.15), a `t` that is not pada-final is untouched, and a
+    /// jhal outside the curated three (e.g. a word-final `k` or `B`) must
+    /// still decline — that is what pins the guard's narrowness against a
+    /// future over-widening to `is_jhal`.
     #[test]
-    fn jhalam_jasho_ante_fires_only_on_a_pada_final_t_or_sh() {
+    fn jhalam_jasho_ante_fires_only_on_a_pada_final_t_z_or_d() {
         let rule = rules().find(|r| r.id == "8.2.39").unwrap();
 
         let mut p = Prakriya {
@@ -1651,9 +1676,33 @@ mod tests {
         assert!((rule.apply)(&mut p));
         assert_eq!(p.text(), "apinaq");
 
+        // word-final `D`: √rudh's laṅ prathama eka, once 8.2.23 has eaten
+        // tip's own `t` and left the dhātu's own final exposed pada-finally.
+        let mut p = Prakriya {
+            terms: vec![Term::new("aru"), Term::new("Ra"), Term::new("D")],
+            ..Default::default()
+        };
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.text(), "aruRad");
+
         // `s`-final belongs to 8.2.66/8.3.15, not here
         let mut p = Prakriya {
             terms: vec![Term::new("aBav"), Term::new("a"), Term::new("s")],
+            ..Default::default()
+        };
+        assert!(!(rule.apply)(&mut p));
+
+        // a jhal outside the curated three arms (`t`/`z`/`D`) must still
+        // decline, even though `jashtva_of` could resolve it: no curated
+        // root reaches the velar/palatal/labial arms word-finally, so they
+        // stay unwitnessed and unadmitted until one does.
+        let mut p = Prakriya {
+            terms: vec![Term::new("aBana"), Term::new("k")],
+            ..Default::default()
+        };
+        assert!(!(rule.apply)(&mut p));
+        let mut p = Prakriya {
+            terms: vec![Term::new("ala"), Term::new("B")],
             ..Default::default()
         };
         assert!(!(rule.apply)(&mut p));
@@ -1847,7 +1896,7 @@ mod tests {
             ("kft", Lakara::Lat, Purusha::Prathama, Vacana::Bahu, false),
         ] {
             let d = dhatus().iter().find(|d| d.id == id).unwrap();
-            let p = sole(derive(d, la, d.pada, pu, va));
+            let p = sole(derive(d, la, d.pada.padas()[0], pu, va));
             assert!(
                 p.log.iter().any(|s| s.sutra == "8.3.24"),
                 "{id}: 8.3.24 should always fire on a weak rudhādi cell"

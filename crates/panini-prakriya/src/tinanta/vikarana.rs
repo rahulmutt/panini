@@ -776,7 +776,13 @@ mod tests {
         // fork exists.
         for (id, stem) in [("kft", "kfnat"), ("his", "hinans"), ("Kid", "Kinad")] {
             let d = dhatus().iter().find(|d| d.id == id).unwrap();
-            let branches = derive(d, Lakara::Lat, d.pada, Purusha::Prathama, Vacana::Eka);
+            let branches = derive(
+                d,
+                Lakara::Lat,
+                d.pada.padas()[0],
+                Purusha::Prathama,
+                Vacana::Eka,
+            );
             assert!(!branches.is_empty());
             for p in &branches {
                 // 3.1.78 is recorded TWICE, around 1.3.9 (see the rule's
@@ -817,7 +823,13 @@ mod tests {
         // perfectly well after its `i`, and must not.
         for id in ["BU", "kliS", "Ap", "ad"] {
             let d = dhatus().iter().find(|d| d.id == id).unwrap();
-            let branches = derive(d, Lakara::Lat, d.pada, Purusha::Prathama, Vacana::Eka);
+            let branches = derive(
+                d,
+                Lakara::Lat,
+                d.pada.padas()[0],
+                Purusha::Prathama,
+                Vacana::Eka,
+            );
             for p in &branches {
                 assert!(
                     !p.log.iter().any(|s| s.sutra == "3.1.78"),

@@ -5,15 +5,18 @@ use panini::{Panini, Verdict};
 use panini_data::{Lakara, Pada, Purusha, Vacana, dhatus};
 use panini_prakriya::derive;
 
-/// (root_id, lakara_label, [P.E, P.D, P.B, M.E, M.D, M.B, U.E, U.D, U.B]) in SLP1.
-/// The first column is a `Dhatu::id`, not a `code` — see
+/// (root_id, lakara_label, pada, [P.E, P.D, P.B, M.E, M.D, M.B, U.E, U.D, U.B])
+/// in SLP1. The first column is a `Dhatu::id`, not a `code` — see
 /// `every_form_validates_and_matches`'s comment for why that distinction
 /// matters (it is gaṇa-qualified where two roots share an SLP1 form, e.g.
-/// svādi's `aS.5` vs kryādi's `aS`).
-const PARADIGM: &[(&str, &str, [&str; 9])] = &[
+/// svādi's `aS.5` vs kryādi's `aS`). The pada column is no longer inferable
+/// from the root id alone: 1.3.72 gives some roots a `PadaAssignment` that
+/// admits both, so a block has to declare which pada it is a block OF.
+const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
     (
         "BU",
         "laT",
+        Pada::Parasmaipada,
         [
             "Bavati", "BavataH", "Bavanti", "Bavasi", "BavaTaH", "BavaTa", "BavAmi", "BavAvaH",
             "BavAmaH",
@@ -22,6 +25,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "nI",
         "laT",
+        Pada::Parasmaipada,
         [
             "nayati", "nayataH", "nayanti", "nayasi", "nayaTaH", "nayaTa", "nayAmi", "nayAvaH",
             "nayAmaH",
@@ -30,6 +34,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "ji",
         "laT",
+        Pada::Parasmaipada,
         [
             "jayati", "jayataH", "jayanti", "jayasi", "jayaTaH", "jayaTa", "jayAmi", "jayAvaH",
             "jayAmaH",
@@ -38,6 +43,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "smf",
         "laT",
+        Pada::Parasmaipada,
         [
             "smarati", "smarataH", "smaranti", "smarasi", "smaraTaH", "smaraTa", "smarAmi",
             "smarAvaH", "smarAmaH",
@@ -46,6 +52,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "paW",
         "laT",
+        Pada::Parasmaipada,
         [
             "paWati", "paWataH", "paWanti", "paWasi", "paWaTaH", "paWaTa", "paWAmi", "paWAvaH",
             "paWAmaH",
@@ -54,6 +61,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "vad",
         "laT",
+        Pada::Parasmaipada,
         [
             "vadati", "vadataH", "vadanti", "vadasi", "vadaTaH", "vadaTa", "vadAmi", "vadAvaH",
             "vadAmaH",
@@ -62,6 +70,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "BU",
         "laN",
+        Pada::Parasmaipada,
         [
             "aBavad", "aBavatAm", "aBavan", "aBavaH", "aBavatam", "aBavata", "aBavam", "aBavAva",
             "aBavAma",
@@ -70,6 +79,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "nI",
         "laN",
+        Pada::Parasmaipada,
         [
             "anayad", "anayatAm", "anayan", "anayaH", "anayatam", "anayata", "anayam", "anayAva",
             "anayAma",
@@ -78,6 +88,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "ji",
         "laN",
+        Pada::Parasmaipada,
         [
             "ajayad", "ajayatAm", "ajayan", "ajayaH", "ajayatam", "ajayata", "ajayam", "ajayAva",
             "ajayAma",
@@ -86,6 +97,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "smf",
         "laN",
+        Pada::Parasmaipada,
         [
             "asmarad",
             "asmaratAm",
@@ -101,6 +113,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "paW",
         "laN",
+        Pada::Parasmaipada,
         [
             "apaWad", "apaWatAm", "apaWan", "apaWaH", "apaWatam", "apaWata", "apaWam", "apaWAva",
             "apaWAma",
@@ -109,6 +122,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "vad",
         "laN",
+        Pada::Parasmaipada,
         [
             "avadad", "avadatAm", "avadan", "avadaH", "avadatam", "avadata", "avadam", "avadAva",
             "avadAma",
@@ -117,6 +131,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "BU",
         "loT",
+        Pada::Parasmaipada,
         [
             "Bavatu", "BavatAm", "Bavantu", "Bava", "Bavatam", "Bavata", "BavAni", "BavAva",
             "BavAma",
@@ -125,6 +140,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "nI",
         "loT",
+        Pada::Parasmaipada,
         [
             "nayatu", "nayatAm", "nayantu", "naya", "nayatam", "nayata", "nayAni", "nayAva",
             "nayAma",
@@ -133,6 +149,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "ji",
         "loT",
+        Pada::Parasmaipada,
         [
             "jayatu", "jayatAm", "jayantu", "jaya", "jayatam", "jayata", "jayAni", "jayAva",
             "jayAma",
@@ -141,6 +158,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "smf",
         "loT",
+        Pada::Parasmaipada,
         [
             // uttama eka is smarARi, not smarAni: smar's r and the Ani
             // ending's n are separated only by the aw vowel A (6.1.101's
@@ -155,6 +173,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "paW",
         "loT",
+        Pada::Parasmaipada,
         [
             "paWatu", "paWatAm", "paWantu", "paWa", "paWatam", "paWata", "paWAni", "paWAva",
             "paWAma",
@@ -163,6 +182,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "vad",
         "loT",
+        Pada::Parasmaipada,
         [
             "vadatu", "vadatAm", "vadantu", "vada", "vadatam", "vadata", "vadAni", "vadAva",
             "vadAma",
@@ -171,6 +191,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "BU",
         "viDiliN",
+        Pada::Parasmaipada,
         [
             "Baved", "BavetAm", "BaveyuH", "BaveH", "Bavetam", "Baveta", "Baveyam", "Baveva",
             "Bavema",
@@ -179,6 +200,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "nI",
         "viDiliN",
+        Pada::Parasmaipada,
         [
             "nayed", "nayetAm", "nayeyuH", "nayeH", "nayetam", "nayeta", "nayeyam", "nayeva",
             "nayema",
@@ -187,6 +209,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "ji",
         "viDiliN",
+        Pada::Parasmaipada,
         [
             "jayed", "jayetAm", "jayeyuH", "jayeH", "jayetam", "jayeta", "jayeyam", "jayeva",
             "jayema",
@@ -195,6 +218,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "smf",
         "viDiliN",
+        Pada::Parasmaipada,
         [
             "smared", "smaretAm", "smareyuH", "smareH", "smaretam", "smareta", "smareyam",
             "smareva", "smarema",
@@ -203,6 +227,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "paW",
         "viDiliN",
+        Pada::Parasmaipada,
         [
             "paWed", "paWetAm", "paWeyuH", "paWeH", "paWetam", "paWeta", "paWeyam", "paWeva",
             "paWema",
@@ -211,6 +236,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "vad",
         "viDiliN",
+        Pada::Parasmaipada,
         [
             "vaded", "vadetAm", "vadeyuH", "vadeH", "vadetam", "vadeta", "vadeyam", "vadeva",
             "vadema",
@@ -219,6 +245,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "eD",
         "laT",
+        Pada::Atmanepada,
         [
             "eDate", "eDete", "eDante", "eDase", "eDeTe", "eDaDve", "eDe", "eDAvahe", "eDAmahe",
         ],
@@ -226,6 +253,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "laB",
         "laT",
+        Pada::Atmanepada,
         [
             "laBate", "laBete", "laBante", "laBase", "laBeTe", "laBaDve", "laBe", "laBAvahe",
             "laBAmahe",
@@ -234,6 +262,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "sev",
         "laT",
+        Pada::Atmanepada,
         [
             "sevate", "sevete", "sevante", "sevase", "seveTe", "sevaDve", "seve", "sevAvahe",
             "sevAmahe",
@@ -242,6 +271,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "vft",
         "laT",
+        Pada::Atmanepada,
         [
             "vartate",
             "vartete",
@@ -257,6 +287,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "BAz",
         "laT",
+        Pada::Atmanepada,
         [
             "BAzate", "BAzete", "BAzante", "BAzase", "BAzeTe", "BAzaDve", "BAze", "BAzAvahe",
             "BAzAmahe",
@@ -265,6 +296,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "Ikz",
         "laT",
+        Pada::Atmanepada,
         [
             "Ikzate", "Ikzete", "Ikzante", "Ikzase", "IkzeTe", "IkzaDve", "Ikze", "IkzAvahe",
             "IkzAmahe",
@@ -273,6 +305,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "eD",
         "loT",
+        Pada::Atmanepada,
         [
             "eDatAm", "eDetAm", "eDantAm", "eDasva", "eDeTAm", "eDaDvam", "eDE", "eDAvahE",
             "eDAmahE",
@@ -281,6 +314,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "laB",
         "loT",
+        Pada::Atmanepada,
         [
             "laBatAm", "laBetAm", "laBantAm", "laBasva", "laBeTAm", "laBaDvam", "laBE", "laBAvahE",
             "laBAmahE",
@@ -289,6 +323,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "sev",
         "loT",
+        Pada::Atmanepada,
         [
             "sevatAm", "sevetAm", "sevantAm", "sevasva", "seveTAm", "sevaDvam", "sevE", "sevAvahE",
             "sevAmahE",
@@ -297,6 +332,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "vft",
         "loT",
+        Pada::Atmanepada,
         [
             "vartatAm",
             "vartetAm",
@@ -312,6 +348,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "BAz",
         "loT",
+        Pada::Atmanepada,
         [
             "BAzatAm", "BAzetAm", "BAzantAm", "BAzasva", "BAzeTAm", "BAzaDvam", "BAzE", "BAzAvahE",
             "BAzAmahE",
@@ -320,6 +357,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "Ikz",
         "loT",
+        Pada::Atmanepada,
         [
             "IkzatAm", "IkzetAm", "IkzantAm", "Ikzasva", "IkzeTAm", "IkzaDvam", "IkzE", "IkzAvahE",
             "IkzAmahE",
@@ -328,6 +366,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "eD",
         "laN",
+        Pada::Atmanepada,
         [
             "EData", "EDetAm", "EDanta", "EDaTAH", "EDeTAm", "EDaDvam", "EDe", "EDAvahi", "EDAmahi",
         ],
@@ -335,6 +374,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "laB",
         "laN",
+        Pada::Atmanepada,
         [
             "alaBata",
             "alaBetAm",
@@ -350,6 +390,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "sev",
         "laN",
+        Pada::Atmanepada,
         [
             "asevata",
             "asevetAm",
@@ -365,6 +406,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "vft",
         "laN",
+        Pada::Atmanepada,
         [
             "avartata",
             "avartetAm",
@@ -380,6 +422,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "BAz",
         "laN",
+        Pada::Atmanepada,
         [
             "aBAzata",
             "aBAzetAm",
@@ -395,6 +438,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "Ikz",
         "laN",
+        Pada::Atmanepada,
         [
             "Ekzata", "EkzetAm", "Ekzanta", "EkzaTAH", "EkzeTAm", "EkzaDvam", "Ekze", "EkzAvahi",
             "EkzAmahi",
@@ -403,6 +447,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "eD",
         "viDiliN",
+        Pada::Atmanepada,
         [
             "eDeta", "eDeyAtAm", "eDeran", "eDeTAH", "eDeyATAm", "eDeDvam", "eDeya", "eDevahi",
             "eDemahi",
@@ -411,6 +456,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "laB",
         "viDiliN",
+        Pada::Atmanepada,
         [
             "laBeta",
             "laBeyAtAm",
@@ -426,6 +472,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "sev",
         "viDiliN",
+        Pada::Atmanepada,
         [
             "seveta",
             "seveyAtAm",
@@ -441,6 +488,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "vft",
         "viDiliN",
+        Pada::Atmanepada,
         [
             "varteta",
             "varteyAtAm",
@@ -456,6 +504,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "BAz",
         "viDiliN",
+        Pada::Atmanepada,
         [
             "BAzeta",
             "BAzeyAtAm",
@@ -471,6 +520,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "Ikz",
         "viDiliN",
+        Pada::Atmanepada,
         [
             "Ikzeta",
             "IkzeyAtAm",
@@ -486,6 +536,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "div",
         "laT",
+        Pada::Parasmaipada,
         [
             "dIvyati", "dIvyataH", "dIvyanti", "dIvyasi", "dIvyaTaH", "dIvyaTa", "dIvyAmi",
             "dIvyAvaH", "dIvyAmaH",
@@ -494,6 +545,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "naS",
         "laT",
+        Pada::Parasmaipada,
         [
             "naSyati", "naSyataH", "naSyanti", "naSyasi", "naSyaTaH", "naSyaTa", "naSyAmi",
             "naSyAvaH", "naSyAmaH",
@@ -502,6 +554,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "kup",
         "laT",
+        Pada::Parasmaipada,
         [
             "kupyati", "kupyataH", "kupyanti", "kupyasi", "kupyaTaH", "kupyaTa", "kupyAmi",
             "kupyAvaH", "kupyAmaH",
@@ -510,6 +563,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "man",
         "laT",
+        Pada::Atmanepada,
         [
             "manyate",
             "manyete",
@@ -525,6 +579,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "yuD",
         "laT",
+        Pada::Atmanepada,
         [
             "yuDyate",
             "yuDyete",
@@ -540,6 +595,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "vid",
         "laT",
+        Pada::Atmanepada,
         [
             "vidyate",
             "vidyete",
@@ -555,6 +611,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "tud",
         "laT",
+        Pada::Parasmaipada,
         [
             "tudati", "tudataH", "tudanti", "tudasi", "tudaTaH", "tudaTa", "tudAmi", "tudAvaH",
             "tudAmaH",
@@ -563,6 +620,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "liK",
         "laT",
+        Pada::Parasmaipada,
         [
             "liKati", "liKataH", "liKanti", "liKasi", "liKaTaH", "liKaTa", "liKAmi", "liKAvaH",
             "liKAmaH",
@@ -571,6 +629,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "viS",
         "laT",
+        Pada::Parasmaipada,
         [
             "viSati", "viSataH", "viSanti", "viSasi", "viSaTaH", "viSaTa", "viSAmi", "viSAvaH",
             "viSAmaH",
@@ -579,6 +638,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "juz",
         "laT",
+        Pada::Atmanepada,
         [
             "juzate", "juzete", "juzante", "juzase", "juzeTe", "juzaDve", "juze", "juzAvahe",
             "juzAmahe",
@@ -587,6 +647,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "vij",
         "laT",
+        Pada::Atmanepada,
         [
             "vijate", "vijete", "vijante", "vijase", "vijeTe", "vijaDve", "vije", "vijAvahe",
             "vijAmahe",
@@ -595,6 +656,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "gur",
         "laT",
+        Pada::Atmanepada,
         [
             "gurate", "gurete", "gurante", "gurase", "gureTe", "guraDve", "gure", "gurAvahe",
             "gurAmahe",
@@ -603,6 +665,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "div",
         "laN",
+        Pada::Parasmaipada,
         [
             "adIvyad",
             "adIvyatAm",
@@ -618,6 +681,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "naS",
         "laN",
+        Pada::Parasmaipada,
         [
             "anaSyad",
             "anaSyatAm",
@@ -633,6 +697,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "kup",
         "laN",
+        Pada::Parasmaipada,
         [
             "akupyad",
             "akupyatAm",
@@ -648,6 +713,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "man",
         "laN",
+        Pada::Atmanepada,
         [
             "amanyata",
             "amanyetAm",
@@ -663,6 +729,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "yuD",
         "laN",
+        Pada::Atmanepada,
         [
             "ayuDyata",
             "ayuDyetAm",
@@ -678,6 +745,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "vid",
         "laN",
+        Pada::Atmanepada,
         [
             "avidyata",
             "avidyetAm",
@@ -693,6 +761,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "tud",
         "laN",
+        Pada::Parasmaipada,
         [
             "atudad", "atudatAm", "atudan", "atudaH", "atudatam", "atudata", "atudam", "atudAva",
             "atudAma",
@@ -701,6 +770,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "liK",
         "laN",
+        Pada::Parasmaipada,
         [
             "aliKad", "aliKatAm", "aliKan", "aliKaH", "aliKatam", "aliKata", "aliKam", "aliKAva",
             "aliKAma",
@@ -709,6 +779,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "viS",
         "laN",
+        Pada::Parasmaipada,
         [
             "aviSad", "aviSatAm", "aviSan", "aviSaH", "aviSatam", "aviSata", "aviSam", "aviSAva",
             "aviSAma",
@@ -717,6 +788,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "juz",
         "laN",
+        Pada::Atmanepada,
         [
             "ajuzata",
             "ajuzetAm",
@@ -732,6 +804,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "vij",
         "laN",
+        Pada::Atmanepada,
         [
             "avijata",
             "avijetAm",
@@ -747,6 +820,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "gur",
         "laN",
+        Pada::Atmanepada,
         [
             "agurata",
             "aguretAm",
@@ -762,6 +836,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "div",
         "loT",
+        Pada::Parasmaipada,
         [
             "dIvyatu", "dIvyatAm", "dIvyantu", "dIvya", "dIvyatam", "dIvyata", "dIvyAni",
             "dIvyAva", "dIvyAma",
@@ -770,6 +845,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "naS",
         "loT",
+        Pada::Parasmaipada,
         [
             "naSyatu", "naSyatAm", "naSyantu", "naSya", "naSyatam", "naSyata", "naSyAni",
             "naSyAva", "naSyAma",
@@ -778,6 +854,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "kup",
         "loT",
+        Pada::Parasmaipada,
         [
             "kupyatu", "kupyatAm", "kupyantu", "kupya", "kupyatam", "kupyata", "kupyAni",
             "kupyAva", "kupyAma",
@@ -786,6 +863,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "man",
         "loT",
+        Pada::Atmanepada,
         [
             "manyatAm",
             "manyetAm",
@@ -801,6 +879,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "yuD",
         "loT",
+        Pada::Atmanepada,
         [
             "yuDyatAm",
             "yuDyetAm",
@@ -816,6 +895,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "vid",
         "loT",
+        Pada::Atmanepada,
         [
             "vidyatAm",
             "vidyetAm",
@@ -831,6 +911,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "tud",
         "loT",
+        Pada::Parasmaipada,
         [
             "tudatu", "tudatAm", "tudantu", "tuda", "tudatam", "tudata", "tudAni", "tudAva",
             "tudAma",
@@ -839,6 +920,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "liK",
         "loT",
+        Pada::Parasmaipada,
         [
             "liKatu", "liKatAm", "liKantu", "liKa", "liKatam", "liKata", "liKAni", "liKAva",
             "liKAma",
@@ -847,6 +929,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "viS",
         "loT",
+        Pada::Parasmaipada,
         [
             "viSatu", "viSatAm", "viSantu", "viSa", "viSatam", "viSata", "viSAni", "viSAva",
             "viSAma",
@@ -855,6 +938,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "juz",
         "loT",
+        Pada::Atmanepada,
         [
             "juzatAm", "juzetAm", "juzantAm", "juzasva", "juzeTAm", "juzaDvam", "juzE", "juzAvahE",
             "juzAmahE",
@@ -863,6 +947,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "vij",
         "loT",
+        Pada::Atmanepada,
         [
             "vijatAm", "vijetAm", "vijantAm", "vijasva", "vijeTAm", "vijaDvam", "vijE", "vijAvahE",
             "vijAmahE",
@@ -871,6 +956,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "gur",
         "loT",
+        Pada::Atmanepada,
         [
             "guratAm", "guretAm", "gurantAm", "gurasva", "gureTAm", "guraDvam", "gurE", "gurAvahE",
             "gurAmahE",
@@ -879,6 +965,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "div",
         "viDiliN",
+        Pada::Parasmaipada,
         [
             "dIvyed", "dIvyetAm", "dIvyeyuH", "dIvyeH", "dIvyetam", "dIvyeta", "dIvyeyam",
             "dIvyeva", "dIvyema",
@@ -887,6 +974,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "naS",
         "viDiliN",
+        Pada::Parasmaipada,
         [
             "naSyed", "naSyetAm", "naSyeyuH", "naSyeH", "naSyetam", "naSyeta", "naSyeyam",
             "naSyeva", "naSyema",
@@ -895,6 +983,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "kup",
         "viDiliN",
+        Pada::Parasmaipada,
         [
             "kupyed", "kupyetAm", "kupyeyuH", "kupyeH", "kupyetam", "kupyeta", "kupyeyam",
             "kupyeva", "kupyema",
@@ -903,6 +992,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "man",
         "viDiliN",
+        Pada::Atmanepada,
         [
             "manyeta",
             "manyeyAtAm",
@@ -918,6 +1008,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "yuD",
         "viDiliN",
+        Pada::Atmanepada,
         [
             "yuDyeta",
             "yuDyeyAtAm",
@@ -933,6 +1024,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "vid",
         "viDiliN",
+        Pada::Atmanepada,
         [
             "vidyeta",
             "vidyeyAtAm",
@@ -948,6 +1040,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "tud",
         "viDiliN",
+        Pada::Parasmaipada,
         [
             "tuded", "tudetAm", "tudeyuH", "tudeH", "tudetam", "tudeta", "tudeyam", "tudeva",
             "tudema",
@@ -956,6 +1049,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "liK",
         "viDiliN",
+        Pada::Parasmaipada,
         [
             "liKed", "liKetAm", "liKeyuH", "liKeH", "liKetam", "liKeta", "liKeyam", "liKeva",
             "liKema",
@@ -964,6 +1058,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "viS",
         "viDiliN",
+        Pada::Parasmaipada,
         [
             "viSed", "viSetAm", "viSeyuH", "viSeH", "viSetam", "viSeta", "viSeyam", "viSeva",
             "viSema",
@@ -972,6 +1067,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "juz",
         "viDiliN",
+        Pada::Atmanepada,
         [
             "juzeta",
             "juzeyAtAm",
@@ -987,6 +1083,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "vij",
         "viDiliN",
+        Pada::Atmanepada,
         [
             "vijeta",
             "vijeyAtAm",
@@ -1002,6 +1099,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "gur",
         "viDiliN",
+        Pada::Atmanepada,
         [
             "gureta",
             "gureyAtAm",
@@ -1017,6 +1115,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "yA",
         "laT",
+        Pada::Parasmaipada,
         [
             "yAti", "yAtaH", "yAnti", "yAsi", "yATaH", "yATa", "yAmi", "yAvaH", "yAmaH",
         ],
@@ -1024,6 +1123,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "vA",
         "laT",
+        Pada::Parasmaipada,
         [
             "vAti", "vAtaH", "vAnti", "vAsi", "vATaH", "vATa", "vAmi", "vAvaH", "vAmaH",
         ],
@@ -1031,6 +1131,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "yA",
         "laN",
+        Pada::Parasmaipada,
         [
             "ayAd", "ayAtAm", "ayAn", "ayAH", "ayAtam", "ayAta", "ayAm", "ayAva", "ayAma",
         ],
@@ -1038,6 +1139,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "vA",
         "laN",
+        Pada::Parasmaipada,
         [
             "avAd", "avAtAm", "avAn", "avAH", "avAtam", "avAta", "avAm", "avAva", "avAma",
         ],
@@ -1045,6 +1147,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "yA",
         "loT",
+        Pada::Parasmaipada,
         [
             "yAtu", "yAtAm", "yAntu", "yAhi", "yAtam", "yAta", "yAni", "yAva", "yAma",
         ],
@@ -1052,6 +1155,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "vA",
         "loT",
+        Pada::Parasmaipada,
         [
             "vAtu", "vAtAm", "vAntu", "vAhi", "vAtam", "vAta", "vAni", "vAva", "vAma",
         ],
@@ -1059,6 +1163,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "yA",
         "viDiliN",
+        Pada::Parasmaipada,
         [
             "yAyAd", "yAyAtAm", "yAyuH", "yAyAH", "yAyAtam", "yAyAta", "yAyAm", "yAyAva", "yAyAma",
         ],
@@ -1066,6 +1171,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "vA",
         "viDiliN",
+        Pada::Parasmaipada,
         [
             "vAyAd", "vAyAtAm", "vAyuH", "vAyAH", "vAyAtam", "vAyAta", "vAyAm", "vAyAva", "vAyAma",
         ],
@@ -1073,6 +1179,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "ad",
         "laT",
+        Pada::Parasmaipada,
         [
             "atti", "attaH", "adanti", "atsi", "atTaH", "atTa", "admi", "advaH", "admaH",
         ],
@@ -1080,6 +1187,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "ad",
         "laN",
+        Pada::Parasmaipada,
         [
             "Adad", "AttAm", "Adan", "AdaH", "Attam", "Atta", "Adam", "Adva", "Adma",
         ],
@@ -1087,6 +1195,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "ad",
         "loT",
+        Pada::Parasmaipada,
         [
             "attu", "attAm", "adantu", "adDi", "attam", "atta", "adAni", "adAva", "adAma",
         ],
@@ -1094,6 +1203,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "ad",
         "viDiliN",
+        Pada::Parasmaipada,
         [
             "adyAd", "adyAtAm", "adyuH", "adyAH", "adyAtam", "adyAta", "adyAm", "adyAva", "adyAma",
         ],
@@ -1101,6 +1211,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "As",
         "laT",
+        Pada::Atmanepada,
         [
             "Aste", "AsAte", "Asate", "Asse", "AsATe", "ADve", "Ase", "Asvahe", "Asmahe",
         ],
@@ -1108,6 +1219,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "As",
         "laN",
+        Pada::Atmanepada,
         [
             "Asta", "AsAtAm", "Asata", "AsTAH", "AsATAm", "ADvam", "Asi", "Asvahi", "Asmahi",
         ],
@@ -1115,6 +1227,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "As",
         "loT",
+        Pada::Atmanepada,
         [
             "AstAm", "AsAtAm", "AsatAm", "Assva", "AsATAm", "ADvam", "AsE", "AsAvahE", "AsAmahE",
         ],
@@ -1122,6 +1235,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "As",
         "viDiliN",
+        Pada::Atmanepada,
         [
             "AsIta", "AsIyAtAm", "AsIran", "AsITAH", "AsIyATAm", "AsIDvam", "AsIya", "AsIvahi",
             "AsImahi",
@@ -1130,6 +1244,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "vas",
         "laT",
+        Pada::Atmanepada,
         [
             "vaste", "vasAte", "vasate", "vasse", "vasATe", "vaDve", "vase", "vasvahe", "vasmahe",
         ],
@@ -1137,6 +1252,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "vas",
         "laN",
+        Pada::Atmanepada,
         [
             "avasta", "avasAtAm", "avasata", "avasTAH", "avasATAm", "avaDvam", "avasi", "avasvahi",
             "avasmahi",
@@ -1145,6 +1261,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "vas",
         "loT",
+        Pada::Atmanepada,
         [
             "vastAm", "vasAtAm", "vasatAm", "vassva", "vasATAm", "vaDvam", "vasE", "vasAvahE",
             "vasAmahE",
@@ -1153,6 +1270,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "vas",
         "viDiliN",
+        Pada::Atmanepada,
         [
             "vasIta",
             "vasIyAtAm",
@@ -1168,6 +1286,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "SI",
         "laT",
+        Pada::Atmanepada,
         [
             "Sete", "SayAte", "Serate", "Seze", "SayATe", "SeDve", "Saye", "Sevahe", "Semahe",
         ],
@@ -1175,6 +1294,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "SI",
         "laN",
+        Pada::Atmanepada,
         [
             "aSeta", "aSayAtAm", "aSerata", "aSeTAH", "aSayATAm", "aSeDvam", "aSayi", "aSevahi",
             "aSemahi",
@@ -1183,6 +1303,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "SI",
         "loT",
+        Pada::Atmanepada,
         [
             "SetAm", "SayAtAm", "SeratAm", "Sezva", "SayATAm", "SeDvam", "SayE", "SayAvahE",
             "SayAmahE",
@@ -1191,6 +1312,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "SI",
         "viDiliN",
+        Pada::Atmanepada,
         [
             "SayIta",
             "SayIyAtAm",
@@ -1206,6 +1328,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "kliS",
         "laT",
+        Pada::Parasmaipada,
         [
             "kliSnAti",
             "kliSnItaH",
@@ -1221,6 +1344,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "kliS",
         "laN",
+        Pada::Parasmaipada,
         [
             "akliSnAd",
             "akliSnItAm",
@@ -1236,6 +1360,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "kliS",
         "loT",
+        Pada::Parasmaipada,
         [
             "kliSnAtu",
             "kliSnItAm",
@@ -1251,6 +1376,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "kliS",
         "viDiliN",
+        Pada::Parasmaipada,
         [
             "kliSnIyAd",
             "kliSnIyAtAm",
@@ -1266,6 +1392,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "guD",
         "laT",
+        Pada::Parasmaipada,
         [
             "guDnAti", "guDnItaH", "guDnanti", "guDnAsi", "guDnITaH", "guDnITa", "guDnAmi",
             "guDnIvaH", "guDnImaH",
@@ -1274,6 +1401,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "guD",
         "laN",
+        Pada::Parasmaipada,
         [
             "aguDnAd",
             "aguDnItAm",
@@ -1289,6 +1417,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "guD",
         "loT",
+        Pada::Parasmaipada,
         [
             "guDnAtu", "guDnItAm", "guDnantu", "guDAna", "guDnItam", "guDnIta", "guDnAni",
             "guDnAva", "guDnAma",
@@ -1297,6 +1426,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "guD",
         "viDiliN",
+        Pada::Parasmaipada,
         [
             "guDnIyAd",
             "guDnIyAtAm",
@@ -1312,6 +1442,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "aS",
         "laT",
+        Pada::Parasmaipada,
         [
             "aSnAti", "aSnItaH", "aSnanti", "aSnAsi", "aSnITaH", "aSnITa", "aSnAmi", "aSnIvaH",
             "aSnImaH",
@@ -1320,6 +1451,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "aS",
         "laN",
+        Pada::Parasmaipada,
         [
             "ASnAd", "ASnItAm", "ASnan", "ASnAH", "ASnItam", "ASnIta", "ASnAm", "ASnIva", "ASnIma",
         ],
@@ -1327,6 +1459,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "aS",
         "loT",
+        Pada::Parasmaipada,
         [
             "aSnAtu", "aSnItAm", "aSnantu", "aSAna", "aSnItam", "aSnIta", "aSnAni", "aSnAva",
             "aSnAma",
@@ -1335,6 +1468,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "aS",
         "viDiliN",
+        Pada::Parasmaipada,
         [
             "aSnIyAd",
             "aSnIyAtAm",
@@ -1350,6 +1484,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "muz",
         "laT",
+        Pada::Parasmaipada,
         [
             "muzRAti", "muzRItaH", "muzRanti", "muzRAsi", "muzRITaH", "muzRITa", "muzRAmi",
             "muzRIvaH", "muzRImaH",
@@ -1358,6 +1493,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "muz",
         "laN",
+        Pada::Parasmaipada,
         [
             "amuzRAd",
             "amuzRItAm",
@@ -1373,6 +1509,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "muz",
         "loT",
+        Pada::Parasmaipada,
         [
             "muzRAtu", "muzRItAm", "muzRantu", "muzARa", "muzRItam", "muzRIta", "muzRAni",
             "muzRAva", "muzRAma",
@@ -1381,6 +1518,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "muz",
         "viDiliN",
+        Pada::Parasmaipada,
         [
             "muzRIyAd",
             "muzRIyAtAm",
@@ -1396,6 +1534,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "vrI",
         "laT",
+        Pada::Parasmaipada,
         [
             "vrIRAti", "vrIRItaH", "vrIRanti", "vrIRAsi", "vrIRITaH", "vrIRITa", "vrIRAmi",
             "vrIRIvaH", "vrIRImaH",
@@ -1404,6 +1543,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "vrI",
         "laN",
+        Pada::Parasmaipada,
         [
             "avrIRAd",
             "avrIRItAm",
@@ -1419,6 +1559,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "vrI",
         "loT",
+        Pada::Parasmaipada,
         [
             "vrIRAtu", "vrIRItAm", "vrIRantu", "vrIRIhi", "vrIRItam", "vrIRIta", "vrIRAni",
             "vrIRAva", "vrIRAma",
@@ -1427,6 +1568,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "vrI",
         "viDiliN",
+        Pada::Parasmaipada,
         [
             "vrIRIyAd",
             "vrIRIyAtAm",
@@ -1442,6 +1584,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "vf",
         "laT",
+        Pada::Atmanepada,
         [
             "vfRIte", "vfRAte", "vfRate", "vfRIze", "vfRATe", "vfRIDve", "vfRe", "vfRIvahe",
             "vfRImahe",
@@ -1450,6 +1593,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "vf",
         "laN",
+        Pada::Atmanepada,
         [
             "avfRIta",
             "avfRAtAm",
@@ -1465,6 +1609,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "vf",
         "loT",
+        Pada::Atmanepada,
         [
             "vfRItAm", "vfRAtAm", "vfRatAm", "vfRIzva", "vfRATAm", "vfRIDvam", "vfRE", "vfRAvahE",
             "vfRAmahE",
@@ -1473,6 +1618,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "vf",
         "viDiliN",
+        Pada::Atmanepada,
         [
             "vfRIta",
             "vfRIyAtAm",
@@ -1488,6 +1634,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "Ap",
         "laT",
+        Pada::Parasmaipada,
         [
             "Apnoti",
             "ApnutaH",
@@ -1503,6 +1650,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "Ap",
         "laN",
+        Pada::Parasmaipada,
         [
             "Apnod", "ApnutAm", "Apnuvan", "ApnoH", "Apnutam", "Apnuta", "Apnavam", "Apnuva",
             "Apnuma",
@@ -1511,6 +1659,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "Ap",
         "loT",
+        Pada::Parasmaipada,
         [
             "Apnotu",
             "ApnutAm",
@@ -1526,6 +1675,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "Ap",
         "viDiliN",
+        Pada::Parasmaipada,
         [
             "ApnuyAd",
             "ApnuyAtAm",
@@ -1541,6 +1691,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "Sak",
         "laT",
+        Pada::Parasmaipada,
         [
             "Saknoti",
             "SaknutaH",
@@ -1556,6 +1707,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "Sak",
         "laN",
+        Pada::Parasmaipada,
         [
             "aSaknod",
             "aSaknutAm",
@@ -1571,6 +1723,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "Sak",
         "loT",
+        Pada::Parasmaipada,
         [
             "Saknotu",
             "SaknutAm",
@@ -1586,6 +1739,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "Sak",
         "viDiliN",
+        Pada::Parasmaipada,
         [
             "SaknuyAd",
             "SaknuyAtAm",
@@ -1601,6 +1755,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "hi",
         "laT",
+        Pada::Parasmaipada,
         [
             "hinoti", "hinutaH", "hinvanti", "hinozi", "hinuTaH", "hinuTa", "hinomi", "hinuvaH",
             "hinumaH",
@@ -1609,6 +1764,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "hi",
         "laN",
+        Pada::Parasmaipada,
         [
             "ahinod", "ahinutAm", "ahinvan", "ahinoH", "ahinutam", "ahinuta", "ahinavam",
             "ahinuva", "ahinuma",
@@ -1617,6 +1773,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "hi",
         "loT",
+        Pada::Parasmaipada,
         [
             "hinotu", "hinutAm", "hinvantu", "hinu", "hinutam", "hinuta", "hinavAni", "hinavAva",
             "hinavAma",
@@ -1625,6 +1782,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "hi",
         "viDiliN",
+        Pada::Parasmaipada,
         [
             "hinuyAd",
             "hinuyAtAm",
@@ -1640,6 +1798,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "ri",
         "laT",
+        Pada::Parasmaipada,
         [
             "riRoti", "riRutaH", "riRvanti", "riRozi", "riRuTaH", "riRuTa", "riRomi", "riRuvaH",
             "riRumaH",
@@ -1648,6 +1807,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "ri",
         "laN",
+        Pada::Parasmaipada,
         [
             "ariRod", "ariRutAm", "ariRvan", "ariRoH", "ariRutam", "ariRuta", "ariRavam",
             "ariRuva", "ariRuma",
@@ -1656,6 +1816,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "ri",
         "loT",
+        Pada::Parasmaipada,
         [
             "riRotu", "riRutAm", "riRvantu", "riRu", "riRutam", "riRuta", "riRavAni", "riRavAva",
             "riRavAma",
@@ -1664,6 +1825,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "ri",
         "viDiliN",
+        Pada::Parasmaipada,
         [
             "riRuyAd",
             "riRuyAtAm",
@@ -1679,6 +1841,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "aS.5",
         "laT",
+        Pada::Atmanepada,
         [
             "aSnute", "aSnuvAte", "aSnuvate", "aSnuze", "aSnuvATe", "aSnuDve", "aSnuve",
             "aSnuvahe", "aSnumahe",
@@ -1687,6 +1850,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "aS.5",
         "laN",
+        Pada::Atmanepada,
         [
             "ASnuta",
             "ASnuvAtAm",
@@ -1702,6 +1866,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "aS.5",
         "loT",
+        Pada::Atmanepada,
         [
             "aSnutAm",
             "aSnuvAtAm",
@@ -1717,6 +1882,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "aS.5",
         "viDiliN",
+        Pada::Atmanepada,
         [
             "aSnuvIta",
             "aSnuvIyAtAm",
@@ -1732,6 +1898,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "stiG",
         "laT",
+        Pada::Atmanepada,
         [
             "stiGnute",
             "stiGnuvAte",
@@ -1747,6 +1914,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "stiG",
         "laN",
+        Pada::Atmanepada,
         [
             "astiGnuta",
             "astiGnuvAtAm",
@@ -1762,6 +1930,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "stiG",
         "loT",
+        Pada::Atmanepada,
         [
             "stiGnutAm",
             "stiGnuvAtAm",
@@ -1777,6 +1946,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "stiG",
         "viDiliN",
+        Pada::Atmanepada,
         [
             "stiGnuvIta",
             "stiGnuvIyAtAm",
@@ -1792,6 +1962,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "kft",
         "laT",
+        Pada::Parasmaipada,
         [
             "kfRatti", "kfnttaH", "kfntanti", "kfRatsi", "kfntTaH", "kfntTa", "kfRatmi", "kfntvaH",
             "kfntmaH",
@@ -1800,6 +1971,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "kft",
         "laN",
+        Pada::Parasmaipada,
         [
             "akfRad", "akfnttAm", "akfntan", "akfRad", "akfnttam", "akfntta", "akfRatam",
             "akfntva", "akfntma",
@@ -1808,6 +1980,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "kft",
         "loT",
+        Pada::Parasmaipada,
         [
             "kfRattu", "kfnttAm", "kfntantu", "kfndDi", "kfnttam", "kfntta", "kfRatAni",
             "kfRatAva", "kfRatAma",
@@ -1816,6 +1989,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "kft",
         "viDiliN",
+        Pada::Parasmaipada,
         [
             "kfntyAd",
             "kfntyAtAm",
@@ -1831,6 +2005,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "his",
         "laT",
+        Pada::Parasmaipada,
         [
             "hinasti", "hiMstaH", "hiMsanti", "hinassi", "hiMsTaH", "hiMsTa", "hinasmi", "hiMsvaH",
             "hiMsmaH",
@@ -1839,6 +2014,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "his",
         "laN",
+        Pada::Parasmaipada,
         [
             "ahinad", "ahiMstAm", "ahiMsan", "ahinad", "ahiMstam", "ahiMsta", "ahinasam",
             "ahiMsva", "ahiMsma",
@@ -1847,6 +2023,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "his",
         "loT",
+        Pada::Parasmaipada,
         [
             "hinastu", "hiMstAm", "hiMsantu", "hinDi", "hiMstam", "hiMsta", "hinasAni", "hinasAva",
             "hinasAma",
@@ -1855,6 +2032,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "his",
         "viDiliN",
+        Pada::Parasmaipada,
         [
             "hiMsyAd",
             "hiMsyAtAm",
@@ -1870,6 +2048,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "Kid",
         "laT",
+        Pada::Atmanepada,
         [
             "Kintte", "KindAte", "Kindate", "Kintse", "KindATe", "KindDve", "Kinde", "Kindvahe",
             "Kindmahe",
@@ -1878,6 +2057,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "Kid",
         "laN",
+        Pada::Atmanepada,
         [
             "aKintta",
             "aKindAtAm",
@@ -1893,6 +2073,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "Kid",
         "loT",
+        Pada::Atmanepada,
         [
             "KinttAm",
             "KindAtAm",
@@ -1908,6 +2089,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "Kid",
         "viDiliN",
+        Pada::Atmanepada,
         [
             "KindIta",
             "KindIyAtAm",
@@ -1923,6 +2105,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "Banj",
         "laT",
+        Pada::Parasmaipada,
         [
             "Banakti", "BaNktaH", "BaYjanti", "Banakzi", "BaNkTaH", "BaNkTa", "Banajmi", "BaYjvaH",
             "BaYjmaH",
@@ -1931,6 +2114,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "Banj",
         "laN",
+        Pada::Parasmaipada,
         [
             "aBanag", "aBaNktAm", "aBaYjan", "aBanag", "aBaNktam", "aBaNkta", "aBanajam",
             "aBaYjva", "aBaYjma",
@@ -1939,6 +2123,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "Banj",
         "loT",
+        Pada::Parasmaipada,
         [
             "Banaktu", "BaNktAm", "BaYjantu", "BaNgDi", "BaNktam", "BaNkta", "BanajAni",
             "BanajAva", "BanajAma",
@@ -1947,6 +2132,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "Banj",
         "viDiliN",
+        Pada::Parasmaipada,
         [
             "BaYjyAd",
             "BaYjyAtAm",
@@ -1962,6 +2148,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "piz",
         "laT",
+        Pada::Parasmaipada,
         [
             "pinazwi", "piMzwaH", "piMzanti", "pinakzi", "piMzWaH", "piMzWa", "pinazmi", "piMzvaH",
             "piMzmaH",
@@ -1970,6 +2157,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "piz",
         "laN",
+        Pada::Parasmaipada,
         [
             "apinaq", "apiMzwAm", "apiMzan", "apinaq", "apiMzwam", "apiMzwa", "apinazam",
             "apiMzva", "apiMzma",
@@ -1978,6 +2166,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "piz",
         "loT",
+        Pada::Parasmaipada,
         [
             "pinazwu", "piMzwAm", "piMzantu", "piRqQi", "piMzwam", "piMzwa", "pinazARi",
             "pinazAva", "pinazAma",
@@ -1986,6 +2175,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "piz",
         "viDiliN",
+        Pada::Parasmaipada,
         [
             "piMzyAd",
             "piMzyAtAm",
@@ -2001,6 +2191,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "inD",
         "laT",
+        Pada::Atmanepada,
         [
             "indDe", "inDAte", "inDate", "intse", "inDATe", "indDve", "inDe", "inDvahe", "inDmahe",
         ],
@@ -2008,6 +2199,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "inD",
         "laN",
+        Pada::Atmanepada,
         [
             "EndDa", "EnDAtAm", "EnData", "EndDAH", "EnDATAm", "EndDvam", "EnDi", "EnDvahi",
             "EnDmahi",
@@ -2016,6 +2208,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "inD",
         "loT",
+        Pada::Atmanepada,
         [
             "indDAm",
             "inDAtAm",
@@ -2031,6 +2224,7 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
     (
         "inD",
         "viDiliN",
+        Pada::Atmanepada,
         [
             "inDIta",
             "inDIyAtAm",
@@ -2043,10 +2237,110 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
             "inDImahi",
         ],
     ),
+    (
+        "ruD",
+        "laT",
+        Pada::Parasmaipada,
+        [
+            "ruRadDi", "rundDaH", "runDanti", "ruRatsi", "rundDaH", "rundDa", "ruRaDmi", "runDvaH",
+            "runDmaH",
+        ],
+    ),
+    (
+        "ruD",
+        "laN",
+        Pada::Parasmaipada,
+        [
+            "aruRad", "arundDAm", "arunDan", "aruRad", "arundDam", "arundDa", "aruRaDam",
+            "arunDva", "arunDma",
+        ],
+    ),
+    (
+        "ruD",
+        "loT",
+        Pada::Parasmaipada,
+        [
+            "ruRadDu", "rundDAm", "runDantu", "rundDi", "rundDam", "rundDa", "ruRaDAni",
+            "ruRaDAva", "ruRaDAma",
+        ],
+    ),
+    (
+        "ruD",
+        "viDiliN",
+        Pada::Parasmaipada,
+        [
+            "runDyAd",
+            "runDyAtAm",
+            "runDyuH",
+            "runDyAH",
+            "runDyAtam",
+            "runDyAta",
+            "runDyAm",
+            "runDyAva",
+            "runDyAma",
+        ],
+    ),
+    (
+        "ruD",
+        "laT",
+        Pada::Atmanepada,
+        [
+            "rundDe", "runDAte", "runDate", "runtse", "runDATe", "rundDve", "runDe", "runDvahe",
+            "runDmahe",
+        ],
+    ),
+    (
+        "ruD",
+        "laN",
+        Pada::Atmanepada,
+        [
+            "arundDa",
+            "arunDAtAm",
+            "arunData",
+            "arundDAH",
+            "arunDATAm",
+            "arundDvam",
+            "arunDi",
+            "arunDvahi",
+            "arunDmahi",
+        ],
+    ),
+    (
+        "ruD",
+        "loT",
+        Pada::Atmanepada,
+        [
+            "rundDAm",
+            "runDAtAm",
+            "runDatAm",
+            "runtsva",
+            "runDATAm",
+            "rundDvam",
+            "ruRaDE",
+            "ruRaDAvahE",
+            "ruRaDAmahE",
+        ],
+    ),
+    (
+        "ruD",
+        "viDiliN",
+        Pada::Atmanepada,
+        [
+            "runDIta",
+            "runDIyAtAm",
+            "runDIran",
+            "runDITAH",
+            "runDIyATAm",
+            "runDIDvam",
+            "runDIya",
+            "runDIvahi",
+            "runDImahi",
+        ],
+    ),
 ];
 
 /// Second and third valid forms, for cells where an optional (vikalpa) rule
-/// forks the derivation. `(root_id, lakara_label, cell index into the
+/// forks the derivation. `(root_id, lakara_label, pada, cell index into the
 /// [&str; 9], alternate form, vikalpa key)`.
 ///
 /// The vikalpa key names the optional rules applied on the branch that
@@ -2058,221 +2352,713 @@ const PARADIGM: &[(&str, &str, [&str; 9])] = &[
 /// `PARADIGM` holds index 0 — the derivation with no optional rule applied —
 /// so an alternate is by construction never `PARADIGM`'s own string.
 /// Cell order is [P.E, P.D, P.B, M.E, M.D, M.B, U.E, U.D, U.B], so 7 and 8
-/// are uttama dvi and uttama bahu.
-const ALTERNATES: &[(&str, &str, usize, &str, &str)] = &[
-    ("hi", "laT", 7, "hinvaH", "6.4.107"),
-    ("hi", "laT", 8, "hinmaH", "6.4.107"),
-    ("hi", "laN", 7, "ahinva", "6.4.107"),
-    ("hi", "laN", 8, "ahinma", "6.4.107"),
-    ("ri", "laT", 7, "riRvaH", "6.4.107"),
-    ("ri", "laT", 8, "riRmaH", "6.4.107"),
-    ("ri", "laN", 7, "ariRva", "6.4.107"),
-    ("ri", "laN", 8, "ariRma", "6.4.107"),
-    ("BU", "laN", 0, "aBavat", "8.4.56"),
-    ("nI", "laN", 0, "anayat", "8.4.56"),
-    ("ji", "laN", 0, "ajayat", "8.4.56"),
-    ("smf", "laN", 0, "asmarat", "8.4.56"),
-    ("paW", "laN", 0, "apaWat", "8.4.56"),
-    ("vad", "laN", 0, "avadat", "8.4.56"),
-    ("BU", "viDiliN", 0, "Bavet", "8.4.56"),
-    ("nI", "viDiliN", 0, "nayet", "8.4.56"),
-    ("ji", "viDiliN", 0, "jayet", "8.4.56"),
-    ("smf", "viDiliN", 0, "smaret", "8.4.56"),
-    ("paW", "viDiliN", 0, "paWet", "8.4.56"),
-    ("vad", "viDiliN", 0, "vadet", "8.4.56"),
-    ("div", "laN", 0, "adIvyat", "8.4.56"),
-    ("naS", "laN", 0, "anaSyat", "8.4.56"),
-    ("kup", "laN", 0, "akupyat", "8.4.56"),
-    ("tud", "laN", 0, "atudat", "8.4.56"),
-    ("liK", "laN", 0, "aliKat", "8.4.56"),
-    ("viS", "laN", 0, "aviSat", "8.4.56"),
-    ("div", "viDiliN", 0, "dIvyet", "8.4.56"),
-    ("naS", "viDiliN", 0, "naSyet", "8.4.56"),
-    ("kup", "viDiliN", 0, "kupyet", "8.4.56"),
-    ("tud", "viDiliN", 0, "tudet", "8.4.56"),
-    ("liK", "viDiliN", 0, "liKet", "8.4.56"),
-    ("viS", "viDiliN", 0, "viSet", "8.4.56"),
-    ("yA", "laN", 0, "ayAt", "8.4.56"),
-    ("vA", "laN", 0, "avAt", "8.4.56"),
-    ("yA", "viDiliN", 0, "yAyAt", "8.4.56"),
-    ("vA", "viDiliN", 0, "vAyAt", "8.4.56"),
-    ("ad", "laN", 0, "Adat", "8.4.56"),
-    ("ad", "viDiliN", 0, "adyAt", "8.4.56"),
-    ("kliS", "laN", 0, "akliSnAt", "8.4.56"),
-    ("kliS", "viDiliN", 0, "kliSnIyAt", "8.4.56"),
-    ("guD", "laN", 0, "aguDnAt", "8.4.56"),
-    ("guD", "viDiliN", 0, "guDnIyAt", "8.4.56"),
-    ("aS", "laN", 0, "ASnAt", "8.4.56"),
-    ("aS", "viDiliN", 0, "aSnIyAt", "8.4.56"),
-    ("muz", "laN", 0, "amuzRAt", "8.4.56"),
-    ("muz", "viDiliN", 0, "muzRIyAt", "8.4.56"),
-    ("vrI", "laN", 0, "avrIRAt", "8.4.56"),
-    ("vrI", "viDiliN", 0, "vrIRIyAt", "8.4.56"),
-    ("Ap", "laN", 0, "Apnot", "8.4.56"),
-    ("Ap", "viDiliN", 0, "ApnuyAt", "8.4.56"),
-    ("Sak", "laN", 0, "aSaknot", "8.4.56"),
-    ("Sak", "viDiliN", 0, "SaknuyAt", "8.4.56"),
-    ("hi", "laN", 0, "ahinot", "8.4.56"),
-    ("hi", "viDiliN", 0, "hinuyAt", "8.4.56"),
-    ("ri", "laN", 0, "ariRot", "8.4.56"),
-    ("ri", "viDiliN", 0, "riRuyAt", "8.4.56"),
-    ("BU", "loT", 0, "BavatAd", "7.1.35"),
-    ("BU", "loT", 0, "BavatAt", "7.1.35+8.4.56"),
-    ("BU", "loT", 3, "BavatAd", "7.1.35"),
-    ("BU", "loT", 3, "BavatAt", "7.1.35+8.4.56"),
-    ("nI", "loT", 0, "nayatAd", "7.1.35"),
-    ("nI", "loT", 0, "nayatAt", "7.1.35+8.4.56"),
-    ("nI", "loT", 3, "nayatAd", "7.1.35"),
-    ("nI", "loT", 3, "nayatAt", "7.1.35+8.4.56"),
-    ("ji", "loT", 0, "jayatAd", "7.1.35"),
-    ("ji", "loT", 0, "jayatAt", "7.1.35+8.4.56"),
-    ("ji", "loT", 3, "jayatAd", "7.1.35"),
-    ("ji", "loT", 3, "jayatAt", "7.1.35+8.4.56"),
-    ("smf", "loT", 0, "smaratAd", "7.1.35"),
-    ("smf", "loT", 0, "smaratAt", "7.1.35+8.4.56"),
-    ("smf", "loT", 3, "smaratAd", "7.1.35"),
-    ("smf", "loT", 3, "smaratAt", "7.1.35+8.4.56"),
-    ("paW", "loT", 0, "paWatAd", "7.1.35"),
-    ("paW", "loT", 0, "paWatAt", "7.1.35+8.4.56"),
-    ("paW", "loT", 3, "paWatAd", "7.1.35"),
-    ("paW", "loT", 3, "paWatAt", "7.1.35+8.4.56"),
-    ("vad", "loT", 0, "vadatAd", "7.1.35"),
-    ("vad", "loT", 0, "vadatAt", "7.1.35+8.4.56"),
-    ("vad", "loT", 3, "vadatAd", "7.1.35"),
-    ("vad", "loT", 3, "vadatAt", "7.1.35+8.4.56"),
-    ("div", "loT", 0, "dIvyatAd", "7.1.35"),
-    ("div", "loT", 0, "dIvyatAt", "7.1.35+8.4.56"),
-    ("div", "loT", 3, "dIvyatAd", "7.1.35"),
-    ("div", "loT", 3, "dIvyatAt", "7.1.35+8.4.56"),
-    ("naS", "loT", 0, "naSyatAd", "7.1.35"),
-    ("naS", "loT", 0, "naSyatAt", "7.1.35+8.4.56"),
-    ("naS", "loT", 3, "naSyatAd", "7.1.35"),
-    ("naS", "loT", 3, "naSyatAt", "7.1.35+8.4.56"),
-    ("kup", "loT", 0, "kupyatAd", "7.1.35"),
-    ("kup", "loT", 0, "kupyatAt", "7.1.35+8.4.56"),
-    ("kup", "loT", 3, "kupyatAd", "7.1.35"),
-    ("kup", "loT", 3, "kupyatAt", "7.1.35+8.4.56"),
-    ("tud", "loT", 0, "tudatAd", "7.1.35"),
-    ("tud", "loT", 0, "tudatAt", "7.1.35+8.4.56"),
-    ("tud", "loT", 3, "tudatAd", "7.1.35"),
-    ("tud", "loT", 3, "tudatAt", "7.1.35+8.4.56"),
-    ("liK", "loT", 0, "liKatAd", "7.1.35"),
-    ("liK", "loT", 0, "liKatAt", "7.1.35+8.4.56"),
-    ("liK", "loT", 3, "liKatAd", "7.1.35"),
-    ("liK", "loT", 3, "liKatAt", "7.1.35+8.4.56"),
-    ("viS", "loT", 0, "viSatAd", "7.1.35"),
-    ("viS", "loT", 0, "viSatAt", "7.1.35+8.4.56"),
-    ("viS", "loT", 3, "viSatAd", "7.1.35"),
-    ("viS", "loT", 3, "viSatAt", "7.1.35+8.4.56"),
-    ("yA", "loT", 0, "yAtAd", "7.1.35"),
-    ("yA", "loT", 0, "yAtAt", "7.1.35+8.4.56"),
-    ("yA", "loT", 3, "yAtAd", "7.1.35"),
-    ("yA", "loT", 3, "yAtAt", "7.1.35+8.4.56"),
-    ("vA", "loT", 0, "vAtAd", "7.1.35"),
-    ("vA", "loT", 0, "vAtAt", "7.1.35+8.4.56"),
-    ("vA", "loT", 3, "vAtAd", "7.1.35"),
-    ("vA", "loT", 3, "vAtAt", "7.1.35+8.4.56"),
-    ("ad", "loT", 0, "attAd", "7.1.35"),
-    ("ad", "loT", 0, "attAt", "7.1.35+8.4.56"),
-    ("ad", "loT", 3, "attAd", "7.1.35"),
-    ("ad", "loT", 3, "attAt", "7.1.35+8.4.56"),
-    ("kliS", "loT", 0, "kliSnItAd", "7.1.35"),
-    ("kliS", "loT", 0, "kliSnItAt", "7.1.35+8.4.56"),
-    ("kliS", "loT", 3, "kliSnItAd", "7.1.35"),
-    ("kliS", "loT", 3, "kliSnItAt", "7.1.35+8.4.56"),
-    ("guD", "loT", 0, "guDnItAd", "7.1.35"),
-    ("guD", "loT", 0, "guDnItAt", "7.1.35+8.4.56"),
-    ("guD", "loT", 3, "guDnItAd", "7.1.35"),
-    ("guD", "loT", 3, "guDnItAt", "7.1.35+8.4.56"),
-    ("aS", "loT", 0, "aSnItAd", "7.1.35"),
-    ("aS", "loT", 0, "aSnItAt", "7.1.35+8.4.56"),
-    ("aS", "loT", 3, "aSnItAd", "7.1.35"),
-    ("aS", "loT", 3, "aSnItAt", "7.1.35+8.4.56"),
-    ("muz", "loT", 0, "muzRItAd", "7.1.35"),
-    ("muz", "loT", 0, "muzRItAt", "7.1.35+8.4.56"),
-    ("muz", "loT", 3, "muzRItAd", "7.1.35"),
-    ("muz", "loT", 3, "muzRItAt", "7.1.35+8.4.56"),
-    ("vrI", "loT", 0, "vrIRItAd", "7.1.35"),
-    ("vrI", "loT", 0, "vrIRItAt", "7.1.35+8.4.56"),
-    ("vrI", "loT", 3, "vrIRItAd", "7.1.35"),
-    ("vrI", "loT", 3, "vrIRItAt", "7.1.35+8.4.56"),
-    ("Ap", "loT", 0, "ApnutAd", "7.1.35"),
-    ("Ap", "loT", 0, "ApnutAt", "7.1.35+8.4.56"),
-    ("Ap", "loT", 3, "ApnutAd", "7.1.35"),
-    ("Ap", "loT", 3, "ApnutAt", "7.1.35+8.4.56"),
-    ("Sak", "loT", 0, "SaknutAd", "7.1.35"),
-    ("Sak", "loT", 0, "SaknutAt", "7.1.35+8.4.56"),
-    ("Sak", "loT", 3, "SaknutAd", "7.1.35"),
-    ("Sak", "loT", 3, "SaknutAt", "7.1.35+8.4.56"),
-    ("hi", "loT", 0, "hinutAd", "7.1.35"),
-    ("hi", "loT", 0, "hinutAt", "7.1.35+8.4.56"),
-    ("hi", "loT", 3, "hinutAd", "7.1.35"),
-    ("hi", "loT", 3, "hinutAt", "7.1.35+8.4.56"),
-    ("ri", "loT", 0, "riRutAd", "7.1.35"),
-    ("ri", "loT", 0, "riRutAt", "7.1.35+8.4.56"),
-    ("ri", "loT", 3, "riRutAd", "7.1.35"),
-    ("ri", "loT", 3, "riRutAt", "7.1.35+8.4.56"),
-    ("yA", "laN", 2, "ayuH", "3.4.111"),
-    ("vA", "laN", 2, "avuH", "3.4.111"),
-    ("kft", "laT", 1, "kfntaH", "8.4.65"),
-    ("kft", "laT", 4, "kfnTaH", "8.4.65"),
-    ("kft", "laT", 5, "kfnTa", "8.4.65"),
-    ("kft", "laN", 0, "akfRat", "8.4.56"),
-    ("kft", "laN", 1, "akfntAm", "8.4.65"),
-    ("kft", "laN", 3, "akfRat", "8.4.56"),
-    ("kft", "laN", 3, "akfRaH", "8.2.75"),
-    ("kft", "laN", 4, "akfntam", "8.4.65"),
-    ("kft", "laN", 5, "akfnta", "8.4.65"),
-    ("kft", "loT", 0, "kfnttAd", "7.1.35"),
-    ("kft", "loT", 0, "kfntAd", "7.1.35+8.4.65"),
-    ("kft", "loT", 0, "kfnttAt", "7.1.35+8.4.56"),
-    ("kft", "loT", 0, "kfntAt", "7.1.35+8.4.65+8.4.56"),
-    ("kft", "loT", 1, "kfntAm", "8.4.65"),
-    ("kft", "loT", 3, "kfnDi", "8.4.65"),
-    ("kft", "loT", 3, "kfnttAd", "7.1.35"),
-    ("kft", "loT", 3, "kfntAd", "7.1.35+8.4.65"),
-    ("kft", "loT", 3, "kfnttAt", "7.1.35+8.4.56"),
-    ("kft", "loT", 3, "kfntAt", "7.1.35+8.4.65+8.4.56"),
-    ("kft", "loT", 4, "kfntam", "8.4.65"),
-    ("kft", "loT", 5, "kfnta", "8.4.65"),
-    ("kft", "viDiliN", 0, "kfntyAt", "8.4.56"),
-    ("his", "laN", 0, "ahinat", "8.4.56"),
-    ("his", "laN", 3, "ahinat", "8.4.56"),
-    ("his", "laN", 3, "ahinaH", "8.2.74"),
-    ("his", "loT", 0, "hiMstAd", "7.1.35"),
-    ("his", "loT", 0, "hiMstAt", "7.1.35+8.4.56"),
-    ("his", "loT", 3, "hiMstAd", "7.1.35"),
-    ("his", "loT", 3, "hiMstAt", "7.1.35+8.4.56"),
-    ("his", "viDiliN", 0, "hiMsyAt", "8.4.56"),
-    ("Kid", "laT", 0, "Kinte", "8.4.65"),
-    ("Kid", "laT", 5, "KinDve", "8.4.65"),
-    ("Kid", "laN", 0, "aKinta", "8.4.65"),
-    ("Kid", "laN", 3, "aKinTAH", "8.4.65"),
-    ("Kid", "laN", 5, "aKinDvam", "8.4.65"),
-    ("Kid", "loT", 0, "KintAm", "8.4.65"),
-    ("Kid", "loT", 5, "KinDvam", "8.4.65"),
-    ("Banj", "laN", 0, "aBanak", "8.4.56"),
-    ("Banj", "laN", 3, "aBanak", "8.4.56"),
-    ("Banj", "loT", 0, "BaNktAd", "7.1.35"),
-    ("Banj", "loT", 0, "BaNktAt", "7.1.35+8.4.56"),
-    ("Banj", "loT", 3, "BaNktAd", "7.1.35"),
-    ("Banj", "loT", 3, "BaNktAt", "7.1.35+8.4.56"),
-    ("Banj", "viDiliN", 0, "BaYjyAt", "8.4.56"),
-    ("piz", "laN", 0, "apinaw", "8.4.56"),
-    ("piz", "laN", 3, "apinaw", "8.4.56"),
-    ("piz", "loT", 0, "piMzwAd", "7.1.35"),
-    ("piz", "loT", 0, "piMzwAt", "7.1.35+8.4.56"),
-    ("piz", "loT", 3, "piRQi", "8.4.65"),
-    ("piz", "loT", 3, "piMzwAd", "7.1.35"),
-    ("piz", "loT", 3, "piMzwAt", "7.1.35+8.4.56"),
-    ("piz", "viDiliN", 0, "piMzyAt", "8.4.56"),
-    ("inD", "laT", 0, "inDe", "8.4.65"),
-    ("inD", "laT", 5, "inDve", "8.4.65"),
-    ("inD", "laN", 0, "EnDa", "8.4.65"),
-    ("inD", "laN", 3, "EnDAH", "8.4.65"),
-    ("inD", "laN", 5, "EnDvam", "8.4.65"),
-    ("inD", "loT", 0, "inDAm", "8.4.65"),
-    ("inD", "loT", 5, "inDvam", "8.4.65"),
+/// are uttama dvi and uttama bahu. `pada` names the block the row belongs
+/// to, same as `PARADIGM`'s column.
+const ALTERNATES: &[(&str, &str, Pada, usize, &str, &str)] = &[
+    ("hi", "laT", Pada::Parasmaipada, 7, "hinvaH", "6.4.107"),
+    ("hi", "laT", Pada::Parasmaipada, 8, "hinmaH", "6.4.107"),
+    ("hi", "laN", Pada::Parasmaipada, 7, "ahinva", "6.4.107"),
+    ("hi", "laN", Pada::Parasmaipada, 8, "ahinma", "6.4.107"),
+    ("ri", "laT", Pada::Parasmaipada, 7, "riRvaH", "6.4.107"),
+    ("ri", "laT", Pada::Parasmaipada, 8, "riRmaH", "6.4.107"),
+    ("ri", "laN", Pada::Parasmaipada, 7, "ariRva", "6.4.107"),
+    ("ri", "laN", Pada::Parasmaipada, 8, "ariRma", "6.4.107"),
+    ("BU", "laN", Pada::Parasmaipada, 0, "aBavat", "8.4.56"),
+    ("nI", "laN", Pada::Parasmaipada, 0, "anayat", "8.4.56"),
+    ("ji", "laN", Pada::Parasmaipada, 0, "ajayat", "8.4.56"),
+    ("smf", "laN", Pada::Parasmaipada, 0, "asmarat", "8.4.56"),
+    ("paW", "laN", Pada::Parasmaipada, 0, "apaWat", "8.4.56"),
+    ("vad", "laN", Pada::Parasmaipada, 0, "avadat", "8.4.56"),
+    ("BU", "viDiliN", Pada::Parasmaipada, 0, "Bavet", "8.4.56"),
+    ("nI", "viDiliN", Pada::Parasmaipada, 0, "nayet", "8.4.56"),
+    ("ji", "viDiliN", Pada::Parasmaipada, 0, "jayet", "8.4.56"),
+    ("smf", "viDiliN", Pada::Parasmaipada, 0, "smaret", "8.4.56"),
+    ("paW", "viDiliN", Pada::Parasmaipada, 0, "paWet", "8.4.56"),
+    ("vad", "viDiliN", Pada::Parasmaipada, 0, "vadet", "8.4.56"),
+    ("div", "laN", Pada::Parasmaipada, 0, "adIvyat", "8.4.56"),
+    ("naS", "laN", Pada::Parasmaipada, 0, "anaSyat", "8.4.56"),
+    ("kup", "laN", Pada::Parasmaipada, 0, "akupyat", "8.4.56"),
+    ("tud", "laN", Pada::Parasmaipada, 0, "atudat", "8.4.56"),
+    ("liK", "laN", Pada::Parasmaipada, 0, "aliKat", "8.4.56"),
+    ("viS", "laN", Pada::Parasmaipada, 0, "aviSat", "8.4.56"),
+    ("div", "viDiliN", Pada::Parasmaipada, 0, "dIvyet", "8.4.56"),
+    ("naS", "viDiliN", Pada::Parasmaipada, 0, "naSyet", "8.4.56"),
+    ("kup", "viDiliN", Pada::Parasmaipada, 0, "kupyet", "8.4.56"),
+    ("tud", "viDiliN", Pada::Parasmaipada, 0, "tudet", "8.4.56"),
+    ("liK", "viDiliN", Pada::Parasmaipada, 0, "liKet", "8.4.56"),
+    ("viS", "viDiliN", Pada::Parasmaipada, 0, "viSet", "8.4.56"),
+    ("yA", "laN", Pada::Parasmaipada, 0, "ayAt", "8.4.56"),
+    ("vA", "laN", Pada::Parasmaipada, 0, "avAt", "8.4.56"),
+    ("yA", "viDiliN", Pada::Parasmaipada, 0, "yAyAt", "8.4.56"),
+    ("vA", "viDiliN", Pada::Parasmaipada, 0, "vAyAt", "8.4.56"),
+    ("ad", "laN", Pada::Parasmaipada, 0, "Adat", "8.4.56"),
+    ("ad", "viDiliN", Pada::Parasmaipada, 0, "adyAt", "8.4.56"),
+    ("kliS", "laN", Pada::Parasmaipada, 0, "akliSnAt", "8.4.56"),
+    (
+        "kliS",
+        "viDiliN",
+        Pada::Parasmaipada,
+        0,
+        "kliSnIyAt",
+        "8.4.56",
+    ),
+    ("guD", "laN", Pada::Parasmaipada, 0, "aguDnAt", "8.4.56"),
+    (
+        "guD",
+        "viDiliN",
+        Pada::Parasmaipada,
+        0,
+        "guDnIyAt",
+        "8.4.56",
+    ),
+    ("aS", "laN", Pada::Parasmaipada, 0, "ASnAt", "8.4.56"),
+    ("aS", "viDiliN", Pada::Parasmaipada, 0, "aSnIyAt", "8.4.56"),
+    ("muz", "laN", Pada::Parasmaipada, 0, "amuzRAt", "8.4.56"),
+    (
+        "muz",
+        "viDiliN",
+        Pada::Parasmaipada,
+        0,
+        "muzRIyAt",
+        "8.4.56",
+    ),
+    ("vrI", "laN", Pada::Parasmaipada, 0, "avrIRAt", "8.4.56"),
+    (
+        "vrI",
+        "viDiliN",
+        Pada::Parasmaipada,
+        0,
+        "vrIRIyAt",
+        "8.4.56",
+    ),
+    ("Ap", "laN", Pada::Parasmaipada, 0, "Apnot", "8.4.56"),
+    ("Ap", "viDiliN", Pada::Parasmaipada, 0, "ApnuyAt", "8.4.56"),
+    ("Sak", "laN", Pada::Parasmaipada, 0, "aSaknot", "8.4.56"),
+    (
+        "Sak",
+        "viDiliN",
+        Pada::Parasmaipada,
+        0,
+        "SaknuyAt",
+        "8.4.56",
+    ),
+    ("hi", "laN", Pada::Parasmaipada, 0, "ahinot", "8.4.56"),
+    ("hi", "viDiliN", Pada::Parasmaipada, 0, "hinuyAt", "8.4.56"),
+    ("ri", "laN", Pada::Parasmaipada, 0, "ariRot", "8.4.56"),
+    ("ri", "viDiliN", Pada::Parasmaipada, 0, "riRuyAt", "8.4.56"),
+    ("BU", "loT", Pada::Parasmaipada, 0, "BavatAd", "7.1.35"),
+    (
+        "BU",
+        "loT",
+        Pada::Parasmaipada,
+        0,
+        "BavatAt",
+        "7.1.35+8.4.56",
+    ),
+    ("BU", "loT", Pada::Parasmaipada, 3, "BavatAd", "7.1.35"),
+    (
+        "BU",
+        "loT",
+        Pada::Parasmaipada,
+        3,
+        "BavatAt",
+        "7.1.35+8.4.56",
+    ),
+    ("nI", "loT", Pada::Parasmaipada, 0, "nayatAd", "7.1.35"),
+    (
+        "nI",
+        "loT",
+        Pada::Parasmaipada,
+        0,
+        "nayatAt",
+        "7.1.35+8.4.56",
+    ),
+    ("nI", "loT", Pada::Parasmaipada, 3, "nayatAd", "7.1.35"),
+    (
+        "nI",
+        "loT",
+        Pada::Parasmaipada,
+        3,
+        "nayatAt",
+        "7.1.35+8.4.56",
+    ),
+    ("ji", "loT", Pada::Parasmaipada, 0, "jayatAd", "7.1.35"),
+    (
+        "ji",
+        "loT",
+        Pada::Parasmaipada,
+        0,
+        "jayatAt",
+        "7.1.35+8.4.56",
+    ),
+    ("ji", "loT", Pada::Parasmaipada, 3, "jayatAd", "7.1.35"),
+    (
+        "ji",
+        "loT",
+        Pada::Parasmaipada,
+        3,
+        "jayatAt",
+        "7.1.35+8.4.56",
+    ),
+    ("smf", "loT", Pada::Parasmaipada, 0, "smaratAd", "7.1.35"),
+    (
+        "smf",
+        "loT",
+        Pada::Parasmaipada,
+        0,
+        "smaratAt",
+        "7.1.35+8.4.56",
+    ),
+    ("smf", "loT", Pada::Parasmaipada, 3, "smaratAd", "7.1.35"),
+    (
+        "smf",
+        "loT",
+        Pada::Parasmaipada,
+        3,
+        "smaratAt",
+        "7.1.35+8.4.56",
+    ),
+    ("paW", "loT", Pada::Parasmaipada, 0, "paWatAd", "7.1.35"),
+    (
+        "paW",
+        "loT",
+        Pada::Parasmaipada,
+        0,
+        "paWatAt",
+        "7.1.35+8.4.56",
+    ),
+    ("paW", "loT", Pada::Parasmaipada, 3, "paWatAd", "7.1.35"),
+    (
+        "paW",
+        "loT",
+        Pada::Parasmaipada,
+        3,
+        "paWatAt",
+        "7.1.35+8.4.56",
+    ),
+    ("vad", "loT", Pada::Parasmaipada, 0, "vadatAd", "7.1.35"),
+    (
+        "vad",
+        "loT",
+        Pada::Parasmaipada,
+        0,
+        "vadatAt",
+        "7.1.35+8.4.56",
+    ),
+    ("vad", "loT", Pada::Parasmaipada, 3, "vadatAd", "7.1.35"),
+    (
+        "vad",
+        "loT",
+        Pada::Parasmaipada,
+        3,
+        "vadatAt",
+        "7.1.35+8.4.56",
+    ),
+    ("div", "loT", Pada::Parasmaipada, 0, "dIvyatAd", "7.1.35"),
+    (
+        "div",
+        "loT",
+        Pada::Parasmaipada,
+        0,
+        "dIvyatAt",
+        "7.1.35+8.4.56",
+    ),
+    ("div", "loT", Pada::Parasmaipada, 3, "dIvyatAd", "7.1.35"),
+    (
+        "div",
+        "loT",
+        Pada::Parasmaipada,
+        3,
+        "dIvyatAt",
+        "7.1.35+8.4.56",
+    ),
+    ("naS", "loT", Pada::Parasmaipada, 0, "naSyatAd", "7.1.35"),
+    (
+        "naS",
+        "loT",
+        Pada::Parasmaipada,
+        0,
+        "naSyatAt",
+        "7.1.35+8.4.56",
+    ),
+    ("naS", "loT", Pada::Parasmaipada, 3, "naSyatAd", "7.1.35"),
+    (
+        "naS",
+        "loT",
+        Pada::Parasmaipada,
+        3,
+        "naSyatAt",
+        "7.1.35+8.4.56",
+    ),
+    ("kup", "loT", Pada::Parasmaipada, 0, "kupyatAd", "7.1.35"),
+    (
+        "kup",
+        "loT",
+        Pada::Parasmaipada,
+        0,
+        "kupyatAt",
+        "7.1.35+8.4.56",
+    ),
+    ("kup", "loT", Pada::Parasmaipada, 3, "kupyatAd", "7.1.35"),
+    (
+        "kup",
+        "loT",
+        Pada::Parasmaipada,
+        3,
+        "kupyatAt",
+        "7.1.35+8.4.56",
+    ),
+    ("tud", "loT", Pada::Parasmaipada, 0, "tudatAd", "7.1.35"),
+    (
+        "tud",
+        "loT",
+        Pada::Parasmaipada,
+        0,
+        "tudatAt",
+        "7.1.35+8.4.56",
+    ),
+    ("tud", "loT", Pada::Parasmaipada, 3, "tudatAd", "7.1.35"),
+    (
+        "tud",
+        "loT",
+        Pada::Parasmaipada,
+        3,
+        "tudatAt",
+        "7.1.35+8.4.56",
+    ),
+    ("liK", "loT", Pada::Parasmaipada, 0, "liKatAd", "7.1.35"),
+    (
+        "liK",
+        "loT",
+        Pada::Parasmaipada,
+        0,
+        "liKatAt",
+        "7.1.35+8.4.56",
+    ),
+    ("liK", "loT", Pada::Parasmaipada, 3, "liKatAd", "7.1.35"),
+    (
+        "liK",
+        "loT",
+        Pada::Parasmaipada,
+        3,
+        "liKatAt",
+        "7.1.35+8.4.56",
+    ),
+    ("viS", "loT", Pada::Parasmaipada, 0, "viSatAd", "7.1.35"),
+    (
+        "viS",
+        "loT",
+        Pada::Parasmaipada,
+        0,
+        "viSatAt",
+        "7.1.35+8.4.56",
+    ),
+    ("viS", "loT", Pada::Parasmaipada, 3, "viSatAd", "7.1.35"),
+    (
+        "viS",
+        "loT",
+        Pada::Parasmaipada,
+        3,
+        "viSatAt",
+        "7.1.35+8.4.56",
+    ),
+    ("yA", "loT", Pada::Parasmaipada, 0, "yAtAd", "7.1.35"),
+    ("yA", "loT", Pada::Parasmaipada, 0, "yAtAt", "7.1.35+8.4.56"),
+    ("yA", "loT", Pada::Parasmaipada, 3, "yAtAd", "7.1.35"),
+    ("yA", "loT", Pada::Parasmaipada, 3, "yAtAt", "7.1.35+8.4.56"),
+    ("vA", "loT", Pada::Parasmaipada, 0, "vAtAd", "7.1.35"),
+    ("vA", "loT", Pada::Parasmaipada, 0, "vAtAt", "7.1.35+8.4.56"),
+    ("vA", "loT", Pada::Parasmaipada, 3, "vAtAd", "7.1.35"),
+    ("vA", "loT", Pada::Parasmaipada, 3, "vAtAt", "7.1.35+8.4.56"),
+    ("ad", "loT", Pada::Parasmaipada, 0, "attAd", "7.1.35"),
+    ("ad", "loT", Pada::Parasmaipada, 0, "attAt", "7.1.35+8.4.56"),
+    ("ad", "loT", Pada::Parasmaipada, 3, "attAd", "7.1.35"),
+    ("ad", "loT", Pada::Parasmaipada, 3, "attAt", "7.1.35+8.4.56"),
+    ("kliS", "loT", Pada::Parasmaipada, 0, "kliSnItAd", "7.1.35"),
+    (
+        "kliS",
+        "loT",
+        Pada::Parasmaipada,
+        0,
+        "kliSnItAt",
+        "7.1.35+8.4.56",
+    ),
+    ("kliS", "loT", Pada::Parasmaipada, 3, "kliSnItAd", "7.1.35"),
+    (
+        "kliS",
+        "loT",
+        Pada::Parasmaipada,
+        3,
+        "kliSnItAt",
+        "7.1.35+8.4.56",
+    ),
+    ("guD", "loT", Pada::Parasmaipada, 0, "guDnItAd", "7.1.35"),
+    (
+        "guD",
+        "loT",
+        Pada::Parasmaipada,
+        0,
+        "guDnItAt",
+        "7.1.35+8.4.56",
+    ),
+    ("guD", "loT", Pada::Parasmaipada, 3, "guDnItAd", "7.1.35"),
+    (
+        "guD",
+        "loT",
+        Pada::Parasmaipada,
+        3,
+        "guDnItAt",
+        "7.1.35+8.4.56",
+    ),
+    ("aS", "loT", Pada::Parasmaipada, 0, "aSnItAd", "7.1.35"),
+    (
+        "aS",
+        "loT",
+        Pada::Parasmaipada,
+        0,
+        "aSnItAt",
+        "7.1.35+8.4.56",
+    ),
+    ("aS", "loT", Pada::Parasmaipada, 3, "aSnItAd", "7.1.35"),
+    (
+        "aS",
+        "loT",
+        Pada::Parasmaipada,
+        3,
+        "aSnItAt",
+        "7.1.35+8.4.56",
+    ),
+    ("muz", "loT", Pada::Parasmaipada, 0, "muzRItAd", "7.1.35"),
+    (
+        "muz",
+        "loT",
+        Pada::Parasmaipada,
+        0,
+        "muzRItAt",
+        "7.1.35+8.4.56",
+    ),
+    ("muz", "loT", Pada::Parasmaipada, 3, "muzRItAd", "7.1.35"),
+    (
+        "muz",
+        "loT",
+        Pada::Parasmaipada,
+        3,
+        "muzRItAt",
+        "7.1.35+8.4.56",
+    ),
+    ("vrI", "loT", Pada::Parasmaipada, 0, "vrIRItAd", "7.1.35"),
+    (
+        "vrI",
+        "loT",
+        Pada::Parasmaipada,
+        0,
+        "vrIRItAt",
+        "7.1.35+8.4.56",
+    ),
+    ("vrI", "loT", Pada::Parasmaipada, 3, "vrIRItAd", "7.1.35"),
+    (
+        "vrI",
+        "loT",
+        Pada::Parasmaipada,
+        3,
+        "vrIRItAt",
+        "7.1.35+8.4.56",
+    ),
+    ("Ap", "loT", Pada::Parasmaipada, 0, "ApnutAd", "7.1.35"),
+    (
+        "Ap",
+        "loT",
+        Pada::Parasmaipada,
+        0,
+        "ApnutAt",
+        "7.1.35+8.4.56",
+    ),
+    ("Ap", "loT", Pada::Parasmaipada, 3, "ApnutAd", "7.1.35"),
+    (
+        "Ap",
+        "loT",
+        Pada::Parasmaipada,
+        3,
+        "ApnutAt",
+        "7.1.35+8.4.56",
+    ),
+    ("Sak", "loT", Pada::Parasmaipada, 0, "SaknutAd", "7.1.35"),
+    (
+        "Sak",
+        "loT",
+        Pada::Parasmaipada,
+        0,
+        "SaknutAt",
+        "7.1.35+8.4.56",
+    ),
+    ("Sak", "loT", Pada::Parasmaipada, 3, "SaknutAd", "7.1.35"),
+    (
+        "Sak",
+        "loT",
+        Pada::Parasmaipada,
+        3,
+        "SaknutAt",
+        "7.1.35+8.4.56",
+    ),
+    ("hi", "loT", Pada::Parasmaipada, 0, "hinutAd", "7.1.35"),
+    (
+        "hi",
+        "loT",
+        Pada::Parasmaipada,
+        0,
+        "hinutAt",
+        "7.1.35+8.4.56",
+    ),
+    ("hi", "loT", Pada::Parasmaipada, 3, "hinutAd", "7.1.35"),
+    (
+        "hi",
+        "loT",
+        Pada::Parasmaipada,
+        3,
+        "hinutAt",
+        "7.1.35+8.4.56",
+    ),
+    ("ri", "loT", Pada::Parasmaipada, 0, "riRutAd", "7.1.35"),
+    (
+        "ri",
+        "loT",
+        Pada::Parasmaipada,
+        0,
+        "riRutAt",
+        "7.1.35+8.4.56",
+    ),
+    ("ri", "loT", Pada::Parasmaipada, 3, "riRutAd", "7.1.35"),
+    (
+        "ri",
+        "loT",
+        Pada::Parasmaipada,
+        3,
+        "riRutAt",
+        "7.1.35+8.4.56",
+    ),
+    ("yA", "laN", Pada::Parasmaipada, 2, "ayuH", "3.4.111"),
+    ("vA", "laN", Pada::Parasmaipada, 2, "avuH", "3.4.111"),
+    ("kft", "laT", Pada::Parasmaipada, 1, "kfntaH", "8.4.65"),
+    ("kft", "laT", Pada::Parasmaipada, 4, "kfnTaH", "8.4.65"),
+    ("kft", "laT", Pada::Parasmaipada, 5, "kfnTa", "8.4.65"),
+    ("kft", "laN", Pada::Parasmaipada, 0, "akfRat", "8.4.56"),
+    ("kft", "laN", Pada::Parasmaipada, 1, "akfntAm", "8.4.65"),
+    ("kft", "laN", Pada::Parasmaipada, 3, "akfRat", "8.4.56"),
+    ("kft", "laN", Pada::Parasmaipada, 3, "akfRaH", "8.2.75"),
+    ("kft", "laN", Pada::Parasmaipada, 4, "akfntam", "8.4.65"),
+    ("kft", "laN", Pada::Parasmaipada, 5, "akfnta", "8.4.65"),
+    ("kft", "loT", Pada::Parasmaipada, 0, "kfnttAd", "7.1.35"),
+    (
+        "kft",
+        "loT",
+        Pada::Parasmaipada,
+        0,
+        "kfntAd",
+        "7.1.35+8.4.65",
+    ),
+    (
+        "kft",
+        "loT",
+        Pada::Parasmaipada,
+        0,
+        "kfnttAt",
+        "7.1.35+8.4.56",
+    ),
+    (
+        "kft",
+        "loT",
+        Pada::Parasmaipada,
+        0,
+        "kfntAt",
+        "7.1.35+8.4.65+8.4.56",
+    ),
+    ("kft", "loT", Pada::Parasmaipada, 1, "kfntAm", "8.4.65"),
+    ("kft", "loT", Pada::Parasmaipada, 3, "kfnDi", "8.4.65"),
+    ("kft", "loT", Pada::Parasmaipada, 3, "kfnttAd", "7.1.35"),
+    (
+        "kft",
+        "loT",
+        Pada::Parasmaipada,
+        3,
+        "kfntAd",
+        "7.1.35+8.4.65",
+    ),
+    (
+        "kft",
+        "loT",
+        Pada::Parasmaipada,
+        3,
+        "kfnttAt",
+        "7.1.35+8.4.56",
+    ),
+    (
+        "kft",
+        "loT",
+        Pada::Parasmaipada,
+        3,
+        "kfntAt",
+        "7.1.35+8.4.65+8.4.56",
+    ),
+    ("kft", "loT", Pada::Parasmaipada, 4, "kfntam", "8.4.65"),
+    ("kft", "loT", Pada::Parasmaipada, 5, "kfnta", "8.4.65"),
+    ("kft", "viDiliN", Pada::Parasmaipada, 0, "kfntyAt", "8.4.56"),
+    ("his", "laN", Pada::Parasmaipada, 0, "ahinat", "8.4.56"),
+    ("his", "laN", Pada::Parasmaipada, 3, "ahinat", "8.4.56"),
+    ("his", "laN", Pada::Parasmaipada, 3, "ahinaH", "8.2.74"),
+    ("his", "loT", Pada::Parasmaipada, 0, "hiMstAd", "7.1.35"),
+    (
+        "his",
+        "loT",
+        Pada::Parasmaipada,
+        0,
+        "hiMstAt",
+        "7.1.35+8.4.56",
+    ),
+    ("his", "loT", Pada::Parasmaipada, 3, "hiMstAd", "7.1.35"),
+    (
+        "his",
+        "loT",
+        Pada::Parasmaipada,
+        3,
+        "hiMstAt",
+        "7.1.35+8.4.56",
+    ),
+    ("his", "viDiliN", Pada::Parasmaipada, 0, "hiMsyAt", "8.4.56"),
+    ("Kid", "laT", Pada::Atmanepada, 0, "Kinte", "8.4.65"),
+    ("Kid", "laT", Pada::Atmanepada, 5, "KinDve", "8.4.65"),
+    ("Kid", "laN", Pada::Atmanepada, 0, "aKinta", "8.4.65"),
+    ("Kid", "laN", Pada::Atmanepada, 3, "aKinTAH", "8.4.65"),
+    ("Kid", "laN", Pada::Atmanepada, 5, "aKinDvam", "8.4.65"),
+    ("Kid", "loT", Pada::Atmanepada, 0, "KintAm", "8.4.65"),
+    ("Kid", "loT", Pada::Atmanepada, 5, "KinDvam", "8.4.65"),
+    ("Banj", "laN", Pada::Parasmaipada, 0, "aBanak", "8.4.56"),
+    ("Banj", "laN", Pada::Parasmaipada, 3, "aBanak", "8.4.56"),
+    ("Banj", "loT", Pada::Parasmaipada, 0, "BaNktAd", "7.1.35"),
+    (
+        "Banj",
+        "loT",
+        Pada::Parasmaipada,
+        0,
+        "BaNktAt",
+        "7.1.35+8.4.56",
+    ),
+    ("Banj", "loT", Pada::Parasmaipada, 3, "BaNktAd", "7.1.35"),
+    (
+        "Banj",
+        "loT",
+        Pada::Parasmaipada,
+        3,
+        "BaNktAt",
+        "7.1.35+8.4.56",
+    ),
+    (
+        "Banj",
+        "viDiliN",
+        Pada::Parasmaipada,
+        0,
+        "BaYjyAt",
+        "8.4.56",
+    ),
+    ("piz", "laN", Pada::Parasmaipada, 0, "apinaw", "8.4.56"),
+    ("piz", "laN", Pada::Parasmaipada, 3, "apinaw", "8.4.56"),
+    ("piz", "loT", Pada::Parasmaipada, 0, "piMzwAd", "7.1.35"),
+    (
+        "piz",
+        "loT",
+        Pada::Parasmaipada,
+        0,
+        "piMzwAt",
+        "7.1.35+8.4.56",
+    ),
+    ("piz", "loT", Pada::Parasmaipada, 3, "piRQi", "8.4.65"),
+    ("piz", "loT", Pada::Parasmaipada, 3, "piMzwAd", "7.1.35"),
+    (
+        "piz",
+        "loT",
+        Pada::Parasmaipada,
+        3,
+        "piMzwAt",
+        "7.1.35+8.4.56",
+    ),
+    ("piz", "viDiliN", Pada::Parasmaipada, 0, "piMzyAt", "8.4.56"),
+    ("inD", "laT", Pada::Atmanepada, 0, "inDe", "8.4.65"),
+    ("inD", "laT", Pada::Atmanepada, 5, "inDve", "8.4.65"),
+    ("inD", "laN", Pada::Atmanepada, 0, "EnDa", "8.4.65"),
+    ("inD", "laN", Pada::Atmanepada, 3, "EnDAH", "8.4.65"),
+    ("inD", "laN", Pada::Atmanepada, 5, "EnDvam", "8.4.65"),
+    ("inD", "loT", Pada::Atmanepada, 0, "inDAm", "8.4.65"),
+    ("inD", "loT", Pada::Atmanepada, 5, "inDvam", "8.4.65"),
+    ("ruD", "laT", Pada::Parasmaipada, 1, "runDaH", "8.4.65"),
+    ("ruD", "laT", Pada::Parasmaipada, 4, "runDaH", "8.4.65"),
+    ("ruD", "laT", Pada::Parasmaipada, 5, "runDa", "8.4.65"),
+    ("ruD", "laN", Pada::Parasmaipada, 0, "aruRat", "8.4.56"),
+    ("ruD", "laN", Pada::Parasmaipada, 1, "arunDAm", "8.4.65"),
+    ("ruD", "laN", Pada::Parasmaipada, 3, "aruRat", "8.4.56"),
+    ("ruD", "laN", Pada::Parasmaipada, 3, "aruRaH", "8.2.75"),
+    ("ruD", "laN", Pada::Parasmaipada, 4, "arunDam", "8.4.65"),
+    ("ruD", "laN", Pada::Parasmaipada, 5, "arunDa", "8.4.65"),
+    ("ruD", "loT", Pada::Parasmaipada, 0, "rundDAd", "7.1.35"),
+    (
+        "ruD",
+        "loT",
+        Pada::Parasmaipada,
+        0,
+        "runDAd",
+        "7.1.35+8.4.65",
+    ),
+    (
+        "ruD",
+        "loT",
+        Pada::Parasmaipada,
+        0,
+        "rundDAt",
+        "7.1.35+8.4.56",
+    ),
+    (
+        "ruD",
+        "loT",
+        Pada::Parasmaipada,
+        0,
+        "runDAt",
+        "7.1.35+8.4.65+8.4.56",
+    ),
+    ("ruD", "loT", Pada::Parasmaipada, 1, "runDAm", "8.4.65"),
+    ("ruD", "loT", Pada::Parasmaipada, 3, "runDi", "8.4.65"),
+    ("ruD", "loT", Pada::Parasmaipada, 3, "rundDAd", "7.1.35"),
+    (
+        "ruD",
+        "loT",
+        Pada::Parasmaipada,
+        3,
+        "runDAd",
+        "7.1.35+8.4.65",
+    ),
+    (
+        "ruD",
+        "loT",
+        Pada::Parasmaipada,
+        3,
+        "rundDAt",
+        "7.1.35+8.4.56",
+    ),
+    (
+        "ruD",
+        "loT",
+        Pada::Parasmaipada,
+        3,
+        "runDAt",
+        "7.1.35+8.4.65+8.4.56",
+    ),
+    ("ruD", "loT", Pada::Parasmaipada, 4, "runDam", "8.4.65"),
+    ("ruD", "loT", Pada::Parasmaipada, 5, "runDa", "8.4.65"),
+    ("ruD", "viDiliN", Pada::Parasmaipada, 0, "runDyAt", "8.4.56"),
+    ("ruD", "laT", Pada::Atmanepada, 0, "runDe", "8.4.65"),
+    ("ruD", "laT", Pada::Atmanepada, 5, "runDve", "8.4.65"),
+    ("ruD", "laN", Pada::Atmanepada, 0, "arunDa", "8.4.65"),
+    ("ruD", "laN", Pada::Atmanepada, 3, "arunDAH", "8.4.65"),
+    ("ruD", "laN", Pada::Atmanepada, 5, "arunDvam", "8.4.65"),
+    ("ruD", "loT", Pada::Atmanepada, 0, "runDAm", "8.4.65"),
+    ("ruD", "loT", Pada::Atmanepada, 5, "runDvam", "8.4.65"),
 ];
 
 fn lan_a_form(id: &str, pu: Purusha, va: Vacana) -> String {
@@ -2315,7 +3101,7 @@ fn vowel_initial_roots_take_at_not_a() {
 #[test]
 fn every_form_validates_and_matches() {
     let engine = Panini::new();
-    for (root, lakara, forms) in PARADIGM {
+    for (root, lakara, row_pada, forms) in PARADIGM {
         // `PARADIGM`'s first column is a `Dhatu::id` (gaṇa-qualified, so the
         // two √aś rows stay distinct: `aS.5` vs `aS`), but `Analysis::dhatu`
         // reports the surface `code` (deliberately not unique — it's a
@@ -2323,9 +3109,13 @@ fn every_form_validates_and_matches() {
         // each other rather than compared directly. Because both √aś rows
         // share `code == "aS"`, matching on `code` alone would let a
         // mis-transcribed row silently bind to the WRONG root's forms as
-        // long as the two roots' surfaces happen to be disjoint; `pada`
-        // differs between the two (kryādi's is parasmaipada, svādi's is
-        // ātmanepada), so pinning it too closes that hole.
+        // long as the two roots' surfaces happen to be disjoint. Comparing
+        // against `row_pada` — the row's own declared pada — rather than
+        // `d.pada.padas()[0]` pins the row's claim, not the root's: it still
+        // closes the √aś hole (kryādi's is parasmaipada, svādi's is
+        // ātmanepada), and it is the form that also works once a root's
+        // `PadaAssignment` is `Ubhayapada` and `padas()[0]` alone can no
+        // longer stand in for "the pada this block is for".
         let d = dhatus().iter().find(|d| d.id == *root).unwrap();
         for expected in forms {
             let r = engine.check(expected);
@@ -2336,7 +3126,7 @@ fn every_form_validates_and_matches() {
             assert!(
                 r.analyses.iter().any(|a| a.form_slp1 == *expected
                     && a.dhatu == d.code
-                    && a.pada == d.pada
+                    && a.pada == *row_pada
                     && panini::lakara_name(a.lakara) == *lakara),
                 "no {lakara} analysis of {root} produced {expected}"
             );
@@ -2347,11 +3137,12 @@ fn every_form_validates_and_matches() {
 /// Every alternate must itself check out as a real form of the root and
 /// lakāra it is filed under — same `Dhatu::id` → `code` resolution
 /// `every_form_validates_and_matches` uses, since `Analysis::dhatu` reports
-/// the non-unique surface `code`.
+/// the non-unique surface `code`. Pinned against the row's own `pada`, for
+/// the same reason `every_form_validates_and_matches` is.
 #[test]
 fn every_alternate_validates_and_matches() {
     let engine = Panini::new();
-    for (root, lakara, _cell, form, _key) in ALTERNATES {
+    for (root, lakara, row_pada, _cell, form, _key) in ALTERNATES {
         let d = dhatus().iter().find(|d| d.id == *root).unwrap();
         let r = engine.check(form);
         assert!(
@@ -2361,29 +3152,31 @@ fn every_alternate_validates_and_matches() {
         assert!(
             r.analyses.iter().any(|a| a.form_slp1 == *form
                 && a.dhatu == d.code
-                && a.pada == d.pada
+                && a.pada == *row_pada
                 && panini::lakara_name(a.lakara) == *lakara),
             "no {lakara} analysis of {root} produced alternate {form}"
         );
     }
 }
 
-/// `derivation_set_is_exactly_pinned`'s `(r, l, c, _, _)` filter and
+/// `derivation_set_is_exactly_pinned`'s `(r, l, p, c, _, _)` filter and
 /// `every_alternate_validates_and_matches`'s `_cell` both silently ignore a
-/// row whose `cell` is out of range or whose `(root, lakara)` is mistyped —
-/// neither assertion would ever touch the cell such a row meant to name.
-/// This closes that: every `ALTERNATES` row must name a real cell of a real
-/// `PARADIGM` block.
+/// row whose `cell` is out of range or whose `(root, lakara, pada)` is
+/// mistyped — neither assertion would ever touch the cell such a row meant
+/// to name. This closes that: every `ALTERNATES` row must name a real cell
+/// of a real `PARADIGM` block, pada included.
 #[test]
 fn every_alternate_names_a_real_cell() {
-    for (root, lakara, cell, form, _key) in ALTERNATES {
+    for (root, lakara, pada, cell, form, _key) in ALTERNATES {
         assert!(
             *cell < 9,
             "alternate {form} ({root} {lakara}) has out-of-range cell {cell}"
         );
         assert!(
-            PARADIGM.iter().any(|(r, l, _)| r == root && l == lakara),
-            "alternate {form} names {root} {lakara}, which is not a PARADIGM block"
+            PARADIGM
+                .iter()
+                .any(|(r, l, p, _)| r == root && l == lakara && p == pada),
+            "alternate {form} names {root} {lakara} {pada:?}, which is not a PARADIGM block"
         );
     }
 }
@@ -2396,21 +3189,21 @@ const VIKALPA_RULES: &[&str] = &[
     "7.1.35", "3.4.111", "6.4.107", "8.2.74", "8.2.75", "8.4.65", "8.4.56",
 ];
 
-/// `ALTERNATES` is otherwise 213 bare strings, and a string can be right for
+/// `ALTERNATES` is otherwise 242 bare strings, and a string can be right for
 /// the wrong reason — `BavatAt` is a real form whether or not 8.4.56 is what
 /// produced it. This ties each row to the grammar: find the branch that
 /// derives the row's form, intersect its log with the optional-rule set, and
 /// require exactly the rules the row claims.
 #[test]
 fn every_alternate_names_the_vikalpa_rules_that_produced_it() {
-    for (root, lakara, cell, form, key) in ALTERNATES {
+    for (root, lakara, pada, cell, form, key) in ALTERNATES {
         let d = dhatus().iter().find(|d| d.id == *root).unwrap();
         let (pu, va) = CELLS[*cell];
         let lak = *LAKARA_BY_NAME
             .iter()
             .find_map(|(n, l)| (n == lakara).then_some(l))
             .unwrap();
-        let branch = derive(d, lak, d.pada, pu, va)
+        let branch = derive(d, lak, *pada, pu, va)
             .into_iter()
             .find(|p| !p.blocked && p.text() == *form)
             .unwrap_or_else(|| panic!("no branch of {root} {lakara} cell {cell} derives {form}"));
@@ -2436,7 +3229,7 @@ fn every_alternate_names_the_vikalpa_rules_that_produced_it() {
 /// derives must be EXACTLY its pinned form plus its pinned alternates.
 #[test]
 fn derivation_set_is_exactly_pinned() {
-    for (root, lakara, forms) in PARADIGM {
+    for (root, lakara, row_pada, forms) in PARADIGM {
         let d = dhatus().iter().find(|d| d.id == *root).unwrap();
         for (cell, expected) in forms.iter().enumerate() {
             let (pu, va) = CELLS[cell];
@@ -2445,7 +3238,7 @@ fn derivation_set_is_exactly_pinned() {
                 .find_map(|(n, l)| (n == lakara).then_some(l))
                 .unwrap();
 
-            let branches = derive(d, lak, d.pada, pu, va);
+            let branches = derive(d, lak, *row_pada, pu, va);
             assert_eq!(
                 branches[0].text(),
                 *expected,
@@ -2463,8 +3256,10 @@ fn derivation_set_is_exactly_pinned() {
             want.extend(
                 ALTERNATES
                     .iter()
-                    .filter(|(r, l, c, _, _)| r == root && l == lakara && *c == cell)
-                    .map(|(_, _, _, f, _)| (*f).to_string()),
+                    .filter(|(r, l, p, c, _, _)| {
+                        r == root && l == lakara && p == row_pada && *c == cell
+                    })
+                    .map(|(_, _, _, _, f, _)| (*f).to_string()),
             );
             want.sort();
 
@@ -2483,35 +3278,43 @@ fn derivation_set_is_exactly_pinned() {
 /// design-time vidyut-prakriya audit predicted for the two conventions the
 /// svādi slice retired (7.1.35 tātaṅ, 8.4.56 pausal cartva), the one audited
 /// divergence it resolved (3.4.111 Śākaṭāyana's jus), the three roots added
-/// in rudhādi 7a (kft, his, Kid), and — new in rudhādi 7b — three more
-/// (Banj, piz, inD), all six of which fork in all four lakāras, not just
-/// loṭ and laṅ: laṭ (kft cells 1/4/5, Kid cells 0/5, and inD cells 0/5, on
-/// 8.4.65), laṅ (on 8.4.65, the 8.2.74/8.2.75 ru alternation, and — new in
-/// 7b — the 8.2.23-above-8.2.41 śa-luk jaśtva 8.4.56 branch), loṭ (on
-/// 7.1.35/8.4.65/8.4.56, stacking up to three deep, and — new in 7b — piṣ's
-/// loṭ madhyama eka, which stacks 8.4.65 alongside 7.1.35/8.4.56 four deep),
-/// and vidhiliṅ (kft/his/Banj/piz cell 0, on 8.4.56): 1728 cells total (192
-/// root×lakāra blocks × 9), of which 1579 hold exactly one form, 91 hold
-/// two, 55 hold three, one holds four (piṣ's loṭ madhyama eka, the
-/// deepest fork added in 7b), and — the sharpest branch-count witness in
-/// the repo, per `docs/ARCHITECTURE.md` — exactly one holds five (√kṛt's
-/// loṭ prathama eka) and one holds six (√kṛt's loṭ madhyama eka,
-/// `kfndDi`/`kfnDi`'s cell). `ALTERNATES` itself has 213 rows, keyed 60
-/// `8.4.56`, 56 `7.1.35`, 56 `7.1.35+8.4.56`, 2 `3.4.111`, 8 `6.4.107`, 25
-/// `8.4.65`, 1 `8.2.75`, 1 `8.2.74`, 2 `7.1.35+8.4.65`, and 2
-/// `7.1.35+8.4.65+8.4.56` — the assertions below are complete. The audit
-/// probe that produced the original numbers ran against a vidyut-prakriya
-/// checkout during design; slice 9's cross-implementation audit re-ran the
-/// full check against a scratchpad vidyut-prakriya checkout across all 1620
-/// pre-7b cells with zero differences, and every 7b form was cross-checked
-/// the same way during this slice's design, so the numbers are re-verified
-/// as well as pinned, even though that probe's source is deliberately not
-/// committed to this repo (it is throwaway verification tooling, not
-/// shipped code) — this test is what keeps the numbers true day to day.
+/// in rudhādi 7a (kft, his, Kid), three more added in rudhādi 7b (Banj, piz,
+/// inD), and — new in the ubhayapada 1.3.72 slice — √rudh (ruD), pinned in
+/// both padas: every one of the seven rudhādi roots forks in both loṭ and
+/// laṅ, and two of them — kft and ruD — fork in all four lakāras: laṭ (kft
+/// cells 1/4/5, Kid cells 0/5, inD cells 0/5, and — new in this slice — ruD
+/// parasmaipada cells 1/4/5 and ātmanepada cells 0/5, all on 8.4.65), laṅ (on
+/// 8.4.65, the 8.2.74/8.2.75 ru alternation, and the 8.2.23-above-8.2.41
+/// śa-luk jaśtva 8.4.56 branch), loṭ (on 7.1.35/8.4.65/8.4.56, stacking up to
+/// three deep, and piṣ's loṭ madhyama eka, which stacks 8.4.65 alongside
+/// 7.1.35/8.4.56 four deep), and vidhiliṅ (kft/his/Banj/piz/ruD cell 0, on
+/// 8.4.56 — Kid and inD do not fork here): 1800 cells total (200 root×lakāra
+/// blocks × 9), of which 1630 hold exactly one form, 109 hold two, 56 hold
+/// three, one holds four (piṣ's loṭ madhyama eka, the deepest fork added in
+/// 7b), and — the sharpest branch-count witnesses in the repo, per
+/// `docs/ARCHITECTURE.md` — exactly two hold five (√kṛt's loṭ prathama eka,
+/// and ruD's loṭ parasmaipada prathama eka) and two hold six (√kṛt's loṭ
+/// madhyama eka, `kfndDi`/`kfnDi`'s cell, and — new in this slice — ruD's
+/// loṭ parasmaipada madhyama eka, `rundDi`/`runDi`/`rundDAd`/`runDAd`/
+/// `rundDAt`/`runDAt`, tying √kṛt's record with the same k = 3
+/// (7.1.35, 8.4.65, 8.4.56) against a 2³ bound of eight). `ALTERNATES`
+/// itself has 242 rows, keyed 63 `8.4.56`, 58 `7.1.35`, 58 `7.1.35+8.4.56`,
+/// 2 `3.4.111`, 8 `6.4.107`, 42 `8.4.65`, 2 `8.2.75`, 1 `8.2.74`, 4
+/// `7.1.35+8.4.65`, and 4 `7.1.35+8.4.65+8.4.56` — the assertions below are
+/// complete. The audit probe that produced the original numbers ran against
+/// a vidyut-prakriya checkout during design; slice 9's cross-implementation
+/// audit re-ran the full check against a scratchpad vidyut-prakriya checkout
+/// across all 1620 pre-7b cells with zero differences, every 7b form was
+/// cross-checked the same way during that slice's design, and this slice's
+/// √rudh forms were audited against a vidyut-prakriya checkout at commit
+/// 8da2f90 the same way, so the numbers are re-verified as well as pinned,
+/// even though that probe's source is deliberately not committed to this
+/// repo (it is throwaway verification tooling, not shipped code) — this
+/// test is what keeps the numbers true day to day.
 #[test]
 fn derivation_set_shape_matches_the_audited_numbers() {
     let total_cells = PARADIGM.len() * 9;
-    assert_eq!(total_cells, 1728, "192 root×lakāra blocks × 9 cells each");
+    assert_eq!(total_cells, 1800, "200 root×lakāra blocks × 9 cells each");
 
     let mut ones = 0usize;
     let mut twos = 0usize;
@@ -2519,11 +3322,13 @@ fn derivation_set_shape_matches_the_audited_numbers() {
     let mut fours = 0usize;
     let mut fives = 0usize;
     let mut sixes = 0usize;
-    for (root, lakara, _forms) in PARADIGM {
+    for (root, lakara, row_pada, _forms) in PARADIGM {
         for cell in 0..9usize {
             let alt_count = ALTERNATES
                 .iter()
-                .filter(|(r, l, c, _, _)| r == root && l == lakara && *c == cell)
+                .filter(|(r, l, p, c, _, _)| {
+                    r == root && l == lakara && p == row_pada && *c == cell
+                })
                 .count();
             match 1 + alt_count {
                 1 => ones += 1,
@@ -2536,32 +3341,38 @@ fn derivation_set_shape_matches_the_audited_numbers() {
             }
         }
     }
-    assert_eq!(ones, 1579, "one-form cells");
-    assert_eq!(twos, 91, "two-form cells");
-    assert_eq!(threes, 55, "three-form cells");
+    assert_eq!(ones, 1630, "one-form cells");
+    assert_eq!(twos, 109, "two-form cells");
+    assert_eq!(threes, 56, "three-form cells");
     assert_eq!(fours, 1, "four-form cells — piṣ's loṭ madhyama eka");
-    assert_eq!(fives, 1, "five-form cells — kft loṭ prathama eka");
-    assert_eq!(sixes, 1, "six-form cells — kft loṭ madhyama eka");
+    assert_eq!(
+        fives, 2,
+        "five-form cells — kft loṭ prathama eka and ruD loṭ parasmaipada prathama eka"
+    );
+    assert_eq!(
+        sixes, 2,
+        "six-form cells — kft loṭ madhyama eka and ruD loṭ parasmaipada madhyama eka"
+    );
 
-    assert_eq!(ALTERNATES.len(), 213, "ALTERNATES row count");
+    assert_eq!(ALTERNATES.len(), 242, "ALTERNATES row count");
     let key_count = |key: &str| {
         ALTERNATES
             .iter()
-            .filter(|(_, _, _, _, k)| *k == key)
+            .filter(|(_, _, _, _, _, k)| *k == key)
             .count()
     };
-    assert_eq!(key_count("8.4.56"), 60, "8.4.56-only alternates");
-    assert_eq!(key_count("7.1.35"), 56, "7.1.35-only alternates");
-    assert_eq!(key_count("7.1.35+8.4.56"), 56, "7.1.35+8.4.56 alternates");
+    assert_eq!(key_count("8.4.56"), 63, "8.4.56-only alternates");
+    assert_eq!(key_count("7.1.35"), 58, "7.1.35-only alternates");
+    assert_eq!(key_count("7.1.35+8.4.56"), 58, "7.1.35+8.4.56 alternates");
     assert_eq!(key_count("3.4.111"), 2, "3.4.111 alternates");
     assert_eq!(key_count("6.4.107"), 8, "6.4.107 alternates");
-    assert_eq!(key_count("8.4.65"), 25, "8.4.65-only alternates");
-    assert_eq!(key_count("8.2.75"), 1, "8.2.75-only alternates");
+    assert_eq!(key_count("8.4.65"), 42, "8.4.65-only alternates");
+    assert_eq!(key_count("8.2.75"), 2, "8.2.75-only alternates");
     assert_eq!(key_count("8.2.74"), 1, "8.2.74-only alternates");
-    assert_eq!(key_count("7.1.35+8.4.65"), 2, "7.1.35+8.4.65 alternates");
+    assert_eq!(key_count("7.1.35+8.4.65"), 4, "7.1.35+8.4.65 alternates");
     assert_eq!(
         key_count("7.1.35+8.4.65+8.4.56"),
-        2,
+        4,
         "7.1.35+8.4.65+8.4.56 alternates"
     );
 }
@@ -2576,34 +3387,46 @@ fn paradigm_covers_every_enumerable_cell() {
     // adādi × vidhiliṅ was gated in slice 5a and ungated in slice 5b; √śī was
     // gated in slice 5f task 1 and ungated here. There are no gated cells any
     // more. This constant stays (empty) so the two assertions below keep
-    // documenting that EVERY enumerable (root, lakara) pair must be pinned in
-    // PARADIGM — a future partial slice may repopulate it, but it must never
-    // silently hide a missing golden block.
-    const GATED: &[(&str, &str)] = &[];
+    // documenting that EVERY enumerable (root, lakara, pada) triple must be
+    // pinned in PARADIGM — a future partial slice may repopulate it, but it
+    // must never silently hide a missing golden block.
+    const GATED: &[(&str, &str, Pada)] = &[];
 
-    let pinned: Vec<(&str, &str)> = PARADIGM.iter().map(|(r, l, _)| (*r, *l)).collect();
-    let mut unpinned: Vec<(&str, &str)> = Vec::new();
+    let pinned: Vec<(&str, &str, Pada)> =
+        PARADIGM.iter().map(|(r, l, p, _)| (*r, *l, *p)).collect();
+    let mut unpinned: Vec<(&str, &str, Pada)> = Vec::new();
     for d in dhatus() {
         for &lakara in panini_analyze::LAKARAS {
-            let pair = (d.id, panini::lakara_name(lakara));
-            if !pinned.contains(&pair) {
-                unpinned.push(pair);
+            for &pada in d.pada.padas() {
+                let triple = (d.id, panini::lakara_name(lakara), pada);
+                if !pinned.contains(&triple) {
+                    unpinned.push(triple);
+                }
             }
         }
     }
-    unpinned.sort_unstable();
+    // `Pada` has no `Ord` of its own (`Context.pada` never needs to be
+    // sorted); `pada_name` gives a stable, already-public key to sort by.
+    fn sort_key<'a>(t: &(&'a str, &'a str, Pada)) -> (&'a str, &'a str, &'static str) {
+        (t.0, t.1, panini::pada_name(t.2))
+    }
+    unpinned.sort_unstable_by_key(sort_key);
     let mut gated = GATED.to_vec();
-    gated.sort_unstable();
+    gated.sort_unstable_by_key(sort_key);
     assert_eq!(
         unpinned, gated,
-        "every enumerable (root, lakara) pair needs golden rows in PARADIGM \
+        "every enumerable (root, lakara, pada) triple needs golden rows in PARADIGM \
          (or an explicit entry in GATED, for a cell deliberately withheld from golden coverage)"
     );
     // Catches a duplicated PARADIGM block masking a missing one above.
+    let enumerable: usize = dhatus()
+        .iter()
+        .map(|d| d.pada.padas().len() * panini_analyze::LAKARAS.len())
+        .sum();
     assert_eq!(
         PARADIGM.len() + GATED.len(),
-        dhatus().len() * panini_analyze::LAKARAS.len(),
-        "PARADIGM has a duplicate or stale (root, lakara) block"
+        enumerable,
+        "PARADIGM has a duplicate or stale (root, lakara, pada) block"
     );
 }
 
@@ -2622,8 +3445,10 @@ fn known_nonforms_are_invalid() {
         "gacCati",
         "Bavati123",
         "tiRRati",
-        // Wrong pada: the root's pada tag gates the whole derivation
-        // (1.3.12 / 1.3.78) and the analyzer proposes only the tagged pada.
+        // Wrong pada: the root's pada assignment gates the whole derivation
+        // (1.3.12 / 1.3.72 / 1.3.78) and the analyzer proposes exactly the
+        // padas that assignment admits — one each for the single-pada roots
+        // below, both for an ubhayapadī root like √rudh.
         "laBati", // atmanepadin root with a parasmaipada ending
         "Bavate", // parasmaipada root with an atmanepada ending
         "eDati",  // vowel-initial atmanepadin root, parasmaipada ending
@@ -2647,10 +3472,21 @@ fn known_nonforms_are_invalid() {
         "todati",  // tud guṇa'd — 7.3.86 must be blocked by śa's ṅit
         "jozate",  // juṣ guṇa'd — block under ātmanepada too
         "devyati", // div guṇa'd (before 8.2.77): guṇa must be blocked
-        // Wrong pada: the root's pada tag gates the whole derivation.
+        // Wrong pada: the root's curated pada verdict gates the whole
+        // derivation.
         "manyati", // atmanepadin divādi root with a parasmaipada ending
         "vidyati", // atmanepadin divādi root, parasmaipada ending
-        "tudate",  // parasmaipada tudādi root with an atmanepada ending
+        // `tudate` is a REAL Sanskrit form -- √tud is ubhayapadī
+        // (`06.0001 tu\da~^`), and since 1.3.72 svaritañitaḥ landed, the
+        // engine could derive it. It is INVALID here only because
+        // `Dhatu.pada` records a curated verdict (which padas this engine
+        // claims for the root) and √tud's row still says parasmaipada --
+        // a curation choice with a known audit behind it, not an engine
+        // limit. Auditing the whole table for mis-assigned pada is its own
+        // slice; until then this entry pins the documented meaning of
+        // INVALID ("not derivable within the covered grammar"), not a
+        // claim about Sanskrit.
+        "tudate",
         // adādi (gaṇa 2): śap is luk'd (2.4.72). A retained-śap surface must
         // not derive, and the parasmaipada roots reject ātmanepada endings.
         "yAyati", // yā with a spurious y-śap — no derivation yields it

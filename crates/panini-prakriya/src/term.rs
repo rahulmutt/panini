@@ -14,6 +14,25 @@ pub enum Tag {
     /// The dhatu takes atmanepada (the data-layer stand-in for the anudatta
     /// it-marker that 1.3.12 reads; see the spec's pada-sanction section).
     Atmanepadin,
+    /// The dhatu is ubhayapadi: it takes EITHER pada, so both cells derive.
+    ///
+    /// Read only by 1.3.72 svaritaYitaH, and by 1.3.78's atmanepada arm,
+    /// which declines rather than blocks when it is present.
+    ///
+    /// The tag is deliberately NOT named for 1.3.72's condition. It means:
+    /// **1.3.72's condition holds AND 1.3.12's does not** -- the residue
+    /// after 1.3.12, which is what the data layer's
+    /// PadaAssignment::Ubhayapada stores.
+    ///
+    /// The counterexample that forces the distinction is Vindh: its upadesha
+    /// `YiinDI~\` carries a Yi, and 1.3.72 reads Yit, so a marker-named tag
+    /// (Svaritanit or similar) would have to be TRUE on Vindh -- and Vindh
+    /// would grow a parasmaipada column it must not have. It must never
+    /// reach 1.3.72 at all, because the anudatta `~\` on top of the Yi
+    /// settles its pada by 1.3.12, and vidyut-prakriya derives it
+    /// atmanepada-only. This tag is false on Vindh, which is the point.
+    /// Pinned by `indh_is_atmanepada_only_despite_its_nit`.
+    Ubhayapadin,
     /// The term behaves as Nit (set by the atidesha 1.2.4 sarvadhatukam apit;
     /// consumed by 7.2.81 Ato NitaH).
     Ngit,

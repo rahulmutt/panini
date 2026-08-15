@@ -15,7 +15,7 @@ use crate::controller::run_pipeline;
 use crate::prakriya::Prakriya;
 use crate::rule::Rule;
 use crate::term::{Tag, Term};
-use panini_data::{Dhatu, Gana, Lakara, Pada, Purusha, Vacana};
+use panini_data::{Dhatu, Gana, Lakara, Pada, PadaAssignment, Purusha, Vacana};
 
 mod adesha;
 mod anga;
@@ -81,8 +81,10 @@ pub fn derive(
     p.terms.push({
         let mut t = Term::new(dhatu.code);
         t.add(Tag::Dhatu);
-        if matches!(dhatu.pada, Pada::Atmanepada) {
-            t.add(Tag::Atmanepadin);
+        match dhatu.pada {
+            PadaAssignment::Parasmaipada => {}
+            PadaAssignment::Atmanepada => t.add(Tag::Atmanepadin),
+            PadaAssignment::Ubhayapada => t.add(Tag::Ubhayapadin),
         }
         match dhatu.gana {
             Gana::Divadi => t.add(Tag::Divadi),

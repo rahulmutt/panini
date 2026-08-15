@@ -19,7 +19,12 @@
     run (the full `panini` golden suite, ~183s at 1728 cells when the mutant
     is caught in the paradigm binary and the run aborts there — but ~380s
     when it is NOT caught and the suite runs to completion; both re-measured
-    in slice 7b, and ~140s / ~300s at 1620 cells before it). Under a cap
+    in slice 7b, and ~140s / ~300s at 1620 cells before it. At the **1800**
+    cells of the ubhayapada 1.3.72 slice, a standalone `mise run test` — one
+    suite, no mutation campaign alongside it — measured paradigm ~207s and
+    roundtrip ~240s (trace ~2s), i.e. an **uncontended** uncaught floor of
+    ~450s, *more* than the ~395s a 4%-growth scaling predicts. Scale the
+    floor by measurement, not by cell count). Under a cap
     that doesn't clear that uncaught-run floor — or auto-derived timing,
     which falls back to a 20s floor — a mutant that survives is recorded
     as a **timeout rather than a survivor**, so a reported zero-survivor
@@ -31,12 +36,20 @@
     headroom over a full uncaught run of the workspace suite, and always
     check `timeout.txt` alongside `missed.txt`. **The cap must clear a full
     uncaught run at the parallelism you actually use, not just at `-j 1`.**
-    1200s clears the ~380s floor measured at 1728 cells only while
-    contention stays low: slice 7b ran the gate at `-j 16` on 24 cores and
-    got **43 timeouts** where one was expected — the same vacuity, reached
-    through parallelism instead of suite growth. Re-running exactly those
-    at `-j 4 --timeout 2400` caught 43 of 44 in 389–449s, i.e. the mutants
-    were never survivors and never hung; `-j 16` was. `cargo mutants` also
+    1200s clears the ~380s uncontended floor measured at 1728 cells only
+    while contention stays low: slice 7b ran the gate at `-j 16` on 24 cores
+    and got **43 timeouts** where one was expected — the same vacuity,
+    reached through parallelism instead of suite growth. Re-running exactly
+    those at `-j 4 --timeout 2400` caught 43 of 44 in 389–449s — 2.1–2.5×
+    the ~183s caught-and-aborted figure measured standalone, which is the
+    only direct evidence here of what `-j 4` costs. **Nothing in this repo
+    has yet measured a `-j 4` run against the 1800-cell suite.** Extrapolate
+    the same 2.1–2.5× onto its ~450s uncontended floor and an uncaught
+    mutant at `-j 4` lands somewhere near 950–1100s: still under the 1200s
+    cap, but with a margin of tens of percent, not the 3× the 1728-cell
+    figures suggest. Treat 1200s at `-j 4` as adequate-but-unverified, not
+    comfortable; if a timeout appears that is not the known permanent one,
+    re-run it alone before concluding anything. `cargo mutants` also
     reads `-j` from `CARGO_MUTANTS_JOBS`, so an unqualified cap can be
     defeated by the environment alone. Keep `-j` at or below 4 with the
     1200s cap, or raise the cap in step, and re-measure both the floor and
@@ -62,6 +75,14 @@
     `timeout.txt` entry of this shape is the correct, permanent verdict —
     do not chase it with a bigger `--timeout` or a code change; the loop
     itself is correct, working code.
+    **The ubhayapada 1.3.72 slice's own campaign did not use the 1200s
+    default.** It ran by hand at `-j 4 --timeout 2400` — 522 mutants, 482
+    caught, 0 missed, 39 unviable, and the one known-permanent timeout
+    above — doubling the cap precisely because the ~450s uncontended floor
+    times an unverified `-j 4` contention factor left no margin worth
+    reading a `timeout.txt` entry against. `mise.toml`'s default is
+    deliberately left at 1200; pass `--timeout 2400` explicitly until
+    someone actually measures a `-j 4` run against the 1800-cell suite.
   - `cargo-deny` + `cargo-audit` (supply-chain checks) — `mise run audit` runs
     `cargo audit && cargo deny check` and is expected to pass, including
     `cargo deny check advisories`.
@@ -75,14 +96,14 @@
   target under `crates/panini-lipi/fuzz` legitimately omits it, since it uses
   `#![no_main]` plus the libfuzzer harness macro).
 - Grammar changes are gated by the golden paradigm test
-  (`crates/panini/tests/paradigm.rs`, 1728 cells, six complete gaṇas plus
+  (`crates/panini/tests/paradigm.rs`, 1800 cells, six complete gaṇas plus
   rudhādi partial — `PARADIGM`
     stays one-form-per-cell: a cell forked by an optional rule keeps its
-    other forms — a second (91 cells), a third (55 cells), a fourth (1 cell,
-    rudhādi's √piṣ loṭ madhyama eka) and — rudhādi's √kṛt loṭ cells, the
-    sharpest forks in the suite — a fourth and fifth (prathama eka) or a
-    fourth through sixth (madhyama eka) — in
-    `ALTERNATES` (213 rows in all, so 1728 + 213 = 1941 forms total), and
+    other forms — a second (109 cells), a third (56 cells), a fourth (1 cell,
+    rudhādi's √piṣ loṭ madhyama eka) and — rudhādi's √kṛt and √rudh loṭ
+    parasmaipada cells, tied as the sharpest forks in the suite — a fourth
+    and fifth (prathama eka) or a fourth through sixth (madhyama eka) — in
+    `ALTERNATES` (242 rows in all, so 1800 + 242 = 2042 forms total), and
     `derivation_set_is_exactly_pinned` asserts each cell's derivation set is
     exactly the union of the two. The suite is no longer filtered by any
     one-form-per-cell convention — the
@@ -113,7 +134,10 @@
     √vrī (parasmaipada) and √vṛṅ (ātmanepada) landed in slice 9b along with
     8.4.1 / 8.4.2, the engine's first ṇatva. √vṛṅ is the gaṇa's **only**
     ātmanepadī root — every other ātmanepada form in kryādi belongs to an
-    ubhayapadī root, and ubhayapada (1.3.72 svaritañitaḥ) is still deferred —
+    ubhayapadī root, and no kryādi ubhayapadī root is curated. The
+    ubhayapada slice landed 1.3.72 *svaritañitaḥ* (with rudhādi's √rudh),
+    so the pada model no longer stands in their way; whether any given one
+    needs phonology of its own is a per-root question nobody has asked yet —
     see `docs/superpowers/specs/2026-07-28-kryadi-gana-design.md`; svādi
     (gaṇa 5) is now **complete** — six roots across all four lakāras: √āp,
     √śak, √hi and √ri (parasmaipada), √aś (`Dhatu::id` `aS.5`, distinct from
@@ -129,32 +153,54 @@
     see `docs/superpowers/specs/2026-07-29-svadi-gana-design.md`.) rudhādi
     (gaṇa 7, vikaraṇa śnam) is **partial**, not complete — the first gaṇa
     described that way. Nine of its 25 dhātupāṭha roots are ubhayapadī
-    (`~^`-marked) and 1.3.72 *svaritañitaḥ* is still deferred, so √rudh,
-    √bhid, √chid and √yuj are absent and the gaṇa lacks its own eponymous
-    root; slice 7a lands three roots that need nothing beyond the gaṇa's own
-    spine (√kṛt, √hiṃs — stored `hins` — and √khid), and 7b adds three
-    more, one per consonant family: √bhañj (cu-class final), √piṣ
-    (ṣ-final) and √indh (jhaṣ-final, the gaṇa's second ātmanepada root).
-    That does **not** close what is reachable without 1.3.72, and the gaṇa
-    is not complete at six: six is the size every completed gaṇa *after
-    bhvādi* has here (bhvādi, the first, has twelve). Nine reachable
+    (`~^`-marked); slice 7a lands three roots that need nothing beyond the
+    gaṇa's own spine (√kṛt, √hiṃs — stored `hins` — and √khid), 7b adds
+    three more, one per consonant family: √bhañj (cu-class final), √piṣ
+    (ṣ-final) and √indh (jhaṣ-final, the gaṇa's second ātmanepada root),
+    and the ubhayapada slice adds the gaṇa's own **eponym**, √rudh
+    (`07.0001 ru\Di~^r`), with 1.3.72 *svaritañitaḥ* — the engine's first
+    ubhayapadī root, deriving a full paradigm in each pada. That discharges
+    the **ubhayapada** deferral as such: 1.3.72 is no longer what keeps any
+    root out, and the other **eight** ubhayapadī roots are now out for
+    narrower, root-specific reasons, verified cell by cell against
+    vidyut-prakriya. **√bhid, √kṣud, √yuj and √tṛd are curation-only** — the
+    engine already derives all 72 cells of each, byte-identical to vidyut.
+    **√ric and √vic** need no new sūtra, but the work in 8.2.30 *coḥ kuḥ* is
+    more than the one-line guard widening it looks like: they are c-final,
+    and the rule is hardcoded to a single `j` → `g` pair — its match reads
+    `j` alone AND its substitute is a literal `'g'`, while its comment
+    claims a 1.1.50 *sthāne'ntaratamaḥ* nearest-velar substitution (voicing
+    and aspiration preserved) that the code does not implement. So today
+    they surface `riRacti` for `riRakti`; widening the match alone would
+    reach the right surface — 8.4.55 *khari ca* devoices the `g` to `k`
+    before `ti` — but through a wrong intermediate (`riRagti` for
+    `riRakti`), which is why the substitute has to be generalised in the
+    same slice rather than left to the next one. **√chid and √chṛd** need two
+    sūtras the engine does not have — 6.1.73 *che ca*, the tuk augment
+    before a `C` after a short vowel, and 8.4.40 *stoḥ ścunā ścuḥ*, the
+    ścutva that follows it — without which their laṅ cells surface
+    `aCinat` for `acCinat`. Nine reachable non-ubhayapadī
     rudhādi roots remain out — √śiṣ, √tṛh, √und, √añj, √tañc, √vij, √vṛj,
     √pṛc and √vid — each bringing machinery of its own (7.1.58 *idito num
     dhātoḥ* for √und, 6.4.24 *aniditāṁ hala upadhāyāḥ kṅiti* for √añj and
     √tañc, and two `Dhatu::id` collisions). √bhuj (`07.0017 Bu\ja~`) is the
     twenty-fifth entry and out on different grounds again: 1.3.66
     *bhujo'navane* forks its pada on **sense**, not on an axis this engine
-    models. 9 ubhayapadī + 6 curated + 9 reachable + √bhuj = 25.
-    The gaṇa stays partial for the reason it always has:
-    1.3.72, not the root count. √indh's pada was **verified, not inferred
-    from its ñi**: `YiinDI~\`'s ñi it-marker is one of the two things
-    1.3.72 reads, which would have deferred the root alongside √rudh, so it
-    was checked against vidyut-prakriya — which derives √indh in ātmanepada
+    models. 8 ubhayapadī + 7 curated + 9 reachable + √bhuj = 25.
+    The root count is not what keeps the gaṇa partial — seven is already one
+    more than the six every completed gaṇa *after bhvādi* has here (bhvādi,
+    the first, has twelve) — and neither, any longer, is 1.3.72: what
+    remains is curation for four of the eight, two narrow pieces of
+    phonology for the other four, the nine uncurated reachable roots, and
+    √bhuj's sense axis. √indh's pada was **verified, not inferred from its
+    ñi**: `YiinDI~\`'s ñi it-marker is one of the two things 1.3.72 reads,
+    which would have made the root ubhayapadī alongside √rudh, so it was
+    checked against vidyut-prakriya — which derives √indh in ātmanepada
     only, against a `~^r` control (√rudh) that does derive both padas — and
     the root's own anudātta settles its pada by 1.3.12 *anudāttaṅita
-    ātmanepadam*. śnam is
-    the engine's first **infix**: unlike every other vikaraṇa it is not a
-    suffix, and the pipeline's fixed `[ANGA, SHAP, ENDING]` slots have
+    ātmanepadam*. śnam is the engine's first **infix**: unlike every other
+    vikaraṇa it is not a suffix, and the pipeline's fixed
+    `[ANGA, SHAP, ENDING]` slots have
     nowhere to put one, so 3.1.78 splits the root across the first two
     instead — `terms[SHAP].text` for rudhādi is śnam followed by the root's
     own tail, not the vikaraṇa alone (`kft` → `[kf, nat, ti]`); see the
@@ -169,11 +215,18 @@
     eka to `piMqQi` (`piRqQi` after 8.4.58) and lets √indh's mid-word `D`s
     reach the rule at all. 7b's own four sūtras are one per family: 8.2.30
     *coḥ kuḥ* (√bhañj's `j` → `g`), 8.4.41 *ṣṭunā ṣṭuḥ* and 8.2.41 *ṣaḍhoḥ
-    kaḥ si* (√piṣ), and 8.2.40 *jhaṣas tathor dho'dhaḥ* (√indh). The vikalpa
+    kaḥ si* (√piṣ), and 8.2.40 *jhaṣas tathor dho'dhaḥ* (√indh). √rudh
+    needed no new phonology of its own: 1.3.72 aside, the ubhayapada slice
+    only widened 8.2.39 *jhalāṁ jaśo'nte*'s guard by exactly one arm (`D`),
+    which is what makes `aruRad` derivable — and, through 8.2.75 *daś ca*'s
+    own `ends_with('d')` guard, the `aruRaH` branch too. The vikalpa
     set is unchanged at **seven** rules, in pipeline order: 7.1.35, 3.4.111,
     6.4.107, 8.2.74, 8.2.75, 8.4.65, 8.4.56 — 7b is the first gaṇa slice
-    since the `vikalpa` flag landed (`53e03e7`) to add none; kryādi and
-    svādi predate the flag rather than having declined to use it. Four
+    since the `vikalpa` flag landed (`53e03e7`) to add none, and the
+    ubhayapada slice adds none either: 1.3.72 is deliberately **not**
+    optional, because a root's two padas are two cells, not two branches of
+    one cell; kryādi and svādi predate the flag rather than having declined
+    to use it. Four
     orderings in the tripādī are deliberate, and they differ in what they
     pin. **8.2.74 and 8.2.75 above 8.2.73**, against sūtra order, are
     *derivation* constraints — both replace the dhātu's own final, and
@@ -215,14 +268,19 @@
   Each gaṇa slice also runs a **whole-corpus cross-implementation audit**
   against that same vendored checkout — an out-of-repo harness under its
   `examples/`, comparing derivation sets cell by cell (7b: 1728 cells, 1941
-  forms, zero differences). One residual circularity is known and unfixed:
+  forms, zero differences; the ubhayapada slice audited its own addition —
+  √rudh's 72 cells, split per pada via `Tinanta::builder().pada(...)`, at
+  vidyut commit `8da2f90`, plus the negative that vidyut derives √indh in
+  ātmanepada only against √rudh as the `~^r` control — and the
+  corpus it sits in now stands at 1800 cells and 2042 forms). One residual
+  circularity is known and unfixed:
   the harness resolves each root to a `data/dhatupatha.tsv` entry by
   requiring vidyut to reproduce **this engine's own pinned laṭ prathama eka
   form**, so for a root whose new sūtra shapes exactly that cell — √bhañj's
   `Banakti`, √piṣ's `pinazwi`, √indh's `indDe` — the anchoring cell is the
   one cell the audit cannot independently validate. The next slice should key
   entry selection on the dhātupāṭha number instead (`07.0016` for √bhañj);
-  that number currently sits only in a comment above eight of the 48 `Dhatu`
+  that number currently sits only in a comment above nine of the 49 `Dhatu`
   rows, so doing so means promoting it to a real field on `Dhatu` first.
 - New grammar goes in `TINANTA_RULES` as a self-guarding `Rule`, not as a
   branch inside `derive`. `TINANTA_RULES` is a list of seven stage arrays,
@@ -243,7 +301,7 @@
   and it is not the blanket exemption 7a's deferred #5 asked for ("per-rule
   guard tests for tripādī rules are not achievable"): `tripadi.rs` carries
   eighteen of them today, including
-  `jhalam_jasho_ante_fires_only_on_a_pada_final_t_or_sh` and
+  `jhalam_jasho_ante_fires_only_on_a_pada_final_t_z_or_d` and
   `va_avasane_fires_only_on_a_pada_final_jhal`. Whole-word scope is not what
   blocks a guard test; an unconstructible precondition is. `derive` carries
   no grammar branches: the only gana-conditioned logic there is aṅga tagging
@@ -267,10 +325,12 @@
   7.1.35, 3.4.111, 6.4.107, 8.2.74, 8.2.75, 8.4.65, 8.4.56.** 7.1.35 and
   8.4.56 can both fire on one derivation, stacking into a three-branch
   cell — loṭ prathama eka forks twice, giving `Bavatu` / `BavatAd` /
-  `BavatAt`. rudhādi's √kṛt stacks three of the seven (7.1.35, 8.4.65,
-  8.4.56) on its own loṭ cells — five branches at prathama eka, six at
-  madhyama eka (`kfndDi` / `kfnDi` / `kfnttAd` / `kfntAd` / `kfnttAt` /
-  `kfntAt`) — because 8.4.56 only reaches the two tātaṅ (7.1.35) branches,
+  `BavatAt`. rudhādi's √kṛt and √rudh each stack three of the seven (7.1.35,
+  8.4.65, 8.4.56) on their own loṭ parasmaipada cells — five branches at
+  prathama eka, six at madhyama eka
+  (`kfndDi` / `kfnDi` / `kfnttAd` / `kfntAd` / `kfnttAt` /
+  `kfntAt`, and `rundDi` / `runDi` / `rundDAd` / `runDAd` / `rundDAt` /
+  `runDAt`) — because 8.4.56 only reaches the two tātaṅ (7.1.35) branches,
   not the two vowel-final ones; see `docs/ARCHITECTURE.md`'s branch-count
   paragraph for the full accounting.
 - **An optional rule's position relative to its consumers depends on what its

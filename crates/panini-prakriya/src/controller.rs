@@ -126,8 +126,8 @@ mod tests {
 
     #[test]
     fn a_vikalpa_rule_that_declines_forks_nothing() {
-        // The overwhelmingly common case: 6.4.107 sees ~1720 of the
-        // grammar's 1728 cells and fires on none of them (only 8 cells fire
+        // The overwhelmingly common case: 6.4.107 sees 1792 of the
+        // grammar's 1800 cells and fires on none of them (only 8 cells fire
         // it at all — counted by walking every `PARADIGM` cell and checking
         // each branch's log for "6.4.107"). If declining forked, the whole
         // suite would double.
@@ -139,7 +139,7 @@ mod tests {
     fn a_firing_vikalpa_rule_forks_declined_first() {
         // Declined-first is load-bearing, not cosmetic: index 0 must stay
         // byte-identical to the pre-fork engine's single output, which is
-        // what makes "the 1728 goldens are unchanged" checkable.
+        // what makes "the 1800 goldens are unchanged" checkable.
         let out = run_pipeline(p1("a"), &[&[PUSH_X][..]]);
         assert_eq!(texts(&out), vec!["a", "ax"]);
     }
