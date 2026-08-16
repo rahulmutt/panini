@@ -5,16 +5,20 @@ use panini::{Panini, Verdict};
 use panini_data::{Lakara, Pada, Purusha, Vacana, dhatus};
 use panini_prakriya::derive;
 
-/// (root_id, lakara_label, pada, [P.E, P.D, P.B, M.E, M.D, M.B, U.E, U.D, U.B])
-/// in SLP1. The first column is a `Dhatu::id`, not a `code` — see
-/// `every_form_validates_and_matches`'s comment for why that distinction
-/// matters (it is gaṇa-qualified where two roots share an SLP1 form, e.g.
-/// svādi's `aS.5` vs kryādi's `aS`). The pada column is no longer inferable
-/// from the root id alone: 1.3.72 gives some roots a `PadaAssignment` that
-/// admits both, so a block has to declare which pada it is a block OF.
+/// (root_number, lakara_label, pada, [P.E, P.D, P.B, M.E, M.D, M.B, U.E, U.D, U.B])
+/// in SLP1. `PARADIGM`'s first column is a `Dhatu::dhatupatha` — the entry
+/// number, unique by construction, so the two √aś rows are distinct without
+/// anyone deciding which gaṇa's was the incumbent (`09.0059` kryādi,
+/// `05.0020` svādi). Resolve a number against the `DHATUS` table in
+/// `panini-data` to see which root a block is for; the tables carry no
+/// per-row comment, deliberately, since 442 uncheckable comments is a
+/// staleness liability no test could pin. The pada column is no longer
+/// inferable from the root alone: 1.3.72 gives some roots a
+/// `PadaAssignment` that admits both, so a block has to declare which pada
+/// it is a block OF.
 const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
     (
-        "BU",
+        "01.0001",
         "laT",
         Pada::Parasmaipada,
         [
@@ -23,7 +27,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "nI",
+        "01.1049",
         "laT",
         Pada::Parasmaipada,
         [
@@ -32,7 +36,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "ji",
+        "01.0642",
         "laT",
         Pada::Parasmaipada,
         [
@@ -41,7 +45,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "smf",
+        "01.1082",
         "laT",
         Pada::Parasmaipada,
         [
@@ -50,7 +54,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "paW",
+        "01.0381",
         "laT",
         Pada::Parasmaipada,
         [
@@ -59,7 +63,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "vad",
+        "01.1164",
         "laT",
         Pada::Parasmaipada,
         [
@@ -68,7 +72,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "BU",
+        "01.0001",
         "laN",
         Pada::Parasmaipada,
         [
@@ -77,7 +81,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "nI",
+        "01.1049",
         "laN",
         Pada::Parasmaipada,
         [
@@ -86,7 +90,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "ji",
+        "01.0642",
         "laN",
         Pada::Parasmaipada,
         [
@@ -95,7 +99,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "smf",
+        "01.1082",
         "laN",
         Pada::Parasmaipada,
         [
@@ -111,7 +115,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "paW",
+        "01.0381",
         "laN",
         Pada::Parasmaipada,
         [
@@ -120,7 +124,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "vad",
+        "01.1164",
         "laN",
         Pada::Parasmaipada,
         [
@@ -129,7 +133,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "BU",
+        "01.0001",
         "loT",
         Pada::Parasmaipada,
         [
@@ -138,7 +142,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "nI",
+        "01.1049",
         "loT",
         Pada::Parasmaipada,
         [
@@ -147,7 +151,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "ji",
+        "01.0642",
         "loT",
         Pada::Parasmaipada,
         [
@@ -156,7 +160,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "smf",
+        "01.1082",
         "loT",
         Pada::Parasmaipada,
         [
@@ -171,7 +175,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "paW",
+        "01.0381",
         "loT",
         Pada::Parasmaipada,
         [
@@ -180,7 +184,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "vad",
+        "01.1164",
         "loT",
         Pada::Parasmaipada,
         [
@@ -189,7 +193,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "BU",
+        "01.0001",
         "viDiliN",
         Pada::Parasmaipada,
         [
@@ -198,7 +202,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "nI",
+        "01.1049",
         "viDiliN",
         Pada::Parasmaipada,
         [
@@ -207,7 +211,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "ji",
+        "01.0642",
         "viDiliN",
         Pada::Parasmaipada,
         [
@@ -216,7 +220,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "smf",
+        "01.1082",
         "viDiliN",
         Pada::Parasmaipada,
         [
@@ -225,7 +229,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "paW",
+        "01.0381",
         "viDiliN",
         Pada::Parasmaipada,
         [
@@ -234,7 +238,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "vad",
+        "01.1164",
         "viDiliN",
         Pada::Parasmaipada,
         [
@@ -243,7 +247,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "eD",
+        "01.0002",
         "laT",
         Pada::Atmanepada,
         [
@@ -251,7 +255,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "laB",
+        "01.1130",
         "laT",
         Pada::Atmanepada,
         [
@@ -260,7 +264,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "sev",
+        "01.0574",
         "laT",
         Pada::Atmanepada,
         [
@@ -269,7 +273,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "vft",
+        "01.0862",
         "laT",
         Pada::Atmanepada,
         [
@@ -285,7 +289,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "BAz",
+        "01.0696",
         "laT",
         Pada::Atmanepada,
         [
@@ -294,7 +298,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "Ikz",
+        "01.0694",
         "laT",
         Pada::Atmanepada,
         [
@@ -303,7 +307,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "eD",
+        "01.0002",
         "loT",
         Pada::Atmanepada,
         [
@@ -312,7 +316,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "laB",
+        "01.1130",
         "loT",
         Pada::Atmanepada,
         [
@@ -321,7 +325,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "sev",
+        "01.0574",
         "loT",
         Pada::Atmanepada,
         [
@@ -330,7 +334,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "vft",
+        "01.0862",
         "loT",
         Pada::Atmanepada,
         [
@@ -346,7 +350,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "BAz",
+        "01.0696",
         "loT",
         Pada::Atmanepada,
         [
@@ -355,7 +359,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "Ikz",
+        "01.0694",
         "loT",
         Pada::Atmanepada,
         [
@@ -364,7 +368,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "eD",
+        "01.0002",
         "laN",
         Pada::Atmanepada,
         [
@@ -372,7 +376,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "laB",
+        "01.1130",
         "laN",
         Pada::Atmanepada,
         [
@@ -388,7 +392,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "sev",
+        "01.0574",
         "laN",
         Pada::Atmanepada,
         [
@@ -404,7 +408,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "vft",
+        "01.0862",
         "laN",
         Pada::Atmanepada,
         [
@@ -420,7 +424,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "BAz",
+        "01.0696",
         "laN",
         Pada::Atmanepada,
         [
@@ -436,7 +440,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "Ikz",
+        "01.0694",
         "laN",
         Pada::Atmanepada,
         [
@@ -445,7 +449,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "eD",
+        "01.0002",
         "viDiliN",
         Pada::Atmanepada,
         [
@@ -454,7 +458,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "laB",
+        "01.1130",
         "viDiliN",
         Pada::Atmanepada,
         [
@@ -470,7 +474,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "sev",
+        "01.0574",
         "viDiliN",
         Pada::Atmanepada,
         [
@@ -486,7 +490,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "vft",
+        "01.0862",
         "viDiliN",
         Pada::Atmanepada,
         [
@@ -502,7 +506,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "BAz",
+        "01.0696",
         "viDiliN",
         Pada::Atmanepada,
         [
@@ -518,7 +522,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "Ikz",
+        "01.0694",
         "viDiliN",
         Pada::Atmanepada,
         [
@@ -534,7 +538,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "div",
+        "04.0001",
         "laT",
         Pada::Parasmaipada,
         [
@@ -543,7 +547,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "naS",
+        "04.0091",
         "laT",
         Pada::Parasmaipada,
         [
@@ -552,7 +556,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "kup",
+        "04.0146",
         "laT",
         Pada::Parasmaipada,
         [
@@ -561,7 +565,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "man",
+        "04.0073",
         "laT",
         Pada::Atmanepada,
         [
@@ -577,7 +581,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "yuD",
+        "04.0069",
         "laT",
         Pada::Atmanepada,
         [
@@ -593,7 +597,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "vid",
+        "04.0067",
         "laT",
         Pada::Atmanepada,
         [
@@ -609,7 +613,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "tud",
+        "06.0001",
         "laT",
         Pada::Parasmaipada,
         [
@@ -618,7 +622,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "liK",
+        "06.0092",
         "laT",
         Pada::Parasmaipada,
         [
@@ -627,7 +631,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "viS",
+        "06.0160",
         "laT",
         Pada::Parasmaipada,
         [
@@ -636,7 +640,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "juz",
+        "06.0008",
         "laT",
         Pada::Atmanepada,
         [
@@ -645,7 +649,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "vij",
+        "06.0009",
         "laT",
         Pada::Atmanepada,
         [
@@ -654,7 +658,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "gur",
+        "06.0131",
         "laT",
         Pada::Atmanepada,
         [
@@ -663,7 +667,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "div",
+        "04.0001",
         "laN",
         Pada::Parasmaipada,
         [
@@ -679,7 +683,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "naS",
+        "04.0091",
         "laN",
         Pada::Parasmaipada,
         [
@@ -695,7 +699,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "kup",
+        "04.0146",
         "laN",
         Pada::Parasmaipada,
         [
@@ -711,7 +715,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "man",
+        "04.0073",
         "laN",
         Pada::Atmanepada,
         [
@@ -727,7 +731,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "yuD",
+        "04.0069",
         "laN",
         Pada::Atmanepada,
         [
@@ -743,7 +747,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "vid",
+        "04.0067",
         "laN",
         Pada::Atmanepada,
         [
@@ -759,7 +763,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "tud",
+        "06.0001",
         "laN",
         Pada::Parasmaipada,
         [
@@ -768,7 +772,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "liK",
+        "06.0092",
         "laN",
         Pada::Parasmaipada,
         [
@@ -777,7 +781,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "viS",
+        "06.0160",
         "laN",
         Pada::Parasmaipada,
         [
@@ -786,7 +790,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "juz",
+        "06.0008",
         "laN",
         Pada::Atmanepada,
         [
@@ -802,7 +806,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "vij",
+        "06.0009",
         "laN",
         Pada::Atmanepada,
         [
@@ -818,7 +822,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "gur",
+        "06.0131",
         "laN",
         Pada::Atmanepada,
         [
@@ -834,7 +838,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "div",
+        "04.0001",
         "loT",
         Pada::Parasmaipada,
         [
@@ -843,7 +847,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "naS",
+        "04.0091",
         "loT",
         Pada::Parasmaipada,
         [
@@ -852,7 +856,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "kup",
+        "04.0146",
         "loT",
         Pada::Parasmaipada,
         [
@@ -861,7 +865,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "man",
+        "04.0073",
         "loT",
         Pada::Atmanepada,
         [
@@ -877,7 +881,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "yuD",
+        "04.0069",
         "loT",
         Pada::Atmanepada,
         [
@@ -893,7 +897,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "vid",
+        "04.0067",
         "loT",
         Pada::Atmanepada,
         [
@@ -909,7 +913,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "tud",
+        "06.0001",
         "loT",
         Pada::Parasmaipada,
         [
@@ -918,7 +922,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "liK",
+        "06.0092",
         "loT",
         Pada::Parasmaipada,
         [
@@ -927,7 +931,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "viS",
+        "06.0160",
         "loT",
         Pada::Parasmaipada,
         [
@@ -936,7 +940,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "juz",
+        "06.0008",
         "loT",
         Pada::Atmanepada,
         [
@@ -945,7 +949,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "vij",
+        "06.0009",
         "loT",
         Pada::Atmanepada,
         [
@@ -954,7 +958,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "gur",
+        "06.0131",
         "loT",
         Pada::Atmanepada,
         [
@@ -963,7 +967,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "div",
+        "04.0001",
         "viDiliN",
         Pada::Parasmaipada,
         [
@@ -972,7 +976,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "naS",
+        "04.0091",
         "viDiliN",
         Pada::Parasmaipada,
         [
@@ -981,7 +985,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "kup",
+        "04.0146",
         "viDiliN",
         Pada::Parasmaipada,
         [
@@ -990,7 +994,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "man",
+        "04.0073",
         "viDiliN",
         Pada::Atmanepada,
         [
@@ -1006,7 +1010,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "yuD",
+        "04.0069",
         "viDiliN",
         Pada::Atmanepada,
         [
@@ -1022,7 +1026,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "vid",
+        "04.0067",
         "viDiliN",
         Pada::Atmanepada,
         [
@@ -1038,7 +1042,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "tud",
+        "06.0001",
         "viDiliN",
         Pada::Parasmaipada,
         [
@@ -1047,7 +1051,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "liK",
+        "06.0092",
         "viDiliN",
         Pada::Parasmaipada,
         [
@@ -1056,7 +1060,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "viS",
+        "06.0160",
         "viDiliN",
         Pada::Parasmaipada,
         [
@@ -1065,7 +1069,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "juz",
+        "06.0008",
         "viDiliN",
         Pada::Atmanepada,
         [
@@ -1081,7 +1085,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "vij",
+        "06.0009",
         "viDiliN",
         Pada::Atmanepada,
         [
@@ -1097,7 +1101,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "gur",
+        "06.0131",
         "viDiliN",
         Pada::Atmanepada,
         [
@@ -1113,7 +1117,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "yA",
+        "02.0044",
         "laT",
         Pada::Parasmaipada,
         [
@@ -1121,7 +1125,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "vA",
+        "02.0045",
         "laT",
         Pada::Parasmaipada,
         [
@@ -1129,7 +1133,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "yA",
+        "02.0044",
         "laN",
         Pada::Parasmaipada,
         [
@@ -1137,7 +1141,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "vA",
+        "02.0045",
         "laN",
         Pada::Parasmaipada,
         [
@@ -1145,7 +1149,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "yA",
+        "02.0044",
         "loT",
         Pada::Parasmaipada,
         [
@@ -1153,7 +1157,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "vA",
+        "02.0045",
         "loT",
         Pada::Parasmaipada,
         [
@@ -1161,7 +1165,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "yA",
+        "02.0044",
         "viDiliN",
         Pada::Parasmaipada,
         [
@@ -1169,7 +1173,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "vA",
+        "02.0045",
         "viDiliN",
         Pada::Parasmaipada,
         [
@@ -1177,7 +1181,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "ad",
+        "02.0001",
         "laT",
         Pada::Parasmaipada,
         [
@@ -1185,7 +1189,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "ad",
+        "02.0001",
         "laN",
         Pada::Parasmaipada,
         [
@@ -1193,7 +1197,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "ad",
+        "02.0001",
         "loT",
         Pada::Parasmaipada,
         [
@@ -1201,7 +1205,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "ad",
+        "02.0001",
         "viDiliN",
         Pada::Parasmaipada,
         [
@@ -1209,7 +1213,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "As",
+        "02.0011",
         "laT",
         Pada::Atmanepada,
         [
@@ -1217,7 +1221,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "As",
+        "02.0011",
         "laN",
         Pada::Atmanepada,
         [
@@ -1225,7 +1229,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "As",
+        "02.0011",
         "loT",
         Pada::Atmanepada,
         [
@@ -1233,7 +1237,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "As",
+        "02.0011",
         "viDiliN",
         Pada::Atmanepada,
         [
@@ -1242,7 +1246,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "vas",
+        "02.0013",
         "laT",
         Pada::Atmanepada,
         [
@@ -1250,7 +1254,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "vas",
+        "02.0013",
         "laN",
         Pada::Atmanepada,
         [
@@ -1259,7 +1263,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "vas",
+        "02.0013",
         "loT",
         Pada::Atmanepada,
         [
@@ -1268,7 +1272,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "vas",
+        "02.0013",
         "viDiliN",
         Pada::Atmanepada,
         [
@@ -1284,7 +1288,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "SI",
+        "02.0026",
         "laT",
         Pada::Atmanepada,
         [
@@ -1292,7 +1296,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "SI",
+        "02.0026",
         "laN",
         Pada::Atmanepada,
         [
@@ -1301,7 +1305,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "SI",
+        "02.0026",
         "loT",
         Pada::Atmanepada,
         [
@@ -1310,7 +1314,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "SI",
+        "02.0026",
         "viDiliN",
         Pada::Atmanepada,
         [
@@ -1326,7 +1330,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "kliS",
+        "09.0058",
         "laT",
         Pada::Parasmaipada,
         [
@@ -1342,7 +1346,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "kliS",
+        "09.0058",
         "laN",
         Pada::Parasmaipada,
         [
@@ -1358,7 +1362,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "kliS",
+        "09.0058",
         "loT",
         Pada::Parasmaipada,
         [
@@ -1374,7 +1378,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "kliS",
+        "09.0058",
         "viDiliN",
         Pada::Parasmaipada,
         [
@@ -1390,7 +1394,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "guD",
+        "09.0053",
         "laT",
         Pada::Parasmaipada,
         [
@@ -1399,7 +1403,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "guD",
+        "09.0053",
         "laN",
         Pada::Parasmaipada,
         [
@@ -1415,7 +1419,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "guD",
+        "09.0053",
         "loT",
         Pada::Parasmaipada,
         [
@@ -1424,7 +1428,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "guD",
+        "09.0053",
         "viDiliN",
         Pada::Parasmaipada,
         [
@@ -1440,7 +1444,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "aS",
+        "09.0059",
         "laT",
         Pada::Parasmaipada,
         [
@@ -1449,7 +1453,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "aS",
+        "09.0059",
         "laN",
         Pada::Parasmaipada,
         [
@@ -1457,7 +1461,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "aS",
+        "09.0059",
         "loT",
         Pada::Parasmaipada,
         [
@@ -1466,7 +1470,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "aS",
+        "09.0059",
         "viDiliN",
         Pada::Parasmaipada,
         [
@@ -1482,7 +1486,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "muz",
+        "09.0066",
         "laT",
         Pada::Parasmaipada,
         [
@@ -1491,7 +1495,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "muz",
+        "09.0066",
         "laN",
         Pada::Parasmaipada,
         [
@@ -1507,7 +1511,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "muz",
+        "09.0066",
         "loT",
         Pada::Parasmaipada,
         [
@@ -1516,7 +1520,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "muz",
+        "09.0066",
         "viDiliN",
         Pada::Parasmaipada,
         [
@@ -1532,7 +1536,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "vrI",
+        "09.0040",
         "laT",
         Pada::Parasmaipada,
         [
@@ -1541,7 +1545,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "vrI",
+        "09.0040",
         "laN",
         Pada::Parasmaipada,
         [
@@ -1557,7 +1561,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "vrI",
+        "09.0040",
         "loT",
         Pada::Parasmaipada,
         [
@@ -1566,7 +1570,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "vrI",
+        "09.0040",
         "viDiliN",
         Pada::Parasmaipada,
         [
@@ -1582,7 +1586,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "vf",
+        "09.0045",
         "laT",
         Pada::Atmanepada,
         [
@@ -1591,7 +1595,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "vf",
+        "09.0045",
         "laN",
         Pada::Atmanepada,
         [
@@ -1607,7 +1611,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "vf",
+        "09.0045",
         "loT",
         Pada::Atmanepada,
         [
@@ -1616,7 +1620,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "vf",
+        "09.0045",
         "viDiliN",
         Pada::Atmanepada,
         [
@@ -1632,7 +1636,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "Ap",
+        "05.0016",
         "laT",
         Pada::Parasmaipada,
         [
@@ -1648,7 +1652,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "Ap",
+        "05.0016",
         "laN",
         Pada::Parasmaipada,
         [
@@ -1657,7 +1661,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "Ap",
+        "05.0016",
         "loT",
         Pada::Parasmaipada,
         [
@@ -1673,7 +1677,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "Ap",
+        "05.0016",
         "viDiliN",
         Pada::Parasmaipada,
         [
@@ -1689,7 +1693,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "Sak",
+        "05.0017",
         "laT",
         Pada::Parasmaipada,
         [
@@ -1705,7 +1709,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "Sak",
+        "05.0017",
         "laN",
         Pada::Parasmaipada,
         [
@@ -1721,7 +1725,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "Sak",
+        "05.0017",
         "loT",
         Pada::Parasmaipada,
         [
@@ -1737,7 +1741,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "Sak",
+        "05.0017",
         "viDiliN",
         Pada::Parasmaipada,
         [
@@ -1753,7 +1757,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "hi",
+        "05.0012",
         "laT",
         Pada::Parasmaipada,
         [
@@ -1762,7 +1766,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "hi",
+        "05.0012",
         "laN",
         Pada::Parasmaipada,
         [
@@ -1771,7 +1775,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "hi",
+        "05.0012",
         "loT",
         Pada::Parasmaipada,
         [
@@ -1780,7 +1784,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "hi",
+        "05.0012",
         "viDiliN",
         Pada::Parasmaipada,
         [
@@ -1796,7 +1800,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "ri",
+        "05.0032",
         "laT",
         Pada::Parasmaipada,
         [
@@ -1805,7 +1809,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "ri",
+        "05.0032",
         "laN",
         Pada::Parasmaipada,
         [
@@ -1814,7 +1818,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "ri",
+        "05.0032",
         "loT",
         Pada::Parasmaipada,
         [
@@ -1823,7 +1827,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "ri",
+        "05.0032",
         "viDiliN",
         Pada::Parasmaipada,
         [
@@ -1839,7 +1843,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "aS.5",
+        "05.0020",
         "laT",
         Pada::Atmanepada,
         [
@@ -1848,7 +1852,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "aS.5",
+        "05.0020",
         "laN",
         Pada::Atmanepada,
         [
@@ -1864,7 +1868,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "aS.5",
+        "05.0020",
         "loT",
         Pada::Atmanepada,
         [
@@ -1880,7 +1884,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "aS.5",
+        "05.0020",
         "viDiliN",
         Pada::Atmanepada,
         [
@@ -1896,7 +1900,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "stiG",
+        "05.0021",
         "laT",
         Pada::Atmanepada,
         [
@@ -1912,7 +1916,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "stiG",
+        "05.0021",
         "laN",
         Pada::Atmanepada,
         [
@@ -1928,7 +1932,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "stiG",
+        "05.0021",
         "loT",
         Pada::Atmanepada,
         [
@@ -1944,7 +1948,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "stiG",
+        "05.0021",
         "viDiliN",
         Pada::Atmanepada,
         [
@@ -1960,7 +1964,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "kft",
+        "07.0010",
         "laT",
         Pada::Parasmaipada,
         [
@@ -1969,7 +1973,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "kft",
+        "07.0010",
         "laN",
         Pada::Parasmaipada,
         [
@@ -1978,7 +1982,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "kft",
+        "07.0010",
         "loT",
         Pada::Parasmaipada,
         [
@@ -1987,7 +1991,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "kft",
+        "07.0010",
         "viDiliN",
         Pada::Parasmaipada,
         [
@@ -2003,7 +2007,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "his",
+        "07.0019",
         "laT",
         Pada::Parasmaipada,
         [
@@ -2012,7 +2016,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "his",
+        "07.0019",
         "laN",
         Pada::Parasmaipada,
         [
@@ -2021,7 +2025,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "his",
+        "07.0019",
         "loT",
         Pada::Parasmaipada,
         [
@@ -2030,7 +2034,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "his",
+        "07.0019",
         "viDiliN",
         Pada::Parasmaipada,
         [
@@ -2046,7 +2050,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "Kid",
+        "07.0012",
         "laT",
         Pada::Atmanepada,
         [
@@ -2055,7 +2059,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "Kid",
+        "07.0012",
         "laN",
         Pada::Atmanepada,
         [
@@ -2071,7 +2075,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "Kid",
+        "07.0012",
         "loT",
         Pada::Atmanepada,
         [
@@ -2087,7 +2091,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "Kid",
+        "07.0012",
         "viDiliN",
         Pada::Atmanepada,
         [
@@ -2103,7 +2107,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "Banj",
+        "07.0016",
         "laT",
         Pada::Parasmaipada,
         [
@@ -2112,7 +2116,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "Banj",
+        "07.0016",
         "laN",
         Pada::Parasmaipada,
         [
@@ -2121,7 +2125,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "Banj",
+        "07.0016",
         "loT",
         Pada::Parasmaipada,
         [
@@ -2130,7 +2134,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "Banj",
+        "07.0016",
         "viDiliN",
         Pada::Parasmaipada,
         [
@@ -2146,7 +2150,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "piz",
+        "07.0015",
         "laT",
         Pada::Parasmaipada,
         [
@@ -2155,7 +2159,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "piz",
+        "07.0015",
         "laN",
         Pada::Parasmaipada,
         [
@@ -2164,7 +2168,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "piz",
+        "07.0015",
         "loT",
         Pada::Parasmaipada,
         [
@@ -2173,7 +2177,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "piz",
+        "07.0015",
         "viDiliN",
         Pada::Parasmaipada,
         [
@@ -2189,7 +2193,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "inD",
+        "07.0011",
         "laT",
         Pada::Atmanepada,
         [
@@ -2197,7 +2201,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "inD",
+        "07.0011",
         "laN",
         Pada::Atmanepada,
         [
@@ -2206,7 +2210,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "inD",
+        "07.0011",
         "loT",
         Pada::Atmanepada,
         [
@@ -2222,7 +2226,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "inD",
+        "07.0011",
         "viDiliN",
         Pada::Atmanepada,
         [
@@ -2238,7 +2242,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "ruD",
+        "07.0001",
         "laT",
         Pada::Parasmaipada,
         [
@@ -2247,7 +2251,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "ruD",
+        "07.0001",
         "laN",
         Pada::Parasmaipada,
         [
@@ -2256,7 +2260,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "ruD",
+        "07.0001",
         "loT",
         Pada::Parasmaipada,
         [
@@ -2265,7 +2269,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "ruD",
+        "07.0001",
         "viDiliN",
         Pada::Parasmaipada,
         [
@@ -2281,7 +2285,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "ruD",
+        "07.0001",
         "laT",
         Pada::Atmanepada,
         [
@@ -2290,7 +2294,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "ruD",
+        "07.0001",
         "laN",
         Pada::Atmanepada,
         [
@@ -2306,7 +2310,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "ruD",
+        "07.0001",
         "loT",
         Pada::Atmanepada,
         [
@@ -2322,7 +2326,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
-        "ruD",
+        "07.0001",
         "viDiliN",
         Pada::Atmanepada,
         [
@@ -2340,7 +2344,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
 ];
 
 /// Second and third valid forms, for cells where an optional (vikalpa) rule
-/// forks the derivation. `(root_id, lakara_label, pada, cell index into the
+/// forks the derivation. `(root_number, lakara_label, pada, cell index into the
 /// [&str; 9], alternate form, vikalpa key)`.
 ///
 /// The vikalpa key names the optional rules applied on the branch that
@@ -2355,501 +2359,809 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
 /// are uttama dvi and uttama bahu. `pada` names the block the row belongs
 /// to, same as `PARADIGM`'s column.
 const ALTERNATES: &[(&str, &str, Pada, usize, &str, &str)] = &[
-    ("hi", "laT", Pada::Parasmaipada, 7, "hinvaH", "6.4.107"),
-    ("hi", "laT", Pada::Parasmaipada, 8, "hinmaH", "6.4.107"),
-    ("hi", "laN", Pada::Parasmaipada, 7, "ahinva", "6.4.107"),
-    ("hi", "laN", Pada::Parasmaipada, 8, "ahinma", "6.4.107"),
-    ("ri", "laT", Pada::Parasmaipada, 7, "riRvaH", "6.4.107"),
-    ("ri", "laT", Pada::Parasmaipada, 8, "riRmaH", "6.4.107"),
-    ("ri", "laN", Pada::Parasmaipada, 7, "ariRva", "6.4.107"),
-    ("ri", "laN", Pada::Parasmaipada, 8, "ariRma", "6.4.107"),
-    ("BU", "laN", Pada::Parasmaipada, 0, "aBavat", "8.4.56"),
-    ("nI", "laN", Pada::Parasmaipada, 0, "anayat", "8.4.56"),
-    ("ji", "laN", Pada::Parasmaipada, 0, "ajayat", "8.4.56"),
-    ("smf", "laN", Pada::Parasmaipada, 0, "asmarat", "8.4.56"),
-    ("paW", "laN", Pada::Parasmaipada, 0, "apaWat", "8.4.56"),
-    ("vad", "laN", Pada::Parasmaipada, 0, "avadat", "8.4.56"),
-    ("BU", "viDiliN", Pada::Parasmaipada, 0, "Bavet", "8.4.56"),
-    ("nI", "viDiliN", Pada::Parasmaipada, 0, "nayet", "8.4.56"),
-    ("ji", "viDiliN", Pada::Parasmaipada, 0, "jayet", "8.4.56"),
-    ("smf", "viDiliN", Pada::Parasmaipada, 0, "smaret", "8.4.56"),
-    ("paW", "viDiliN", Pada::Parasmaipada, 0, "paWet", "8.4.56"),
-    ("vad", "viDiliN", Pada::Parasmaipada, 0, "vadet", "8.4.56"),
-    ("div", "laN", Pada::Parasmaipada, 0, "adIvyat", "8.4.56"),
-    ("naS", "laN", Pada::Parasmaipada, 0, "anaSyat", "8.4.56"),
-    ("kup", "laN", Pada::Parasmaipada, 0, "akupyat", "8.4.56"),
-    ("tud", "laN", Pada::Parasmaipada, 0, "atudat", "8.4.56"),
-    ("liK", "laN", Pada::Parasmaipada, 0, "aliKat", "8.4.56"),
-    ("viS", "laN", Pada::Parasmaipada, 0, "aviSat", "8.4.56"),
-    ("div", "viDiliN", Pada::Parasmaipada, 0, "dIvyet", "8.4.56"),
-    ("naS", "viDiliN", Pada::Parasmaipada, 0, "naSyet", "8.4.56"),
-    ("kup", "viDiliN", Pada::Parasmaipada, 0, "kupyet", "8.4.56"),
-    ("tud", "viDiliN", Pada::Parasmaipada, 0, "tudet", "8.4.56"),
-    ("liK", "viDiliN", Pada::Parasmaipada, 0, "liKet", "8.4.56"),
-    ("viS", "viDiliN", Pada::Parasmaipada, 0, "viSet", "8.4.56"),
-    ("yA", "laN", Pada::Parasmaipada, 0, "ayAt", "8.4.56"),
-    ("vA", "laN", Pada::Parasmaipada, 0, "avAt", "8.4.56"),
-    ("yA", "viDiliN", Pada::Parasmaipada, 0, "yAyAt", "8.4.56"),
-    ("vA", "viDiliN", Pada::Parasmaipada, 0, "vAyAt", "8.4.56"),
-    ("ad", "laN", Pada::Parasmaipada, 0, "Adat", "8.4.56"),
-    ("ad", "viDiliN", Pada::Parasmaipada, 0, "adyAt", "8.4.56"),
-    ("kliS", "laN", Pada::Parasmaipada, 0, "akliSnAt", "8.4.56"),
+    ("05.0012", "laT", Pada::Parasmaipada, 7, "hinvaH", "6.4.107"),
+    ("05.0012", "laT", Pada::Parasmaipada, 8, "hinmaH", "6.4.107"),
+    ("05.0012", "laN", Pada::Parasmaipada, 7, "ahinva", "6.4.107"),
+    ("05.0012", "laN", Pada::Parasmaipada, 8, "ahinma", "6.4.107"),
+    ("05.0032", "laT", Pada::Parasmaipada, 7, "riRvaH", "6.4.107"),
+    ("05.0032", "laT", Pada::Parasmaipada, 8, "riRmaH", "6.4.107"),
+    ("05.0032", "laN", Pada::Parasmaipada, 7, "ariRva", "6.4.107"),
+    ("05.0032", "laN", Pada::Parasmaipada, 8, "ariRma", "6.4.107"),
+    ("01.0001", "laN", Pada::Parasmaipada, 0, "aBavat", "8.4.56"),
+    ("01.1049", "laN", Pada::Parasmaipada, 0, "anayat", "8.4.56"),
+    ("01.0642", "laN", Pada::Parasmaipada, 0, "ajayat", "8.4.56"),
+    ("01.1082", "laN", Pada::Parasmaipada, 0, "asmarat", "8.4.56"),
+    ("01.0381", "laN", Pada::Parasmaipada, 0, "apaWat", "8.4.56"),
+    ("01.1164", "laN", Pada::Parasmaipada, 0, "avadat", "8.4.56"),
     (
-        "kliS",
+        "01.0001",
+        "viDiliN",
+        Pada::Parasmaipada,
+        0,
+        "Bavet",
+        "8.4.56",
+    ),
+    (
+        "01.1049",
+        "viDiliN",
+        Pada::Parasmaipada,
+        0,
+        "nayet",
+        "8.4.56",
+    ),
+    (
+        "01.0642",
+        "viDiliN",
+        Pada::Parasmaipada,
+        0,
+        "jayet",
+        "8.4.56",
+    ),
+    (
+        "01.1082",
+        "viDiliN",
+        Pada::Parasmaipada,
+        0,
+        "smaret",
+        "8.4.56",
+    ),
+    (
+        "01.0381",
+        "viDiliN",
+        Pada::Parasmaipada,
+        0,
+        "paWet",
+        "8.4.56",
+    ),
+    (
+        "01.1164",
+        "viDiliN",
+        Pada::Parasmaipada,
+        0,
+        "vadet",
+        "8.4.56",
+    ),
+    ("04.0001", "laN", Pada::Parasmaipada, 0, "adIvyat", "8.4.56"),
+    ("04.0091", "laN", Pada::Parasmaipada, 0, "anaSyat", "8.4.56"),
+    ("04.0146", "laN", Pada::Parasmaipada, 0, "akupyat", "8.4.56"),
+    ("06.0001", "laN", Pada::Parasmaipada, 0, "atudat", "8.4.56"),
+    ("06.0092", "laN", Pada::Parasmaipada, 0, "aliKat", "8.4.56"),
+    ("06.0160", "laN", Pada::Parasmaipada, 0, "aviSat", "8.4.56"),
+    (
+        "04.0001",
+        "viDiliN",
+        Pada::Parasmaipada,
+        0,
+        "dIvyet",
+        "8.4.56",
+    ),
+    (
+        "04.0091",
+        "viDiliN",
+        Pada::Parasmaipada,
+        0,
+        "naSyet",
+        "8.4.56",
+    ),
+    (
+        "04.0146",
+        "viDiliN",
+        Pada::Parasmaipada,
+        0,
+        "kupyet",
+        "8.4.56",
+    ),
+    (
+        "06.0001",
+        "viDiliN",
+        Pada::Parasmaipada,
+        0,
+        "tudet",
+        "8.4.56",
+    ),
+    (
+        "06.0092",
+        "viDiliN",
+        Pada::Parasmaipada,
+        0,
+        "liKet",
+        "8.4.56",
+    ),
+    (
+        "06.0160",
+        "viDiliN",
+        Pada::Parasmaipada,
+        0,
+        "viSet",
+        "8.4.56",
+    ),
+    ("02.0044", "laN", Pada::Parasmaipada, 0, "ayAt", "8.4.56"),
+    ("02.0045", "laN", Pada::Parasmaipada, 0, "avAt", "8.4.56"),
+    (
+        "02.0044",
+        "viDiliN",
+        Pada::Parasmaipada,
+        0,
+        "yAyAt",
+        "8.4.56",
+    ),
+    (
+        "02.0045",
+        "viDiliN",
+        Pada::Parasmaipada,
+        0,
+        "vAyAt",
+        "8.4.56",
+    ),
+    ("02.0001", "laN", Pada::Parasmaipada, 0, "Adat", "8.4.56"),
+    (
+        "02.0001",
+        "viDiliN",
+        Pada::Parasmaipada,
+        0,
+        "adyAt",
+        "8.4.56",
+    ),
+    (
+        "09.0058",
+        "laN",
+        Pada::Parasmaipada,
+        0,
+        "akliSnAt",
+        "8.4.56",
+    ),
+    (
+        "09.0058",
         "viDiliN",
         Pada::Parasmaipada,
         0,
         "kliSnIyAt",
         "8.4.56",
     ),
-    ("guD", "laN", Pada::Parasmaipada, 0, "aguDnAt", "8.4.56"),
+    ("09.0053", "laN", Pada::Parasmaipada, 0, "aguDnAt", "8.4.56"),
     (
-        "guD",
+        "09.0053",
         "viDiliN",
         Pada::Parasmaipada,
         0,
         "guDnIyAt",
         "8.4.56",
     ),
-    ("aS", "laN", Pada::Parasmaipada, 0, "ASnAt", "8.4.56"),
-    ("aS", "viDiliN", Pada::Parasmaipada, 0, "aSnIyAt", "8.4.56"),
-    ("muz", "laN", Pada::Parasmaipada, 0, "amuzRAt", "8.4.56"),
+    ("09.0059", "laN", Pada::Parasmaipada, 0, "ASnAt", "8.4.56"),
     (
-        "muz",
+        "09.0059",
+        "viDiliN",
+        Pada::Parasmaipada,
+        0,
+        "aSnIyAt",
+        "8.4.56",
+    ),
+    ("09.0066", "laN", Pada::Parasmaipada, 0, "amuzRAt", "8.4.56"),
+    (
+        "09.0066",
         "viDiliN",
         Pada::Parasmaipada,
         0,
         "muzRIyAt",
         "8.4.56",
     ),
-    ("vrI", "laN", Pada::Parasmaipada, 0, "avrIRAt", "8.4.56"),
+    ("09.0040", "laN", Pada::Parasmaipada, 0, "avrIRAt", "8.4.56"),
     (
-        "vrI",
+        "09.0040",
         "viDiliN",
         Pada::Parasmaipada,
         0,
         "vrIRIyAt",
         "8.4.56",
     ),
-    ("Ap", "laN", Pada::Parasmaipada, 0, "Apnot", "8.4.56"),
-    ("Ap", "viDiliN", Pada::Parasmaipada, 0, "ApnuyAt", "8.4.56"),
-    ("Sak", "laN", Pada::Parasmaipada, 0, "aSaknot", "8.4.56"),
+    ("05.0016", "laN", Pada::Parasmaipada, 0, "Apnot", "8.4.56"),
     (
-        "Sak",
+        "05.0016",
+        "viDiliN",
+        Pada::Parasmaipada,
+        0,
+        "ApnuyAt",
+        "8.4.56",
+    ),
+    ("05.0017", "laN", Pada::Parasmaipada, 0, "aSaknot", "8.4.56"),
+    (
+        "05.0017",
         "viDiliN",
         Pada::Parasmaipada,
         0,
         "SaknuyAt",
         "8.4.56",
     ),
-    ("hi", "laN", Pada::Parasmaipada, 0, "ahinot", "8.4.56"),
-    ("hi", "viDiliN", Pada::Parasmaipada, 0, "hinuyAt", "8.4.56"),
-    ("ri", "laN", Pada::Parasmaipada, 0, "ariRot", "8.4.56"),
-    ("ri", "viDiliN", Pada::Parasmaipada, 0, "riRuyAt", "8.4.56"),
-    ("BU", "loT", Pada::Parasmaipada, 0, "BavatAd", "7.1.35"),
+    ("05.0012", "laN", Pada::Parasmaipada, 0, "ahinot", "8.4.56"),
     (
-        "BU",
+        "05.0012",
+        "viDiliN",
+        Pada::Parasmaipada,
+        0,
+        "hinuyAt",
+        "8.4.56",
+    ),
+    ("05.0032", "laN", Pada::Parasmaipada, 0, "ariRot", "8.4.56"),
+    (
+        "05.0032",
+        "viDiliN",
+        Pada::Parasmaipada,
+        0,
+        "riRuyAt",
+        "8.4.56",
+    ),
+    ("01.0001", "loT", Pada::Parasmaipada, 0, "BavatAd", "7.1.35"),
+    (
+        "01.0001",
         "loT",
         Pada::Parasmaipada,
         0,
         "BavatAt",
         "7.1.35+8.4.56",
     ),
-    ("BU", "loT", Pada::Parasmaipada, 3, "BavatAd", "7.1.35"),
+    ("01.0001", "loT", Pada::Parasmaipada, 3, "BavatAd", "7.1.35"),
     (
-        "BU",
+        "01.0001",
         "loT",
         Pada::Parasmaipada,
         3,
         "BavatAt",
         "7.1.35+8.4.56",
     ),
-    ("nI", "loT", Pada::Parasmaipada, 0, "nayatAd", "7.1.35"),
+    ("01.1049", "loT", Pada::Parasmaipada, 0, "nayatAd", "7.1.35"),
     (
-        "nI",
+        "01.1049",
         "loT",
         Pada::Parasmaipada,
         0,
         "nayatAt",
         "7.1.35+8.4.56",
     ),
-    ("nI", "loT", Pada::Parasmaipada, 3, "nayatAd", "7.1.35"),
+    ("01.1049", "loT", Pada::Parasmaipada, 3, "nayatAd", "7.1.35"),
     (
-        "nI",
+        "01.1049",
         "loT",
         Pada::Parasmaipada,
         3,
         "nayatAt",
         "7.1.35+8.4.56",
     ),
-    ("ji", "loT", Pada::Parasmaipada, 0, "jayatAd", "7.1.35"),
+    ("01.0642", "loT", Pada::Parasmaipada, 0, "jayatAd", "7.1.35"),
     (
-        "ji",
+        "01.0642",
         "loT",
         Pada::Parasmaipada,
         0,
         "jayatAt",
         "7.1.35+8.4.56",
     ),
-    ("ji", "loT", Pada::Parasmaipada, 3, "jayatAd", "7.1.35"),
+    ("01.0642", "loT", Pada::Parasmaipada, 3, "jayatAd", "7.1.35"),
     (
-        "ji",
+        "01.0642",
         "loT",
         Pada::Parasmaipada,
         3,
         "jayatAt",
         "7.1.35+8.4.56",
     ),
-    ("smf", "loT", Pada::Parasmaipada, 0, "smaratAd", "7.1.35"),
     (
-        "smf",
+        "01.1082",
+        "loT",
+        Pada::Parasmaipada,
+        0,
+        "smaratAd",
+        "7.1.35",
+    ),
+    (
+        "01.1082",
         "loT",
         Pada::Parasmaipada,
         0,
         "smaratAt",
         "7.1.35+8.4.56",
     ),
-    ("smf", "loT", Pada::Parasmaipada, 3, "smaratAd", "7.1.35"),
     (
-        "smf",
+        "01.1082",
+        "loT",
+        Pada::Parasmaipada,
+        3,
+        "smaratAd",
+        "7.1.35",
+    ),
+    (
+        "01.1082",
         "loT",
         Pada::Parasmaipada,
         3,
         "smaratAt",
         "7.1.35+8.4.56",
     ),
-    ("paW", "loT", Pada::Parasmaipada, 0, "paWatAd", "7.1.35"),
+    ("01.0381", "loT", Pada::Parasmaipada, 0, "paWatAd", "7.1.35"),
     (
-        "paW",
+        "01.0381",
         "loT",
         Pada::Parasmaipada,
         0,
         "paWatAt",
         "7.1.35+8.4.56",
     ),
-    ("paW", "loT", Pada::Parasmaipada, 3, "paWatAd", "7.1.35"),
+    ("01.0381", "loT", Pada::Parasmaipada, 3, "paWatAd", "7.1.35"),
     (
-        "paW",
+        "01.0381",
         "loT",
         Pada::Parasmaipada,
         3,
         "paWatAt",
         "7.1.35+8.4.56",
     ),
-    ("vad", "loT", Pada::Parasmaipada, 0, "vadatAd", "7.1.35"),
+    ("01.1164", "loT", Pada::Parasmaipada, 0, "vadatAd", "7.1.35"),
     (
-        "vad",
+        "01.1164",
         "loT",
         Pada::Parasmaipada,
         0,
         "vadatAt",
         "7.1.35+8.4.56",
     ),
-    ("vad", "loT", Pada::Parasmaipada, 3, "vadatAd", "7.1.35"),
+    ("01.1164", "loT", Pada::Parasmaipada, 3, "vadatAd", "7.1.35"),
     (
-        "vad",
+        "01.1164",
         "loT",
         Pada::Parasmaipada,
         3,
         "vadatAt",
         "7.1.35+8.4.56",
     ),
-    ("div", "loT", Pada::Parasmaipada, 0, "dIvyatAd", "7.1.35"),
     (
-        "div",
+        "04.0001",
+        "loT",
+        Pada::Parasmaipada,
+        0,
+        "dIvyatAd",
+        "7.1.35",
+    ),
+    (
+        "04.0001",
         "loT",
         Pada::Parasmaipada,
         0,
         "dIvyatAt",
         "7.1.35+8.4.56",
     ),
-    ("div", "loT", Pada::Parasmaipada, 3, "dIvyatAd", "7.1.35"),
     (
-        "div",
+        "04.0001",
+        "loT",
+        Pada::Parasmaipada,
+        3,
+        "dIvyatAd",
+        "7.1.35",
+    ),
+    (
+        "04.0001",
         "loT",
         Pada::Parasmaipada,
         3,
         "dIvyatAt",
         "7.1.35+8.4.56",
     ),
-    ("naS", "loT", Pada::Parasmaipada, 0, "naSyatAd", "7.1.35"),
     (
-        "naS",
+        "04.0091",
+        "loT",
+        Pada::Parasmaipada,
+        0,
+        "naSyatAd",
+        "7.1.35",
+    ),
+    (
+        "04.0091",
         "loT",
         Pada::Parasmaipada,
         0,
         "naSyatAt",
         "7.1.35+8.4.56",
     ),
-    ("naS", "loT", Pada::Parasmaipada, 3, "naSyatAd", "7.1.35"),
     (
-        "naS",
+        "04.0091",
+        "loT",
+        Pada::Parasmaipada,
+        3,
+        "naSyatAd",
+        "7.1.35",
+    ),
+    (
+        "04.0091",
         "loT",
         Pada::Parasmaipada,
         3,
         "naSyatAt",
         "7.1.35+8.4.56",
     ),
-    ("kup", "loT", Pada::Parasmaipada, 0, "kupyatAd", "7.1.35"),
     (
-        "kup",
+        "04.0146",
+        "loT",
+        Pada::Parasmaipada,
+        0,
+        "kupyatAd",
+        "7.1.35",
+    ),
+    (
+        "04.0146",
         "loT",
         Pada::Parasmaipada,
         0,
         "kupyatAt",
         "7.1.35+8.4.56",
     ),
-    ("kup", "loT", Pada::Parasmaipada, 3, "kupyatAd", "7.1.35"),
     (
-        "kup",
+        "04.0146",
+        "loT",
+        Pada::Parasmaipada,
+        3,
+        "kupyatAd",
+        "7.1.35",
+    ),
+    (
+        "04.0146",
         "loT",
         Pada::Parasmaipada,
         3,
         "kupyatAt",
         "7.1.35+8.4.56",
     ),
-    ("tud", "loT", Pada::Parasmaipada, 0, "tudatAd", "7.1.35"),
+    ("06.0001", "loT", Pada::Parasmaipada, 0, "tudatAd", "7.1.35"),
     (
-        "tud",
+        "06.0001",
         "loT",
         Pada::Parasmaipada,
         0,
         "tudatAt",
         "7.1.35+8.4.56",
     ),
-    ("tud", "loT", Pada::Parasmaipada, 3, "tudatAd", "7.1.35"),
+    ("06.0001", "loT", Pada::Parasmaipada, 3, "tudatAd", "7.1.35"),
     (
-        "tud",
+        "06.0001",
         "loT",
         Pada::Parasmaipada,
         3,
         "tudatAt",
         "7.1.35+8.4.56",
     ),
-    ("liK", "loT", Pada::Parasmaipada, 0, "liKatAd", "7.1.35"),
+    ("06.0092", "loT", Pada::Parasmaipada, 0, "liKatAd", "7.1.35"),
     (
-        "liK",
+        "06.0092",
         "loT",
         Pada::Parasmaipada,
         0,
         "liKatAt",
         "7.1.35+8.4.56",
     ),
-    ("liK", "loT", Pada::Parasmaipada, 3, "liKatAd", "7.1.35"),
+    ("06.0092", "loT", Pada::Parasmaipada, 3, "liKatAd", "7.1.35"),
     (
-        "liK",
+        "06.0092",
         "loT",
         Pada::Parasmaipada,
         3,
         "liKatAt",
         "7.1.35+8.4.56",
     ),
-    ("viS", "loT", Pada::Parasmaipada, 0, "viSatAd", "7.1.35"),
+    ("06.0160", "loT", Pada::Parasmaipada, 0, "viSatAd", "7.1.35"),
     (
-        "viS",
+        "06.0160",
         "loT",
         Pada::Parasmaipada,
         0,
         "viSatAt",
         "7.1.35+8.4.56",
     ),
-    ("viS", "loT", Pada::Parasmaipada, 3, "viSatAd", "7.1.35"),
+    ("06.0160", "loT", Pada::Parasmaipada, 3, "viSatAd", "7.1.35"),
     (
-        "viS",
+        "06.0160",
         "loT",
         Pada::Parasmaipada,
         3,
         "viSatAt",
         "7.1.35+8.4.56",
     ),
-    ("yA", "loT", Pada::Parasmaipada, 0, "yAtAd", "7.1.35"),
-    ("yA", "loT", Pada::Parasmaipada, 0, "yAtAt", "7.1.35+8.4.56"),
-    ("yA", "loT", Pada::Parasmaipada, 3, "yAtAd", "7.1.35"),
-    ("yA", "loT", Pada::Parasmaipada, 3, "yAtAt", "7.1.35+8.4.56"),
-    ("vA", "loT", Pada::Parasmaipada, 0, "vAtAd", "7.1.35"),
-    ("vA", "loT", Pada::Parasmaipada, 0, "vAtAt", "7.1.35+8.4.56"),
-    ("vA", "loT", Pada::Parasmaipada, 3, "vAtAd", "7.1.35"),
-    ("vA", "loT", Pada::Parasmaipada, 3, "vAtAt", "7.1.35+8.4.56"),
-    ("ad", "loT", Pada::Parasmaipada, 0, "attAd", "7.1.35"),
-    ("ad", "loT", Pada::Parasmaipada, 0, "attAt", "7.1.35+8.4.56"),
-    ("ad", "loT", Pada::Parasmaipada, 3, "attAd", "7.1.35"),
-    ("ad", "loT", Pada::Parasmaipada, 3, "attAt", "7.1.35+8.4.56"),
-    ("kliS", "loT", Pada::Parasmaipada, 0, "kliSnItAd", "7.1.35"),
+    ("02.0044", "loT", Pada::Parasmaipada, 0, "yAtAd", "7.1.35"),
     (
-        "kliS",
+        "02.0044",
+        "loT",
+        Pada::Parasmaipada,
+        0,
+        "yAtAt",
+        "7.1.35+8.4.56",
+    ),
+    ("02.0044", "loT", Pada::Parasmaipada, 3, "yAtAd", "7.1.35"),
+    (
+        "02.0044",
+        "loT",
+        Pada::Parasmaipada,
+        3,
+        "yAtAt",
+        "7.1.35+8.4.56",
+    ),
+    ("02.0045", "loT", Pada::Parasmaipada, 0, "vAtAd", "7.1.35"),
+    (
+        "02.0045",
+        "loT",
+        Pada::Parasmaipada,
+        0,
+        "vAtAt",
+        "7.1.35+8.4.56",
+    ),
+    ("02.0045", "loT", Pada::Parasmaipada, 3, "vAtAd", "7.1.35"),
+    (
+        "02.0045",
+        "loT",
+        Pada::Parasmaipada,
+        3,
+        "vAtAt",
+        "7.1.35+8.4.56",
+    ),
+    ("02.0001", "loT", Pada::Parasmaipada, 0, "attAd", "7.1.35"),
+    (
+        "02.0001",
+        "loT",
+        Pada::Parasmaipada,
+        0,
+        "attAt",
+        "7.1.35+8.4.56",
+    ),
+    ("02.0001", "loT", Pada::Parasmaipada, 3, "attAd", "7.1.35"),
+    (
+        "02.0001",
+        "loT",
+        Pada::Parasmaipada,
+        3,
+        "attAt",
+        "7.1.35+8.4.56",
+    ),
+    (
+        "09.0058",
+        "loT",
+        Pada::Parasmaipada,
+        0,
+        "kliSnItAd",
+        "7.1.35",
+    ),
+    (
+        "09.0058",
         "loT",
         Pada::Parasmaipada,
         0,
         "kliSnItAt",
         "7.1.35+8.4.56",
     ),
-    ("kliS", "loT", Pada::Parasmaipada, 3, "kliSnItAd", "7.1.35"),
     (
-        "kliS",
+        "09.0058",
+        "loT",
+        Pada::Parasmaipada,
+        3,
+        "kliSnItAd",
+        "7.1.35",
+    ),
+    (
+        "09.0058",
         "loT",
         Pada::Parasmaipada,
         3,
         "kliSnItAt",
         "7.1.35+8.4.56",
     ),
-    ("guD", "loT", Pada::Parasmaipada, 0, "guDnItAd", "7.1.35"),
     (
-        "guD",
+        "09.0053",
+        "loT",
+        Pada::Parasmaipada,
+        0,
+        "guDnItAd",
+        "7.1.35",
+    ),
+    (
+        "09.0053",
         "loT",
         Pada::Parasmaipada,
         0,
         "guDnItAt",
         "7.1.35+8.4.56",
     ),
-    ("guD", "loT", Pada::Parasmaipada, 3, "guDnItAd", "7.1.35"),
     (
-        "guD",
+        "09.0053",
+        "loT",
+        Pada::Parasmaipada,
+        3,
+        "guDnItAd",
+        "7.1.35",
+    ),
+    (
+        "09.0053",
         "loT",
         Pada::Parasmaipada,
         3,
         "guDnItAt",
         "7.1.35+8.4.56",
     ),
-    ("aS", "loT", Pada::Parasmaipada, 0, "aSnItAd", "7.1.35"),
+    ("09.0059", "loT", Pada::Parasmaipada, 0, "aSnItAd", "7.1.35"),
     (
-        "aS",
+        "09.0059",
         "loT",
         Pada::Parasmaipada,
         0,
         "aSnItAt",
         "7.1.35+8.4.56",
     ),
-    ("aS", "loT", Pada::Parasmaipada, 3, "aSnItAd", "7.1.35"),
+    ("09.0059", "loT", Pada::Parasmaipada, 3, "aSnItAd", "7.1.35"),
     (
-        "aS",
+        "09.0059",
         "loT",
         Pada::Parasmaipada,
         3,
         "aSnItAt",
         "7.1.35+8.4.56",
     ),
-    ("muz", "loT", Pada::Parasmaipada, 0, "muzRItAd", "7.1.35"),
     (
-        "muz",
+        "09.0066",
+        "loT",
+        Pada::Parasmaipada,
+        0,
+        "muzRItAd",
+        "7.1.35",
+    ),
+    (
+        "09.0066",
         "loT",
         Pada::Parasmaipada,
         0,
         "muzRItAt",
         "7.1.35+8.4.56",
     ),
-    ("muz", "loT", Pada::Parasmaipada, 3, "muzRItAd", "7.1.35"),
     (
-        "muz",
+        "09.0066",
+        "loT",
+        Pada::Parasmaipada,
+        3,
+        "muzRItAd",
+        "7.1.35",
+    ),
+    (
+        "09.0066",
         "loT",
         Pada::Parasmaipada,
         3,
         "muzRItAt",
         "7.1.35+8.4.56",
     ),
-    ("vrI", "loT", Pada::Parasmaipada, 0, "vrIRItAd", "7.1.35"),
     (
-        "vrI",
+        "09.0040",
+        "loT",
+        Pada::Parasmaipada,
+        0,
+        "vrIRItAd",
+        "7.1.35",
+    ),
+    (
+        "09.0040",
         "loT",
         Pada::Parasmaipada,
         0,
         "vrIRItAt",
         "7.1.35+8.4.56",
     ),
-    ("vrI", "loT", Pada::Parasmaipada, 3, "vrIRItAd", "7.1.35"),
     (
-        "vrI",
+        "09.0040",
+        "loT",
+        Pada::Parasmaipada,
+        3,
+        "vrIRItAd",
+        "7.1.35",
+    ),
+    (
+        "09.0040",
         "loT",
         Pada::Parasmaipada,
         3,
         "vrIRItAt",
         "7.1.35+8.4.56",
     ),
-    ("Ap", "loT", Pada::Parasmaipada, 0, "ApnutAd", "7.1.35"),
+    ("05.0016", "loT", Pada::Parasmaipada, 0, "ApnutAd", "7.1.35"),
     (
-        "Ap",
+        "05.0016",
         "loT",
         Pada::Parasmaipada,
         0,
         "ApnutAt",
         "7.1.35+8.4.56",
     ),
-    ("Ap", "loT", Pada::Parasmaipada, 3, "ApnutAd", "7.1.35"),
+    ("05.0016", "loT", Pada::Parasmaipada, 3, "ApnutAd", "7.1.35"),
     (
-        "Ap",
+        "05.0016",
         "loT",
         Pada::Parasmaipada,
         3,
         "ApnutAt",
         "7.1.35+8.4.56",
     ),
-    ("Sak", "loT", Pada::Parasmaipada, 0, "SaknutAd", "7.1.35"),
     (
-        "Sak",
+        "05.0017",
+        "loT",
+        Pada::Parasmaipada,
+        0,
+        "SaknutAd",
+        "7.1.35",
+    ),
+    (
+        "05.0017",
         "loT",
         Pada::Parasmaipada,
         0,
         "SaknutAt",
         "7.1.35+8.4.56",
     ),
-    ("Sak", "loT", Pada::Parasmaipada, 3, "SaknutAd", "7.1.35"),
     (
-        "Sak",
+        "05.0017",
+        "loT",
+        Pada::Parasmaipada,
+        3,
+        "SaknutAd",
+        "7.1.35",
+    ),
+    (
+        "05.0017",
         "loT",
         Pada::Parasmaipada,
         3,
         "SaknutAt",
         "7.1.35+8.4.56",
     ),
-    ("hi", "loT", Pada::Parasmaipada, 0, "hinutAd", "7.1.35"),
+    ("05.0012", "loT", Pada::Parasmaipada, 0, "hinutAd", "7.1.35"),
     (
-        "hi",
+        "05.0012",
         "loT",
         Pada::Parasmaipada,
         0,
         "hinutAt",
         "7.1.35+8.4.56",
     ),
-    ("hi", "loT", Pada::Parasmaipada, 3, "hinutAd", "7.1.35"),
+    ("05.0012", "loT", Pada::Parasmaipada, 3, "hinutAd", "7.1.35"),
     (
-        "hi",
+        "05.0012",
         "loT",
         Pada::Parasmaipada,
         3,
         "hinutAt",
         "7.1.35+8.4.56",
     ),
-    ("ri", "loT", Pada::Parasmaipada, 0, "riRutAd", "7.1.35"),
+    ("05.0032", "loT", Pada::Parasmaipada, 0, "riRutAd", "7.1.35"),
     (
-        "ri",
+        "05.0032",
         "loT",
         Pada::Parasmaipada,
         0,
         "riRutAt",
         "7.1.35+8.4.56",
     ),
-    ("ri", "loT", Pada::Parasmaipada, 3, "riRutAd", "7.1.35"),
+    ("05.0032", "loT", Pada::Parasmaipada, 3, "riRutAd", "7.1.35"),
     (
-        "ri",
+        "05.0032",
         "loT",
         Pada::Parasmaipada,
         3,
         "riRutAt",
         "7.1.35+8.4.56",
     ),
-    ("yA", "laN", Pada::Parasmaipada, 2, "ayuH", "3.4.111"),
-    ("vA", "laN", Pada::Parasmaipada, 2, "avuH", "3.4.111"),
-    ("kft", "laT", Pada::Parasmaipada, 1, "kfntaH", "8.4.65"),
-    ("kft", "laT", Pada::Parasmaipada, 4, "kfnTaH", "8.4.65"),
-    ("kft", "laT", Pada::Parasmaipada, 5, "kfnTa", "8.4.65"),
-    ("kft", "laN", Pada::Parasmaipada, 0, "akfRat", "8.4.56"),
-    ("kft", "laN", Pada::Parasmaipada, 1, "akfntAm", "8.4.65"),
-    ("kft", "laN", Pada::Parasmaipada, 3, "akfRat", "8.4.56"),
-    ("kft", "laN", Pada::Parasmaipada, 3, "akfRaH", "8.2.75"),
-    ("kft", "laN", Pada::Parasmaipada, 4, "akfntam", "8.4.65"),
-    ("kft", "laN", Pada::Parasmaipada, 5, "akfnta", "8.4.65"),
-    ("kft", "loT", Pada::Parasmaipada, 0, "kfnttAd", "7.1.35"),
+    ("02.0044", "laN", Pada::Parasmaipada, 2, "ayuH", "3.4.111"),
+    ("02.0045", "laN", Pada::Parasmaipada, 2, "avuH", "3.4.111"),
+    ("07.0010", "laT", Pada::Parasmaipada, 1, "kfntaH", "8.4.65"),
+    ("07.0010", "laT", Pada::Parasmaipada, 4, "kfnTaH", "8.4.65"),
+    ("07.0010", "laT", Pada::Parasmaipada, 5, "kfnTa", "8.4.65"),
+    ("07.0010", "laN", Pada::Parasmaipada, 0, "akfRat", "8.4.56"),
+    ("07.0010", "laN", Pada::Parasmaipada, 1, "akfntAm", "8.4.65"),
+    ("07.0010", "laN", Pada::Parasmaipada, 3, "akfRat", "8.4.56"),
+    ("07.0010", "laN", Pada::Parasmaipada, 3, "akfRaH", "8.2.75"),
+    ("07.0010", "laN", Pada::Parasmaipada, 4, "akfntam", "8.4.65"),
+    ("07.0010", "laN", Pada::Parasmaipada, 5, "akfnta", "8.4.65"),
+    ("07.0010", "loT", Pada::Parasmaipada, 0, "kfnttAd", "7.1.35"),
     (
-        "kft",
+        "07.0010",
         "loT",
         Pada::Parasmaipada,
         0,
@@ -2857,7 +3169,7 @@ const ALTERNATES: &[(&str, &str, Pada, usize, &str, &str)] = &[
         "7.1.35+8.4.65",
     ),
     (
-        "kft",
+        "07.0010",
         "loT",
         Pada::Parasmaipada,
         0,
@@ -2865,18 +3177,18 @@ const ALTERNATES: &[(&str, &str, Pada, usize, &str, &str)] = &[
         "7.1.35+8.4.56",
     ),
     (
-        "kft",
+        "07.0010",
         "loT",
         Pada::Parasmaipada,
         0,
         "kfntAt",
         "7.1.35+8.4.65+8.4.56",
     ),
-    ("kft", "loT", Pada::Parasmaipada, 1, "kfntAm", "8.4.65"),
-    ("kft", "loT", Pada::Parasmaipada, 3, "kfnDi", "8.4.65"),
-    ("kft", "loT", Pada::Parasmaipada, 3, "kfnttAd", "7.1.35"),
+    ("07.0010", "loT", Pada::Parasmaipada, 1, "kfntAm", "8.4.65"),
+    ("07.0010", "loT", Pada::Parasmaipada, 3, "kfnDi", "8.4.65"),
+    ("07.0010", "loT", Pada::Parasmaipada, 3, "kfnttAd", "7.1.35"),
     (
-        "kft",
+        "07.0010",
         "loT",
         Pada::Parasmaipada,
         3,
@@ -2884,7 +3196,7 @@ const ALTERNATES: &[(&str, &str, Pada, usize, &str, &str)] = &[
         "7.1.35+8.4.65",
     ),
     (
-        "kft",
+        "07.0010",
         "loT",
         Pada::Parasmaipada,
         3,
@@ -2892,59 +3204,73 @@ const ALTERNATES: &[(&str, &str, Pada, usize, &str, &str)] = &[
         "7.1.35+8.4.56",
     ),
     (
-        "kft",
+        "07.0010",
         "loT",
         Pada::Parasmaipada,
         3,
         "kfntAt",
         "7.1.35+8.4.65+8.4.56",
     ),
-    ("kft", "loT", Pada::Parasmaipada, 4, "kfntam", "8.4.65"),
-    ("kft", "loT", Pada::Parasmaipada, 5, "kfnta", "8.4.65"),
-    ("kft", "viDiliN", Pada::Parasmaipada, 0, "kfntyAt", "8.4.56"),
-    ("his", "laN", Pada::Parasmaipada, 0, "ahinat", "8.4.56"),
-    ("his", "laN", Pada::Parasmaipada, 3, "ahinat", "8.4.56"),
-    ("his", "laN", Pada::Parasmaipada, 3, "ahinaH", "8.2.74"),
-    ("his", "loT", Pada::Parasmaipada, 0, "hiMstAd", "7.1.35"),
+    ("07.0010", "loT", Pada::Parasmaipada, 4, "kfntam", "8.4.65"),
+    ("07.0010", "loT", Pada::Parasmaipada, 5, "kfnta", "8.4.65"),
     (
-        "his",
+        "07.0010",
+        "viDiliN",
+        Pada::Parasmaipada,
+        0,
+        "kfntyAt",
+        "8.4.56",
+    ),
+    ("07.0019", "laN", Pada::Parasmaipada, 0, "ahinat", "8.4.56"),
+    ("07.0019", "laN", Pada::Parasmaipada, 3, "ahinat", "8.4.56"),
+    ("07.0019", "laN", Pada::Parasmaipada, 3, "ahinaH", "8.2.74"),
+    ("07.0019", "loT", Pada::Parasmaipada, 0, "hiMstAd", "7.1.35"),
+    (
+        "07.0019",
         "loT",
         Pada::Parasmaipada,
         0,
         "hiMstAt",
         "7.1.35+8.4.56",
     ),
-    ("his", "loT", Pada::Parasmaipada, 3, "hiMstAd", "7.1.35"),
+    ("07.0019", "loT", Pada::Parasmaipada, 3, "hiMstAd", "7.1.35"),
     (
-        "his",
+        "07.0019",
         "loT",
         Pada::Parasmaipada,
         3,
         "hiMstAt",
         "7.1.35+8.4.56",
     ),
-    ("his", "viDiliN", Pada::Parasmaipada, 0, "hiMsyAt", "8.4.56"),
-    ("Kid", "laT", Pada::Atmanepada, 0, "Kinte", "8.4.65"),
-    ("Kid", "laT", Pada::Atmanepada, 5, "KinDve", "8.4.65"),
-    ("Kid", "laN", Pada::Atmanepada, 0, "aKinta", "8.4.65"),
-    ("Kid", "laN", Pada::Atmanepada, 3, "aKinTAH", "8.4.65"),
-    ("Kid", "laN", Pada::Atmanepada, 5, "aKinDvam", "8.4.65"),
-    ("Kid", "loT", Pada::Atmanepada, 0, "KintAm", "8.4.65"),
-    ("Kid", "loT", Pada::Atmanepada, 5, "KinDvam", "8.4.65"),
-    ("Banj", "laN", Pada::Parasmaipada, 0, "aBanak", "8.4.56"),
-    ("Banj", "laN", Pada::Parasmaipada, 3, "aBanak", "8.4.56"),
-    ("Banj", "loT", Pada::Parasmaipada, 0, "BaNktAd", "7.1.35"),
     (
-        "Banj",
+        "07.0019",
+        "viDiliN",
+        Pada::Parasmaipada,
+        0,
+        "hiMsyAt",
+        "8.4.56",
+    ),
+    ("07.0012", "laT", Pada::Atmanepada, 0, "Kinte", "8.4.65"),
+    ("07.0012", "laT", Pada::Atmanepada, 5, "KinDve", "8.4.65"),
+    ("07.0012", "laN", Pada::Atmanepada, 0, "aKinta", "8.4.65"),
+    ("07.0012", "laN", Pada::Atmanepada, 3, "aKinTAH", "8.4.65"),
+    ("07.0012", "laN", Pada::Atmanepada, 5, "aKinDvam", "8.4.65"),
+    ("07.0012", "loT", Pada::Atmanepada, 0, "KintAm", "8.4.65"),
+    ("07.0012", "loT", Pada::Atmanepada, 5, "KinDvam", "8.4.65"),
+    ("07.0016", "laN", Pada::Parasmaipada, 0, "aBanak", "8.4.56"),
+    ("07.0016", "laN", Pada::Parasmaipada, 3, "aBanak", "8.4.56"),
+    ("07.0016", "loT", Pada::Parasmaipada, 0, "BaNktAd", "7.1.35"),
+    (
+        "07.0016",
         "loT",
         Pada::Parasmaipada,
         0,
         "BaNktAt",
         "7.1.35+8.4.56",
     ),
-    ("Banj", "loT", Pada::Parasmaipada, 3, "BaNktAd", "7.1.35"),
+    ("07.0016", "loT", Pada::Parasmaipada, 3, "BaNktAd", "7.1.35"),
     (
-        "Banj",
+        "07.0016",
         "loT",
         Pada::Parasmaipada,
         3,
@@ -2952,54 +3278,61 @@ const ALTERNATES: &[(&str, &str, Pada, usize, &str, &str)] = &[
         "7.1.35+8.4.56",
     ),
     (
-        "Banj",
+        "07.0016",
         "viDiliN",
         Pada::Parasmaipada,
         0,
         "BaYjyAt",
         "8.4.56",
     ),
-    ("piz", "laN", Pada::Parasmaipada, 0, "apinaw", "8.4.56"),
-    ("piz", "laN", Pada::Parasmaipada, 3, "apinaw", "8.4.56"),
-    ("piz", "loT", Pada::Parasmaipada, 0, "piMzwAd", "7.1.35"),
+    ("07.0015", "laN", Pada::Parasmaipada, 0, "apinaw", "8.4.56"),
+    ("07.0015", "laN", Pada::Parasmaipada, 3, "apinaw", "8.4.56"),
+    ("07.0015", "loT", Pada::Parasmaipada, 0, "piMzwAd", "7.1.35"),
     (
-        "piz",
+        "07.0015",
         "loT",
         Pada::Parasmaipada,
         0,
         "piMzwAt",
         "7.1.35+8.4.56",
     ),
-    ("piz", "loT", Pada::Parasmaipada, 3, "piRQi", "8.4.65"),
-    ("piz", "loT", Pada::Parasmaipada, 3, "piMzwAd", "7.1.35"),
+    ("07.0015", "loT", Pada::Parasmaipada, 3, "piRQi", "8.4.65"),
+    ("07.0015", "loT", Pada::Parasmaipada, 3, "piMzwAd", "7.1.35"),
     (
-        "piz",
+        "07.0015",
         "loT",
         Pada::Parasmaipada,
         3,
         "piMzwAt",
         "7.1.35+8.4.56",
     ),
-    ("piz", "viDiliN", Pada::Parasmaipada, 0, "piMzyAt", "8.4.56"),
-    ("inD", "laT", Pada::Atmanepada, 0, "inDe", "8.4.65"),
-    ("inD", "laT", Pada::Atmanepada, 5, "inDve", "8.4.65"),
-    ("inD", "laN", Pada::Atmanepada, 0, "EnDa", "8.4.65"),
-    ("inD", "laN", Pada::Atmanepada, 3, "EnDAH", "8.4.65"),
-    ("inD", "laN", Pada::Atmanepada, 5, "EnDvam", "8.4.65"),
-    ("inD", "loT", Pada::Atmanepada, 0, "inDAm", "8.4.65"),
-    ("inD", "loT", Pada::Atmanepada, 5, "inDvam", "8.4.65"),
-    ("ruD", "laT", Pada::Parasmaipada, 1, "runDaH", "8.4.65"),
-    ("ruD", "laT", Pada::Parasmaipada, 4, "runDaH", "8.4.65"),
-    ("ruD", "laT", Pada::Parasmaipada, 5, "runDa", "8.4.65"),
-    ("ruD", "laN", Pada::Parasmaipada, 0, "aruRat", "8.4.56"),
-    ("ruD", "laN", Pada::Parasmaipada, 1, "arunDAm", "8.4.65"),
-    ("ruD", "laN", Pada::Parasmaipada, 3, "aruRat", "8.4.56"),
-    ("ruD", "laN", Pada::Parasmaipada, 3, "aruRaH", "8.2.75"),
-    ("ruD", "laN", Pada::Parasmaipada, 4, "arunDam", "8.4.65"),
-    ("ruD", "laN", Pada::Parasmaipada, 5, "arunDa", "8.4.65"),
-    ("ruD", "loT", Pada::Parasmaipada, 0, "rundDAd", "7.1.35"),
     (
-        "ruD",
+        "07.0015",
+        "viDiliN",
+        Pada::Parasmaipada,
+        0,
+        "piMzyAt",
+        "8.4.56",
+    ),
+    ("07.0011", "laT", Pada::Atmanepada, 0, "inDe", "8.4.65"),
+    ("07.0011", "laT", Pada::Atmanepada, 5, "inDve", "8.4.65"),
+    ("07.0011", "laN", Pada::Atmanepada, 0, "EnDa", "8.4.65"),
+    ("07.0011", "laN", Pada::Atmanepada, 3, "EnDAH", "8.4.65"),
+    ("07.0011", "laN", Pada::Atmanepada, 5, "EnDvam", "8.4.65"),
+    ("07.0011", "loT", Pada::Atmanepada, 0, "inDAm", "8.4.65"),
+    ("07.0011", "loT", Pada::Atmanepada, 5, "inDvam", "8.4.65"),
+    ("07.0001", "laT", Pada::Parasmaipada, 1, "runDaH", "8.4.65"),
+    ("07.0001", "laT", Pada::Parasmaipada, 4, "runDaH", "8.4.65"),
+    ("07.0001", "laT", Pada::Parasmaipada, 5, "runDa", "8.4.65"),
+    ("07.0001", "laN", Pada::Parasmaipada, 0, "aruRat", "8.4.56"),
+    ("07.0001", "laN", Pada::Parasmaipada, 1, "arunDAm", "8.4.65"),
+    ("07.0001", "laN", Pada::Parasmaipada, 3, "aruRat", "8.4.56"),
+    ("07.0001", "laN", Pada::Parasmaipada, 3, "aruRaH", "8.2.75"),
+    ("07.0001", "laN", Pada::Parasmaipada, 4, "arunDam", "8.4.65"),
+    ("07.0001", "laN", Pada::Parasmaipada, 5, "arunDa", "8.4.65"),
+    ("07.0001", "loT", Pada::Parasmaipada, 0, "rundDAd", "7.1.35"),
+    (
+        "07.0001",
         "loT",
         Pada::Parasmaipada,
         0,
@@ -3007,7 +3340,7 @@ const ALTERNATES: &[(&str, &str, Pada, usize, &str, &str)] = &[
         "7.1.35+8.4.65",
     ),
     (
-        "ruD",
+        "07.0001",
         "loT",
         Pada::Parasmaipada,
         0,
@@ -3015,18 +3348,18 @@ const ALTERNATES: &[(&str, &str, Pada, usize, &str, &str)] = &[
         "7.1.35+8.4.56",
     ),
     (
-        "ruD",
+        "07.0001",
         "loT",
         Pada::Parasmaipada,
         0,
         "runDAt",
         "7.1.35+8.4.65+8.4.56",
     ),
-    ("ruD", "loT", Pada::Parasmaipada, 1, "runDAm", "8.4.65"),
-    ("ruD", "loT", Pada::Parasmaipada, 3, "runDi", "8.4.65"),
-    ("ruD", "loT", Pada::Parasmaipada, 3, "rundDAd", "7.1.35"),
+    ("07.0001", "loT", Pada::Parasmaipada, 1, "runDAm", "8.4.65"),
+    ("07.0001", "loT", Pada::Parasmaipada, 3, "runDi", "8.4.65"),
+    ("07.0001", "loT", Pada::Parasmaipada, 3, "rundDAd", "7.1.35"),
     (
-        "ruD",
+        "07.0001",
         "loT",
         Pada::Parasmaipada,
         3,
@@ -3034,7 +3367,7 @@ const ALTERNATES: &[(&str, &str, Pada, usize, &str, &str)] = &[
         "7.1.35+8.4.65",
     ),
     (
-        "ruD",
+        "07.0001",
         "loT",
         Pada::Parasmaipada,
         3,
@@ -3042,32 +3375,39 @@ const ALTERNATES: &[(&str, &str, Pada, usize, &str, &str)] = &[
         "7.1.35+8.4.56",
     ),
     (
-        "ruD",
+        "07.0001",
         "loT",
         Pada::Parasmaipada,
         3,
         "runDAt",
         "7.1.35+8.4.65+8.4.56",
     ),
-    ("ruD", "loT", Pada::Parasmaipada, 4, "runDam", "8.4.65"),
-    ("ruD", "loT", Pada::Parasmaipada, 5, "runDa", "8.4.65"),
-    ("ruD", "viDiliN", Pada::Parasmaipada, 0, "runDyAt", "8.4.56"),
-    ("ruD", "laT", Pada::Atmanepada, 0, "runDe", "8.4.65"),
-    ("ruD", "laT", Pada::Atmanepada, 5, "runDve", "8.4.65"),
-    ("ruD", "laN", Pada::Atmanepada, 0, "arunDa", "8.4.65"),
-    ("ruD", "laN", Pada::Atmanepada, 3, "arunDAH", "8.4.65"),
-    ("ruD", "laN", Pada::Atmanepada, 5, "arunDvam", "8.4.65"),
-    ("ruD", "loT", Pada::Atmanepada, 0, "runDAm", "8.4.65"),
-    ("ruD", "loT", Pada::Atmanepada, 5, "runDvam", "8.4.65"),
+    ("07.0001", "loT", Pada::Parasmaipada, 4, "runDam", "8.4.65"),
+    ("07.0001", "loT", Pada::Parasmaipada, 5, "runDa", "8.4.65"),
+    (
+        "07.0001",
+        "viDiliN",
+        Pada::Parasmaipada,
+        0,
+        "runDyAt",
+        "8.4.56",
+    ),
+    ("07.0001", "laT", Pada::Atmanepada, 0, "runDe", "8.4.65"),
+    ("07.0001", "laT", Pada::Atmanepada, 5, "runDve", "8.4.65"),
+    ("07.0001", "laN", Pada::Atmanepada, 0, "arunDa", "8.4.65"),
+    ("07.0001", "laN", Pada::Atmanepada, 3, "arunDAH", "8.4.65"),
+    ("07.0001", "laN", Pada::Atmanepada, 5, "arunDvam", "8.4.65"),
+    ("07.0001", "loT", Pada::Atmanepada, 0, "runDAm", "8.4.65"),
+    ("07.0001", "loT", Pada::Atmanepada, 5, "runDvam", "8.4.65"),
 ];
 
-fn lan_a_form(id: &str, pu: Purusha, va: Vacana) -> String {
-    let d = dhatus().iter().find(|d| d.id == id).unwrap();
+fn lan_a_form(number: &str, pu: Purusha, va: Vacana) -> String {
+    let d = dhatus().iter().find(|d| d.dhatupatha == number).unwrap();
     let branches = derive(d, Lakara::Lan, Pada::Atmanepada, pu, va);
     assert_eq!(
         branches.len(),
         1,
-        "{id} laṅ ātmanepada {pu:?} {va:?} forked unexpectedly"
+        "{number} laṅ ātmanepada {pu:?} {va:?} forked unexpectedly"
     );
     branches[0].text()
 }
@@ -3086,7 +3426,7 @@ fn labh_lan_atmanepada_all_nine_cells() {
         (Purusha::Uttama, Vacana::Bahu, "alaBAmahi"),
     ];
     for (pu, va, form) in expected {
-        assert_eq!(lan_a_form("laB", pu, va), form, "{pu:?} {va:?}");
+        assert_eq!(lan_a_form("01.1130", pu, va), form, "{pu:?} {va:?}");
     }
 }
 
@@ -3094,29 +3434,34 @@ fn labh_lan_atmanepada_all_nine_cells() {
 fn vowel_initial_roots_take_at_not_a() {
     // 6.4.72 āḍ ajādīnām (apavāda to 6.4.71) + 6.1.90 vṛddhi:
     // a+eD → ED (aidhata), a+Ikz → Ekz (aikṣata).
-    assert_eq!(lan_a_form("eD", Purusha::Prathama, Vacana::Eka), "EData");
-    assert_eq!(lan_a_form("Ikz", Purusha::Prathama, Vacana::Eka), "Ekzata");
+    assert_eq!(
+        lan_a_form("01.0002", Purusha::Prathama, Vacana::Eka),
+        "EData"
+    );
+    assert_eq!(
+        lan_a_form("01.0694", Purusha::Prathama, Vacana::Eka),
+        "Ekzata"
+    );
 }
 
 #[test]
 fn every_form_validates_and_matches() {
     let engine = Panini::new();
     for (root, lakara, row_pada, forms) in PARADIGM {
-        // `PARADIGM`'s first column is a `Dhatu::id` (gaṇa-qualified, so the
-        // two √aś rows stay distinct: `aS.5` vs `aS`), but `Analysis::dhatu`
-        // reports the surface `code` (deliberately not unique — it's a
-        // user-facing spelling, not a key). The two must be resolved against
-        // each other rather than compared directly. Because both √aś rows
-        // share `code == "aS"`, matching on `code` alone would let a
-        // mis-transcribed row silently bind to the WRONG root's forms as
-        // long as the two roots' surfaces happen to be disjoint. Comparing
-        // against `row_pada` — the row's own declared pada — rather than
+        // `PARADIGM`'s first column is a `Dhatu::dhatupatha`, but
+        // `Analysis::dhatu` reports the surface `code` (deliberately not
+        // unique — it's a user-facing spelling, not a key). The two must be
+        // resolved against each other rather than compared directly. Because
+        // both √aś rows share `code == "aS"`, matching on `code` alone would
+        // let a mis-transcribed row silently bind to the WRONG root's forms
+        // as long as the two roots' surfaces happen to be disjoint.
+        // Comparing against `row_pada` — the row's own declared pada — rather than
         // `d.pada.padas()[0]` pins the row's claim, not the root's: it still
         // closes the √aś hole (kryādi's is parasmaipada, svādi's is
         // ātmanepada), and it is the form that also works once a root's
         // `PadaAssignment` is `Ubhayapada` and `padas()[0]` alone can no
         // longer stand in for "the pada this block is for".
-        let d = dhatus().iter().find(|d| d.id == *root).unwrap();
+        let d = dhatus().iter().find(|d| d.dhatupatha == *root).unwrap();
         for expected in forms {
             let r = engine.check(expected);
             assert!(
@@ -3135,7 +3480,7 @@ fn every_form_validates_and_matches() {
 }
 
 /// Every alternate must itself check out as a real form of the root and
-/// lakāra it is filed under — same `Dhatu::id` → `code` resolution
+/// lakāra it is filed under — same `Dhatu::dhatupatha` → `code` resolution
 /// `every_form_validates_and_matches` uses, since `Analysis::dhatu` reports
 /// the non-unique surface `code`. Pinned against the row's own `pada`, for
 /// the same reason `every_form_validates_and_matches` is.
@@ -3143,7 +3488,7 @@ fn every_form_validates_and_matches() {
 fn every_alternate_validates_and_matches() {
     let engine = Panini::new();
     for (root, lakara, row_pada, _cell, form, _key) in ALTERNATES {
-        let d = dhatus().iter().find(|d| d.id == *root).unwrap();
+        let d = dhatus().iter().find(|d| d.dhatupatha == *root).unwrap();
         let r = engine.check(form);
         assert!(
             matches!(r.verdict, Verdict::Valid),
@@ -3197,7 +3542,7 @@ const VIKALPA_RULES: &[&str] = &[
 #[test]
 fn every_alternate_names_the_vikalpa_rules_that_produced_it() {
     for (root, lakara, pada, cell, form, key) in ALTERNATES {
-        let d = dhatus().iter().find(|d| d.id == *root).unwrap();
+        let d = dhatus().iter().find(|d| d.dhatupatha == *root).unwrap();
         let (pu, va) = CELLS[*cell];
         let lak = *LAKARA_BY_NAME
             .iter()
@@ -3230,7 +3575,7 @@ fn every_alternate_names_the_vikalpa_rules_that_produced_it() {
 #[test]
 fn derivation_set_is_exactly_pinned() {
     for (root, lakara, row_pada, forms) in PARADIGM {
-        let d = dhatus().iter().find(|d| d.id == *root).unwrap();
+        let d = dhatus().iter().find(|d| d.dhatupatha == *root).unwrap();
         for (cell, expected) in forms.iter().enumerate() {
             let (pu, va) = CELLS[cell];
             let lak = *LAKARA_BY_NAME
@@ -3398,7 +3743,7 @@ fn paradigm_covers_every_enumerable_cell() {
     for d in dhatus() {
         for &lakara in panini_analyze::LAKARAS {
             for &pada in d.pada.padas() {
-                let triple = (d.id, panini::lakara_name(lakara), pada);
+                let triple = (d.dhatupatha, panini::lakara_name(lakara), pada);
                 if !pinned.contains(&triple) {
                     unpinned.push(triple);
                 }

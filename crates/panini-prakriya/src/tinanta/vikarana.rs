@@ -774,8 +774,12 @@ mod tests {
         // Asserting the 3.1.78 step over every branch is strictly stronger
         // than asserting it on a single derivation and stays valid once that
         // fork exists.
-        for (id, stem) in [("kft", "kfnat"), ("his", "hinans"), ("Kid", "Kinad")] {
-            let d = dhatus().iter().find(|d| d.id == id).unwrap();
+        for (number, stem) in [
+            ("07.0010", "kfnat"),
+            ("07.0019", "hinans"),
+            ("07.0012", "Kinad"),
+        ] {
+            let d = dhatus().iter().find(|d| d.dhatupatha == number).unwrap();
             let branches = derive(
                 d,
                 Lakara::Lat,
@@ -795,10 +799,11 @@ mod tests {
                     .iter()
                     .rev()
                     .find(|s| s.sutra == "3.1.78")
-                    .unwrap_or_else(|| panic!("{id}: 3.1.78 never fired"));
+                    .unwrap_or_else(|| panic!("{}: 3.1.78 never fired", d.code));
                 assert!(
                     step.after.starts_with(stem),
-                    "{id}: expected stem {stem}, got {}",
+                    "{}: expected stem {stem}, got {}",
+                    d.code,
                     step.after
                 );
                 // The chain stays continuous and in sūtra order: 1.3.9 sits
@@ -807,11 +812,13 @@ mod tests {
                 let last = p.log.iter().rposition(|s| s.sutra == "3.1.78").unwrap();
                 assert!(
                     first < last,
-                    "{id}: expected two 3.1.78 entries (insertion, placement)"
+                    "{}: expected two 3.1.78 entries (insertion, placement)",
+                    d.code
                 );
                 assert!(
                     p.log[first + 1..last].iter().any(|s| s.sutra == "1.3.9"),
-                    "{id}: 1.3.9 does not fall between the two 3.1.78 entries"
+                    "{}: 1.3.9 does not fall between the two 3.1.78 entries",
+                    d.code
                 );
             }
         }
@@ -821,8 +828,8 @@ mod tests {
     fn shnam_declines_outside_rudhadi() {
         // The guard is a gaṇa tag, not a shape test. √kliś would split
         // perfectly well after its `i`, and must not.
-        for id in ["BU", "kliS", "Ap", "ad"] {
-            let d = dhatus().iter().find(|d| d.id == id).unwrap();
+        for number in ["01.0001", "09.0058", "05.0016", "02.0001"] {
+            let d = dhatus().iter().find(|d| d.dhatupatha == number).unwrap();
             let branches = derive(
                 d,
                 Lakara::Lat,
@@ -833,7 +840,8 @@ mod tests {
             for p in &branches {
                 assert!(
                     !p.log.iter().any(|s| s.sutra == "3.1.78"),
-                    "{id}: 3.1.78 fired outside rudhādi"
+                    "{}: 3.1.78 fired outside rudhādi",
+                    d.code
                 );
             }
         }

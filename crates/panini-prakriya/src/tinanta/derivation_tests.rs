@@ -45,8 +45,8 @@ pub(super) fn declined(branches: Vec<Prakriya>, expected: usize) -> Prakriya {
     branches.into_iter().next().unwrap()
 }
 
-pub(super) fn form(code: &str, pu: Purusha, va: Vacana) -> String {
-    let d = dhatus().iter().find(|d| d.id == code).unwrap();
+pub(super) fn form(number: &str, pu: Purusha, va: Vacana) -> String {
+    let d = dhatus().iter().find(|d| d.dhatupatha == number).unwrap();
     sole(derive(d, Lakara::Lat, Pada::Parasmaipada, pu, va)).text()
 }
 
@@ -54,41 +54,41 @@ pub(super) fn form(code: &str, pu: Purusha, va: Vacana) -> String {
 // as `crate::tinanta::form_g`; `anga.rs` and `tripadi.rs` import it by that
 // stable path. The other helpers carry the same visibility so a stage test
 // module can import any of them the same way.
-pub(super) fn form_g(code: &str, la: Lakara, pu: Purusha, va: Vacana) -> String {
-    let d = dhatus().iter().find(|d| d.id == code).unwrap();
+pub(super) fn form_g(number: &str, la: Lakara, pu: Purusha, va: Vacana) -> String {
+    let d = dhatus().iter().find(|d| d.dhatupatha == number).unwrap();
     sole(derive(d, la, d.pada.padas()[0], pu, va)).text()
 }
 
 /// `form_g` for a cell an optional rule forks: same lookup, `declined`
 /// instead of `sole`.
 pub(super) fn form_g_forked(
-    code: &str,
+    number: &str,
     la: Lakara,
     pu: Purusha,
     va: Vacana,
     branches: usize,
 ) -> String {
-    let d = dhatus().iter().find(|d| d.id == code).unwrap();
+    let d = dhatus().iter().find(|d| d.dhatupatha == number).unwrap();
     declined(derive(d, la, d.pada.padas()[0], pu, va), branches).text()
 }
 
-pub(super) fn lin_form(code: &str, pu: Purusha, va: Vacana) -> String {
-    let d = dhatus().iter().find(|d| d.id == code).unwrap();
+pub(super) fn lin_form(number: &str, pu: Purusha, va: Vacana) -> String {
+    let d = dhatus().iter().find(|d| d.dhatupatha == number).unwrap();
     sole(derive(d, Lakara::VidhiLin, Pada::Parasmaipada, pu, va)).text()
 }
 
-pub(super) fn lat_a_form(code: &str, pu: Purusha, va: Vacana) -> String {
-    let d = dhatus().iter().find(|d| d.id == code).unwrap();
+pub(super) fn lat_a_form(number: &str, pu: Purusha, va: Vacana) -> String {
+    let d = dhatus().iter().find(|d| d.dhatupatha == number).unwrap();
     sole(derive(d, Lakara::Lat, Pada::Atmanepada, pu, va)).text()
 }
 
-pub(super) fn lot_a_form(code: &str, pu: Purusha, va: Vacana) -> String {
-    let d = dhatus().iter().find(|d| d.id == code).unwrap();
+pub(super) fn lot_a_form(number: &str, pu: Purusha, va: Vacana) -> String {
+    let d = dhatus().iter().find(|d| d.dhatupatha == number).unwrap();
     sole(derive(d, Lakara::Lot, Pada::Atmanepada, pu, va)).text()
 }
 
-pub(super) fn lin_a_form(code: &str, pu: Purusha, va: Vacana) -> String {
-    let d = dhatus().iter().find(|d| d.id == code).unwrap();
+pub(super) fn lin_a_form(number: &str, pu: Purusha, va: Vacana) -> String {
+    let d = dhatus().iter().find(|d| d.dhatupatha == number).unwrap();
     sole(derive(d, Lakara::VidhiLin, Pada::Atmanepada, pu, va)).text()
 }
 
@@ -146,47 +146,47 @@ fn divadi_tudadi_present_third_singular() {
     // Guṇa blocked by 1.1.5 (śyan/śa are ṅit): kup→kupyati NOT kopyati,
     // tud→tudati NOT todati, juṣ→juṣate NOT joṣate.
     assert_eq!(
-        form_g("naS", Lakara::Lat, Purusha::Prathama, Vacana::Eka),
+        form_g("04.0091", Lakara::Lat, Purusha::Prathama, Vacana::Eka),
         "naSyati"
     );
     assert_eq!(
-        form_g("kup", Lakara::Lat, Purusha::Prathama, Vacana::Eka),
+        form_g("04.0146", Lakara::Lat, Purusha::Prathama, Vacana::Eka),
         "kupyati"
     );
     assert_eq!(
-        form_g("man", Lakara::Lat, Purusha::Prathama, Vacana::Eka),
+        form_g("04.0073", Lakara::Lat, Purusha::Prathama, Vacana::Eka),
         "manyate"
     );
     assert_eq!(
-        form_g("yuD", Lakara::Lat, Purusha::Prathama, Vacana::Eka),
+        form_g("04.0069", Lakara::Lat, Purusha::Prathama, Vacana::Eka),
         "yuDyate"
     );
     assert_eq!(
-        form_g("vid", Lakara::Lat, Purusha::Prathama, Vacana::Eka),
+        form_g("04.0067", Lakara::Lat, Purusha::Prathama, Vacana::Eka),
         "vidyate"
     );
     assert_eq!(
-        form_g("tud", Lakara::Lat, Purusha::Prathama, Vacana::Eka),
+        form_g("06.0001", Lakara::Lat, Purusha::Prathama, Vacana::Eka),
         "tudati"
     );
     assert_eq!(
-        form_g("liK", Lakara::Lat, Purusha::Prathama, Vacana::Eka),
+        form_g("06.0092", Lakara::Lat, Purusha::Prathama, Vacana::Eka),
         "liKati"
     );
     assert_eq!(
-        form_g("viS", Lakara::Lat, Purusha::Prathama, Vacana::Eka),
+        form_g("06.0160", Lakara::Lat, Purusha::Prathama, Vacana::Eka),
         "viSati"
     );
     assert_eq!(
-        form_g("juz", Lakara::Lat, Purusha::Prathama, Vacana::Eka),
+        form_g("06.0008", Lakara::Lat, Purusha::Prathama, Vacana::Eka),
         "juzate"
     );
     assert_eq!(
-        form_g("vij", Lakara::Lat, Purusha::Prathama, Vacana::Eka),
+        form_g("06.0009", Lakara::Lat, Purusha::Prathama, Vacana::Eka),
         "vijate"
     );
     assert_eq!(
-        form_g("gur", Lakara::Lat, Purusha::Prathama, Vacana::Eka),
+        form_g("06.0131", Lakara::Lat, Purusha::Prathama, Vacana::Eka),
         "gurate"
     );
 }
@@ -204,40 +204,46 @@ fn divadi_tudadi_vowel_sandhi_cells() {
     // not `aa`). naS/tud/juz avoid √div, whose 8.2.77 lengthening is
     // Task 5's job — its short-vowel `divyanti` is already correct here.
     assert_eq!(
-        form_g("naS", Lakara::Lat, Purusha::Prathama, Vacana::Bahu),
+        form_g("04.0091", Lakara::Lat, Purusha::Prathama, Vacana::Bahu),
         "naSyanti"
     );
     assert_eq!(
-        form_g("tud", Lakara::Lat, Purusha::Prathama, Vacana::Bahu),
+        form_g("06.0001", Lakara::Lat, Purusha::Prathama, Vacana::Bahu),
         "tudanti"
     );
     assert_eq!(
-        form_g("juz", Lakara::Lat, Purusha::Prathama, Vacana::Bahu),
+        form_g("06.0008", Lakara::Lat, Purusha::Prathama, Vacana::Bahu),
         "juzante"
     );
     // 1st singular (7.3.101 ato dIrgho yaYi: śyan/śa `a` + `mi` → `Ami`).
     assert_eq!(
-        form_g("tud", Lakara::Lat, Purusha::Uttama, Vacana::Eka),
+        form_g("06.0001", Lakara::Lat, Purusha::Uttama, Vacana::Eka),
         "tudAmi"
     );
     // Ātmanepada uttama-eka (6.1.97 a+e para-rūpa: śyan `ya` + `e` → `ye`).
     assert_eq!(
-        form_g("man", Lakara::Lat, Purusha::Uttama, Vacana::Eka),
+        form_g("04.0073", Lakara::Lat, Purusha::Uttama, Vacana::Eka),
         "manye"
     );
     // 7.2.81 Ato NitaH: ātmanepada dual Ate→iyte, then coalesced.
     assert_eq!(
-        form_g("man", Lakara::Lat, Purusha::Prathama, Vacana::Dvi),
+        form_g("04.0073", Lakara::Lat, Purusha::Prathama, Vacana::Dvi),
         "manyete"
     );
     // 7.2.80 ato yeyaH: vidhiliṅ yA→iy after śyan's `ya`.
     assert_eq!(
-        form_g_forked("kup", Lakara::VidhiLin, Purusha::Prathama, Vacana::Eka, 2),
+        form_g_forked(
+            "04.0146",
+            Lakara::VidhiLin,
+            Purusha::Prathama,
+            Vacana::Eka,
+            2
+        ),
         "kupyed"
     );
     // 6.4.105 ato heH: imperative hi-elision after śyan's `ya`.
     assert_eq!(
-        form_g_forked("naS", Lakara::Lot, Purusha::Madhyama, Vacana::Eka, 3),
+        form_g_forked("04.0091", Lakara::Lot, Purusha::Madhyama, Vacana::Eka, 3),
         "naSya"
     );
 }
@@ -245,12 +251,12 @@ fn divadi_tudadi_vowel_sandhi_cells() {
 #[test]
 fn div_lengthens_before_syan() {
     assert_eq!(
-        form_g("div", Lakara::Lat, Purusha::Prathama, Vacana::Eka),
+        form_g("04.0001", Lakara::Lat, Purusha::Prathama, Vacana::Eka),
         "dIvyati"
     );
     // laṅ: augment does not disturb the upadhā i.
     assert_eq!(
-        form_g_forked("div", Lakara::Lan, Purusha::Prathama, Vacana::Eka, 2),
+        form_g_forked("04.0001", Lakara::Lan, Purusha::Prathama, Vacana::Eka, 2),
         "adIvyad"
     );
 }
@@ -260,25 +266,25 @@ fn adadi_luk_present_no_junction_cells() {
     // ā-final adādi roots: śap is luk'd (2.4.72), the ending attaches to
     // the root directly. These cells need only the luk (no ā+a junction).
     assert_eq!(
-        form_g("yA", Lakara::Lat, Purusha::Prathama, Vacana::Eka),
+        form_g("02.0044", Lakara::Lat, Purusha::Prathama, Vacana::Eka),
         "yAti"
     );
     assert_eq!(
-        form_g("yA", Lakara::Lat, Purusha::Madhyama, Vacana::Eka),
+        form_g("02.0044", Lakara::Lat, Purusha::Madhyama, Vacana::Eka),
         "yAsi"
     );
     assert_eq!(
-        form_g("yA", Lakara::Lat, Purusha::Uttama, Vacana::Eka),
+        form_g("02.0044", Lakara::Lat, Purusha::Uttama, Vacana::Eka),
         "yAmi"
     );
     // laṅ: aṭ-augment (yā is consonant-initial) → ayā; ending attaches.
     assert_eq!(
-        form_g_forked("yA", Lakara::Lan, Purusha::Prathama, Vacana::Eka, 2),
+        form_g_forked("02.0044", Lakara::Lan, Purusha::Prathama, Vacana::Eka, 2),
         "ayAd"
     );
     // loṭ 2sg: hi does NOT elide after ā (6.4.105 needs short a) → yāhi.
     assert_eq!(
-        form_g_forked("yA", Lakara::Lot, Purusha::Madhyama, Vacana::Eka, 3),
+        form_g_forked("02.0044", Lakara::Lot, Purusha::Madhyama, Vacana::Eka, 3),
         "yAhi"
     );
 }
@@ -287,23 +293,23 @@ fn adadi_luk_present_no_junction_cells() {
 fn adadi_root_final_a_coalesces_with_vowel_endings() {
     // ā + a(nti) → ā : yānti (laṭ 3pl), yAntu (loṭ 3pl), ayAn (laṅ 3pl).
     assert_eq!(
-        form_g("yA", Lakara::Lat, Purusha::Prathama, Vacana::Bahu),
+        form_g("02.0044", Lakara::Lat, Purusha::Prathama, Vacana::Bahu),
         "yAnti"
     );
     assert_eq!(
-        form_g("yA", Lakara::Lot, Purusha::Prathama, Vacana::Bahu),
+        form_g("02.0044", Lakara::Lot, Purusha::Prathama, Vacana::Bahu),
         "yAntu"
     );
     // Now forks: 3.4.111 (Task 4) adds the Śākaṭāyana jus branch (ayuH,
     // pinned in `paradigm.rs`'s ALTERNATES). Branch 0 is still the declined
     // derivation.
     assert_eq!(
-        form_g_forked("yA", Lakara::Lan, Purusha::Prathama, Vacana::Bahu, 2),
+        form_g_forked("02.0044", Lakara::Lan, Purusha::Prathama, Vacana::Bahu, 2),
         "ayAn"
     );
     // ā + A(ṭ) → ā : loṭ uttama-eka takes āṭ (yA + Ani → yAni).
     assert_eq!(
-        form_g("yA", Lakara::Lot, Purusha::Uttama, Vacana::Eka),
+        form_g("02.0044", Lakara::Lot, Purusha::Uttama, Vacana::Eka),
         "yAni"
     );
 }
@@ -320,8 +326,8 @@ fn adadi_vidhilin_derives_the_yas_yuh_reduction() {
     // asserts the branch count directly here (rather than routing through
     // `form_g_forked`) because this loop checks blocked/log/text-non-empty
     // invariants across every cell, not one pinned surface form.
-    for code in ["yA", "vA"] {
-        let d = dhatus().iter().find(|d| d.id == code).unwrap();
+    for number in ["02.0044", "02.0045"] {
+        let d = dhatus().iter().find(|d| d.dhatupatha == number).unwrap();
         for pu in [Purusha::Prathama, Purusha::Madhyama, Purusha::Uttama] {
             for va in [Vacana::Eka, Vacana::Dvi, Vacana::Bahu] {
                 let expected = if pu == Purusha::Prathama && va == Vacana::Eka {
@@ -333,21 +339,22 @@ fn adadi_vidhilin_derives_the_yas_yuh_reduction() {
                     derive(d, Lakara::VidhiLin, d.pada.padas()[0], pu, va),
                     expected,
                 );
-                assert!(!p.blocked, "{code} vidhiliṅ {pu:?} {va:?} was blocked");
-                assert!(!p.log.is_empty(), "{code} vidhiliṅ ran no rules");
+                assert!(!p.blocked, "{} vidhiliṅ {pu:?} {va:?} was blocked", d.code);
+                assert!(!p.log.is_empty(), "{} vidhiliṅ ran no rules", d.code);
                 assert!(
                     !p.text().is_empty(),
-                    "{code} vidhiliṅ {pu:?} {va:?} is empty"
+                    "{} vidhiliṅ {pu:?} {va:?} is empty",
+                    d.code
                 );
             }
         }
     }
     assert_eq!(
-        form_g("yA", Lakara::VidhiLin, Purusha::Prathama, Vacana::Bahu),
+        form_g("02.0044", Lakara::VidhiLin, Purusha::Prathama, Vacana::Bahu),
         "yAyuH"
     );
     assert_eq!(
-        form_g("yA", Lakara::VidhiLin, Purusha::Uttama, Vacana::Eka),
+        form_g("02.0044", Lakara::VidhiLin, Purusha::Uttama, Vacana::Eka),
         "yAyAm"
     );
 }
@@ -356,24 +363,24 @@ fn adadi_vidhilin_derives_the_yas_yuh_reduction() {
 fn cartva_turns_d_to_t_before_khar() {
     // √ad laṭ: 3sg atti (d+t), 2sg atsi (d+s), 2pl atTa (d+T).
     assert_eq!(
-        form_g("ad", Lakara::Lat, Purusha::Prathama, Vacana::Eka),
+        form_g("02.0001", Lakara::Lat, Purusha::Prathama, Vacana::Eka),
         "atti"
     );
     assert_eq!(
-        form_g("ad", Lakara::Lat, Purusha::Madhyama, Vacana::Eka),
+        form_g("02.0001", Lakara::Lat, Purusha::Madhyama, Vacana::Eka),
         "atsi"
     );
     assert_eq!(
-        form_g("ad", Lakara::Lat, Purusha::Madhyama, Vacana::Bahu),
+        form_g("02.0001", Lakara::Lat, Purusha::Madhyama, Vacana::Bahu),
         "atTa"
     );
     // Not before a non-khar (m/v) or a vowel: admi, adanti stay.
     assert_eq!(
-        form_g("ad", Lakara::Lat, Purusha::Uttama, Vacana::Eka),
+        form_g("02.0001", Lakara::Lat, Purusha::Uttama, Vacana::Eka),
         "admi"
     );
     assert_eq!(
-        form_g("ad", Lakara::Lat, Purusha::Prathama, Vacana::Bahu),
+        form_g("02.0001", Lakara::Lat, Purusha::Prathama, Vacana::Bahu),
         "adanti"
     );
 }
@@ -383,12 +390,12 @@ fn her_dhih_gives_addhi_for_consonant_root() {
     // √ad loṭ 2sg: 3.4.87 si→hi, 6.4.105 declines (d, not short a),
     // 6.4.101 hi→Di → adDi.
     assert_eq!(
-        form_g_forked("ad", Lakara::Lot, Purusha::Madhyama, Vacana::Eka, 3),
+        form_g_forked("02.0001", Lakara::Lot, Purusha::Madhyama, Vacana::Eka, 3),
         "adDi"
     );
     // Thematic root unaffected: √bhū loṭ 2sg is Bava (hi luk'd by 6.4.105).
     assert_eq!(
-        form_g_forked("BU", Lakara::Lot, Purusha::Madhyama, Vacana::Eka, 3),
+        form_g_forked("01.0001", Lakara::Lot, Purusha::Madhyama, Vacana::Eka, 3),
         "Bava"
     );
 }
@@ -398,55 +405,55 @@ fn adadi_lan_singular_a_augment() {
     // √ad laṅ 3sg Adad, 2sg AdaH — the inserted `a` blocks the saṃyogānta
     // collapse (Adt/Ads → Ad) and cartva (d now before `a`, not a khar).
     assert_eq!(
-        form_g_forked("ad", Lakara::Lan, Purusha::Prathama, Vacana::Eka, 2),
+        form_g_forked("02.0001", Lakara::Lan, Purusha::Prathama, Vacana::Eka, 2),
         "Adad"
     );
     assert_eq!(
-        form_g("ad", Lakara::Lan, Purusha::Madhyama, Vacana::Eka),
+        form_g("02.0001", Lakara::Lan, Purusha::Madhyama, Vacana::Eka),
         "AdaH"
     );
     // Dual/plural keep the direct junction (multi-char endings, no a-augment):
     // cartva gives Attam/AttAm; 1sg Adam untouched.
     assert_eq!(
-        form_g("ad", Lakara::Lan, Purusha::Madhyama, Vacana::Dvi),
+        form_g("02.0001", Lakara::Lan, Purusha::Madhyama, Vacana::Dvi),
         "Attam"
     );
     assert_eq!(
-        form_g("ad", Lakara::Lan, Purusha::Prathama, Vacana::Dvi),
+        form_g("02.0001", Lakara::Lan, Purusha::Prathama, Vacana::Dvi),
         "AttAm"
     );
     assert_eq!(
-        form_g("ad", Lakara::Lan, Purusha::Uttama, Vacana::Eka),
+        form_g("02.0001", Lakara::Lan, Purusha::Uttama, Vacana::Eka),
         "Adam"
     );
 }
 
 #[test]
 fn bhu_3sg_is_bhavati() {
-    assert_eq!(form("BU", Purusha::Prathama, Vacana::Eka), "Bavati");
+    assert_eq!(form("01.0001", Purusha::Prathama, Vacana::Eka), "Bavati");
 }
 #[test]
 fn bhu_1pl_is_bhavamah() {
-    assert_eq!(form("BU", Purusha::Uttama, Vacana::Bahu), "BavAmaH");
+    assert_eq!(form("01.0001", Purusha::Uttama, Vacana::Bahu), "BavAmaH");
 }
 #[test]
 fn smr_3sg_is_smarati() {
-    assert_eq!(form("smf", Purusha::Prathama, Vacana::Eka), "smarati");
+    assert_eq!(form("01.1082", Purusha::Prathama, Vacana::Eka), "smarati");
 }
 #[test]
 fn pat_3du_is_patatah() {
-    assert_eq!(form("paW", Purusha::Prathama, Vacana::Dvi), "paWataH");
+    assert_eq!(form("01.0381", Purusha::Prathama, Vacana::Dvi), "paWataH");
 }
 #[test]
 fn bhu_3pl_is_bhavanti() {
-    assert_eq!(form("BU", Purusha::Prathama, Vacana::Bahu), "Bavanti");
+    assert_eq!(form("01.0001", Purusha::Prathama, Vacana::Bahu), "Bavanti");
 }
 #[test]
 fn shap_is_pit_and_bhvadi_guna_survives() {
     // Regression guard for Task 3: adding the guṇa-block mechanism must
     // not disturb bhvādi. śap is pit, so 7.3.84 still fires for BU.
-    assert_eq!(form("BU", Purusha::Prathama, Vacana::Eka), "Bavati");
-    let d = dhatus().iter().find(|d| d.id == "vft").unwrap();
+    assert_eq!(form("01.0001", Purusha::Prathama, Vacana::Eka), "Bavati");
+    let d = dhatus().iter().find(|d| d.dhatupatha == "01.0862").unwrap();
     // vṛt uses 7.3.86 (laghūpadhā guṇa) before śap (pit) → vartate.
     assert_eq!(
         sole(derive(
@@ -466,12 +473,12 @@ fn ji_3sg_is_jayati() {
     // "ji" ends in `i`; 7.3.84 guNa gives "je", then 6.1.78 eco'yavAyAvaH
     // (the `e` arm, distinct from the `o` arm already exercised by BU)
     // turns je+a into jaya, yielding "jayati".
-    assert_eq!(form("ji", Purusha::Prathama, Vacana::Eka), "jayati");
+    assert_eq!(form("01.0642", Purusha::Prathama, Vacana::Eka), "jayati");
 }
 
 #[test]
 fn trace_is_recorded() {
-    let d = dhatus().iter().find(|d| d.id == "BU").unwrap();
+    let d = dhatus().iter().find(|d| d.dhatupatha == "01.0001").unwrap();
     let p = sole(derive(
         d,
         Lakara::Lat,
@@ -580,7 +587,13 @@ fn bhu_vidhilin_all_nine_cells() {
     // this file), so it is pinned separately with `form_g_forked` rather than
     // through the single-branch loop below.
     assert_eq!(
-        form_g_forked("BU", Lakara::VidhiLin, Purusha::Prathama, Vacana::Eka, 2),
+        form_g_forked(
+            "01.0001",
+            Lakara::VidhiLin,
+            Purusha::Prathama,
+            Vacana::Eka,
+            2
+        ),
         "Baved"
     );
     for (pu, va, want) in [
@@ -593,7 +606,7 @@ fn bhu_vidhilin_all_nine_cells() {
         (Purusha::Uttama, Vacana::Dvi, "Baveva"),
         (Purusha::Uttama, Vacana::Bahu, "Bavema"),
     ] {
-        assert_eq!(lin_form("BU", pu, va), want, "{pu:?} {va:?}");
+        assert_eq!(lin_form("01.0001", pu, va), want, "{pu:?} {va:?}");
     }
 }
 
@@ -601,7 +614,7 @@ fn bhu_vidhilin_all_nine_cells() {
 fn pada_sanction_blocks_wrong_pada_derivations() {
     // 1.3.12/1.3.78: derivation is the source of truth for pada. A
     // wrong-pada derive must not silently produce a surface form.
-    let labh = dhatus().iter().find(|d| d.id == "laB").unwrap();
+    let labh = dhatus().iter().find(|d| d.dhatupatha == "01.1130").unwrap();
     let p = sole(derive(
         labh,
         Lakara::Lat,
@@ -613,7 +626,7 @@ fn pada_sanction_blocks_wrong_pada_derivations() {
     assert_eq!(p.text(), "laB", "no rule may run after the block");
     assert!(p.log.is_empty(), "a blocked derivation records nothing");
 
-    let bhu = dhatus().iter().find(|d| d.id == "BU").unwrap();
+    let bhu = dhatus().iter().find(|d| d.dhatupatha == "01.0001").unwrap();
     let p = sole(derive(
         bhu,
         Lakara::Lat,
@@ -626,7 +639,7 @@ fn pada_sanction_blocks_wrong_pada_derivations() {
 
 #[test]
 fn pada_sanction_records_the_sanctioning_sutra() {
-    let bhu = dhatus().iter().find(|d| d.id == "BU").unwrap();
+    let bhu = dhatus().iter().find(|d| d.dhatupatha == "01.0001").unwrap();
     let p = sole(derive(
         bhu,
         Lakara::Lat,
@@ -636,7 +649,7 @@ fn pada_sanction_records_the_sanctioning_sutra() {
     ));
     assert_eq!(p.log.first().unwrap().sutra, "1.3.78");
 
-    let labh = dhatus().iter().find(|d| d.id == "laB").unwrap();
+    let labh = dhatus().iter().find(|d| d.dhatupatha == "01.1130").unwrap();
     let p = sole(derive(
         labh,
         Lakara::Lat,
@@ -656,7 +669,7 @@ fn rudh_derives_in_both_padas() {
     //
     // This is also the end-to-end pin on `derive`'s Ubhayapada → Ubhayapadin
     // tagging arm: with that arm missing, the ātmanepada cell would block.
-    let rudh = dhatus().iter().find(|d| d.id == "ruD").unwrap();
+    let rudh = dhatus().iter().find(|d| d.dhatupatha == "07.0001").unwrap();
 
     let p = sole(derive(
         rudh,
@@ -701,7 +714,7 @@ fn indh_is_atmanepada_only_despite_its_nit() {
     // condition holds *and* 1.3.12's does not — which is exactly why √indh
     // does not carry it. If the tag ever drifts back toward "has a ñi
     // marker", this test is the one that fails.
-    let indh = dhatus().iter().find(|d| d.id == "inD").unwrap();
+    let indh = dhatus().iter().find(|d| d.dhatupatha == "07.0011").unwrap();
     let p = sole(derive(
         indh,
         Lakara::Lat,
@@ -732,7 +745,7 @@ fn parasmaipada_only_root_still_blocks_atmanepada() {
     // 1.3.72's guard declines on an aṅga with no Ubhayapadin tag, leaving
     // 1.3.78's ātmanepada arm to block as it always did. Widening that arm
     // to decline unconditionally would surface *BavatE here.
-    let bhu = dhatus().iter().find(|d| d.id == "BU").unwrap();
+    let bhu = dhatus().iter().find(|d| d.dhatupatha == "01.0001").unwrap();
     let p = sole(derive(
         bhu,
         Lakara::Lat,
@@ -750,7 +763,7 @@ fn atmanepada_only_root_still_blocks_parasmaipada() {
     // rudhādi and ātmanepadin, so 1.3.72 declines on its guard and 1.3.12
     // blocks the parasmaipada request. Being a rudhādi root is not what
     // makes √rudh ubhayapadī.
-    let khid = dhatus().iter().find(|d| d.id == "Kid").unwrap();
+    let khid = dhatus().iter().find(|d| d.dhatupatha == "07.0012").unwrap();
     let p = sole(derive(
         khid,
         Lakara::Lat,
@@ -776,7 +789,7 @@ fn labh_lat_atmanepada_all_nine_cells() {
         (Purusha::Uttama, Vacana::Bahu, "laBAmahe"),
     ];
     for (pu, va, form) in expected {
-        assert_eq!(lat_a_form("laB", pu, va), form, "{pu:?} {va:?}");
+        assert_eq!(lat_a_form("01.1130", pu, va), form, "{pu:?} {va:?}");
     }
 }
 
@@ -794,7 +807,7 @@ fn labh_lot_atmanepada_all_nine_cells() {
         (Purusha::Uttama, Vacana::Bahu, "laBAmahE"),
     ];
     for (pu, va, form) in expected {
-        assert_eq!(lot_a_form("laB", pu, va), form, "{pu:?} {va:?}");
+        assert_eq!(lot_a_form("01.1130", pu, va), form, "{pu:?} {va:?}");
     }
 }
 
@@ -802,9 +815,12 @@ fn labh_lot_atmanepada_all_nine_cells() {
 fn savabhyam_vamau_preempts_am_etah() {
     // 3.4.91 (se→sva, Dve→Dvam) is the apavāda ordered before 3.4.90:
     // reversed, se would become sAm and Dve DvAm.
-    assert_eq!(lot_a_form("laB", Purusha::Madhyama, Vacana::Eka), "laBasva");
     assert_eq!(
-        lot_a_form("laB", Purusha::Madhyama, Vacana::Bahu),
+        lot_a_form("01.1130", Purusha::Madhyama, Vacana::Eka),
+        "laBasva"
+    );
+    assert_eq!(
+        lot_a_form("01.1130", Purusha::Madhyama, Vacana::Bahu),
         "laBaDvam"
     );
 }
@@ -812,7 +828,10 @@ fn savabhyam_vamau_preempts_am_etah() {
 #[test]
 fn am_etah_is_lot_only() {
     // laṭ's te/Ate must NOT become tAm/AtAm.
-    assert_eq!(lat_a_form("laB", Purusha::Prathama, Vacana::Eka), "laBate");
+    assert_eq!(
+        lat_a_form("01.1130", Purusha::Prathama, Vacana::Eka),
+        "laBate"
+    );
 }
 
 #[test]
@@ -829,7 +848,7 @@ fn labh_vidhilin_atmanepada_all_nine_cells() {
         (Purusha::Uttama, Vacana::Bahu, "laBemahi"),
     ];
     for (pu, va, form) in expected {
-        assert_eq!(lin_a_form("laB", pu, va), form, "{pu:?} {va:?}");
+        assert_eq!(lin_a_form("01.1130", pu, va), form, "{pu:?} {va:?}");
     }
 }
 
@@ -838,7 +857,7 @@ fn siyut_survives_salopa_as_long_i() {
     // sIyta → (7.2.79) Iyta: 6.1.87's widened guard must accept the
     // long I (yāsuṭ's chain produced short iy via 7.2.80).
     let p = {
-        let d = dhatus().iter().find(|d| d.id == "laB").unwrap();
+        let d = dhatus().iter().find(|d| d.dhatupatha == "01.1130").unwrap();
         sole(derive(
             d,
             Lakara::VidhiLin,
@@ -860,7 +879,7 @@ fn as_lot_atmanepada_uttama_eka_is_ase() {
     // athematic ending arm must vṛddhi it to a single E (Asai → AsE).
     // Bug: AsAE (āsāai). Cf. the thematic laBE.
     assert_eq!(
-        form_g("As", Lakara::Lot, Purusha::Uttama, Vacana::Eka),
+        form_g("02.0011", Lakara::Lot, Purusha::Uttama, Vacana::Eka),
         "AsE"
     );
 }
@@ -879,7 +898,7 @@ fn as_vidhilin_atmanepada_elides_optative_y_before_val() {
         (Purusha::Uttama, Vacana::Bahu, "AsImahi"),
     ] {
         assert_eq!(
-            form_g("As", Lakara::VidhiLin, pu, va),
+            form_g("02.0011", Lakara::VidhiLin, pu, va),
             want,
             "{pu:?} {va:?}"
         );
@@ -891,7 +910,7 @@ fn as_vidhilin_atmanepada_elides_optative_y_before_val() {
         (Purusha::Madhyama, Vacana::Dvi, "AsIyATAm"),
     ] {
         assert_eq!(
-            form_g("As", Lakara::VidhiLin, pu, va),
+            form_g("02.0011", Lakara::VidhiLin, pu, va),
             want,
             "{pu:?} {va:?}"
         );
@@ -902,7 +921,10 @@ fn as_vidhilin_atmanepada_elides_optative_y_before_val() {
 fn vrt_lat_uses_laghupadha_guna() {
     // vft's f is PENULTIMATE (upadha), not final like smf's: guna comes
     // from 7.3.86 pugantalaghUpaDasya ca, not 7.3.84.
-    assert_eq!(lat_a_form("vft", Purusha::Prathama, Vacana::Eka), "vartate");
+    assert_eq!(
+        lat_a_form("01.0862", Purusha::Prathama, Vacana::Eka),
+        "vartate"
+    );
 }
 
 #[test]
@@ -916,11 +938,11 @@ fn eco_yavayavah_athematic_arm_produces_the_ay_adesha() {
     // gives vidhiliṅ 3pl its `SayIran` (Se + Iyran → Say + Iyran →
     // 6.1.66 → SayIran).
     assert_eq!(
-        form_g("SI", Lakara::Lat, Purusha::Prathama, Vacana::Dvi),
+        form_g("02.0026", Lakara::Lat, Purusha::Prathama, Vacana::Dvi),
         "SayAte"
     );
     assert_eq!(
-        form_g("SI", Lakara::VidhiLin, Purusha::Prathama, Vacana::Bahu),
+        form_g("02.0026", Lakara::VidhiLin, Purusha::Prathama, Vacana::Bahu),
         "SayIran"
     );
 }
@@ -943,14 +965,14 @@ fn shi_takes_guna_despite_the_ngit_ending() {
     // ordered-trace test `shete_trace_is_the_minimal_shing_guna_path` in
     // `crates/panini/tests/trace.rs`.
     assert_eq!(
-        form_g("SI", Lakara::Lat, Purusha::Prathama, Vacana::Eka),
+        form_g("02.0026", Lakara::Lat, Purusha::Prathama, Vacana::Eka),
         "Sete"
     );
     // laṅ: 6.4.71 has already prefixed the aṭ-augment, so the aṅga is
     // `aSI` when 7.4.21 runs — the guard must match on the tail, not the
     // whole string.
     assert_eq!(
-        form_g("SI", Lakara::Lan, Purusha::Prathama, Vacana::Eka),
+        form_g("02.0026", Lakara::Lan, Purusha::Prathama, Vacana::Eka),
         "aSeta"
     );
 }
@@ -961,15 +983,15 @@ fn cartva_guard_is_khar_only_not_m_or_vowel() {
     // Over-application killer: d before `m` (admi) or vowel (adanti) must NOT
     // cartva-ize. Under-application killer: d before `t` MUST (atti, not adti).
     assert_eq!(
-        form_g("ad", Lakara::Lat, Purusha::Uttama, Vacana::Eka),
+        form_g("02.0001", Lakara::Lat, Purusha::Uttama, Vacana::Eka),
         "admi"
     );
     assert_eq!(
-        form_g("ad", Lakara::Lat, Purusha::Prathama, Vacana::Bahu),
+        form_g("02.0001", Lakara::Lat, Purusha::Prathama, Vacana::Bahu),
         "adanti"
     );
     assert_eq!(
-        form_g("ad", Lakara::Lat, Purusha::Prathama, Vacana::Eka),
+        form_g("02.0001", Lakara::Lat, Purusha::Prathama, Vacana::Eka),
         "atti"
     );
 }
@@ -981,22 +1003,22 @@ fn dhi_ca_elides_s_before_dhve() {
     // 8.2 in the tripādī and is asiddha to 8.4, so the `s` is gone before
     // any 8.4 junction rule can look at it: As + Dve -> A + Dve -> ADve.
     assert_eq!(
-        form_g("As", Lakara::Lat, Purusha::Madhyama, Vacana::Bahu),
+        form_g("02.0011", Lakara::Lat, Purusha::Madhyama, Vacana::Bahu),
         "ADve"
     );
     assert_eq!(
-        form_g("As", Lakara::Lan, Purusha::Madhyama, Vacana::Bahu),
+        form_g("02.0011", Lakara::Lan, Purusha::Madhyama, Vacana::Bahu),
         "ADvam"
     );
     assert_eq!(
-        form_g("As", Lakara::Lot, Purusha::Madhyama, Vacana::Bahu),
+        form_g("02.0011", Lakara::Lot, Purusha::Madhyama, Vacana::Bahu),
         "ADvam"
     );
     // Guard boundary: the affix must be Dh-initial. A clean `s`-meets-`s`
     // cell is untouched, so 2sg stays Asse — the rule must not
     // over-apply.
     assert_eq!(
-        form_g("As", Lakara::Lat, Purusha::Madhyama, Vacana::Eka),
+        form_g("02.0011", Lakara::Lat, Purusha::Madhyama, Vacana::Eka),
         "Asse"
     );
 }
@@ -1005,15 +1027,15 @@ fn dhi_ca_elides_s_before_dhve() {
 fn dhi_ca_fires_for_vas_and_only_before_dh() {
     // √vas is the sūtra's second witness: vas + Dve -> va + Dve -> vaDve.
     assert_eq!(
-        form_g("vas", Lakara::Lat, Purusha::Madhyama, Vacana::Bahu),
+        form_g("02.0013", Lakara::Lat, Purusha::Madhyama, Vacana::Bahu),
         "vaDve"
     );
     assert_eq!(
-        form_g("vas", Lakara::Lan, Purusha::Madhyama, Vacana::Bahu),
+        form_g("02.0013", Lakara::Lan, Purusha::Madhyama, Vacana::Bahu),
         "avaDvam"
     );
     assert_eq!(
-        form_g("vas", Lakara::Lot, Purusha::Madhyama, Vacana::Bahu),
+        form_g("02.0013", Lakara::Lot, Purusha::Madhyama, Vacana::Bahu),
         "vaDvam"
     );
     // The affix must be Dh-initial. These four cells put the same aṅga-
@@ -1021,19 +1043,19 @@ fn dhi_ca_fires_for_vas_and_only_before_dh() {
     // and they are also the first pins that cartva (8.4.55) leaves an `s`
     // alone before a khar, an arm √ad and √ās could not reach.
     assert_eq!(
-        form_g("vas", Lakara::Lat, Purusha::Prathama, Vacana::Eka),
+        form_g("02.0013", Lakara::Lat, Purusha::Prathama, Vacana::Eka),
         "vaste"
     );
     assert_eq!(
-        form_g("vas", Lakara::Lat, Purusha::Madhyama, Vacana::Eka),
+        form_g("02.0013", Lakara::Lat, Purusha::Madhyama, Vacana::Eka),
         "vasse"
     );
     assert_eq!(
-        form_g("vas", Lakara::Lan, Purusha::Madhyama, Vacana::Eka),
+        form_g("02.0013", Lakara::Lan, Purusha::Madhyama, Vacana::Eka),
         "avasTAH"
     );
     assert_eq!(
-        form_g("vas", Lakara::Lot, Purusha::Madhyama, Vacana::Eka),
+        form_g("02.0013", Lakara::Lot, Purusha::Madhyama, Vacana::Eka),
         "vassva"
     );
 }
@@ -1047,11 +1069,11 @@ fn dhi_ca_does_not_elide_a_non_s_before_dh() {
     // affix search), never reaching the "preceding term ends in `s`"
     // arm at all. These are the slice-3 goldens, unchanged.
     assert_eq!(
-        form_g("laB", Lakara::Lat, Purusha::Madhyama, Vacana::Bahu),
+        form_g("01.1130", Lakara::Lat, Purusha::Madhyama, Vacana::Bahu),
         "laBaDve"
     );
     assert_eq!(
-        form_g("laB", Lakara::Lan, Purusha::Madhyama, Vacana::Bahu),
+        form_g("01.1130", Lakara::Lan, Purusha::Madhyama, Vacana::Bahu),
         "alaBaDvam"
     );
     // adDi (√ad loṭ 2sg, pinned at paradigm level in
@@ -1063,7 +1085,7 @@ fn dhi_ca_does_not_elide_a_non_s_before_dh() {
     // `s`, so the second arm declines and the `d` survives. Dropping
     // this arm would wrongly yield *aDi.
     assert_eq!(
-        form_g_forked("ad", Lakara::Lot, Purusha::Madhyama, Vacana::Eka, 3),
+        form_g_forked("02.0001", Lakara::Lot, Purusha::Madhyama, Vacana::Eka, 3),
         "adDi"
     );
 }
@@ -1085,11 +1107,11 @@ fn dhi_ca_reads_the_affixs_neighbour_not_the_anga() {
     // AsIDvam (never *AIDvam): the `s` is retained because the affix
     // search declines, not because of anything more subtle.
     assert_eq!(
-        form_g("As", Lakara::VidhiLin, Purusha::Madhyama, Vacana::Bahu),
+        form_g("02.0011", Lakara::VidhiLin, Purusha::Madhyama, Vacana::Bahu),
         "AsIDvam"
     );
     assert_eq!(
-        form_g("vas", Lakara::VidhiLin, Purusha::Madhyama, Vacana::Bahu),
+        form_g("02.0013", Lakara::VidhiLin, Purusha::Madhyama, Vacana::Bahu),
         "vasIDvam"
     );
 }
@@ -1124,7 +1146,7 @@ fn cartva_of_maps_each_jhal_to_its_first_varga_car() {
 fn her_dhih_guard_is_jhal_final_only() {
     // ā-final √yā loṭ 2sg keeps hi (yAhi), NOT *yADi: 6.4.101 needs a jhal.
     assert_eq!(
-        form_g_forked("yA", Lakara::Lot, Purusha::Madhyama, Vacana::Eka, 3),
+        form_g_forked("02.0044", Lakara::Lot, Purusha::Madhyama, Vacana::Eka, 3),
         "yAhi"
     );
 }
@@ -1134,7 +1156,7 @@ fn a_augment_does_not_leak_into_dual_or_plural() {
     // The single-char length guard: 2du ending `tam` must NOT get an `a`
     // (no *Adatam); it stays Attam via cartva.
     assert_eq!(
-        form_g("ad", Lakara::Lan, Purusha::Madhyama, Vacana::Dvi),
+        form_g("02.0001", Lakara::Lan, Purusha::Madhyama, Vacana::Dvi),
         "Attam"
     );
 }
@@ -1145,20 +1167,20 @@ fn seventwone_five_atmanepada_3pl_uses_at_not_ant() {
     // AsatAm (Ja → at, not the `ant` of 7.1.3). A-final thematic roots keep
     // `ante` (7.1.5 declines), so laB is unchanged.
     assert_eq!(
-        form_g("As", Lakara::Lat, Purusha::Prathama, Vacana::Bahu),
+        form_g("02.0011", Lakara::Lat, Purusha::Prathama, Vacana::Bahu),
         "Asate"
     );
     assert_eq!(
-        form_g("As", Lakara::Lan, Purusha::Prathama, Vacana::Bahu),
+        form_g("02.0011", Lakara::Lan, Purusha::Prathama, Vacana::Bahu),
         "Asata"
     );
     assert_eq!(
-        form_g("As", Lakara::Lot, Purusha::Prathama, Vacana::Bahu),
+        form_g("02.0011", Lakara::Lot, Purusha::Prathama, Vacana::Bahu),
         "AsatAm"
     );
     // Guard boundary: a-final ātmanepada aṅga still takes 7.1.3's `ante`.
     assert_eq!(
-        form_g("laB", Lakara::Lat, Purusha::Prathama, Vacana::Bahu),
+        form_g("01.1130", Lakara::Lat, Purusha::Prathama, Vacana::Bahu),
         "laBante"
     );
 }
@@ -1169,15 +1191,15 @@ fn anatah_declines_for_a_final_atmanepada_angas() {
     // ātmanepada 3pl keeps 7.1.3's `ante`. Pins that the guard reads the
     // preceding segment's `a`, not the consonant-final root.
     assert_eq!(
-        form_g("laB", Lakara::Lat, Purusha::Prathama, Vacana::Bahu),
+        form_g("01.1130", Lakara::Lat, Purusha::Prathama, Vacana::Bahu),
         "laBante"
     );
     assert_eq!(
-        form_g("man", Lakara::Lat, Purusha::Prathama, Vacana::Bahu),
+        form_g("04.0073", Lakara::Lat, Purusha::Prathama, Vacana::Bahu),
         "manyante"
     );
     assert_eq!(
-        form_g("juz", Lakara::Lat, Purusha::Prathama, Vacana::Bahu),
+        form_g("06.0008", Lakara::Lat, Purusha::Prathama, Vacana::Bahu),
         "juzante"
     );
 }
@@ -1187,17 +1209,17 @@ fn voiced_junction_does_not_touch_non_jhas_or_non_jhal_junctions() {
     // Under-application guard: `s` before the non-jhaś `s`/`th`/`v` of
     // se/sva/thās stays `s` (Asse, Assva, AsTAH) — only a jhaś triggers it.
     assert_eq!(
-        form_g("As", Lakara::Lot, Purusha::Madhyama, Vacana::Eka),
+        form_g("02.0011", Lakara::Lot, Purusha::Madhyama, Vacana::Eka),
         "Assva"
     );
     assert_eq!(
-        form_g("As", Lakara::Lan, Purusha::Madhyama, Vacana::Eka),
+        form_g("02.0011", Lakara::Lan, Purusha::Madhyama, Vacana::Eka),
         "AsTAH"
     );
     // Over-application guard: √ad is parasmaipada; its voiceless junctions
     // stay cartva's business:
     assert_eq!(
-        form_g("ad", Lakara::Lat, Purusha::Prathama, Vacana::Eka),
+        form_g("02.0001", Lakara::Lat, Purusha::Prathama, Vacana::Eka),
         "atti"
     );
 }
@@ -1208,15 +1230,15 @@ fn shings_jha_takes_the_rut_augment() {
     // augment. 7.1.5 has just turned the leading J into `at` (Je → ate);
     // ruṭ's `r` prefixes that: Se + r + ate → Serate.
     assert_eq!(
-        form_g("SI", Lakara::Lat, Purusha::Prathama, Vacana::Bahu),
+        form_g("02.0026", Lakara::Lat, Purusha::Prathama, Vacana::Bahu),
         "Serate"
     );
     assert_eq!(
-        form_g("SI", Lakara::Lot, Purusha::Prathama, Vacana::Bahu),
+        form_g("02.0026", Lakara::Lot, Purusha::Prathama, Vacana::Bahu),
         "SeratAm"
     );
     assert_eq!(
-        form_g("SI", Lakara::Lan, Purusha::Prathama, Vacana::Bahu),
+        form_g("02.0026", Lakara::Lan, Purusha::Prathama, Vacana::Bahu),
         "aSerata"
     );
 }
@@ -1227,7 +1249,7 @@ fn shings_vidhilin_3pl_takes_no_rut() {
     // band, so 7.1.5 never fires in vidhiliṅ and ruṭ cannot attach:
     // SayIran, NOT *SayIraran.
     assert_eq!(
-        form_g("SI", Lakara::VidhiLin, Purusha::Prathama, Vacana::Bahu),
+        form_g("02.0026", Lakara::VidhiLin, Purusha::Prathama, Vacana::Bahu),
         "SayIran"
     );
 }
@@ -1238,11 +1260,11 @@ fn shatva_retroflexes_the_endings_s_after_shings_e() {
     // non-a/ā vowel. With the aṅga guṇated to `Se`, the `se` and `sva`
     // endings meet an `e` → Seze, Sezva.
     assert_eq!(
-        form_g("SI", Lakara::Lat, Purusha::Madhyama, Vacana::Eka),
+        form_g("02.0026", Lakara::Lat, Purusha::Madhyama, Vacana::Eka),
         "Seze"
     );
     assert_eq!(
-        form_g("SI", Lakara::Lot, Purusha::Madhyama, Vacana::Eka),
+        form_g("02.0026", Lakara::Lot, Purusha::Madhyama, Vacana::Eka),
         "Sezva"
     );
 }
@@ -1253,26 +1275,26 @@ fn rudhadi_strong_cells() {
     // all beyond 3.1.78 — 8.4.1 ṇatva already fires across the ANGA/SHAP
     // junction, exactly as it does for kryādi's vf + nA → vfRAti.
     assert_eq!(
-        form_g("kft", Lakara::Lat, Purusha::Prathama, Vacana::Eka),
+        form_g("07.0010", Lakara::Lat, Purusha::Prathama, Vacana::Eka),
         "kfRatti"
     );
     assert_eq!(
-        form_g("kft", Lakara::Lat, Purusha::Uttama, Vacana::Eka),
+        form_g("07.0010", Lakara::Lat, Purusha::Uttama, Vacana::Eka),
         "kfRatmi"
     );
     // √hiṃs needs 6.4.23: hins + śnam is hinans, and the root's own n comes
     // back out.
     assert_eq!(
-        form_g("his", Lakara::Lat, Purusha::Prathama, Vacana::Eka),
+        form_g("07.0019", Lakara::Lat, Purusha::Prathama, Vacana::Eka),
         "hinasti"
     );
     assert_eq!(
-        form_g("his", Lakara::Lot, Purusha::Uttama, Vacana::Eka),
+        form_g("07.0019", Lakara::Lot, Purusha::Uttama, Vacana::Eka),
         "hinasAni"
     );
     // The ātmanepada arm's strong cells keep śnam's `a` too.
     assert_eq!(
-        form_g("Kid", Lakara::Lot, Purusha::Uttama, Vacana::Eka),
+        form_g("07.0012", Lakara::Lot, Purusha::Uttama, Vacana::Eka),
         "KinadE"
     );
 }
@@ -1283,19 +1305,19 @@ fn rudhadi_weak_cells_lose_shnams_a() {
     // split visible. These are the cells 8.4.65 does NOT fork, so they are
     // safe to assert with `form_g` at this stage.
     assert_eq!(
-        form_g("kft", Lakara::Lat, Purusha::Prathama, Vacana::Bahu),
+        form_g("07.0010", Lakara::Lat, Purusha::Prathama, Vacana::Bahu),
         "kfntanti"
     );
     assert_eq!(
-        form_g("kft", Lakara::Lat, Purusha::Uttama, Vacana::Dvi),
+        form_g("07.0010", Lakara::Lat, Purusha::Uttama, Vacana::Dvi),
         "kfntvaH"
     );
     assert_eq!(
-        form_g("Kid", Lakara::Lat, Purusha::Uttama, Vacana::Eka),
+        form_g("07.0012", Lakara::Lat, Purusha::Uttama, Vacana::Eka),
         "Kinde"
     );
     assert_eq!(
-        form_g("Kid", Lakara::VidhiLin, Purusha::Prathama, Vacana::Eka),
+        form_g("07.0012", Lakara::VidhiLin, Purusha::Prathama, Vacana::Eka),
         "KindIta"
     );
 }
@@ -1309,15 +1331,15 @@ fn rudhadi_anusvara_round_trip_is_conditional() {
     // yay, so it survives. Folding the two rules into one operation would
     // derive *hintaH.
     assert_eq!(
-        form_g("his", Lakara::Lat, Purusha::Prathama, Vacana::Dvi),
+        form_g("07.0019", Lakara::Lat, Purusha::Prathama, Vacana::Dvi),
         "hiMstaH"
     );
     assert_eq!(
-        form_g("his", Lakara::VidhiLin, Purusha::Prathama, Vacana::Bahu),
+        form_g("07.0019", Lakara::VidhiLin, Purusha::Prathama, Vacana::Bahu),
         "hiMsyuH"
     );
     assert_eq!(
-        form_g("kft", Lakara::Lat, Purusha::Prathama, Vacana::Bahu),
+        form_g("07.0010", Lakara::Lat, Purusha::Prathama, Vacana::Bahu),
         "kfntanti"
     );
 }
@@ -1344,14 +1366,14 @@ fn rudhadi_lot_madhyama_eka_takes_jashtva() {
     // kfntAd (7.1.35+8.4.65), kfnttAt (7.1.35+8.4.56), kfntAt
     // (7.1.35+8.4.65+8.4.56).
     assert_eq!(
-        form_g_forked("kft", Lakara::Lot, Purusha::Madhyama, Vacana::Eka, 6),
+        form_g_forked("07.0010", Lakara::Lot, Purusha::Madhyama, Vacana::Eka, 6),
         "kfndDi"
     );
     // √hiṃs reaches the same cell through 8.2.25 instead: its stem-final
     // `s` is ELIDED before the Dh-initial ending, not voiced. Third witness
     // for that rule, on a stem shape it has not seen.
     assert_eq!(
-        form_g_forked("his", Lakara::Lot, Purusha::Madhyama, Vacana::Eka, 3),
+        form_g_forked("07.0019", Lakara::Lot, Purusha::Madhyama, Vacana::Eka, 3),
         "hinDi"
     );
 }
@@ -1360,23 +1382,23 @@ fn rudhadi_lot_madhyama_eka_takes_jashtva() {
 fn rudhadi_savarna_elision_forks() {
     // The declined branch keeps both consonants and is index 0.
     assert_eq!(
-        form_g_forked("kft", Lakara::Lat, Purusha::Prathama, Vacana::Dvi, 2),
+        form_g_forked("07.0010", Lakara::Lat, Purusha::Prathama, Vacana::Dvi, 2),
         "kfnttaH"
     );
     assert_eq!(
-        form_g_forked("Kid", Lakara::Lat, Purusha::Prathama, Vacana::Eka, 2),
+        form_g_forked("07.0012", Lakara::Lat, Purusha::Prathama, Vacana::Eka, 2),
         "Kintte"
     );
     // √hiṃs never forks here: `s` and `t` are not savarṇa.
     assert_eq!(
-        form_g("his", Lakara::Lat, Purusha::Prathama, Vacana::Dvi),
+        form_g("07.0019", Lakara::Lat, Purusha::Prathama, Vacana::Dvi),
         "hiMstaH"
     );
 }
 
 #[test]
 fn rudhadi_savarna_elision_derives_both_members() {
-    let d = dhatus().iter().find(|d| d.id == "kft").unwrap();
+    let d = dhatus().iter().find(|d| d.dhatupatha == "07.0010").unwrap();
     let forms: Vec<String> = derive(
         d,
         Lakara::Lat,
@@ -1395,28 +1417,28 @@ fn rudhadi_lan_eka_cells() {
     // prathama eka: √kṛt's `d` comes from the existing 8.2.39, √hiṃs's from
     // the new 8.2.73 — 8.2.39 declines on a final `s` by design.
     assert_eq!(
-        form_g_forked("kft", Lakara::Lan, Purusha::Prathama, Vacana::Eka, 2),
+        form_g_forked("07.0010", Lakara::Lan, Purusha::Prathama, Vacana::Eka, 2),
         "akfRad"
     );
     assert_eq!(
-        form_g_forked("his", Lakara::Lan, Purusha::Prathama, Vacana::Eka, 2),
+        form_g_forked("07.0019", Lakara::Lan, Purusha::Prathama, Vacana::Eka, 2),
         "ahinad"
     );
     // madhyama eka forks three ways: the stop, its pausal variant, and ru.
     assert_eq!(
-        form_g_forked("kft", Lakara::Lan, Purusha::Madhyama, Vacana::Eka, 3),
+        form_g_forked("07.0010", Lakara::Lan, Purusha::Madhyama, Vacana::Eka, 3),
         "akfRad"
     );
     assert_eq!(
-        form_g_forked("his", Lakara::Lan, Purusha::Madhyama, Vacana::Eka, 3),
+        form_g_forked("07.0019", Lakara::Lan, Purusha::Madhyama, Vacana::Eka, 3),
         "ahinad"
     );
 }
 
 #[test]
 fn ru_branch_derives_the_visarga_forms() {
-    for (id, expected) in [("kft", "akfRaH"), ("his", "ahinaH")] {
-        let d = dhatus().iter().find(|d| d.id == id).unwrap();
+    for (number, expected) in [("07.0010", "akfRaH"), ("07.0019", "ahinaH")] {
+        let d = dhatus().iter().find(|d| d.dhatupatha == number).unwrap();
         let forms: Vec<String> = derive(
             d,
             Lakara::Lan,
@@ -1427,7 +1449,11 @@ fn ru_branch_derives_the_visarga_forms() {
         .iter()
         .map(|p| p.text())
         .collect();
-        assert!(forms.contains(&expected.to_string()), "{id}: {forms:?}");
+        assert!(
+            forms.contains(&expected.to_string()),
+            "{}: {forms:?}",
+            d.code
+        );
     }
 }
 
@@ -1437,7 +1463,7 @@ fn shnams_ru_fires_on_the_dhatus_own_final() {
     // produced — which is why it is ordered ABOVE 8.2.73, against sūtra
     // order. Assert the order, not just the surface: numeric order still
     // derives ahinad on both branches, it simply never derives ahinaH.
-    let d = dhatus().iter().find(|d| d.id == "his").unwrap();
+    let d = dhatus().iter().find(|d| d.dhatupatha == "07.0019").unwrap();
     let p = derive(
         d,
         Lakara::Lan,
@@ -1472,12 +1498,14 @@ fn the_ru_alternation_stays_off_the_new_roots() {
     // `aBanag` and 8.2.39 has already voiced √piṣ's to `apinaq`, and its
     // `s`-final check does not match either. If it over-fired, these
     // cells would surface a `d` and then a visarga via 8.2.75 and 8.3.15.
-    for (root, want) in [("Banj", "aBanag"), ("piz", "apinaq")] {
+    for (number, want) in [("07.0016", "aBanag"), ("07.0015", "apinaq")] {
+        let d = dhatus().iter().find(|d| d.dhatupatha == number).unwrap();
         for pu in [Purusha::Prathama, Purusha::Madhyama] {
             assert_eq!(
-                form_g_forked(root, Lakara::Lan, pu, Vacana::Eka, 2),
+                form_g_forked(number, Lakara::Lan, pu, Vacana::Eka, 2),
                 want,
-                "{root} laṅ eka took the ru alternation"
+                "{} laṅ eka took the ru alternation",
+                d.code
             );
         }
     }
@@ -1485,13 +1513,14 @@ fn the_ru_alternation_stays_off_the_new_roots() {
 
 #[test]
 fn no_8_2_73_step_appears_for_bhanj_or_pish() {
-    for root in ["Banj", "piz"] {
+    for number in ["07.0016", "07.0015"] {
         for pu in [Purusha::Prathama, Purusha::Madhyama] {
-            let d = dhatus().iter().find(|d| d.id == root).unwrap();
+            let d = dhatus().iter().find(|d| d.dhatupatha == number).unwrap();
             for p in derive(d, Lakara::Lan, d.pada.padas()[0], pu, Vacana::Eka) {
                 assert!(
                     !p.log.iter().any(|s| s.sutra == "8.2.73"),
-                    "{root}: 8.2.73 fired outside √hiṃs"
+                    "{}: 8.2.73 fired outside √hiṃs",
+                    d.code
                 );
             }
         }
@@ -1515,11 +1544,11 @@ fn rudhadi_vidhilin_madhyama_eka_is_untouched_by_the_ru_alternation() {
     // also pins the branch count at exactly one — witnessing that 8.2.74's
     // copy of the guard declines here too, not just 8.2.73's.
     assert_eq!(
-        form_g("kft", Lakara::VidhiLin, Purusha::Madhyama, Vacana::Eka),
+        form_g("07.0010", Lakara::VidhiLin, Purusha::Madhyama, Vacana::Eka),
         "kfntyAH"
     );
     assert_eq!(
-        form_g("his", Lakara::VidhiLin, Purusha::Madhyama, Vacana::Eka),
+        form_g("07.0019", Lakara::VidhiLin, Purusha::Madhyama, Vacana::Eka),
         "hiMsyAH"
     );
 }
@@ -1543,7 +1572,7 @@ fn bhanj_lat_all_nine_cells() {
         (Purusha::Uttama, Vacana::Bahu, "BaYjmaH"),
     ];
     for (pu, va, want) in cells {
-        assert_eq!(form_g("Banj", Lakara::Lat, pu, va), want);
+        assert_eq!(form_g("07.0016", Lakara::Lat, pu, va), want);
     }
 }
 
@@ -1553,11 +1582,11 @@ fn bhanj_lan_eka_velarises_word_finally() {
     // `j` as the true word end; 8.2.30 then applies word-finally rather
     // than before a jhal. Both eka cells fork on 8.4.56 alone.
     assert_eq!(
-        form_g_forked("Banj", Lakara::Lan, Purusha::Prathama, Vacana::Eka, 2),
+        form_g_forked("07.0016", Lakara::Lan, Purusha::Prathama, Vacana::Eka, 2),
         "aBanag"
     );
     assert_eq!(
-        form_g_forked("Banj", Lakara::Lan, Purusha::Madhyama, Vacana::Eka, 2),
+        form_g_forked("07.0016", Lakara::Lan, Purusha::Madhyama, Vacana::Eka, 2),
         "aBanag"
     );
 }
@@ -1569,7 +1598,7 @@ fn bhanj_lot_madhyama_eka_is_bhangdhi() {
     // Three branches: the declined one plus 7.1.35's tātaṅ and its 8.4.56
     // pausal fork.
     assert_eq!(
-        form_g_forked("Banj", Lakara::Lot, Purusha::Madhyama, Vacana::Eka, 3),
+        form_g_forked("07.0016", Lakara::Lot, Purusha::Madhyama, Vacana::Eka, 3),
         "BaNgDi"
     );
 }
@@ -1581,11 +1610,11 @@ fn coh_kuh_declines_before_a_non_jhal_non_final() {
     // neither a jhal nor a word end — so the `j` survives to take 8.3.24's
     // anusvāra and 8.4.58's palatal parasavarṇa instead.
     assert_eq!(
-        form_g("Banj", Lakara::Lat, Purusha::Prathama, Vacana::Bahu),
+        form_g("07.0016", Lakara::Lat, Purusha::Prathama, Vacana::Bahu),
         "BaYjanti"
     );
     assert_eq!(
-        form_g("Banj", Lakara::Lat, Purusha::Uttama, Vacana::Dvi),
+        form_g("07.0016", Lakara::Lat, Purusha::Uttama, Vacana::Dvi),
         "BaYjvaH"
     );
 }
@@ -1606,7 +1635,7 @@ fn pish_lat_retroflexes_around_the_shnam_stem() {
         (Purusha::Uttama, Vacana::Bahu, "piMzmaH"),
     ];
     for (pu, va, want) in cells {
-        assert_eq!(form_g("piz", Lakara::Lat, pu, va), want);
+        assert_eq!(form_g("07.0015", Lakara::Lat, pu, va), want);
     }
 }
 
@@ -1617,7 +1646,7 @@ fn pish_weak_stem_keeps_its_anusvara() {
     // `z`, which is śal — so piMzwaH keeps the anusvāra that kfntaH
     // resolves. √hiṃs's hiMstaH was the first witness, in 7a.
     assert_eq!(
-        form_g("piz", Lakara::Lat, Purusha::Prathama, Vacana::Dvi),
+        form_g("07.0015", Lakara::Lat, Purusha::Prathama, Vacana::Dvi),
         "piMzwaH"
     );
 }
@@ -1629,11 +1658,11 @@ fn shtutva_requires_strict_adjacency() {
     // rule's — ṇatva (8.4.1 / 8.4.2), which 8.4.2 explicitly lets an aṭ
     // intervene in. Conflating the two would retroflex piMzanti as well.
     assert_eq!(
-        form_g("piz", Lakara::Lat, Purusha::Prathama, Vacana::Bahu),
+        form_g("07.0015", Lakara::Lat, Purusha::Prathama, Vacana::Bahu),
         "piMzanti"
     );
     assert_eq!(
-        form_g("piz", Lakara::Lot, Purusha::Uttama, Vacana::Eka),
+        form_g("07.0015", Lakara::Lot, Purusha::Uttama, Vacana::Eka),
         "pinazARi"
     );
 }
@@ -1644,7 +1673,13 @@ fn pish_vidhilin_all_nine_cells() {
     // nothing to do here; the cells are pure weak stem plus 8.4.56 on
     // prathama eka.
     assert_eq!(
-        form_g_forked("piz", Lakara::VidhiLin, Purusha::Prathama, Vacana::Eka, 2),
+        form_g_forked(
+            "07.0015",
+            Lakara::VidhiLin,
+            Purusha::Prathama,
+            Vacana::Eka,
+            2
+        ),
         "piMzyAd"
     );
     let cells = [
@@ -1658,7 +1693,7 @@ fn pish_vidhilin_all_nine_cells() {
         (Purusha::Uttama, Vacana::Bahu, "piMzyAma"),
     ];
     for (pu, va, want) in cells {
-        assert_eq!(form_g("piz", Lakara::VidhiLin, pu, va), want);
+        assert_eq!(form_g("07.0015", Lakara::VidhiLin, pu, va), want);
     }
 }
 
@@ -1669,7 +1704,7 @@ fn pish_lat_madhyama_eka_is_pinakshi() {
     // widening this cell forces, and the one 8.3.59's own comment
     // predicted ("h/y/v/r/l or k").
     assert_eq!(
-        form_g("piz", Lakara::Lat, Purusha::Madhyama, Vacana::Eka),
+        form_g("07.0015", Lakara::Lat, Purusha::Madhyama, Vacana::Eka),
         "pinakzi"
     );
 }
@@ -1683,11 +1718,11 @@ fn shadhoh_kah_si_declines_when_8_2_23_ate_the_s_first() {
     // 8.2.23 and you get `apinak` instead — a plausible-looking form that
     // splits madhyama eka from prathama eka.
     assert_eq!(
-        form_g_forked("piz", Lakara::Lan, Purusha::Madhyama, Vacana::Eka, 2),
+        form_g_forked("07.0015", Lakara::Lan, Purusha::Madhyama, Vacana::Eka, 2),
         "apinaq"
     );
     assert_eq!(
-        form_g_forked("piz", Lakara::Lan, Purusha::Prathama, Vacana::Eka, 2),
+        form_g_forked("07.0015", Lakara::Lan, Purusha::Prathama, Vacana::Eka, 2),
         "apinaq"
     );
 }
@@ -1704,7 +1739,7 @@ fn pish_lan_all_nine_cells() {
         (Purusha::Uttama, Vacana::Bahu, "apiMzma"),
     ];
     for (pu, va, want) in cells {
-        assert_eq!(form_g("piz", Lakara::Lan, pu, va), want);
+        assert_eq!(form_g("07.0015", Lakara::Lan, pu, va), want);
     }
 }
 
@@ -1717,7 +1752,7 @@ fn pish_lot_madhyama_eka_is_pinddhi() {
     // elides the `q` before the savarṇa `Q`. 7.1.35's tātaṅ and its 8.4.56
     // fork supply the other two branches.
     assert_eq!(
-        form_g_forked("piz", Lakara::Lot, Purusha::Madhyama, Vacana::Eka, 4),
+        form_g_forked("07.0015", Lakara::Lot, Purusha::Madhyama, Vacana::Eka, 4),
         "piRqQi"
     );
 }
@@ -1725,7 +1760,7 @@ fn pish_lot_madhyama_eka_is_pinddhi() {
 #[test]
 fn pish_lot_all_nine_cells() {
     assert_eq!(
-        form_g_forked("piz", Lakara::Lot, Purusha::Prathama, Vacana::Eka, 3),
+        form_g_forked("07.0015", Lakara::Lot, Purusha::Prathama, Vacana::Eka, 3),
         "pinazwu"
     );
     let cells = [
@@ -1738,7 +1773,7 @@ fn pish_lot_all_nine_cells() {
         (Purusha::Uttama, Vacana::Bahu, "pinazAma"),
     ];
     for (pu, va, want) in cells {
-        assert_eq!(form_g("piz", Lakara::Lot, pu, va), want);
+        assert_eq!(form_g("07.0015", Lakara::Lot, pu, va), want);
     }
 }
 
@@ -1749,11 +1784,11 @@ fn jhalam_jash_jhashi_still_declines_on_its_two_pre_existing_shapes() {
     // declines it. √hiṃs's hinDi presents an `n`, for which jashtva_of
     // returns None — a DIFFERENT clause. Both remain branch 0.
     assert_eq!(
-        form_g_forked("Kid", Lakara::Lat, Purusha::Madhyama, Vacana::Bahu, 2),
+        form_g_forked("07.0012", Lakara::Lat, Purusha::Madhyama, Vacana::Bahu, 2),
         "KindDve"
     );
     assert_eq!(
-        form_g_forked("his", Lakara::Lot, Purusha::Madhyama, Vacana::Eka, 3),
+        form_g_forked("07.0019", Lakara::Lot, Purusha::Madhyama, Vacana::Eka, 3),
         "hinDi"
     );
 }
@@ -1765,11 +1800,11 @@ fn indh_lat_all_nine_cells() {
     // inD + te -> inD + De -> indDe. 8.4.65 optionally elides that `d`
     // before the savarṇa `D`, which is where inDe comes from.
     assert_eq!(
-        form_g_forked("inD", Lakara::Lat, Purusha::Prathama, Vacana::Eka, 2),
+        form_g_forked("07.0011", Lakara::Lat, Purusha::Prathama, Vacana::Eka, 2),
         "indDe"
     );
     assert_eq!(
-        form_g_forked("inD", Lakara::Lat, Purusha::Madhyama, Vacana::Bahu, 2),
+        form_g_forked("07.0011", Lakara::Lat, Purusha::Madhyama, Vacana::Bahu, 2),
         "indDve"
     );
     let cells = [
@@ -1782,7 +1817,7 @@ fn indh_lat_all_nine_cells() {
         (Purusha::Uttama, Vacana::Bahu, "inDmahe"),
     ];
     for (pu, va, want) in cells {
-        assert_eq!(form_g("inD", Lakara::Lat, pu, va), want);
+        assert_eq!(form_g("07.0011", Lakara::Lat, pu, va), want);
     }
 }
 
@@ -1793,11 +1828,11 @@ fn jhashas_tathor_dhodhah_declines_before_a_non_dental() {
     // rule declines and 8.4.55 khari ca devoices the stem's `D` to `t`
     // instead. inDvahe and inDmahe make the same point for `v` and `m`.
     assert_eq!(
-        form_g("inD", Lakara::Lat, Purusha::Madhyama, Vacana::Eka),
+        form_g("07.0011", Lakara::Lat, Purusha::Madhyama, Vacana::Eka),
         "intse"
     );
     assert_eq!(
-        form_g("inD", Lakara::Lot, Purusha::Madhyama, Vacana::Eka),
+        form_g("07.0011", Lakara::Lot, Purusha::Madhyama, Vacana::Eka),
         "intsva"
     );
 }
@@ -1807,15 +1842,15 @@ fn indh_strong_stem_appears_only_in_lot_uttama() {
     // The ātmanepada endings are ṅit throughout except loṭ uttama, where
     // the strong stem inaD survives 6.4.111 and shows śnam's `a`.
     assert_eq!(
-        form_g("inD", Lakara::Lot, Purusha::Uttama, Vacana::Eka),
+        form_g("07.0011", Lakara::Lot, Purusha::Uttama, Vacana::Eka),
         "inaDE"
     );
     assert_eq!(
-        form_g("inD", Lakara::Lot, Purusha::Uttama, Vacana::Dvi),
+        form_g("07.0011", Lakara::Lot, Purusha::Uttama, Vacana::Dvi),
         "inaDAvahE"
     );
     assert_eq!(
-        form_g("inD", Lakara::Lot, Purusha::Uttama, Vacana::Bahu),
+        form_g("07.0011", Lakara::Lot, Purusha::Uttama, Vacana::Bahu),
         "inaDAmahE"
     );
 }
@@ -1828,7 +1863,7 @@ fn indh_lan_and_lot_and_vidhilin_cells() {
         (Purusha::Madhyama, Vacana::Eka, "EndDAH"),
         (Purusha::Madhyama, Vacana::Bahu, "EndDvam"),
     ] {
-        assert_eq!(form_g_forked("inD", Lakara::Lan, pu, va, 2), want);
+        assert_eq!(form_g_forked("07.0011", Lakara::Lan, pu, va, 2), want);
     }
     for (pu, va, want) in [
         (Purusha::Prathama, Vacana::Dvi, "EnDAtAm"),
@@ -1838,15 +1873,15 @@ fn indh_lan_and_lot_and_vidhilin_cells() {
         (Purusha::Uttama, Vacana::Dvi, "EnDvahi"),
         (Purusha::Uttama, Vacana::Bahu, "EnDmahi"),
     ] {
-        assert_eq!(form_g("inD", Lakara::Lan, pu, va), want);
+        assert_eq!(form_g("07.0011", Lakara::Lan, pu, va), want);
     }
 
     assert_eq!(
-        form_g_forked("inD", Lakara::Lot, Purusha::Prathama, Vacana::Eka, 2),
+        form_g_forked("07.0011", Lakara::Lot, Purusha::Prathama, Vacana::Eka, 2),
         "indDAm"
     );
     assert_eq!(
-        form_g_forked("inD", Lakara::Lot, Purusha::Madhyama, Vacana::Bahu, 2),
+        form_g_forked("07.0011", Lakara::Lot, Purusha::Madhyama, Vacana::Bahu, 2),
         "indDvam"
     );
     for (pu, va, want) in [
@@ -1854,7 +1889,7 @@ fn indh_lan_and_lot_and_vidhilin_cells() {
         (Purusha::Prathama, Vacana::Bahu, "inDatAm"),
         (Purusha::Madhyama, Vacana::Dvi, "inDATAm"),
     ] {
-        assert_eq!(form_g("inD", Lakara::Lot, pu, va), want);
+        assert_eq!(form_g("07.0011", Lakara::Lot, pu, va), want);
     }
 
     // vidhiliṅ takes no fork at all: the optative `I` is neither a jhal
@@ -1870,6 +1905,6 @@ fn indh_lan_and_lot_and_vidhilin_cells() {
         (Purusha::Uttama, Vacana::Dvi, "inDIvahi"),
         (Purusha::Uttama, Vacana::Bahu, "inDImahi"),
     ] {
-        assert_eq!(form_g("inD", Lakara::VidhiLin, pu, va), want);
+        assert_eq!(form_g("07.0011", Lakara::VidhiLin, pu, va), want);
     }
 }

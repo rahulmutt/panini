@@ -794,19 +794,19 @@ mod tests {
         // untouched by it: their finals (`A`, `d`, `s`) are outside the guard,
         // and their shipped forms are the proof.
         assert_eq!(
-            form_g("yA", Lakara::Lat, Purusha::Prathama, Vacana::Eka),
+            form_g("02.0044", Lakara::Lat, Purusha::Prathama, Vacana::Eka),
             "yAti"
         );
         assert_eq!(
-            form_g("ad", Lakara::Lat, Purusha::Prathama, Vacana::Eka),
+            form_g("02.0001", Lakara::Lat, Purusha::Prathama, Vacana::Eka),
             "atti"
         );
         assert_eq!(
-            form_g("As", Lakara::Lat, Purusha::Prathama, Vacana::Eka),
+            form_g("02.0011", Lakara::Lat, Purusha::Prathama, Vacana::Eka),
             "Aste"
         );
         assert_eq!(
-            form_g("vas", Lakara::Lat, Purusha::Prathama, Vacana::Eka),
+            form_g("02.0013", Lakara::Lat, Purusha::Prathama, Vacana::Eka),
             "vaste"
         );
         // And the rule declines outright on a prakriya whose aṅga is not √śī,
