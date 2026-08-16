@@ -36,6 +36,15 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
+        "01.1049",
+        "laT",
+        Pada::Atmanepada,
+        [
+            "nayate", "nayete", "nayante", "nayase", "nayeTe", "nayaDve", "naye", "nayAvahe",
+            "nayAmahe",
+        ],
+    ),
+    (
         "01.0642",
         "laT",
         Pada::Parasmaipada,
@@ -87,6 +96,15 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         [
             "anayad", "anayatAm", "anayan", "anayaH", "anayatam", "anayata", "anayam", "anayAva",
             "anayAma",
+        ],
+    ),
+    (
+        "01.1049",
+        "laN",
+        Pada::Atmanepada,
+        [
+            "anayata", "anayetAm", "anayanta", "anayaTAH", "anayeTAm", "anayaDvam", "anaye",
+            "anayAvahi", "anayAmahi",
         ],
     ),
     (
@@ -151,6 +169,15 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
+        "01.1049",
+        "loT",
+        Pada::Atmanepada,
+        [
+            "nayatAm", "nayetAm", "nayantAm", "nayasva", "nayeTAm", "nayaDvam", "nayE",
+            "nayAvahE", "nayAmahE",
+        ],
+    ),
+    (
         "01.0642",
         "loT",
         Pada::Parasmaipada,
@@ -208,6 +235,15 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         [
             "nayed", "nayetAm", "nayeyuH", "nayeH", "nayetam", "nayeta", "nayeyam", "nayeva",
             "nayema",
+        ],
+    ),
+    (
+        "01.1049",
+        "viDiliN",
+        Pada::Atmanepada,
+        [
+            "nayeta", "nayeyAtAm", "nayeran", "nayeTAH", "nayeyATAm", "nayeDvam", "nayeya",
+            "nayevahi", "nayemahi",
         ],
     ),
     (
@@ -622,6 +658,15 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
+        "06.0001",
+        "laT",
+        Pada::Atmanepada,
+        [
+            "tudate", "tudete", "tudante", "tudase", "tudeTe", "tudaDve", "tude", "tudAvahe",
+            "tudAmahe",
+        ],
+    ),
+    (
         "06.0092",
         "laT",
         Pada::Parasmaipada,
@@ -769,6 +814,15 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         [
             "atudad", "atudatAm", "atudan", "atudaH", "atudatam", "atudata", "atudam", "atudAva",
             "atudAma",
+        ],
+    ),
+    (
+        "06.0001",
+        "laN",
+        Pada::Atmanepada,
+        [
+            "atudata", "atudetAm", "atudanta", "atudaTAH", "atudeTAm", "atudaDvam", "atude",
+            "atudAvahi", "atudAmahi",
         ],
     ),
     (
@@ -922,6 +976,15 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
+        "06.0001",
+        "loT",
+        Pada::Atmanepada,
+        [
+            "tudatAm", "tudetAm", "tudantAm", "tudasva", "tudeTAm", "tudaDvam", "tudE",
+            "tudAvahE", "tudAmahE",
+        ],
+    ),
+    (
         "06.0092",
         "loT",
         Pada::Parasmaipada,
@@ -1048,6 +1111,15 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         [
             "tuded", "tudetAm", "tudeyuH", "tudeH", "tudetam", "tudeta", "tudeyam", "tudeva",
             "tudema",
+        ],
+    ),
+    (
+        "06.0001",
+        "viDiliN",
+        Pada::Atmanepada,
+        [
+            "tudeta", "tudeyAtAm", "tuderan", "tudeTAH", "tudeyATAm", "tudeDvam", "tudeya",
+            "tudevahi", "tudemahi",
         ],
     ),
     (
@@ -3633,8 +3705,8 @@ fn derivation_set_is_exactly_pinned() {
 /// śa-luk jaśtva 8.4.56 branch), loṭ (on 7.1.35/8.4.65/8.4.56, stacking up to
 /// three deep, and piṣ's loṭ madhyama eka, which stacks 8.4.65 alongside
 /// 7.1.35/8.4.56 four deep), and vidhiliṅ (kft/his/Banj/piz/ruD cell 0, on
-/// 8.4.56 — Kid and inD do not fork here): 1800 cells total (200 root×lakāra
-/// blocks × 9), of which 1630 hold exactly one form, 109 hold two, 56 hold
+/// 8.4.56 — Kid and inD do not fork here): 1872 cells total (208 root×lakāra
+/// blocks × 9), of which 1702 hold exactly one form, 109 hold two, 56 hold
 /// three, one holds four (piṣ's loṭ madhyama eka, the deepest fork added in
 /// 7b), and — the sharpest branch-count witnesses in the repo, per
 /// `docs/ARCHITECTURE.md` — exactly two hold five (√kṛt's loṭ prathama eka,
@@ -3652,14 +3724,14 @@ fn derivation_set_is_exactly_pinned() {
 /// across all 1620 pre-7b cells with zero differences, every 7b form was
 /// cross-checked the same way during that slice's design, and this slice's
 /// √rudh forms were audited against a vidyut-prakriya checkout at commit
-/// 8da2f90 the same way, so the numbers are re-verified as well as pinned,
-/// even though that probe's source is deliberately not committed to this
-/// repo (it is throwaway verification tooling, not shipped code) — this
-/// test is what keeps the numbers true day to day.
+/// 8da2f90 the same way, and the probe's source is committed at
+/// `tools/audit/panini_full_audit.rs` as of `0ff84a7`, and this slice re-ran
+/// it over all 1872 cells — so the numbers are re-verified as well as pinned
+/// — this test is what keeps the numbers true day to day.
 #[test]
 fn derivation_set_shape_matches_the_audited_numbers() {
     let total_cells = PARADIGM.len() * 9;
-    assert_eq!(total_cells, 1800, "200 root×lakāra blocks × 9 cells each");
+    assert_eq!(total_cells, 1872, "208 root×lakāra blocks × 9 cells each");
 
     let mut ones = 0usize;
     let mut twos = 0usize;
@@ -3686,7 +3758,7 @@ fn derivation_set_shape_matches_the_audited_numbers() {
             }
         }
     }
-    assert_eq!(ones, 1630, "one-form cells");
+    assert_eq!(ones, 1702, "one-form cells");
     assert_eq!(twos, 109, "two-form cells");
     assert_eq!(threes, 56, "three-form cells");
     assert_eq!(fours, 1, "four-form cells — piṣ's loṭ madhyama eka");
@@ -3729,21 +3801,15 @@ fn derivation_set_shape_matches_the_audited_numbers() {
 /// `PARADIGM` block or appear in the explicit gated list below.
 #[test]
 fn paradigm_covers_every_enumerable_cell() {
-    // Repopulated by the pada audit, and emptied again in the same slice once
-    // the audited forms land. √nī and √tud became ubhayapadī when the audit
-    // corrected their column; their ātmanepada blocks are transcribed from the
-    // cross-implementation audit's dump, which runs against the corrected data
-    // — so the data flip necessarily lands one commit ahead of its goldens.
-    const GATED: &[(&str, &str, Pada)] = &[
-        ("01.1049", "laT", Pada::Atmanepada),
-        ("01.1049", "laN", Pada::Atmanepada),
-        ("01.1049", "loT", Pada::Atmanepada),
-        ("01.1049", "viDiliN", Pada::Atmanepada),
-        ("06.0001", "laT", Pada::Atmanepada),
-        ("06.0001", "laN", Pada::Atmanepada),
-        ("06.0001", "loT", Pada::Atmanepada),
-        ("06.0001", "viDiliN", Pada::Atmanepada),
-    ];
+    // adādi × vidhiliṅ was gated in slice 5a and ungated in slice 5b; √śī was
+    // gated in slice 5f task 1 and ungated there; √nī and √tud's ātmanepada
+    // blocks were gated for one commit by the pada audit, between the column
+    // being corrected and the audited goldens landing. There are no gated
+    // cells any more. This constant stays (empty) so the two assertions below
+    // keep documenting that EVERY enumerable (root, lakara, pada) triple must
+    // be pinned in PARADIGM — a future partial slice may repopulate it, but it
+    // must never silently hide a missing golden block.
+    const GATED: &[(&str, &str, Pada)] = &[];
 
     let pinned: Vec<(&str, &str, Pada)> =
         PARADIGM.iter().map(|(r, l, p, _)| (*r, *l, *p)).collect();
