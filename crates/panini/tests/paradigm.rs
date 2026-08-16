@@ -5,16 +5,17 @@ use panini::{Panini, Verdict};
 use panini_data::{Lakara, Pada, Purusha, Vacana, dhatus};
 use panini_prakriya::derive;
 
-/// (root_id, lakara_label, pada, [P.E, P.D, P.B, M.E, M.D, M.B, U.E, U.D, U.B])
-/// in SLP1. `PARADIGM`'s first column is a `Dhatu::dhatupatha` — the entry number,
-/// unique by construction, so the two √aś rows are distinct without anyone
-/// deciding which gaṇa's was the incumbent (`09.0059` kryādi, `05.0020`
-/// svādi). Resolve a number against the `DHATUS` table in `panini-data` to
-/// see which root a block is for; the tables carry no per-row comment,
-/// deliberately, since 442 uncheckable comments is a staleness liability no
-/// test could pin. The pada column is no longer inferable
-/// from the root id alone: 1.3.72 gives some roots a `PadaAssignment` that
-/// admits both, so a block has to declare which pada it is a block OF.
+/// (root_number, lakara_label, pada, [P.E, P.D, P.B, M.E, M.D, M.B, U.E, U.D, U.B])
+/// in SLP1. `PARADIGM`'s first column is a `Dhatu::dhatupatha` — the entry
+/// number, unique by construction, so the two √aś rows are distinct without
+/// anyone deciding which gaṇa's was the incumbent (`09.0059` kryādi,
+/// `05.0020` svādi). Resolve a number against the `DHATUS` table in
+/// `panini-data` to see which root a block is for; the tables carry no
+/// per-row comment, deliberately, since 442 uncheckable comments is a
+/// staleness liability no test could pin. The pada column is no longer
+/// inferable from the root alone: 1.3.72 gives some roots a
+/// `PadaAssignment` that admits both, so a block has to declare which pada
+/// it is a block OF.
 const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
     (
         "01.0001",
@@ -2343,7 +2344,7 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
 ];
 
 /// Second and third valid forms, for cells where an optional (vikalpa) rule
-/// forks the derivation. `(root_id, lakara_label, pada, cell index into the
+/// forks the derivation. `(root_number, lakara_label, pada, cell index into the
 /// [&str; 9], alternate form, vikalpa key)`.
 ///
 /// The vikalpa key names the optional rules applied on the branch that

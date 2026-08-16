@@ -73,7 +73,8 @@ pub struct Dhatu {
     /// differs from the it-stripped upadeśa the reason is a rule this engine
     /// does not derive: `07.0019` stores `hins` for `hisi~` because 7.1.58
     /// idito num dhātoḥ is kept as a stated simplification, and `05.0021`
-    /// stores `stiG` for `zwiGa~\` per 6.1.64 dhātvādeḥ ṣaḥ saḥ.
+    /// stores `stiG` for `zwiGa~\` per 6.1.64 dhātvādeḥ ṣaḥ saḥ and its
+    /// vārttika, which carries the following retroflex with it.
     pub code: &'static str,
     pub gana: Gana,
     /// Which pada(s) this engine derives for this root — a curated verdict,
@@ -682,7 +683,7 @@ mod tests {
             "dhātupāṭha numbers must be unique"
         );
         // Uniqueness here is a property of the source, not of a convention
-        // this repo maintains: upstream numbers are unique across all 2260
+        // this repo maintains: upstream numbers are unique across all 2259
         // entries, which `dhatupatha_numbers_resolve_upstream` also asserts.
         // That is the whole reason the number can serve as the key where the
         // SLP1 `code` could not — `code` is NOT unique (both √aś rows share
@@ -713,6 +714,9 @@ mod tests {
 
     #[test]
     fn rudhadi_rows_are_the_seven_curated_roots() {
+        // √rudh, the gaṇa's eponym, arrived with 1.3.72 svaritañitaḥ and
+        // PadaAssignment::Ubhayapada.
+        //
         // rudhādi also holds `vi\da~\` and `o~vijI~`, whose SLP1 surfaces
         // WOULD have collided with divādi's `vid` and tudādi's `vij` under
         // the retired `id` scheme. Neither is curated — the gaṇa stops at
@@ -859,10 +863,21 @@ mod tests {
         t
     }
 
-    /// 6.1.64 dhātvādeḥ ṣaḥ saḥ / ṇaḥ naḥ. A root-initial ṣ or ṇ in the
-    /// upadeśa is stored as s / n, because no rule in this engine performs
-    /// the substitution. For `zwiGa~\` the retroflex immediately after goes
-    /// with it (ṣṭ → st), which is exactly what `stiG` records.
+    /// 6.1.64 dhātvādeḥ ṣaḥ saḥ (ṣ → s) and 6.1.65 ṇo naḥ (ṇ → n). A
+    /// root-initial ṣ or ṇ in the upadeśa is stored substituted, because no
+    /// rule in this engine performs either substitution. For `zwiGa~\` the
+    /// retroflex immediately after goes with it, under the vārttika on
+    /// 6.1.64 (ṣṭ → st), which is exactly what `stiG` records.
+    ///
+    /// Only the `zw` → `st` arm of that vārttika (6.1.64.2) is handled here.
+    /// Its other arms — `zW` → `sT`, `zR` → `sn`, `zaR` → `san` — and the
+    /// companion vārttika 6.1.64.1 exempting `zWiv`/`zvazk` from any change
+    /// are unimplemented: no curated root needs them today. `01.1077 zWA\`
+    /// (√sthā), `01.0641`/`04.0004 zWivu~`, `01.0105 zvazka~\` and
+    /// `01.0535 zaRa~` are the upstream roots that would exercise them; a
+    /// future slice curating any of those must extend this function first,
+    /// or `dhatupatha_numbers_resolve_upstream` fails loudly (√sthā would
+    /// demand `sWA`, which this function does not produce).
     fn dhatvadeh_sha_sa(code: String) -> String {
         if let Some(rest) = code.strip_prefix('z') {
             let rest = rest
@@ -925,6 +940,26 @@ mod tests {
                 stripped, d.code,
                 "{} {upadesha} it-strips to {stripped}, but DHATUS stores {}",
                 d.dhatupatha, d.code
+            );
+            // The spec's claim is that the number resolves the root
+            // UNIQUELY, not merely that the row it names matches. A number
+            // pointing at one of several siblings sharing both the
+            // it-stripped upadeśa and the artha within the same gaṇa would
+            // still pass every assertion above. Scope to the gaṇa (the
+            // number's two-digit prefix, per `gana_matches_dhatupatha_prefix`)
+            // because upstream reuses (code, artha) pairs across gaṇas too.
+            let gana_prefix = &d.dhatupatha[..2];
+            let siblings = rows
+                .iter()
+                .filter(|(n, u, a)| {
+                    n.starts_with(gana_prefix) && stored_form(u) == stripped && *a == *artha
+                })
+                .count();
+            assert_eq!(
+                siblings, 1,
+                "{} is ambiguous: {siblings} rows in gaṇa {gana_prefix} share \
+                 ({stripped}, {artha})",
+                d.dhatupatha
             );
         }
     }

@@ -1498,12 +1498,14 @@ fn the_ru_alternation_stays_off_the_new_roots() {
     // `aBanag` and 8.2.39 has already voiced √piṣ's to `apinaq`, and its
     // `s`-final check does not match either. If it over-fired, these
     // cells would surface a `d` and then a visarga via 8.2.75 and 8.3.15.
-    for (number, code, want) in [("07.0016", "Banj", "aBanag"), ("07.0015", "piz", "apinaq")] {
+    for (number, want) in [("07.0016", "aBanag"), ("07.0015", "apinaq")] {
+        let d = dhatus().iter().find(|d| d.dhatupatha == number).unwrap();
         for pu in [Purusha::Prathama, Purusha::Madhyama] {
             assert_eq!(
                 form_g_forked(number, Lakara::Lan, pu, Vacana::Eka, 2),
                 want,
-                "{code} laṅ eka took the ru alternation"
+                "{} laṅ eka took the ru alternation",
+                d.code
             );
         }
     }
