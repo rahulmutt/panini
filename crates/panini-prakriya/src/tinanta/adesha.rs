@@ -1311,7 +1311,7 @@ mod tests {
         // Strong cell (tip is pit, not ṅit) keeps the `a`; weak cell (Ji is
         // apit → ṅit by 1.2.4) loses it. A guard that ignored ṅitva would
         // derive *kfnttanti and *kfRatvaH, both plausible-looking.
-        let d = dhatus().iter().find(|d| d.id == "kft").unwrap();
+        let d = dhatus().iter().find(|d| d.dhatupatha == "07.0010").unwrap();
         let strong = sole(derive(
             d,
             Lakara::Lat,

@@ -1389,17 +1389,17 @@ mod tests {
         //
         // aṅga-final `A` is excluded (a/ā are not iṇ):
         assert_eq!(
-            form_g("As", Lakara::Lot, Purusha::Madhyama, Vacana::Eka),
+            form_g("02.0011", Lakara::Lot, Purusha::Madhyama, Vacana::Eka),
             "Assva"
         );
         // aṅga-final `s` is not a vowel at all:
         assert_eq!(
-            form_g("vas", Lakara::Lat, Purusha::Madhyama, Vacana::Eka),
+            form_g("02.0013", Lakara::Lat, Purusha::Madhyama, Vacana::Eka),
             "vasse"
         );
         // Thematic path: the ending is preceded by the śap's `a`, excluded.
         assert_eq!(
-            form_g("laB", Lakara::Lot, Purusha::Madhyama, Vacana::Eka),
+            form_g("01.1130", Lakara::Lot, Purusha::Madhyama, Vacana::Eka),
             "laBasva"
         );
         // And a non-s-initial ending after √śī's `e` is left alone — the
@@ -1554,7 +1554,7 @@ mod tests {
         // forbids Natva there. This is an existing golden -- a mutant that
         // drops this guard breaks the 1080, not just this test.
         assert_eq!(
-            form_g("smf", Lakara::Lan, Purusha::Prathama, Vacana::Bahu),
+            form_g("01.1082", Lakara::Lan, Purusha::Prathama, Vacana::Bahu),
             "asmaran"
         );
         let mut p = natva_prakriya("a", "smar", "an");
@@ -1573,7 +1573,7 @@ mod tests {
         // restores it afterwards. This engine has no anusvAra machinery, so
         // the bleeding is encoded as this guard. Another existing golden.
         assert_eq!(
-            form_g("BAz", Lakara::Lat, Purusha::Prathama, Vacana::Bahu),
+            form_g("01.0696", Lakara::Lat, Purusha::Prathama, Vacana::Bahu),
             "BAzante"
         );
         let mut p = natva_prakriya("BAz", "a", "nte");
@@ -1891,20 +1891,28 @@ mod tests {
         // Enumerated rather than golden-driven: a predicate that fired
         // unconditionally still produces plausible Sanskrit for two of the
         // three 7a roots, and only √hiṃs catches it.
-        for (id, la, pu, va, has_anusvara) in [
-            ("his", Lakara::Lat, Purusha::Prathama, Vacana::Dvi, true),
-            ("kft", Lakara::Lat, Purusha::Prathama, Vacana::Bahu, false),
+        for (number, la, pu, va, has_anusvara) in [
+            ("07.0019", Lakara::Lat, Purusha::Prathama, Vacana::Dvi, true),
+            (
+                "07.0010",
+                Lakara::Lat,
+                Purusha::Prathama,
+                Vacana::Bahu,
+                false,
+            ),
         ] {
-            let d = dhatus().iter().find(|d| d.id == id).unwrap();
+            let d = dhatus().iter().find(|d| d.dhatupatha == number).unwrap();
             let p = sole(derive(d, la, d.pada.padas()[0], pu, va));
             assert!(
                 p.log.iter().any(|s| s.sutra == "8.3.24"),
-                "{id}: 8.3.24 should always fire on a weak rudhādi cell"
+                "{}: 8.3.24 should always fire on a weak rudhādi cell",
+                d.code
             );
             assert_eq!(
                 p.text().contains('M'),
                 has_anusvara,
-                "{id}: anusvāra retention"
+                "{}: anusvāra retention",
+                d.code
             );
         }
     }

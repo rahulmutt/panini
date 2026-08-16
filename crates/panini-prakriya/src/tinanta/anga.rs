@@ -461,7 +461,7 @@ mod tests {
         // (a) 7.1.5 fired, but the aṅga is √ās, not √śī: no ruṭ (Asate, not
         //     *Asrate). This is the clause an `||` → `&&` mutant drops.
         assert_eq!(
-            form_g("As", Lakara::Lat, Purusha::Prathama, Vacana::Bahu),
+            form_g("02.0011", Lakara::Lat, Purusha::Prathama, Vacana::Bahu),
             "Asate"
         );
         // (b) The aṅga IS √śī, but 7.1.5 never fired (empty log): the rule
@@ -481,7 +481,7 @@ mod tests {
         // 6.4.23 deletes the nasal the ROOT contributed, which after 3.1.78
         // sits in SHAP behind śnam's `na`. It must not touch śnam's own `n`:
         // hinans → hinas, never *hias or *hins.
-        let d = dhatus().iter().find(|d| d.id == "his").unwrap();
+        let d = dhatus().iter().find(|d| d.dhatupatha == "07.0019").unwrap();
         let p = sole(derive(
             d,
             Lakara::Lat,
@@ -498,8 +498,8 @@ mod tests {
     fn nalopa_declines_where_the_tail_has_no_nasal() {
         // kft's tail is `t` and Kid's is `d`. A guard that fired on any
         // rudhādi root would produce *kfRatti from a mangled stem.
-        for id in ["kft", "Kid"] {
-            let d = dhatus().iter().find(|d| d.id == id).unwrap();
+        for number in ["07.0010", "07.0012"] {
+            let d = dhatus().iter().find(|d| d.dhatupatha == number).unwrap();
             let branches = derive(
                 d,
                 Lakara::Lat,
@@ -510,7 +510,8 @@ mod tests {
             for p in &branches {
                 assert!(
                     !p.log.iter().any(|s| s.sutra == "6.4.23"),
-                    "{id}: 6.4.23 fired with no root nasal"
+                    "{}: 6.4.23 fired with no root nasal",
+                    d.code
                 );
             }
         }

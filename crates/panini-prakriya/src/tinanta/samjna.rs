@@ -222,8 +222,8 @@ mod tests {
         t
     }
 
-    fn pada_prakriya(id: &str, pada: Pada) -> Prakriya {
-        let d = dhatus().iter().find(|d| d.id == id).unwrap();
+    fn pada_prakriya(number: &str, pada: Pada) -> Prakriya {
+        let d = dhatus().iter().find(|d| d.dhatupatha == number).unwrap();
         let mut p = Prakriya {
             ctx: Context::new(Lakara::Lat, pada, Purusha::Prathama, Vacana::Eka),
             ..Default::default()
@@ -242,7 +242,7 @@ mod tests {
         // the ubhayapada arm this rule exists to open.
         let rule = rules().find(|r| r.id == "1.3.72").unwrap();
         for (pada, fires) in [(Pada::Atmanepada, true), (Pada::Parasmaipada, false)] {
-            let mut p = pada_prakriya("ruD", pada);
+            let mut p = pada_prakriya("07.0001", pada);
             assert_eq!((rule.apply)(&mut p), fires, "1.3.72 on {pada:?}");
             assert!(!p.blocked, "1.3.72 must never block, {pada:?}");
         }
@@ -255,12 +255,13 @@ mod tests {
         // one (√khid, √indh) is 1.3.12's; 1.3.72 must leave both alone in
         // both padas, without recording and without blocking.
         let rule = rules().find(|r| r.id == "1.3.72").unwrap();
-        for id in ["BU", "Kid", "inD"] {
+        for number in ["01.0001", "07.0012", "07.0011"] {
+            let code = pada_anga_text(number);
             for pada in [Pada::Parasmaipada, Pada::Atmanepada] {
-                let mut p = pada_prakriya(id, pada);
-                assert!(!(rule.apply)(&mut p), "1.3.72 fired on {id} {pada:?}");
-                assert!(!p.blocked, "1.3.72 blocked {id} {pada:?}");
-                assert!(p.log.is_empty(), "1.3.72 recorded on {id} {pada:?}");
+                let mut p = pada_prakriya(number, pada);
+                assert!(!(rule.apply)(&mut p), "1.3.72 fired on {code} {pada:?}");
+                assert!(!p.blocked, "1.3.72 blocked {code} {pada:?}");
+                assert!(p.log.is_empty(), "1.3.72 recorded on {code} {pada:?}");
             }
         }
     }
@@ -293,19 +294,19 @@ mod tests {
         // sanctions it. Pinned so a mutant that turned all three rules into
         // no-ops could not pass by being trivially order-independent.
         let cells = [
-            ("ruD", Pada::Parasmaipada, Some("1.3.78")),
-            ("ruD", Pada::Atmanepada, Some("1.3.72")),
-            ("inD", Pada::Parasmaipada, None),
-            ("inD", Pada::Atmanepada, Some("1.3.12")),
-            ("BU", Pada::Parasmaipada, Some("1.3.78")),
-            ("BU", Pada::Atmanepada, None),
-            ("Kid", Pada::Parasmaipada, None),
-            ("Kid", Pada::Atmanepada, Some("1.3.12")),
+            ("07.0001", Pada::Parasmaipada, Some("1.3.78")),
+            ("07.0001", Pada::Atmanepada, Some("1.3.72")),
+            ("07.0011", Pada::Parasmaipada, None),
+            ("07.0011", Pada::Atmanepada, Some("1.3.12")),
+            ("01.0001", Pada::Parasmaipada, Some("1.3.78")),
+            ("01.0001", Pada::Atmanepada, None),
+            ("07.0012", Pada::Parasmaipada, None),
+            ("07.0012", Pada::Atmanepada, Some("1.3.12")),
         ];
-        for (id, pada, expected) in cells {
+        for (number, pada, expected) in cells {
             let mut results = Vec::new();
             for order in ORDERS {
-                let mut p = pada_prakriya(id, pada);
+                let mut p = pada_prakriya(number, pada);
                 for i in order {
                     if p.blocked {
                         break;
@@ -321,23 +322,29 @@ mod tests {
                     .collect();
                 results.push((p.blocked, p.text(), logged));
             }
+            let code = pada_anga_text(number);
             let want: (bool, String, Vec<String>) = match expected {
-                Some(sutra) => (false, pada_anga_text(id), vec![sutra.to_string()]),
-                None => (true, pada_anga_text(id), vec![]),
+                Some(sutra) => (false, code.clone(), vec![sutra.to_string()]),
+                None => (true, code.clone(), vec![]),
             };
-            assert_eq!(results[0], want, "{id} {pada:?} in sūtra order");
+            assert_eq!(results[0], want, "{code} {pada:?} in sūtra order");
             for (n, got) in results.iter().enumerate() {
                 assert_eq!(
                     got, &results[0],
-                    "{id} {pada:?}: order {:?} differs from sūtra order",
+                    "{code} {pada:?}: order {:?} differs from sūtra order",
                     ORDERS[n]
                 );
             }
         }
     }
 
-    fn pada_anga_text(id: &str) -> String {
-        dhatus().iter().find(|d| d.id == id).unwrap().code.into()
+    fn pada_anga_text(number: &str) -> String {
+        dhatus()
+            .iter()
+            .find(|d| d.dhatupatha == number)
+            .unwrap()
+            .code
+            .into()
     }
 
     #[test]
