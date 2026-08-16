@@ -108,7 +108,9 @@ PANINI_AUDIT_DUMP=/tmp/audit-table.tsv mise exec rust@1.97.1 -- cargo run --rele
 
 2026-08-16, "pada audit" slice, vidyut `8da2f90`:
 **zero differences across 1872 cells / 2114 forms / 49 roots**, with both negative
-controls verified failing.
+controls verified failing. (The previous run, the "dhātupāṭha number as identity"
+slice at this same vidyut commit, is what discharged AGENTS.md's "one residual
+circularity is known and unfixed".)
 
 ## Scope
 
