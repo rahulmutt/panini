@@ -83,7 +83,8 @@ accordingly; see the "REPRESENTATION" note on 3.1.78 in
 The gaṇa carries seven roots — √kṛt, √hiṃs and √khid (slice 7a), √bhañj, √piṣ
 and √indh (7b), and √rudh (`07.0001`), the gaṇa's own eponym, which arrived
 with 1.3.72 *svaritañitaḥ* in the ubhayapada slice as the engine's first
-ubhayapadī root — and stays **partial**: nine of rudhādi's 25 dhātupāṭha
+ubhayapadī root — the pada audit later added √nī and √tud, outside this
+gaṇa — and stays **partial**: nine of rudhādi's 25 dhātupāṭha
 roots are ubhayapadī. The ubhayapada deferral itself is discharged — 1.3.72
 holds none of the other eight back any more — but they are not all alike.
 **√bhid, √kṣud, √yuj and √tṛd** are curation-only: the engine derives all

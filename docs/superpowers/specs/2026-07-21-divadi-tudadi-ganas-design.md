@@ -112,6 +112,12 @@ slice takes only its **parasmaipada** pada (tudati), consistent with slice 3's
 explicit deferral of ubhayapadī roots and 1.3.72; the ātmanepada tudati-form is
 future work. The gaṇa is still represented by its namesake.
 
+> **Discharged 2026-08-16** by the pada audit
+> (`docs/superpowers/specs/2026-08-16-pada-audit-design.md`). √tud is
+> `PadaAssignment::Ubhayapada` and both padas are pinned in `PARADIGM`. The
+> same audit found that `01.1049 √nī`, curated in the v1 slice, is ubhayapadī
+> on the same sūtra and had been missed here and everywhere else.
+
 Coverage: 12 → 24 roots; golden paradigm 432 → **864** forms (12 new roots × 4
 lakāras × 9 cells = 432 new).
 

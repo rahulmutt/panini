@@ -33,7 +33,7 @@ rather than on an axis this engine models. *parasmaipada* and *ātmanepada*
 curated 49-root set, in four lakāras: *laṭ* (present), *laṅ* (imperfect), *loṭ*
 (imperative), and *vidhiliṅ* (optative). A cell may have more than one valid
 form where an optional (*vikalpa*) sūtra applies — `hinvaH` and `hinuvaH` are
-both correct — and in fact 170 of the 1800 cells hold more than one form: 109
+both correct — and in fact 170 of the 1872 cells hold more than one form: 109
 hold two, 56 hold three (`Bavatu`, `BavatAd`, `BavatAt`), one holds four
 (rudhādi's √piṣ loṭ madhyama eka), two hold five, and two hold six — rudhādi's
 √kṛt and √rudh loṭ parasmaipada madhyama eka, tied as the sharpest forks in the

@@ -96,14 +96,14 @@
   target under `crates/panini-lipi/fuzz` legitimately omits it, since it uses
   `#![no_main]` plus the libfuzzer harness macro).
 - Grammar changes are gated by the golden paradigm test
-  (`crates/panini/tests/paradigm.rs`, 1800 cells, six complete gaṇas plus
+  (`crates/panini/tests/paradigm.rs`, 1872 cells, six complete gaṇas plus
   rudhādi partial — `PARADIGM`
     stays one-form-per-cell: a cell forked by an optional rule keeps its
     other forms — a second (109 cells), a third (56 cells), a fourth (1 cell,
     rudhādi's √piṣ loṭ madhyama eka) and — rudhādi's √kṛt and √rudh loṭ
     parasmaipada cells, tied as the sharpest forks in the suite — a fourth
     and fifth (prathama eka) or a fourth through sixth (madhyama eka) — in
-    `ALTERNATES` (242 rows in all, so 1800 + 242 = 2042 forms total), and
+    `ALTERNATES` (242 rows in all, so 1872 + 242 = 2114 forms total), and
     `derivation_set_is_exactly_pinned` asserts each cell's derivation set is
     exactly the union of the two. The suite is no longer filtered by any
     one-form-per-cell convention — the
@@ -158,7 +158,14 @@
     (ṣ-final) and √indh (jhaṣ-final, the gaṇa's second ātmanepada root),
     and the ubhayapada slice adds the gaṇa's own **eponym**, √rudh
     (`07.0001 ru\Di~^r`), with 1.3.72 *svaritañitaḥ* — the engine's first
-    ubhayapadī root, deriving a full paradigm in each pada. That discharges
+    ubhayapadī root, deriving a full paradigm in each pada.
+    The pada audit added two more: `01.1049 RI\Y` (√nī, bhvādi) and
+    `06.0001 tu\da~^` (√tud, tudādi), both ubhayapadī by 1.3.72 and both
+    curated parasmaipada until then. √tud was a known deferral; √nī was
+    named by no deferral list and was read past by every slice from v1 on.
+    `curated_pada_agrees_with_upadesha_markers` in `panini-data` now
+    re-derives all 49 verdicts from the vendored upadeśa, so the column
+    cannot drift from the data that determines it. That discharges
     the **ubhayapada** deferral as such: 1.3.72 is no longer what keeps any
     root out, and the other **eight** ubhayapadī roots are now out for
     narrower, root-specific reasons, verified cell by cell against
@@ -277,7 +284,7 @@
   √rudh's 72 cells, split per pada via `Tinanta::builder().pada(...)`, at
   vidyut commit `8da2f90`, plus the negative that vidyut derives √indh in
   ātmanepada only against √rudh as the `~^r` control — and the corpus it sits
-  in now stands at 1800 cells and 2042 forms). The harness resolves each root
+  in now stands at 1872 cells and 2114 forms). The harness resolves each root
   to a `data/dhatupatha.tsv` entry by its **dhātupāṭha number** (`07.0016` for
   √bhañj), which is `Dhatu::dhatupatha` and the root's identity in this repo.
   That closed the one circularity this audit used to carry: selection
