@@ -63,6 +63,11 @@ pub enum Vacana {
 
 #[derive(Debug, Clone, Copy)]
 pub struct Dhatu {
+    /// Dhātupāṭha entry number — the unique key. Names a row of
+    /// `data/dhatupatha.tsv`, and `dhatupatha_numbers_resolve_upstream`
+    /// checks that the row it names is the right one, by it-stripping that
+    /// row's upadeśa and comparing against `code`.
+    pub dhatupatha: &'static str,
     /// Unique lookup key. Usually equal to `code`. Exceptions:
     /// (1) **Collision handling**: when a later gaṇa's root collides with an
     /// SLP1 form already in use, the incumbent keeps its bare `code` as id,
@@ -93,6 +98,7 @@ pub struct Dhatu {
 
 static DHATUS: &[Dhatu] = &[
     Dhatu {
+        dhatupatha: "01.0001",
         id: "BU",
         code: "BU",
         gana: Gana::Bhvadi,
@@ -100,6 +106,7 @@ static DHATUS: &[Dhatu] = &[
         artha: "sattAyAm",
     },
     Dhatu {
+        dhatupatha: "01.1049",
         id: "nI",
         code: "nI",
         gana: Gana::Bhvadi,
@@ -107,6 +114,7 @@ static DHATUS: &[Dhatu] = &[
         artha: "prApaRe",
     },
     Dhatu {
+        dhatupatha: "01.0642",
         id: "ji",
         code: "ji",
         gana: Gana::Bhvadi,
@@ -114,6 +122,7 @@ static DHATUS: &[Dhatu] = &[
         artha: "jaye",
     },
     Dhatu {
+        dhatupatha: "01.1082",
         id: "smf",
         code: "smf",
         gana: Gana::Bhvadi,
@@ -121,6 +130,7 @@ static DHATUS: &[Dhatu] = &[
         artha: "cintAyAm",
     },
     Dhatu {
+        dhatupatha: "01.0381",
         id: "paW",
         code: "paW",
         gana: Gana::Bhvadi,
@@ -128,6 +138,7 @@ static DHATUS: &[Dhatu] = &[
         artha: "vyaktAyAM vAci",
     },
     Dhatu {
+        dhatupatha: "01.1164",
         id: "vad",
         code: "vad",
         gana: Gana::Bhvadi,
@@ -135,6 +146,7 @@ static DHATUS: &[Dhatu] = &[
         artha: "vyaktAyAM vAci",
     },
     Dhatu {
+        dhatupatha: "01.0002",
         id: "eD",
         code: "eD",
         gana: Gana::Bhvadi,
@@ -142,6 +154,7 @@ static DHATUS: &[Dhatu] = &[
         artha: "vfdDO",
     },
     Dhatu {
+        dhatupatha: "01.1130",
         id: "laB",
         code: "laB",
         gana: Gana::Bhvadi,
@@ -149,6 +162,7 @@ static DHATUS: &[Dhatu] = &[
         artha: "prAptO",
     },
     Dhatu {
+        dhatupatha: "01.0574",
         id: "sev",
         code: "sev",
         gana: Gana::Bhvadi,
@@ -156,6 +170,7 @@ static DHATUS: &[Dhatu] = &[
         artha: "sevane",
     },
     Dhatu {
+        dhatupatha: "01.0862",
         id: "vft",
         code: "vft",
         gana: Gana::Bhvadi,
@@ -163,6 +178,7 @@ static DHATUS: &[Dhatu] = &[
         artha: "vartane",
     },
     Dhatu {
+        dhatupatha: "01.0696",
         id: "BAz",
         code: "BAz",
         gana: Gana::Bhvadi,
@@ -170,6 +186,7 @@ static DHATUS: &[Dhatu] = &[
         artha: "vyaktAyAM vAci",
     },
     Dhatu {
+        dhatupatha: "01.0694",
         id: "Ikz",
         code: "Ikz",
         gana: Gana::Bhvadi,
@@ -178,6 +195,7 @@ static DHATUS: &[Dhatu] = &[
     },
     // divādi (gaṇa 4) — vikaraṇa śyan (3.1.69)
     Dhatu {
+        dhatupatha: "04.0001",
         id: "div",
         code: "div",
         gana: Gana::Divadi,
@@ -185,6 +203,7 @@ static DHATUS: &[Dhatu] = &[
         artha: "krIqAyAm",
     },
     Dhatu {
+        dhatupatha: "04.0091",
         id: "naS",
         code: "naS",
         gana: Gana::Divadi,
@@ -192,6 +211,7 @@ static DHATUS: &[Dhatu] = &[
         artha: "adarSane",
     },
     Dhatu {
+        dhatupatha: "04.0146",
         id: "kup",
         code: "kup",
         gana: Gana::Divadi,
@@ -199,6 +219,7 @@ static DHATUS: &[Dhatu] = &[
         artha: "kroDe",
     },
     Dhatu {
+        dhatupatha: "04.0073",
         id: "man",
         code: "man",
         gana: Gana::Divadi,
@@ -206,6 +227,7 @@ static DHATUS: &[Dhatu] = &[
         artha: "jYAne",
     },
     Dhatu {
+        dhatupatha: "04.0069",
         id: "yuD",
         code: "yuD",
         gana: Gana::Divadi,
@@ -213,6 +235,7 @@ static DHATUS: &[Dhatu] = &[
         artha: "samprahAre",
     },
     Dhatu {
+        dhatupatha: "04.0067",
         id: "vid",
         code: "vid",
         gana: Gana::Divadi,
@@ -221,6 +244,7 @@ static DHATUS: &[Dhatu] = &[
     },
     // tudādi (gaṇa 6) — vikaraṇa śa (3.1.77)
     Dhatu {
+        dhatupatha: "06.0001",
         id: "tud",
         code: "tud",
         gana: Gana::Tudadi,
@@ -228,6 +252,7 @@ static DHATUS: &[Dhatu] = &[
         artha: "vyaTane",
     },
     Dhatu {
+        dhatupatha: "06.0092",
         id: "liK",
         code: "liK",
         gana: Gana::Tudadi,
@@ -235,6 +260,7 @@ static DHATUS: &[Dhatu] = &[
         artha: "akzaravinyAse",
     },
     Dhatu {
+        dhatupatha: "06.0160",
         id: "viS",
         code: "viS",
         gana: Gana::Tudadi,
@@ -242,6 +268,7 @@ static DHATUS: &[Dhatu] = &[
         artha: "praveSane",
     },
     Dhatu {
+        dhatupatha: "06.0008",
         id: "juz",
         code: "juz",
         gana: Gana::Tudadi,
@@ -249,6 +276,7 @@ static DHATUS: &[Dhatu] = &[
         artha: "prItisevanayoH",
     },
     Dhatu {
+        dhatupatha: "06.0009",
         id: "vij",
         code: "vij",
         gana: Gana::Tudadi,
@@ -256,6 +284,7 @@ static DHATUS: &[Dhatu] = &[
         artha: "BayacalanayoH",
     },
     Dhatu {
+        dhatupatha: "06.0131",
         id: "gur",
         code: "gur",
         gana: Gana::Tudadi,
@@ -267,6 +296,7 @@ static DHATUS: &[Dhatu] = &[
     // √vas here is `vas` ācchādane (2Ā, "to wear"), NOT the far commoner
     // `vas` nivāse (1P, "to dwell", vasati); artha is the only disambiguator.
     Dhatu {
+        dhatupatha: "02.0044",
         id: "yA",
         code: "yA",
         gana: Gana::Adadi,
@@ -274,6 +304,7 @@ static DHATUS: &[Dhatu] = &[
         artha: "prApaRe",
     },
     Dhatu {
+        dhatupatha: "02.0045",
         id: "vA",
         code: "vA",
         gana: Gana::Adadi,
@@ -281,6 +312,7 @@ static DHATUS: &[Dhatu] = &[
         artha: "gatigandhanayoH",
     },
     Dhatu {
+        dhatupatha: "02.0001",
         id: "ad",
         code: "ad",
         gana: Gana::Adadi,
@@ -288,6 +320,7 @@ static DHATUS: &[Dhatu] = &[
         artha: "BakzaRe",
     },
     Dhatu {
+        dhatupatha: "02.0011",
         id: "As",
         code: "As",
         gana: Gana::Adadi,
@@ -295,6 +328,7 @@ static DHATUS: &[Dhatu] = &[
         artha: "upaveSane",
     },
     Dhatu {
+        dhatupatha: "02.0013",
         id: "vas",
         code: "vas",
         gana: Gana::Adadi,
@@ -302,6 +336,7 @@ static DHATUS: &[Dhatu] = &[
         artha: "AcCAdane",
     },
     Dhatu {
+        dhatupatha: "02.0026",
         id: "SI",
         code: "SI",
         gana: Gana::Adadi,
@@ -309,6 +344,7 @@ static DHATUS: &[Dhatu] = &[
         artha: "svapne",
     },
     Dhatu {
+        dhatupatha: "09.0058",
         id: "kliS",
         code: "kliS",
         gana: Gana::Kryadi,
@@ -316,6 +352,7 @@ static DHATUS: &[Dhatu] = &[
         artha: "vibADane",
     },
     Dhatu {
+        dhatupatha: "09.0053",
         id: "guD",
         code: "guD",
         gana: Gana::Kryadi,
@@ -323,6 +360,7 @@ static DHATUS: &[Dhatu] = &[
         artha: "roze",
     },
     Dhatu {
+        dhatupatha: "09.0059",
         id: "aS",
         code: "aS",
         gana: Gana::Kryadi,
@@ -330,6 +368,7 @@ static DHATUS: &[Dhatu] = &[
         artha: "Bojane",
     },
     Dhatu {
+        dhatupatha: "09.0066",
         id: "muz",
         code: "muz",
         gana: Gana::Kryadi,
@@ -337,6 +376,7 @@ static DHATUS: &[Dhatu] = &[
         artha: "steye",
     },
     Dhatu {
+        dhatupatha: "09.0040",
         id: "vrI",
         code: "vrI",
         gana: Gana::Kryadi,
@@ -344,6 +384,7 @@ static DHATUS: &[Dhatu] = &[
         artha: "varaRe",
     },
     Dhatu {
+        dhatupatha: "09.0045",
         id: "vf",
         code: "vf",
         gana: Gana::Kryadi,
@@ -352,6 +393,7 @@ static DHATUS: &[Dhatu] = &[
     },
     // svādi (gaṇa 5) — vikaraṇa śnu (3.1.73)
     Dhatu {
+        dhatupatha: "05.0016",
         id: "Ap",
         code: "Ap",
         gana: Gana::Svadi,
@@ -359,6 +401,7 @@ static DHATUS: &[Dhatu] = &[
         artha: "vyAptO",
     },
     Dhatu {
+        dhatupatha: "05.0017",
         id: "Sak",
         code: "Sak",
         gana: Gana::Svadi,
@@ -366,6 +409,7 @@ static DHATUS: &[Dhatu] = &[
         artha: "SaktO",
     },
     Dhatu {
+        dhatupatha: "05.0012",
         id: "hi",
         code: "hi",
         gana: Gana::Svadi,
@@ -373,6 +417,7 @@ static DHATUS: &[Dhatu] = &[
         artha: "gatO vfdDO ca",
     },
     Dhatu {
+        dhatupatha: "05.0032",
         id: "ri",
         code: "ri",
         gana: Gana::Svadi,
@@ -383,6 +428,7 @@ static DHATUS: &[Dhatu] = &[
         // 05.0020 aSU~\ vyAptau. Distinct root from kryādi's 09.0059 aSa~
         // Bojane, which shares this SLP1 form — hence the qualified id.
         // aSnute against aSnAti is the pair.
+        dhatupatha: "05.0020",
         id: "aS.5",
         code: "aS",
         gana: Gana::Svadi,
@@ -393,6 +439,7 @@ static DHATUS: &[Dhatu] = &[
         // 05.0021 zwiGa~\. Stored post-6.1.64 dhātvādeḥ ṣaḥ saḥ: no rule in
         // the engine performs that substitution, so it is a stated
         // simplification, not a derivation step. See the spec's Data section.
+        dhatupatha: "05.0021",
         id: "stiG",
         code: "stiG",
         gana: Gana::Svadi,
@@ -402,6 +449,7 @@ static DHATUS: &[Dhatu] = &[
     Dhatu {
         // 07.0010 kftI~ vezwane. rudhādi's √kṛt, distinct from tudādi's
         // √kṛnt — not in the root set, so no id qualification is needed.
+        dhatupatha: "07.0010",
         id: "kft",
         code: "kft",
         gana: Gana::Rudhadi,
@@ -416,6 +464,7 @@ static DHATUS: &[Dhatu] = &[
         // a derivation step — exactly as `stiG` is stored post-6.1.64.
         // This is the root that makes 6.4.23 SnAnnalopaH reachable: śnam
         // gives hinans, and 6.4.23 takes the root's own n back out.
+        dhatupatha: "07.0019",
         id: "his",
         code: "hins",
         gana: Gana::Rudhadi,
@@ -426,6 +475,7 @@ static DHATUS: &[Dhatu] = &[
         // 07.0012 Ki\da~\ dEnye. The gaṇa's ātmanepada arm. rudhādi offers
         // only three ānudātta roots (√indh, √khid, √vid); √khid is the one
         // that needs no rule beyond the gaṇa's own.
+        dhatupatha: "07.0012",
         id: "Kid",
         code: "Kid",
         gana: Gana::Rudhadi,
@@ -436,6 +486,7 @@ static DHATUS: &[Dhatu] = &[
         // 07.0016 Ba\njo~ Amardane. Witnesses 8.2.30 coH kuH: the root's
         // cu-class final (j) becomes the matching velar (g) word-finally
         // or before a jhal-initial affix.
+        dhatupatha: "07.0016",
         id: "Banj",
         code: "Banj",
         gana: Gana::Rudhadi,
@@ -447,6 +498,7 @@ static DHATUS: &[Dhatu] = &[
         // an adjacent dental assimilates to retroflex next to the root's
         // z) and 8.2.41 (the root's final z is itself replaced by k
         // before an s-initial affix).
+        dhatupatha: "07.0015",
         id: "piz",
         code: "piz",
         gana: Gana::Rudhadi,
@@ -462,6 +514,7 @@ static DHATUS: &[Dhatu] = &[
         // pada by 1.3.12 anudAttaNita Atmanepadam, and vidyut-prakriya
         // derives it ātmanepada-only, checked against a `~^r` control
         // (√rudh) that does derive both padas.
+        dhatupatha: "07.0011",
         id: "inD",
         code: "inD",
         gana: Gana::Rudhadi,
@@ -495,6 +548,7 @@ static DHATUS: &[Dhatu] = &[
         // anusvāra before either ṇatva rule looks. The strong/weak split
         // itself is NOT new: √kṛt has shown it since slice 7a (kfRatti vs
         // kfnttaH), at the adjacent-trigger 8.4.1.
+        dhatupatha: "07.0001",
         id: "ruD",
         code: "ruD",
         gana: Gana::Rudhadi,
@@ -784,5 +838,179 @@ mod tests {
             .map(|d| d.id)
             .collect();
         assert_eq!(qualified, vec!["aS.5"]);
+    }
+
+    /// Upstream's dhātupāṭha, vendored at the commit named in its header.
+    /// `include_str!` sits inside `#[cfg(test)]`, so the 54K reaches the test
+    /// binary only and never the library.
+    const UPSTREAM: &str = include_str!("../../../data/dhatupatha.tsv");
+
+    /// `(number, upadeśa, artha)` for every upstream row.
+    fn upstream_rows() -> Vec<(&'static str, &'static str, &'static str)> {
+        UPSTREAM
+            .lines()
+            .filter(|l| !l.starts_with('#') && !l.trim().is_empty())
+            .filter_map(|l| {
+                let mut f = l.split('\t');
+                match (f.next(), f.next(), f.next()) {
+                    // Skip upstream's own `code	dhatu	artha` header row.
+                    (Some(n), Some(u), Some(a)) if n != "code" => Some((n, u, a)),
+                    _ => None,
+                }
+            })
+            .collect()
+    }
+
+    /// True for an SLP1 consonant (*hal*). SLP1's vowels are the fourteen
+    /// listed here; `~`, being notation rather than a sound, is not a hal.
+    fn is_hal(c: char) -> bool {
+        c.is_alphabetic() && !"aAiIuUfFxXeEoO".contains(c)
+    }
+
+    /// Strips the anubandhas from an upstream upadeśa.
+    ///
+    /// **Not grammar the pipeline owes a `Rule`** — it never runs in a
+    /// derivation. It exists so `dhatupatha_numbers_resolve_upstream` can
+    /// relate an upstream row to our stored `code` without consulting
+    /// anything this repo wrote, which is the assertion that makes the
+    /// cross-implementation audit non-circular.
+    fn strip_anubandhas(upadesha: &str) -> String {
+        // Accent notation: anudātta `\`, svarita `^`. Marks, not sounds.
+        let s: String = upadesha
+            .chars()
+            .filter(|c| *c != '\\' && *c != '^')
+            .collect();
+
+        // 1.3.3 halantyam is decided on the ORIGINAL upadeśa, before 1.3.2
+        // deletes anything. Getting this order wrong corrupts silently rather
+        // than failing loudly: `paWa~` ends in the vowel `a` (marked
+        // anunāsika by the `~` after it), so its `W` is root-final and must
+        // survive — deciding after the deletion would strip it to `pa`, and
+        // would strip `tfha~` to `tf`, destroying a real root-final `h` while
+        // still producing a plausible string. `ru\Di~^r` genuinely ends in
+        // the consonant `r`, so that `r` IS an it.
+        let ends_in_hal = s.chars().last().is_some_and(is_hal);
+
+        // 1.3.2 upadeśe'j-anunāsika it, with 1.3.9 tasya lopaḥ. Upstream
+        // marks an anunāsika it with a following `~`, so each `X~` pair goes.
+        let mut t = String::new();
+        let mut chars = s.chars().peekable();
+        while let Some(c) = chars.next() {
+            if chars.peek() == Some(&'~') {
+                chars.next();
+                continue;
+            }
+            t.push(c);
+        }
+
+        // 1.3.5 ādir ñiṭuḍavaḥ: an initial ñi / ṭu / ḍu is it.
+        for prefix in ["Yi", "wu", "qu"] {
+            if let Some(rest) = t.strip_prefix(prefix) {
+                t = rest.to_string();
+                break;
+            }
+        }
+
+        // 1.3.3 halantyam, on the verdict reached above.
+        if ends_in_hal && t.chars().count() > 1 {
+            t.pop();
+        }
+        t
+    }
+
+    /// 6.1.64 dhātvādeḥ ṣaḥ saḥ / ṇaḥ naḥ. A root-initial ṣ or ṇ in the
+    /// upadeśa is stored as s / n, because no rule in this engine performs
+    /// the substitution. For `zwiGa~\` the retroflex immediately after goes
+    /// with it (ṣṭ → st), which is exactly what `stiG` records.
+    fn dhatvadeh_sha_sa(code: String) -> String {
+        if let Some(rest) = code.strip_prefix('z') {
+            let rest = rest
+                .strip_prefix('w')
+                .map_or_else(|| rest.to_string(), |r| format!("t{r}"));
+            return format!("s{rest}");
+        }
+        if let Some(rest) = code.strip_prefix('R') {
+            return format!("n{rest}");
+        }
+        code
+    }
+
+    /// The form this repo stores as `Dhatu::code`, derived from an upstream
+    /// upadeśa.
+    fn stored_form(upadesha: &str) -> String {
+        let s = dhatvadeh_sha_sa(strip_anubandhas(upadesha));
+        // 7.1.58 idito num dhātoḥ is not derivable here, so √hiṃs is stored
+        // with the num already inserted. This is the single deviation between
+        // an it-stripped upadeśa and a stored `code`, and it is the same one
+        // the retired `Dhatu::id` doc comment recorded.
+        if s == "his" { "hins".to_string() } else { s }
+    }
+
+    #[test]
+    fn dhatupatha_numbers_resolve_upstream() {
+        let rows = upstream_rows();
+        let count = rows.len();
+        assert!(
+            count > 2000,
+            "vendored dhātupāṭha looks truncated: {count} rows"
+        );
+        let mut numbers: Vec<&str> = rows.iter().map(|(n, _, _)| *n).collect();
+        numbers.sort_unstable();
+        numbers.dedup();
+        assert_eq!(
+            numbers.len(),
+            count,
+            "upstream numbers must be unique for one to serve as our key"
+        );
+
+        for d in dhatus() {
+            let (_, upadesha, _) = rows
+                .iter()
+                .find(|(n, _, _)| *n == d.dhatupatha)
+                .unwrap_or_else(|| panic!("{} names no upstream row", d.dhatupatha));
+            // THIS is the assertion that breaks the circularity. Matching on
+            // number and artha alone would still pass if a number pointed at
+            // a sibling entry sharing an artha, and upstream has 8- and
+            // 15-way artha collisions (`vyaktAyAM vAci`, `vfdDO`). Relating
+            // the upadeśa to the code is the only check that cannot be
+            // satisfied by copying back the choice we made.
+            let stripped = stored_form(upadesha);
+            assert_eq!(
+                stripped, d.code,
+                "{} {upadesha} it-strips to {stripped}, but DHATUS stores {}",
+                d.dhatupatha, d.code
+            );
+        }
+    }
+
+    #[test]
+    fn gana_matches_dhatupatha_prefix() {
+        // The number's prefix encodes the gaṇa, so `Dhatu::gana` is redundant
+        // with it. The field stays (the rule pipeline reads the enum
+        // pervasively, and deriving it would mean parsing a string on every
+        // lookup), and the redundancy becomes this check instead — a number
+        // typed into the wrong gaṇa's block still names a real upstream row,
+        // so nothing else would catch it.
+        //
+        // Mapped variant → prefix, not the inverse: this engine covers seven
+        // of the ten gaṇas, so 03, 08 and 10 have no `Gana` variant.
+        for d in dhatus() {
+            let expected = match d.gana {
+                Gana::Bhvadi => "01",
+                Gana::Adadi => "02",
+                Gana::Divadi => "04",
+                Gana::Svadi => "05",
+                Gana::Tudadi => "06",
+                Gana::Rudhadi => "07",
+                Gana::Kryadi => "09",
+            };
+            assert!(
+                d.dhatupatha.starts_with(expected),
+                "{:?} root {} has number {}, which is not in gaṇa {expected}",
+                d.gana,
+                d.code,
+                d.dhatupatha
+            );
+        }
     }
 }
