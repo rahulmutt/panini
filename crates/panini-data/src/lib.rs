@@ -68,18 +68,12 @@ pub struct Dhatu {
     /// checks that the row it names is the right one, by it-stripping that
     /// row's upadeśa and comparing against `code`.
     pub dhatupatha: &'static str,
-    /// Unique lookup key. Usually equal to `code`. Exceptions:
-    /// (1) **Collision handling**: when a later gaṇa's root collides with an
-    /// SLP1 form already in use, the incumbent keeps its bare `code` as id,
-    /// and only the newcomer's id is gaṇa-qualified as `{code}.{gana}`
-    /// (kryādi's `aS` keeps id `aS`; svādi's colliding root gets id `aS.5`).
-    /// (2) **Rule-driven storage**: id is a bare lookup key, code carries a
-    /// rule-driven stored augment (e.g., rudhādi's `his` is the lookup key,
-    /// but `hins` is stored because 7.1.58 idito num dhātoH is not derivable
-    /// and the num is kept as a stated simplification). Never hand this to
-    /// `Term::new`.
-    pub id: &'static str,
-    /// The root's SLP1 text, as it enters the derivation.
+    /// The root's SLP1 text, as it enters the derivation. Deliberately not
+    /// unique — both √aś rows spell `aS` — and never a lookup key. Where it
+    /// differs from the it-stripped upadeśa the reason is a rule this engine
+    /// does not derive: `07.0019` stores `hins` for `hisi~` because 7.1.58
+    /// idito num dhātoḥ is kept as a stated simplification, and `05.0021`
+    /// stores `stiG` for `zwiGa~\` per 6.1.64 dhātvādeḥ ṣaḥ saḥ.
     pub code: &'static str,
     pub gana: Gana,
     /// Which pada(s) this engine derives for this root — a curated verdict,
@@ -99,7 +93,6 @@ pub struct Dhatu {
 static DHATUS: &[Dhatu] = &[
     Dhatu {
         dhatupatha: "01.0001",
-        id: "BU",
         code: "BU",
         gana: Gana::Bhvadi,
         pada: PadaAssignment::Parasmaipada,
@@ -107,7 +100,6 @@ static DHATUS: &[Dhatu] = &[
     },
     Dhatu {
         dhatupatha: "01.1049",
-        id: "nI",
         code: "nI",
         gana: Gana::Bhvadi,
         pada: PadaAssignment::Parasmaipada,
@@ -115,7 +107,6 @@ static DHATUS: &[Dhatu] = &[
     },
     Dhatu {
         dhatupatha: "01.0642",
-        id: "ji",
         code: "ji",
         gana: Gana::Bhvadi,
         pada: PadaAssignment::Parasmaipada,
@@ -123,7 +114,6 @@ static DHATUS: &[Dhatu] = &[
     },
     Dhatu {
         dhatupatha: "01.1082",
-        id: "smf",
         code: "smf",
         gana: Gana::Bhvadi,
         pada: PadaAssignment::Parasmaipada,
@@ -131,7 +121,6 @@ static DHATUS: &[Dhatu] = &[
     },
     Dhatu {
         dhatupatha: "01.0381",
-        id: "paW",
         code: "paW",
         gana: Gana::Bhvadi,
         pada: PadaAssignment::Parasmaipada,
@@ -139,7 +128,6 @@ static DHATUS: &[Dhatu] = &[
     },
     Dhatu {
         dhatupatha: "01.1164",
-        id: "vad",
         code: "vad",
         gana: Gana::Bhvadi,
         pada: PadaAssignment::Parasmaipada,
@@ -147,7 +135,6 @@ static DHATUS: &[Dhatu] = &[
     },
     Dhatu {
         dhatupatha: "01.0002",
-        id: "eD",
         code: "eD",
         gana: Gana::Bhvadi,
         pada: PadaAssignment::Atmanepada,
@@ -155,7 +142,6 @@ static DHATUS: &[Dhatu] = &[
     },
     Dhatu {
         dhatupatha: "01.1130",
-        id: "laB",
         code: "laB",
         gana: Gana::Bhvadi,
         pada: PadaAssignment::Atmanepada,
@@ -163,7 +149,6 @@ static DHATUS: &[Dhatu] = &[
     },
     Dhatu {
         dhatupatha: "01.0574",
-        id: "sev",
         code: "sev",
         gana: Gana::Bhvadi,
         pada: PadaAssignment::Atmanepada,
@@ -171,7 +156,6 @@ static DHATUS: &[Dhatu] = &[
     },
     Dhatu {
         dhatupatha: "01.0862",
-        id: "vft",
         code: "vft",
         gana: Gana::Bhvadi,
         pada: PadaAssignment::Atmanepada,
@@ -179,7 +163,6 @@ static DHATUS: &[Dhatu] = &[
     },
     Dhatu {
         dhatupatha: "01.0696",
-        id: "BAz",
         code: "BAz",
         gana: Gana::Bhvadi,
         pada: PadaAssignment::Atmanepada,
@@ -187,7 +170,6 @@ static DHATUS: &[Dhatu] = &[
     },
     Dhatu {
         dhatupatha: "01.0694",
-        id: "Ikz",
         code: "Ikz",
         gana: Gana::Bhvadi,
         pada: PadaAssignment::Atmanepada,
@@ -196,7 +178,6 @@ static DHATUS: &[Dhatu] = &[
     // divādi (gaṇa 4) — vikaraṇa śyan (3.1.69)
     Dhatu {
         dhatupatha: "04.0001",
-        id: "div",
         code: "div",
         gana: Gana::Divadi,
         pada: PadaAssignment::Parasmaipada,
@@ -204,7 +185,6 @@ static DHATUS: &[Dhatu] = &[
     },
     Dhatu {
         dhatupatha: "04.0091",
-        id: "naS",
         code: "naS",
         gana: Gana::Divadi,
         pada: PadaAssignment::Parasmaipada,
@@ -212,7 +192,6 @@ static DHATUS: &[Dhatu] = &[
     },
     Dhatu {
         dhatupatha: "04.0146",
-        id: "kup",
         code: "kup",
         gana: Gana::Divadi,
         pada: PadaAssignment::Parasmaipada,
@@ -220,7 +199,6 @@ static DHATUS: &[Dhatu] = &[
     },
     Dhatu {
         dhatupatha: "04.0073",
-        id: "man",
         code: "man",
         gana: Gana::Divadi,
         pada: PadaAssignment::Atmanepada,
@@ -228,7 +206,6 @@ static DHATUS: &[Dhatu] = &[
     },
     Dhatu {
         dhatupatha: "04.0069",
-        id: "yuD",
         code: "yuD",
         gana: Gana::Divadi,
         pada: PadaAssignment::Atmanepada,
@@ -236,7 +213,6 @@ static DHATUS: &[Dhatu] = &[
     },
     Dhatu {
         dhatupatha: "04.0067",
-        id: "vid",
         code: "vid",
         gana: Gana::Divadi,
         pada: PadaAssignment::Atmanepada,
@@ -245,7 +221,6 @@ static DHATUS: &[Dhatu] = &[
     // tudādi (gaṇa 6) — vikaraṇa śa (3.1.77)
     Dhatu {
         dhatupatha: "06.0001",
-        id: "tud",
         code: "tud",
         gana: Gana::Tudadi,
         pada: PadaAssignment::Parasmaipada,
@@ -253,7 +228,6 @@ static DHATUS: &[Dhatu] = &[
     },
     Dhatu {
         dhatupatha: "06.0092",
-        id: "liK",
         code: "liK",
         gana: Gana::Tudadi,
         pada: PadaAssignment::Parasmaipada,
@@ -261,7 +235,6 @@ static DHATUS: &[Dhatu] = &[
     },
     Dhatu {
         dhatupatha: "06.0160",
-        id: "viS",
         code: "viS",
         gana: Gana::Tudadi,
         pada: PadaAssignment::Parasmaipada,
@@ -269,7 +242,6 @@ static DHATUS: &[Dhatu] = &[
     },
     Dhatu {
         dhatupatha: "06.0008",
-        id: "juz",
         code: "juz",
         gana: Gana::Tudadi,
         pada: PadaAssignment::Atmanepada,
@@ -277,7 +249,6 @@ static DHATUS: &[Dhatu] = &[
     },
     Dhatu {
         dhatupatha: "06.0009",
-        id: "vij",
         code: "vij",
         gana: Gana::Tudadi,
         pada: PadaAssignment::Atmanepada,
@@ -285,7 +256,6 @@ static DHATUS: &[Dhatu] = &[
     },
     Dhatu {
         dhatupatha: "06.0131",
-        id: "gur",
         code: "gur",
         gana: Gana::Tudadi,
         pada: PadaAssignment::Atmanepada,
@@ -297,7 +267,6 @@ static DHATUS: &[Dhatu] = &[
     // `vas` nivāse (1P, "to dwell", vasati); artha is the only disambiguator.
     Dhatu {
         dhatupatha: "02.0044",
-        id: "yA",
         code: "yA",
         gana: Gana::Adadi,
         pada: PadaAssignment::Parasmaipada,
@@ -305,7 +274,6 @@ static DHATUS: &[Dhatu] = &[
     },
     Dhatu {
         dhatupatha: "02.0045",
-        id: "vA",
         code: "vA",
         gana: Gana::Adadi,
         pada: PadaAssignment::Parasmaipada,
@@ -313,7 +281,6 @@ static DHATUS: &[Dhatu] = &[
     },
     Dhatu {
         dhatupatha: "02.0001",
-        id: "ad",
         code: "ad",
         gana: Gana::Adadi,
         pada: PadaAssignment::Parasmaipada,
@@ -321,7 +288,6 @@ static DHATUS: &[Dhatu] = &[
     },
     Dhatu {
         dhatupatha: "02.0011",
-        id: "As",
         code: "As",
         gana: Gana::Adadi,
         pada: PadaAssignment::Atmanepada,
@@ -329,7 +295,6 @@ static DHATUS: &[Dhatu] = &[
     },
     Dhatu {
         dhatupatha: "02.0013",
-        id: "vas",
         code: "vas",
         gana: Gana::Adadi,
         pada: PadaAssignment::Atmanepada,
@@ -337,7 +302,6 @@ static DHATUS: &[Dhatu] = &[
     },
     Dhatu {
         dhatupatha: "02.0026",
-        id: "SI",
         code: "SI",
         gana: Gana::Adadi,
         pada: PadaAssignment::Atmanepada,
@@ -345,7 +309,6 @@ static DHATUS: &[Dhatu] = &[
     },
     Dhatu {
         dhatupatha: "09.0058",
-        id: "kliS",
         code: "kliS",
         gana: Gana::Kryadi,
         pada: PadaAssignment::Parasmaipada,
@@ -353,7 +316,6 @@ static DHATUS: &[Dhatu] = &[
     },
     Dhatu {
         dhatupatha: "09.0053",
-        id: "guD",
         code: "guD",
         gana: Gana::Kryadi,
         pada: PadaAssignment::Parasmaipada,
@@ -361,7 +323,6 @@ static DHATUS: &[Dhatu] = &[
     },
     Dhatu {
         dhatupatha: "09.0059",
-        id: "aS",
         code: "aS",
         gana: Gana::Kryadi,
         pada: PadaAssignment::Parasmaipada,
@@ -369,7 +330,6 @@ static DHATUS: &[Dhatu] = &[
     },
     Dhatu {
         dhatupatha: "09.0066",
-        id: "muz",
         code: "muz",
         gana: Gana::Kryadi,
         pada: PadaAssignment::Parasmaipada,
@@ -377,7 +337,6 @@ static DHATUS: &[Dhatu] = &[
     },
     Dhatu {
         dhatupatha: "09.0040",
-        id: "vrI",
         code: "vrI",
         gana: Gana::Kryadi,
         pada: PadaAssignment::Parasmaipada,
@@ -385,7 +344,6 @@ static DHATUS: &[Dhatu] = &[
     },
     Dhatu {
         dhatupatha: "09.0045",
-        id: "vf",
         code: "vf",
         gana: Gana::Kryadi,
         pada: PadaAssignment::Atmanepada,
@@ -394,7 +352,6 @@ static DHATUS: &[Dhatu] = &[
     // svādi (gaṇa 5) — vikaraṇa śnu (3.1.73)
     Dhatu {
         dhatupatha: "05.0016",
-        id: "Ap",
         code: "Ap",
         gana: Gana::Svadi,
         pada: PadaAssignment::Parasmaipada,
@@ -402,7 +359,6 @@ static DHATUS: &[Dhatu] = &[
     },
     Dhatu {
         dhatupatha: "05.0017",
-        id: "Sak",
         code: "Sak",
         gana: Gana::Svadi,
         pada: PadaAssignment::Parasmaipada,
@@ -410,7 +366,6 @@ static DHATUS: &[Dhatu] = &[
     },
     Dhatu {
         dhatupatha: "05.0012",
-        id: "hi",
         code: "hi",
         gana: Gana::Svadi,
         pada: PadaAssignment::Parasmaipada,
@@ -418,7 +373,6 @@ static DHATUS: &[Dhatu] = &[
     },
     Dhatu {
         dhatupatha: "05.0032",
-        id: "ri",
         code: "ri",
         gana: Gana::Svadi,
         pada: PadaAssignment::Parasmaipada,
@@ -426,10 +380,10 @@ static DHATUS: &[Dhatu] = &[
     },
     Dhatu {
         // 05.0020 aSU~\ vyAptau. Distinct root from kryādi's 09.0059 aSa~
-        // Bojane, which shares this SLP1 form — hence the qualified id.
-        // aSnute against aSnAti is the pair.
+        // Bojane, which shares this SLP1 form — under the retired `id`
+        // scheme that required a qualifier; dhātupāṭha numbers distinguish
+        // the rows without one. aSnute against aSnAti is the pair.
         dhatupatha: "05.0020",
-        id: "aS.5",
         code: "aS",
         gana: Gana::Svadi,
         pada: PadaAssignment::Atmanepada,
@@ -440,7 +394,6 @@ static DHATUS: &[Dhatu] = &[
         // the engine performs that substitution, so it is a stated
         // simplification, not a derivation step. See the spec's Data section.
         dhatupatha: "05.0021",
-        id: "stiG",
         code: "stiG",
         gana: Gana::Svadi,
         pada: PadaAssignment::Atmanepada,
@@ -448,9 +401,9 @@ static DHATUS: &[Dhatu] = &[
     },
     Dhatu {
         // 07.0010 kftI~ vezwane. rudhādi's √kṛt, distinct from tudādi's
-        // √kṛnt — not in the root set, so no id qualification is needed.
+        // √kṛnt — not in the root set, so the retired `id` scheme never
+        // needed to qualify it.
         dhatupatha: "07.0010",
-        id: "kft",
         code: "kft",
         gana: Gana::Rudhadi,
         pada: PadaAssignment::Parasmaipada,
@@ -465,7 +418,6 @@ static DHATUS: &[Dhatu] = &[
         // This is the root that makes 6.4.23 SnAnnalopaH reachable: śnam
         // gives hinans, and 6.4.23 takes the root's own n back out.
         dhatupatha: "07.0019",
-        id: "his",
         code: "hins",
         gana: Gana::Rudhadi,
         pada: PadaAssignment::Parasmaipada,
@@ -476,7 +428,6 @@ static DHATUS: &[Dhatu] = &[
         // only three ānudātta roots (√indh, √khid, √vid); √khid is the one
         // that needs no rule beyond the gaṇa's own.
         dhatupatha: "07.0012",
-        id: "Kid",
         code: "Kid",
         gana: Gana::Rudhadi,
         pada: PadaAssignment::Atmanepada,
@@ -487,7 +438,6 @@ static DHATUS: &[Dhatu] = &[
         // cu-class final (j) becomes the matching velar (g) word-finally
         // or before a jhal-initial affix.
         dhatupatha: "07.0016",
-        id: "Banj",
         code: "Banj",
         gana: Gana::Rudhadi,
         pada: PadaAssignment::Parasmaipada,
@@ -499,7 +449,6 @@ static DHATUS: &[Dhatu] = &[
         // z) and 8.2.41 (the root's final z is itself replaced by k
         // before an s-initial affix).
         dhatupatha: "07.0015",
-        id: "piz",
         code: "piz",
         gana: Gana::Rudhadi,
         pada: PadaAssignment::Parasmaipada,
@@ -515,7 +464,6 @@ static DHATUS: &[Dhatu] = &[
         // derives it ātmanepada-only, checked against a `~^r` control
         // (√rudh) that does derive both padas.
         dhatupatha: "07.0011",
-        id: "inD",
         code: "inD",
         gana: Gana::Rudhadi,
         pada: PadaAssignment::Atmanepada,
@@ -549,7 +497,6 @@ static DHATUS: &[Dhatu] = &[
         // itself is NOT new: √kṛt has shown it since slice 7a (kfRatti vs
         // kfnttaH), at the adjacent-trigger 8.4.1.
         dhatupatha: "07.0001",
-        id: "ruD",
         code: "ruD",
         gana: Gana::Rudhadi,
         pada: PadaAssignment::Ubhayapada,
