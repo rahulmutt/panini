@@ -11,7 +11,7 @@ use panini_prakriya::derive;
 /// anyone deciding which gaṇa's was the incumbent (`09.0059` kryādi,
 /// `05.0020` svādi). Resolve a number against the `DHATUS` table in
 /// `panini-data` to see which root a block is for; the tables carry no
-/// per-row comment, deliberately, since 442 uncheckable comments is a
+/// per-row comment, deliberately, since 450 uncheckable comments is a
 /// staleness liability no test could pin. The pada column is no longer
 /// inferable from the root alone: 1.3.72 gives some roots a
 /// `PadaAssignment` that admits both, so a block has to declare which pada
@@ -3725,7 +3725,8 @@ fn derivation_set_is_exactly_pinned() {
 /// divergence it resolved (3.4.111 Śākaṭāyana's jus), the three roots added
 /// in rudhādi 7a (kft, his, Kid), three more added in rudhādi 7b (Banj, piz,
 /// inD), and — new in the ubhayapada 1.3.72 slice — √rudh (ruD), pinned in
-/// both padas: every one of the seven rudhādi roots forks in both loṭ and
+/// both padas, joined by the pada audit's √nī and √tud, also pinned in both
+/// padas: every one of the seven rudhādi roots forks in both loṭ and
 /// laṅ, and two of them — kft and ruD — fork in all four lakāras: laṭ (kft
 /// cells 1/4/5, Kid cells 0/5, inD cells 0/5, and — new in this slice — ruD
 /// parasmaipada cells 1/4/5 and ātmanepada cells 0/5, all on 8.4.65), laṅ (on
@@ -3753,9 +3754,9 @@ fn derivation_set_is_exactly_pinned() {
 /// cross-checked the same way during that slice's design, and this slice's
 /// √rudh forms were audited against a vidyut-prakriya checkout at commit
 /// 8da2f90 the same way, and the probe's source is committed at
-/// `tools/audit/panini_full_audit.rs` as of `0ff84a7`, and this slice re-ran
-/// it over all 1872 cells — so the numbers are re-verified as well as pinned
-/// — this test is what keeps the numbers true day to day.
+/// `tools/audit/panini_full_audit.rs` as of `0ff84a7`, and the pada audit
+/// re-ran it over all 1872 cells — so the numbers are re-verified as well as
+/// pinned. This test is what keeps the numbers true day to day.
 #[test]
 fn derivation_set_shape_matches_the_audited_numbers() {
     let total_cells = PARADIGM.len() * 9;

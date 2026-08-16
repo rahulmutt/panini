@@ -126,8 +126,8 @@ mod tests {
 
     #[test]
     fn a_vikalpa_rule_that_declines_forks_nothing() {
-        // The overwhelmingly common case: 6.4.107 sees 1792 of the
-        // grammar's 1800 cells and fires on none of them (only 8 cells fire
+        // The overwhelmingly common case: 6.4.107 sees 1864 of the
+        // grammar's 1872 cells and fires on none of them (only 8 cells fire
         // it at all — counted by walking every `PARADIGM` cell and checking
         // each branch's log for "6.4.107"). If declining forked, the whole
         // suite would double.
