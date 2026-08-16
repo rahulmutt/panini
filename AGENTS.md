@@ -83,6 +83,27 @@
     reading a `timeout.txt` entry against. `mise.toml`'s default is
     deliberately left at 1200; pass `--timeout 2400` explicitly until
     someone actually measures a `-j 4` run against the 1800-cell suite.
+    **The pada audit measured both at 1872 cells.** Uncontended floor:
+    paradigm ~205s, roundtrip ~236s, trace ~2s (uncaught total ~443s) — flat
+    against the 1800-cell ~450s figure, in fact slightly below it. Campaign
+    at `-j 4 --timeout 2400`: 522 mutants, 482 caught, 0 missed, 39 unviable,
+    and the one known-permanent `tripadi.rs` timeout. This is the `-j 4`
+    timing measurement the paragraph above calls for, taken at the suite's
+    current size rather than the 1800 cells named there, which will not
+    recur: `outcomes.json`'s per-mutant test-phase durations for the 482
+    caught mutants put the median at 30.1s, p90 at 346.6s, p99 at 547.2s, and
+    the max at 754.6s, with only 4 mutants over 600s and none over 1200s. The
+    measured worst-case contention factor is 754.6 / 443 ≈ 1.7×, well under
+    the 2.1–2.5× inferred from the `-j 16` re-runs above, so that
+    extrapolation was pessimistic. 2400 kept real margin — roughly 3.2× the
+    slowest observed caught mutant. 1200 would also have sufficed in this
+    run, since nothing exceeded it, but only by ~1.6× over that same 754.6s
+    max, not the ~3× the 1728-cell figures showed. This run caught every
+    mutant, so the uncaught worst case — which must run the whole suite to
+    completion rather than abort early, and so sits at or above 754.6s — is
+    still inferred rather than directly observed. Keep `--timeout 2400`
+    rather than dropping to 1200 until an uncaught mutant is actually
+    observed.
   - `cargo-deny` + `cargo-audit` (supply-chain checks) — `mise run audit` runs
     `cargo audit && cargo deny check` and is expected to pass, including
     `cargo deny check advisories`.
