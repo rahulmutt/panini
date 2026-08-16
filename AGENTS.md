@@ -140,14 +140,14 @@
     needs phonology of its own is a per-root question nobody has asked yet —
     see `docs/superpowers/specs/2026-07-28-kryadi-gana-design.md`; svādi
     (gaṇa 5) is now **complete** — six roots across all four lakāras: √āp,
-    √śak, √hi and √ri (parasmaipada), √aś (`Dhatu::id` `aS.5`, distinct from
-    kryādi's `aS` — the first root whose `id` differs from its SLP1 `code`)
-    and √ṣṭigh (`stiG`) (ātmanepada). Its vikaraṇa is śnu (3.1.73), and it is
-    the first gaṇa where 7.3.84's guṇa lands on the vikaraṇa rather than the
-    root: 7.3.84 now applies twice, once with respect to śnu and once with
-    respect to the ending (1.4.13 makes the aṅga affix-relative), giving
-    `Apnoti` against the ṅit-blocked `ApnutaH`. The other split running
-    through the gaṇa is *asaṁyogapūrva* — whether śnu's `u` is preceded by a
+    √śak, √hi and √ri (parasmaipada), √aś (`05.0020`, distinct from kryādi's
+    `09.0059`) and √ṣṭigh (`stiG`) (ātmanepada). Its vikaraṇa is śnu
+    (3.1.73), and it is the first gaṇa where 7.3.84's guṇa lands on the
+    vikaraṇa rather than the root: 7.3.84 now applies twice, once with
+    respect to śnu and once with respect to the ending (1.4.13 makes the
+    aṅga affix-relative), giving `Apnoti` against the ṅit-blocked
+    `ApnutaH`. The other split running through the gaṇa is
+    *asaṁyogapūrva* — whether śnu's `u` is preceded by a
     conjunct decides both the yaṇ alternation (6.4.87 / 6.4.77: `hinvanti`
     against `Apnuvanti`) and the hi-luk (6.4.106: `hinu` against `Apnuhi`) —
     see `docs/superpowers/specs/2026-07-29-svadi-gana-design.md`.) rudhādi
@@ -183,8 +183,9 @@
     rudhādi roots remain out — √śiṣ, √tṛh, √und, √añj, √tañc, √vij, √vṛj,
     √pṛc and √vid — each bringing machinery of its own (7.1.58 *idito num
     dhātoḥ* for √und, 6.4.24 *aniditāṁ hala upadhāyāḥ kṅiti* for √añj and
-    √tañc, and two `Dhatu::id` collisions). √bhuj (`07.0017 Bu\ja~`) is the
-    twenty-fifth entry and out on different grounds again: 1.3.66
+    √tañc, and two SLP1 surface collisions, which number keying makes
+    moot). √bhuj (`07.0017 Bu\ja~`) is the twenty-fifth entry and out on
+    different grounds again: 1.3.66
     *bhujo'navane* forks its pada on **sense**, not on an axis this engine
     models. 8 ubhayapadī + 7 curated + 9 reachable + √bhuj = 25.
     The root count is not what keeps the gaṇa partial — seven is already one
@@ -272,16 +273,20 @@
   √rudh's 72 cells, split per pada via `Tinanta::builder().pada(...)`, at
   vidyut commit `8da2f90`, plus the negative that vidyut derives √indh in
   ātmanepada only against √rudh as the `~^r` control — and the
-  corpus it sits in now stands at 1800 cells and 2042 forms). One residual
-  circularity is known and unfixed:
-  the harness resolves each root to a `data/dhatupatha.tsv` entry by
-  requiring vidyut to reproduce **this engine's own pinned laṭ prathama eka
-  form**, so for a root whose new sūtra shapes exactly that cell — √bhañj's
-  `Banakti`, √piṣ's `pinazwi`, √indh's `indDe` — the anchoring cell is the
-  one cell the audit cannot independently validate. The next slice should key
-  entry selection on the dhātupāṭha number instead (`07.0016` for √bhañj);
-  that number currently sits only in a comment above nine of the 49 `Dhatu`
-  rows, so doing so means promoting it to a real field on `Dhatu` first.
+  corpus it sits in now stands at 1800 cells and 2042 forms).
+  The harness resolves each root to a `data/dhatupatha.tsv` entry by its
+  **dhātupāṭha number** (`07.0016` for √bhañj), which is `Dhatu::dhatupatha`
+  and the root's identity in this repo. That closed the one circularity this
+  audit used to carry: selection previously required vidyut to reproduce
+  **this engine's own pinned laṭ prathama eka form**, so for a root whose new
+  sūtra shaped exactly that cell — √bhañj's `Banakti`, √piṣ's `pinazwi`,
+  √indh's `indDe` — the anchoring cell was the one cell the audit could not
+  independently validate. The numbers themselves are held honest in-repo by
+  `dhatupatha_numbers_resolve_upstream`, which it-strips each vendored
+  upadeśa (1.3.2, 1.3.5, 1.3.3, then 6.1.64) and compares it against the
+  stored `code` — an assertion that cannot be satisfied by copying back our
+  own choice, unlike matching on number or artha alone (upstream has 8- and
+  15-way artha collisions).
 - New grammar goes in `TINANTA_RULES` as a self-guarding `Rule`, not as a
   branch inside `derive`. `TINANTA_RULES` is a list of seven stage arrays,
   each living in its own file under `crates/panini-prakriya/src/tinanta/`; add

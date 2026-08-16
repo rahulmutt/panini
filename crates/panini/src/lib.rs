@@ -11,11 +11,12 @@ pub enum Verdict {
 }
 
 pub struct Analysis {
-    /// The dhatu's `code` (its SLP1 spelling), not its `id`: this is a
-    /// user-facing root spelling, not a lookup key, and is deliberately not
-    /// guaranteed unique — two roots in different gaṇas can share an SLP1
-    /// form (e.g. svādi's `aS.5` and kryādi's `aS` both report `"aS"` here).
-    /// `Dhatu::id` is the unique key; resolve against it if you need one.
+    /// The dhatu's `code` (its SLP1 spelling): this is a user-facing root
+    /// spelling, not a lookup key, and is deliberately not guaranteed unique
+    /// — two roots in different gaṇas can share an SLP1 form (svādi's
+    /// `05.0020` and kryādi's `09.0059` both report `"aS"` here).
+    /// `Dhatu::dhatupatha` is the unique key; resolve against it if you need
+    /// one.
     pub dhatu: String,
     pub lakara: Lakara,
     pub pada: Pada,
