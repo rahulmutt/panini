@@ -907,7 +907,13 @@ mod tests {
             .collect();
         let final_it = bare.chars().last().filter(|c| is_hal(*c));
         let ngit = final_it == Some('N');
-        // 1.3.5 ādir ñiṭuḍavaḥ supplies a ñ it as an initial `Yi` too.
+        // 1.3.5 ādir ñiṭuḍavaḥ supplies a ñ it as an initial `Yi` too. Do NOT
+        // extend this to `wu`/`qu`: the sūtra makes ñi, ṭu AND ḍu its, but
+        // only ñi is a ñ-it, and 1.3.72 reads *svarita or ñit* specifically
+        // — adding a wu/qu arm here would wrongly make every ṭu/ḍu-initial
+        // root ubhayapadī. `01.1130 qula\Ba~\z` (√labh) is a curated
+        // ḍu-initial root; it already comes out Ātmanepada correctly via its
+        // own `~\`, not via this function.
         let nyit = final_it == Some('Y') || bare.starts_with("Yi");
 
         // ORDER IS LOAD-BEARING. 1.3.12 is tested first because `YiinDI~\`
@@ -1049,32 +1055,6 @@ mod tests {
             "pada column disagrees with the vendored upadeśa:\n  {}",
             wrong.join("\n  ")
         );
-    }
-
-    #[test]
-    fn curated_gana_agrees_with_the_dhatupatha_number() {
-        // The same class of hole as the pada column: a hand-copied verdict
-        // sitting beside the data that determines it. A dhātupāṭha number's
-        // first two digits ARE its gaṇa, and nothing asserted the agreement.
-        // Not decorative — `05.0020` and `09.0059` share the code `aS` and are
-        // distinguished only by gaṇa.
-        for d in dhatus() {
-            let expected = match &d.dhatupatha[..2] {
-                "01" => Gana::Bhvadi,
-                "02" => Gana::Adadi,
-                "04" => Gana::Divadi,
-                "05" => Gana::Svadi,
-                "06" => Gana::Tudadi,
-                "07" => Gana::Rudhadi,
-                "09" => Gana::Kryadi,
-                other => panic!("{} names gaṇa {other}, which no root curates", d.dhatupatha),
-            };
-            assert_eq!(
-                d.gana, expected,
-                "{} carries the wrong gaṇa for its number",
-                d.dhatupatha
-            );
-        }
     }
 
     #[test]

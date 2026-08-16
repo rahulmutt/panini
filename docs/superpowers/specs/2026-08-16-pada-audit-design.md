@@ -136,6 +136,16 @@ data that determines it — and closing it is two lines in the same test. Both
 √aś rows make it non-trivial rather than decorative: `05.0020` and `09.0059`
 share a `code` and are distinguished only by gaṇa.
 
+> **Discharged, on a false premise, 2026-08-16.** This section's opening claim
+> — "nothing today asserts that `Dhatu::gana` agrees with the dhātupāṭha
+> number" — was wrong: `gana_matches_dhatupatha_prefix` in
+> `crates/panini-data/src/lib.rs` already asserts exactly that agreement, and
+> it predates this slice. The test this section asked for
+> (`curated_gana_agrees_with_the_dhatupatha_number`, the same bijection read
+> in the opposite direction) was written anyway, found redundant with it in
+> the final whole-branch review, and removed. The check this section wanted
+> exists, and always did.
+
 ## What changes downstream
 
 ### The data rows
