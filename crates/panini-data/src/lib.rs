@@ -597,69 +597,69 @@ mod tests {
     #[test]
     fn curated_roots_have_expected_ganas_and_padas() {
         assert_eq!(dhatus().len(), 49);
-        let bu = dhatus().iter().find(|d| d.id == "BU").unwrap();
+        let bu = dhatus().iter().find(|d| d.dhatupatha == "01.0001").unwrap();
         assert!(matches!(bu.pada, PadaAssignment::Parasmaipada));
-        let labh = dhatus().iter().find(|d| d.id == "laB").unwrap();
+        let labh = dhatus().iter().find(|d| d.dhatupatha == "01.1130").unwrap();
         assert!(matches!(labh.pada, PadaAssignment::Atmanepada));
         // Both vowel-initial atmanepadi roots must be present (they exercise
         // the AT-augment path 6.4.72/6.1.90).
-        assert!(dhatus().iter().any(|d| d.id == "eD"));
-        assert!(dhatus().iter().any(|d| d.id == "Ikz"));
+        assert!(dhatus().iter().any(|d| d.dhatupatha == "01.0002"));
+        assert!(dhatus().iter().any(|d| d.dhatupatha == "01.0694"));
         // Divadi/tudadi still present.
-        let div = dhatus().iter().find(|d| d.id == "div").unwrap();
+        let div = dhatus().iter().find(|d| d.dhatupatha == "04.0001").unwrap();
         assert!(matches!(div.gana, Gana::Divadi));
-        let tud = dhatus().iter().find(|d| d.id == "tud").unwrap();
+        let tud = dhatus().iter().find(|d| d.dhatupatha == "06.0001").unwrap();
         assert!(matches!(tud.gana, Gana::Tudadi));
         // New: adadi (gaṇa 2), both ā-final parasmaipada.
-        let ya = dhatus().iter().find(|d| d.id == "yA").unwrap();
+        let ya = dhatus().iter().find(|d| d.dhatupatha == "02.0044").unwrap();
         assert!(matches!(ya.gana, Gana::Adadi) && matches!(ya.pada, PadaAssignment::Parasmaipada));
-        let va = dhatus().iter().find(|d| d.id == "vA").unwrap();
+        let va = dhatus().iter().find(|d| d.dhatupatha == "02.0045").unwrap();
         assert!(matches!(va.gana, Gana::Adadi) && matches!(va.pada, PadaAssignment::Parasmaipada));
         // adādi ātmanepada: √ās (slice 5d), √vas (slice 5e), and √śī (this slice) closes gaṇa.
-        let as_ = dhatus().iter().find(|d| d.id == "As").unwrap();
+        let as_ = dhatus().iter().find(|d| d.dhatupatha == "02.0011").unwrap();
         assert!(matches!(as_.gana, Gana::Adadi) && matches!(as_.pada, PadaAssignment::Atmanepada));
-        let vas = dhatus().iter().find(|d| d.id == "vas").unwrap();
+        let vas = dhatus().iter().find(|d| d.dhatupatha == "02.0013").unwrap();
         assert!(matches!(vas.gana, Gana::Adadi) && matches!(vas.pada, PadaAssignment::Atmanepada));
         // √vas ācchādane (2Ā), not √vas nivāse (1P) — artha disambiguates.
         assert_eq!(vas.artha, "AcCAdane");
         // adādi ātmanepada: √śī (this slice) closes the gaṇa.
-        let shi = dhatus().iter().find(|d| d.id == "SI").unwrap();
+        let shi = dhatus().iter().find(|d| d.dhatupatha == "02.0026").unwrap();
         assert!(matches!(shi.gana, Gana::Adadi) && matches!(shi.pada, PadaAssignment::Atmanepada));
         assert_eq!(shi.artha, "svapne");
         // kryādi (gaṇa 9), slice 9a: kliS/guD/aS, all parasmaipada.
-        let klis = dhatus().iter().find(|d| d.id == "kliS").unwrap();
+        let klis = dhatus().iter().find(|d| d.dhatupatha == "09.0058").unwrap();
         assert!(
             matches!(klis.gana, Gana::Kryadi) && matches!(klis.pada, PadaAssignment::Parasmaipada)
         );
         assert_eq!(klis.artha, "vibADane");
-        let gud = dhatus().iter().find(|d| d.id == "guD").unwrap();
+        let gud = dhatus().iter().find(|d| d.dhatupatha == "09.0053").unwrap();
         assert!(
             matches!(gud.gana, Gana::Kryadi) && matches!(gud.pada, PadaAssignment::Parasmaipada)
         );
         assert_eq!(gud.artha, "roze");
-        let ash = dhatus().iter().find(|d| d.id == "aS").unwrap();
+        let ash = dhatus().iter().find(|d| d.dhatupatha == "09.0059").unwrap();
         assert!(
             matches!(ash.gana, Gana::Kryadi) && matches!(ash.pada, PadaAssignment::Parasmaipada)
         );
         assert_eq!(ash.artha, "Bojane");
         // kryādi, slice 9b: muz/vrI parasmaipada, vf (√vṛṅ) atmanepada --
         // the gaṇa's only pure-atmanepadi root.
-        let muz = dhatus().iter().find(|d| d.id == "muz").unwrap();
+        let muz = dhatus().iter().find(|d| d.dhatupatha == "09.0066").unwrap();
         assert!(
             matches!(muz.gana, Gana::Kryadi) && matches!(muz.pada, PadaAssignment::Parasmaipada)
         );
         assert_eq!(muz.artha, "steye");
-        let vri = dhatus().iter().find(|d| d.id == "vrI").unwrap();
+        let vri = dhatus().iter().find(|d| d.dhatupatha == "09.0040").unwrap();
         assert!(
             matches!(vri.gana, Gana::Kryadi) && matches!(vri.pada, PadaAssignment::Parasmaipada)
         );
         assert_eq!(vri.artha, "varaRe");
-        let vf = dhatus().iter().find(|d| d.id == "vf").unwrap();
+        let vf = dhatus().iter().find(|d| d.dhatupatha == "09.0045").unwrap();
         assert!(matches!(vf.gana, Gana::Kryadi) && matches!(vf.pada, PadaAssignment::Atmanepada));
         assert_eq!(vf.artha, "samBaktO");
         // New: svādi (gaṇa 5), all four parasmaipadī.
-        for id in ["Ap", "Sak", "hi", "ri"] {
-            let d = dhatus().iter().find(|d| d.id == id).unwrap();
+        for number in ["05.0016", "05.0017", "05.0012", "05.0032"] {
+            let d = dhatus().iter().find(|d| d.dhatupatha == number).unwrap();
             assert!(matches!(d.gana, Gana::Svadi));
             assert!(matches!(d.pada, PadaAssignment::Parasmaipada));
         }
@@ -703,7 +703,10 @@ mod tests {
 
     #[test]
     fn ad_is_registered_as_adadi_parasmaipada() {
-        let ad = dhatus().iter().find(|d| d.id == "ad").expect("√ad present");
+        let ad = dhatus()
+            .iter()
+            .find(|d| d.dhatupatha == "02.0001")
+            .expect("√ad present");
         assert!(matches!(ad.gana, Gana::Adadi));
         assert!(matches!(ad.pada, PadaAssignment::Parasmaipada));
         assert_eq!(ad.artha, "BakzaRe");
@@ -711,56 +714,65 @@ mod tests {
 
     #[test]
     fn as_is_registered_as_adadi_atmanepada() {
-        let as_ = dhatus().iter().find(|d| d.id == "As").expect("√ās present");
+        let as_ = dhatus()
+            .iter()
+            .find(|d| d.dhatupatha == "02.0011")
+            .expect("√ās present");
         assert!(matches!(as_.gana, Gana::Adadi));
         assert!(matches!(as_.pada, PadaAssignment::Atmanepada));
         assert_eq!(as_.artha, "upaveSane");
     }
 
     #[test]
-    fn id_is_the_lookup_key_and_is_unique() {
-        let ids: Vec<&str> = dhatus().iter().map(|d| d.id).collect();
-        let mut sorted = ids.clone();
+    fn dhatupatha_is_the_key_and_is_unique() {
+        let keys: Vec<&str> = dhatus().iter().map(|d| d.dhatupatha).collect();
+        let mut sorted = keys.clone();
         sorted.sort_unstable();
         sorted.dedup();
-        assert_eq!(sorted.len(), ids.len(), "dhatu ids must be unique");
-        // Verify the contract stated in `Dhatu::id`'s doc: id equals code,
-        // except for two known exceptions: (1) collision-qualified ids like
-        // svādi's aS.5 for the kryādi/svādi aS collision; (2) rule-driven
-        // storage exceptions like rudhādi's his/hins, where id is the lookup
-        // key but code carries the rule-enforced augment (7.1.58 num here).
+        assert_eq!(
+            sorted.len(),
+            keys.len(),
+            "dhātupāṭha numbers must be unique"
+        );
+        // Uniqueness here is a property of the source, not of a convention
+        // this repo maintains: upstream numbers are unique across all 2260
+        // entries, which `dhatupatha_numbers_resolve_upstream` also asserts.
+        // That is the whole reason the number can serve as the key where the
+        // SLP1 `code` could not — `code` is NOT unique (both √aś rows share
+        // it), and the retired `Dhatu::id` existed only to paper over that.
         for d in dhatus() {
-            let is_collision_qualified = d.id.starts_with(&format!("{}.", d.code));
-            let is_rule_driven_storage = d.id == "his" && d.code == "hins";
-            assert!(
-                d.id == d.code || is_collision_qualified || is_rule_driven_storage,
-                "id {:?} must follow Dhatu::id contract: equal to code, \
-                 or gaṇa-qualified as {{code}}.{{gana}} (collision), \
-                 or a known rule-driven storage exception",
-                d.id
+            assert_eq!(
+                d.dhatupatha.len(),
+                7,
+                "{} is not a well-formed dhātupāṭha number",
+                d.dhatupatha
             );
         }
     }
 
     #[test]
     fn the_two_ash_roots_are_distinct_rows() {
-        let svadi = dhatus().iter().find(|d| d.id == "aS.5").unwrap();
-        let kryadi = dhatus().iter().find(|d| d.id == "aS").unwrap();
+        let svadi = dhatus().iter().find(|d| d.dhatupatha == "05.0020").unwrap();
+        let kryadi = dhatus().iter().find(|d| d.dhatupatha == "09.0059").unwrap();
         assert!(matches!(svadi.gana, Gana::Svadi));
         assert!(matches!(kryadi.gana, Gana::Kryadi));
         assert!(matches!(svadi.pada, PadaAssignment::Atmanepada));
         assert!(matches!(kryadi.pada, PadaAssignment::Parasmaipada));
-        // Same surface text, different rows. If ids ever collapse, one of these
-        // roots silently stops being derivable.
+        // Same surface text, different rows — and now distinct by
+        // construction rather than by a hand-applied qualifier, since their
+        // numbers come from different gaṇas of the source.
         assert_eq!(svadi.code, kryadi.code);
     }
 
     #[test]
-    fn rudhadi_holds_seven_roots_including_its_eponym() {
-        // Seven roots, in table order. √hiṃs is stored `hins`, NOT `his`:
-        // see its row comment. √rudh, the eponym, arrived with 1.3.72
-        // svaritaYitaH and PadaAssignment::Ubhayapada — the machinery that
-        // 7b recorded as the one thing its absence was waiting on.
+    fn rudhadi_rows_are_the_seven_curated_roots() {
+        // rudhādi also holds `vi\da~\` and `o~vijI~`, whose SLP1 surfaces
+        // WOULD have collided with divādi's `vid` and tudādi's `vij` under
+        // the retired `id` scheme. Neither is curated — the gaṇa stops at
+        // seven roots — and under number keying the question no longer
+        // arises: `07.0013` and `07.0023` would be distinct from `04.0067`
+        // and `06.0009` whether or not their surfaces agree. The whole
+        // `aS.5` qualification mechanism retired with the field.
         //
         // The gaṇa is still PARTIAL (7 of its 25 dhātupāṭha roots). 1.3.72
         // no longer holds any of the remaining eight `~^r` roots back, but
@@ -773,18 +785,18 @@ mod tests {
         let rows: Vec<_> = dhatus()
             .iter()
             .filter(|d| d.gana == Gana::Rudhadi)
-            .map(|d| (d.id, d.code, d.pada))
+            .map(|d| (d.dhatupatha, d.code, d.pada))
             .collect();
         assert_eq!(
             rows,
             vec![
-                ("kft", "kft", PadaAssignment::Parasmaipada),
-                ("his", "hins", PadaAssignment::Parasmaipada),
-                ("Kid", "Kid", PadaAssignment::Atmanepada),
-                ("Banj", "Banj", PadaAssignment::Parasmaipada),
-                ("piz", "piz", PadaAssignment::Parasmaipada),
-                ("inD", "inD", PadaAssignment::Atmanepada),
-                ("ruD", "ruD", PadaAssignment::Ubhayapada),
+                ("07.0010", "kft", PadaAssignment::Parasmaipada),
+                ("07.0019", "hins", PadaAssignment::Parasmaipada),
+                ("07.0012", "Kid", PadaAssignment::Atmanepada),
+                ("07.0016", "Banj", PadaAssignment::Parasmaipada),
+                ("07.0015", "piz", PadaAssignment::Parasmaipada),
+                ("07.0011", "inD", PadaAssignment::Atmanepada),
+                ("07.0001", "ruD", PadaAssignment::Ubhayapada),
             ]
         );
     }
@@ -814,30 +826,12 @@ mod tests {
     #[test]
     fn every_curated_root_admits_at_least_one_pada() {
         for d in dhatus() {
-            assert!(!d.pada.padas().is_empty(), "{} admits no pada at all", d.id);
+            assert!(
+                !d.pada.padas().is_empty(),
+                "{} admits no pada at all",
+                d.dhatupatha
+            );
         }
-    }
-
-    #[test]
-    fn rudhadi_ids_do_not_collide() {
-        // rudhādi also holds `vi\da~\` and `o~vijI~`, which WOULD collide
-        // with divādi's `vid` and tudādi's `vij`. Neither is curated — the
-        // gaṇa stops at seven roots — so every rudhādi id is still its own
-        // unqualified SLP1 code and the `aS.5` qualification mechanism
-        // stays at exactly one user. 7a's spec predicted this would not
-        // survive 7b; it does, because that prediction assumed a root set
-        // including √vid. √rudh does not change it either: `ruD` collides
-        // with nothing in the table.
-        for d in dhatus().iter().filter(|d| d.gana == Gana::Rudhadi) {
-            let n = dhatus().iter().filter(|o| o.id == d.id).count();
-            assert_eq!(n, 1, "rudhādi id {} is not unique in DHATUS", d.id);
-        }
-        let qualified: Vec<_> = dhatus()
-            .iter()
-            .filter(|d| d.id.contains('.'))
-            .map(|d| d.id)
-            .collect();
-        assert_eq!(qualified, vec!["aS.5"]);
     }
 
     /// Upstream's dhātupāṭha, vendored at the commit named in its header.
