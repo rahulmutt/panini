@@ -83,7 +83,8 @@ accordingly; see the "REPRESENTATION" note on 3.1.78 in
 The gaṇa carries seven roots — √kṛt, √hiṃs and √khid (slice 7a), √bhañj, √piṣ
 and √indh (7b), and √rudh (`07.0001`), the gaṇa's own eponym, which arrived
 with 1.3.72 *svaritañitaḥ* in the ubhayapada slice as the engine's first
-ubhayapadī root — and stays **partial**: nine of rudhādi's 25 dhātupāṭha
+ubhayapadī root (the pada audit later added √nī and √tud, outside this
+gaṇa) — and stays **partial**: nine of rudhādi's 25 dhātupāṭha
 roots are ubhayapadī. The ubhayapada deferral itself is discharged — 1.3.72
 holds none of the other eight back any more — but they are not all alike.
 **√bhid, √kṣud, √yuj and √tṛd** are curation-only: the engine derives all
@@ -260,8 +261,8 @@ of scope with √kṛ itself.
 8.2.39 obligatorily voices its final `t` to `d`), forking 58 cells (loṭ
 prathama and madhyama eka across the 29 roots with a parasmaipada column —
 `tu`/`hi` are parasmaipada endings, so the curated set's 20 ātmanepada-only
-roots never reach this guard, and ubhayapadī √rudh reaches it in its
-parasmaipada cells only) — `Bavatu ~ BavatAd`, `Bava ~ BavatAd`. 8.4.56
+roots never reach this guard, and ubhayapadī √rudh, √nī and √tud reach it
+in their parasmaipada cells only) — `Bavatu ~ BavatAd`, `Bava ~ BavatAd`. 8.4.56
 optionally devoices a pada-final jaś (produced by the now-obligatory 8.2.39)
 back to its car at the end of an utterance, forking 63 cells outright: laṅ
 and vidhiliṅ prathama eka across those same 29 parasmaipada columns (58 of

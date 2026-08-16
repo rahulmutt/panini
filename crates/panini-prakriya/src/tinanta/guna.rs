@@ -940,7 +940,7 @@ mod tests {
         // kryādi: `nI` IS ik-final, so only the 1.1.5 guard keeps this rule off
         // it — and 6.4.113 only ever produces `nI` before a ṅit ending, so the
         // guard is always satisfied. The no-delta guard, half two. If this ever
-        // fires, kryādi surfaces *kliSne and 1800 goldens move.
+        // fires, kryādi surfaces *kliSne and 1872 goldens move.
         let mut p = Prakriya {
             terms: vec![Term::new("kliS"), Term::new("nI"), Term::new("taH")],
             ..Default::default()

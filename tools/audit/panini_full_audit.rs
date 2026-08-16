@@ -21,9 +21,9 @@
 //! doc comment states that a blocked prakriyā's `text()` is a partial string
 //! (often the bare root code), not a surface form.
 //!
-//! Corpus invariants, asserted: 49 roots, 1800 cells, 2042 forms. These are
+//! Corpus invariants, asserted: 49 roots, 1872 cells, 2114 forms. These are
 //! facts about the repo, pinned by its own golden suite
-//! (`derivation_set_shape_matches_the_audited_numbers`): 200 root×lakāra blocks
+//! (`derivation_set_shape_matches_the_audited_numbers`): 208 root×lakāra blocks
 //! × 9 cells, plus 242 `ALTERNATES` rows. If this harness's enumeration
 //! disagrees, the harness is wrong.
 //!
@@ -51,7 +51,7 @@
 //!     PANINI_AUDIT_PERTURB=form  cargo run --release --example panini_full_audit
 //!     PANINI_AUDIT_PERTURB=entry cargo run --release --example panini_full_audit
 //!
-//! Optionally dump the full 1800-cell table:
+//! Optionally dump the full 1872-cell table:
 //!
 //!     PANINI_AUDIT_DUMP=/path/to/table.tsv cargo run --release --example panini_full_audit
 
@@ -575,8 +575,8 @@ fn main() {
     println!("differing cells  : {}", diffs.len());
 
     assert_eq!(roots_seen.len(), 49, "curated roots");
-    assert_eq!(n_cells, 1800, "cells: 200 root×pada×lakāra blocks × 9");
-    assert_eq!(n_forms, 2042, "forms: 1800 cells + 242 ALTERNATES rows");
+    assert_eq!(n_cells, 1872, "cells: 208 root×pada×lakāra blocks × 9");
+    assert_eq!(n_forms, 2114, "forms: 1872 cells + 242 ALTERNATES rows");
     assert_eq!(
         n_branches, n_forms,
         "no cell may yield two live branches with the same text"

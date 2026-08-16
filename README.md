@@ -33,16 +33,18 @@ rather than on an axis this engine models. *parasmaipada* and *ātmanepada*
 curated 49-root set, in four lakāras: *laṭ* (present), *laṅ* (imperfect), *loṭ*
 (imperative), and *vidhiliṅ* (optative). A cell may have more than one valid
 form where an optional (*vikalpa*) sūtra applies — `hinvaH` and `hinuvaH` are
-both correct — and in fact 170 of the 1800 cells hold more than one form: 109
+both correct — and in fact 170 of the 1872 cells hold more than one form: 109
 hold two, 56 hold three (`Bavatu`, `BavatAd`, `BavatAt`), one holds four
 (rudhādi's √piṣ loṭ madhyama eka), two hold five, and two hold six — rudhādi's
 √kṛt and √rudh loṭ parasmaipada madhyama eka, tied as the sharpest forks in the
 suite, each holding six valid readings of the one cell: `kfndDi` / `kfnDi` /
 `kfnttAd` / `kfntAd` / `kfnttAt` / `kfntAt`, and `rundDi` / `runDi` /
 `rundDAd` / `runDAd` / `rundDAt` / `runDAt`. A root may also admit **both**
-padas — √rudh derives a full parasmaipada and a full ātmanepada paradigm, so a
-single surface can now be genuinely pada-ambiguous (`runDAm` is both a loṭ
-parasmaipada and a loṭ ātmanepada cell). `check --json` — and the `Analysis`
+padas — √rudh, √nī and √tud each derive a full parasmaipada and a full
+ātmanepada paradigm, so a single surface can now be genuinely pada-ambiguous
+(`runDAm` is both a loṭ parasmaipada and a loṭ ātmanepada cell, and √nī and
+√tud add six more: `anayata`, `nayatAm`, `nayeta`, `atudata`, `tudatAm`,
+`tudeta`). `check --json` — and the `Analysis`
 API behind it — reports every analysis of the input, each with its own pada and
 its own trace; the default `check` output prints only the first, without its
 pada. 1.3.72's semantic condition (*kartrabhiprāye kriyāphale*, the fruit of

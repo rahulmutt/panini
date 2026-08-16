@@ -22,41 +22,20 @@ run = "cargo fmt --all --check"
 # `panini` crate's golden paradigm/trace/roundtrip tests that are the
 # actual gate on the guarded rules in panini-prakriya.
 #
-# --timeout must clear a FULL, UNCAUGHT run of that workspace suite, not
-# just a typical one. A caught mutant fails fast and is recorded quickly;
-# an uncaught mutant runs the entire suite to completion before
-# cargo-mutants can conclude nothing failed. At 1620 cells that full run
-# (paradigm ~140s + roundtrip ~157s + trace, back to back) was already close
-# to 300s, so a 300s cap no longer has headroom over the thing it is
-# supposed to bound — it starts reclassifying genuine survivors as
-# TIMEOUT instead of MISSED, which is the same vacuity a too-short cap
-# always causes, just reached by suite growth instead of by an unset
-# timeout. At 1728 cells (slice 7b) the same full uncaught run measures
-# ~380s (paradigm ~183s + roundtrip ~196s + trace), so 1200s has better
-# than 3x headroom -- AT LOW PARALLELISM. The cap must clear a full
-# uncaught run at the parallelism actually used, and this line pins none:
-# cargo-mutants reads -j from CARGO_MUTANTS_JOBS, so the environment can
-# defeat the cap on its own. Slice 7b ran this gate at -j 16 on 24 cores
-# and got 43 timeouts where one was expected; re-running exactly those at
-# -j 4 --timeout 2400 caught 43 of 44 in 389-449s, i.e. 2.1-2.5x the ~183s
-# those same caught mutants take standalone. -j 16 on 24 cores does not
-# clear 1200s. Keep -j <= 4 with this cap, or raise the cap
-# in step. Re-check both the floor and the margin whenever the golden
-# suite grows again. It has: the ubhayapada 1.3.72 slice took the suite to
-# 1800 cells, and a standalone `mise run test` there measured paradigm
-# ~207s + roundtrip ~240s + trace ~2s -- an UNCONTENDED uncaught floor of
-# ~450s, more than the ~395s a 4%-growth scaling predicts. No -j 4 run has
-# been measured against that suite; applying 7b's 2.1-2.5x contention
-# factor puts an uncaught mutant near 950-1100s, i.e. under this cap but
-# without the ~3x margin the 1728-cell numbers showed. Adequate, not
-# comfortable -- re-measure before trusting it further. That slice's own
-# gate declined to trust it: its campaign (522 mutants, 482 caught, 0
-# missed, 39 unviable, 1 known-permanent timeout) was run by hand at
-# `-j 4 --timeout 2400`, doubling this default precisely because the
-# ~450s uncontended floor times an unverified -j 4 factor left too thin a
-# margin to read a `timeout.txt` entry as anything. The default below is
-# unchanged and still 1200; pass 2400 explicitly until someone measures a
-# -j 4 run against the 1800-cell suite.
+# --timeout must clear a FULL, UNCAUGHT run of the workspace suite at the
+# parallelism actually used -- cargo-mutants reads -j from
+# CARGO_MUTANTS_JOBS, so an unqualified cap can be defeated by the
+# environment alone. Keep -j <= 4, and pass --timeout 2400 explicitly
+# rather than trusting the 1200 default below: under too short a cap, a
+# genuine survivor is recorded as a TIMEOUT rather than a MISSED, which
+# makes a reported zero-survivor run vacuous, so always check
+# `timeout.txt` alongside `missed.txt`.
+#
+# The measured floor and margin behind these numbers -- including the
+# `-j 4` timing this gate now has at the current suite size -- are
+# recorded in AGENTS.md's cargo-mutants paragraph, the single source for
+# this reasoning. Re-check both there whenever the golden suite grows
+# again.
 run = "cargo mutants --package panini-prakriya --test-workspace=true --timeout 1200"
 
 [tasks.audit]

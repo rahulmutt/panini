@@ -11,7 +11,7 @@ use panini_prakriya::derive;
 /// anyone deciding which gaṇa's was the incumbent (`09.0059` kryādi,
 /// `05.0020` svādi). Resolve a number against the `DHATUS` table in
 /// `panini-data` to see which root a block is for; the tables carry no
-/// per-row comment, deliberately, since 442 uncheckable comments is a
+/// per-row comment, deliberately, since 450 uncheckable comments is a
 /// staleness liability no test could pin. The pada column is no longer
 /// inferable from the root alone: 1.3.72 gives some roots a
 /// `PadaAssignment` that admits both, so a block has to declare which pada
@@ -33,6 +33,15 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         [
             "nayati", "nayataH", "nayanti", "nayasi", "nayaTaH", "nayaTa", "nayAmi", "nayAvaH",
             "nayAmaH",
+        ],
+    ),
+    (
+        "01.1049",
+        "laT",
+        Pada::Atmanepada,
+        [
+            "nayate", "nayete", "nayante", "nayase", "nayeTe", "nayaDve", "naye", "nayAvahe",
+            "nayAmahe",
         ],
     ),
     (
@@ -87,6 +96,22 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         [
             "anayad", "anayatAm", "anayan", "anayaH", "anayatam", "anayata", "anayam", "anayAva",
             "anayAma",
+        ],
+    ),
+    (
+        "01.1049",
+        "laN",
+        Pada::Atmanepada,
+        [
+            "anayata",
+            "anayetAm",
+            "anayanta",
+            "anayaTAH",
+            "anayeTAm",
+            "anayaDvam",
+            "anaye",
+            "anayAvahi",
+            "anayAmahi",
         ],
     ),
     (
@@ -151,6 +176,15 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
+        "01.1049",
+        "loT",
+        Pada::Atmanepada,
+        [
+            "nayatAm", "nayetAm", "nayantAm", "nayasva", "nayeTAm", "nayaDvam", "nayE", "nayAvahE",
+            "nayAmahE",
+        ],
+    ),
+    (
         "01.0642",
         "loT",
         Pada::Parasmaipada,
@@ -208,6 +242,22 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         [
             "nayed", "nayetAm", "nayeyuH", "nayeH", "nayetam", "nayeta", "nayeyam", "nayeva",
             "nayema",
+        ],
+    ),
+    (
+        "01.1049",
+        "viDiliN",
+        Pada::Atmanepada,
+        [
+            "nayeta",
+            "nayeyAtAm",
+            "nayeran",
+            "nayeTAH",
+            "nayeyATAm",
+            "nayeDvam",
+            "nayeya",
+            "nayevahi",
+            "nayemahi",
         ],
     ),
     (
@@ -622,6 +672,15 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
+        "06.0001",
+        "laT",
+        Pada::Atmanepada,
+        [
+            "tudate", "tudete", "tudante", "tudase", "tudeTe", "tudaDve", "tude", "tudAvahe",
+            "tudAmahe",
+        ],
+    ),
+    (
         "06.0092",
         "laT",
         Pada::Parasmaipada,
@@ -769,6 +828,22 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         [
             "atudad", "atudatAm", "atudan", "atudaH", "atudatam", "atudata", "atudam", "atudAva",
             "atudAma",
+        ],
+    ),
+    (
+        "06.0001",
+        "laN",
+        Pada::Atmanepada,
+        [
+            "atudata",
+            "atudetAm",
+            "atudanta",
+            "atudaTAH",
+            "atudeTAm",
+            "atudaDvam",
+            "atude",
+            "atudAvahi",
+            "atudAmahi",
         ],
     ),
     (
@@ -922,6 +997,15 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         ],
     ),
     (
+        "06.0001",
+        "loT",
+        Pada::Atmanepada,
+        [
+            "tudatAm", "tudetAm", "tudantAm", "tudasva", "tudeTAm", "tudaDvam", "tudE", "tudAvahE",
+            "tudAmahE",
+        ],
+    ),
+    (
         "06.0092",
         "loT",
         Pada::Parasmaipada,
@@ -1048,6 +1132,22 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         [
             "tuded", "tudetAm", "tudeyuH", "tudeH", "tudetam", "tudeta", "tudeyam", "tudeva",
             "tudema",
+        ],
+    ),
+    (
+        "06.0001",
+        "viDiliN",
+        Pada::Atmanepada,
+        [
+            "tudeta",
+            "tudeyAtAm",
+            "tuderan",
+            "tudeTAH",
+            "tudeyATAm",
+            "tudeDvam",
+            "tudeya",
+            "tudevahi",
+            "tudemahi",
         ],
     ),
     (
@@ -3625,7 +3725,8 @@ fn derivation_set_is_exactly_pinned() {
 /// divergence it resolved (3.4.111 Śākaṭāyana's jus), the three roots added
 /// in rudhādi 7a (kft, his, Kid), three more added in rudhādi 7b (Banj, piz,
 /// inD), and — new in the ubhayapada 1.3.72 slice — √rudh (ruD), pinned in
-/// both padas: every one of the seven rudhādi roots forks in both loṭ and
+/// both padas, joined by the pada audit's √nī and √tud, also pinned in both
+/// padas: every one of the seven rudhādi roots forks in both loṭ and
 /// laṅ, and two of them — kft and ruD — fork in all four lakāras: laṭ (kft
 /// cells 1/4/5, Kid cells 0/5, inD cells 0/5, and — new in this slice — ruD
 /// parasmaipada cells 1/4/5 and ātmanepada cells 0/5, all on 8.4.65), laṅ (on
@@ -3633,8 +3734,8 @@ fn derivation_set_is_exactly_pinned() {
 /// śa-luk jaśtva 8.4.56 branch), loṭ (on 7.1.35/8.4.65/8.4.56, stacking up to
 /// three deep, and piṣ's loṭ madhyama eka, which stacks 8.4.65 alongside
 /// 7.1.35/8.4.56 four deep), and vidhiliṅ (kft/his/Banj/piz/ruD cell 0, on
-/// 8.4.56 — Kid and inD do not fork here): 1800 cells total (200 root×lakāra
-/// blocks × 9), of which 1630 hold exactly one form, 109 hold two, 56 hold
+/// 8.4.56 — Kid and inD do not fork here): 1872 cells total (208 root×lakāra
+/// blocks × 9), of which 1702 hold exactly one form, 109 hold two, 56 hold
 /// three, one holds four (piṣ's loṭ madhyama eka, the deepest fork added in
 /// 7b), and — the sharpest branch-count witnesses in the repo, per
 /// `docs/ARCHITECTURE.md` — exactly two hold five (√kṛt's loṭ prathama eka,
@@ -3652,14 +3753,14 @@ fn derivation_set_is_exactly_pinned() {
 /// across all 1620 pre-7b cells with zero differences, every 7b form was
 /// cross-checked the same way during that slice's design, and this slice's
 /// √rudh forms were audited against a vidyut-prakriya checkout at commit
-/// 8da2f90 the same way, so the numbers are re-verified as well as pinned,
-/// even though that probe's source is deliberately not committed to this
-/// repo (it is throwaway verification tooling, not shipped code) — this
-/// test is what keeps the numbers true day to day.
+/// 8da2f90 the same way, and the probe's source is committed at
+/// `tools/audit/panini_full_audit.rs` as of `0ff84a7`, and the pada audit
+/// re-ran it over all 1872 cells — so the numbers are re-verified as well as
+/// pinned. This test is what keeps the numbers true day to day.
 #[test]
 fn derivation_set_shape_matches_the_audited_numbers() {
     let total_cells = PARADIGM.len() * 9;
-    assert_eq!(total_cells, 1800, "200 root×lakāra blocks × 9 cells each");
+    assert_eq!(total_cells, 1872, "208 root×lakāra blocks × 9 cells each");
 
     let mut ones = 0usize;
     let mut twos = 0usize;
@@ -3686,7 +3787,7 @@ fn derivation_set_shape_matches_the_audited_numbers() {
             }
         }
     }
-    assert_eq!(ones, 1630, "one-form cells");
+    assert_eq!(ones, 1702, "one-form cells");
     assert_eq!(twos, 109, "two-form cells");
     assert_eq!(threes, 56, "three-form cells");
     assert_eq!(fours, 1, "four-form cells — piṣ's loṭ madhyama eka");
@@ -3730,10 +3831,12 @@ fn derivation_set_shape_matches_the_audited_numbers() {
 #[test]
 fn paradigm_covers_every_enumerable_cell() {
     // adādi × vidhiliṅ was gated in slice 5a and ungated in slice 5b; √śī was
-    // gated in slice 5f task 1 and ungated here. There are no gated cells any
-    // more. This constant stays (empty) so the two assertions below keep
-    // documenting that EVERY enumerable (root, lakara, pada) triple must be
-    // pinned in PARADIGM — a future partial slice may repopulate it, but it
+    // gated in slice 5f task 1 and ungated there; √nī and √tud's ātmanepada
+    // blocks were gated for one commit by the pada audit, between the column
+    // being corrected and the audited goldens landing. There are no gated
+    // cells any more. This constant stays (empty) so the two assertions below
+    // keep documenting that EVERY enumerable (root, lakara, pada) triple must
+    // be pinned in PARADIGM — a future partial slice may repopulate it, but it
     // must never silently hide a missing golden block.
     const GATED: &[(&str, &str, Pada)] = &[];
 
@@ -3821,17 +3924,6 @@ fn known_nonforms_are_invalid() {
         // derivation.
         "manyati", // atmanepadin divādi root with a parasmaipada ending
         "vidyati", // atmanepadin divādi root, parasmaipada ending
-        // `tudate` is a REAL Sanskrit form -- √tud is ubhayapadī
-        // (`06.0001 tu\da~^`), and since 1.3.72 svaritañitaḥ landed, the
-        // engine could derive it. It is INVALID here only because
-        // `Dhatu.pada` records a curated verdict (which padas this engine
-        // claims for the root) and √tud's row still says parasmaipada --
-        // a curation choice with a known audit behind it, not an engine
-        // limit. Auditing the whole table for mis-assigned pada is its own
-        // slice; until then this entry pins the documented meaning of
-        // INVALID ("not derivable within the covered grammar"), not a
-        // claim about Sanskrit.
-        "tudate",
         // adādi (gaṇa 2): śap is luk'd (2.4.72). A retained-śap surface must
         // not derive, and the parasmaipada roots reject ātmanepada endings.
         "yAyati", // yā with a spurious y-śap — no derivation yields it

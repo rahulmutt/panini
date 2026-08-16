@@ -27,7 +27,7 @@ is ruleless.
 comment states that a blocked prakriyā's `text()` is a partial string — often the
 bare root code — not a surface form.
 
-**It asserts the corpus totals** (49 roots, 1800 cells, 2042 forms) rather than
+**It asserts the corpus totals** (49 roots, 1872 cells, 2114 forms) rather than
 reporting whatever it enumerated. Those are facts about the repo, pinned
 independently by `derivation_set_shape_matches_the_audited_numbers` in
 `crates/panini/tests/paradigm.rs`. If the harness disagrees, the harness is wrong.
@@ -106,13 +106,17 @@ PANINI_AUDIT_DUMP=/tmp/audit-table.tsv mise exec rust@1.97.1 -- cargo run --rele
 
 ## Last recorded result
 
-2026-08-16, "dhātupāṭha number as identity" slice, vidyut `8da2f90`:
-**zero differences across 1800 cells / 2042 forms / 49 roots**, with both negative
-controls verified failing. That run is what discharged AGENTS.md's "one residual
-circularity is known and unfixed".
+2026-08-16, "pada audit" slice, vidyut `8da2f90`:
+**zero differences across 1872 cells / 2114 forms / 49 roots**, with both negative
+controls verified failing. (The previous run, the "dhātupāṭha number as identity"
+slice at this same vidyut commit, is what discharged AGENTS.md's "one residual
+circularity is known and unfixed".)
 
 ## Scope
 
 The harness tells both engines which pada to derive; it does not audit whether a
-root's `PadaAssignment` is itself correct. Auditing the 49 roots for mis-assigned
-pada is a separate, still-open slice — √tud (`06.0001 tu\da~^`) is the known case.
+root's `PadaAssignment` is itself correct. Auditing the column itself is
+`curated_pada_agrees_with_upadesha_markers` in `panini-data`, which re-derives
+every verdict from the vendored upadeśa and runs in `cargo test` — the two
+audits are complementary, and the pada audit slice ran both. This harness stays
+the authority on derived **forms**.
