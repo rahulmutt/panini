@@ -103,8 +103,15 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         "laN",
         Pada::Atmanepada,
         [
-            "anayata", "anayetAm", "anayanta", "anayaTAH", "anayeTAm", "anayaDvam", "anaye",
-            "anayAvahi", "anayAmahi",
+            "anayata",
+            "anayetAm",
+            "anayanta",
+            "anayaTAH",
+            "anayeTAm",
+            "anayaDvam",
+            "anaye",
+            "anayAvahi",
+            "anayAmahi",
         ],
     ),
     (
@@ -173,8 +180,8 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         "loT",
         Pada::Atmanepada,
         [
-            "nayatAm", "nayetAm", "nayantAm", "nayasva", "nayeTAm", "nayaDvam", "nayE",
-            "nayAvahE", "nayAmahE",
+            "nayatAm", "nayetAm", "nayantAm", "nayasva", "nayeTAm", "nayaDvam", "nayE", "nayAvahE",
+            "nayAmahE",
         ],
     ),
     (
@@ -242,8 +249,15 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         "viDiliN",
         Pada::Atmanepada,
         [
-            "nayeta", "nayeyAtAm", "nayeran", "nayeTAH", "nayeyATAm", "nayeDvam", "nayeya",
-            "nayevahi", "nayemahi",
+            "nayeta",
+            "nayeyAtAm",
+            "nayeran",
+            "nayeTAH",
+            "nayeyATAm",
+            "nayeDvam",
+            "nayeya",
+            "nayevahi",
+            "nayemahi",
         ],
     ),
     (
@@ -821,8 +835,15 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         "laN",
         Pada::Atmanepada,
         [
-            "atudata", "atudetAm", "atudanta", "atudaTAH", "atudeTAm", "atudaDvam", "atude",
-            "atudAvahi", "atudAmahi",
+            "atudata",
+            "atudetAm",
+            "atudanta",
+            "atudaTAH",
+            "atudeTAm",
+            "atudaDvam",
+            "atude",
+            "atudAvahi",
+            "atudAmahi",
         ],
     ),
     (
@@ -980,8 +1001,8 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         "loT",
         Pada::Atmanepada,
         [
-            "tudatAm", "tudetAm", "tudantAm", "tudasva", "tudeTAm", "tudaDvam", "tudE",
-            "tudAvahE", "tudAmahE",
+            "tudatAm", "tudetAm", "tudantAm", "tudasva", "tudeTAm", "tudaDvam", "tudE", "tudAvahE",
+            "tudAmahE",
         ],
     ),
     (
@@ -1118,8 +1139,15 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
         "viDiliN",
         Pada::Atmanepada,
         [
-            "tudeta", "tudeyAtAm", "tuderan", "tudeTAH", "tudeyATAm", "tudeDvam", "tudeya",
-            "tudevahi", "tudemahi",
+            "tudeta",
+            "tudeyAtAm",
+            "tuderan",
+            "tudeTAH",
+            "tudeyATAm",
+            "tudeDvam",
+            "tudeya",
+            "tudevahi",
+            "tudemahi",
         ],
     ),
     (
