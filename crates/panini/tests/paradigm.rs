@@ -3729,13 +3729,21 @@ fn derivation_set_shape_matches_the_audited_numbers() {
 /// `PARADIGM` block or appear in the explicit gated list below.
 #[test]
 fn paradigm_covers_every_enumerable_cell() {
-    // adādi × vidhiliṅ was gated in slice 5a and ungated in slice 5b; √śī was
-    // gated in slice 5f task 1 and ungated here. There are no gated cells any
-    // more. This constant stays (empty) so the two assertions below keep
-    // documenting that EVERY enumerable (root, lakara, pada) triple must be
-    // pinned in PARADIGM — a future partial slice may repopulate it, but it
-    // must never silently hide a missing golden block.
-    const GATED: &[(&str, &str, Pada)] = &[];
+    // Repopulated by the pada audit, and emptied again in the same slice once
+    // the audited forms land. √nī and √tud became ubhayapadī when the audit
+    // corrected their column; their ātmanepada blocks are transcribed from the
+    // cross-implementation audit's dump, which runs against the corrected data
+    // — so the data flip necessarily lands one commit ahead of its goldens.
+    const GATED: &[(&str, &str, Pada)] = &[
+        ("01.1049", "laT", Pada::Atmanepada),
+        ("01.1049", "laN", Pada::Atmanepada),
+        ("01.1049", "loT", Pada::Atmanepada),
+        ("01.1049", "viDiliN", Pada::Atmanepada),
+        ("06.0001", "laT", Pada::Atmanepada),
+        ("06.0001", "laN", Pada::Atmanepada),
+        ("06.0001", "loT", Pada::Atmanepada),
+        ("06.0001", "viDiliN", Pada::Atmanepada),
+    ];
 
     let pinned: Vec<(&str, &str, Pada)> =
         PARADIGM.iter().map(|(r, l, p, _)| (*r, *l, *p)).collect();
@@ -3821,17 +3829,6 @@ fn known_nonforms_are_invalid() {
         // derivation.
         "manyati", // atmanepadin divādi root with a parasmaipada ending
         "vidyati", // atmanepadin divādi root, parasmaipada ending
-        // `tudate` is a REAL Sanskrit form -- √tud is ubhayapadī
-        // (`06.0001 tu\da~^`), and since 1.3.72 svaritañitaḥ landed, the
-        // engine could derive it. It is INVALID here only because
-        // `Dhatu.pada` records a curated verdict (which padas this engine
-        // claims for the root) and √tud's row still says parasmaipada --
-        // a curation choice with a known audit behind it, not an engine
-        // limit. Auditing the whole table for mis-assigned pada is its own
-        // slice; until then this entry pins the documented meaning of
-        // INVALID ("not derivable within the covered grammar"), not a
-        // claim about Sanskrit.
-        "tudate",
         // adādi (gaṇa 2): śap is luk'd (2.4.72). A retained-śap surface must
         // not derive, and the parasmaipada roots reject ātmanepada endings.
         "yAyati", // yā with a spurious y-śap — no derivation yields it

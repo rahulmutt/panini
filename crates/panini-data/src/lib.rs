@@ -77,16 +77,23 @@ pub struct Dhatu {
     /// vārttika, which carries the following retroflex with it.
     pub code: &'static str,
     pub gana: Gana,
-    /// Which pada(s) this engine derives for this root — a curated verdict,
-    /// not the upadeśa it-markers (`anudatta_ngit`, `svarita_nit`) that the
-    /// sūtras actually read. Reading real markers here would make 1.3.72
-    /// fire on every root whose markers satisfy it, and √tud's do; holding
-    /// this slice's non-ubhayapada scope would then require writing a false
-    /// marker on √tud, which the public data API refuses to do — the same
-    /// refusal `Context::default`'s doc states for claiming a "default
-    /// lakāra". A documented deferral in one field, lifted root-by-root as
-    /// sūtras are implemented, is honest about what it is; see "The pada
-    /// model" in `docs/superpowers/specs/2026-08-15-ubhayapada-1-3-72-design.md`.
+    /// Which pada(s) this engine derives for this root. Curated rather than
+    /// read from the upadeśa's it-markers — but no longer a *deferral*:
+    /// `curated_pada_agrees_with_upadesha_markers` re-derives every one of
+    /// these 49 verdicts from the vendored upadeśa via 1.3.12 / 1.3.72 /
+    /// 1.3.78 and requires it to match, the same way
+    /// `dhatupatha_numbers_resolve_upstream` holds `code` to upstream.
+    ///
+    /// The column stayed hand-written because deriving it in production means
+    /// running it-stripping in production, and upadeśa preprocessing is not
+    /// the tiṅanta pipeline `TINANTA_RULES` models — it needs its own pipeline
+    /// concept. Until it has one, a curated column plus a non-circular test is
+    /// the honest arrangement; see the deferral in
+    /// `docs/superpowers/specs/2026-08-16-pada-audit-design.md`.
+    ///
+    /// The test covers the 49 roots curated here, not the dhātupāṭha's 2259.
+    /// It catches a mis-assigned pada on a root a future slice adds; it does
+    /// not make the table self-maintaining.
     pub pada: PadaAssignment,
     pub artha: &'static str,
 }
@@ -99,11 +106,15 @@ static DHATUS: &[Dhatu] = &[
         pada: PadaAssignment::Parasmaipada,
         artha: "sattAyAm",
     },
+    // 01.1049 `RI\Y`: the final `Y` is an it by 1.3.3 halantyam, so 1.3.72
+    // svaritañitaḥ sanctions both padas (nayati / nayate). Curated
+    // parasmaipada from the v1 slice until the pada audit; no deferral list
+    // ever named it.
     Dhatu {
         dhatupatha: "01.1049",
         code: "nI",
         gana: Gana::Bhvadi,
-        pada: PadaAssignment::Parasmaipada,
+        pada: PadaAssignment::Ubhayapada,
         artha: "prApaRe",
     },
     Dhatu {
@@ -220,11 +231,15 @@ static DHATUS: &[Dhatu] = &[
         artha: "sattAyAm",
     },
     // tudādi (gaṇa 6) — vikaraṇa śa (3.1.77)
+    // 06.0001 `tu\da~^`: the `~^` is a svarita it, so 1.3.72 sanctions both
+    // padas (tudati / tudate). Deferred behind 1.3.72 by the divādi/tudādi
+    // slice, then behind curation once 1.3.72 landed; discharged by the pada
+    // audit.
     Dhatu {
         dhatupatha: "06.0001",
         code: "tud",
         gana: Gana::Tudadi,
-        pada: PadaAssignment::Parasmaipada,
+        pada: PadaAssignment::Ubhayapada,
         artha: "vyaTane",
     },
     Dhatu {
@@ -863,6 +878,54 @@ mod tests {
         t
     }
 
+    /// The pada a root's own upadeśa assigns it, by 1.3.12 / 1.3.72 / 1.3.78.
+    ///
+    /// **Not grammar the pipeline owes a `Rule`** — the same standing as
+    /// `strip_anubandhas`, for the same reason: it never runs in a
+    /// derivation. It exists so `curated_pada_agrees_with_upadesha_markers`
+    /// can re-derive the `pada` column from upstream without consulting
+    /// anything this repo wrote about the root.
+    ///
+    /// The accent notation is the whole difficulty. Upstream writes an accent
+    /// AFTER the `~` that marks an anunāsika it, so `~\` is an anudātta it and
+    /// `~^` a svarita it — whereas a `\` sitting directly on a vowel elsewhere
+    /// is the ROOT's own accent and says nothing about pada. 35 of the 49
+    /// curated roots carry such an accent — `01.0642 ji\`, `01.1082 smf\` and
+    /// `02.0001 a\da~` among them — so conflating the two does not fail
+    /// loudly; it silently calls most of the table ātmanepada.
+    fn pada_from_upadesha(upadesha: &str) -> PadaAssignment {
+        // Accents attached to an it vowel, and only those.
+        let anudatta_it = upadesha.contains("~\\");
+        let svarita_it = upadesha.contains("~^");
+
+        // 1.3.3 halantyam, decided on the accent-stripped upadeśa: a final hal
+        // is an it. `SIN` and `vfN` reach 1.3.12 this way, `RI\Y` reaches
+        // 1.3.72, and none of the three carries a `~` at all.
+        let bare: String = upadesha
+            .chars()
+            .filter(|c| *c != '\\' && *c != '^')
+            .collect();
+        let final_it = bare.chars().last().filter(|c| is_hal(*c));
+        let ngit = final_it == Some('N');
+        // 1.3.5 ādir ñiṭuḍavaḥ supplies a ñ it as an initial `Yi` too.
+        let nyit = final_it == Some('Y') || bare.starts_with("Yi");
+
+        // ORDER IS LOAD-BEARING. 1.3.12 is tested first because `YiinDI~\`
+        // (√indh) satisfies both it and 1.3.72, and must come out ātmanepada.
+        // Pinned by `indh_is_atmanepada_despite_satisfying_1_3_72`.
+        if anudatta_it || ngit {
+            // 1.3.12 anudāttaṅita ātmanepadam.
+            return PadaAssignment::Atmanepada;
+        }
+        if svarita_it || nyit {
+            // 1.3.72 svaritañitaḥ kartrabhiprāye kriyāphale — ubhayapada,
+            // since 1.3.78 supplies the parasmaipada arm.
+            return PadaAssignment::Ubhayapada;
+        }
+        // 1.3.78 śeṣāt kartari parasmaipadam.
+        PadaAssignment::Parasmaipada
+    }
+
     /// 6.1.64 dhātvādeḥ ṣaḥ saḥ (ṣ → s) and 6.1.65 ṇo naḥ (ṇ → n). A
     /// root-initial ṣ or ṇ in the upadeśa is stored substituted, because no
     /// rule in this engine performs either substitution. For `zwiGa~\` the
@@ -962,6 +1025,96 @@ mod tests {
                 d.dhatupatha
             );
         }
+    }
+
+    #[test]
+    fn curated_pada_agrees_with_upadesha_markers() {
+        let rows = upstream_rows();
+        let mut wrong: Vec<String> = Vec::new();
+        for d in dhatus() {
+            let (_, upadesha, _) = rows
+                .iter()
+                .find(|(n, _, _)| *n == d.dhatupatha)
+                .unwrap_or_else(|| panic!("{} names no upstream row", d.dhatupatha));
+            let derived = pada_from_upadesha(upadesha);
+            if derived != d.pada {
+                wrong.push(format!(
+                    "{} {} ({upadesha}): curated {:?}, markers say {derived:?}",
+                    d.dhatupatha, d.code, d.pada
+                ));
+            }
+        }
+        assert!(
+            wrong.is_empty(),
+            "pada column disagrees with the vendored upadeśa:\n  {}",
+            wrong.join("\n  ")
+        );
+    }
+
+    #[test]
+    fn curated_gana_agrees_with_the_dhatupatha_number() {
+        // The same class of hole as the pada column: a hand-copied verdict
+        // sitting beside the data that determines it. A dhātupāṭha number's
+        // first two digits ARE its gaṇa, and nothing asserted the agreement.
+        // Not decorative — `05.0020` and `09.0059` share the code `aS` and are
+        // distinguished only by gaṇa.
+        for d in dhatus() {
+            let expected = match &d.dhatupatha[..2] {
+                "01" => Gana::Bhvadi,
+                "02" => Gana::Adadi,
+                "04" => Gana::Divadi,
+                "05" => Gana::Svadi,
+                "06" => Gana::Tudadi,
+                "07" => Gana::Rudhadi,
+                "09" => Gana::Kryadi,
+                other => panic!("{} names gaṇa {other}, which no root curates", d.dhatupatha),
+            };
+            assert_eq!(
+                d.gana, expected,
+                "{} carries the wrong gaṇa for its number",
+                d.dhatupatha
+            );
+        }
+    }
+
+    #[test]
+    fn indh_is_atmanepada_despite_satisfying_1_3_72() {
+        // `YiinDI~\` carries a ñi that 1.3.72 reads AND an anudātta it that
+        // 1.3.12 reads. 1.3.12 wins: vidyut-prakriya derives √indh in
+        // ātmanepada only, checked in the ubhayapada slice against √rudh as a
+        // `~^r` control. Reversing the two clauses in `pada_from_upadesha`
+        // grows √indh a parasmaipada column it must not have.
+        //
+        // This is the second, independent encoding of the precedence that
+        // `Tag::Ubhayapadin`'s doc comment in `panini-prakriya` states. It is
+        // asserted here so a reversal fails rather than quietly re-deriving
+        // that tag's own opinion.
+        assert_eq!(pada_from_upadesha("YiinDI~\\"), PadaAssignment::Atmanepada);
+    }
+
+    #[test]
+    fn a_final_hal_it_assigns_pada_without_any_tilde() {
+        // 1.3.3 halantyam is the only marker these three have — no `~`
+        // anywhere — so a check that looked only for `~\` / `~^` would call
+        // all three parasmaipada and still agree with the column on two.
+        assert_eq!(pada_from_upadesha("SIN"), PadaAssignment::Atmanepada); // 02.0026 √śī
+        assert_eq!(pada_from_upadesha("vfN"), PadaAssignment::Atmanepada); // 09.0045 √vṛṅ
+        assert_eq!(pada_from_upadesha("RI\\Y"), PadaAssignment::Ubhayapada); // 01.1049 √nī
+    }
+
+    #[test]
+    fn a_root_vowel_accent_does_not_assign_pada() {
+        // The failure mode that would make the whole audit vacuous: 35 of the
+        // 49 curated roots carry a `\` on a root vowel, and reading it as
+        // 1.3.12's anudātta calls 35 of them ātmanepada. Agreement with the
+        // column would still hold on every genuinely ātmanepada root, so only
+        // a parasmaipada witness catches it.
+        assert_eq!(pada_from_upadesha("ji\\"), PadaAssignment::Parasmaipada); // 01.0642
+        assert_eq!(pada_from_upadesha("a\\da~"), PadaAssignment::Parasmaipada); // 02.0001
+        assert_eq!(pada_from_upadesha("Ba\\njo~"), PadaAssignment::Parasmaipada); // 07.0016
+        // And the converse: the accent that DOES assign, on an it vowel.
+        assert_eq!(pada_from_upadesha("Ki\\da~\\"), PadaAssignment::Atmanepada); // 07.0012
+        assert_eq!(pada_from_upadesha("tu\\da~^"), PadaAssignment::Ubhayapada); // 06.0001
     }
 
     #[test]
