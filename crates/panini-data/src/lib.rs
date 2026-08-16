@@ -200,7 +200,7 @@ static DHATUS: &[Dhatu] = &[
         code: "div",
         gana: Gana::Divadi,
         pada: PadaAssignment::Parasmaipada,
-        artha: "krIqAyAm",
+        artha: "krIqAvijigIzAvyavahAradyutistutimodamadasvapnakAntigatizu",
     },
     Dhatu {
         dhatupatha: "04.0091",
@@ -309,7 +309,7 @@ static DHATUS: &[Dhatu] = &[
         code: "vA",
         gana: Gana::Adadi,
         pada: PadaAssignment::Parasmaipada,
-        artha: "gatigandhanayoH",
+        artha: "gatiganDanayoH",
     },
     Dhatu {
         dhatupatha: "02.0001",
@@ -494,7 +494,7 @@ static DHATUS: &[Dhatu] = &[
         artha: "Amardane",
     },
     Dhatu {
-        // 07.0015 pi\zx~ saYcUrRane hiMsAyAM ca. Witnesses 8.4.41 (zwutva:
+        // 07.0015 pi\zx~ saYcUrRane hiMsAyAm ca. Witnesses 8.4.41 (zwutva:
         // an adjacent dental assimilates to retroflex next to the root's
         // z) and 8.2.41 (the root's final z is itself replaced by k
         // before an s-initial affix).
@@ -503,7 +503,7 @@ static DHATUS: &[Dhatu] = &[
         code: "piz",
         gana: Gana::Rudhadi,
         pada: PadaAssignment::Parasmaipada,
-        artha: "saYcUrRane hiMsAyAM ca",
+        artha: "saYcUrRane hiMsAyAm ca",
     },
     Dhatu {
         // 07.0011 YiinDI~\ dIptO. Witnesses 8.2.40 Jazas taTor Do'DaH: a
@@ -964,10 +964,15 @@ mod tests {
         );
 
         for d in dhatus() {
-            let (_, upadesha, _) = rows
+            let (_, upadesha, artha) = rows
                 .iter()
                 .find(|(n, _, _)| *n == d.dhatupatha)
                 .unwrap_or_else(|| panic!("{} names no upstream row", d.dhatupatha));
+            assert_eq!(
+                *artha, d.artha,
+                "{} artha diverges from upstream",
+                d.dhatupatha
+            );
             // THIS is the assertion that breaks the circularity. Matching on
             // number and artha alone would still pass if a number pointed at
             // a sibling entry sharing an artha, and upstream has 8- and
