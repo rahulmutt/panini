@@ -266,8 +266,13 @@
   programmatically), and that is what specs, plans, and verification in this
   repo actually check ids/names against.
   Each gaṇa slice also runs a **whole-corpus cross-implementation audit**
-  against that same vendored checkout — an out-of-repo harness under its
-  `examples/`, comparing derivation sets cell by cell (7b: 1728 cells, 1941
+  against that same vendored checkout, comparing derivation sets cell by cell.
+  The harness is `tools/audit/panini_full_audit.rs`; it is a `vidyut-prakriya`
+  example rather than a workspace member (it depends on both engines), so
+  `tools/audit/README.md` covers copying it into a vidyut checkout and running
+  it, including the negative controls that must pass before a zero-difference
+  result means anything. It lived out-of-repo until 2026-08-16, which cost
+  three slices a from-scratch rebuild apiece (7b: 1728 cells, 1941
   forms, zero differences; the ubhayapada slice audited its own addition —
   √rudh's 72 cells, split per pada via `Tinanta::builder().pada(...)`, at
   vidyut commit `8da2f90`, plus the negative that vidyut derives √indh in
