@@ -93,17 +93,32 @@
     recur: `outcomes.json`'s per-mutant test-phase durations for the 482
     caught mutants put the median at 30.1s, p90 at 346.6s, p99 at 547.2s, and
     the max at 754.6s, with only 4 mutants over 600s and none over 1200s. The
-    measured worst-case contention factor is 754.6 / 443 ≈ 1.7×, well under
-    the 2.1–2.5× inferred from the `-j 16` re-runs above, so that
-    extrapolation was pessimistic. 2400 kept real margin — roughly 3.2× the
-    slowest observed caught mutant. 1200 would also have sufficed in this
-    run, since nothing exceeded it, but only by ~1.6× over that same 754.6s
-    max, not the ~3× the 1728-cell figures showed. This run caught every
-    mutant, so the uncaught worst case — which must run the whole suite to
-    completion rather than abort early, and so sits at or above 754.6s — is
-    still inferred rather than directly observed. Keep `--timeout 2400`
-    rather than dropping to 1200 until an uncaught mutant is actually
-    observed.
+    slowest caught mutant,
+    `crates/panini-prakriya/src/tinanta/vikarana.rs:316:17`, is a near-direct
+    measurement of that worst case rather than an inference from contention
+    alone: it ran the golden suite to completion without being caught —
+    `paradigm` passed (11 passed, 356.90s against an uncontended 205.47s
+    standalone, 1.74×) and `roundtrip` passed (1 passed, 391.84s against an
+    uncontended 236.36s standalone, 1.66×), with `trace` adding ~0s — and
+    was caught only afterwards, by `panini-prakriya --lib`, which failed in
+    0.20s. 356.90 + 391.84 ≈ 748.7s of its 754.6s total was therefore the
+    golden suite running to completion without catching it, which is exactly
+    the work an uncaught mutant does. The measured worst-case contention
+    factor, 754.6 / 443 ≈ 1.7×, is accordingly apples-to-apples against
+    the uncontended floor — both divide by an uncaught-run time, not a
+    caught-and-aborted one — well under the 2.1–2.5× inferred from the
+    `-j 16` re-runs above, so that extrapolation was pessimistic. 2400 kept
+    real margin — roughly 3.2× the slowest observed caught mutant. 1200
+    would also have sufficed in this run, since nothing exceeded it, but only
+    by ~1.6× over that same 754.6s max, not the ~3× the 1728-cell figures
+    showed. This run caught every mutant, so a genuinely uncaught mutant —
+    one that also spends `trace`'s ~2s rather than the ~0s this one did,
+    and is never caught by `--lib` — remains unobserved; but because the
+    slowest caught mutant already paid the full golden-suite cost before
+    `--lib` caught it, the uncaught worst case is no longer purely inferred
+    from contention factors, only from the small remainder that one mutant
+    leaves unmeasured. Keep `--timeout 2400` rather than dropping to 1200
+    until a genuinely uncaught mutant is actually observed.
   - `cargo-deny` + `cargo-audit` (supply-chain checks) — `mise run audit` runs
     `cargo audit && cargo deny check` and is expected to pass, including
     `cargo deny check advisories`.
@@ -180,17 +195,18 @@
     and the ubhayapada slice adds the gaṇa's own **eponym**, √rudh
     (`07.0001 ru\Di~^r`), with 1.3.72 *svaritañitaḥ* — the engine's first
     ubhayapadī root, deriving a full paradigm in each pada.
-    The pada audit added two more: `01.1049 RI\Y` (√nī, bhvādi) and
-    `06.0001 tu\da~^` (√tud, tudādi), both ubhayapadī by 1.3.72 and both
-    curated parasmaipada until then. √tud was a known deferral; √nī was
-    named by no deferral list and was read past by every slice from v1 on.
     `curated_pada_agrees_with_upadesha_markers` in `panini-data` now
     re-derives all 49 verdicts from the vendored upadeśa, so the column
     cannot drift from the data that determines it. That discharges
     the **ubhayapada** deferral as such: 1.3.72 is no longer what keeps any
     root out, and the other **eight** ubhayapadī roots are now out for
     narrower, root-specific reasons, verified cell by cell against
-    vidyut-prakriya. **√bhid, √kṣud, √yuj and √tṛd are curation-only** — the
+    vidyut-prakriya.
+    The pada audit added two more: `01.1049 RI\Y` (√nī, bhvādi) and
+    `06.0001 tu\da~^` (√tud, tudādi), both ubhayapadī by 1.3.72 and both
+    curated parasmaipada until then. √tud was a known deferral; √nī was
+    named by no deferral list and was read past by every slice from v1 on.
+    **√bhid, √kṣud, √yuj and √tṛd are curation-only** — the
     engine already derives all 72 cells of each, byte-identical to vidyut.
     **√ric and √vic** need no new sūtra, but the work in 8.2.30 *coḥ kuḥ* is
     more than the one-line guard widening it looks like: they are c-final,
@@ -305,7 +321,11 @@
   √rudh's 72 cells, split per pada via `Tinanta::builder().pada(...)`, at
   vidyut commit `8da2f90`, plus the negative that vidyut derives √indh in
   ātmanepada only against √rudh as the `~^r` control — and the corpus it sits
-  in now stands at 1872 cells and 2114 forms). The harness resolves each root
+  in now stands at 1872 cells and 2114 forms). The pada audit ran the harness
+  after it was already committed in-repo, needing no rebuild, and its own
+  full-corpus run found the same **zero differences across 1872 cells / 2114
+  forms / 49 roots** at vidyut commit `8da2f90`, with both negative controls
+  verified failing first. The harness resolves each root
   to a `data/dhatupatha.tsv` entry by its **dhātupāṭha number** (`07.0016` for
   √bhañj), which is `Dhatu::dhatupatha` and the root's identity in this repo.
   That closed the one circularity this audit used to carry: selection
