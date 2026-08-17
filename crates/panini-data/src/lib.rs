@@ -80,7 +80,7 @@ pub struct Dhatu {
     /// Which pada(s) this engine derives for this root. Curated rather than
     /// read from the upadeśa's it-markers — but no longer a *deferral*:
     /// `curated_pada_agrees_with_upadesha_markers` re-derives every one of
-    /// these 49 verdicts from the vendored upadeśa via 1.3.12 / 1.3.72 /
+    /// these 53 verdicts from the vendored upadeśa via 1.3.12 / 1.3.72 /
     /// 1.3.78 and requires it to match, the same way
     /// `dhatupatha_numbers_resolve_upstream` holds `code` to upstream.
     ///
@@ -91,7 +91,7 @@ pub struct Dhatu {
     /// the honest arrangement; see the deferral in
     /// `docs/superpowers/specs/2026-08-16-pada-audit-design.md`.
     ///
-    /// The test covers the 49 roots curated here, not the dhātupāṭha's 2259.
+    /// The test covers the 53 roots curated here, not the dhātupāṭha's 2259.
     /// It catches a mis-assigned pada on a root a future slice adds; it does
     /// not make the table self-maintaining.
     pub pada: PadaAssignment,
@@ -964,8 +964,9 @@ mod tests {
     /// The accent notation is the whole difficulty. Upstream writes an accent
     /// AFTER the `~` that marks an anunāsika it, so `~\` is an anudātta it and
     /// `~^` a svarita it — whereas a `\` sitting directly on a vowel elsewhere
-    /// is the ROOT's own accent and says nothing about pada. 35 of the 49
-    /// curated roots carry such an accent — `01.0642 ji\`, `01.1082 smf\` and
+    /// is the ROOT's own accent and says nothing about pada. Counted off the
+    /// vendored upadeśa: 38 of the 53 curated roots carry a `\` at all, and 25
+    /// of those carry one on a root vowel — `01.0642 ji\`, `01.1082 smf\` and
     /// `02.0001 a\da~` among them — so conflating the two does not fail
     /// loudly; it silently calls most of the table ātmanepada.
     fn pada_from_upadesha(upadesha: &str) -> PadaAssignment {
@@ -1159,10 +1160,13 @@ mod tests {
 
     #[test]
     fn a_root_vowel_accent_does_not_assign_pada() {
-        // The failure mode that would make the whole audit vacuous: 35 of the
-        // 49 curated roots carry a `\` on a root vowel, and reading it as
-        // 1.3.12's anudātta calls 35 of them ātmanepada. Agreement with the
-        // column would still hold on every genuinely ātmanepada root, so only
+        // The failure mode that would make the whole audit vacuous: 38 of the
+        // 53 curated roots carry a `\` somewhere in their upadeśa, 25 of them
+        // on a root vowel rather than on an it. Reading every `\` as 1.3.12's
+        // anudātta would call 20 of the 38 ātmanepada wrongly (14 curated
+        // parasmaipada, 6 ubhayapada); the other 18 carry a genuine `~\` and
+        // are curated ātmanepada anyway, which is why agreement with the
+        // column would still hold on every genuinely ātmanepada root, and only
         // a parasmaipada witness catches it.
         assert_eq!(pada_from_upadesha("ji\\"), PadaAssignment::Parasmaipada); // 01.0642
         assert_eq!(pada_from_upadesha("a\\da~"), PadaAssignment::Parasmaipada); // 02.0001

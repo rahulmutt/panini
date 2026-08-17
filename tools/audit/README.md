@@ -27,7 +27,7 @@ is ruleless.
 comment states that a blocked prakriyā's `text()` is a partial string — often the
 bare root code — not a surface form.
 
-**It asserts the corpus totals** (49 roots, 1872 cells, 2114 forms) rather than
+**It asserts the corpus totals** (53 roots, 2160 cells, 2496 forms) rather than
 reporting whatever it enumerated. Those are facts about the repo, pinned
 independently by `derivation_set_shape_matches_the_audited_numbers` in
 `crates/panini/tests/paradigm.rs`. If the harness disagrees, the harness is wrong.

@@ -240,10 +240,14 @@ it three more times, cell for cell and mechanism for mechanism:
 six forms and five hold five** — the loṭ parasmaipada *prathama* eka of each
 of those same five roots is a five-form cell — and nothing in the suite
 exceeds six. The fourth root 7c curated, √yuj, is the instructive near-miss:
-ubhayapadī like the other three, but not dental-final, and 8.2.30 *coḥ kuḥ*
-turns its stem-final `j` into `k` ahead of the suffix, so the `k` + `t`
-junction is not savarṇa the way the geminate `t` + `t` is and 8.4.65's site
-never arises. Its two loṭ parasmaipada eka cells stop at three forms
+ubhayapadī like the other three, but not dental-final. 8.2.30 *coḥ kuḥ*
+replaces its stem-final palatal `j` with the **velar** `g` — the substitute is
+a literal `'g'` in `tripadi.rs`, and it is 8.4.55 *khari ca*, later, that
+devoices it to `k` before the `t` of tātaṅ. So the junction 8.4.65 would need
+is velar against dental at both sites — `g` + `D` in `yuNgDi`, `k` + `t` in
+`yuNktAd` — and never savarṇa the way the dental-final roots' `d` + `D` and
+geminate `t` + `t` are. 8.4.65's site never arises, and √yuj's two loṭ
+parasmaipada eka cells stop at three forms
 (`yunaktu`/`yuNktAd`/`yuNktAt` and `yuNgDi`/`yuNktAd`/`yuNktAt`).
 The deepest cell slice 7b adds
 is shallower: √piṣ's

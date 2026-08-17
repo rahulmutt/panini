@@ -42,8 +42,10 @@ one cell: `kfndDi` / `kfnDi` / `kfnttAd` / `kfntAd` / `kfnttAt` / `kfntAt` for
 √kṛt, and `rundDi` / `runDi` / `rundDAd` / `runDAd` / `rundDAt` / `runDAt` for
 √rudh. Nothing in the suite forks deeper than six. √yuj, ubhayapadī like the
 other three roots 7c curated, does *not* fork that deep: 8.2.30 *coḥ kuḥ*
-turns its final `j` to `k`, so it never reaches the 8.4.65 branch the
-dental-final roots take. A root may also admit **both**
+replaces its palatal `j` with the velar `g` (which 8.4.55 *khari ca* later
+devoices to `k` before a `t`), and a velar is never savarṇa with the dental
+`t`/`D` that follows, so it never reaches the 8.4.65 branch the dental-final
+roots take. A root may also admit **both**
 padas — all seven ubhayapadī roots in the curated set (√nī, √tud, √rudh,
 √bhid, √kṣud, √yuj and √tṛd) derive a full parasmaipada and a full ātmanepada
 paradigm, so a single surface can be genuinely pada-ambiguous. Eighteen

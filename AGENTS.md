@@ -443,8 +443,11 @@
   not the two vowel-final ones. √yuj, ubhayapadī like those last three but
   not dental-final, stops at three forms in the same two cells
   (`yunaktu`/`yuNktAd`/`yuNktAt`, `yuNgDi`/`yuNktAd`/`yuNktAt`): 8.2.30 *coḥ
-  kuḥ* makes its stem-final `j` a `k`, and `k` + `t` is not savarṇa the way
-  the geminate `t` + `t` is, so 8.4.65's site never arises. See
+  kuḥ* replaces its stem-final palatal `j` with the velar `g` (8.4.55 *khari
+  ca* devoices that to `k` before the `t` of tātaṅ, which is where `yuNktAd`'s
+  `k` comes from), so the junction 8.4.65 would need is velar against dental
+  — `g` + `D`, then `k` + `t` — and never savarṇa the way the dental-final
+  roots' `d` + `D` and geminate `t` + `t` are. 8.4.65's site never arises. See
   `docs/ARCHITECTURE.md`'s branch-count
   paragraph for the full accounting.
 - **An optional rule's position relative to its consumers depends on what its

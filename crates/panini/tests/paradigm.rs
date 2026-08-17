@@ -4352,7 +4352,7 @@ const VIKALPA_RULES: &[&str] = &[
     "7.1.35", "3.4.111", "6.4.107", "8.2.74", "8.2.75", "8.4.65", "8.4.56",
 ];
 
-/// `ALTERNATES` is otherwise 242 bare strings, and a string can be right for
+/// `ALTERNATES` is otherwise 336 bare strings, and a string can be right for
 /// the wrong reason — `BavatAt` is a real form whether or not 8.4.56 is what
 /// produced it. This ties each row to the grammar: find the branch that
 /// derives the row's form, intersect its log with the optional-rule set, and
@@ -4457,9 +4457,12 @@ fn derivation_set_is_exactly_pinned() {
 /// by 1.3.72 and pinned in both padas — and three of them join kft and ruD as
 /// four-lakāra forkers: Bid, kzud and tfd each stack 7.1.35/8.4.65/8.4.56 in
 /// loṭ parasmaipada exactly as kft and ruD do, while yuj forks only two deep
-/// there (7.1.35/8.4.56, no 8.4.65 branch — 8.2.30 turns its stem-final `j`
-/// into `k` ahead of the suffix, and `k`+`t` is not savarṇa the way the
-/// dental-final roots' geminate `t`+`t` is, so 8.4.65's site never arises):
+/// there (7.1.35/8.4.56, no 8.4.65 branch — 8.2.30 coH kuH replaces its
+/// stem-final palatal `j` with the VELAR `g`, which 8.4.55 khari ca later
+/// devoices to `k` before the `t` of tātaṅ, so the junction 8.4.65 would need
+/// is velar-against-dental at both sites — `g`+`D` in yuNgDi, `k`+`t` in
+/// yuNktAd — and never savarṇa the way the dental-final roots' `d`+`D` and
+/// geminate `t`+`t` are, so 8.4.65's site never arises):
 /// 2160 cells total (240 root×lakāra blocks × 9), of which 1922 hold exactly one form,
 /// 166 hold two, 61 hold three, one holds four (piṣ's loṭ madhyama eka, the
 /// deepest fork added in 7b), and — the sharpest branch-count witnesses in
