@@ -1381,6 +1381,7 @@ fn kshud_natva_is_the_intervening_arm_under_a_sibilant_trigger() {
     );
     assert!(!t.contains(&"8.4.1".to_string()), "{weak}: got {t:?}");
     assert!(!t.contains(&"8.4.2".to_string()), "{weak}: got {t:?}");
+    assert!(t.contains(&"8.3.24".to_string()), "{weak}: got {t:?}");
 
     // An ĀTMANEPADA strong-stem cell, sanctioned by 1.3.72 rather than
     // 1.3.78, still retroflexes. Without this the two pins above could not
@@ -1395,6 +1396,7 @@ fn kshud_natva_is_the_intervening_arm_under_a_sibilant_trigger() {
     );
     assert!(t.contains(&"1.3.72".to_string()), "{atma}: got {t:?}");
     assert!(t.contains(&"8.4.2".to_string()), "{atma}: got {t:?}");
+    assert!(!t.contains(&"8.4.1".to_string()), "{atma}: got {t:?}");
 }
 
 #[test]
@@ -1424,6 +1426,7 @@ fn trd_natva_is_the_adjacent_arm_through_an_r_vowel_trigger() {
     );
     assert!(!t.contains(&"8.4.1".to_string()), "{weak}: got {t:?}");
     assert!(!t.contains(&"8.4.2".to_string()), "{weak}: got {t:?}");
+    assert!(t.contains(&"8.3.24".to_string()), "{weak}: got {t:?}");
 
     // Ātmanepada strong stem, sanctioned by 1.3.72: still retroflexes.
     let (atma, t) = cell_trace(
@@ -1435,4 +1438,5 @@ fn trd_natva_is_the_adjacent_arm_through_an_r_vowel_trigger() {
     );
     assert!(t.contains(&"1.3.72".to_string()), "{atma}: got {t:?}");
     assert!(t.contains(&"8.4.1".to_string()), "{atma}: got {t:?}");
+    assert!(!t.contains(&"8.4.2".to_string()), "{atma}: got {t:?}");
 }

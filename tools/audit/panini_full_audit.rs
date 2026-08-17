@@ -10,7 +10,7 @@
 //! removes that circularity.
 //!
 //! What it compares: for each of the 53 curated roots, for each pada the root
-//! admits (seven for the ubhayapadī roots), for each of the four lakāras this engine
+//! admits (two apiece for the seven ubhayapadī roots), for each of the four lakāras this engine
 //! implements (laṭ, laṅ, loṭ, vidhiliṅ), for each of the nine puruṣa × vacana
 //! cells — the complete DERIVATION SET, as sorted SLP1 strings. Not a single
 //! form: optional (vikalpa) rules fork cells legitimately, and comparing index 0

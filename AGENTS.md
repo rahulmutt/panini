@@ -389,6 +389,15 @@
   6.1.65) and compares it against the stored `code` — an assertion that cannot
   be satisfied by copying back our own choice, unlike matching on number or
   artha alone (upstream has 8- and 15-way artha collisions).
+  Three comments inside `crates/panini-prakriya/src` still carry pre-7c
+  figures — `controller.rs:130` and `tinanta/guna.rs:943` cite the corpus
+  size as 1872/1864-of-1872 rather than 2160/2152-of-2160, and
+  `tinanta/tripadi.rs:269` calls √bhañj rudhādi's only cu-final curated
+  root, which √yuj's `j`-final stem (also reaching 8.2.30 *coḥ kuḥ*) now
+  contradicts. They were left as-is deliberately: 7c's central claim is a
+  byte-identical, engine-untouched slice, and the mutation gate's validity
+  depends on that package's diff staying empty, so no comment inside it was
+  touched even to fix drift. This note is the record of that deferral.
 - New grammar goes in `TINANTA_RULES` as a self-guarding `Rule`, not as a
   branch inside `derive`. `TINANTA_RULES` is a list of seven stage arrays,
   each living in its own file under `crates/panini-prakriya/src/tinanta/`; add
