@@ -106,11 +106,11 @@ PANINI_AUDIT_DUMP=/tmp/audit-table.tsv mise exec rust@1.97.1 -- cargo run --rele
 
 ## Last recorded result
 
-2026-08-16, "pada audit" slice, vidyut `8da2f90`:
-**zero differences across 1872 cells / 2114 forms / 49 roots**, with both negative
-controls verified failing. (The previous run, the "dhātupāṭha number as identity"
-slice at this same vidyut commit, is what discharged AGENTS.md's "one residual
-circularity is known and unfixed".)
+2026-08-17, rudhādi slice 7c, vidyut `8da2f90`:
+**zero differences across 2160 cells / 2496 forms / 53 roots**, with the
+`entry` negative control verified failing. This is the run that first sourced
+the "√bhid, √kṣud, √yuj and √tṛd derive byte-identically" claim, which until
+7c appeared in three files and rested on no recorded audit.
 
 ## Scope
 
