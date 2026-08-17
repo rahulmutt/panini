@@ -31,6 +31,8 @@
 //! opens every trace.
 
 use panini::Panini;
+use panini_data::{Lakara, Pada, Purusha, Vacana, dhatus};
+use panini_prakriya::derive;
 
 fn trace_for(word: &str) -> Vec<String> {
     let engine = Panini::new();
@@ -41,6 +43,29 @@ fn trace_for(word: &str) -> Vec<String> {
         .find(|a| a.form_slp1 == word)
         .expect("expected an analysis deriving exactly this surface form");
     a.trace.iter().map(|s| s.sutra.clone()).collect()
+}
+
+/// The trace of one paradigm cell, addressed by COORDINATES rather than by
+/// surface string. `trace_for` resolves a word, and a word is ambiguous for
+/// an ubhayapadī root whose two padas can share a surface — these ṇatva pins
+/// care about a specific (root, lakāra, pada, cell), so they address it
+/// directly and read the declined branch's own log.
+fn cell_trace(
+    number: &str,
+    lakara: Lakara,
+    pada: Pada,
+    purusha: Purusha,
+    vacana: Vacana,
+) -> (String, Vec<String>) {
+    let d = dhatus()
+        .iter()
+        .find(|d| d.dhatupatha == number)
+        .unwrap_or_else(|| panic!("{number} is not a curated root"));
+    let p = derive(d, lakara, pada, purusha, vacana)
+        .into_iter()
+        .next()
+        .expect("every enumerable cell derives at least one branch");
+    (p.text(), p.log.iter().map(|s| s.sutra.clone()).collect())
 }
 
 /// Index of a sūtra in a trace, for the pins that must assert ORDER rather
@@ -1322,4 +1347,92 @@ fn runde_is_ambiguous_within_atmanepada() {
         cells.contains(&(Lakara::Lat, Pada::Atmanepada, Purusha::Uttama, Vacana::Eka)),
         "expected an ātmanepada laṭ uttama eka analysis, got {cells:?}"
     );
+}
+
+#[test]
+fn kshud_natva_is_the_intervening_arm_under_a_sibilant_trigger() {
+    // 07.0006 kzu\di~^r. The strong stem's trigger is the `z` of `kz`, the
+    // target is Snam's `n`, and the root's own aw vowel `u` separates them,
+    // so this is 8.4.2 awkupvANnumvyavAye'pi and NOT the adjacent 8.4.1.
+    // That is √rudh's shape (ruRadDi, r-u-n) reached through a sibilant
+    // rather than an r — 8.4.2's other curated witnesses (vrIRAti, muzARa)
+    // are kryādi, where 8.3.24 never competes.
+    let (strong, t) = cell_trace(
+        "07.0006",
+        Lakara::Lat,
+        Pada::Parasmaipada,
+        Purusha::Prathama,
+        Vacana::Eka,
+    );
+    assert!(t.contains(&"8.4.2".to_string()), "{strong}: got {t:?}");
+    assert!(!t.contains(&"8.4.1".to_string()), "{strong}: got {t:?}");
+
+    // The WEAK stem takes no ṇatva at all: 6.4.111 SnasorallopaH elides
+    // Snam's `a`, leaving the nasal directly before a jhal, and 8.3.24
+    // naScApadAntasya Jali — gaṇa-guarded to rudhādi and ordered above
+    // ṇatva in the tripādī — turns it into an anusvāra before either ṇatva
+    // rule looks. Same bleed √rudh shows at runDanti.
+    let (weak, t) = cell_trace(
+        "07.0006",
+        Lakara::Lat,
+        Pada::Parasmaipada,
+        Purusha::Prathama,
+        Vacana::Bahu,
+    );
+    assert!(!t.contains(&"8.4.1".to_string()), "{weak}: got {t:?}");
+    assert!(!t.contains(&"8.4.2".to_string()), "{weak}: got {t:?}");
+
+    // An ĀTMANEPADA strong-stem cell, sanctioned by 1.3.72 rather than
+    // 1.3.78, still retroflexes. Without this the two pins above could not
+    // tell "ṇatva follows stem strength" from "ṇatva follows pada" — the
+    // same reason rudh_natva_follows_stem_strength_not_pada includes ruRaDE.
+    let (atma, t) = cell_trace(
+        "07.0006",
+        Lakara::Lot,
+        Pada::Atmanepada,
+        Purusha::Uttama,
+        Vacana::Eka,
+    );
+    assert!(t.contains(&"1.3.72".to_string()), "{atma}: got {t:?}");
+    assert!(t.contains(&"8.4.2".to_string()), "{atma}: got {t:?}");
+}
+
+#[test]
+fn trd_natva_is_the_adjacent_arm_through_an_r_vowel_trigger() {
+    // 07.0009 u~tfdi~^r. Structurally √kṛt, NOT √kṣud: the trigger `f` sits
+    // directly against Snam's `n` with nothing intervening, so this is the
+    // adjacent 8.4.1 razAByAM no RaH and not 8.4.2. It leans on
+    // is_natva_trigger's `f | F` arm — the r-vowels counting as triggers by
+    // 1.1.51 uraR raparaH, which until now existed for kryādi's √vṛ.
+    let (strong, t) = cell_trace(
+        "07.0009",
+        Lakara::Lat,
+        Pada::Parasmaipada,
+        Purusha::Prathama,
+        Vacana::Eka,
+    );
+    assert!(t.contains(&"8.4.1".to_string()), "{strong}: got {t:?}");
+    assert!(!t.contains(&"8.4.2".to_string()), "{strong}: got {t:?}");
+
+    // Weak stem: 8.3.24 bleeds ṇatva, exactly as for √kṣud and √rudh.
+    let (weak, t) = cell_trace(
+        "07.0009",
+        Lakara::Lat,
+        Pada::Parasmaipada,
+        Purusha::Prathama,
+        Vacana::Bahu,
+    );
+    assert!(!t.contains(&"8.4.1".to_string()), "{weak}: got {t:?}");
+    assert!(!t.contains(&"8.4.2".to_string()), "{weak}: got {t:?}");
+
+    // Ātmanepada strong stem, sanctioned by 1.3.72: still retroflexes.
+    let (atma, t) = cell_trace(
+        "07.0009",
+        Lakara::Lot,
+        Pada::Atmanepada,
+        Purusha::Uttama,
+        Vacana::Eka,
+    );
+    assert!(t.contains(&"1.3.72".to_string()), "{atma}: got {t:?}");
+    assert!(t.contains(&"8.4.1".to_string()), "{atma}: got {t:?}");
 }
