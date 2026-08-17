@@ -4827,3 +4827,52 @@ fn both_ash_roots_derive() {
         );
     }
 }
+
+/// The surfaces that are genuinely pada-ambiguous — the same string pinned
+/// as both a parasmaipada and an ātmanepada cell, so `check` reports two
+/// analyses differing in pada. `README.md` quotes this list; before this
+/// test it was hand-maintained prose with nothing behind it, and the
+/// ubhayapadī root count going from three to seven in slice 7c is exactly
+/// the kind of change that would have grown it silently.
+///
+/// `roundtrip.rs` cannot serve this purpose: it asks only whether SOME
+/// analysis recovers the input, never how many there are.
+#[test]
+fn pada_ambiguous_surfaces_are_exactly_these() {
+    let mut para: Vec<&str> = Vec::new();
+    let mut atma: Vec<&str> = Vec::new();
+    for (_root, _lakara, pada, forms) in PARADIGM {
+        let bucket = match pada {
+            Pada::Parasmaipada => &mut para,
+            Pada::Atmanepada => &mut atma,
+        };
+        bucket.extend(forms.iter().copied());
+    }
+
+    let mut both: Vec<&str> = para.iter().copied().filter(|f| atma.contains(f)).collect();
+    both.sort_unstable();
+    both.dedup();
+
+    // Measured (never hand-picked) by running this assertion against
+    // `Vec::<&str>::new()` and reading the real set off the failure. The
+    // pre-slice baseline (checked separately against `main`, before any
+    // 7c commit) was actually ten surfaces, not the seven README.md names:
+    // `rundDAm` and `arundDa` (√rudh `07.0001`, loT and laN, each ambiguous
+    // against its own two padas), `anayata`/`nayatAm`/`nayetAm`/`nayeta`
+    // (√nī) and `atudata`/`tudatAm`/`tudetAm`/`tudeta` (√tud) — README's
+    // hand list already missed `arundDa`, `nayetAm` and `tudetAm`, and
+    // spells the rudh one without its second `d`. All ten pre-slice
+    // surfaces are present below, so nothing was disturbed by this slice.
+    // Slice 7c's four new ubhayapadī roots contribute the other eight:
+    // `BinttAm`/`aBintta` (√Bid `07.0002`), `akzuntta`/`kzunttAm`
+    // (√kzud `07.0006`), `ayuNkta`/`yuNktAm` (√yuj `07.0007`), and
+    // `atfntta`/`tfnttAm` (√tfd `07.0009`).
+    assert_eq!(
+        both,
+        vec![
+            "BinttAm", "aBintta", "akzuntta", "anayata", "arundDa", "atfntta", "atudata",
+            "ayuNkta", "kzunttAm", "nayatAm", "nayetAm", "nayeta", "rundDAm", "tfnttAm", "tudatAm",
+            "tudetAm", "tudeta", "yuNktAm",
+        ]
+    );
+}
