@@ -25,18 +25,18 @@ run = "cargo fmt --all --check"
 # --timeout must clear a FULL, UNCAUGHT run of the workspace suite at the
 # parallelism actually used -- cargo-mutants reads -j from
 # CARGO_MUTANTS_JOBS, so an unqualified cap can be defeated by the
-# environment alone. Keep -j <= 4, and pass --timeout 2400 explicitly
-# rather than trusting the 1200 default below: under too short a cap, a
-# genuine survivor is recorded as a TIMEOUT rather than a MISSED, which
-# makes a reported zero-survivor run vacuous, so always check
-# `timeout.txt` alongside `missed.txt`.
+# environment alone. Keep -j <= 4. The --timeout 2400 below is passed
+# explicitly rather than left to cargo-mutants' own default: under too
+# short a cap, a genuine survivor is recorded as a TIMEOUT rather than a
+# MISSED, which makes a reported zero-survivor run vacuous, so always
+# check `timeout.txt` alongside `missed.txt`.
 #
 # The measured floor and margin behind these numbers -- including the
 # `-j 4` timing this gate now has at the current suite size -- are
 # recorded in AGENTS.md's cargo-mutants paragraph, the single source for
 # this reasoning. Re-check both there whenever the golden suite grows
 # again.
-run = "cargo mutants --package panini-prakriya --test-workspace=true --timeout 1200"
+run = "cargo mutants --package panini-prakriya --test-workspace=true --timeout 2400 -j 4"
 
 [tasks.audit]
 run = "cargo audit && cargo deny check"

@@ -8,7 +8,7 @@
   `MISE_ENV=dev mise install`. This provides:
   - `cargo-mutants` (mutation testing) — `mise run mutants` runs
     `cargo mutants --package panini-prakriya --test-workspace=true --timeout
-    1200` (the `--test-workspace` flag is required so each **mutant** run
+    2400 -j 4` (the `--test-workspace` flag is required so each **mutant** run
     exercises the `panini` crate's golden paradigm/trace/roundtrip tests, not
     just `panini-prakriya`'s own unit tests — but it does NOT apply to
     cargo-mutants' own **baseline** run, which always exercises only the
@@ -80,17 +80,20 @@
     caught, 0 missed, 39 unviable, and the one known-permanent timeout
     above — doubling the cap precisely because the ~450s uncontended floor
     times an unverified `-j 4` contention factor left no margin worth
-    reading a `timeout.txt` entry against. `mise.toml`'s default is
-    deliberately left at 1200; pass `--timeout 2400` explicitly until
-    someone actually measures a `-j 4` run against the 1800-cell suite.
+    reading a `timeout.txt` entry against. `mise.toml`'s default was
+    deliberately left at 1200 at the time, with `--timeout 2400` passed by
+    hand; **that is no longer so — `mise run mutants` now runs
+    `-j 4 --timeout 2400` itself**, so run the gate through the task rather
+    than reconstructing the flags, and change the default only against a
+    fresh measurement of the floor and the margin.
     **The pada audit measured both at 1872 cells.** Uncontended floor:
     paradigm ~205s, roundtrip ~236s, trace ~2s (uncaught total ~443s) — flat
     against the 1800-cell ~450s figure, in fact slightly below it. Campaign
     at `-j 4 --timeout 2400`: 522 mutants, 482 caught, 0 missed, 39 unviable,
     and the one known-permanent `tripadi.rs` timeout. This is the `-j 4`
     timing measurement the paragraph above calls for, taken at the suite's
-    current size rather than the 1800 cells named there, which will not
-    recur: `outcomes.json`'s per-mutant test-phase durations for the 482
+    size at that point rather than the 1800 cells named there, which will
+    not recur: `outcomes.json`'s per-mutant test-phase durations for the 482
     caught mutants put the median at 30.1s, p90 at 346.6s, p99 at 547.2s, and
     the max at 754.6s, with only 4 mutants over 600s and none over 1200s. The
     slowest caught mutant,
@@ -119,6 +122,33 @@
     from contention factors, only from the small remainder that one mutant
     leaves unmeasured. Keep `--timeout 2400` rather than dropping to 1200
     until a genuinely uncaught mutant is actually observed.
+    **Slice 7c re-measured both at 2160 cells.** Uncontended floor:
+    paradigm 276.99s, roundtrip 331.81s, trace 1.93s — an uncaught total of
+    **610.73s**, where scaling the 1872-cell ~443s figure by cell count
+    predicted ~510s. Cell count has now failed as a multiplier in both
+    directions (flat from 1800 to 1872, then 38% for a 15% growth): measure
+    the floor, never scale it. Campaign at `-j 4 --timeout 2400`: **522
+    mutants, 482 caught, 0 missed, 39 unviable, 1 timeout** — that one being
+    the known-permanent `tripadi.rs:1140:23` non-terminating-loop mutant
+    described above, which is the correct verdict at any cap.
+    `outcomes.json`'s per-mutant test-phase durations for the 482 caught
+    mutants put the median at 46.1s, p90 at 419.0s, p99 at 679.4s and the
+    max at 848.2s, with **44** mutants over 600s and none over 1200s
+    (the pada audit's were 30.1 / 346.6 / 547.2 / 754.6 with only **4** over
+    600s — the over-600s count jumping 4 → 44 is the number to watch here,
+    not the max). **Two margins, and they answer different questions.**
+    Against the worst **caught** mutant, 848.2s, *directly measured*: 2.83×
+    at 2400, 1.41× at 1200. Against the worst **uncaught** run — the
+    610.73s floor times the 1.70× `-j 4` contention factor the pada audit
+    measured, so ~1040s, a *projection* and not a measurement: **2.31× at
+    2400**, 1.16× at 1200. The uncaught figure is the one that governs the
+    vacuity question, because a genuine survivor runs the suite to
+    completion whereas a caught run can abort the moment it is detected —
+    do not quote the caught max as if it were the margin basis, and do not
+    quote the projection as if it were measured. 1200 would have passed
+    this campaign too, nothing having exceeded it, but 1.16× of projected
+    headroom is exactly the shape that turns a "0 missed" into a vacuous
+    one on a busier machine. Keep 2400.
   - `cargo-deny` + `cargo-audit` (supply-chain checks) — `mise run audit` runs
     `cargo audit && cargo deny check` and is expected to pass, including
     `cargo deny check advisories`.
@@ -132,14 +162,15 @@
   target under `crates/panini-lipi/fuzz` legitimately omits it, since it uses
   `#![no_main]` plus the libfuzzer harness macro).
 - Grammar changes are gated by the golden paradigm test
-  (`crates/panini/tests/paradigm.rs`, 1872 cells, six complete gaṇas plus
+  (`crates/panini/tests/paradigm.rs`, 2160 cells, six complete gaṇas plus
   rudhādi partial — `PARADIGM`
     stays one-form-per-cell: a cell forked by an optional rule keeps its
-    other forms — a second (109 cells), a third (56 cells), a fourth (1 cell,
-    rudhādi's √piṣ loṭ madhyama eka) and — rudhādi's √kṛt and √rudh loṭ
-    parasmaipada cells, tied as the sharpest forks in the suite — a fourth
+    other forms — a second (166 cells), a third (61 cells), a fourth (1 cell,
+    rudhādi's √piṣ loṭ madhyama eka) and — the loṭ parasmaipada cells of
+    rudhādi's √kṛt, √rudh, √bhid, √kṣud and √tṛd, five ways tied as the
+    sharpest forks in the suite — a fourth
     and fifth (prathama eka) or a fourth through sixth (madhyama eka) — in
-    `ALTERNATES` (242 rows in all, so 1872 + 242 = 2114 forms total), and
+    `ALTERNATES` (336 rows in all, so 2160 + 336 = 2496 forms total), and
     `derivation_set_is_exactly_pinned` asserts each cell's derivation set is
     exactly the union of the two. The suite is no longer filtered by any
     one-form-per-cell convention — the
@@ -194,20 +225,31 @@
     (ṣ-final) and √indh (jhaṣ-final, the gaṇa's second ātmanepada root),
     and the ubhayapada slice adds the gaṇa's own **eponym**, √rudh
     (`07.0001 ru\Di~^r`), with 1.3.72 *svaritañitaḥ* — the engine's first
-    ubhayapadī root, deriving a full paradigm in each pada.
+    ubhayapadī root, deriving a full paradigm in each pada. Slice 7c then
+    curated four more, taking the gaṇa from seven roots to **eleven**:
+    √bhid (`07.0002 Bi\di~^r`), √kṣud (`07.0006 kzu\di~^r`), √yuj
+    (`07.0007 yu\ji~^r`) and √tṛd (`07.0009 u~tfdi~^r`), all four
+    ubhayapadī by 1.3.72 and all four pinned in both padas.
     `curated_pada_agrees_with_upadesha_markers` in `panini-data` now
-    re-derives all 49 verdicts from the vendored upadeśa, so the column
+    re-derives all 53 verdicts from the vendored upadeśa, so the column
     cannot drift from the data that determines it. That discharges
     the **ubhayapada** deferral as such: 1.3.72 is no longer what keeps any
-    root out, and the other **eight** ubhayapadī roots are now out for
-    narrower, root-specific reasons, verified cell by cell against
-    vidyut-prakriya.
+    root out, and the **four** ubhayapadī roots still outside the curated
+    set are out for narrower, root-specific reasons, verified cell by cell
+    against vidyut-prakriya.
     The pada audit added two more: `01.1049 RI\Y` (√nī, bhvādi) and
     `06.0001 tu\da~^` (√tud, tudādi), both ubhayapadī by 1.3.72 and both
     curated parasmaipada until then. √tud was a known deferral; √nī was
     named by no deferral list and was read past by every slice from v1 on.
-    **√bhid, √kṣud, √yuj and √tṛd are curation-only** — the
-    engine already derives all 72 cells of each, byte-identical to vidyut.
+    **√bhid, √kṣud, √yuj and √tṛd were called "curation-only" for months
+    with no run behind the claim; 7c ran it.** None of the four needed a
+    new sūtra, and the whole-corpus cross-implementation audit of
+    2026-08-17, against vidyut-prakriya at commit
+    `8da2f90bee3ce1c07505fa432fc3729e3f7e02ea`, found **zero differences
+    across all 2160 cells / 2496 forms / 53 roots** — with the `entry`
+    negative control **verified failing first** (exit 1, 36 √bhū cells
+    flagged), so the zero is not vacuous. Byte-identity to vidyut is now a
+    sourced result rather than an assertion.
     **√ric and √vic** need no new sūtra, but the work in 8.2.30 *coḥ kuḥ* is
     more than the one-line guard widening it looks like: they are c-final,
     and the rule is hardcoded to a single `j` → `g` pair — its match reads
@@ -230,12 +272,13 @@
     moot). √bhuj (`07.0017 Bu\ja~`) is the twenty-fifth entry and out on
     different grounds again: 1.3.66
     *bhujo'navane* forks its pada on **sense**, not on an axis this engine
-    models. 8 ubhayapadī + 7 curated + 9 reachable + √bhuj = 25.
-    The root count is not what keeps the gaṇa partial — seven is already one
-    more than the six every completed gaṇa *after bhvādi* has here (bhvādi,
+    models. 11 curated + 4 uncurated ubhayapadī + 9 reachable + √bhuj = 25,
+    so **14 of the 25 remain out**.
+    The root count is not what keeps the gaṇa partial — eleven is nearly
+    twice the six every completed gaṇa *after bhvādi* has here (bhvādi,
     the first, has twelve) — and neither, any longer, is 1.3.72: what
-    remains is curation for four of the eight, two narrow pieces of
-    phonology for the other four, the nine uncurated reachable roots, and
+    remains is two narrow pieces of phonology for the four uncurated
+    ubhayapadī roots, the nine uncurated reachable roots, and
     √bhuj's sense axis. √indh's pada was **verified, not inferred from its
     ñi**: `YiinDI~\`'s ñi it-marker is one of the two things 1.3.72 reads,
     which would have made the root ubhayapadī alongside √rudh, so it was
@@ -320,12 +363,20 @@
   forms, zero differences; the ubhayapada slice audited its own addition —
   √rudh's 72 cells, split per pada via `Tinanta::builder().pada(...)`, at
   vidyut commit `8da2f90`, plus the negative that vidyut derives √indh in
-  ātmanepada only against √rudh as the `~^r` control — and the corpus it sits
-  in now stands at 1872 cells and 2114 forms). The pada audit ran the harness
+  ātmanepada only against √rudh as the `~^r` control — and the corpus it sat
+  in then stood at 1872 cells and 2114 forms). The pada audit ran the harness
   after it was already committed in-repo, needing no rebuild, and its own
   full-corpus run found the same **zero differences across 1872 cells / 2114
   forms / 49 roots** at vidyut commit `8da2f90`, with both negative controls
-  verified failing first. The harness resolves each root
+  verified failing first. **Slice 7c re-ran that same committed harness over
+  the grown corpus, and its result is the current record: zero differences
+  across 2160 cells / 2496 forms / 53 roots**, at vidyut commit
+  `8da2f90bee3ce1c07505fa432fc3729e3f7e02ea`, with the `entry` negative
+  control **verified failing first** — exit 1, 36 √bhū cells flagged. Those
+  totals are asserted by the harness itself rather than reported from
+  whatever it happened to enumerate, so a corpus that grows without the
+  harness being updated fails loudly instead of quietly auditing a subset.
+  The harness resolves each root
   to a `data/dhatupatha.tsv` entry by its **dhātupāṭha number** (`07.0016` for
   √bhañj), which is `Dhatu::dhatupatha` and the root's identity in this repo.
   That closed the one circularity this audit used to carry: selection
@@ -338,6 +389,15 @@
   6.1.65) and compares it against the stored `code` — an assertion that cannot
   be satisfied by copying back our own choice, unlike matching on number or
   artha alone (upstream has 8- and 15-way artha collisions).
+  Three comments inside `crates/panini-prakriya/src` still carry pre-7c
+  figures — `controller.rs:130` and `tinanta/guna.rs:943` cite the corpus
+  size as 1872/1864-of-1872 rather than 2160/2152-of-2160, and
+  `tinanta/tripadi.rs:269` calls √bhañj rudhādi's only cu-final curated
+  root, which √yuj's `j`-final stem (also reaching 8.2.30 *coḥ kuḥ*) now
+  contradicts. They were left as-is deliberately: 7c's central claim is a
+  byte-identical, engine-untouched slice, and the mutation gate's validity
+  depends on that package's diff staying empty, so no comment inside it was
+  touched even to fix drift. This note is the record of that deferral.
 - New grammar goes in `TINANTA_RULES` as a self-guarding `Rule`, not as a
   branch inside `derive`. `TINANTA_RULES` is a list of seven stage arrays,
   each living in its own file under `crates/panini-prakriya/src/tinanta/`; add
@@ -381,13 +441,23 @@
   7.1.35, 3.4.111, 6.4.107, 8.2.74, 8.2.75, 8.4.65, 8.4.56.** 7.1.35 and
   8.4.56 can both fire on one derivation, stacking into a three-branch
   cell — loṭ prathama eka forks twice, giving `Bavatu` / `BavatAd` /
-  `BavatAt`. rudhādi's √kṛt and √rudh each stack three of the seven (7.1.35,
+  `BavatAt`. Five rudhādi roots — √kṛt, √rudh, √bhid, √kṣud and √tṛd — each
+  stack three of the seven (7.1.35,
   8.4.65, 8.4.56) on their own loṭ parasmaipada cells — five branches at
   prathama eka, six at madhyama eka
   (`kfndDi` / `kfnDi` / `kfnttAd` / `kfntAd` / `kfnttAt` /
   `kfntAt`, and `rundDi` / `runDi` / `rundDAd` / `runDAd` / `rundDAt` /
-  `runDAt`) — because 8.4.56 only reaches the two tātaṅ (7.1.35) branches,
-  not the two vowel-final ones; see `docs/ARCHITECTURE.md`'s branch-count
+  `runDAt`, and likewise for √bhid, √kṣud and √tṛd) — because 8.4.56 only
+  reaches the two tātaṅ (7.1.35) branches,
+  not the two vowel-final ones. √yuj, ubhayapadī like those last three but
+  not dental-final, stops at three forms in the same two cells
+  (`yunaktu`/`yuNktAd`/`yuNktAt`, `yuNgDi`/`yuNktAd`/`yuNktAt`): 8.2.30 *coḥ
+  kuḥ* replaces its stem-final palatal `j` with the velar `g` (8.4.55 *khari
+  ca* devoices that to `k` before the `t` of tātaṅ, which is where `yuNktAd`'s
+  `k` comes from), so the junction 8.4.65 would need is velar against dental
+  — `g` + `D`, then `k` + `t` — and never savarṇa the way the dental-final
+  roots' `d` + `D` and geminate `t` + `t` are. 8.4.65's site never arises. See
+  `docs/ARCHITECTURE.md`'s branch-count
   paragraph for the full accounting.
 - **An optional rule's position relative to its consumers depends on what its
   mutation does to the predicates they read — the operative question is not
