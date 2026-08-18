@@ -298,8 +298,8 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // `j` earlier in the word can never hide a later, applicable one.
     // No cell in this suite has two cu sounds to distinguish: √ric and √vic
     // each carry exactly one `c`, no curated root mixes a `c` with a `j`, and
-    // the j-bearing roots that decline (√ji, √juṣ, √vij, and √bhañj's own 3pl
-    // `Banjanti`) decline because their `j` precedes a vowel.
+    // the j-bearing roots that decline (√ji, √juṣ, √vij, √yuj, and √bhañj's
+    // own 3pl `Banjanti`) decline because their `j` precedes a vowel.
     // The scan is therefore deliberately NOT narrowed to √bhañj's known
     // position: this is hardening against an ordering no witness here
     // exercises, not a fix for one observed.
@@ -445,7 +445,8 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // 8.3.59 (widened below) then retroflexes that `s` back to `z` after
     // the new `k`: pinakzi.
     //
-    // NARROW GUARD, by design, matching 8.2.30/8.4.41's discipline: only the
+    // NARROW GUARD, by design, matching 8.4.41's discipline -- the discipline
+    // 8.2.30 followed until it widened (see `kutva_of` above): only the
     // `z` arm is reachable this slice (rudhādi's one z-final curated root is
     // √piṣ; no curated root's aṅga ends in `Q`). Widen the match the moment
     // a Q-tailed root lands.
