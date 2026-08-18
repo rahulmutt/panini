@@ -9,7 +9,7 @@ use crate::rule::{Rule, RuleKind};
 use crate::term::Tag;
 use crate::tinanta::sound::{
     cartva_of, is_jhal, is_jhash, is_khar, is_natva_intervener, is_natva_trigger, is_savarna,
-    is_vowel, jashtva_of, parasavarna_of,
+    is_vowel, jashtva_of, kutva_of, parasavarna_of,
 };
 use crate::tinanta::terms::{ANGA, ENDING, SHAP};
 
@@ -265,15 +265,18 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // then 8.4.55 khari ca devoices to Banakti); aBanaj -> aBanag
     // word-finally.
     //
-    // NARROW GUARD, by design, as with 8.2.39 just below: only `j` -> `g`
-    // is reachable this slice (rudhādi's one cu-final curated root is
-    // √bhañj), so the pair is hardcoded at both ends — the match tests `j`
-    // and the substitute is the literal `'g'`. The 1.1.50 nearest-velar
-    // account above is therefore a description of the sūtra, NOT of this
-    // code. When a `c`-tailed root lands (√ric, √vic), widen the match AND
-    // replace the hardcoded substitute with a real cu -> ku map; widening
-    // only the match would substitute `g` for a `c` and reach the right
-    // surface by accident, 8.4.55 khari ca devoicing it to `k` afterwards.
+    // The substitute is `kutva_of`, and so is the MATCH -- one lookup governs
+    // both halves, so they cannot drift apart. That matters more than it
+    // looks: the rule previously tested a literal `j` and wrote a literal
+    // 'g', and widening only the match would have substituted `g` for a `c`
+    // and still reached the right surface, 8.4.55 khari ca devoicing it to
+    // `k` afterwards. Every paradigm golden would have passed. Do not
+    // "simplify" `kutva_of` back into a hardcoded char: only
+    // `rinakti_trace_reaches_k_in_one_step` in `crates/panini/tests/trace.rs`
+    // can tell the two implementations apart.
+    //
+    // The 1.1.50 sthAne'ntaratamaH account above is therefore a description
+    // of this code, not only of the sūtra.
     //
     // Read via `word_chars`, not a term-boundary check: the target `j` sits
     // at the END of a non-final term (śnam's infix leaves the root's own
@@ -292,12 +295,11 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // way 8.3.24's and 8.4.58's own searches further down this array do: the
     // rule finds the first `j` that is genuinely word-final or jhal-followed
     // rather than the first `j` in the word full stop, so a non-applicable
-    // `j` earlier in the word can never hide a later, applicable one. No cell
-    // in this suite has two `j`s to distinguish: √bhañj carries the only one
-    // that ever qualifies, and the other j-bearing roots (√ji, √juṣ, √vij)
-    // always present theirs before a vowel — √bhañj's own 3pl does too,
-    // reaching this rule as `Banjanti` (the `Y` of BaYjanti is 8.3.24 +
-    // 8.4.58's later work) and declining for exactly that reason.
+    // `j` earlier in the word can never hide a later, applicable one.
+    // No cell in this suite has two cu sounds to distinguish: √ric and √vic
+    // each carry exactly one `c`, no curated root mixes a `c` with a `j`, and
+    // the j-bearing roots that decline (√ji, √juṣ, √vij, and √bhañj's own 3pl
+    // `Banjanti`) decline because their `j` precedes a vowel.
     // The scan is therefore deliberately NOT narrowed to √bhañj's known
     // position: this is hardening against an ordering no witness here
     // exercises, not a fix for one observed.
@@ -309,13 +311,16 @@ pub(crate) static TRIPADI: &[Rule] = &[
         apply: |p| {
             let w = word_chars(p);
             let Some(pos) = w.iter().enumerate().position(|(i, (_, _, c))| {
-                *c == 'j' && w.get(i + 1).is_none_or(|(_, _, next)| is_jhal(*next))
+                kutva_of(*c).is_some() && w.get(i + 1).is_none_or(|(_, _, next)| is_jhal(*next))
             }) else {
                 return false;
             };
-            let (term, idx, _) = w[pos];
+            let (term, idx, found) = w[pos];
+            let Some(to) = kutva_of(found) else {
+                return false;
+            };
             let before = p.snapshot();
-            set_char(p, term, idx, 'g');
+            set_char(p, term, idx, to);
             p.record("8.2.30", "coH kuH", before);
             true
         },
@@ -1608,9 +1613,11 @@ mod tests {
         }
     }
 
-    /// 8.2.30 velarises a `j` that is word-final or immediately followed by
-    /// a jhal, and declines otherwise. Only the `j` -> `g` arm is reachable
-    /// this slice, so this pins that guard rather than the wider cu/ku set.
+    /// 8.2.30 velarises a cu sound that is word-final or immediately followed
+    /// by a jhal, and declines otherwise. Both reachable arms are pinned
+    /// here: `j -> g` (√bhañj, √yuj) and `c -> k` (√ric, √vic). The `c` case
+    /// is the one that distinguishes a real 1.1.50 substitution from the
+    /// literal 'g' this rule used to write -- see `kutva_of`.
     #[test]
     fn coh_kuh_fires_only_word_finally_or_before_a_jhal() {
         let rule = rules().find(|r| r.id == "8.2.30").unwrap();
@@ -1633,6 +1640,30 @@ mod tests {
         };
         assert!((rule.apply)(&mut p));
         assert_eq!(p.text(), "Banag");
+
+        // a `c` takes the VOICELESS velar `k`, not `g`. This is the case the
+        // old hardcoded substitute got wrong while still reaching the right
+        // surface: 8.4.55 khari ca would have devoiced a spurious `g` to `k`
+        // downstream, hiding the error from every paradigm golden.
+        //
+        // The `n` is still DENTAL here: √ric's ṇatva is 8.4.2's, which runs
+        // later in the tripādī than 8.2.30, so `riRakti`'s retroflex has not
+        // happened yet at this rule's turn. These fixtures are the real
+        // intermediates, not the finished surfaces.
+        let mut p = Prakriya {
+            terms: vec![Term::new("ri"), Term::new("nac"), Term::new("ti")],
+            ..Default::default()
+        };
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.text(), "rinakti");
+
+        // word-final `c`, same arm.
+        let mut p = Prakriya {
+            terms: vec![Term::new("ari"), Term::new("nac")],
+            ..Default::default()
+        };
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.text(), "arinak");
 
         // before a vowel: neither jhal nor word-final, so the rule declines.
         let mut p = Prakriya {
