@@ -998,7 +998,7 @@ mod tests {
     /// AFTER the `~` that marks an anunāsika it, so `~\` is an anudātta it and
     /// `~^` a svarita it — whereas a `\` sitting directly on a vowel elsewhere
     /// is the ROOT's own accent and says nothing about pada. Counted off the
-    /// vendored upadeśa: 38 of the 53 curated roots carry a `\` at all, and 25
+    /// vendored upadeśa: 40 of the 55 curated roots carry a `\` at all, and 27
     /// of those carry one on a root vowel — `01.0642 ji\`, `01.1082 smf\` and
     /// `02.0001 a\da~` among them — so conflating the two does not fail
     /// loudly; it silently calls most of the table ātmanepada.
@@ -1193,11 +1193,11 @@ mod tests {
 
     #[test]
     fn a_root_vowel_accent_does_not_assign_pada() {
-        // The failure mode that would make the whole audit vacuous: 38 of the
-        // 53 curated roots carry a `\` somewhere in their upadeśa, 25 of them
+        // The failure mode that would make the whole audit vacuous: 40 of the
+        // 55 curated roots carry a `\` somewhere in their upadeśa, 27 of them
         // on a root vowel rather than on an it. Reading every `\` as 1.3.12's
-        // anudātta would call 20 of the 38 ātmanepada wrongly (14 curated
-        // parasmaipada, 6 ubhayapada); the other 18 carry a genuine `~\` and
+        // anudātta would call 22 of the 40 ātmanepada wrongly (14 curated
+        // parasmaipada, 8 ubhayapada); the other 18 carry a genuine `~\` and
         // are curated ātmanepada anyway, which is why agreement with the
         // column would still hold on every genuinely ātmanepada root, and only
         // a parasmaipada witness catches it.
