@@ -417,7 +417,7 @@
   and it is not the blanket exemption 7a's deferred #5 asked for ("per-rule
   guard tests for tripādī rules are not achievable"): `tripadi.rs` carries
   eighteen of them today, including
-  `jhalam_jasho_ante_fires_only_on_a_pada_final_t_z_or_d` and
+  `jhalam_jasho_ante_fires_on_any_pada_final_jhal_jashtva_of_resolves` and
   `va_avasane_fires_only_on_a_pada_final_jhal`. Whole-word scope is not what
   blocks a guard test; an unconstructible precondition is. `derive` carries
   no grammar branches: the only gana-conditioned logic there is aṅga tagging

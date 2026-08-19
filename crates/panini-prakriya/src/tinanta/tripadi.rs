@@ -592,13 +592,11 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // 8.2.73 tipy anasteḥ: before tip, a dhātu other than √as takes `d` for
     // its final. ahinas + t → ahinad.
     //
-    // This is what fills the hole 8.2.39 leaves. 8.2.39 jhalāṁ jaśo'nte is
-    // guarded narrowly to a final `t`, `z` or `D` (the `z` arm since slice
-    // 7b, the `D` arm since the ubhayapada slice's √rudh), and correctly so
-    // — a final `s` is 8.2.66 / 8.3.15's, not jaśtva's, and is deliberately
-    // outside that set — so without this rule √hiṃs would surface as
-    // *ahinaH in laṅ prathama eka. √kṛt needs nothing here: its
-    // final really is a `t` and 8.2.39 handles it.
+    // This is what fills the hole 8.2.39 leaves. 8.2.39 jhalāṁ jaśo'nte
+    // declines on a final `s` because `jashtva_of('s')` is `None` — a final
+    // `s` is 8.2.66 / 8.3.15's business, not jaśtva's — so without this rule
+    // √hiṃs would surface as *ahinaH in laṅ prathama eka. √kṛt needs
+    // nothing here: its final really is a `t` and 8.2.39 handles it.
     //
     // DELIBERATE OVER-APPLICATION, recorded so it is not later read as a
     // bug: the sūtra says *tipi*, and this guard covers sip as well. The
@@ -1288,10 +1286,13 @@ pub(crate) static TRIPADI: &[Rule] = &[
         },
     },
     // 8.4.56 vāvasāne: at the end of an utterance a jhal OPTIONALLY becomes
-    // its car, continuing khari ca's operation. After 8.2.39 the only
-    // reachable jhal-final is `d`, so in practice this restores the `t` that
-    // 8.2.39 voiced — which is exactly the relationship the sūtras state,
-    // and why `aBavat` is now an alternate rather than the pinned form.
+    // its car, continuing khari ca's operation. After 8.2.39 the reachable
+    // jhal-finals are `d` and, since 8.2.39's widening, `g` too (√ric's and
+    // √vic's laṅ prathama/madhyama eka, whose `c`-final stems reach 8.2.30
+    // then 8.2.39): in practice this restores the `t` or `k` that 8.2.39
+    // voiced — `aBavat` from `aBavad`, `ariRak` from `ariRag` — which is
+    // exactly the relationship the sūtras state, and why those are now
+    // alternates rather than the pinned forms.
     //
     // LAST rule in the pipeline, deliberately. Avasāna is the end of the
     // utterance, so the rule must see the finished word; and being last, it
@@ -1304,10 +1305,23 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // omits the sibilants and `h`), so a standalone jhal check would be dead
     // code, unreachable by any input that doesn't already fail the
     // `cartva_of` let-else below. Nor is there a `sub == last` no-op check:
-    // 8.2.39 obligatorily turns every pada-final `t` into `d` upstream, and
-    // no cell in this suite ends in any other jhal, so `cartva_of(last)`
-    // never yields its argument back. Widen with a real guard, not a
-    // speculative one, the moment either assumption stops holding.
+    // 8.2.39 now obligatorily turns every pada-final jhal it reaches into
+    // its jaś, and every jaś's car is a different sound (`cartva_of` has no
+    // fixed points among `g`, `j`, `q`, `d`, `b`), so `cartva_of(last)`
+    // never yields its argument back here.
+    //
+    // That was NOT true before this task's widening, and the inversion is
+    // worth recording: with the old three-literal 8.2.39 guard, a
+    // word-final `k` (√ric's, √vic's) passed straight through un-voiced,
+    // and `cartva_of('k')` is `Some('k')` — a genuine fixed point — so this
+    // rule fired vacuously on it (`ariRak` -> `ariRak`), which is exactly
+    // the "more branches than distinct forms" symptom the diagnosis found.
+    // Widening 8.2.39 to read `jashtva_of` on both sides is what finally
+    // makes this paragraph's claim true, by construction: everything
+    // 8.2.39 now writes is a jaś, and no jaś is its own car. Widen this
+    // guard with a real check, not a speculative one, the moment some
+    // future rule produces a jaś-final `s` or similar exception 8.2.39
+    // doesn't cover.
     Rule {
         id: "8.4.56",
         name: "vA'vasAne",
@@ -1697,7 +1711,7 @@ mod tests {
     /// labelled 8.3.15) — `jashtva_of('s')` is `None`, so the widened guard
     /// still declines for it — and a `t` that is not pada-final is untouched.
     #[test]
-    fn jhalam_jasho_ante_fires_only_on_a_pada_final_t_z_or_d() {
+    fn jhalam_jasho_ante_fires_on_any_pada_final_jhal_jashtva_of_resolves() {
         let rule = rules().find(|r| r.id == "8.2.39").unwrap();
 
         let mut p = Prakriya {
@@ -1751,6 +1765,31 @@ mod tests {
         };
         assert!((rule.apply)(&mut p));
         assert_eq!(p.text(), "arinag");
+
+        // already-jaś pada-final: this pins the `Some(jash) == last` no-op
+        // guard directly. `aBanag` is √bhañj's laṅ prathama eka intermediate
+        // (the golden `aBanag` is pinned in `paradigm.rs`) once 8.2.30 has
+        // already velarised its stem to a `g` — `jashtva_of('g')` is `g`
+        // itself, a fixed point, so this rule must decline rather than
+        // "voice" it again. Without the no-op guard this would fire
+        // vacuously and stamp a spurious 8.2.39 step into every already-jaś
+        // trace in the corpus.
+        let mut p = Prakriya {
+            terms: vec![Term::new("aBana"), Term::new("g")],
+            ..Default::default()
+        };
+        assert!(!(rule.apply)(&mut p));
+
+        // the other four fixed points in `jashtva_of`'s domain (`j`, `q`,
+        // `d`, `b`) decline the same way, so the no-op guard is pinned
+        // across its whole domain, not just the `g` witness above.
+        for already_jash in ["j", "q", "d", "b"] {
+            let mut p = Prakriya {
+                terms: vec![Term::new("a"), Term::new(already_jash)],
+                ..Default::default()
+            };
+            assert!(!(rule.apply)(&mut p), "fired on already-{already_jash}");
+        }
 
         // vowel-final
         let mut p = Prakriya {
@@ -1899,8 +1938,9 @@ mod tests {
         assert_eq!(p.text(), "kfndDi");
     }
 
-    /// 8.4.56 devoices a pada-final jhal. After 8.2.39 the only reachable
-    /// one is `d`; a vowel, a visarga and a nasal all decline.
+    /// 8.4.56 devoices a pada-final jhal. After 8.2.39 the reachable jhal
+    /// finals are `d` and, since 8.2.39's widening, `g` (√ric's and √vic's
+    /// laṅ eka cells); a vowel, a visarga and a nasal all decline.
     #[test]
     fn va_avasane_fires_only_on_a_pada_final_jhal() {
         let rule = rules().find(|r| r.id == "8.4.56").unwrap();
