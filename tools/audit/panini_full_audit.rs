@@ -21,7 +21,7 @@
 //! doc comment states that a blocked prakriyā's `text()` is a partial string
 //! (often the bare root code), not a surface form.
 //!
-//! Corpus invariants, asserted: 55 roots, 2304 cells, 2496 forms. These are
+//! Corpus invariants, asserted: 55 roots, 2304 cells, 2654 forms. These are
 //! facts about the repo, pinned by its own golden suite
 //! (`derivation_set_shape_matches_the_audited_numbers`): 240 root×lakāra blocks
 //! × 9 cells, plus 336 `ALTERNATES` rows. If this harness's enumeration
@@ -576,7 +576,7 @@ fn main() {
 
     assert_eq!(roots_seen.len(), 55, "curated roots");
     assert_eq!(n_cells, 2304, "cells: 256 root×pada×lakāra blocks × 9");
-    assert_eq!(n_forms, 2496, "forms: 2160 cells + 336 ALTERNATES rows");
+    assert_eq!(n_forms, 2654, "forms: 2304 cells + 350 ALTERNATES rows");
     assert_eq!(
         n_branches, n_forms,
         "no cell may yield two live branches with the same text"
