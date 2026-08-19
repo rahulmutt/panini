@@ -129,7 +129,7 @@
     directions (flat from 1800 to 1872, then 38% for a 15% growth): measure
     the floor, never scale it. Campaign at `-j 4 --timeout 2400`: **522
     mutants, 482 caught, 0 missed, 39 unviable, 1 timeout** — that one being
-    the known-permanent `tripadi.rs:1156:23` non-terminating-loop mutant
+    the known-permanent `tripadi.rs:1140:23` non-terminating-loop mutant
     described above, which is the correct verdict at any cap.
     `outcomes.json`'s per-mutant test-phase durations for the 482 caught
     mutants put the median at 46.1s, p90 at 419.0s, p99 at 679.4s and the
