@@ -461,9 +461,9 @@
   figures — `controller.rs:130` and `tinanta/guna.rs:943` cite the corpus
   size as 1872/1864-of-1872 rather than 2304/2296-of-2304 — the same 8
   cells 6.4.107 always fired on (`key_count("6.4.107") == 8`, pinned at
-  `paradigm.rs:4829`), now measured against the bigger corpus. A third,
+  `paradigm.rs:4831`), now measured against the bigger corpus. A third,
   `tinanta/tripadi.rs`'s comment on 8.2.30 (formerly the one calling √bhañj
-  "rudhādi's only cu-final curated root"), was **not** left stale the same
+  rudhādi's one cu-final curated root), was **not** left stale the same
   way: the 8.2.30/8.2.39 generalization slice rewrote it in place, since
   generalising that rule past a single hardcoded root was the whole point
   of that slice, and its diff to `panini-prakriya` was never meant to stay
@@ -581,6 +581,16 @@
   (the default) auto-detects the input transliteration scheme; passing an
   explicit `--in` scheme (`slp1`/`iast`/`hk`/`deva`) makes that scheme
   authoritative, overriding auto-detection.
+- **When a rule's substitute set widens, re-check every downstream guard
+  that enumerates literals over the sounds it can now emit, in the same
+  slice.** The 8.2.30/8.2.39 generalization slice paid for skipping this:
+  once 8.2.30 read `kutva_of` instead of a hardcoded `g`, its output
+  alphabet gained a voiceless `k`, and 8.2.39's `t`/`z`/`D`-only literal
+  guard had never seen a word-final voiceless velar because nothing had
+  ever produced one. Six `NARROW GUARD` sites remain in `tripadi.rs` and
+  `anga.rs` today — each is a deliberate, commented narrowing, and each is
+  a standing instance of this same hazard for the next slice that widens
+  what feeds it.
 
 ## Where things live
 See `docs/ARCHITECTURE.md`.

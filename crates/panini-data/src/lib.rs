@@ -500,8 +500,8 @@ static DHATUS: &[Dhatu] = &[
         // √piṣ's — but it does reach one arm of existing phonology no
         // curated root had reached before: laṅ prathama/madhyama eka expose
         // the dhātu's own final `D` pada-finally (8.2.23 having eaten
-        // tip/sip's own consonant), which is 8.2.39 JalAM jaSo'nte's newly
-        // widened `D` arm, not new phonology of its own.
+        // tip/sip's own consonant), which 8.2.39 JalAM jaSo'nte now reaches
+        // through jashtva_of, not new phonology of its own.
         //
         // It is also the first root to reach 8.4.2 awkupvANnumvyavAye'pi —
         // the NON-ADJACENT ṇatva, trigger and target separated (here by the

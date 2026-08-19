@@ -4759,8 +4759,8 @@ fn derivation_set_is_exactly_pinned() {
 /// a vidyut-prakriya checkout during design; slice 9's cross-implementation
 /// audit re-ran the full check against a scratchpad vidyut-prakriya checkout
 /// across all 1620 pre-7b cells with zero differences, every 7b form was
-/// cross-checked the same way during that slice's design, this slice's
-/// √rudh forms were audited against a vidyut-prakriya checkout at commit
+/// cross-checked the same way during that slice's design, the ubhayapada
+/// slice's √rudh forms were audited against a vidyut-prakriya checkout at commit
 /// 8da2f90 the same way, and slice 7c's four roots were audited the same way
 /// against vidyut `8da2f90`, zero differences across all 2160 cells / 2496
 /// forms / 53 roots, with the `entry` negative control verified failing —

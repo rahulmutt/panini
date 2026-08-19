@@ -148,9 +148,18 @@ pub(crate) fn jashtva_of(c: char) -> Option<char> {
 /// aspiration, so `c` goes to `k` and `j` to `g`, never both to one letter.
 ///
 /// `C` and `J` have no curated witness — no aspirate-cu-final root is in
-/// scope — and are present anyway because the table is a total function of
-/// place, the same reason `jashtva_of` carries its 1.1.50-derived `z -> q`
+/// scope — and are present anyway because the table covers every cu STOP
+/// arm, the same reason `jashtva_of` carries its 1.1.50-derived `z -> q`
 /// arm. `kutva_of_cu_all_arms` is what keeps them from rotting.
+///
+/// `Y` (ñ) is cu too, and this table deliberately omits its arm. `cu~` is
+/// udit, so by 1.1.69 it denotes the whole varga including the nasal, and
+/// ñ -> ṅ (prāñc -> prāṅ) is 8.2.30's classic witness — vidyut-prakriya's
+/// `map("cu~", "ku~")` includes it. But every `Y` this engine produces
+/// comes from 8.4.58, which runs BELOW 8.2.30 in the tripadi ordering, and
+/// no curated root's stem carries one going in, so the arm is unreachable
+/// from a tiṅanta corpus. A subanta slice reaching prāñc -> prāṅ must add
+/// `Y -> N` here.
 ///
 /// The velars are deliberately absent rather than mapped to themselves: they
 /// are already ku, not cu, and `None` is what lets 8.2.30 use this single
@@ -344,8 +353,10 @@ mod tests {
         for c in ['k', 'K', 'g', 'G', 'N'] {
             assert_eq!(kutva_of(c), None, "{c} is ku already, not cu");
         }
-        // The palatal nasal and sibilant are not cu for this rule's
-        // purposes -- 8.2.30's `coH` names the stops.
+        // `S` (ś) is genuinely not cu -- 8.2.30's `coH` names the stops,
+        // not the sibilant. `Y` (ñ) IS cu (`cu~` is udit, so 1.1.69 pulls
+        // the nasal in too) but the table omits that arm as unreachable
+        // from this tiṅanta corpus; see kutva_of's doc comment.
         for c in ['Y', 'S'] {
             assert_eq!(kutva_of(c), None, "{c} is not a cu stop");
         }

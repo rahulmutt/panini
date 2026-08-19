@@ -258,7 +258,7 @@ pub(crate) static TRIPADI: &[Rule] = &[
             true
         },
     },
-    // 8.2.30 coH kuH: a cu sound (c C j J) is replaced by its ku counterpart
+    // 8.2.30 coH kuH: a cu stop (c C j J) is replaced by its ku counterpart
     // (the nearest velar by 1.1.50 sthāne'ntaratamaḥ, so voicing and
     // aspiration are preserved) when it is either word-final or immediately
     // followed by a jhal. Banaj + ti -> Banag + ti (before the jhal `t`,
@@ -297,9 +297,10 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // rather than the first `j` in the word full stop, so a non-applicable
     // `j` earlier in the word can never hide a later, applicable one.
     // No cell in this suite has two cu sounds to distinguish: √ric and √vic
-    // each carry exactly one `c`, no curated root mixes a `c` with a `j`, and
-    // the j-bearing roots that decline (√ji, √juṣ, √vij, √yuj, and √bhañj's
-    // own 3pl `Banjanti`) decline because their `j` precedes a vowel.
+    // each carry exactly one `c`, no curated root mixes a `c` with a `j`,
+    // √ji, √juṣ and √vij always present theirs before a vowel, and the
+    // weak-stem cells of √bhañj, √yuj, √ric and √vic (`Banjanti`,
+    // `yuYjanti`, `riYcanti`) decline for the same reason.
     // The scan is therefore deliberately NOT narrowed to √bhañj's known
     // position: this is hardening against an ordering no witness here
     // exercises, not a fix for one observed.
