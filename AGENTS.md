@@ -129,7 +129,7 @@
     directions (flat from 1800 to 1872, then 38% for a 15% growth): measure
     the floor, never scale it. Campaign at `-j 4 --timeout 2400`: **522
     mutants, 482 caught, 0 missed, 39 unviable, 1 timeout** — that one being
-    the known-permanent `tripadi.rs:1140:23` non-terminating-loop mutant
+    the known-permanent `tripadi.rs:1156:23` non-terminating-loop mutant
     described above, which is the correct verdict at any cap.
     `outcomes.json`'s per-mutant test-phase durations for the 482 caught
     mutants put the median at 46.1s, p90 at 419.0s, p99 at 679.4s and the
@@ -149,6 +149,40 @@
     this campaign too, nothing having exceeded it, but 1.16× of projected
     headroom is exactly the shape that turns a "0 missed" into a vacuous
     one on a busier machine. Keep 2400.
+    **This slice (ric/vic, 8.2.30) re-measured both at 2304 cells.**
+    Uncontended floor: paradigm 321.34s, roundtrip 371.81s, trace 2.00s —
+    an uncaught total of **~695.15s** (wall clock 11m36.179s), where scaling
+    7c's 610.73s figure by cell count predicted a much smaller move than the
+    **+13.8%** actually observed against **+6.7%** cell growth. The series
+    so far: flat from 1800 to 1872 cells, then +38% for +15% into 7c, and
+    now +13.8% for +6.7% — cell count has again failed as a multiplier,
+    this time in the superlinear direction; measure the floor, never scale
+    it. Cap sanity check before the campaign: 695.15s × the pada audit's
+    1.70× `-j 4` contention factor ≈ **1182s** projected worst case for an
+    uncaught mutant, a **2.03×** margin under the 2400s cap, so the campaign
+    ran without raising it. Campaign at `-j 4 --timeout 2400`, run via the
+    `cargo-mutants` binary directly rather than the mise shim: **527
+    mutants, 487 caught, 0 missed, 39 unviable, 1 timeout** (process exit
+    code 3, expected whenever a timeout exists) — that one being the
+    known-permanent `tripadi.rs:1156:23` non-terminating-loop mutant
+    described above (its line number moved from `:1140:23` because this
+    slice added code above it), which is the correct verdict at any cap.
+    `outcomes.json`'s per-mutant test-phase durations for the 487 caught
+    mutants put the median at 50.5s, p90 at 490.0s, p99 at 738.3s and the
+    max at 976.8s, with **46** mutants over 600s and none over 1200s. The
+    slowest three were all `BinaryOperator` mutants: `tripadi.rs` at
+    976.8s, then `vikarana.rs` at 917.9s and 863.0s. The over-600s count
+    across slices is now 4 (pada audit) → 44 (7c) → 46 (this slice), while
+    the max has again barely moved — that count remains the number to
+    watch. **Two margins, and they answer different questions.** Against
+    the worst **caught** mutant, 976.8s, *directly measured*: 2400 / 976.8
+    = **2.46×**. Against the worst **uncaught** run, the projected ~1181.8s
+    above, *projected and not measured*: 2400 / 1181.8 = **2.03×**. The
+    brief predicted ~530 mutants from `kutva_of` alone (two
+    function-replacement, four arm-deletion); actual came in at 527, close
+    but not identical, because this slice also widened 8.2.39 via
+    `jashtva_of`, which the brief did not anticipate — the composition
+    differs from the prediction even though the total is close. Keep 2400.
   - `cargo-deny` + `cargo-audit` (supply-chain checks) — `mise run audit` runs
     `cargo audit && cargo deny check` and is expected to pass, including
     `cargo deny check advisories`.
