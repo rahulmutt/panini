@@ -162,15 +162,15 @@
   target under `crates/panini-lipi/fuzz` legitimately omits it, since it uses
   `#![no_main]` plus the libfuzzer harness macro).
 - Grammar changes are gated by the golden paradigm test
-  (`crates/panini/tests/paradigm.rs`, 2160 cells, six complete gaṇas plus
+  (`crates/panini/tests/paradigm.rs`, 2304 cells, six complete gaṇas plus
   rudhādi partial — `PARADIGM`
     stays one-form-per-cell: a cell forked by an optional rule keeps its
-    other forms — a second (166 cells), a third (61 cells), a fourth (1 cell,
+    other forms — a second (172 cells), a third (65 cells), a fourth (1 cell,
     rudhādi's √piṣ loṭ madhyama eka) and — the loṭ parasmaipada cells of
     rudhādi's √kṛt, √rudh, √bhid, √kṣud and √tṛd, five ways tied as the
     sharpest forks in the suite — a fourth
     and fifth (prathama eka) or a fourth through sixth (madhyama eka) — in
-    `ALTERNATES` (336 rows in all, so 2160 + 336 = 2496 forms total), and
+    `ALTERNATES` (350 rows in all, so 2304 + 350 = 2654 forms total), and
     `derivation_set_is_exactly_pinned` asserts each cell's derivation set is
     exactly the union of the two. The suite is no longer filtered by any
     one-form-per-cell convention — the
@@ -229,12 +229,16 @@
     curated four more, taking the gaṇa from seven roots to **eleven**:
     √bhid (`07.0002 Bi\di~^r`), √kṣud (`07.0006 kzu\di~^r`), √yuj
     (`07.0007 yu\ji~^r`) and √tṛd (`07.0009 u~tfdi~^r`), all four
-    ubhayapadī by 1.3.72 and all four pinned in both padas.
+    ubhayapadī by 1.3.72 and all four pinned in both padas. The
+    8.2.30/8.2.39 generalization slice then curated two more, taking the
+    gaṇa to **thirteen**: √ric (`07.0004 ri\ci~^r`) and √vic
+    (`07.0005 vi\ci~^r`), also ubhayapadī by 1.3.72 and pinned in both
+    padas.
     `curated_pada_agrees_with_upadesha_markers` in `panini-data` now
-    re-derives all 53 verdicts from the vendored upadeśa, so the column
+    re-derives all 55 verdicts from the vendored upadeśa, so the column
     cannot drift from the data that determines it. That discharges
     the **ubhayapada** deferral as such: 1.3.72 is no longer what keeps any
-    root out, and the **four** ubhayapadī roots still outside the curated
+    root out, and the **two** ubhayapadī roots still outside the curated
     set are out for narrower, root-specific reasons, verified cell by cell
     against vidyut-prakriya.
     The pada audit added two more: `01.1049 RI\Y` (√nī, bhvādi) and
@@ -250,17 +254,35 @@
     negative control **verified failing first** (exit 1, 36 √bhū cells
     flagged), so the zero is not vacuous. Byte-identity to vidyut is now a
     sourced result rather than an assertion.
-    **√ric and √vic** need no new sūtra, but the work in 8.2.30 *coḥ kuḥ* is
-    more than the one-line guard widening it looks like: they are c-final,
-    and the rule is hardcoded to a single `j` → `g` pair — its match reads
-    `j` alone AND its substitute is a literal `'g'`, while its comment
-    claims a 1.1.50 *sthāne'ntaratamaḥ* nearest-velar substitution (voicing
-    and aspiration preserved) that the code does not implement. So today
-    they surface `riRacti` for `riRakti`; widening the match alone would
-    reach the right surface — 8.4.55 *khari ca* devoices the `g` to `k`
-    before `ti` — but through a wrong intermediate (`riRagti` for
-    `riRakti`), which is why the substitute has to be generalised in the
-    same slice rather than left to the next one. **√chid and √chṛd** need two
+    **The 8.2.30/8.2.39 generalization slice ran the harness twice.** The
+    first run, against vidyut-prakriya at the same `8da2f90` commit, found
+    **four differing cells** — √ric's and √vic's declined laṅ prathama and
+    madhyama eka, in both padas — which is what exposed 8.2.39's narrow
+    guard as a real defect rather than a documented deferral: real code,
+    not only the synthetic `entry` control, tripped the harness. After
+    8.2.39 was generalised, the second run came back clean: **zero
+    differences across all 2304 cells / 2654 forms / 55 roots**, with the
+    `entry` negative control verified failing first (36 √bhū cells) both
+    times.
+    **√ric and √vic** needed no new sūtra, but 8.2.30 *coḥ kuḥ* needed more
+    than the one-line guard widening it looked like: they are c-final, and
+    the rule was hardcoded to a single `j` → `g` pair — its match read `j`
+    alone AND its substitute was a literal `'g'`, while its comment claimed
+    a 1.1.50 *sthāne'ntaratamaḥ* nearest-velar substitution (voicing and
+    aspiration preserved) that the code did not implement. Widening the
+    match alone would have reached the right surface (`riRakti`, since
+    8.4.55 *khari ca* devoices the resulting `g` to `k` before `ti`) but
+    through a wrong intermediate (`riRagti`), so both match and substitute
+    now read one `kutva_of` map (cu → ku) instead — the substitute *is* the
+    map, not a case split. That fix exposed 8.2.39 *jhalāṁ jaśo'nte* as
+    narrower than it looked: its three-literal guard (`t`/`z`/`D`) had
+    never had to classify a voiceless word-final velar, because no curated
+    root had produced one before √ric and √vic did. 8.2.39 now reads a
+    `jashtva_of` map on both sides too, plus a no-op guard for the table's
+    fixed points, so √ric's and √vic's declined laṅ prathama and madhyama
+    eka reach `ariRag`/`avinag` (jaśtva-voiced), with 8.4.56 *vā'vasāne*
+    supplying the optional `ariRak`/`avinak` — the same √bhañj-pattern fork
+    √yuj's `ayunag`/`ayunak` already witnesses. **√chid and √chṛd** need two
     sūtras the engine does not have — 6.1.73 *che ca*, the tuk augment
     before a `C` after a short vowel, and 8.4.40 *stoḥ ścunā ścuḥ*, the
     ścutva that follows it — without which their laṅ cells surface
@@ -272,13 +294,13 @@
     moot). √bhuj (`07.0017 Bu\ja~`) is the twenty-fifth entry and out on
     different grounds again: 1.3.66
     *bhujo'navane* forks its pada on **sense**, not on an axis this engine
-    models. 11 curated + 4 uncurated ubhayapadī + 9 reachable + √bhuj = 25,
-    so **14 of the 25 remain out**.
-    The root count is not what keeps the gaṇa partial — eleven is nearly
-    twice the six every completed gaṇa *after bhvādi* has here (bhvādi,
+    models. 13 curated + 2 uncurated ubhayapadī + 9 reachable + √bhuj = 25,
+    so **12 of the 25 remain out**.
+    The root count is not what keeps the gaṇa partial — thirteen is well
+    past the six every completed gaṇa *after bhvādi* has here (bhvādi,
     the first, has twelve) — and neither, any longer, is 1.3.72: what
-    remains is two narrow pieces of phonology for the four uncurated
-    ubhayapadī roots, the nine uncurated reachable roots, and
+    remains is the two-sūtra gap that keeps √chid and √chṛd out, the nine
+    uncurated reachable roots, and
     √bhuj's sense axis. √indh's pada was **verified, not inferred from its
     ñi**: `YiinDI~\`'s ñi it-marker is one of the two things 1.3.72 reads,
     which would have made the root ubhayapadī alongside √rudh, so it was
@@ -369,10 +391,18 @@
   full-corpus run found the same **zero differences across 1872 cells / 2114
   forms / 49 roots** at vidyut commit `8da2f90`, with both negative controls
   verified failing first. **Slice 7c re-ran that same committed harness over
-  the grown corpus, and its result is the current record: zero differences
-  across 2160 cells / 2496 forms / 53 roots**, at vidyut commit
-  `8da2f90bee3ce1c07505fa432fc3729e3f7e02ea`, with the `entry` negative
-  control **verified failing first** — exit 1, 36 √bhū cells flagged. Those
+  the grown corpus: zero differences across 2160 cells / 2496 forms / 53
+  roots**, at vidyut commit `8da2f90bee3ce1c07505fa432fc3729e3f7e02ea`, with
+  the `entry` negative control **verified failing first** — exit 1, 36 √bhū
+  cells flagged. **The 8.2.30/8.2.39 generalization slice ran it twice, and
+  its second run is the current record.** The first run, at the same
+  vidyut commit, found four differing cells — √ric's and √vic's declined
+  laṅ prathama and madhyama eka, in both padas — the first time this
+  harness caught a real defect in real code rather than only the synthetic
+  `entry` control; that is what exposed 8.2.39's guard as too narrow. After
+  8.2.39 was generalised alongside 8.2.30, the second run came back clean:
+  **zero differences across 2304 cells / 2654 forms / 55 roots**, with
+  `entry` verified failing first both times. Those
   totals are asserted by the harness itself rather than reported from
   whatever it happened to enumerate, so a corpus that grows without the
   harness being updated fails loudly instead of quietly auditing a subset.

@@ -4700,8 +4700,10 @@ fn derivation_set_is_exactly_pinned() {
 /// in rudhādi 7a (kft, his, Kid), three more added in rudhādi 7b (Banj, piz,
 /// inD), and — new in the ubhayapada 1.3.72 slice — √rudh (ruD), pinned in
 /// both padas, joined by the pada audit's √nī and √tud, also pinned in both
-/// padas: every one of the eleven rudhādi roots forks in both loṭ and
-/// laṅ, and two of them — kft and ruD — fork in all four lakāras: laṭ (kft
+/// padas, and — new in the 8.2.30/8.2.39 generalization slice — √ric and
+/// √vic, also pinned in both padas: every one of the thirteen rudhādi
+/// roots forks in both loṭ and laṅ, and two of them — kft and ruD — fork
+/// in all four lakāras: laṭ (kft
 /// cells 1/4/5, Kid cells 0/5, inD cells 0/5, and — new in this slice — ruD
 /// parasmaipada cells 1/4/5 and ātmanepada cells 0/5, all on 8.4.65), laṅ (on
 /// 8.4.65, the 8.2.74/8.2.75 ru alternation, and the 8.2.23-above-8.2.41
@@ -4724,7 +4726,9 @@ fn derivation_set_is_exactly_pinned() {
 /// palatal (`c`) rather than `j`, which 8.2.30 coH kuH — now one
 /// substitution-table lookup instead of a literal `g` — substitutes with
 /// the VELAR `k` rather than `g`: the same velar-against-dental mismatch
-/// (`k`+`D` in riNgDi/viNgDi, `k`+`t` in riNktAd/viNktAd) keeps 8.4.65 out
+/// (`g`+`D` in riNgDi/viNgDi — 8.4.53 jaśtva has already voiced 8.2.30's
+/// `k` to `g` before the jaś `D`, so this junction is velar-against-dental
+/// too, never savarṇa — and `k`+`t` in riNktAd/viNktAd) keeps 8.4.65 out
 /// of their loṭ parasmaipada prathama/madhyama eka too, so they join yuj
 /// forking only two deep there, on 7.1.35/8.4.56. The other rule this slice
 /// widened, 8.2.39 jhalāṁ jaśo'nte, now reads its own substitution table on
@@ -4760,14 +4764,13 @@ fn derivation_set_is_exactly_pinned() {
 /// against vidyut `8da2f90`, zero differences across all 2160 cells / 2496
 /// forms / 53 roots, with the `entry` negative control verified failing —
 /// the probe's source is committed at `tools/audit/panini_full_audit.rs`,
-/// and the pada audit re-ran it over all 1872 pre-7c cells — so the numbers
-/// are re-verified as well as pinned. The 8.2.30/8.2.39 generalization
-/// slice's own cross-implementation audit re-ran the same probe against
-/// vidyut-prakriya at commit `8da2f90` over all 2304 cells / 2654 forms / 55
-/// roots with zero differences, its `entry` negative control verified
-/// failing (36 √bhū cells) both times the audit was run — so these numbers
-/// are re-verified as well as pinned. This test is what keeps the numbers
-/// true day to day.
+/// and the pada audit re-ran it over all 1872 pre-7c cells, and the
+/// 8.2.30/8.2.39 generalization slice's own cross-implementation audit
+/// re-ran the same probe against vidyut-prakriya at commit `8da2f90` over
+/// all 2304 cells / 2654 forms / 55 roots with zero differences, its
+/// `entry` negative control verified failing (36 √bhū cells) both times
+/// the audit was run — so the numbers are re-verified as well as pinned.
+/// This test is what keeps the numbers true day to day.
 #[test]
 fn derivation_set_shape_matches_the_audited_numbers() {
     let total_cells = PARADIGM.len() * 9;
@@ -4805,12 +4808,12 @@ fn derivation_set_shape_matches_the_audited_numbers() {
     assert_eq!(
         fives, 5,
         "five-form cells — kft loṭ prathama eka, ruD loṭ parasmaipada prathama eka, and — new \
-         in this slice — Bid, kzud and tfd's loṭ parasmaipada prathama eka"
+         in slice 7c — Bid, kzud and tfd's loṭ parasmaipada prathama eka"
     );
     assert_eq!(
         sixes, 5,
         "six-form cells — kft loṭ madhyama eka, ruD loṭ parasmaipada madhyama eka, and — new \
-         in this slice — Bid, kzud and tfd's loṭ parasmaipada madhyama eka"
+         in slice 7c — Bid, kzud and tfd's loṭ parasmaipada madhyama eka"
     );
 
     assert_eq!(ALTERNATES.len(), 350, "ALTERNATES row count");
@@ -5143,14 +5146,17 @@ fn pada_ambiguous_surfaces_are_exactly_these() {
     // (√nī) and `atudata`/`tudatAm`/`tudetAm`/`tudeta` (√tud) — README's
     // hand list already missed `arundDa`, `nayetAm` and `tudetAm`, and
     // spells the rudh one without its second `d`. All ten pre-slice
-    // surfaces are present below, so nothing was disturbed by this slice.
+    // surfaces are present below, so nothing was disturbed by slice 7c.
     // Slice 7c's four new ubhayapadī roots contribute the other eight:
     // `BinttAm`/`aBintta` (√Bid `07.0002`), `akzuntta`/`kzunttAm`
     // (√kzud `07.0006`), `ayuNkta`/`yuNktAm` (√yuj `07.0007`), and
     // `atfntta`/`tfnttAm` (√tfd `07.0009`). The 8.2.30/8.2.39 generalization
     // slice's two new ubhayapadī roots contribute four more, the same
     // shape as yuj's pair: `ariNkta`/`riNktAm` (√ric `07.0004`) and
-    // `aviNkta`/`viNktAm` (√vic `07.0005`).
+    // `aviNkta`/`viNktAm` (√vic `07.0005`). This slice's own acceptance
+    // check was that all eighteen pre-slice surfaces (7c's ten plus its
+    // own eight) survive undisturbed, with only the four ric/vic surfaces
+    // added — and they do.
     assert_eq!(
         both,
         vec![
