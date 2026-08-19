@@ -1440,3 +1440,67 @@ fn trd_natva_is_the_adjacent_arm_through_an_r_vowel_trigger() {
     assert!(t.contains(&"8.4.1".to_string()), "{atma}: got {t:?}");
     assert!(!t.contains(&"8.4.2".to_string()), "{atma}: got {t:?}");
 }
+
+#[test]
+fn rinakti_trace_reaches_k_in_one_step() {
+    // THE pin that distinguishes a correct 8.2.30 from an accidentally
+    // correct one. √bhañj's `j` takes the VOICED velar `g` and needs 8.4.55
+    // Kari ca to devoice it afterwards -- that two-step path is pinned by
+    // bhanakti_trace_shows_8_2_30_then_8_4_55 above. √ric's `c` is already
+    // voiceless, so 1.1.50's nearest velar IS `k` and 8.2.30 reaches it in
+    // one step, leaving 8.4.55 nothing to do.
+    //
+    // A substitute hardcoded to 'g' would produce riRagti here and let
+    // 8.4.55 devoice it to the same riRakti surface. Every paradigm golden
+    // would still pass; only this test fails. Do not weaken it to a
+    // presence check on 8.2.30.
+    let (text, t) = cell_trace(
+        "07.0004",
+        Lakara::Lat,
+        Pada::Parasmaipada,
+        Purusha::Prathama,
+        Vacana::Eka,
+    );
+    assert_eq!(text, "riRakti", "got {t:?}");
+    assert!(t.contains(&"8.2.30".to_string()), "got {t:?}");
+    assert!(
+        !t.contains(&"8.4.55".to_string()),
+        "8.4.55 must not fire: {t:?}"
+    );
+}
+
+#[test]
+fn rinakti_trace_takes_intervening_natva() {
+    // r, then the aw vowel i, then śnam's n -> 8.4.2, not 8.4.1. Structurally
+    // √rudh's arm (ruRadDi) reached through an `r` trigger, inside the one
+    // gaṇa where 8.3.24 naScApadAntasya Jali competes on the weak stem.
+    let (text, t) = cell_trace(
+        "07.0004",
+        Lakara::Lat,
+        Pada::Parasmaipada,
+        Purusha::Prathama,
+        Vacana::Eka,
+    );
+    assert_eq!(text, "riRakti", "got {t:?}");
+    assert!(t.contains(&"8.4.2".to_string()), "got {t:?}");
+    assert!(!t.contains(&"8.4.1".to_string()), "got {t:?}");
+}
+
+#[test]
+fn vinakti_trace_takes_no_natva_at_all() {
+    // The minimal contrast to √ric: same gaṇa, same c-final shape, same
+    // vikaraṇa, same 8.2.30 application -- and no r/z/f trigger anywhere, so
+    // śnam's `n` stays dental. A NEGATIVE pin, and the point of the pair:
+    // it is what stops a widened ṇatva guard passing unnoticed.
+    let (text, t) = cell_trace(
+        "07.0005",
+        Lakara::Lat,
+        Pada::Parasmaipada,
+        Purusha::Prathama,
+        Vacana::Eka,
+    );
+    assert_eq!(text, "vinakti", "got {t:?}");
+    assert!(t.contains(&"8.2.30".to_string()), "got {t:?}");
+    assert!(!t.contains(&"8.4.1".to_string()), "got {t:?}");
+    assert!(!t.contains(&"8.4.2".to_string()), "got {t:?}");
+}
