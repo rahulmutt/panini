@@ -106,8 +106,11 @@ generalization slice replaced both the match and the substitute with one
 `kutva_of` map (cu → ku) — the substitute *is* the map, not a case split, so
 match and substitute read the same lookup rather than risk drifting apart
 the way widening only the match would have left them.
-That fix then exposed a second sūtra 7c had deliberately left narrow: 8.2.39
-*jhalāṁ jaśo'nte*'s three-literal guard (`t`/`z`/`D`) had never had to
+That fix then exposed a second sūtra this slice's own design had
+deliberately deferred, not 7c's: 7c touched no engine code at all, and the
+guard's own history runs through the ubhayapada slice, which last widened
+8.2.39 *jhalāṁ jaśo'nte*'s guard to its `t`/`z`/`D` three-literal shape
+(the `D` arm, for √rudh). That three-literal guard had never had to
 classify a voiceless word-final velar, because no curated root had produced
 one before. With 8.2.30 now correctly producing `k`, √ric's and √vic's
 declined laṅ forms fell through that guard instead of reaching `ariRag`/

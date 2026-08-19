@@ -4704,7 +4704,8 @@ fn derivation_set_is_exactly_pinned() {
 /// √vic, also pinned in both padas: every one of the thirteen rudhādi
 /// roots forks in both loṭ and laṅ, and two of them — kft and ruD — fork
 /// in all four lakāras: laṭ (kft
-/// cells 1/4/5, Kid cells 0/5, inD cells 0/5, and — new in this slice — ruD
+/// cells 1/4/5, Kid cells 0/5, inD cells 0/5, and — new in the ubhayapada
+/// 1.3.72 slice — ruD
 /// parasmaipada cells 1/4/5 and ātmanepada cells 0/5, all on 8.4.65), laṅ (on
 /// 8.4.65, the 8.2.74/8.2.75 ru alternation, and the 8.2.23-above-8.2.41
 /// śa-luk jaśtva 8.4.56 branch), loṭ (on 7.1.35/8.4.65/8.4.56, stacking up to
@@ -4727,7 +4728,7 @@ fn derivation_set_is_exactly_pinned() {
 /// substitution-table lookup instead of a literal `g` — substitutes with
 /// the VELAR `k` rather than `g`: the same velar-against-dental mismatch
 /// (`g`+`D` in riNgDi/viNgDi — 8.4.53 jaśtva has already voiced 8.2.30's
-/// `k` to `g` before the jaś `D`, so this junction is velar-against-dental
+/// `k` to `g` before the jhaś `D`, so this junction is velar-against-dental
 /// too, never savarṇa — and `k`+`t` in riNktAd/viNktAd) keeps 8.4.65 out
 /// of their loṭ parasmaipada prathama/madhyama eka too, so they join yuj
 /// forking only two deep there, on 7.1.35/8.4.56. The other rule this slice
@@ -4742,11 +4743,11 @@ fn derivation_set_is_exactly_pinned() {
 /// 172 hold two, 65 hold three, one holds four (piṣ's loṭ madhyama eka, the
 /// deepest fork added in 7b), and — the sharpest branch-count witnesses in
 /// the repo, per `docs/ARCHITECTURE.md` — exactly five hold five (√kṛt's loṭ
-/// prathama eka, ruD's loṭ parasmaipada prathama eka, and — new in this
-/// slice — Bid's, kzud's and tfd's loṭ parasmaipada prathama eka) and five
+/// prathama eka, ruD's loṭ parasmaipada prathama eka, and — new in slice
+/// 7c — Bid's, kzud's and tfd's loṭ parasmaipada prathama eka) and five
 /// hold six (√kṛt's loṭ madhyama eka, `kfndDi`/`kfnDi`'s cell, ruD's loṭ
 /// parasmaipada madhyama eka, `rundDi`/`runDi`/`rundDAd`/`runDAd`/
-/// `rundDAt`/`runDAt`, and — new in this slice — Bid's, kzud's and tfd's loṭ
+/// `rundDAt`/`runDAt`, and — new in slice 7c — Bid's, kzud's and tfd's loṭ
 /// parasmaipada madhyama eka, each tying √kṛt's record with the same k = 3
 /// (7.1.35, 8.4.65, 8.4.56) against a 2³ bound of eight — ric and vic do not
 /// join this record; per the 8.2.30/8.2.39 slice's own audit their deepest
@@ -5154,9 +5155,9 @@ fn pada_ambiguous_surfaces_are_exactly_these() {
     // slice's two new ubhayapadī roots contribute four more, the same
     // shape as yuj's pair: `ariNkta`/`riNktAm` (√ric `07.0004`) and
     // `aviNkta`/`viNktAm` (√vic `07.0005`). This slice's own acceptance
-    // check was that all eighteen pre-slice surfaces (7c's ten plus its
-    // own eight) survive undisturbed, with only the four ric/vic surfaces
-    // added — and they do.
+    // check was that all eighteen pre-slice surfaces (the pre-7c ten plus
+    // 7c's own eight) survive undisturbed, with only the four ric/vic
+    // surfaces added — and they do.
     assert_eq!(
         both,
         vec![

@@ -256,8 +256,8 @@
     sourced result rather than an assertion.
     **The 8.2.30/8.2.39 generalization slice ran the harness twice.** The
     first run, against vidyut-prakriya at the same `8da2f90` commit, found
-    **four differing cells** — √ric's and √vic's declined laṅ prathama and
-    madhyama eka, in both padas — which is what exposed 8.2.39's narrow
+    **four differing cells** — √ric's and √vic's declined laṅ **parasmaipada**
+    prathama and madhyama eka — which is what exposed 8.2.39's narrow
     guard as a real defect rather than a documented deferral: real code,
     not only the synthetic `entry` control, tripped the harness. After
     8.2.39 was generalised, the second run came back clean: **zero
@@ -328,7 +328,11 @@
     needed no new phonology of its own: 1.3.72 aside, the ubhayapada slice
     only widened 8.2.39 *jhalāṁ jaśo'nte*'s guard by exactly one arm (`D`),
     which is what makes `aruRad` derivable — and, through 8.2.75 *daś ca*'s
-    own `ends_with('d')` guard, the `aruRaH` branch too. The vikalpa
+    own `ends_with('d')` guard, the `aruRaH` branch too. (That `t`/`z`/`D`
+    three-literal guard was not the end of the story: the 8.2.30/8.2.39
+    generalization slice later replaced it with a `jashtva_of` map, once
+    √ric and √vic exercised a shape it could not classify — see above.)
+    The vikalpa
     set is unchanged at **seven** rules, in pipeline order: 7.1.35, 3.4.111,
     6.4.107, 8.2.74, 8.2.75, 8.4.65, 8.4.56 — 7b is the first gaṇa slice
     since the `vikalpa` flag landed (`53e03e7`) to add none, and the
@@ -397,7 +401,7 @@
   cells flagged. **The 8.2.30/8.2.39 generalization slice ran it twice, and
   its second run is the current record.** The first run, at the same
   vidyut commit, found four differing cells — √ric's and √vic's declined
-  laṅ prathama and madhyama eka, in both padas — the first time this
+  laṅ **parasmaipada** prathama and madhyama eka — the first time this
   harness caught a real defect in real code rather than only the synthetic
   `entry` control; that is what exposed 8.2.39's guard as too narrow. After
   8.2.39 was generalised alongside 8.2.30, the second run came back clean:
@@ -419,15 +423,22 @@
   6.1.65) and compares it against the stored `code` — an assertion that cannot
   be satisfied by copying back our own choice, unlike matching on number or
   artha alone (upstream has 8- and 15-way artha collisions).
-  Three comments inside `crates/panini-prakriya/src` still carry pre-7c
+  Two comments inside `crates/panini-prakriya/src` still carry pre-7c
   figures — `controller.rs:130` and `tinanta/guna.rs:943` cite the corpus
-  size as 1872/1864-of-1872 rather than 2160/2152-of-2160, and
-  `tinanta/tripadi.rs:269` calls √bhañj rudhādi's only cu-final curated
-  root, which √yuj's `j`-final stem (also reaching 8.2.30 *coḥ kuḥ*) now
-  contradicts. They were left as-is deliberately: 7c's central claim is a
-  byte-identical, engine-untouched slice, and the mutation gate's validity
-  depends on that package's diff staying empty, so no comment inside it was
-  touched even to fix drift. This note is the record of that deferral.
+  size as 1872/1864-of-1872 rather than 2304/2296-of-2304 — the same 8
+  cells 6.4.107 always fired on (`key_count("6.4.107") == 8`, pinned at
+  `paradigm.rs:4829`), now measured against the bigger corpus. A third,
+  `tinanta/tripadi.rs`'s comment on 8.2.30 (formerly the one calling √bhañj
+  "rudhādi's only cu-final curated root"), was **not** left stale the same
+  way: the 8.2.30/8.2.39 generalization slice rewrote it in place, since
+  generalising that rule past a single hardcoded root was the whole point
+  of that slice, and its diff to `panini-prakriya` was never meant to stay
+  empty the way 7c's was. The remaining two were left as-is deliberately by
+  7c: 7c's central claim was a byte-identical, engine-untouched slice, and
+  its mutation gate's validity depended on that package's diff staying
+  empty, so no comment inside it was touched even to fix drift, at the
+  time. This note is the record of that deferral, now down to two
+  comments.
 - New grammar goes in `TINANTA_RULES` as a self-guarding `Rule`, not as a
   branch inside `derive`. `TINANTA_RULES` is a list of seven stage arrays,
   each living in its own file under `crates/panini-prakriya/src/tinanta/`; add
