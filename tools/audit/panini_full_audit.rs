@@ -23,8 +23,12 @@
 //!
 //! Corpus invariants, asserted: 55 roots, 2304 cells, 2654 forms. These are
 //! facts about the repo, pinned by its own golden suite
-//! (`derivation_set_shape_matches_the_audited_numbers`): 240 root×lakāra blocks
-//! × 9 cells, plus 336 `ALTERNATES` rows. If this harness's enumeration
+//! (`derivation_set_shape_matches_the_audited_numbers`): as that suite still
+//! pins it today, 240 root×lakāra blocks × 9 cells, plus 336 `ALTERNATES`
+//! rows. Those two figures have not yet moved to match the corpus line above
+//! because this slice's √ric/√vic goldens have not landed; a later task
+//! generates them from the engine this audit just certified, and only then
+//! do the golden suite's figures change. If this harness's enumeration
 //! disagrees, the harness is wrong.
 //!
 //! Which dhātupāṭha file: the vidyut checkout's own
