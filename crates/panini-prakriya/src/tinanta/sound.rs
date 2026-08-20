@@ -143,6 +143,37 @@ pub(crate) fn jashtva_of(c: char) -> Option<char> {
     })
 }
 
+/// The *ku* (velar) counterpart of a cu sound — 8.2.30 coH kuH's substitute.
+/// By 1.1.50 sthAne'ntaratamaH the nearest substitute preserves voicing and
+/// aspiration, so `c` goes to `k` and `j` to `g`, never both to one letter.
+///
+/// `C` and `J` have no curated witness — no aspirate-cu-final root is in
+/// scope — and are present anyway because the table covers every cu STOP
+/// arm, the same reason `jashtva_of` carries its 1.1.50-derived `z -> q`
+/// arm. `kutva_of_cu_all_arms` is what keeps them from rotting.
+///
+/// `Y` (ñ) is cu too, and this table deliberately omits its arm. `cu~` is
+/// udit, so by 1.1.69 it denotes the whole varga including the nasal, and
+/// ñ -> ṅ (prāñc -> prāṅ) is 8.2.30's classic witness — vidyut-prakriya's
+/// `map("cu~", "ku~")` includes it. But every `Y` this engine produces
+/// comes from 8.4.58, which runs BELOW 8.2.30 in the tripadi ordering, and
+/// no curated root's stem carries one going in, so the arm is unreachable
+/// from a tiṅanta corpus. A subanta slice reaching prāñc -> prāṅ must add
+/// `Y -> N` here.
+///
+/// The velars are deliberately absent rather than mapped to themselves: they
+/// are already ku, not cu, and `None` is what lets 8.2.30 use this single
+/// lookup as its match test as well as its substitute.
+pub(crate) fn kutva_of(c: char) -> Option<char> {
+    Some(match c {
+        'c' => 'k',
+        'C' => 'K',
+        'j' => 'g',
+        'J' => 'G',
+        _ => return None,
+    })
+}
+
 /// The homorganic nasal of a *yay*. Covers only the stops — yay's
 /// semivowel arm (`y v r l`) is unreached while 8.3.24 fires solely before
 /// a jhal, and jhal excludes semivowels, so no anusvāra this engine
@@ -299,6 +330,40 @@ mod tests {
         assert_eq!(jashtva_of('z'), Some('q'));
         assert_eq!(jashtva_of('S'), None);
         assert_eq!(jashtva_of('s'), None);
+    }
+
+    #[test]
+    fn kutva_of_cu_all_arms() {
+        // 8.2.30 coH kuH: pin every arm of the cu -> ku substitution table
+        // directly. Only `j -> g` (√bhañj, √yuj) and `c -> k` (√ric, √vic)
+        // are reachable from the golden forms, so a mutant rewriting the
+        // aspirate arms would be invisible to the whole suite without this.
+        // Mirrors jashtva_of_stops_all_arms above.
+        //
+        // 1.1.50 sthAne'ntaratamaH picks the NEAREST velar, so voicing and
+        // aspiration carry across: voiceless unaspirated `c` goes to the
+        // voiceless unaspirated `k`, never to `g`.
+        assert_eq!(kutva_of('c'), Some('k'));
+        assert_eq!(kutva_of('C'), Some('K'));
+        assert_eq!(kutva_of('j'), Some('g'));
+        assert_eq!(kutva_of('J'), Some('G'));
+
+        // The velars are already ku and are not cu; the rule must not
+        // re-fire on its own output.
+        for c in ['k', 'K', 'g', 'G', 'N'] {
+            assert_eq!(kutva_of(c), None, "{c} is ku already, not cu");
+        }
+        // `S` (ś) is genuinely not cu -- 8.2.30's `coH` names the stops,
+        // not the sibilant. `Y` (ñ) IS cu (`cu~` is udit, so 1.1.69 pulls
+        // the nasal in too) but the table omits that arm as unreachable
+        // from this tiṅanta corpus; see kutva_of's doc comment.
+        for c in ['Y', 'S'] {
+            assert_eq!(kutva_of(c), None, "{c} is not a cu stop");
+        }
+        // Off-domain sanity: a vowel and a dental.
+        for c in ['a', 't'] {
+            assert_eq!(kutva_of(c), None, "{c} should not kutva");
+        }
     }
 
     #[test]

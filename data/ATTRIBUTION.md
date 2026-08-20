@@ -40,8 +40,8 @@ recorded below.
   (the `\` it does carry is the root vowel's own accent), so it stands as
   ubhayapadī; vidyut-prakriya derives it in both padas.
 - The gaṇa is **partial**: nine of rudhādi's 25 entries are ubhayapadī
-  (`~^r`-marked). 1.3.72 is implemented, so the ubhayapada deferral is
-  discharged; of the eight other than √rudh, four (`Bi\di~^r`, `kzu\di~^r`,
-  `yu\ji~^r`, `u~tfdi~^r`) are uncurated only, while `ri\ci~^r` and
-  `vi\ci~^r` await a wider 8.2.30 *coḥ kuḥ* and `Ci\di~^r` and `u~Cfdi~^r`
-  await 6.1.73 *che ca* with 8.4.40 *stoḥ ścunā ścuḥ*.
+  (`~^r`-marked), seven of them now curated — √rudh (`ru\Di~^r`), slice 7c's
+  `Bi\di~^r`, `kzu\di~^r`, `yu\ji~^r` and `u~tfdi~^r`, and the 8.2.30/8.2.39
+  generalization slice's `ri\ci~^r` and `vi\ci~^r`. 1.3.72 is implemented,
+  so the ubhayapada deferral is discharged; only `Ci\di~^r` and `u~Cfdi~^r`
+  remain, awaiting 6.1.73 *che ca* with 8.4.40 *stoḥ ścunā ścuḥ*.

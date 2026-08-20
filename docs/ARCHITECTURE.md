@@ -40,7 +40,7 @@ implements; `tinanta::rules()` yields that flattened sequence.
 
 The stage boundary is file organisation, not grammar: the flattened order is
 what matters, and `tinanta_rule_order_is_pinned` in `derivation_tests.rs`
-pins all 87 ids verbatim (72 pre-rudhādi, the fourteen rudhādi added:
+pins all 87 ids verbatim (72 pre-rudhādi, the fifteen rudhādi added:
 3.1.78, 6.4.23, 6.4.111, 8.2.74, 8.2.75, 8.2.73, 8.3.24, 8.4.53, 8.4.58 and
 8.4.65 in slice 7a, then 8.2.30, 8.2.40, 8.2.41 and 8.4.41 in 7b, and
 1.3.72 *svaritañitaḥ*, which arrived with √rudh in the ubhayapada slice).
@@ -80,42 +80,60 @@ gaṇa, the way `terms[SHAP].text` may be empty for adādi. A rule reading
 accordingly; see the "REPRESENTATION" note on 3.1.78 in
 `tinanta/vikarana.rs` and the caveat in `tinanta/terms.rs`.
 
-The gaṇa carries eleven roots — √kṛt, √hiṃs and √khid (slice 7a), √bhañj, √piṣ
-and √indh (7b), √rudh (`07.0001`), the gaṇa's own eponym, which arrived
+The gaṇa carries thirteen roots — √kṛt, √hiṃs and √khid (slice 7a), √bhañj,
+√piṣ and √indh (7b), √rudh (`07.0001`), the gaṇa's own eponym, which arrived
 with 1.3.72 *svaritañitaḥ* in the ubhayapada slice as the engine's first
 ubhayapadī root (the pada audit later added √nī and √tud, outside this
-gaṇa), and √bhid (`07.0002`), √kṣud (`07.0006`), √yuj (`07.0007`) and √tṛd
-(`07.0009`), curated in slice 7c and all four ubhayapadī by 1.3.72 — and it
-stays **partial**: nine of rudhādi's 25 dhātupāṭha
-roots are ubhayapadī, five of the nine now curated. The ubhayapada deferral
-itself is discharged — 1.3.72 holds none of the remaining four back any
-more — but they are not all alike.
+gaṇa), √bhid (`07.0002`), √kṣud (`07.0006`), √yuj (`07.0007`) and √tṛd
+(`07.0009`), curated in slice 7c and all four ubhayapadī by 1.3.72, and √ric
+(`07.0004`) and √vic (`07.0005`), curated in the 8.2.30/8.2.39 generalization
+slice and likewise ubhayapadī — and it stays **partial**: nine of rudhādi's
+25 dhātupāṭha roots are ubhayapadī, seven of the nine now curated. The
+ubhayapada deferral itself is discharged — 1.3.72 holds none of the remaining
+two back any more — but the roots still out are not all alike.
 **√bhid, √kṣud, √yuj and √tṛd** were the four described as curation-only for
 months without a run behind the description. Slice 7c curated them and ran
 the audit: zero differences against vidyut-prakriya at commit
 `8da2f90bee3ce1c07505fa432fc3729e3f7e02ea`, across the whole corpus of 2160
 cells / 2496 forms / 53 roots, with the `entry` negative control verified
-failing first (exit 1, 36 √bhū cells flagged). **√ric and √vic**
-are c-final, and 8.2.30 *coḥ kuḥ* is hardcoded to a single `j` → `g` pair —
-its match names `j` alone, and its substitute is a literal `'g'` rather than
-the 1.1.50 nearest velar its own comment describes. They therefore need no new
-sūtra but more than a widened guard: the substitute has to be generalised
-alongside the match. Widening only the match would still reach the right
-surface (`riRakti`, since 8.4.55 *khari ca* devoices the `g`), through a wrong
-intermediate. **√chid and √chṛd** need two sūtras this engine does not
-implement, 6.1.73 *che ca* (the tuk augment before a `C`
-after a short vowel) and 8.4.40 *stoḥ ścunā ścuḥ* (the ścutva that follows),
-without which their laṅ cells surface `aCinat` where vidyut has `acCinat`.
+failing first (exit 1, 36 √bhū cells flagged). **√ric and √vic**, both
+c-final, were the ones 8.2.30 *coḥ kuḥ* could not reach: its match named `j`
+alone, and its substitute was a literal `'g'` rather than the 1.1.50 nearest
+velar its own comment described. Widening only the match would still have
+reached the right surface (`riRakti`, since 8.4.55 *khari ca* devoices the
+resulting `g` to `k`), but through a wrong intermediate, so the 8.2.30/8.2.39
+generalization slice replaced both the match and the substitute with one
+`kutva_of` map (cu → ku) — the substitute *is* the map, not a case split, so
+match and substitute read the same lookup rather than risk drifting apart
+the way widening only the match would have left them.
+That fix then exposed a second sūtra this slice's own design had
+deliberately deferred, not 7c's: 7c touched no engine code at all, and the
+guard's own history runs through the ubhayapada slice, which last widened
+8.2.39 *jhalāṁ jaśo'nte*'s guard to its `t`/`z`/`D` three-literal shape
+(the `D` arm, for √rudh). That three-literal guard had never had to
+classify a voiceless word-final velar, because no curated root had produced
+one before. With 8.2.30 now correctly producing `k`, √ric's and √vic's
+declined laṅ forms fell through that guard instead of reaching `ariRag`/
+`avinag`. The slice's cross-implementation audit caught the four resulting
+differing cells on its first run — a real defect in real code, not only the
+synthetic `entry` control catching a planted one — and 8.2.39 was
+generalised the same way, to one
+`jashtva_of` map read on both sides (plus a no-op guard for the table's fixed
+points); the audit's second run came back clean. **√chid and √chṛd** need
+two sūtras this engine does not implement, 6.1.73 *che ca* (the tuk augment
+before a `C` after a short vowel) and 8.4.40 *stoḥ ścunā ścuḥ* (the ścutva
+that follows), without which their laṅ cells surface `aCinat` where vidyut
+has `acCinat`.
 Nine further reachable non-ubhayapadī roots (√śiṣ, √tṛh, √und, √añj, √tañc,
 √vij, √vṛj, √pṛc, √vid) are simply not curated yet; and
 the twenty-fifth, √bhuj (`07.0017`), is out on different grounds again —
 1.3.66 *bhujo'navane* forks its pada on sense rather than on an axis this
 engine models. Six roots is the size every completed gaṇa *after bhvādi*
 has here — bhvādi, the first, has twelve — so the root count is not what
-makes this one partial; rudhādi is already past it at eleven. Nor is 1.3.72
-any longer: what is left is two narrow pieces of phonology for the four
-uncurated ubhayapadī roots, the nine uncurated reachable roots, and √bhuj's
-sense axis — **14 of the 25 in all**.
+makes this one partial; rudhādi is already past it at thirteen. Nor is
+1.3.72 any longer: what is left is the two-sūtra gap that keeps √chid and
+√chṛd out, the nine uncurated reachable roots, and √bhuj's sense axis —
+**12 of the 25 in all**.
 
 Pada is a **context coordinate**, not a branch: an ubhayapadī root
 contributes *two* `PARADIGM` blocks per lakāra, one per pada, so a
@@ -282,24 +300,24 @@ same lopa obligatory for √kṛ and is what makes this rule optional, is out
 of scope with √kṛ itself.
 
 7.1.35 optionally replaces the loṭ endings `tu`/`hi` with tātaṅ (then
-8.2.39 obligatorily voices its final `t` to `d`), forking 66 cells (loṭ
-prathama and madhyama eka across the 33 roots with a parasmaipada column —
+8.2.39 obligatorily voices its final `t` to `d`), forking 70 cells (loṭ
+prathama and madhyama eka across the 35 roots with a parasmaipada column —
 `tu`/`hi` are parasmaipada endings, so the curated set's 20 ātmanepada-only
-roots never reach this guard, and the seven ubhayapadī roots √rudh, √nī,
-√tud, √bhid, √kṣud, √yuj and √tṛd reach it
-in their parasmaipada cells only; 33 + 20 = the 53 curated
+roots never reach this guard, and the nine ubhayapadī roots √rudh, √nī,
+√tud, √bhid, √kṣud, √yuj, √tṛd, √ric and √vic reach it
+in their parasmaipada cells only; 35 + 20 = the 55 curated
 roots) — `Bavatu ~ BavatAd`, `Bava ~ BavatAd`. 8.4.56
 optionally devoices a pada-final jaś (produced by the now-obligatory 8.2.39)
-back to its car at the end of an utterance, forking 75 cells outright: laṅ
-and vidhiliṅ prathama eka across those same 33 parasmaipada columns (66 of
+back to its car at the end of an utterance, forking 81 cells outright: laṅ
+and vidhiliṅ prathama eka across those same 35 parasmaipada columns (70 of
 them — 8.2.39's `d` is a parasmaipada-ending artifact, ātmanepada's
 laṅ/vidhiliṅ prathama eka endings are vowel-final and never reach a jhal),
-plus nine rudhādi laṅ *madhyama* eka cells (√kṛt, √hiṃs, √bhañj, √piṣ,
-√rudh, √bhid, √kṣud, √yuj and √tṛd — every rudhādi root with a
+plus eleven rudhādi laṅ *madhyama* eka cells (√kṛt, √hiṃs, √bhañj, √piṣ,
+√rudh, √bhid, √kṣud, √yuj, √tṛd, √ric and √vic — every rudhādi root with a
 parasmaipada column), where 8.2.23
 *saṁyogāntasya lopaḥ* has eaten the ending's own `s` and left the stem's
 jaś pada-final after all — `aBavad ~ aBavat`, `Baved ~ Bavet`,
-`apinaq ~ apinaw`, `aruRad ~ aruRat` — and forking a further 66 (the same
+`apinaq ~ apinaw`, `aruRad ~ aruRat` — and forking a further 70 (the same
 loṭ cells 7.1.35 just forked) by devoicing the tātaṅ branch's `BavatAd` to
 `BavatAt`, which is
 what stacks the two rules into the three-branch loṭ cells above rather
