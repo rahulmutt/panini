@@ -183,6 +183,53 @@
     but not identical, because this slice also widened 8.2.39 via
     `jashtva_of`, which the brief did not anticipate — the composition
     differs from the prediction even though the total is close. Keep 2400.
+    **Slice 7d (eight rudhādi roots, no new sūtra) re-measured both at 2592
+    cells.** Uncontended floor: paradigm 397.27s, roundtrip 472.38s, trace
+    2.23s — an uncaught total of **871.88s** (wall clock 14m35.882s).
+    Scaling the last slice's 695.15s figure by cell count (2304 → 2592,
+    +12.5%) predicted ~782.04s; the measurement came in ~90s hotter —
+    **+25.4% wall for +12.5% cells**, the fourth consecutive slice where
+    cell count fails as a multiplier, again in the superlinear direction.
+    **This is the first floor measured under rust 1.98.0** (`mise.toml`,
+    `57f886f`); every earlier figure in this series, including the 695.15s
+    one just cited, was measured under 1.97.1. The compiler is therefore a
+    live candidate cause for the ~90s excess — named as a candidate, not
+    asserted as the cause, since no isolated before/after comparison at a
+    fixed cell count was taken. Cap sanity check before the campaign:
+    871.88s × the pada audit's 1.70× `-j 4` contention factor ≈ **1482.2s**
+    projected worst case for an uncaught mutant, a **1.62×** margin under
+    the 2400s cap (the spec expected ~1450–1500s / ~1.6×), so the campaign
+    ran without raising it. Campaign at `-j 4 --timeout 2400`, run via the
+    `cargo-mutants` binary directly (the mise shim errored with "no version
+    set for shim: cargo-mutants"): **527 mutants, 487 caught, 0 missed, 39
+    unviable, 1 timeout** (487 + 39 + 1 = 527) — the mutant population
+    unchanged from the last slice, as expected, since this slice adds no
+    `panini-prakriya` code. The one timeout is the known-permanent
+    non-terminating-loop mutant on the ṇatva backward scan,
+    `tripadi.rs:1157:23: replace -= with /=` — identified **by that shape**
+    (mutating `j -= 1` to `j /= 1` makes `j` constant, so the mutated run
+    never reaches an assertion), not by its line number: this slice touches
+    no lines in `tripadi.rs` (`git log 9ffe1ac..HEAD -- crates/panini-prakriya/src/tinanta/tripadi.rs`
+    is empty), yet the line moved from `:1156:23` to `:1157:23` anyway — a
+    one-line drift that predates this branch and that this slice did not
+    cause. The earlier paragraphs' `:1140:23` and `:1156:23` citations are
+    left as written; they were correct at the time. `outcomes.json`'s
+    per-mutant test-phase durations for the 487 caught mutants put the
+    median at 68.5s, p90 at 598.4s, p99 at 928.6s and the max at 1224.4s,
+    with **48** mutants over 600s and, for the first time in this series,
+    **1** over 1200s. The over-600s count across slices is now 4 (pada
+    audit) → 44 (7c) → 46 (last slice) → 48 (this slice) — still the number
+    to watch — while the max also moved further than in prior slices
+    (976.8s → 1224.4s). The slowest was a `BinaryOperator` mutant on
+    `tripadi.rs:1152:33` (`replace < with <=`, 1224.4s), followed by two
+    `vikarana.rs` `BinaryOperator` mutants at 1028.5s and two
+    `LogicalOperator` mutants at 980.3s and 961.0s. **Two margins, and they
+    answer different questions.** Against the worst **caught** mutant,
+    1224.4s, *directly measured*: 2400 / 1224.4 = **1.96×**. Against the
+    worst **uncaught** run, the projected ~1482.2s above, *projected and
+    not measured*: 2400 / 1482.2 = **1.62×**. Both margins shrank from the
+    last slice's 2.46×/2.03×, consistent with the floor's outsized jump,
+    but neither crossed 1×. Keep 2400.
   - `cargo-deny` + `cargo-audit` (supply-chain checks) — `mise run audit` runs
     `cargo audit && cargo deny check` and is expected to pass, including
     `cargo deny check advisories`.
