@@ -71,7 +71,7 @@ resolve a toolchain there. Name it explicitly:
 
 ```bash
 cd /tmp/vidyut-full/vidyut-prakriya
-mise exec rust@1.97.1 -- cargo run --release --example panini_full_audit
+mise exec rust@1.98.0 -- cargo run --release --example panini_full_audit
 ```
 
 Both checkout locations are env-overridable, defaulting to `/tmp/vidyut-full` and
@@ -79,7 +79,7 @@ Both checkout locations are env-overridable, defaulting to `/tmp/vidyut-full` an
 
 ```bash
 PANINI_AUDIT_VIDYUT=/path/to/vidyut PANINI_AUDIT_REPO=/path/to/panini \
-  mise exec rust@1.97.1 -- cargo run --release --example panini_full_audit
+  mise exec rust@1.98.0 -- cargo run --release --example panini_full_audit
 ```
 
 ## Negative controls
@@ -88,8 +88,8 @@ Run at least one before recording a clean result. Each should exit 1 and print
 real form-vs-form differences:
 
 ```bash
-PANINI_AUDIT_PERTURB=form  mise exec rust@1.97.1 -- cargo run --release --example panini_full_audit
-PANINI_AUDIT_PERTURB=entry mise exec rust@1.97.1 -- cargo run --release --example panini_full_audit
+PANINI_AUDIT_PERTURB=form  mise exec rust@1.98.0 -- cargo run --release --example panini_full_audit
+PANINI_AUDIT_PERTURB=entry mise exec rust@1.98.0 -- cargo run --release --example panini_full_audit
 ```
 
 `form` corrupts one form on this engine's side. `entry` is the one that matters:
@@ -101,7 +101,7 @@ much less; keep this one plausible if you change it.
 Optionally dump the full table:
 
 ```bash
-PANINI_AUDIT_DUMP=/tmp/audit-table.tsv mise exec rust@1.97.1 -- cargo run --release --example panini_full_audit
+PANINI_AUDIT_DUMP=/tmp/audit-table.tsv mise exec rust@1.98.0 -- cargo run --release --example panini_full_audit
 ```
 
 ## Last recorded result

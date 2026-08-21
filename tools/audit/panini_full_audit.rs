@@ -9,7 +9,7 @@
 //! one cell the audit could not independently validate. Keying on the number
 //! removes that circularity.
 //!
-//! What it compares: for each of the 55 curated roots, for each pada the root
+//! What it compares: for each of the 63 curated roots, for each pada the root
 //! admits (two apiece for the nine ubhayapadī roots), for each of the four lakāras this engine
 //! implements (laṭ, laṅ, loṭ, vidhiliṅ), for each of the nine puruṣa × vacana
 //! cells — the complete DERIVATION SET, as sorted SLP1 strings. Not a single
@@ -23,7 +23,7 @@
 //!
 //! Corpus invariants, asserted: 63 roots, 2592 cells, 3014 forms. These are
 //! facts about the repo, pinned by its own golden suite
-//! (`derivation_set_shape_matches_the_audited_numbers`): 256 root×lakāra
+//! (`derivation_set_shape_matches_the_audited_numbers`): 288 root×pada×lakāra
 //! blocks × 9 cells, plus 422 `ALTERNATES` rows. If this harness's
 //! enumeration disagrees, the harness is wrong.
 //!
