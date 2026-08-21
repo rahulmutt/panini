@@ -39,9 +39,29 @@ recorded below.
   carries no trailing `~\` anudātta it-marker for 1.3.12 to settle it with
   (the `\` it does carry is the root vowel's own accent), so it stands as
   ubhayapadī; vidyut-prakriya derives it in both padas.
+- Cross-reference: the rudhādi gaṇa (gaṇa 7), slice 7d, entries correspond
+  to Dhātupāṭha numbers 07.0013 (`vi\da~\`), 07.0014 (`Si\zx~`), 07.0020
+  (`undI~`), 07.0021 (`anjU~`), 07.0022 (`tancU~`), 07.0023 (`o~vijI~`),
+  07.0024 (`vfjI~`) and 07.0025 (`pfcI~`). None of the eight stores a
+  `code` differing from a plain it-strip of its vendored upadeśa — unlike
+  `07.0019` (`hisi~`, stored `hins`, post-7.1.58 *idito num dhātoḥ*, in
+  the slice 7a bullet above) — so this slice records no per-entry
+  deviation. `dhatupatha_numbers_resolve_upstream` already proved it in
+  Task 1 Step 5; this bullet records it.
 - The gaṇa is **partial**: nine of rudhādi's 25 entries are ubhayapadī
   (`~^r`-marked), seven of them now curated — √rudh (`ru\Di~^r`), slice 7c's
   `Bi\di~^r`, `kzu\di~^r`, `yu\ji~^r` and `u~tfdi~^r`, and the 8.2.30/8.2.39
   generalization slice's `ri\ci~^r` and `vi\ci~^r`. 1.3.72 is implemented,
   so the ubhayapada deferral is discharged; only `Ci\di~^r` and `u~Cfdi~^r`
-  remain, awaiting 6.1.73 *che ca* with 8.4.40 *stoḥ ścunā ścuḥ*.
+  remain, awaiting 6.1.73 *che ca* with 8.4.40 *stoḥ ścunā ścuḥ*. The
+  gaṇa's other axis, non-ubhayapadī, is narrower now: sixteen of the 25
+  entries are non-ubhayapadī, and slice 7d's eight take the curated count
+  there to fourteen, on the audited numbers alone with no new sūtra.
+  Only two non-ubhayapadī entries remain out — `tfha~` (07.0018, √tṛh,
+  deferred to slice 7e behind 7.3.92 *tṛṇaha im* with 8.2.31 *ho ḍhaḥ* and
+  8.3.13 *ḍho ḍhe lopaḥ*) and `Bu\ja~` (07.0017, √bhuj, deferred behind
+  1.3.66 *bhujo'navane*, which forks its pada on sense) — so what was, before
+  this slice, an "ubhayapadī vs. everything else" story is now a four-root
+  remainder: two ubhayapadī (`Ci\di~^r`, `u~Cfdi~^r`) and two
+  non-ubhayapadī (`tfha~`, `Bu\ja~`), each held out by its own named
+  sūtra cost rather than by curation lag.

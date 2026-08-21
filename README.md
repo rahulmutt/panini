@@ -15,30 +15,35 @@ cargo run -p panini-cli -- check 'bhavati' --trace
 
 Finite verbs (*tiṅanta*), six gaṇas fully covered — *bhvādi* (1, vikaraṇa
 śap), *divādi* (4, śyan), *tudādi* (6, śa), *adādi* (2, śap luk'd), *kryādi*
-(9, śnā) and *svādi* (5, śnu) — plus *rudhādi* (7, śnam) **partial**: thirteen
+(9, śnā) and *svādi* (5, śnu) — plus *rudhādi* (7, śnam) **partial**: twenty-one
 of its roots (√kṛt, √hiṃs, √khid, √bhañj, √piṣ, √indh, √rudh, and — curated
 in slice 7c — √bhid, √kṣud, √yuj and √tṛd, and — curated in the 8.2.30/8.2.39
-generalization slice — √ric and √vic) of 25. √rudh, the gaṇa's eponym,
+generalization slice — √ric and √vic, and — curated in slice 7d, on the
+audited numbers alone with no new sūtra — √śiṣ, √und, √añj, √tañc, √vij,
+√vṛj, √pṛc and √vid) of 25. √rudh, the gaṇa's eponym,
 arrived with 1.3.72 *svaritañitaḥ* as the engine's first ubhayapadī root, so
 the ubhayapada deferral itself is discharged: 1.3.72 is no longer what keeps
-any root out. **12 of the 25 remain out**, each for a narrow reason of its
-own — √chid and √chṛd for two sūtras the engine does not implement (6.1.73
-*che ca*, 8.4.40 *stoḥ ścunā ścuḥ*).
-Nine reachable non-ubhayapadī roots are likewise not curated yet, and the last,
-√bhuj, is deferred behind 1.3.66 *bhujo'navane*, which forks its pada on sense
+any root out. **4 of the 25 remain out**, each for a narrow reason of its
+own — √tṛh, deferred behind 7.3.92 *tṛṇaha im* (with 8.2.31 *ho ḍhaḥ* and
+8.3.13 *ḍho ḍhe lopaḥ*); √chid and √chṛd for two sūtras the engine does not
+implement (6.1.73 *che ca*, 8.4.40 *stoḥ ścunā ścuḥ*); and √bhuj, deferred
+behind 1.3.66 *bhujo'navane*, which forks its pada on sense
 rather than on an axis this engine models. *parasmaipada* and *ātmanepada*
 (which padas a root admits is a curated verdict on its table row), over a
-curated 55-root set, in four lakāras: *laṭ* (present), *laṅ* (imperfect), *loṭ*
+curated 63-root set, in four lakāras: *laṭ* (present), *laṅ* (imperfect), *loṭ*
 (imperative), and *vidhiliṅ* (optative). A cell may have more than one valid
 form where an optional (*vikalpa*) sūtra applies — `hinvaH` and `hinuvaH` are
-both correct — and in fact 248 of the 2304 cells hold more than one form: 172
-hold two, 65 hold three (`Bavatu`, `BavatAd`, `BavatAt`), one holds four
-(rudhādi's √piṣ loṭ madhyama eka), five hold five, and five hold six — the loṭ
-parasmaipada madhyama eka of rudhādi's √kṛt, √rudh, √bhid, √kṣud and √tṛd,
-tied as the sharpest forks in the suite, each holding six valid readings of the
+both correct — and in fact 299 of the 2592 cells hold more than one form: 208
+hold two, 77 hold three (`Bavatu`, `BavatAd`, `BavatAt`), two hold four
+(rudhādi's √piṣ loṭ madhyama eka, and — new in slice 7d — √śiṣ's), six hold
+five, and six hold six — the loṭ
+parasmaipada madhyama eka of rudhādi's √kṛt, √rudh, √bhid, √kṣud, √tṛd and —
+new in slice 7d — √und, tied as the sharpest forks in the suite, each holding
+six valid readings of the
 one cell: `kfndDi` / `kfnDi` / `kfnttAd` / `kfntAd` / `kfnttAt` / `kfntAt` for
-√kṛt, and `rundDi` / `runDi` / `rundDAd` / `runDAd` / `rundDAt` / `runDAt` for
-√rudh. Nothing in the suite forks deeper than six. √yuj, ubhayapadī like the
+√kṛt, `rundDi` / `runDi` / `rundDAd` / `runDAd` / `rundDAt` / `runDAt` for
+√rudh, and `undDi` / `unDi` / `unttAd` / `untAd` / `unttAt` / `untAt` for
+√und. Nothing in the suite forks deeper than six. √yuj, ubhayapadī like the
 other three roots 7c curated, does *not* fork that deep: 8.2.30 *coḥ kuḥ*
 replaces its palatal `j` with the velar `g` (which 8.4.55 *khari ca* later
 devoices to `k` before a `t`), and a velar is never savarṇa with the dental

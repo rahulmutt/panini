@@ -91,7 +91,7 @@ pub struct Dhatu {
     /// the honest arrangement; see the deferral in
     /// `docs/superpowers/specs/2026-08-16-pada-audit-design.md`.
     ///
-    /// The test covers the 55 roots curated here, not the dhātupāṭha's 2259.
+    /// The test covers the 63 roots curated here, not the dhātupāṭha's 2259.
     /// It catches a mis-assigned pada on a root a future slice adds; it does
     /// not make the table self-maintaining.
     pub pada: PadaAssignment,
@@ -611,6 +611,101 @@ static DHATUS: &[Dhatu] = &[
         pada: PadaAssignment::Ubhayapada,
         artha: "pfTagBAve",
     },
+    Dhatu {
+        // 07.0014 Si\zx~ viSezaRe. Structurally √piṣ (07.0015) with a
+        // different head: both are z-final, so both drive 8.4.41 zwutva
+        // (Sinazwi, the dental of `ti` retroflexed next to the root's z)
+        // and 8.2.41 (the z replaced by k before an s-initial affix).
+        // Curated as the witness that the z path is not piṣ-specific.
+        dhatupatha: "07.0014",
+        code: "Siz",
+        gana: Gana::Rudhadi,
+        pada: PadaAssignment::Parasmaipada,
+        artha: "viSezaRe",
+    },
+    Dhatu {
+        // 07.0020 undI~ kledane. VOWEL-INITIAL and u-headed, which is what
+        // makes it worth curating: its laN takes AT (6.4.72) and then
+        // 6.1.90 AwaS ca, whose `u` -> `O` arm no curated root had ever
+        // reached -- `vrddhi_of_ac_vowels_all_arms` in panini-prakriya's
+        // sound.rs says in as many words that only e/I/E inputs occur.
+        // Onad is the counterexample. The root's own `n` is 6.4.23's, and
+        // 6.4.111 then takes śnam's `a`, exactly as for √bhañj.
+        dhatupatha: "07.0020",
+        code: "und",
+        gana: Gana::Rudhadi,
+        pada: PadaAssignment::Parasmaipada,
+        artha: "kledane",
+    },
+    Dhatu {
+        // 07.0021 anjU~ vyaktimrakzaRakAntigatizu. Vowel-initial like
+        // √und, and the 8.2.30 witness among the four nasal-tailed roots
+        // here: anaj -> anj (6.4.111) -> ang (8.2.30) -> aNk, the `j` arm
+        // of kutva_of on a stem whose nasal 6.4.23 has already thinned.
+        dhatupatha: "07.0021",
+        code: "anj",
+        gana: Gana::Rudhadi,
+        pada: PadaAssignment::Parasmaipada,
+        artha: "vyaktimrakzaRakAntigatizu",
+    },
+    Dhatu {
+        // 07.0022 tancU~ saNkocane. The consonant-initial contrast to
+        // √añj: same nasal tail, same 6.4.23, and a `c` rather than a `j`
+        // for 8.2.30 -- so kutva_of's two cu arms are both driven by roots
+        // of the same shape, differing only in voicing.
+        dhatupatha: "07.0022",
+        code: "tanc",
+        gana: Gana::Rudhadi,
+        pada: PadaAssignment::Parasmaipada,
+        artha: "saNkocane",
+    },
+    Dhatu {
+        // 07.0023 o~vijI~ BayacalanayoH. The second `o~`-initial upadeśa
+        // in the table, after tudādi's `06.0009`. Nothing new is needed
+        // for it: 1.3.2's anunāsika-it
+        // loop in strip_anubandhas takes `o~` like any other vowel + `~`
+        // pair, and `curated_pada_agrees_with_upadesha_markers` checks the
+        // verdict rather than trusting it.
+        dhatupatha: "07.0023",
+        code: "vij",
+        gana: Gana::Rudhadi,
+        pada: PadaAssignment::Parasmaipada,
+        artha: "BayacalanayoH",
+    },
+    Dhatu {
+        // 07.0024 vfjI~ varjane. f-headed, so śnam's own `n` retroflexes
+        // by 8.4.1 raSAByAM no RaH -- vfRakti. The minimal contrast to
+        // √pṛc below is the tail, not the trigger: both take ṇatva, and
+        // only one of them also drives 8.2.30 on a `c`.
+        dhatupatha: "07.0024",
+        code: "vfj",
+        gana: Gana::Rudhadi,
+        pada: PadaAssignment::Parasmaipada,
+        artha: "varjane",
+    },
+    Dhatu {
+        // 07.0025 pfcI~ samparke. ṇatva by 8.4.1 like √vṛj, and 8.2.30 on
+        // a `c` like √tañc -- the one curated root that stacks both, so it
+        // pins that the ṇatva trigger and the kutva substitution do not
+        // interfere. pfRakti / pfNktaH.
+        dhatupatha: "07.0025",
+        code: "pfc",
+        gana: Gana::Rudhadi,
+        pada: PadaAssignment::Parasmaipada,
+        artha: "samparke",
+    },
+    Dhatu {
+        // 07.0013 vi\da~\ vicAraRe. Ātmanepada by 1.3.12 on its trailing
+        // `~\`, and the gaṇa's third pure-ātmanepadī root after √khid and
+        // √indh. Distinct from divādi's `vid` (04.0067) and every other
+        // √vid by dhātupāṭha number, not by surface. 8.4.65 Jaro Jari
+        // savarRe forks nearly every cell it has (vinte / vintte).
+        dhatupatha: "07.0013",
+        code: "vid",
+        gana: Gana::Rudhadi,
+        pada: PadaAssignment::Atmanepada,
+        artha: "vicAraRe",
+    },
 ];
 
 pub fn dhatus() -> &'static [Dhatu] {
@@ -652,7 +747,7 @@ mod tests {
 
     #[test]
     fn curated_roots_have_expected_ganas_and_padas() {
-        assert_eq!(dhatus().len(), 55);
+        assert_eq!(dhatus().len(), 63);
         let bu = dhatus().iter().find(|d| d.dhatupatha == "01.0001").unwrap();
         assert!(matches!(bu.pada, PadaAssignment::Parasmaipada));
         let labh = dhatus().iter().find(|d| d.dhatupatha == "01.1130").unwrap();
@@ -821,35 +916,33 @@ mod tests {
     }
 
     #[test]
-    fn rudhadi_rows_are_the_thirteen_curated_roots() {
+    fn rudhadi_rows_are_the_twenty_one_curated_roots() {
         // √rudh, the gaṇa's eponym, arrived with 1.3.72 svaritaYitaH and
-        // PadaAssignment::Ubhayapada. Slice 7c then added the four roots
-        // that needed nothing but a table row and an audit -- √bhid,
-        // √kṣud, √yuj and √tṛd, all four ubhayapadī by the same sūtra.
-        // That claim ("the engine already derives all 72 cells of each,
-        // byte-identical to vidyut") had been repeated in three files and
-        // sourced in none until 7c actually ran the audit; see
-        // `tools/audit/README.md`'s recorded result.
+        // PadaAssignment::Ubhayapada. Slice 7c added √bhid, √kṣud, √yuj and
+        // √tṛd; the 8.2.30/8.2.39 generalization slice added √ric and √vic
+        // once 8.2.30 stopped hardcoding its `j` -> `g` pair.
         //
-        // rudhādi also holds `vi\da~\` and `o~vijI~`, whose SLP1 surfaces
+        // Slice 7d adds the eight roots that a probe against
+        // vidyut-prakriya showed need NO sūtra this engine lacks: √śiṣ,
+        // √und, √añj, √tañc, √vij, √vṛj, √pṛc and √vid. The probe compared
+        // the sūtras each root's derivations invoke against this engine's
+        // implemented set; `tools/audit/README.md`'s recorded result is
+        // what turned that into a byte-for-byte verdict.
+        //
+        // `vi\da~\` and `o~vijI~` are the two entries whose SLP1 surfaces
         // WOULD have collided with divādi's `vid` and tudādi's `vij` under
-        // the retired `id` scheme. Neither is curated, and under number
-        // keying the question no longer arises: `07.0013` and `07.0023`
-        // would be distinct from `04.0067` and `06.0009` whether or not
-        // their surfaces agree.
+        // the retired `id` scheme. Both are curated here, and under number
+        // keying the question does not arise: `07.0013` and `07.0023` are
+        // distinct from `04.0067` and `06.0009` whether or not their
+        // surfaces agree. This is the slice that would have paid for the
+        // retired scheme, and does not.
         //
-        // √ric and √vic join here now: they were held out only because
-        // 8.2.30 coH kuH hardcoded the `j` -> `g` pair its match and
-        // substitute needed to generalise past, and that generalisation is
-        // now done.
-        //
-        // The gaṇa is still PARTIAL: 13 of its 25 dhātupāṭha roots, so
-        // TWELVE remain out, and they do not all cost the same. √chid and
-        // √chṛd want 6.1.73 Ce ca plus 8.4.40 stoH ScunA ScuH,
-        // which this engine does not have. Nine reachable non-ubhayapadī
-        // roots (√śiṣ, √tṛh, √und, √añj, √tañc, √vij, √vṛj, √pṛc, √vid) are
-        // simply not curated. And √bhuj is out on different grounds again:
-        // 1.3.66 Bujo'navane forks its pada on sense.
+        // The gaṇa is still PARTIAL: 21 of its 25 dhātupāṭha roots, so FOUR
+        // remain out, and they do not all cost the same. √tṛh wants 7.3.92
+        // tfRaha im with 8.2.31 ho QaH and 8.3.13 Qo Qe lopaH -- slice 7e.
+        // √chid and √chṛd want 6.1.73 Ce ca plus 8.4.40 stoH ScunA ScuH.
+        // And √bhuj is out on different grounds again: 1.3.66 Bujo'navane
+        // forks its pada on sense.
         let rows: Vec<_> = dhatus()
             .iter()
             .filter(|d| d.gana == Gana::Rudhadi)
@@ -871,6 +964,14 @@ mod tests {
                 ("07.0009", "tfd", PadaAssignment::Ubhayapada),
                 ("07.0004", "ric", PadaAssignment::Ubhayapada),
                 ("07.0005", "vic", PadaAssignment::Ubhayapada),
+                ("07.0014", "Siz", PadaAssignment::Parasmaipada),
+                ("07.0020", "und", PadaAssignment::Parasmaipada),
+                ("07.0021", "anj", PadaAssignment::Parasmaipada),
+                ("07.0022", "tanc", PadaAssignment::Parasmaipada),
+                ("07.0023", "vij", PadaAssignment::Parasmaipada),
+                ("07.0024", "vfj", PadaAssignment::Parasmaipada),
+                ("07.0025", "pfc", PadaAssignment::Parasmaipada),
+                ("07.0013", "vid", PadaAssignment::Atmanepada),
             ]
         );
     }
@@ -998,7 +1099,7 @@ mod tests {
     /// AFTER the `~` that marks an anunāsika it, so `~\` is an anudātta it and
     /// `~^` a svarita it — whereas a `\` sitting directly on a vowel elsewhere
     /// is the ROOT's own accent and says nothing about pada. Counted off the
-    /// vendored upadeśa: 40 of the 55 curated roots carry a `\` at all, and 27
+    /// vendored upadeśa: 42 of the 63 curated roots carry a `\` at all, and 29
     /// of those carry one on a root vowel — `01.0642 ji\`, `01.1082 smf\` and
     /// `02.0001 a\da~` among them — so conflating the two does not fail
     /// loudly; it silently calls most of the table ātmanepada.
@@ -1193,11 +1294,11 @@ mod tests {
 
     #[test]
     fn a_root_vowel_accent_does_not_assign_pada() {
-        // The failure mode that would make the whole audit vacuous: 40 of the
-        // 55 curated roots carry a `\` somewhere in their upadeśa, 27 of them
+        // The failure mode that would make the whole audit vacuous: 42 of the
+        // 63 curated roots carry a `\` somewhere in their upadeśa, 29 of them
         // on a root vowel rather than on an it. Reading every `\` as 1.3.12's
-        // anudātta would call 22 of the 40 ātmanepada wrongly (14 curated
-        // parasmaipada, 8 ubhayapada); the other 18 carry a genuine `~\` and
+        // anudātta would call 23 of the 42 ātmanepada wrongly (15 curated
+        // parasmaipada, 8 ubhayapada); the other 19 carry a genuine `~\` and
         // are curated ātmanepada anyway, which is why agreement with the
         // column would still hold on every genuinely ātmanepada root, and only
         // a parasmaipada witness catches it.

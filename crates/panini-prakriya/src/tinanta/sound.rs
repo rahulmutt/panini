@@ -247,9 +247,12 @@ mod tests {
     #[test]
     fn vrddhi_of_ac_vowels_all_arms() {
         // 1.1.1 vRddhir Adaic: pin every arm of the vRddhi substitution
-        // table directly, since the curated roots only ever drive
-        // vrddhi_of through 6.1.90 with e/I/E inputs (never a/A/u/U/o/O),
-        // leaving those arms unreachable via golden derivations. Mirrors
+        // table directly. Rudhādi 7d's √und reaches vrddhi_of through
+        // 6.1.90 with a `u` input via a golden derivation --
+        // `aunat_trace_takes_the_u_vrddhi_arm` pins `Onad` -- so the `u`
+        // arm is no longer unreachable that way; the remaining arms
+        // (a/A/U/o/O) are still unit-test-only, and this test remains the
+        // only thing covering them. Mirrors
         // guna_of_ik_vowels_all_arms above.
         assert_eq!(vrddhi_of('a'), Some('A'));
         assert_eq!(vrddhi_of('A'), Some('A'));
