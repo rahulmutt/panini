@@ -48,7 +48,8 @@ shows a difference".
 Every `code` and every pada below was hand-traced through `panini-data`'s
 existing `strip_anubandhas` and `pada_from_upadesha` and falls out correctly,
 so the data layer needs no change to accept them. Two are worth naming: the
-`o~` of `o~vijI~` is the first `o~`-initial it-marker the table carries, and it
+`o~` of `o~vijI~` is the second `o~`-initial it-marker the table carries,
+after tudādi's `06.0009 o~vijI~\`, and it
 is stripped by the existing 1.3.2 loop with no new arm; and `Si\zx~`'s `x~`
 goes the same way while the root-final `z` — a real sound, not an it —
 survives, because `ends_in_hal` is decided on the original upadeśa whose last
@@ -60,7 +61,7 @@ character is `~`.
 | 07.0020 | `undI~` | `und` | parasmaipada | 6.1.90 with `u` → `O`; the fork-heavy root |
 | 07.0021 | `anjU~` | `anj` | parasmaipada | vowel-initial, 6.4.23 + 6.4.111 + 8.2.30 (`anakti`, `aNktaH`, `Anag`/`Anak`) |
 | 07.0022 | `tancU~` | `tanc` | parasmaipada | 8.2.30 on `c` + 8.4.53 (`tanakti`, `taNgDi`) |
-| 07.0023 | `o~vijI~` | `vij` | parasmaipada | first `o~`-initial it-marker curated (`vinakti`, `viNktaH`) |
+| 07.0023 | `o~vijI~` | `vij` | parasmaipada | second `o~`-initial it-marker curated, after tudādi's `06.0009` (`vinakti`, `viNktaH`) |
 | 07.0024 | `vfjI~` | `vfj` | parasmaipada | 8.4.1 ṇatva of śnam's `n` (`vfRakti`) |
 | 07.0025 | `pfcI~` | `pfc` | parasmaipada | ṇatva + 8.2.30 on `c` (`pfRakti`, `pfNktaH`) |
 | 07.0013 | `vi\da~\` | `vid` | ātmanepada | ātmanepada-only; 8.4.65 forks throughout (`vinte`/`vintte`) |

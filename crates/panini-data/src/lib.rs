@@ -660,8 +660,9 @@ static DHATUS: &[Dhatu] = &[
         artha: "saNkocane",
     },
     Dhatu {
-        // 07.0023 o~vijI~ BayacalanayoH. The first `o~`-initial upadeśa in
-        // the table. Nothing new is needed for it: 1.3.2's anunāsika-it
+        // 07.0023 o~vijI~ BayacalanayoH. The second `o~`-initial upadeśa
+        // in the table, after tudādi's `06.0009`. Nothing new is needed
+        // for it: 1.3.2's anunāsika-it
         // loop in strip_anubandhas takes `o~` like any other vowel + `~`
         // pair, and `curated_pada_agrees_with_upadesha_markers` checks the
         // verdict rather than trusting it.
@@ -695,7 +696,7 @@ static DHATUS: &[Dhatu] = &[
     },
     Dhatu {
         // 07.0013 vi\da~\ vicAraRe. Ātmanepada by 1.3.12 on its trailing
-        // `~\`, and the gaṇa's second pure-ātmanepadī root after √khid and
+        // `~\`, and the gaṇa's third pure-ātmanepadī root after √khid and
         // √indh. Distinct from divādi's `vid` (04.0067) and every other
         // √vid by dhātupāṭha number, not by surface. 8.4.65 Jaro Jari
         // savarRe forks nearly every cell it has (vinte / vintte).

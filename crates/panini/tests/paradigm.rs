@@ -5197,7 +5197,7 @@ const VIKALPA_RULES: &[&str] = &[
     "7.1.35", "3.4.111", "6.4.107", "8.2.74", "8.2.75", "8.4.65", "8.4.56",
 ];
 
-/// `ALTERNATES` is otherwise 350 bare strings, and a string can be right for
+/// `ALTERNATES` is otherwise 422 bare strings, and a string can be right for
 /// the wrong reason — `BavatAt` is a real form whether or not 8.4.56 is what
 /// produced it. This ties each row to the grammar: find the branch that
 /// derives the row's form, intersect its log with the optional-rule set, and
@@ -5770,7 +5770,11 @@ fn pada_ambiguous_surfaces_are_exactly_these() {
     // `aviNkta`/`viNktAm` (√vic `07.0005`). This slice's own acceptance
     // check was that all eighteen pre-slice surfaces (the pre-7c ten plus
     // 7c's own eight) survive undisturbed, with only the four ric/vic
-    // surfaces added — and they do.
+    // surfaces added — and they do. Rudhādi 7d re-ran this same check: its
+    // one new pada-bearing addition to the bucket, √vid (`07.0013`,
+    // ātmanepada-only), gets compared against every parasmaipada surface
+    // in the corpus, and the result is no new collision — the set is
+    // unchanged at twenty-two surfaces.
     assert_eq!(
         both,
         vec![

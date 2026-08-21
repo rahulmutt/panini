@@ -312,24 +312,24 @@ same lopa obligatory for √kṛ and is what makes this rule optional, is out
 of scope with √kṛ itself.
 
 7.1.35 optionally replaces the loṭ endings `tu`/`hi` with tātaṅ (then
-8.2.39 obligatorily voices its final `t` to `d`), forking 70 cells (loṭ
-prathama and madhyama eka across the 35 roots with a parasmaipada column —
-`tu`/`hi` are parasmaipada endings, so the curated set's 20 ātmanepada-only
+8.2.39 obligatorily voices its final `t` to `d`), forking 84 cells (loṭ
+prathama and madhyama eka across the 42 roots with a parasmaipada column —
+`tu`/`hi` are parasmaipada endings, so the curated set's 21 ātmanepada-only
 roots never reach this guard, and the nine ubhayapadī roots √rudh, √nī,
 √tud, √bhid, √kṣud, √yuj, √tṛd, √ric and √vic reach it
-in their parasmaipada cells only; 35 + 20 = the 55 curated
+in their parasmaipada cells only; 42 + 21 = the 63 curated
 roots) — `Bavatu ~ BavatAd`, `Bava ~ BavatAd`. 8.4.56
 optionally devoices a pada-final jaś (produced by the now-obligatory 8.2.39)
-back to its car at the end of an utterance, forking 81 cells outright: laṅ
-and vidhiliṅ prathama eka across those same 35 parasmaipada columns (70 of
+back to its car at the end of an utterance, forking 102 cells outright: laṅ
+and vidhiliṅ prathama eka across those same 42 parasmaipada columns (84 of
 them — 8.2.39's `d` is a parasmaipada-ending artifact, ātmanepada's
 laṅ/vidhiliṅ prathama eka endings are vowel-final and never reach a jhal),
-plus eleven rudhādi laṅ *madhyama* eka cells (√kṛt, √hiṃs, √bhañj, √piṣ,
-√rudh, √bhid, √kṣud, √yuj, √tṛd, √ric and √vic — every rudhādi root with a
-parasmaipada column), where 8.2.23
+plus eighteen rudhādi laṅ *madhyama* eka cells (√kṛt, √hiṃs, √bhañj, √piṣ,
+√rudh, √bhid, √kṣud, √yuj, √tṛd, √ric, √vic, √śiṣ, √und, √añj, √tañc, √vij,
+√vṛj and √pṛc — every rudhādi root with a parasmaipada column), where 8.2.23
 *saṁyogāntasya lopaḥ* has eaten the ending's own `s` and left the stem's
 jaś pada-final after all — `aBavad ~ aBavat`, `Baved ~ Bavet`,
-`apinaq ~ apinaw`, `aruRad ~ aruRat` — and forking a further 70 (the same
+`apinaq ~ apinaw`, `aruRad ~ aruRat` — and forking a further 84 (the same
 loṭ cells 7.1.35 just forked) by devoicing the tātaṅ branch's `BavatAd` to
 `BavatAt`, which is
 what stacks the two rules into the three-branch loṭ cells above rather

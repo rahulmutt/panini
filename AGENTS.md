@@ -383,10 +383,16 @@
     `aCinat` for `acCinat`. Rudhādi 7d then curated eight of the nine
     remaining reachable non-ubhayapadī roots — √śiṣ, √und, √añj, √tañc,
     √vij, √vṛj, √pṛc and √vid — on the audited numbers alone, with no new
-    sūtra: each exercises machinery already in the pipeline (7.1.58 *idito
-    num dhātoḥ* for √und, 6.4.24 *aniditāṁ hala upadhāyāḥ kṅiti* for √añj
-    and √tañc, and two SLP1 surface collisions, which number keying makes
-    moot) rather than needing anything new. **√tṛh** is the ninth and the
+    sūtra: each exercises machinery already in the pipeline — 6.4.23 *śnān
+    nalopaḥ* then 6.4.111 *śnasor allopaḥ* for √und, √añj and √tañc (√und
+    additionally taking 6.4.72 *āṭ* with 6.1.90 *āṭaś ca*), 8.2.30 *coḥ
+    kuḥ* (kutva) for √añj, √tañc and √pṛc, 8.4.1 *raṣābhyāṁ no ṇaḥ* (ṇatva)
+    for √vṛj and √pṛc, 8.4.41 and 8.2.41 for √śiṣ, and 8.4.65 *jharo jhari
+    savarṇe* for √vid — plus two SLP1 surface collisions, which number
+    keying makes moot, rather than needing anything new. (vidyut-prakriya
+    credits 6.4.24 *aniditāṁ hala upadhāyāḥ kṅiti* for √und's `unad → und`
+    step; this engine rejects that credit, does not implement 6.4.24 at
+    all, and pins the rejection in `trace.rs`.) **√tṛh** is the ninth and the
     only one still out, deferred to slice 7e behind three sūtras the
     engine does not implement: 7.3.92 *tṛṇaha im* (the *im* augment),
     8.2.31 *ho ḍhaḥ* and 8.3.13 *ḍho ḍhe lopaḥ*. √bhuj (`07.0017 Bu\ja~`)

@@ -115,8 +115,9 @@ no new `Rule`. Because no `Rule` changed in this slice, the zero-difference
 verdict is a statement about those eight rows alone: the engine was already
 correct about every rule they exercise, and this audit is the proof. Corpus
 totals moved from 55/2304/2654 to 63/2592/3014 (63 = 55 + 8 curated roots;
-2592 = 2304 + 8 × 36 cells per root; 3014 = 2654 + 360, i.e. 422 total
-`ALTERNATES` rows, up from 350).
+2592 = 2304 + 8 × 36 cells per root; 3014 = 2654 + 360, where the 360 new
+forms are 288 new cells' canonical forms plus 72 new `ALTERNATES` rows;
+`ALTERNATES` now totals 422 rows, up from 350).
 
 ## Scope
 
