@@ -3069,6 +3069,348 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
             "viYcImahi",
         ],
     ),
+    (
+        "07.0014",
+        "laT",
+        Pada::Parasmaipada,
+        [
+            "Sinazwi", "SiMzwaH", "SiMzanti", "Sinakzi", "SiMzWaH", "SiMzWa", "Sinazmi", "SiMzvaH",
+            "SiMzmaH",
+        ],
+    ),
+    (
+        "07.0014",
+        "laN",
+        Pada::Parasmaipada,
+        [
+            "aSinaq", "aSiMzwAm", "aSiMzan", "aSinaq", "aSiMzwam", "aSiMzwa", "aSinazam",
+            "aSiMzva", "aSiMzma",
+        ],
+    ),
+    (
+        "07.0014",
+        "loT",
+        Pada::Parasmaipada,
+        [
+            "Sinazwu", "SiMzwAm", "SiMzantu", "SiRqQi", "SiMzwam", "SiMzwa", "SinazARi",
+            "SinazAva", "SinazAma",
+        ],
+    ),
+    (
+        "07.0014",
+        "viDiliN",
+        Pada::Parasmaipada,
+        [
+            "SiMzyAd",
+            "SiMzyAtAm",
+            "SiMzyuH",
+            "SiMzyAH",
+            "SiMzyAtam",
+            "SiMzyAta",
+            "SiMzyAm",
+            "SiMzyAva",
+            "SiMzyAma",
+        ],
+    ),
+    (
+        "07.0020",
+        "laT",
+        Pada::Parasmaipada,
+        [
+            "unatti", "unttaH", "undanti", "unatsi", "untTaH", "untTa", "unadmi", "undvaH",
+            "undmaH",
+        ],
+    ),
+    (
+        "07.0020",
+        "laN",
+        Pada::Parasmaipada,
+        [
+            "Onad", "OnttAm", "Ondan", "Onad", "Onttam", "Ontta", "Onadam", "Ondva", "Ondma",
+        ],
+    ),
+    (
+        "07.0020",
+        "loT",
+        Pada::Parasmaipada,
+        [
+            "unattu", "unttAm", "undantu", "undDi", "unttam", "untta", "unadAni", "unadAva",
+            "unadAma",
+        ],
+    ),
+    (
+        "07.0020",
+        "viDiliN",
+        Pada::Parasmaipada,
+        [
+            "undyAd", "undyAtAm", "undyuH", "undyAH", "undyAtam", "undyAta", "undyAm", "undyAva",
+            "undyAma",
+        ],
+    ),
+    (
+        "07.0021",
+        "laT",
+        Pada::Parasmaipada,
+        [
+            "anakti", "aNktaH", "aYjanti", "anakzi", "aNkTaH", "aNkTa", "anajmi", "aYjvaH",
+            "aYjmaH",
+        ],
+    ),
+    (
+        "07.0021",
+        "laN",
+        Pada::Parasmaipada,
+        [
+            "Anag", "ANktAm", "AYjan", "Anag", "ANktam", "ANkta", "Anajam", "AYjva", "AYjma",
+        ],
+    ),
+    (
+        "07.0021",
+        "loT",
+        Pada::Parasmaipada,
+        [
+            "anaktu", "aNktAm", "aYjantu", "aNgDi", "aNktam", "aNkta", "anajAni", "anajAva",
+            "anajAma",
+        ],
+    ),
+    (
+        "07.0021",
+        "viDiliN",
+        Pada::Parasmaipada,
+        [
+            "aYjyAd", "aYjyAtAm", "aYjyuH", "aYjyAH", "aYjyAtam", "aYjyAta", "aYjyAm", "aYjyAva",
+            "aYjyAma",
+        ],
+    ),
+    (
+        "07.0022",
+        "laT",
+        Pada::Parasmaipada,
+        [
+            "tanakti", "taNktaH", "taYcanti", "tanakzi", "taNkTaH", "taNkTa", "tanacmi", "taYcvaH",
+            "taYcmaH",
+        ],
+    ),
+    (
+        "07.0022",
+        "laN",
+        Pada::Parasmaipada,
+        [
+            "atanag", "ataNktAm", "ataYcan", "atanag", "ataNktam", "ataNkta", "atanacam",
+            "ataYcva", "ataYcma",
+        ],
+    ),
+    (
+        "07.0022",
+        "loT",
+        Pada::Parasmaipada,
+        [
+            "tanaktu", "taNktAm", "taYcantu", "taNgDi", "taNktam", "taNkta", "tanacAni",
+            "tanacAva", "tanacAma",
+        ],
+    ),
+    (
+        "07.0022",
+        "viDiliN",
+        Pada::Parasmaipada,
+        [
+            "taYcyAd",
+            "taYcyAtAm",
+            "taYcyuH",
+            "taYcyAH",
+            "taYcyAtam",
+            "taYcyAta",
+            "taYcyAm",
+            "taYcyAva",
+            "taYcyAma",
+        ],
+    ),
+    (
+        "07.0023",
+        "laT",
+        Pada::Parasmaipada,
+        [
+            "vinakti", "viNktaH", "viYjanti", "vinakzi", "viNkTaH", "viNkTa", "vinajmi", "viYjvaH",
+            "viYjmaH",
+        ],
+    ),
+    (
+        "07.0023",
+        "laN",
+        Pada::Parasmaipada,
+        [
+            "avinag", "aviNktAm", "aviYjan", "avinag", "aviNktam", "aviNkta", "avinajam",
+            "aviYjva", "aviYjma",
+        ],
+    ),
+    (
+        "07.0023",
+        "loT",
+        Pada::Parasmaipada,
+        [
+            "vinaktu", "viNktAm", "viYjantu", "viNgDi", "viNktam", "viNkta", "vinajAni",
+            "vinajAva", "vinajAma",
+        ],
+    ),
+    (
+        "07.0023",
+        "viDiliN",
+        Pada::Parasmaipada,
+        [
+            "viYjyAd",
+            "viYjyAtAm",
+            "viYjyuH",
+            "viYjyAH",
+            "viYjyAtam",
+            "viYjyAta",
+            "viYjyAm",
+            "viYjyAva",
+            "viYjyAma",
+        ],
+    ),
+    (
+        "07.0024",
+        "laT",
+        Pada::Parasmaipada,
+        [
+            "vfRakti", "vfNktaH", "vfYjanti", "vfRakzi", "vfNkTaH", "vfNkTa", "vfRajmi", "vfYjvaH",
+            "vfYjmaH",
+        ],
+    ),
+    (
+        "07.0024",
+        "laN",
+        Pada::Parasmaipada,
+        [
+            "avfRag", "avfNktAm", "avfYjan", "avfRag", "avfNktam", "avfNkta", "avfRajam",
+            "avfYjva", "avfYjma",
+        ],
+    ),
+    (
+        "07.0024",
+        "loT",
+        Pada::Parasmaipada,
+        [
+            "vfRaktu", "vfNktAm", "vfYjantu", "vfNgDi", "vfNktam", "vfNkta", "vfRajAni",
+            "vfRajAva", "vfRajAma",
+        ],
+    ),
+    (
+        "07.0024",
+        "viDiliN",
+        Pada::Parasmaipada,
+        [
+            "vfYjyAd",
+            "vfYjyAtAm",
+            "vfYjyuH",
+            "vfYjyAH",
+            "vfYjyAtam",
+            "vfYjyAta",
+            "vfYjyAm",
+            "vfYjyAva",
+            "vfYjyAma",
+        ],
+    ),
+    (
+        "07.0025",
+        "laT",
+        Pada::Parasmaipada,
+        [
+            "pfRakti", "pfNktaH", "pfYcanti", "pfRakzi", "pfNkTaH", "pfNkTa", "pfRacmi", "pfYcvaH",
+            "pfYcmaH",
+        ],
+    ),
+    (
+        "07.0025",
+        "laN",
+        Pada::Parasmaipada,
+        [
+            "apfRag", "apfNktAm", "apfYcan", "apfRag", "apfNktam", "apfNkta", "apfRacam",
+            "apfYcva", "apfYcma",
+        ],
+    ),
+    (
+        "07.0025",
+        "loT",
+        Pada::Parasmaipada,
+        [
+            "pfRaktu", "pfNktAm", "pfYcantu", "pfNgDi", "pfNktam", "pfNkta", "pfRacAni",
+            "pfRacAva", "pfRacAma",
+        ],
+    ),
+    (
+        "07.0025",
+        "viDiliN",
+        Pada::Parasmaipada,
+        [
+            "pfYcyAd",
+            "pfYcyAtAm",
+            "pfYcyuH",
+            "pfYcyAH",
+            "pfYcyAtam",
+            "pfYcyAta",
+            "pfYcyAm",
+            "pfYcyAva",
+            "pfYcyAma",
+        ],
+    ),
+    (
+        "07.0013",
+        "laT",
+        Pada::Atmanepada,
+        [
+            "vintte", "vindAte", "vindate", "vintse", "vindATe", "vindDve", "vinde", "vindvahe",
+            "vindmahe",
+        ],
+    ),
+    (
+        "07.0013",
+        "laN",
+        Pada::Atmanepada,
+        [
+            "avintta",
+            "avindAtAm",
+            "avindata",
+            "avintTAH",
+            "avindATAm",
+            "avindDvam",
+            "avindi",
+            "avindvahi",
+            "avindmahi",
+        ],
+    ),
+    (
+        "07.0013",
+        "loT",
+        Pada::Atmanepada,
+        [
+            "vinttAm",
+            "vindAtAm",
+            "vindatAm",
+            "vintsva",
+            "vindATAm",
+            "vindDvam",
+            "vinadE",
+            "vinadAvahE",
+            "vinadAmahE",
+        ],
+    ),
+    (
+        "07.0013",
+        "viDiliN",
+        Pada::Atmanepada,
+        [
+            "vindIta",
+            "vindIyAtAm",
+            "vindIran",
+            "vindITAH",
+            "vindIyATAm",
+            "vindIDvam",
+            "vindIya",
+            "vindIvahi",
+            "vindImahi",
+        ],
+    ),
 ];
 
 /// Second and third valid forms, for cells where an optional (vikalpa) rule
@@ -4473,6 +4815,253 @@ const ALTERNATES: &[(&str, &str, Pada, usize, &str, &str)] = &[
         "viYcyAt",
         "8.4.56",
     ),
+    ("07.0014", "laN", Pada::Parasmaipada, 0, "aSinaw", "8.4.56"),
+    ("07.0014", "laN", Pada::Parasmaipada, 3, "aSinaw", "8.4.56"),
+    ("07.0014", "loT", Pada::Parasmaipada, 0, "SiMzwAd", "7.1.35"),
+    (
+        "07.0014",
+        "loT",
+        Pada::Parasmaipada,
+        0,
+        "SiMzwAt",
+        "7.1.35+8.4.56",
+    ),
+    ("07.0014", "loT", Pada::Parasmaipada, 3, "SiRQi", "8.4.65"),
+    ("07.0014", "loT", Pada::Parasmaipada, 3, "SiMzwAd", "7.1.35"),
+    (
+        "07.0014",
+        "loT",
+        Pada::Parasmaipada,
+        3,
+        "SiMzwAt",
+        "7.1.35+8.4.56",
+    ),
+    (
+        "07.0014",
+        "viDiliN",
+        Pada::Parasmaipada,
+        0,
+        "SiMzyAt",
+        "8.4.56",
+    ),
+    ("07.0020", "laT", Pada::Parasmaipada, 1, "untaH", "8.4.65"),
+    ("07.0020", "laT", Pada::Parasmaipada, 4, "unTaH", "8.4.65"),
+    ("07.0020", "laT", Pada::Parasmaipada, 5, "unTa", "8.4.65"),
+    ("07.0020", "laN", Pada::Parasmaipada, 0, "Onat", "8.4.56"),
+    ("07.0020", "laN", Pada::Parasmaipada, 1, "OntAm", "8.4.65"),
+    ("07.0020", "laN", Pada::Parasmaipada, 3, "Onat", "8.4.56"),
+    ("07.0020", "laN", Pada::Parasmaipada, 3, "OnaH", "8.2.75"),
+    ("07.0020", "laN", Pada::Parasmaipada, 4, "Ontam", "8.4.65"),
+    ("07.0020", "laN", Pada::Parasmaipada, 5, "Onta", "8.4.65"),
+    ("07.0020", "loT", Pada::Parasmaipada, 0, "unttAd", "7.1.35"),
+    (
+        "07.0020",
+        "loT",
+        Pada::Parasmaipada,
+        0,
+        "unttAt",
+        "7.1.35+8.4.56",
+    ),
+    (
+        "07.0020",
+        "loT",
+        Pada::Parasmaipada,
+        0,
+        "untAd",
+        "7.1.35+8.4.65",
+    ),
+    (
+        "07.0020",
+        "loT",
+        Pada::Parasmaipada,
+        0,
+        "untAt",
+        "7.1.35+8.4.65+8.4.56",
+    ),
+    ("07.0020", "loT", Pada::Parasmaipada, 1, "untAm", "8.4.65"),
+    ("07.0020", "loT", Pada::Parasmaipada, 3, "unDi", "8.4.65"),
+    ("07.0020", "loT", Pada::Parasmaipada, 3, "unttAd", "7.1.35"),
+    (
+        "07.0020",
+        "loT",
+        Pada::Parasmaipada,
+        3,
+        "unttAt",
+        "7.1.35+8.4.56",
+    ),
+    (
+        "07.0020",
+        "loT",
+        Pada::Parasmaipada,
+        3,
+        "untAd",
+        "7.1.35+8.4.65",
+    ),
+    (
+        "07.0020",
+        "loT",
+        Pada::Parasmaipada,
+        3,
+        "untAt",
+        "7.1.35+8.4.65+8.4.56",
+    ),
+    ("07.0020", "loT", Pada::Parasmaipada, 4, "untam", "8.4.65"),
+    ("07.0020", "loT", Pada::Parasmaipada, 5, "unta", "8.4.65"),
+    (
+        "07.0020",
+        "viDiliN",
+        Pada::Parasmaipada,
+        0,
+        "undyAt",
+        "8.4.56",
+    ),
+    ("07.0021", "laN", Pada::Parasmaipada, 0, "Anak", "8.4.56"),
+    ("07.0021", "laN", Pada::Parasmaipada, 3, "Anak", "8.4.56"),
+    ("07.0021", "loT", Pada::Parasmaipada, 0, "aNktAd", "7.1.35"),
+    (
+        "07.0021",
+        "loT",
+        Pada::Parasmaipada,
+        0,
+        "aNktAt",
+        "7.1.35+8.4.56",
+    ),
+    ("07.0021", "loT", Pada::Parasmaipada, 3, "aNktAd", "7.1.35"),
+    (
+        "07.0021",
+        "loT",
+        Pada::Parasmaipada,
+        3,
+        "aNktAt",
+        "7.1.35+8.4.56",
+    ),
+    (
+        "07.0021",
+        "viDiliN",
+        Pada::Parasmaipada,
+        0,
+        "aYjyAt",
+        "8.4.56",
+    ),
+    ("07.0022", "laN", Pada::Parasmaipada, 0, "atanak", "8.4.56"),
+    ("07.0022", "laN", Pada::Parasmaipada, 3, "atanak", "8.4.56"),
+    ("07.0022", "loT", Pada::Parasmaipada, 0, "taNktAd", "7.1.35"),
+    (
+        "07.0022",
+        "loT",
+        Pada::Parasmaipada,
+        0,
+        "taNktAt",
+        "7.1.35+8.4.56",
+    ),
+    ("07.0022", "loT", Pada::Parasmaipada, 3, "taNktAd", "7.1.35"),
+    (
+        "07.0022",
+        "loT",
+        Pada::Parasmaipada,
+        3,
+        "taNktAt",
+        "7.1.35+8.4.56",
+    ),
+    (
+        "07.0022",
+        "viDiliN",
+        Pada::Parasmaipada,
+        0,
+        "taYcyAt",
+        "8.4.56",
+    ),
+    ("07.0023", "laN", Pada::Parasmaipada, 0, "avinak", "8.4.56"),
+    ("07.0023", "laN", Pada::Parasmaipada, 3, "avinak", "8.4.56"),
+    ("07.0023", "loT", Pada::Parasmaipada, 0, "viNktAd", "7.1.35"),
+    (
+        "07.0023",
+        "loT",
+        Pada::Parasmaipada,
+        0,
+        "viNktAt",
+        "7.1.35+8.4.56",
+    ),
+    ("07.0023", "loT", Pada::Parasmaipada, 3, "viNktAd", "7.1.35"),
+    (
+        "07.0023",
+        "loT",
+        Pada::Parasmaipada,
+        3,
+        "viNktAt",
+        "7.1.35+8.4.56",
+    ),
+    (
+        "07.0023",
+        "viDiliN",
+        Pada::Parasmaipada,
+        0,
+        "viYjyAt",
+        "8.4.56",
+    ),
+    ("07.0024", "laN", Pada::Parasmaipada, 0, "avfRak", "8.4.56"),
+    ("07.0024", "laN", Pada::Parasmaipada, 3, "avfRak", "8.4.56"),
+    ("07.0024", "loT", Pada::Parasmaipada, 0, "vfNktAd", "7.1.35"),
+    (
+        "07.0024",
+        "loT",
+        Pada::Parasmaipada,
+        0,
+        "vfNktAt",
+        "7.1.35+8.4.56",
+    ),
+    ("07.0024", "loT", Pada::Parasmaipada, 3, "vfNktAd", "7.1.35"),
+    (
+        "07.0024",
+        "loT",
+        Pada::Parasmaipada,
+        3,
+        "vfNktAt",
+        "7.1.35+8.4.56",
+    ),
+    (
+        "07.0024",
+        "viDiliN",
+        Pada::Parasmaipada,
+        0,
+        "vfYjyAt",
+        "8.4.56",
+    ),
+    ("07.0025", "laN", Pada::Parasmaipada, 0, "apfRak", "8.4.56"),
+    ("07.0025", "laN", Pada::Parasmaipada, 3, "apfRak", "8.4.56"),
+    ("07.0025", "loT", Pada::Parasmaipada, 0, "pfNktAd", "7.1.35"),
+    (
+        "07.0025",
+        "loT",
+        Pada::Parasmaipada,
+        0,
+        "pfNktAt",
+        "7.1.35+8.4.56",
+    ),
+    ("07.0025", "loT", Pada::Parasmaipada, 3, "pfNktAd", "7.1.35"),
+    (
+        "07.0025",
+        "loT",
+        Pada::Parasmaipada,
+        3,
+        "pfNktAt",
+        "7.1.35+8.4.56",
+    ),
+    (
+        "07.0025",
+        "viDiliN",
+        Pada::Parasmaipada,
+        0,
+        "pfYcyAt",
+        "8.4.56",
+    ),
+    ("07.0013", "laT", Pada::Atmanepada, 0, "vinte", "8.4.65"),
+    ("07.0013", "laT", Pada::Atmanepada, 5, "vinDve", "8.4.65"),
+    ("07.0013", "laN", Pada::Atmanepada, 0, "avinta", "8.4.65"),
+    ("07.0013", "laN", Pada::Atmanepada, 3, "avinTAH", "8.4.65"),
+    ("07.0013", "laN", Pada::Atmanepada, 5, "avinDvam", "8.4.65"),
+    ("07.0013", "loT", Pada::Atmanepada, 0, "vintAm", "8.4.65"),
+    ("07.0013", "loT", Pada::Atmanepada, 5, "vinDvam", "8.4.65"),
 ];
 
 fn lan_a_form(number: &str, pu: Purusha, va: Vacana) -> String {
@@ -4701,8 +5290,12 @@ fn derivation_set_is_exactly_pinned() {
 /// inD), and — new in the ubhayapada 1.3.72 slice — √rudh (ruD), pinned in
 /// both padas, joined by the pada audit's √nī and √tud, also pinned in both
 /// padas, and — new in the 8.2.30/8.2.39 generalization slice — √ric and
-/// √vic, also pinned in both padas: every one of the thirteen rudhādi
-/// roots forks in both loṭ and laṅ, and two of them — kft and ruD — fork
+/// √vic, also pinned in both padas, joined by rudhādi 7d's eight roots —
+/// √śiṣ (Siz), √und (und), √añj (anj), √tañc (tanc), √vij (vij), √vṛj (vfj)
+/// and √pṛc (pfc), all parasmaipadī, plus √vid (vid), ātmanepadī, curated
+/// with no new sūtra and cleared by their own cross-implementation audit:
+/// every one of the twenty-one rudhādi roots forks in both loṭ and laṅ,
+/// and two of them — kft and ruD — fork
 /// in all four lakāras: laṭ (kft
 /// cells 1/4/5, Kid cells 0/5, inD cells 0/5, and — new in the ubhayapada
 /// 1.3.72 slice — ruD
@@ -4710,8 +5303,9 @@ fn derivation_set_is_exactly_pinned() {
 /// 8.4.65, the 8.2.74/8.2.75 ru alternation, and the 8.2.23-above-8.2.41
 /// śa-luk jaśtva 8.4.56 branch), loṭ (on 7.1.35/8.4.65/8.4.56, stacking up to
 /// three deep, and piṣ's loṭ madhyama eka, which stacks 8.4.65 alongside
-/// 7.1.35/8.4.56 four deep), and vidhiliṅ (kft/his/Banj/piz/ruD/Bid/kzud/yuj/tfd/ric/vic
-/// cell 0, on 8.4.56 — Kid and inD do not fork here). Slice 7c curated four more roots —
+/// 7.1.35/8.4.56 four deep), and vidhiliṅ
+/// (kft/his/Banj/piz/ruD/Bid/kzud/yuj/tfd/ric/vic/Siz/und/anj/tanc/vij/vfj/pfc
+/// cell 0, on 8.4.56 — Kid, inD and vid do not fork here). Slice 7c curated four more roots —
 /// √bhid (Bid), √kṣud (kzud), √yuj (yuj) and √tṛd (tfd), all four ubhayapadī
 /// by 1.3.72 and pinned in both padas — and three of them join kft and ruD as
 /// four-lakāra forkers: Bid, kzud and tfd each stack 7.1.35/8.4.65/8.4.56 in
@@ -4738,23 +5332,33 @@ fn derivation_set_is_exactly_pinned() {
 /// madhyama eka decline to `ariRag`/`avinag` (jaśtva-voiced) with 8.4.56
 /// vā'vasāne supplying the optional `ariRak`/`avinak` — the same
 /// √bhañj-pattern fork yuj's `ayunag`/`ayunak` already witnesses, now with
-/// a second pair of roots on it:
-/// 2304 cells total (256 root×lakāra blocks × 9), of which 2056 hold exactly one form,
-/// 172 hold two, 65 hold three, one holds four (piṣ's loṭ madhyama eka, the
-/// deepest fork added in 7b), and — the sharpest branch-count witnesses in
-/// the repo, per `docs/ARCHITECTURE.md` — exactly five hold five (√kṛt's loṭ
-/// prathama eka, ruD's loṭ parasmaipada prathama eka, and — new in slice
-/// 7c — Bid's, kzud's and tfd's loṭ parasmaipada prathama eka) and five
+/// a second pair of roots on it. Rudhādi 7d curated eight more roots on the
+/// audited numbers alone, with no new sūtra: Siz's loṭ parasmaipada
+/// madhyama eka joins piṣ's as a second four-form cell of the same shape
+/// (8.4.65 alone, 7.1.35 alone, and 7.1.35+8.4.56 stacked), and und is the
+/// sharpest of the eight — its loṭ parasmaipada prathama eka stacks
+/// 7.1.35/8.4.65/8.4.56 exactly as kft/ruD/Bid/kzud/tfd's do (a five-form
+/// cell), and its loṭ parasmaipada madhyama eka ties the six-form record
+/// with the same k = 3 against the 2³ bound of eight:
+/// 2592 cells total (288 root×lakāra blocks × 9), of which 2293 hold exactly one form,
+/// 208 hold two, 77 hold three, two hold four (piṣ's loṭ madhyama eka, the
+/// deepest fork added in 7b, and — new in slice 7d — Siz's loṭ parasmaipada
+/// madhyama eka), and — the sharpest branch-count witnesses in
+/// the repo, per `docs/ARCHITECTURE.md` — exactly six hold five (√kṛt's loṭ
+/// prathama eka, ruD's loṭ parasmaipada prathama eka, Bid's, kzud's and
+/// tfd's loṭ parasmaipada prathama eka, and — new in slice 7d — und's loṭ
+/// parasmaipada prathama eka) and six
 /// hold six (√kṛt's loṭ madhyama eka, `kfndDi`/`kfnDi`'s cell, ruD's loṭ
 /// parasmaipada madhyama eka, `rundDi`/`runDi`/`rundDAd`/`runDAd`/
-/// `rundDAt`/`runDAt`, and — new in slice 7c — Bid's, kzud's and tfd's loṭ
-/// parasmaipada madhyama eka, each tying √kṛt's record with the same k = 3
+/// `rundDAt`/`runDAt`, Bid's, kzud's and tfd's loṭ
+/// parasmaipada madhyama eka, and — new in slice 7d — und's loṭ parasmaipada
+/// madhyama eka, each tying √kṛt's record with the same k = 3
 /// (7.1.35, 8.4.65, 8.4.56) against a 2³ bound of eight — ric and vic do not
 /// join this record; per the 8.2.30/8.2.39 slice's own audit their deepest
 /// cells are three forms). `ALTERNATES`
-/// itself has 350 rows, keyed 81 `8.4.56`, 70 `7.1.35`, 70 `7.1.35+8.4.56`,
-/// 2 `3.4.111`, 8 `6.4.107`, 93 `8.4.65`, 5 `8.2.75`, 1 `8.2.74`, 10
-/// `7.1.35+8.4.65`, and 10 `7.1.35+8.4.65+8.4.56` — the assertions below are
+/// itself has 422 rows, keyed 102 `8.4.56`, 84 `7.1.35`, 84 `7.1.35+8.4.56`,
+/// 2 `3.4.111`, 8 `6.4.107`, 111 `8.4.65`, 6 `8.2.75`, 1 `8.2.74`, 12
+/// `7.1.35+8.4.65`, and 12 `7.1.35+8.4.65+8.4.56` — the assertions below are
 /// complete. The audit probe that produced the original numbers ran against
 /// a vidyut-prakriya checkout during design; slice 9's cross-implementation
 /// audit re-ran the full check against a scratchpad vidyut-prakriya checkout
@@ -4770,12 +5374,15 @@ fn derivation_set_is_exactly_pinned() {
 /// re-ran the same probe against vidyut-prakriya at commit `8da2f90` over
 /// all 2304 cells / 2654 forms / 55 roots with zero differences, its
 /// `entry` negative control verified failing (36 √bhū cells) both times
-/// the audit was run — so the numbers are re-verified as well as pinned.
+/// the audit was run, and rudhādi 7d's cross-implementation audit re-ran
+/// the same probe against vidyut-prakriya at commit `8da2f90` over all
+/// 2592 cells / 3014 forms / 63 roots with zero differences, its `entry`
+/// negative control verified failing — so the numbers are re-verified as well as pinned.
 /// This test is what keeps the numbers true day to day.
 #[test]
 fn derivation_set_shape_matches_the_audited_numbers() {
     let total_cells = PARADIGM.len() * 9;
-    assert_eq!(total_cells, 2304, "256 root×lakāra blocks × 9 cells each");
+    assert_eq!(total_cells, 2592, "288 root×lakāra blocks × 9 cells each");
 
     let mut ones = 0usize;
     let mut twos = 0usize;
@@ -4802,40 +5409,46 @@ fn derivation_set_shape_matches_the_audited_numbers() {
             }
         }
     }
-    assert_eq!(ones, 2056, "one-form cells");
-    assert_eq!(twos, 172, "two-form cells");
-    assert_eq!(threes, 65, "three-form cells");
-    assert_eq!(fours, 1, "four-form cells — piṣ's loṭ madhyama eka");
+    assert_eq!(ones, 2293, "one-form cells");
+    assert_eq!(twos, 208, "two-form cells");
+    assert_eq!(threes, 77, "three-form cells");
     assert_eq!(
-        fives, 5,
-        "five-form cells — kft loṭ prathama eka, ruD loṭ parasmaipada prathama eka, and — new \
-         in slice 7c — Bid, kzud and tfd's loṭ parasmaipada prathama eka"
+        fours, 2,
+        "four-form cells — piṣ's loṭ madhyama eka, and — new in slice 7d — Siz's loṭ \
+         parasmaipada madhyama eka"
     );
     assert_eq!(
-        sixes, 5,
-        "six-form cells — kft loṭ madhyama eka, ruD loṭ parasmaipada madhyama eka, and — new \
-         in slice 7c — Bid, kzud and tfd's loṭ parasmaipada madhyama eka"
+        fives, 6,
+        "five-form cells — kft loṭ prathama eka, ruD loṭ parasmaipada prathama eka, Bid, kzud \
+         and tfd's loṭ parasmaipada prathama eka, and — new in slice 7d — und's loṭ \
+         parasmaipada prathama eka"
+    );
+    assert_eq!(
+        sixes, 6,
+        "six-form cells — kft loṭ madhyama eka, ruD loṭ parasmaipada madhyama eka, Bid, kzud \
+         and tfd's loṭ parasmaipada madhyama eka, and — new in slice 7d — und's loṭ \
+         parasmaipada madhyama eka"
     );
 
-    assert_eq!(ALTERNATES.len(), 350, "ALTERNATES row count");
+    assert_eq!(ALTERNATES.len(), 422, "ALTERNATES row count");
     let key_count = |key: &str| {
         ALTERNATES
             .iter()
             .filter(|(_, _, _, _, _, k)| *k == key)
             .count()
     };
-    assert_eq!(key_count("8.4.56"), 81, "8.4.56-only alternates");
-    assert_eq!(key_count("7.1.35"), 70, "7.1.35-only alternates");
-    assert_eq!(key_count("7.1.35+8.4.56"), 70, "7.1.35+8.4.56 alternates");
+    assert_eq!(key_count("8.4.56"), 102, "8.4.56-only alternates");
+    assert_eq!(key_count("7.1.35"), 84, "7.1.35-only alternates");
+    assert_eq!(key_count("7.1.35+8.4.56"), 84, "7.1.35+8.4.56 alternates");
     assert_eq!(key_count("3.4.111"), 2, "3.4.111 alternates");
     assert_eq!(key_count("6.4.107"), 8, "6.4.107 alternates");
-    assert_eq!(key_count("8.4.65"), 93, "8.4.65-only alternates");
-    assert_eq!(key_count("8.2.75"), 5, "8.2.75-only alternates");
+    assert_eq!(key_count("8.4.65"), 111, "8.4.65-only alternates");
+    assert_eq!(key_count("8.2.75"), 6, "8.2.75-only alternates");
     assert_eq!(key_count("8.2.74"), 1, "8.2.74-only alternates");
-    assert_eq!(key_count("7.1.35+8.4.65"), 10, "7.1.35+8.4.65 alternates");
+    assert_eq!(key_count("7.1.35+8.4.65"), 12, "7.1.35+8.4.65 alternates");
     assert_eq!(
         key_count("7.1.35+8.4.65+8.4.56"),
-        10,
+        12,
         "7.1.35+8.4.65+8.4.56 alternates"
     );
 }
