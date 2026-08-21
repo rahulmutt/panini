@@ -27,7 +27,7 @@ is ruleless.
 comment states that a blocked prakriyā's `text()` is a partial string — often the
 bare root code — not a surface form.
 
-**It asserts the corpus totals** (55 roots, 2304 cells, 2654 forms) rather than
+**It asserts the corpus totals** (63 roots, 2592 cells, 3014 forms) rather than
 reporting whatever it enumerated. Those are facts about the repo, pinned
 independently by `derivation_set_shape_matches_the_audited_numbers` in
 `crates/panini/tests/paradigm.rs`. If the harness disagrees, the harness is wrong.
@@ -106,22 +106,17 @@ PANINI_AUDIT_DUMP=/tmp/audit-table.tsv mise exec rust@1.97.1 -- cargo run --rele
 
 ## Last recorded result
 
-2026-08-19, rudhādi 8.2.30 / ric-vic slice, vidyut `8da2f90`:
-**zero differences across 2304 cells / 2654 forms / 55 roots**, with the
-`entry` negative control verified failing both times the audit was run (36
-√bhū cells each time). This slice generalised 8.2.30 *coḥ kuḥ* to a single
-cu→ku lookup and curated √ric and √vic, which surfaced a real disagreement:
-the first audit run, against the engine before 8.2.39 was widened, found
-4 differing cells — √ric and √vic each disagreeing with vidyut at laṅ
-parasmaipada prathama-eka and madhyama-eka (`ariRak` vs `ariRag ariRak`,
-`avinak` vs `avinag avinak`), all 4 gone with no new cells and no golden
-moved. That first run is itself part of the evidence: it is the proof the
-audit catches a real disagreement on real code, not only the synthetic
-`entry` control. 8.2.39 *jhalāṁ jaśo'nte* was then widened from a
-three-literal (`t`/`z`/`D`) guard to a `jashtva_of` lookup, matching the
-discipline 8.2.30 already uses, plus a `Some(jash) == last` no-op guard for
-`jashtva_of`'s fixed points. The re-run, at that engine, is the zero-difference
-result recorded above.
+2026-08-21, rudhādi 7d slice, vidyut `8da2f90`:
+**zero differences across 2592 cells / 3014 forms / 63 roots**, with the
+`entry` negative control verified failing first (exit 1, 36 √bhū cells,
+`Bavati` vs `paWati` and so on). This slice curated eight further rudhādi
+roots — Siz, und, anj, tanc, vij, vfj, pfc, vid — that a probe showed need
+no new `Rule`. Because no `Rule` changed in this slice, the zero-difference
+verdict is a statement about those eight rows alone: the engine was already
+correct about every rule they exercise, and this audit is the proof. Corpus
+totals moved from 55/2304/2654 to 63/2592/3014 (63 = 55 + 8 curated roots;
+2592 = 2304 + 8 × 36 cells per root; 3014 = 2654 + 360, i.e. 422 total
+`ALTERNATES` rows, up from 350).
 
 ## Scope
 
