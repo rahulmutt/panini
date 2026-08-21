@@ -1504,3 +1504,69 @@ fn vinakti_trace_takes_no_natva_at_all() {
     assert!(!t.contains(&"8.4.1".to_string()), "got {t:?}");
     assert!(!t.contains(&"8.4.2".to_string()), "got {t:?}");
 }
+
+#[test]
+fn unantas_trace_orders_6_4_23_before_6_4_111() {
+    // und laT prathama dvi. The ORDER pin 6.4.23's own comment in anga.rs
+    // asks for and nothing asserted until this slice: 6.4.23 SnAnnalopaH
+    // takes the root's `n` out of unand, and only then does 6.4.111
+    // SnasorallopaH take śnam's `a`. Reversed, 6.4.111 fires first and
+    // 6.4.23 can no longer tell śnam's `n` from the root's.
+    //
+    // This is also where vidyut-prakriya credits 6.4.24 aniditAM hala
+    // upaDAyAH kNiti for the same unad -> und step. It is the wrong credit
+    // -- 6.4.24 deletes a nasal upadhā, and after 6.4.23 has run, unad's
+    // upadhā is `a` -- so this engine does not implement 6.4.24 at all and
+    // must not be "corrected" toward vidyut's history here.
+    let (_text, t) = cell_trace(
+        "07.0020",
+        Lakara::Lat,
+        Pada::Parasmaipada,
+        Purusha::Prathama,
+        Vacana::Dvi,
+    );
+    assert!(at(&t, "6.4.23") < at(&t, "6.4.111"), "got {t:?}");
+    assert!(!t.contains(&"6.4.24".to_string()), "got {t:?}");
+}
+
+#[test]
+fn aunat_trace_takes_the_u_vrddhi_arm() {
+    // und laN prathama eka: AT (6.4.72) then 6.1.90 AwaS ca on a
+    // vowel-initial aNga whose first vowel is `u`, so vrddhi_of returns
+    // `O`. Every curated root before this slice drove 6.1.90 with e/I/E
+    // only -- sound.rs's vrddhi_of_ac_vowels_all_arms says so in as many
+    // words -- and this is the first golden derivation to reach the `u`
+    // arm. A vrddhi table that mapped `u` to anything else would still
+    // pass every unit test in sound.rs and fail here.
+    let (text, t) = cell_trace(
+        "07.0020",
+        Lakara::Lan,
+        Pada::Parasmaipada,
+        Purusha::Prathama,
+        Vacana::Eka,
+    );
+    assert_eq!(text, "Onad", "got {t:?}");
+    assert!(at(&t, "6.4.72") < at(&t, "6.1.90"), "got {t:?}");
+}
+
+#[test]
+fn anaktas_trace_is_the_kutva_path_on_a_vowel_initial_root() {
+    // aYj laT prathama dvi: 6.4.23 thins the root's nasal to anaj, 6.4.111
+    // takes śnam's `a` to anj, 8.2.30 coH kuH substitutes the velar for the
+    // `j`, 8.3.24 nasalises to aMg, 8.4.55 Kari ca devoices to aMk, and
+    // 8.4.58 anusvArasya yayi parasavarRaH gives the velar nasal: aNktaH.
+    // The whole tripAdi tail on a vowel-initial root, in order.
+    let (text, t) = cell_trace(
+        "07.0021",
+        Lakara::Lat,
+        Pada::Parasmaipada,
+        Purusha::Prathama,
+        Vacana::Dvi,
+    );
+    assert_eq!(text, "aNktaH", "got {t:?}");
+    assert!(at(&t, "6.4.23") < at(&t, "6.4.111"), "got {t:?}");
+    assert!(at(&t, "6.4.111") < at(&t, "8.2.30"), "got {t:?}");
+    assert!(at(&t, "8.2.30") < at(&t, "8.3.24"), "got {t:?}");
+    assert!(at(&t, "8.3.24") < at(&t, "8.4.55"), "got {t:?}");
+    assert!(at(&t, "8.4.55") < at(&t, "8.4.58"), "got {t:?}");
+}
