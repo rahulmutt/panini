@@ -458,11 +458,16 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // 8.3.59 (widened below) then retroflexes that `s` back to `z` after
     // the new `k`: pinakzi.
     //
-    // NARROW GUARD, by design, matching 8.4.41's discipline -- the discipline
-    // 8.2.30 followed until it widened (see `kutva_of` above): only the
-    // `z` arm is reachable this slice (rudhādi's one z-final curated root is
-    // √piṣ; no curated root's aṅga ends in `Q`). Widen the match the moment
-    // a Q-tailed root lands.
+    // NO LONGER NARROW. This guard used to be narrow "by design," matching
+    // the discipline 8.2.30 followed before `kutva_of` widened it (see
+    // above) and the discipline 8.4.41's CORRESPONDENCE half (below) still
+    // follows: implement only the reachable arm, and widen the match the
+    // moment a new one lands. rudhādi 7e is that widening for this guard —
+    // see BOTH SOUNDS THE SŪTRA NAMES below (past the two guard-mechanics
+    // paragraphs) for why. ṣaḍhoḥ names exactly two sounds and both are
+    // now covered, so nothing is left narrow here; a future widening on
+    // this guard would mean the sūtra itself was misread, not that a new
+    // root arrived.
     //
     // Read via `word_chars`, not a term-boundary check, for the same reason
     // 8.2.30/8.4.41 do: śnam's infix leaves √piṣ's own tail — the `z` — at
