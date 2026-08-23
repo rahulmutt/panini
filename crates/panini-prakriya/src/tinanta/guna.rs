@@ -156,14 +156,39 @@ pub(crate) static GUNA: &[Rule] = &[
     // 6.4.71 has already prefixed the laṅ aṭ-augment onto ANGA (atf) by
     // this point — the same allowance 7.4.21's guard makes.
     //
-    // FOUR CONJUNCTS, each with a negative control among √tṛh's own 36
-    // golden cells. Drop any one and a golden breaks:
+    // FOUR CONJUNCTS, but only THREE have a negative control among
+    // √tṛh's own 36 golden cells:
     //   - the stem is tfnah        every other rudhādi root
     //   - hal-initial follower     `am` → atfRaham; loṭ uttama Ani/Ava/Ama
-    //   - pit sārvadhātuka         tas/Ta/vas, ṅit by 1.2.4 → tfRQaH
+    //   - pit sārvadhātuka         NO CONTROL — see below
     //   - NOT ṅit                  tātaṅ (7.1.35) → tfRQAt; yāsuṭ → tfMhyAt
-    // The fourth is not redundant with the third: under yāsuṭ the ending's
-    // own `t` is still pit, and it is the ĀGAMA that carries the ṅ.
+    //
+    // EQUIVALENT MUTANT, documented on purpose: disabling the pit conjunct
+    // changes no derivation among all 238 tests. Root cause is 1.2.4
+    // sārvadhātukam apit (`samjna.rs`), which tags EVERY apit sārvadhātuka
+    // ending ṅit; the one exception, loṭ uttama, is vowel-initial and
+    // already excluded by the hal conjunct above. So for everything that
+    // reaches this guard, !Pit implies Ngit, and the ṅit check alone
+    // already rejects tas/Ta/vas — the pit check cannot change the
+    // outcome of any reachable derivation. A mutation-testing pass that
+    // flips or deletes this conjunct is EXPECTED TO SURVIVE; that is a
+    // documented equivalent mutant, not a missing test. If a later task's
+    // mutation campaign reports a surviving mutant on this line, this
+    // comment is why — search for "equivalent mutant" first before adding
+    // a test to try to kill it.
+    //
+    // Kept anyway: it states the sūtra's own condition (7.3.92 IS a pit
+    // rule), and this repo prefers guards faithful to the grammar over
+    // guards minimised against the current engine's incidental behavior.
+    // The equivalence is a property of how 1.2.4 is implemented today, not
+    // a theorem — if that tagging ever changes, the pit check is what
+    // keeps 7.3.92 correct. Same reasoning that keeps `is_shtu`'s
+    // unreachable `R` arm.
+    //
+    // The fourth conjunct (not ṅit) is genuinely distinct from the third
+    // and DOES have its own control: under yāsuṭ the ending's own `t` is
+    // still pit, and it is the ĀGAMA that carries the ṅ — pit alone would
+    // wrongly admit that cell, and only the ṅit check rejects it.
     //
     // The sārvadhātuka clause is a real guard here, not a structural
     // always-true as at 7.3.84: it is read off the ending directly, and

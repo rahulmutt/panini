@@ -1916,8 +1916,11 @@ fn indh_lan_and_lot_and_vidhilin_cells() {
 
 #[test]
 fn trh_takes_the_im_agama_only_before_a_hal_initial_pit_sarvadhatuka() {
-    // 7.3.92 tfRaha im, all four conjuncts of its guard, each with the cell
-    // that would break if it were dropped.
+    // 7.3.92 tfRaha im, all four conjuncts of its guard. Three have a cell
+    // that breaks if the conjunct is dropped; the pit conjunct does not --
+    // see the "tas -> tfRQaH" cell below and the comment on the Rule
+    // itself in `guna.rs` for why it is a documented equivalent mutant,
+    // kept for faithfulness to the sUtra rather than for engine coverage.
     //
     // Asserted on the LOG rather than on a surface or a stem, deliberately.
     // Both are already rewritten by the time `derive` returns -- 8.4.1 has
@@ -1963,8 +1966,14 @@ fn trh_takes_the_im_agama_only_before_a_hal_initial_pit_sarvadhatuka() {
         assert_eq!(fired(la, pu, va), (false, false), "{why}");
     }
 
-    // DECLINES on the pit conjunct: 1.2.4 makes tas/Ta/vas Ngit, and
-    // 6.4.111 takes Snam's `a` instead of the Agama going in.
+    // DECLINES here, but NOT an isolated control for the pit conjunct:
+    // 1.2.4 makes tas/Ta/vas Ngit as well as apit, so the Ngit conjunct
+    // below already rejects this cell on its own. Disabling the pit check
+    // alone would not change this outcome -- see guna.rs's comment on the
+    // Rule for why that conjunct is a documented equivalent mutant. Kept
+    // as a cell anyway because it is still the textbook example of what
+    // the pit clause names (6.4.111 takes Snam's `a` instead of the Agama
+    // going in), even though it does not isolate that clause.
     assert_eq!(
         fired(Lakara::Lat, Purusha::Prathama, Vacana::Dvi),
         (false, false),
