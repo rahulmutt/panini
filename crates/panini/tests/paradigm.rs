@@ -3411,6 +3411,49 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
             "vindImahi",
         ],
     ),
+    (
+        "07.0018",
+        "laT",
+        Pada::Parasmaipada,
+        [
+            "tfReQi", "tfRQaH", "tfMhanti", "tfRekzi", "tfRQaH", "tfRQa", "tfRehmi", "tfMhvaH",
+            "tfMhmaH",
+        ],
+    ),
+    (
+        "07.0018",
+        "laN",
+        Pada::Parasmaipada,
+        [
+            "atfReq", "atfRQAm", "atfMhan", "atfReq", "atfRQam", "atfRQa", "atfRaham", "atfMhva",
+            "atfMhma",
+        ],
+    ),
+    (
+        "07.0018",
+        "loT",
+        Pada::Parasmaipada,
+        [
+            "tfReQu", "tfRQAm", "tfMhantu", "tfRQi", "tfRQam", "tfRQa", "tfRahAni", "tfRahAva",
+            "tfRahAma",
+        ],
+    ),
+    (
+        "07.0018",
+        "viDiliN",
+        Pada::Parasmaipada,
+        [
+            "tfMhyAd",
+            "tfMhyAtAm",
+            "tfMhyuH",
+            "tfMhyAH",
+            "tfMhyAtam",
+            "tfMhyAta",
+            "tfMhyAm",
+            "tfMhyAva",
+            "tfMhyAma",
+        ],
+    ),
 ];
 
 /// Second and third valid forms, for cells where an optional (vikalpa) rule
@@ -5062,6 +5105,34 @@ const ALTERNATES: &[(&str, &str, Pada, usize, &str, &str)] = &[
     ("07.0013", "laN", Pada::Atmanepada, 5, "avinDvam", "8.4.65"),
     ("07.0013", "loT", Pada::Atmanepada, 0, "vintAm", "8.4.65"),
     ("07.0013", "loT", Pada::Atmanepada, 5, "vinDvam", "8.4.65"),
+    ("07.0018", "laN", Pada::Parasmaipada, 0, "atfRew", "8.4.56"),
+    ("07.0018", "laN", Pada::Parasmaipada, 3, "atfRew", "8.4.56"),
+    ("07.0018", "loT", Pada::Parasmaipada, 0, "tfRQAd", "7.1.35"),
+    (
+        "07.0018",
+        "loT",
+        Pada::Parasmaipada,
+        0,
+        "tfRQAt",
+        "7.1.35+8.4.56",
+    ),
+    ("07.0018", "loT", Pada::Parasmaipada, 3, "tfRQAd", "7.1.35"),
+    (
+        "07.0018",
+        "loT",
+        Pada::Parasmaipada,
+        3,
+        "tfRQAt",
+        "7.1.35+8.4.56",
+    ),
+    (
+        "07.0018",
+        "viDiliN",
+        Pada::Parasmaipada,
+        0,
+        "tfMhyAt",
+        "8.4.56",
+    ),
 ];
 
 fn lan_a_form(number: &str, pu: Purusha, va: Vacana) -> String {
@@ -5340,8 +5411,8 @@ fn derivation_set_is_exactly_pinned() {
 /// 7.1.35/8.4.65/8.4.56 exactly as kft/ruD/Bid/kzud/tfd's do (a five-form
 /// cell), and its loṭ parasmaipada madhyama eka ties the six-form record
 /// with the same k = 3 against the 2³ bound of eight:
-/// 2592 cells total (288 root×lakāra blocks × 9), of which 2293 hold exactly one form,
-/// 208 hold two, 77 hold three, two hold four (piṣ's loṭ madhyama eka, the
+/// 2628 cells total (292 root×lakāra blocks × 9), of which 2324 hold exactly one form,
+/// 211 hold two, 79 hold three, two hold four (piṣ's loṭ madhyama eka, the
 /// deepest fork added in 7b, and — new in slice 7d — Siz's loṭ parasmaipada
 /// madhyama eka), and — the sharpest branch-count witnesses in
 /// the repo, per `docs/ARCHITECTURE.md` — exactly six hold five (√kṛt's loṭ
@@ -5356,7 +5427,7 @@ fn derivation_set_is_exactly_pinned() {
 /// (7.1.35, 8.4.65, 8.4.56) against a 2³ bound of eight — ric and vic do not
 /// join this record; per the 8.2.30/8.2.39 slice's own audit their deepest
 /// cells are three forms). `ALTERNATES`
-/// itself has 422 rows, keyed 102 `8.4.56`, 84 `7.1.35`, 84 `7.1.35+8.4.56`,
+/// itself has 429 rows, keyed 105 `8.4.56`, 86 `7.1.35`, 86 `7.1.35+8.4.56`,
 /// 2 `3.4.111`, 8 `6.4.107`, 111 `8.4.65`, 6 `8.2.75`, 1 `8.2.74`, 12
 /// `7.1.35+8.4.65`, and 12 `7.1.35+8.4.65+8.4.56` — the assertions below are
 /// complete. The audit probe that produced the original numbers ran against
@@ -5377,12 +5448,19 @@ fn derivation_set_is_exactly_pinned() {
 /// the audit was run, and rudhādi 7d's cross-implementation audit re-ran
 /// the same probe against vidyut-prakriya at commit `8da2f90` over all
 /// 2592 cells / 3014 forms / 63 roots with zero differences, its `entry`
-/// negative control verified failing — so the numbers are re-verified as well as pinned.
+/// negative control verified failing — so the numbers are re-verified as well as pinned,
+/// and rudhādi 7e's cross-implementation audit re-ran the same probe
+/// against vidyut-prakriya at commit `8da2f90` over all 2628 cells /
+/// 3057 forms / 64 roots with zero differences, its `entry` negative
+/// control verified failing. √tṛh joins none of the fork records: its
+/// deepest cells hold three forms, because 8.3.13 Qo Qe lopaH
+/// obligatorily elides the ḍh that 8.4.65 forks on for every other
+/// stop-final rudhādi root.
 /// This test is what keeps the numbers true day to day.
 #[test]
 fn derivation_set_shape_matches_the_audited_numbers() {
     let total_cells = PARADIGM.len() * 9;
-    assert_eq!(total_cells, 2592, "288 root×lakāra blocks × 9 cells each");
+    assert_eq!(total_cells, 2628, "292 root×lakāra blocks × 9 cells each");
 
     let mut ones = 0usize;
     let mut twos = 0usize;
@@ -5409,9 +5487,9 @@ fn derivation_set_shape_matches_the_audited_numbers() {
             }
         }
     }
-    assert_eq!(ones, 2293, "one-form cells");
-    assert_eq!(twos, 208, "two-form cells");
-    assert_eq!(threes, 77, "three-form cells");
+    assert_eq!(ones, 2324, "one-form cells");
+    assert_eq!(twos, 211, "two-form cells");
+    assert_eq!(threes, 79, "three-form cells");
     assert_eq!(
         fours, 2,
         "four-form cells — piṣ's loṭ madhyama eka, and — new in slice 7d — Siz's loṭ \
@@ -5430,16 +5508,16 @@ fn derivation_set_shape_matches_the_audited_numbers() {
          parasmaipada madhyama eka"
     );
 
-    assert_eq!(ALTERNATES.len(), 422, "ALTERNATES row count");
+    assert_eq!(ALTERNATES.len(), 429, "ALTERNATES row count");
     let key_count = |key: &str| {
         ALTERNATES
             .iter()
             .filter(|(_, _, _, _, _, k)| *k == key)
             .count()
     };
-    assert_eq!(key_count("8.4.56"), 102, "8.4.56-only alternates");
-    assert_eq!(key_count("7.1.35"), 84, "7.1.35-only alternates");
-    assert_eq!(key_count("7.1.35+8.4.56"), 84, "7.1.35+8.4.56 alternates");
+    assert_eq!(key_count("8.4.56"), 105, "8.4.56-only alternates");
+    assert_eq!(key_count("7.1.35"), 86, "7.1.35-only alternates");
+    assert_eq!(key_count("7.1.35+8.4.56"), 86, "7.1.35+8.4.56 alternates");
     assert_eq!(key_count("3.4.111"), 2, "3.4.111 alternates");
     assert_eq!(key_count("6.4.107"), 8, "6.4.107 alternates");
     assert_eq!(key_count("8.4.65"), 111, "8.4.65-only alternates");
@@ -5468,18 +5546,7 @@ fn paradigm_covers_every_enumerable_cell() {
     // keep documenting that EVERY enumerable (root, lakara, pada) triple must
     // be pinned in PARADIGM — a future partial slice may repopulate it, but it
     // must never silently hide a missing golden block.
-    // TEMPORARY, slice 7e: √tṛh's data row lands before its sūtras (so
-    // 7.3.92, 8.2.31 and 8.3.13 can be TDD'd against a real derivation)
-    // and before its goldens (which are generated from the engine the
-    // audit certifies, never hand-authored). Task 7 empties this back to
-    // `&[]` in the same commit that pastes the blocks. If this constant is
-    // still non-empty when the slice ships, a root shipped uncovered.
-    const GATED: &[(&str, &str, Pada)] = &[
-        ("07.0018", "laT", Pada::Parasmaipada),
-        ("07.0018", "laN", Pada::Parasmaipada),
-        ("07.0018", "loT", Pada::Parasmaipada),
-        ("07.0018", "viDiliN", Pada::Parasmaipada),
-    ];
+    const GATED: &[(&str, &str, Pada)] = &[];
 
     let pinned: Vec<(&str, &str, Pada)> =
         PARADIGM.iter().map(|(r, l, p, _)| (*r, *l, *p)).collect();
