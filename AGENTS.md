@@ -8,7 +8,7 @@
   `MISE_ENV=dev mise install`. This provides:
   - `cargo-mutants` (mutation testing) — `mise run mutants` runs
     `cargo mutants --package panini-prakriya --test-workspace=true --timeout
-    2400 -j 4` (the `--test-workspace` flag is required so each **mutant** run
+    4800 -j 4` (the `--test-workspace` flag is required so each **mutant** run
     exercises the `panini` crate's golden paradigm/trace/roundtrip tests, not
     just `panini-prakriya`'s own unit tests — but it does NOT apply to
     cargo-mutants' own **baseline** run, which always exercises only the
@@ -230,6 +230,45 @@
     not measured*: 2400 / 1482.2 = **1.62×**. Both margins shrank from the
     last slice's 2.46×/2.03×, consistent with the floor's outsized jump,
     but neither crossed 1×. Keep 2400.
+    **This slice (rudhādi gaṇa 7e, three new sūtras) re-measured both at
+    2628 cells.** Uncontended floor: paradigm 432.94s, roundtrip 508.54s,
+    trace 2.22s — an uncaught total of **943.70s** (`mise run test`'s wall
+    clock came in at 945s, the ~1.3s difference being `panini-prakriya`'s
+    own unit-test binary at 0.17s plus the remaining small blocks). Cell
+    count grew only **+1.4%** this slice (2592 → 2628, the smallest growth
+    in the series), yet the floor grew from 7d's 871.88s to 943.70s, **about
+    +9%** — cell count under-predicting the floor's move for the fifth
+    consecutive slice, and by the widest margin yet relative to how little
+    the cell count itself moved: the standing advice that the floor does not
+    track cell count holds, and this is its sharpest confirmation so far.
+    Zoomed out past any single slice, the trend is the same conclusion at
+    larger scale: **~450s at 1800 cells to 943.70s at 2628 cells** — cells
+    up ~46%, floor up ~110% — is emphatically superlinear, not a fixed
+    multiplier of cell count in either direction.
+    Cap sanity check before the campaign: 943.70s × the pada audit's
+    2.1–2.5× `-j 4` contention factor range projects an uncaught mutant at
+    **1982–2360s**. Against the outgoing `--timeout 2400` cap, that is a
+    margin of only **1.7%–21%** — below the "tens of percent... not
+    comfortable" bar this very paragraph sets, and exactly the vacuity
+    shape flagged above: under too tight a cap a genuine survivor is
+    recorded as a TIMEOUT rather than a MISSED, and a reported "0 missed"
+    becomes meaningless rather than clean. **2400 is retired.** `mise.toml`'s
+    cap is raised to **`--timeout 4800`**, with `-j 4` left unchanged — the
+    2.1–2.5× contention factor was measured at `-j 4`, so changing
+    parallelism would invalidate the projection built on it. At 4800, the
+    margin against the projected uncaught range becomes **2.03×–2.42×**,
+    back in the "roughly 2×" territory the pada audit and 7c campaigns ran
+    at, rather than the sub-1.2×-to-1.02× range the outgoing cap was left
+    running under.
+    Campaign at `-j 4 --timeout 4800`:
+    **[PLACEHOLDER — CAMPAIGN NOT YET RUN. Fill in with the real numbers
+    once the mutation campaign finishes: N mutants, N caught, N missed
+    (expect 0), N unviable, N timeout (expect exactly 1 — the
+    known-permanent `tripadi.rs` ṇatva backward-scan non-terminating-loop
+    mutant described above, the correct verdict at any cap). Also record
+    the `outcomes.json` percentile breakdown (median / p90 / p99 / max) and
+    the resulting caught- and uncaught-margin figures against 4800, in the
+    style of the entries above.]**
   - `cargo-deny` + `cargo-audit` (supply-chain checks) — `mise run audit` runs
     `cargo audit && cargo deny check` and is expected to pass, including
     `cargo deny check advisories`.

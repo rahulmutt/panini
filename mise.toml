@@ -36,7 +36,12 @@ run = "cargo fmt --all --check"
 # recorded in AGENTS.md's cargo-mutants paragraph, the single source for
 # this reasoning. Re-check both there whenever the golden suite grows
 # again.
-run = "cargo mutants --package panini-prakriya --test-workspace=true --timeout 2400 -j 4"
+#
+# --timeout raised 2400 -> 4800 in slice 7e: the re-measured uncontended
+# floor (945s at 2628 cells) projected a contended uncaught run at
+# 1982-2360s, leaving only 1.7-21% margin under 2400 -- below this repo's
+# own "adequate-but-unverified" bar. See AGENTS.md for the arithmetic.
+run = "cargo mutants --package panini-prakriya --test-workspace=true --timeout 4800 -j 4"
 
 [tasks.audit]
 run = "cargo audit && cargo deny check"
