@@ -83,6 +83,16 @@ pub(crate) fn is_jhash(c: char) -> bool {
     matches!(c, 'G' | 'J' | 'Q' | 'D' | 'B')
 }
 
+/// 8.4.41's conditioning class — *ṣṭunā*, the ṣ-and-ṭu the sūtra names on
+/// its trigger side: `z` (ṣ) plus the whole ṭ-varga.
+///
+/// This was a bare `z` literal inside 8.4.41 until rudhādi 7e. 8.2.31 ho
+/// ḍhaḥ produces a `Q`, which must retroflex the `D` that 8.2.40 puts after
+/// it (tfneQ + Di → tfneQ + Qi), and a `z`-only trigger cannot see it.
+pub(crate) fn is_shtu(c: char) -> bool {
+    matches!(c, 'z' | 'w' | 'W' | 'q' | 'Q' | 'R')
+}
+
 /// 8.4.1's trigger set: `r`, `z`, and the r-vowels `f`/`F`, which contain the
 /// r-sound by 1.1.51 *uraṇ raparaḥ*. `S` (the palatal śa) is deliberately
 /// absent — it is not `z` (the retroflex ṣa) despite the visual similarity,
@@ -466,6 +476,25 @@ mod tests {
             'S', 's', 'z', 't', 'T', 'd', 'D', 'n', 'R', 'c', 'j', 'w', 'q', 'l',
         ] {
             assert!(!is_natva_intervener(c), "{c} must break intervention");
+        }
+    }
+
+    /// 8.4.41's trigger class, every arm. `R` has no golden witness — 8.4.1
+    /// (ṇatva) runs BELOW 8.4.41 in `tripadi.rs`, so no `R` exists in the
+    /// word when 8.4.41 scans — and it is in the table anyway, for the same
+    /// reason `kutva_of` carries its witness-less `C`/`J` arms: the class is
+    /// ṣ-and-ṭu, and a table that covers only what is currently reachable
+    /// rots the moment reachability changes. This test is what keeps it.
+    #[test]
+    fn shtu_is_sha_plus_the_whole_tavarga() {
+        for c in ['z', 'w', 'W', 'q', 'Q', 'R'] {
+            assert!(is_shtu(c), "{c} is ṣṭu");
+        }
+        // The dentals are the TARGET class, never the trigger; `s` and `n`
+        // in particular must not qualify, or 8.4.41 would fire on every
+        // s-initial ending in the corpus.
+        for c in ['t', 'T', 'd', 'D', 'n', 's', 'S', 'k', 'c', 'h'] {
+            assert!(!is_shtu(c), "{c} is not ṣṭu");
         }
     }
 }

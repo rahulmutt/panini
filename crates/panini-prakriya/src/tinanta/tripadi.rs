@@ -8,8 +8,8 @@ use crate::prakriya::Prakriya;
 use crate::rule::{Rule, RuleKind};
 use crate::term::Tag;
 use crate::tinanta::sound::{
-    cartva_of, is_jhal, is_jhash, is_khar, is_natva_intervener, is_natva_trigger, is_savarna,
-    is_vowel, jashtva_of, kutva_of, parasavarna_of,
+    cartva_of, is_jhal, is_jhash, is_khar, is_natva_intervener, is_natva_trigger, is_shtu,
+    is_savarna, is_vowel, jashtva_of, kutva_of, parasavarna_of,
 };
 use crate::tinanta::terms::{ANGA, ENDING, SHAP};
 
@@ -481,6 +481,14 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // `apinak`: a real-word-looking form that splits madhyama eka from
     // prathama eka and that no guard test would flag; only the golden and
     // the trace pin catch it.
+    //
+    // BOTH SOUNDS THE SŪTRA NAMES. *ṣaḍhoḥ* is a dvandva — ṣ **and** ḍh —
+    // and until rudhādi 7e the guard read `z` alone, because √piṣ was the
+    // only root that reached the rule and it presents a `z`. √tṛh presents
+    // the other: 8.2.31 ho ḍhaḥ turns its `h` into a `Q`, and tfneQ + si
+    // must become tfnek + si (→ tfRekzi by 8.3.59 and 8.4.1). Same shape as
+    // the 8.2.30 episode — a rule whose own name promised two cases and
+    // whose code implemented one — caught here before an audit had to.
     Rule {
         id: "8.2.41",
         name: "zaQoH kaH si",
@@ -489,7 +497,7 @@ pub(crate) static TRIPADI: &[Rule] = &[
         apply: |p| {
             let w = word_chars(p);
             for i in 1..w.len() {
-                if w[i].2 != 's' || w[i - 1].2 != 'z' {
+                if w[i].2 != 's' || !matches!(w[i - 1].2, 'z' | 'Q') {
                     continue;
                 }
                 let (term, idx, _) = w[i - 1];
@@ -891,12 +899,20 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // `super::derivation_tests` is the witness that the two rules stay
     // disjoint.
     //
-    // NARROW GUARD, by design, matching 8.3.59's discipline just above: the
-    // only trigger √piṣ ever presents is its own `z`, so only `z` is checked
-    // here — no curated root reaches a ṭ-varga-stop trigger yet. The
-    // correspondence match below is narrowed the same way: only t/T/D have
-    // a witness (d/n/s do not). Widen both the moment a root or a junction
-    // reaches the wider cases.
+    // TRIGGER: the full ṣṭu class (`is_shtu`), widened from a bare `z`
+    // literal in rudhādi 7e. That literal was, as the paragraph above says,
+    // the ONE narrowing left holding this rule and 8.4.53 apart under a
+    // reordering — so widening it does not weaken the pair, it removes the
+    // pair's last order-dependence. 8.2.31 ho ḍhaḥ is what made the wider
+    // class reachable: it produces a `Q` that must retroflex 8.2.40's `D`
+    // (tfneQ + Di → tfneQ + Qi → 8.3.13 → tfneQi). Verified inert against
+    // the pre-7e 2592-cell corpus by a byte-for-byte dump diff before any
+    // new root was curated.
+    //
+    // The CORRESPONDENCE side stays narrow, and deliberately: only t/T/D
+    // have a witness. √tṛh reaches `D` → `Q` and nothing wider, so d/n/s
+    // are still absent. Widen that half the moment a junction reaches it —
+    // it is a separate claim from the trigger's, with separate evidence.
     Rule {
         id: "8.4.41",
         name: "zwunA zwuH",
@@ -905,7 +921,7 @@ pub(crate) static TRIPADI: &[Rule] = &[
         apply: |p| {
             let w = word_chars(p);
             for i in 1..w.len() {
-                if w[i - 1].2 != 'z' {
+                if !is_shtu(w[i - 1].2) {
                     continue;
                 }
                 let sub = match w[i].2 {
