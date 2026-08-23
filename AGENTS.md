@@ -294,29 +294,54 @@
       survives rather than getting caught. Worth remembering so a future
       slice does not re-chase this one expecting a distinguishing cell to
       exist.
-    **Contention finding that corrects this paragraph's own number.** The
-    two missed mutants ran the full golden suite to completion without
-    being caught — the direct measurement of an uncaught `-j 4` run this
-    paragraph has asked for since the pada audit — at **979s** and **966s**
-    against the **943.70s** uncontended floor measured above: a contention
-    factor of **~1.02×–1.04×**, not the 2.1–2.5× this paragraph has
-    projected from since the `-j 16` re-runs in slice 7b. At the true
-    factor, 2400 would in fact have held (943.70 × 1.04 ≈ 981s, comfortably
-    under 2400): the raise to 4800 was insurance that, on this machine and
-    this run, proved unnecessary. **Ruling: keep 4800 anyway.** The costs
-    are asymmetric — too low a cap silently turns a "0 missed" into a
-    vacuous result (the failure this repo has hit twice, in 7a and 7b),
-    while too high a cap costs only the ~40 minutes the one permanent
-    timeout above already shows. Over-provisioning is correct under that
-    asymmetry even now that the real factor is known to be lower.
-    **The 2.1–2.5× figure itself should now be treated as machine-dependent
-    and contradicted by this measurement**, not as a fixed constant of
-    `-j 4`: it was inferred from a `-j 16`-to-`-j 4` re-run comparison on
-    one machine, and this slice's direct measurement, on the box this
-    campaign actually ran on, came in roughly half of the low end. The next
-    slice should reason from the 943.70s floor and this ~1.02–1.04×
-    figure — or a fresh direct measurement of its own — rather than
-    re-deriving 2.1–2.5× as if it were settled.
+    `outcomes.json`'s per-mutant test-phase durations (n = 509) put the
+    median at 73s, p90 at 669s, p99 at 1290s and the max at 4800s — that
+    max being the known-permanent timeout itself, not a caught or missed
+    mutant. Excluding the timeout, the max is **1345s**, and the top seven
+    non-timeout runs were 1345s, 1341s, 1335s, 1293s, 1290s, 1032s and
+    1031s, all `CaughtMutant`.
+    **Contention finding that corrects this paragraph's own number — and
+    an earlier draft of this same entry.** The two missed mutants ran the
+    full golden suite to completion without being caught — a direct
+    measurement of an uncaught `-j 4` run — at **979s** and **966s**
+    against the **943.70s** uncontended floor measured above, a factor of
+    **~1.02×–1.04×**. An earlier pass at this entry reported that figure as
+    *the* measured contention; it is real but is not the worst case, and
+    presenting it alone was misleading — those two mutants simply happened
+    to run during lighter scheduling overlap, not at the ceiling. The
+    honest figure comes from all 509 test phases, where the longest
+    non-timeout run, 1345s, is **~1.43×** the floor — still below the
+    2.1–2.5× this paragraph has projected from since the `-j 16` re-runs in
+    slice 7b, so that figure remains overstated for this machine and should
+    still be treated as machine-dependent, not settled — but the gap is
+    narrower than the single-sample 1.02×–1.04× suggested, and this
+    paragraph must not be read as claiming ~1.03× is the ceiling. Quote the
+    full range (1.02×–1.43×) and its basis (two direct uncaught-run
+    measurements plus the 509-sample distribution), not one flattering
+    number.
+    Margin arithmetic against the worst **observed non-timeout** run,
+    1345s, *directly measured, not projected*: against the retired 2400s
+    cap, 2400 / 1345 ≈ **1.78×**; against the new 4800s cap,
+    4800 / 1345 ≈ **3.57×**. **Ruling: keep 4800.** This is now better
+    supported than when the cap was first raised, for a reason the
+    percentile data makes explicit: a **caught** mutant ran longer (1345s)
+    than either of the two **uncaught** ones (979s, 966s), because
+    scheduling overlap under `-j 4` — not whether a mutant is caught or
+    times out — dominates wall-clock duration. That is exactly why a cap
+    must never be provisioned from a single sampled run, uncaught or
+    otherwise: the two-mutant sample that looked like ~1.03× contention was
+    luck, and a cap sized to it would have left only 2400 / 1345 ≈ 1.78×
+    margin against the actual worst case observed in this very campaign,
+    not the false comfort the two-sample figure implied. The costs of the
+    two failure directions remain asymmetric — too low a cap silently turns
+    a "0 missed" into a vacuous result (the failure this repo has hit
+    twice, in 7a and 7b), while too high a cap costs only the ~40 minutes
+    the one permanent timeout above already shows — so over-provisioning
+    stays correct even now that the real contention range is measured and
+    narrower than 2.1–2.5×. The next slice should reason from the 943.70s
+    floor and this **1.02×–1.43×** range — or a fresh direct measurement of
+    its own — rather than re-deriving 2.1–2.5× as settled, and rather than
+    quoting only the lowest sample as if it were the ceiling.
   - `cargo-deny` + `cargo-audit` (supply-chain checks) — `mise run audit` runs
     `cargo audit && cargo deny check` and is expected to pass, including
     `cargo deny check advisories`.
