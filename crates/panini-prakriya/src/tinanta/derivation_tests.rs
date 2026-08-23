@@ -113,6 +113,9 @@ pub(super) fn lin_a_form(number: &str, pu: Purusha, va: Vacana) -> String {
 /// 7.3.92 sits between the two 7.3.84 applications: in sūtra order, and
 /// necessarily above 6.1.87 in `tinanta/adesha.rs`, which coalesces the
 /// āgama it inserts.
+///
+/// 8.3.13 sits BELOW 8.4.41, against sūtra order: the second ḍh it needs
+/// is 8.4.41's own output. See its comment in `tinanta/tripadi.rs`.
 #[test]
 fn tinanta_rule_order_is_pinned() {
     let expected = [
@@ -124,9 +127,9 @@ fn tinanta_rule_order_is_pinned() {
         "6.4.23", "7.4.21", "7.3.84", "7.3.86", "7.3.92", "7.3.84", "6.4.87", "6.4.77", "6.1.78",
         "7.3.101", "6.4.112", "6.4.113", "6.1.101", "6.1.96", "6.1.90", "6.1.97", "6.1.87",
         "6.1.66", "6.4.105", "6.4.106", "6.4.107", "6.4.101", "6.4.111", "8.2.77", "8.2.23",
-        "8.2.25", "8.2.30", "8.2.39", "8.2.40", "8.2.41", "8.2.74", "8.2.75", "8.2.73", "8.3.15",
-        "8.3.24", "8.3.59", "8.4.41", "8.4.53", "8.4.55", "8.4.1", "8.4.2", "8.4.58", "8.4.65",
-        "8.4.56",
+        "8.2.25", "8.2.30", "8.2.31", "8.2.39", "8.2.40", "8.2.41", "8.2.74", "8.2.75", "8.2.73",
+        "8.3.15", "8.3.24", "8.3.59", "8.4.41", "8.3.13", "8.4.53", "8.4.55", "8.4.1", "8.4.2",
+        "8.4.58", "8.4.65", "8.4.56",
     ];
     let actual: Vec<&str> = rules().map(|r| r.id).collect();
     assert_eq!(actual, expected);
@@ -1989,4 +1992,32 @@ fn trh_takes_the_im_agama_only_before_a_hal_initial_pit_sarvadhatuka() {
         (false, false),
         "yAsuT -> tfMhyAt"
     );
+}
+
+#[test]
+fn trh_lat_reaches_its_three_shapes() {
+    // The three tails √tṛh's laṭ splits into, one assertion each, and the
+    // reason 8.2.31's *jhali* condition has to be a real guard:
+    //
+    //   tfReQi   `h` before the jhal `t`     -> 8.2.31, then 8.3.13
+    //   tfRekzi  `h` before `s`              -> 8.2.31, then 8.2.41's Q arm
+    //   tfRehmi  `h` before `m`, NOT a jhal  -> 8.2.31 declines, `h` stays
+    //
+    // tfRehmi is the load-bearing one: an 8.2.31 that fired on every `h`
+    // would give *tfReQmi, a form that looks no less Sanskrit than the
+    // right one.
+    // Every laṭ cell of this root is single-form, so `form_g` (which goes
+    // through `sole`) is the right helper: a cell that unexpectedly gains
+    // an optional branch fails loudly here rather than having its first
+    // branch read silently.
+    let lat = |pu, va| form_g("07.0018", Lakara::Lat, pu, va);
+
+    assert_eq!(lat(Purusha::Prathama, Vacana::Eka), "tfReQi");
+    assert_eq!(lat(Purusha::Madhyama, Vacana::Eka), "tfRekzi");
+    assert_eq!(lat(Purusha::Uttama, Vacana::Eka), "tfRehmi");
+    // The apit cells, where 6.4.111 runs instead of the āgama and 8.3.13
+    // still fires -- on the `Q` that 8.4.41 makes out of 8.2.40's `D`.
+    assert_eq!(lat(Purusha::Prathama, Vacana::Dvi), "tfRQaH");
+    // And the one where nothing retroflexes at all: `h` before a vowel.
+    assert_eq!(lat(Purusha::Prathama, Vacana::Bahu), "tfMhanti");
 }

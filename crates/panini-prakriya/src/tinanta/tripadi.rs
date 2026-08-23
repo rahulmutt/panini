@@ -326,6 +326,41 @@ pub(crate) static TRIPADI: &[Rule] = &[
             true
         },
     },
+    // 8.2.31 ho ḍhaḥ: `h` becomes `Q` (ḍh). The *jhali* and *padasya*
+    // conditions come by anuvṛtti from the same place 8.2.30 coH kuH reads
+    // them, so the guard is written the same way — find the first `h` that
+    // is genuinely word-final or jhal-followed, rather than the first `h`
+    // in the word, so a non-applicable `h` earlier can never hide a later
+    // applicable one.
+    //
+    // tfneh + ti → tfneQ + ti; tfnh + tas → tfnQ + tas; atfneh → atfneQ
+    // (pada-final, the laṅ arm, after 8.2.23 above has eaten tip's `t`).
+    //
+    // It must DECLINE before `m` and `v` — neither is a jhal — which is
+    // exactly what leaves tfRehmi and tfMhvaH their `h`, and before a
+    // vowel, which leaves tfMhanti its own. `is_jhal` already carries `h`
+    // itself, so an `h h` junction would qualify; none arises here (6.4.101
+    // has already taken loṭ's `hi` to `Di` by this point), and the general
+    // form is kept rather than special-cased.
+    Rule {
+        id: "8.2.31",
+        name: "ho QaH",
+        kind: RuleKind::Vidhi,
+        vikalpa: false,
+        apply: |p| {
+            let w = word_chars(p);
+            let Some(pos) = w.iter().enumerate().position(|(i, (_, _, c))| {
+                *c == 'h' && w.get(i + 1).is_none_or(|(_, _, next)| is_jhal(*next))
+            }) else {
+                return false;
+            };
+            let (term, idx, _) = w[pos];
+            let before = p.snapshot();
+            set_char(p, term, idx, 'Q');
+            p.record("8.2.31", "ho QaH", before);
+            true
+        },
+    },
     // 8.2.39 jhalāṁ jaśo'nte: a pada-final jhal becomes its jaś (voiced
     // unaspirated). This is what makes `aBavad` the engine's DECLINED form —
     // it is obligatory, and 8.4.56 below optionally undoes it. Before this
@@ -946,6 +981,53 @@ pub(crate) static TRIPADI: &[Rule] = &[
                 return true;
             }
             false
+        },
+    },
+    // 8.3.13 ḍho ḍhe lopaḥ: a `Q` is elided before a `Q`.
+    // tfReQ + Qi → tfRe + Qi; tfMQ + QaH → tfM + QaH.
+    //
+    // OUT OF SŪTRA ORDER, immediately below 8.4.41, and this is
+    // load-bearing twice over.
+    //
+    // First, the condition. The SECOND ḍh does not exist until ṣṭutva has
+    // run: 8.2.31 makes the stem-final `Q`, 8.2.40 makes the ending's `t`
+    // into `D`, and only 8.4.41 above turns that `D` into the `Q` this rule
+    // needs. Placed in numeric order it would see tfneQ + Di, decline, and
+    // the cell would surface *tfReQQi. The file already orders by operation
+    // where the derivation demands it — 8.2.73 sits below 8.2.75, and
+    // 8.4.56 sits last, below 8.4.65.
+    //
+    // Second, the fork count. √tṛh reaches loṭ madhyama eka in the same
+    // kfnt + Di shape that makes every other stop-final rudhādi root a
+    // SIX-form cell (8.4.53 voices, 8.4.65 optionally elides, 7.1.35 and
+    // 8.4.56 multiply). √tṛh's is a three-former, because this rule
+    // obligatorily eats the very ḍh 8.4.65 would have forked on. Move this
+    // rule below 8.4.65 and the cell silently grows to six forms —
+    // `trnaddhi_trace_has_8_3_13_and_no_8_4_65` in `panini`'s trace suite
+    // is the pin, and the ALTERNATES count is the second alarm.
+    //
+    // 6.3.111 ḍhralope pūrvasya dīrgho'ṇaḥ does NOT follow this elision
+    // here, and its absence is deliberate rather than an omission: it
+    // lengthens a preceding **aṇ**, and in every √tṛh cell the sound before
+    // the elided ḍh is `e` (tfRe + Qi) or `M` (tfM + QaH), neither of which
+    // is one. vidyut-prakriya's traces do not emit it either. Implement it
+    // when a root presents a short a/i/u there — this comment is the note
+    // that says why there is nothing to implement yet.
+    Rule {
+        id: "8.3.13",
+        name: "Qo Qe lopaH",
+        kind: RuleKind::Vidhi,
+        vikalpa: false,
+        apply: |p| {
+            let w = word_chars(p);
+            let Some(i) = (1..w.len()).find(|&i| w[i - 1].2 == 'Q' && w[i].2 == 'Q') else {
+                return false;
+            };
+            let (term, idx, _) = w[i - 1];
+            let before = p.snapshot();
+            remove_char(p, term, idx);
+            p.record("8.3.13", "Qo Qe lopaH", before);
+            true
         },
     },
     // 8.4.53 jhalāṁ jaś jhaśi: a jhal becomes its jaś before a jhaś (a
