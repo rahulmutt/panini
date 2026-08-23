@@ -345,12 +345,44 @@ pub(crate) static ADESHA: &[Rule] = &[
     //
     // Short `iy` comes from 7.2.80/7.2.81; long `Iy` is sīyuṭ after salopa
     // (7.2.79). Both coalesce with śap `a` to guṇa `e`.
+    //
+    // TWO ARMS since rudhādi 7e. The junction arm (below, and the original)
+    // coalesces śap's `a` with the ending's initial `i`/`I` and eats that
+    // initial. The im arm coalesces an `a i` that sits wholly inside SHAP,
+    // put there by 7.3.92, and eats nothing. Both are ād guṇaḥ; they differ
+    // in what the `i` belongs to.
     Rule {
         id: "6.1.87",
         name: "Ad guRaH",
         kind: RuleKind::Vidhi,
         vikalpa: false,
         apply: |p| {
+            // ARM 2, the 7.3.92 im (rudhādi 7e). The āgama put an `i`
+            // inside SHAP immediately after śnam's `a` — tfnah → tfnaih —
+            // and guṇa coalesces that `a i` into `e`, still inside SHAP,
+            // consuming nothing from the ending. That is what makes it a
+            // separate arm rather than a widening of the junction arm
+            // below: the two operations differ in what they consume, not
+            // just in where they look.
+            //
+            // Gated on 7.3.92 having FIRED IN THIS DERIVATION rather than
+            // on sniffing SHAP for an `ai`: the āgama IS the condition, not
+            // a proxy for it, and the gate makes the arm structurally
+            // unable to fire for a root that does not take it. Same idiom
+            // 6.4.72 and 7.1.6 use to read the log for a prior rule.
+            if p.log.iter().any(|s| s.sutra == "7.3.92") {
+                let chars: Vec<char> = p.terms[SHAP].text.chars().collect();
+                let Some(pos) = chars.windows(2).position(|w| w == ['a', 'i']) else {
+                    return false;
+                };
+                let before = p.snapshot();
+                let mut s = chars;
+                s.remove(pos + 1);
+                s[pos] = 'e';
+                p.terms[SHAP].text = s.into_iter().collect();
+                p.record("6.1.87", "Ad guRaH", before);
+                return true;
+            }
             let first = p.terms[ENDING].text.chars().next();
             if !p.terms[SHAP].has(Tag::Thematic) || !matches!(first, Some('i') | Some('I')) {
                 return false;

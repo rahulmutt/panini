@@ -109,6 +109,10 @@ pub(super) fn lin_a_form(number: &str, pu: Purusha, va: Vacana) -> String {
 /// once with respect to the vikaraṇa (guṇates the root), once with
 /// respect to the tiṅ ending (guṇates the vikaraṇa). See its second entry
 /// in `tinanta/guna.rs` for the full rationale.
+///
+/// 7.3.92 sits between the two 7.3.84 applications: in sūtra order, and
+/// necessarily above 6.1.87 in `tinanta/adesha.rs`, which coalesces the
+/// āgama it inserts.
 #[test]
 fn tinanta_rule_order_is_pinned() {
     let expected = [
@@ -117,11 +121,12 @@ fn tinanta_rule_order_is_pinned() {
         "3.4.79", "3.4.91", "3.4.93", "3.4.90", "3.4.92", "3.4.103", "3.4.102", "7.1.35", "3.1.69",
         "3.1.73", "3.1.77", "3.1.78", "3.1.81", "3.1.68", "2.4.72", "3.4.111", "3.1.83", "1.2.4",
         "6.4.71", "6.4.72", "7.3.100", "7.1.5", "7.1.6", "7.1.3", "7.2.79", "7.2.80", "7.2.81",
-        "6.4.23", "7.4.21", "7.3.84", "7.3.86", "7.3.84", "6.4.87", "6.4.77", "6.1.78", "7.3.101",
-        "6.4.112", "6.4.113", "6.1.101", "6.1.96", "6.1.90", "6.1.97", "6.1.87", "6.1.66",
-        "6.4.105", "6.4.106", "6.4.107", "6.4.101", "6.4.111", "8.2.77", "8.2.23", "8.2.25",
-        "8.2.30", "8.2.39", "8.2.40", "8.2.41", "8.2.74", "8.2.75", "8.2.73", "8.3.15", "8.3.24",
-        "8.3.59", "8.4.41", "8.4.53", "8.4.55", "8.4.1", "8.4.2", "8.4.58", "8.4.65", "8.4.56",
+        "6.4.23", "7.4.21", "7.3.84", "7.3.86", "7.3.92", "7.3.84", "6.4.87", "6.4.77", "6.1.78",
+        "7.3.101", "6.4.112", "6.4.113", "6.1.101", "6.1.96", "6.1.90", "6.1.97", "6.1.87",
+        "6.1.66", "6.4.105", "6.4.106", "6.4.107", "6.4.101", "6.4.111", "8.2.77", "8.2.23",
+        "8.2.25", "8.2.30", "8.2.39", "8.2.40", "8.2.41", "8.2.74", "8.2.75", "8.2.73", "8.3.15",
+        "8.3.24", "8.3.59", "8.4.41", "8.4.53", "8.4.55", "8.4.1", "8.4.2", "8.4.58", "8.4.65",
+        "8.4.56",
     ];
     let actual: Vec<&str> = rules().map(|r| r.id).collect();
     assert_eq!(actual, expected);
@@ -1907,4 +1912,72 @@ fn indh_lan_and_lot_and_vidhilin_cells() {
     ] {
         assert_eq!(form_g("07.0011", Lakara::VidhiLin, pu, va), want);
     }
+}
+
+#[test]
+fn trh_takes_the_im_agama_only_before_a_hal_initial_pit_sarvadhatuka() {
+    // 7.3.92 tfRaha im, all four conjuncts of its guard, each with the cell
+    // that would break if it were dropped.
+    //
+    // Asserted on the LOG rather than on a surface or a stem, deliberately.
+    // Both are already rewritten by the time `derive` returns -- 8.4.1 has
+    // taken Snam's `n` to `R` -- and neither settles until 8.2.31 and
+    // 8.3.13 land in the next task. Whether the Agama fired is the claim,
+    // and the log states it directly. The surfaces get asserted next task,
+    // in `trh_lat_reaches_its_three_shapes`.
+    //
+    // 6.1.87 is asserted alongside because for this root only its im arm
+    // can fire: SHAP holds Snam, which is not Thematic, so the junction arm
+    // declines. The two rules stand or fall together.
+    fn fired(la: Lakara, pu: Purusha, va: Vacana) -> (bool, bool) {
+        let d = dhatus()
+            .iter()
+            .find(|d| d.dhatupatha == "07.0018")
+            .expect("07.0018 is curated");
+        let p = derive(d, la, Pada::Parasmaipada, pu, va)
+            .into_iter()
+            .next()
+            .expect("every enumerable cell derives at least one branch");
+        let has = |id: &str| p.log.iter().any(|step| step.sutra == id);
+        (has("7.3.92"), has("6.1.87"))
+    }
+
+    // FIRES: hal-initial, pit, sArvadhAtuka, not Ngit.
+    for (la, pu, va, why) in [
+        (Lakara::Lat, Purusha::Prathama, Vacana::Eka, "ti"),
+        (Lakara::Lat, Purusha::Madhyama, Vacana::Eka, "si"),
+        (Lakara::Lat, Purusha::Uttama, Vacana::Eka, "mi"),
+        // laN tip's apRkta `t`. 8.2.23 saMyogAntasya lopaH eats it, but not
+        // until the tripAdI -- one stage BELOW this rule -- so the hal test
+        // still sees it here. That ordering is pinned again in trace.rs.
+        (Lakara::Lan, Purusha::Prathama, Vacana::Eka, "t"),
+    ] {
+        assert_eq!(fired(la, pu, va), (true, true), "{why}");
+    }
+
+    // DECLINES on the hal conjunct: the ending is vowel-initial.
+    for (la, pu, va, why) in [
+        (Lakara::Lan, Purusha::Uttama, Vacana::Eka, "am -> atfRaham"),
+        (Lakara::Lot, Purusha::Uttama, Vacana::Eka, "Ani -> tfRahAni"),
+    ] {
+        assert_eq!(fired(la, pu, va), (false, false), "{why}");
+    }
+
+    // DECLINES on the pit conjunct: 1.2.4 makes tas/Ta/vas Ngit, and
+    // 6.4.111 takes Snam's `a` instead of the Agama going in.
+    assert_eq!(
+        fired(Lakara::Lat, Purusha::Prathama, Vacana::Dvi),
+        (false, false),
+        "tas -> tfRQaH"
+    );
+
+    // DECLINES on the Ngit conjunct, which the pit conjunct does NOT cover:
+    // under yAsuT the ending's own `t` is still pit, and it is the Agama
+    // that carries the N. The ending is hal-initial too, so this cell
+    // isolates the fourth conjunct exactly.
+    assert_eq!(
+        fired(Lakara::VidhiLin, Purusha::Prathama, Vacana::Eka),
+        (false, false),
+        "yAsuT -> tfMhyAt"
+    );
 }
