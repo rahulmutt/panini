@@ -1630,7 +1630,7 @@ fn atrned_trace_takes_the_im_before_8_2_23_eats_tips_t() {
     // first and ENDING is empty, the hal test fails, and the cell derives
     // *atfRah.
     //
-    // vidyut-prakriya credits 6.1.68 hal NyAb Byo dIrGAt sutisyapRktaM hal
+    // vidyut-prakriya credits 6.1.68 hal NyAb Byo dIrGAt sutisyapfktaM hal
     // with that same deletion, here and for every curated rudhAdi root
     // (akfRat, aBinat, apinaw, aBanak). This engine has no 6.1.68 and
     // reaches the same surface by 8.2.23; the divergence predates √tṛh and

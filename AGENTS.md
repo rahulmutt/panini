@@ -237,7 +237,7 @@
     own unit-test binary at 0.17s plus the remaining small blocks). Cell
     count grew only **+1.4%** this slice (2592 → 2628, the smallest growth
     in the series), yet the floor grew from 7d's 871.88s to 943.70s, **about
-    +9%** — cell count under-predicting the floor's move for the fifth
+    +8.2%** — cell count under-predicting the floor's move for the fifth
     consecutive slice, and by the widest margin yet relative to how little
     the cell count itself moved: the standing advice that the floor does not
     track cell count holds, and this is its sharpest confirmation so far.
@@ -263,22 +263,22 @@
     Campaign at `-j 4 --timeout 4800`: **547 mutants, 505 caught, 2 missed,
     39 unviable, 1 timeout** (505 + 39 + 1 = 545, plus the 2 missed = 547),
     wall clock **8h**. The timeout is the known-permanent
-    `tripadi.rs:1266:23` ṇatva backward-scan non-terminating-loop mutant
+    `tripadi.rs`, 8.4.2's backward ṇatva scan, non-terminating-loop mutant
     (`j -= 1` -> `j /= 1`, making `j` constant so the mutated run never
     reaches an assertion) — the correct verdict at any cap, and it consumed
     the full 4800s, so raising the cap from 2400 cost exactly one extra
     ~40 minutes on this one permanent, undetectable-by-assertion case.
     **Both missed mutants are equivalent mutants, verified individually,
     not missing tests:**
-    - `adesha.rs:380:30: replace + with *` (`s.remove(pos + 1)` ->
-      `s.remove(pos)`, inside 6.1.87's new im arm) — removing either half
+    - `adesha.rs`, 6.1.87's new im arm, `replace + with *` (`s.remove(pos
+      + 1)` -> `s.remove(pos)`) — removing either half
       of an adjacent `a i` pair and then overwriting index `pos` with `'e'`
       produces the same string either way, since whichever character
       survives the removal shifts into (or already sits at) `pos` and is
       immediately clobbered. True for any input reaching this arm, not
-      just this suite's cells. Documented in place at that line.
-    - `tripadi.rs:1026:38: replace - with /` (`w[i - 1]` -> `w[i]`, inside
-      8.3.13, eliding the second ḍh instead of the first) — both `Q`s at
+      just this suite's cells. Documented in place at that guard.
+    - `tripadi.rs`, 8.3.13's own guard, `replace - with /` (`w[i - 1]` ->
+      `w[i]`, eliding the second ḍh instead of the first) — both `Q`s at
       that position are the same character, so the surface result is
       identical either way; the golden suite's full 2628 cells, its
       ALTERNATES, and its traces cannot distinguish which term lost the
@@ -286,7 +286,7 @@
       regardless — the sūtra is *ḍho ḍhe lopaḥ*, "of ḍh, before ḍh,
       elision," which names the FIRST ḍh as the one elided — but that
       correctness is not observable at the surface, hence the survivor.
-      Documented in place at that line. **Correction to this task's own
+      Documented in place at that guard. **Correction to this task's own
       plan:** Task 9's brief predicted this exact survivor but reasoned
       "`tfReQi` should [distinguish it], since eliding the second gives
       `tfReQ`" — that arithmetic is wrong; eliding the second `Q` gives the
@@ -296,7 +296,9 @@
       exist.
     `outcomes.json`'s per-mutant test-phase durations (**n = 508** — 547
     mutants minus the 39 unviable ones, which fail at the Build phase and
-    never reach a Test phase) put the median at 73s, p90 at 669s, p99 at
+    never reach a Test phase) put the median at 73s, p90 at 682s (nearest-
+    rank, the same convention used for p99 below — an earlier pass at this
+    entry used a floor-indexed rank for p90 alone and reported 669s), p99 at
     1290s and the max at 4800s — that max being the known-permanent
     timeout itself, not a caught or missed mutant. Excluding the timeout,
     the max is **1345s**, and the top seven non-timeout runs were 1345s,
@@ -304,7 +306,7 @@
     **Contention finding that corrects this paragraph's own number — and
     an earlier draft of this same entry.** The two missed mutants ran the
     full golden suite to completion without being caught — a direct
-    measurement of an uncaught `-j 4` run — at **979s** and **966s**
+    measurement of an uncaught `-j 4` run — at **980s** and **967s**
     against the **943.70s** uncontended floor measured above, a factor of
     **~1.02×–1.04×**. An earlier pass at this entry reported that figure as
     *the* measured contention; it is real but is not the worst case, and
@@ -326,7 +328,7 @@
     4800 / 1345 ≈ **3.57×**. **Ruling: keep 4800.** This is now better
     supported than when the cap was first raised, for a reason the
     percentile data makes explicit: a **caught** mutant ran longer (1345s)
-    than either of the two **uncaught** ones (979s, 966s), because
+    than either of the two **uncaught** ones (980s, 967s), because
     scheduling overlap under `-j 4` — not whether a mutant is caught or
     times out — dominates wall-clock duration. That is exactly why a cap
     must never be provisioned from a single sampled run, uncaught or
@@ -441,7 +443,7 @@
     three new sūtras — 7.3.92 *tṛṇaha im* (the *im* augment), 8.2.31 *ho
     ḍhaḥ* and 8.3.13 *ḍho ḍhe lopaḥ* — and three widenings of rules the
     engine already had: 8.4.41 *ṣṭunā ṣṭuḥ* (its trigger widened from a
-    bare `z` literal to the full ṣṭu class `w`/`W`/`q`/`Q`/`R`), 8.2.41
+    bare `z` literal to the full ṣṭu class `z`/`w`/`W`/`q`/`Q`/`R`), 8.2.41
     *ṣaḍhoḥ kaḥ si* (widened from `z` alone to `z`/`Q`, the dvandva's other
     named sound) and 6.1.87 *ād guṇaḥ* (a second arm, for the `a i` the
     *im* augment leaves wholly inside `SHAP`, distinct from the junction
@@ -508,10 +510,14 @@
     √tṛh: **zero differences across all 2628 cells / 3057 forms / 64
     roots**, with both negative controls (`entry` and `form`) verified
     failing first. This is the first of these audits with new `Rule`s
-    behind it: 7.3.92, 8.2.31 and 8.3.13, plus the three widenings above —
-    an earlier task in this slice had already proved those widenings inert
-    on the pre-7e 2592-cell corpus by a byte-for-byte dump diff of its own,
-    before √tṛh was curated at all.
+    behind it: 7.3.92, 8.2.31 and 8.3.13, plus the two tripādī widenings
+    above (8.4.41 and 8.2.41) — an earlier task in this slice had already
+    proved those two widenings inert on the pre-7e 2592-cell corpus by a
+    byte-for-byte dump diff of its own, before √tṛh was curated at all.
+    6.1.87's second arm was not part of that dump diff: it landed later,
+    and is inert by construction rather than by measurement — it is
+    gated on `7.3.92` appearing in `p.log`, so no pre-7e derivation can
+    reach it, and the residual risk is what the 2628-cell audit covers.
     **√ric and √vic** needed no new sūtra, but 8.2.30 *coḥ kuḥ* needed more
     than the one-line guard widening it looked like: they are c-final, and
     the rule was hardcoded to a single `j` → `g` pair — its match read `j`

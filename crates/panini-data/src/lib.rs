@@ -956,10 +956,11 @@ mod tests {
         // surfaces agree. This is the slice that would have paid for the
         // retired scheme, and does not.
         //
-        // The gaṇa is still PARTIAL: 21 of its 25 dhātupāṭha roots, so FOUR
-        // remain out, and they do not all cost the same. √tṛh wants 7.3.92
-        // tfRaha im with 8.2.31 ho QaH and 8.3.13 Qo Qe lopaH -- slice 7e.
-        // √chid and √chṛd want 6.1.73 Ce ca plus 8.4.40 stoH ScunA ScuH.
+        // After slice 7d the gaṇa was still PARTIAL: 21 of its 25
+        // dhātupāṭha roots, so FOUR remained out, and they did not all
+        // cost the same. √tṛh wanted 7.3.92 tfRaha im with 8.2.31 ho QaH
+        // and 8.3.13 Qo Qe lopaH -- slice 7e curated it, below. √chid and
+        // √chṛd still want 6.1.73 Ce ca plus 8.4.40 stoH ScunA ScuH.
         // And √bhuj is out on different grounds again: 1.3.66 Bujo'navane
         // forks its pada on sense.
         //

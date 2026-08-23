@@ -1024,7 +1024,7 @@ pub(crate) static TRIPADI: &[Rule] = &[
                 return false;
             };
             // EQUIVALENT MUTANT, documented on purpose (rudhādi 7e
-            // mutation campaign, `tripadi.rs:1026:38: replace - with /`,
+            // mutation campaign, 8.3.13's own guard, `replace - with /`
             // i.e. `w[i - 1]` -> `w[i]`, eliding the second ḍh instead of
             // the first): both `Q`s here are the identical character, so
             // removing either one concatenates to the same surface string

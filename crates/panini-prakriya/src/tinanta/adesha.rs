@@ -378,7 +378,7 @@ pub(crate) static ADESHA: &[Rule] = &[
                 let before = p.snapshot();
                 let mut s = chars;
                 // EQUIVALENT MUTANT, documented on purpose (rudhādi 7e
-                // mutation campaign, `adesha.rs:380:30: replace + with *`,
+                // mutation campaign, 6.1.87's im arm, `replace + with *`
                 // i.e. `s.remove(pos + 1)` -> `s.remove(pos)`): removing
                 // either half of the adjacent `a i` pair and then
                 // overwriting index `pos` with `e` produces the same `s`

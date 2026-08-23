@@ -181,10 +181,12 @@ pub(crate) static GUNA: &[Rule] = &[
     // disjunct" mutant for a `||` chain; at this guard it only generates
     // negation flips and `||`↔`&&` swaps, and the 7e campaign caught every
     // one of them:
-    //   guna.rs:207:16  delete !                 (flips the Pit check)
-    //   guna.rs:207:38  replace || with &&
-    //   guna.rs:207:63  replace || with &&
-    //   guna.rs:207:66  delete !                 (flips the Sarvadhatuka check)
+    // all four on 7.3.92's guard, `!ending.has(Tag::Pit) ||
+    // ending.has(Tag::Ngit) || !ending.has(Tag::Sarvadhatuka)`:
+    //   delete ! on the Pit check           (flips it to `ending.has(Tag::Pit)`)
+    //   replace the first || with &&
+    //   replace the second || with &&
+    //   delete ! on the Sarvadhatuka check  (flips it to `ending.has(Tag::Sarvadhatuka)`)
     // Flipping `!ending.has(Tag::Pit)` to `ending.has(Tag::Pit)` does not
     // disable the conjunct, it inverts it: the guard then rejects exactly
     // the four cells that must fire (the ones where Pit IS true), which is
