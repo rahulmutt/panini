@@ -1030,20 +1030,49 @@ pub(crate) static TRIPADI: &[Rule] = &[
             // removing either one concatenates to the same surface string
             // — the golden suite's full 2628 cells, its ALTERNATES, and
             // its traces cannot and will not distinguish which of the two
-            // was elided, because nothing downstream reads *which term*
-            // lost the character, only the resulting text. `w[i - 1]` is
-            // still the only correct choice, though: the sūtra is
+            // was elided.
+            //
+            // This engine has a dual representation — per-term text plus
+            // the flattened `word_chars`/`p.text()` view — and two later
+            // tripādī rules DO read term structure directly rather than
+            // going through the flattened view: 8.4.55 (`Kari ca`) reads
+            // `ENDING`'s own first char and walks `p.terms[..ENDING]` for
+            // the last non-empty term before it; 8.4.56 (`vA'vasAne`, the
+            // pipeline's last rule) does `p.terms.rposition(|t|
+            // !t.text.is_empty())` and pops/pushes on that specific term.
+            // Both were checked individually rather than assumed safe:
+            // 8.4.55 is unaffected because `is_khar('Q')` is always false
+            // (ḍh is a voiced aspirate, khar is voiceless) — the rule
+            // declines to fire before it ever looks at which term holds
+            // the surviving `Q`, whichever term that is. 8.4.56 is
+            // unaffected because its `rposition` search for the last
+            // non-empty term is self-correcting: it always lands on
+            // whichever term physically holds the word's trailing
+            // character, the same character `p.text()` already read one
+            // line above, so mutant and non-mutant land on the same `sub`
+            // regardless of which term is credited with holding it. That
+            // second case is a currently LATENT non-divergence, not a
+            // structural one: today's golden suite's actual `ENDING`
+            // values (`"Qi"`, `"QaH"`) are both two-plus characters, so
+            // `ENDING` never empties out in practice — a hypothetical
+            // single-character `ENDING` fully elided by the mutant would
+            // still need re-checking against this argument, not assumed
+            // to inherit it.
+            //
+            // `w[i - 1]` is still the only correct choice: the sūtra is
             // ḍho ḍhe lopaḥ, "of ḍh, before ḍh, elision" — the FIRST ḍh is
             // the one the grammar elides, and `w[i]` would elide the
             // second, a different (wrong) analysis that happens to be
             // unobservable at the surface. Do not add a test to try to
             // kill this mutant; do not treat a surviving mutant here as a
             // missing test without first checking whether it is this
-            // exact index-choice mutation. (An earlier task-9 planning
-            // note in this slice predicted this survivor but reasoned
-            // "eliding the second gives tfReQ" — that arithmetic was
-            // wrong: eliding the second Q gives the same tfReQi as eliding
-            // the first, which is exactly why the mutant survives.)
+            // exact index-choice mutation, and without re-running the
+            // 8.4.55/8.4.56 argument above rather than assuming it still
+            // applies. (An earlier task-9 planning note in this slice
+            // predicted this survivor but reasoned "eliding the second
+            // gives tfReQ" — that arithmetic was wrong: eliding the second
+            // Q gives the same tfReQi as eliding the first, which is
+            // exactly why the mutant survives.)
             let (term, idx, _) = w[i - 1];
             let before = p.snapshot();
             remove_char(p, term, idx);

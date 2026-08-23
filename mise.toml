@@ -25,7 +25,7 @@ run = "cargo fmt --all --check"
 # --timeout must clear a FULL, UNCAUGHT run of the workspace suite at the
 # parallelism actually used -- cargo-mutants reads -j from
 # CARGO_MUTANTS_JOBS, so an unqualified cap can be defeated by the
-# environment alone. Keep -j <= 4. The --timeout 2400 below is passed
+# environment alone. Keep -j <= 4. The --timeout 4800 below is passed
 # explicitly rather than left to cargo-mutants' own default: under too
 # short a cap, a genuine survivor is recorded as a TIMEOUT rather than a
 # MISSED, which makes a reported zero-survivor run vacuous, so always

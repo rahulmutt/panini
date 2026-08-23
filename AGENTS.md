@@ -294,12 +294,13 @@
       survives rather than getting caught. Worth remembering so a future
       slice does not re-chase this one expecting a distinguishing cell to
       exist.
-    `outcomes.json`'s per-mutant test-phase durations (n = 509) put the
-    median at 73s, p90 at 669s, p99 at 1290s and the max at 4800s — that
-    max being the known-permanent timeout itself, not a caught or missed
-    mutant. Excluding the timeout, the max is **1345s**, and the top seven
-    non-timeout runs were 1345s, 1341s, 1335s, 1293s, 1290s, 1032s and
-    1031s, all `CaughtMutant`.
+    `outcomes.json`'s per-mutant test-phase durations (**n = 508** — 547
+    mutants minus the 39 unviable ones, which fail at the Build phase and
+    never reach a Test phase) put the median at 73s, p90 at 669s, p99 at
+    1290s and the max at 4800s — that max being the known-permanent
+    timeout itself, not a caught or missed mutant. Excluding the timeout,
+    the max is **1345s**, and the top seven non-timeout runs were 1345s,
+    1341s, 1335s, 1293s, 1290s, 1032s and 1031s, all `CaughtMutant`.
     **Contention finding that corrects this paragraph's own number — and
     an earlier draft of this same entry.** The two missed mutants ran the
     full golden suite to completion without being caught — a direct
@@ -309,7 +310,7 @@
     *the* measured contention; it is real but is not the worst case, and
     presenting it alone was misleading — those two mutants simply happened
     to run during lighter scheduling overlap, not at the ceiling. The
-    honest figure comes from all 509 test phases, where the longest
+    honest figure comes from all 508 test phases, where the longest
     non-timeout run, 1345s, is **~1.43×** the floor — still below the
     2.1–2.5× this paragraph has projected from since the `-j 16` re-runs in
     slice 7b, so that figure remains overstated for this machine and should
@@ -317,7 +318,7 @@
     narrower than the single-sample 1.02×–1.04× suggested, and this
     paragraph must not be read as claiming ~1.03× is the ceiling. Quote the
     full range (1.02×–1.43×) and its basis (two direct uncaught-run
-    measurements plus the 509-sample distribution), not one flattering
+    measurements plus the 508-sample distribution), not one flattering
     number.
     Margin arithmetic against the worst **observed non-timeout** run,
     1345s, *directly measured, not projected*: against the retired 2400s
