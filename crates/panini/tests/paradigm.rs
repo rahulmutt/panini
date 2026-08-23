@@ -5365,7 +5365,7 @@ fn derivation_set_is_exactly_pinned() {
 /// √śiṣ (Siz), √und (und), √añj (anj), √tañc (tanc), √vij (vij), √vṛj (vfj)
 /// and √pṛc (pfc), all parasmaipadī, plus √vid (vid), ātmanepadī, curated
 /// with no new sūtra and cleared by their own cross-implementation audit:
-/// every one of the twenty-one rudhādi roots forks in both loṭ and laṅ,
+/// every one of the twenty-two rudhādi roots forks in both loṭ and laṅ,
 /// and two of them — kft and ruD — fork
 /// in all four lakāras: laṭ (kft
 /// cells 1/4/5, Kid cells 0/5, inD cells 0/5, and — new in the ubhayapada
@@ -5375,7 +5375,7 @@ fn derivation_set_is_exactly_pinned() {
 /// śa-luk jaśtva 8.4.56 branch), loṭ (on 7.1.35/8.4.65/8.4.56, stacking up to
 /// three deep, and piṣ's loṭ madhyama eka, which stacks 8.4.65 alongside
 /// 7.1.35/8.4.56 four deep), and vidhiliṅ
-/// (kft/his/Banj/piz/ruD/Bid/kzud/yuj/tfd/ric/vic/Siz/und/anj/tanc/vij/vfj/pfc
+/// (kft/his/Banj/piz/ruD/Bid/kzud/yuj/tfd/ric/vic/Siz/und/anj/tanc/vij/vfj/pfc/tfh
 /// cell 0, on 8.4.56 — Kid, inD and vid do not fork here). Slice 7c curated four more roots —
 /// √bhid (Bid), √kṣud (kzud), √yuj (yuj) and √tṛd (tfd), all four ubhayapadī
 /// by 1.3.72 and pinned in both padas — and three of them join kft and ruD as
