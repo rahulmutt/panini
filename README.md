@@ -15,26 +15,27 @@ cargo run -p panini-cli -- check 'bhavati' --trace
 
 Finite verbs (*tiṅanta*), six gaṇas fully covered — *bhvādi* (1, vikaraṇa
 śap), *divādi* (4, śyan), *tudādi* (6, śa), *adādi* (2, śap luk'd), *kryādi*
-(9, śnā) and *svādi* (5, śnu) — plus *rudhādi* (7, śnam) **partial**: twenty-one
+(9, śnā) and *svādi* (5, śnu) — plus *rudhādi* (7, śnam) **partial**: twenty-two
 of its roots (√kṛt, √hiṃs, √khid, √bhañj, √piṣ, √indh, √rudh, and — curated
 in slice 7c — √bhid, √kṣud, √yuj and √tṛd, and — curated in the 8.2.30/8.2.39
 generalization slice — √ric and √vic, and — curated in slice 7d, on the
 audited numbers alone with no new sūtra — √śiṣ, √und, √añj, √tañc, √vij,
-√vṛj, √pṛc and √vid) of 25. √rudh, the gaṇa's eponym,
+√vṛj, √pṛc and √vid, and — curated in slice 7e, with 7.3.92 *tṛṇaha im*,
+8.2.31 *ho ḍhaḥ* and 8.3.13 *ḍho ḍhe lopaḥ* — √tṛh) of 25. √rudh, the
+gaṇa's eponym,
 arrived with 1.3.72 *svaritañitaḥ* as the engine's first ubhayapadī root, so
 the ubhayapada deferral itself is discharged: 1.3.72 is no longer what keeps
-any root out. **4 of the 25 remain out**, each for a narrow reason of its
-own — √tṛh, deferred behind 7.3.92 *tṛṇaha im* (with 8.2.31 *ho ḍhaḥ* and
-8.3.13 *ḍho ḍhe lopaḥ*); √chid and √chṛd for two sūtras the engine does not
+any root out. **3 of the 25 remain out**, each for a narrow reason of its
+own — √chid and √chṛd for two sūtras the engine does not
 implement (6.1.73 *che ca*, 8.4.40 *stoḥ ścunā ścuḥ*); and √bhuj, deferred
 behind 1.3.66 *bhujo'navane*, which forks its pada on sense
 rather than on an axis this engine models. *parasmaipada* and *ātmanepada*
 (which padas a root admits is a curated verdict on its table row), over a
-curated 63-root set, in four lakāras: *laṭ* (present), *laṅ* (imperfect), *loṭ*
+curated 64-root set, in four lakāras: *laṭ* (present), *laṅ* (imperfect), *loṭ*
 (imperative), and *vidhiliṅ* (optative). A cell may have more than one valid
 form where an optional (*vikalpa*) sūtra applies — `hinvaH` and `hinuvaH` are
-both correct — and in fact 299 of the 2592 cells hold more than one form: 208
-hold two, 77 hold three (`Bavatu`, `BavatAd`, `BavatAt`), two hold four
+both correct — and in fact 304 of the 2628 cells hold more than one form: 211
+hold two, 79 hold three (`Bavatu`, `BavatAd`, `BavatAt`), two hold four
 (rudhādi's √piṣ loṭ madhyama eka, and — new in slice 7d — √śiṣ's), six hold
 five, and six hold six — the loṭ
 parasmaipada madhyama eka of rudhādi's √kṛt, √rudh, √bhid, √kṣud, √tṛd and —

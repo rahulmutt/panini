@@ -356,17 +356,17 @@
   target under `crates/panini-lipi/fuzz` legitimately omits it, since it uses
   `#![no_main]` plus the libfuzzer harness macro).
 - Grammar changes are gated by the golden paradigm test
-  (`crates/panini/tests/paradigm.rs`, 2592 cells, six complete gaṇas plus
+  (`crates/panini/tests/paradigm.rs`, 2628 cells, six complete gaṇas plus
   rudhādi partial — `PARADIGM`
     stays one-form-per-cell: a cell forked by an optional rule keeps its
-    other forms — a second (208 cells), a third (77 cells), a fourth (2
+    other forms — a second (211 cells), a third (79 cells), a fourth (2
     cells, rudhādi's √piṣ and — new in slice 7d — √śiṣ loṭ madhyama eka) and
     — the loṭ parasmaipada cells of
     rudhādi's √kṛt, √rudh, √bhid, √kṣud, √tṛd and — new in slice 7d — √und,
     six ways tied as the
     sharpest forks in the suite — a fourth
     and fifth (prathama eka) or a fourth through sixth (madhyama eka) — in
-    `ALTERNATES` (422 rows in all, so 2592 + 422 = 3014 forms total), and
+    `ALTERNATES` (429 rows in all, so 2628 + 429 = 3057 forms total), and
     `derivation_set_is_exactly_pinned` asserts each cell's derivation set is
     exactly the union of the two. The suite is no longer filtered by any
     one-form-per-cell convention — the
@@ -436,8 +436,40 @@
     √vij (`07.0023 o~vijI~`), √vṛj (`07.0024 vfjI~`) and √pṛc
     (`07.0025 pfcI~`), the other seven parasmaipadī and none of the eight
     ubhayapadī.
+    Rudhādi 7e then curated the ninth and last reachable non-ubhayapadī
+    root, taking the gaṇa to **twenty-two**: √tṛh (`07.0018 tfha~`), behind
+    three new sūtras — 7.3.92 *tṛṇaha im* (the *im* augment), 8.2.31 *ho
+    ḍhaḥ* and 8.3.13 *ḍho ḍhe lopaḥ* — and three widenings of rules the
+    engine already had: 8.4.41 *ṣṭunā ṣṭuḥ* (its trigger widened from a
+    bare `z` literal to the full ṣṭu class `w`/`W`/`q`/`Q`/`R`), 8.2.41
+    *ṣaḍhoḥ kaḥ si* (widened from `z` alone to `z`/`Q`, the dvandva's other
+    named sound) and 6.1.87 *ād guṇaḥ* (a second arm, for the `a i` the
+    *im* augment leaves wholly inside `SHAP`, distinct from the junction
+    arm's ending-initial `i`/`I`). **7d's own deferral undercounted the
+    gap**: it named only the three sūtras √tṛh lacked outright, but three
+    rules the engine already had were too narrow to carry the root as
+    well — and 8.4.41's own guard comment, titled NARROW GUARD before this
+    slice renamed it, had predicted exactly this widening. √tṛh's deepest
+    cells — the ones every other stop-final rudhādi root turns into
+    six-form forks (8.4.53 voices, 8.4.65 optionally elides, 7.1.35 and
+    8.4.56 each multiply that by three) — hold only **three** forms,
+    because 8.3.13 obligatorily elides the very ḍh that 8.4.65 would
+    otherwise fork on; `tripadi.rs`'s comment on 8.3.13 and
+    `trnaddhi_trace_has_8_3_13_and_no_8_4_65` in `panini`'s trace suite are
+    the record. A standing divergence from vidyut-prakriya's own traces,
+    not introduced by this slice: vidyut credits 6.1.68 *hal ṅyāb bhyo
+    dīrghāt su-ti-sy-apṛktaṁ hal* for the apṛkta-`t` deletion every curated
+    rudhādi root's laṅ takes (`akfRat`, `aBinat`, `apinaw`, `aBanak`, and
+    now `atfReq`); this engine has no 6.1.68 and reaches the same surface
+    through 8.2.23 *saṁyogāntasya lopaḥ* instead — audited clean either
+    way, and predating √tṛh. And 6.3.111 *ḍhralope pūrvasya dīrgho'ṇaḥ* is
+    deliberately unimplemented: it lengthens a preceding *aṇ* before the
+    very ḍh-elision 8.3.13 performs, but no √tṛh cell presents one there
+    (the elided ḍh always follows `e` or `M`), and vidyut-prakriya's own
+    traces do not emit it either — the reason is recorded in place at
+    8.3.13, not merely deferred.
     `curated_pada_agrees_with_upadesha_markers` in `panini-data` now
-    re-derives all 63 verdicts from the vendored upadeśa, so the column
+    re-derives all 64 verdicts from the vendored upadeśa, so the column
     cannot drift from the data that determines it. That discharges
     the **ubhayapada** deferral as such: 1.3.72 is no longer what keeps any
     root out, and the **two** ubhayapadī roots still outside the curated
@@ -471,6 +503,15 @@
     **zero differences across all 2592 cells / 3014 forms / 63 roots**,
     with the `entry` negative control verified failing first. No `Rule`
     changed — the eight roots derive on the rules already in the pipeline.
+    **Rudhādi 7e's own cross-implementation audit** ran the same probe
+    against vidyut-prakriya at commit `8da2f90`, over the corpus grown by
+    √tṛh: **zero differences across all 2628 cells / 3057 forms / 64
+    roots**, with both negative controls (`entry` and `form`) verified
+    failing first. This is the first of these audits with new `Rule`s
+    behind it: 7.3.92, 8.2.31 and 8.3.13, plus the three widenings above —
+    an earlier task in this slice had already proved those widenings inert
+    on the pre-7e 2592-cell corpus by a byte-for-byte dump diff of its own,
+    before √tṛh was curated at all.
     **√ric and √vic** needed no new sūtra, but 8.2.30 *coḥ kuḥ* needed more
     than the one-line guard widening it looked like: they are c-final, and
     the rule was hardcoded to a single `j` → `g` pair — its match read `j`
@@ -505,20 +546,21 @@
     keying makes moot, rather than needing anything new. (vidyut-prakriya
     credits 6.4.24 *aniditāṁ hala upadhāyāḥ kṅiti* for √und's `unad → und`
     step; this engine rejects that credit, does not implement 6.4.24 at
-    all, and pins the rejection in `trace.rs`.) **√tṛh** is the ninth and the
-    only one still out, deferred to slice 7e behind three sūtras the
-    engine does not implement: 7.3.92 *tṛṇaha im* (the *im* augment),
-    8.2.31 *ho ḍhaḥ* and 8.3.13 *ḍho ḍhe lopaḥ*. √bhuj (`07.0017 Bu\ja~`)
+    all, and pins the rejection in `trace.rs`.) That left √tṛh as the
+    ninth and only reachable non-ubhayapadī root still out, deferred to
+    slice 7e behind three sūtras the engine did not implement: 7.3.92
+    *tṛṇaha im* (the *im* augment), 8.2.31 *ho ḍhaḥ* and 8.3.13 *ḍho ḍhe
+    lopaḥ* — see the 7e paragraph above for what curating it actually
+    took. √bhuj (`07.0017 Bu\ja~`)
     is the twenty-fifth entry and out on
     different grounds again: 1.3.66
     *bhujo'navane* forks its pada on **sense**, not on an axis this engine
-    models. 21 curated + 2 uncurated ubhayapadī + √tṛh + √bhuj = 25,
-    so **4 of the 25 remain out**.
-    The root count is not what keeps the gaṇa partial — twenty-one is well
+    models. 22 curated + 2 uncurated ubhayapadī + √bhuj = 25,
+    so **3 of the 25 remain out**.
+    The root count is not what keeps the gaṇa partial — twenty-two is well
     past the six every completed gaṇa *after bhvādi* has here (bhvādi,
     the first, has twelve) — and neither, any longer, is 1.3.72: what
-    remains is the two-sūtra gap that keeps √chid and √chṛd out, √tṛh's
-    three-sūtra gap, and
+    remains is the two-sūtra gap that keeps √chid and √chṛd out, and
     √bhuj's sense axis. √indh's pada was **verified, not inferred from its
     ñi**: `YiinDI~\`'s ñi it-marker is one of the two things 1.3.72 reads,
     which would have made the root ubhayapadī alongside √rudh, so it was
@@ -628,8 +670,14 @@
   committed harness once more, at the same vidyut commit `8da2f90`, over
   the corpus grown by its eight roots: zero differences across 2592 cells
   / 3014 forms / 63 roots**, with `entry` verified failing first — the
-  current record, and the first of these runs with no `Rule` diff behind
+  first of these runs with no `Rule` diff behind
   it at all: the eight roots derive on the rules already in the pipeline.
+  **Rudhādi 7e re-ran the same committed harness once more, at the same
+  vidyut commit `8da2f90`, over the corpus grown by √tṛh: zero differences
+  across 2628 cells / 3057 forms / 64 roots**, with both `entry` and
+  `form` negative controls verified failing first — the current record,
+  and the first of these runs with new `Rule`s behind it: 7.3.92, 8.2.31
+  and 8.3.13.
   Those
   totals are asserted by the harness itself rather than reported from
   whatever it happened to enumerate, so a corpus that grows without the
@@ -649,14 +697,17 @@
   artha alone (upstream has 8- and 15-way artha collisions).
   Two comments inside `crates/panini-prakriya/src` still carry pre-7c
   figures — `controller.rs:130` and `tinanta/guna.rs:943` cite the corpus
-  size as 1872/1864-of-1872, now two slices further stale: the corpus
-  stood at 2304/2296-of-2304 as of the 8.2.30/8.2.39 slice and stands at
-  2592/2584-of-2592 as of rudhādi 7d — the same 8
+  size as 1872/1864-of-1872, now three slices further stale: the corpus
+  stood at 2304/2296-of-2304 as of the 8.2.30/8.2.39 slice, stood at
+  2592/2584-of-2592 as of rudhādi 7d, and stands at 2628/2620-of-2628 as
+  of rudhādi 7e — the same 8
   cells 6.4.107 always fired on (`key_count("6.4.107") == 8`, pinned at
-  `paradigm.rs:5444`), unmoved by 7d since 6.4.107 concerns only svādi's
+  `paradigm.rs:5444`), unmoved by 7d or 7e since 6.4.107 concerns only
+  svādi's
   √hi and √ri. Rudhādi 7d touched neither comment — its one permitted
   engine-comment edit is the comment above
-  `vrddhi_of_ac_vowels_all_arms` in `tinanta/sound.rs`. A third,
+  `vrddhi_of_ac_vowels_all_arms` in `tinanta/sound.rs`. Rudhādi 7e touched
+  neither comment either. A third,
   `tinanta/tripadi.rs`'s comment on 8.2.30 (formerly the one calling √bhañj
   rudhādi's one cu-final curated root), was **not** left stale the same
   way: the 8.2.30/8.2.39 generalization slice rewrote it in place, since
