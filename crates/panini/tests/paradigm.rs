@@ -5468,7 +5468,18 @@ fn paradigm_covers_every_enumerable_cell() {
     // keep documenting that EVERY enumerable (root, lakara, pada) triple must
     // be pinned in PARADIGM — a future partial slice may repopulate it, but it
     // must never silently hide a missing golden block.
-    const GATED: &[(&str, &str, Pada)] = &[];
+    // TEMPORARY, slice 7e: √tṛh's data row lands before its sūtras (so
+    // 7.3.92, 8.2.31 and 8.3.13 can be TDD'd against a real derivation)
+    // and before its goldens (which are generated from the engine the
+    // audit certifies, never hand-authored). Task 7 empties this back to
+    // `&[]` in the same commit that pastes the blocks. If this constant is
+    // still non-empty when the slice ships, a root shipped uncovered.
+    const GATED: &[(&str, &str, Pada)] = &[
+        ("07.0018", "laT", Pada::Parasmaipada),
+        ("07.0018", "laN", Pada::Parasmaipada),
+        ("07.0018", "loT", Pada::Parasmaipada),
+        ("07.0018", "viDiliN", Pada::Parasmaipada),
+    ];
 
     let pinned: Vec<(&str, &str, Pada)> =
         PARADIGM.iter().map(|(r, l, p, _)| (*r, *l, *p)).collect();
