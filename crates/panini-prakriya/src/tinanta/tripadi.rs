@@ -1023,6 +1023,27 @@ pub(crate) static TRIPADI: &[Rule] = &[
             let Some(i) = (1..w.len()).find(|&i| w[i - 1].2 == 'Q' && w[i].2 == 'Q') else {
                 return false;
             };
+            // EQUIVALENT MUTANT, documented on purpose (rudhādi 7e
+            // mutation campaign, `tripadi.rs:1026:38: replace - with /`,
+            // i.e. `w[i - 1]` -> `w[i]`, eliding the second ḍh instead of
+            // the first): both `Q`s here are the identical character, so
+            // removing either one concatenates to the same surface string
+            // — the golden suite's full 2628 cells, its ALTERNATES, and
+            // its traces cannot and will not distinguish which of the two
+            // was elided, because nothing downstream reads *which term*
+            // lost the character, only the resulting text. `w[i - 1]` is
+            // still the only correct choice, though: the sūtra is
+            // ḍho ḍhe lopaḥ, "of ḍh, before ḍh, elision" — the FIRST ḍh is
+            // the one the grammar elides, and `w[i]` would elide the
+            // second, a different (wrong) analysis that happens to be
+            // unobservable at the surface. Do not add a test to try to
+            // kill this mutant; do not treat a surviving mutant here as a
+            // missing test without first checking whether it is this
+            // exact index-choice mutation. (An earlier task-9 planning
+            // note in this slice predicted this survivor but reasoned
+            // "eliding the second gives tfReQ" — that arithmetic was
+            // wrong: eliding the second Q gives the same tfReQi as eliding
+            // the first, which is exactly why the mutant survives.)
             let (term, idx, _) = w[i - 1];
             let before = p.snapshot();
             remove_char(p, term, idx);

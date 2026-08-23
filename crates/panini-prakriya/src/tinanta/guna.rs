@@ -163,24 +163,42 @@ pub(crate) static GUNA: &[Rule] = &[
     //   - pit sārvadhātuka         NO CONTROL — see below
     //   - NOT ṅit                  tātaṅ (7.1.35) → tfRQAt; yāsuṭ → tfMhyAt
     //
-    // EQUIVALENT MUTANT, documented on purpose: disabling the pit conjunct
-    // changes no derivation among all 238 tests. Root cause is 1.2.4
-    // sārvadhātukam apit (`samjna.rs`), which tags EVERY apit sārvadhātuka
-    // ending ṅit; the one exception, loṭ uttama, is vowel-initial and
-    // already excluded by the hal conjunct above. So for everything that
-    // reaches this guard, !Pit implies Ngit, and the ṅit check alone
-    // already rejects tas/Ta/vas — the pit check cannot change the
-    // outcome of any reachable derivation. A mutation-testing pass that
-    // flips or deletes this conjunct is EXPECTED TO SURVIVE; that is a
-    // documented equivalent mutant, not a missing test. If a later task's
-    // mutation campaign reports a surviving mutant on this line, this
-    // comment is why — search for "equivalent mutant" first before adding
-    // a test to try to kill it.
+    // EQUIVALENT IN THEORY, BUT NOT AS TESTED — corrected after the
+    // rudhādi 7e mutation campaign (547 mutants, `-j 4 --timeout 4800`).
+    // The theory still holds: literally removing the pit conjunct from the
+    // guard (so the disjunction reads `Ngit || !Sarvadhatuka`, with no
+    // reference to Pit at all) changes no derivation among all 238 tests.
+    // Root cause is 1.2.4 sārvadhātukam apit (`samjna.rs`), which tags
+    // EVERY apit sārvadhātuka ending ṅit; the one exception, loṭ uttama, is
+    // vowel-initial and already excluded by the hal conjunct above. So for
+    // everything that reaches this guard, !Pit implies Ngit, and the ṅit
+    // check alone already rejects tas/Ta/vas — the pit conjunct's own
+    // CONTRIBUTION to the disjunction is redundant.
+    //
+    // But that is not the mutation cargo-mutants actually generates here,
+    // and the prior version of this comment was wrong to predict survival
+    // on that basis. cargo-mutants does not synthesize a "delete this
+    // disjunct" mutant for a `||` chain; at this guard it only generates
+    // negation flips and `||`↔`&&` swaps, and the 7e campaign caught every
+    // one of them:
+    //   guna.rs:207:16  delete !                 (flips the Pit check)
+    //   guna.rs:207:38  replace || with &&
+    //   guna.rs:207:63  replace || with &&
+    //   guna.rs:207:66  delete !                 (flips the Sarvadhatuka check)
+    // Flipping `!ending.has(Tag::Pit)` to `ending.has(Tag::Pit)` does not
+    // disable the conjunct, it inverts it: the guard then rejects exactly
+    // the four cells that must fire (the ones where Pit IS true), which is
+    // caught, correctly. The redundancy argument above only licenses
+    // removing the conjunct outright — a mutation this repo has never
+    // actually observed cargo-mutants produce at this site. If a future
+    // mutation campaign reports a new surviving mutant on this guard, do
+    // NOT assume this is the same documented case without first checking
+    // that it is, in fact, a delete-the-disjunct mutation and not a flip.
     //
     // Kept anyway: it states the sūtra's own condition (7.3.92 IS a pit
     // rule), and this repo prefers guards faithful to the grammar over
     // guards minimised against the current engine's incidental behavior.
-    // The equivalence is a property of how 1.2.4 is implemented today, not
+    // The redundancy is a property of how 1.2.4 is implemented today, not
     // a theorem — if that tagging ever changes, the pit check is what
     // keeps 7.3.92 correct. Same reasoning that keeps `is_shtu`'s
     // unreachable `R` arm.

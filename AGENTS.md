@@ -260,15 +260,63 @@
     back in the "roughly 2×" territory the pada audit and 7c campaigns ran
     at, rather than the sub-1.2×-to-1.02× range the outgoing cap was left
     running under.
-    Campaign at `-j 4 --timeout 4800`:
-    **[PLACEHOLDER — CAMPAIGN NOT YET RUN. Fill in with the real numbers
-    once the mutation campaign finishes: N mutants, N caught, N missed
-    (expect 0), N unviable, N timeout (expect exactly 1 — the
-    known-permanent `tripadi.rs` ṇatva backward-scan non-terminating-loop
-    mutant described above, the correct verdict at any cap). Also record
-    the `outcomes.json` percentile breakdown (median / p90 / p99 / max) and
-    the resulting caught- and uncaught-margin figures against 4800, in the
-    style of the entries above.]**
+    Campaign at `-j 4 --timeout 4800`: **547 mutants, 505 caught, 2 missed,
+    39 unviable, 1 timeout** (505 + 39 + 1 = 545, plus the 2 missed = 547),
+    wall clock **8h**. The timeout is the known-permanent
+    `tripadi.rs:1266:23` ṇatva backward-scan non-terminating-loop mutant
+    (`j -= 1` -> `j /= 1`, making `j` constant so the mutated run never
+    reaches an assertion) — the correct verdict at any cap, and it consumed
+    the full 4800s, so raising the cap from 2400 cost exactly one extra
+    ~40 minutes on this one permanent, undetectable-by-assertion case.
+    **Both missed mutants are equivalent mutants, verified individually,
+    not missing tests:**
+    - `adesha.rs:380:30: replace + with *` (`s.remove(pos + 1)` ->
+      `s.remove(pos)`, inside 6.1.87's new im arm) — removing either half
+      of an adjacent `a i` pair and then overwriting index `pos` with `'e'`
+      produces the same string either way, since whichever character
+      survives the removal shifts into (or already sits at) `pos` and is
+      immediately clobbered. True for any input reaching this arm, not
+      just this suite's cells. Documented in place at that line.
+    - `tripadi.rs:1026:38: replace - with /` (`w[i - 1]` -> `w[i]`, inside
+      8.3.13, eliding the second ḍh instead of the first) — both `Q`s at
+      that position are the same character, so the surface result is
+      identical either way; the golden suite's full 2628 cells, its
+      ALTERNATES, and its traces cannot distinguish which term lost the
+      character. `w[i - 1]` remains the only grammatically correct choice
+      regardless — the sūtra is *ḍho ḍhe lopaḥ*, "of ḍh, before ḍh,
+      elision," which names the FIRST ḍh as the one elided — but that
+      correctness is not observable at the surface, hence the survivor.
+      Documented in place at that line. **Correction to this task's own
+      plan:** Task 9's brief predicted this exact survivor but reasoned
+      "`tfReQi` should [distinguish it], since eliding the second gives
+      `tfReQ`" — that arithmetic is wrong; eliding the second `Q` gives the
+      same `tfReQi` as eliding the first, which is exactly why the mutant
+      survives rather than getting caught. Worth remembering so a future
+      slice does not re-chase this one expecting a distinguishing cell to
+      exist.
+    **Contention finding that corrects this paragraph's own number.** The
+    two missed mutants ran the full golden suite to completion without
+    being caught — the direct measurement of an uncaught `-j 4` run this
+    paragraph has asked for since the pada audit — at **979s** and **966s**
+    against the **943.70s** uncontended floor measured above: a contention
+    factor of **~1.02×–1.04×**, not the 2.1–2.5× this paragraph has
+    projected from since the `-j 16` re-runs in slice 7b. At the true
+    factor, 2400 would in fact have held (943.70 × 1.04 ≈ 981s, comfortably
+    under 2400): the raise to 4800 was insurance that, on this machine and
+    this run, proved unnecessary. **Ruling: keep 4800 anyway.** The costs
+    are asymmetric — too low a cap silently turns a "0 missed" into a
+    vacuous result (the failure this repo has hit twice, in 7a and 7b),
+    while too high a cap costs only the ~40 minutes the one permanent
+    timeout above already shows. Over-provisioning is correct under that
+    asymmetry even now that the real factor is known to be lower.
+    **The 2.1–2.5× figure itself should now be treated as machine-dependent
+    and contradicted by this measurement**, not as a fixed constant of
+    `-j 4`: it was inferred from a `-j 16`-to-`-j 4` re-run comparison on
+    one machine, and this slice's direct measurement, on the box this
+    campaign actually ran on, came in roughly half of the low end. The next
+    slice should reason from the 943.70s floor and this ~1.02–1.04×
+    figure — or a fresh direct measurement of its own — rather than
+    re-deriving 2.1–2.5× as if it were settled.
   - `cargo-deny` + `cargo-audit` (supply-chain checks) — `mise run audit` runs
     `cargo audit && cargo deny check` and is expected to pass, including
     `cargo deny check advisories`.

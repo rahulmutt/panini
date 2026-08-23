@@ -377,6 +377,19 @@ pub(crate) static ADESHA: &[Rule] = &[
                 };
                 let before = p.snapshot();
                 let mut s = chars;
+                // EQUIVALENT MUTANT, documented on purpose (rudhādi 7e
+                // mutation campaign, `adesha.rs:380:30: replace + with *`,
+                // i.e. `s.remove(pos + 1)` -> `s.remove(pos)`): removing
+                // either half of the adjacent `a i` pair and then
+                // overwriting index `pos` with `e` produces the same `s`
+                // either way, because whichever character survives the
+                // removal shifts into (or already sits at) `pos` and is
+                // immediately clobbered by the `'e'` assignment below. This
+                // holds for any input reaching this arm, not just the
+                // cells this repo's suite happens to cover — do not add a
+                // test to try to kill it; add one only if the surviving
+                // mutant is `remove` targeting a DIFFERENT index than `pos`
+                // or `pos + 1`.
                 s.remove(pos + 1);
                 s[pos] = 'e';
                 p.terms[SHAP].text = s.into_iter().collect();
