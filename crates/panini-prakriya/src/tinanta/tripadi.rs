@@ -876,24 +876,28 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // then voices that same `z` to `q` before the new `Q`, giving piMqQi.
     // Run 8.4.53 first instead and it would read piMz + Di's `z` as the
     // jaśtva target — jashtva_of('z') is no longer a no-op — and rewrite it
-    // to `q` before 8.4.41 ever ran; with 8.4.41's trigger still `z`-only,
-    // that `z` is gone by the time 8.4.41 runs and it has nothing left to
-    // fire on, giving piMqDi instead.
+    // to `q` before 8.4.41 ever ran; with 8.4.41's trigger `z`-only, as it
+    // was through 7b Task 6 (before rudhādi 7e's widening below), that `z`
+    // is gone by the time 8.4.41 runs and it has nothing left to fire on,
+    // giving piMqDi instead.
     //
-    // The two orders fail to converge for an implementation reason, not a
-    // sūtra one. BEFORE 7b Task 6, two separate narrowings held them apart:
-    // THIS rule's trigger set is `z` only (see NARROW GUARD below), not the
-    // full ṭ-varga ṣṭunā ṣṭuḥ names (`w W q Q R`); and 8.4.53's guard used
-    // to check for a literal penult `D`, not "any jhaś." 7b Task 6 generalised
-    // 8.4.53 from literal-`D` to jhal-before-jhaś (Q qualifies), which
-    // removed 8.4.53's narrowing — the AS-IMPLEMENTED order (8.4.41 above
-    // 8.4.53) now converges correctly to piMqQi, as traced above and pinned
-    // by `pish_lot_madhyama_eka_is_pinddhi`'s piRqQi. THIS rule's `z`-only
-    // trigger is now the ONE narrowing left standing: reorder the two rules
-    // (8.4.53 above 8.4.41) and it still stalls at piMqDi, restorable only
-    // by also widening this trigger to include `q` — the full `w W q Q R`
-    // — so a q-triggered 8.4.41 can still retroflex D → Q afterward. Do not
-    // reorder these two rules without re-deriving this cell.
+    // The two orders failed to converge for an implementation reason, not
+    // a sūtra one. BEFORE 7b Task 6, two separate narrowings held them
+    // apart: THIS rule's trigger set was `z` only (see the TRIGGER
+    // paragraph below — titled NARROW GUARD until rudhādi 7e renamed it),
+    // not the full ṭ-varga ṣṭunā ṣṭuḥ names (`w W q Q R`); and 8.4.53's
+    // guard used to check for a literal penult `D`, not "any jhaś." 7b
+    // Task 6 generalised 8.4.53 from literal-`D` to jhal-before-jhaś (Q
+    // qualifies), which removed 8.4.53's narrowing — the AS-IMPLEMENTED
+    // order (8.4.41 above 8.4.53) now converges correctly to piMqQi, as
+    // traced above and pinned by `pish_lot_madhyama_eka_is_pinddhi`'s
+    // piRqQi. THIS rule's `z`-only trigger then became the ONE narrowing
+    // left standing: reorder the two rules (8.4.53 above 8.4.41) and it
+    // still stalled at piMqDi, restorable only by also widening this
+    // trigger to include `q` — the full `w W q Q R` — so a q-triggered
+    // 8.4.41 could still retroflex D → Q afterward. rudhādi 7e made
+    // exactly that widening (see TRIGGER below). Do not reorder these two
+    // rules without re-deriving this cell.
     //
     // STRICT ADJACENCY is the load-bearing part of the guard: only the
     // IMMEDIATELY preceding character is read, never scanned past. A
@@ -976,13 +980,15 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // supplies the substitute, checked at every adjacent pair
     // `word_chars` reports.
     //
-    // NOT NARROWED THE WAY 8.4.41 ABOVE IS. 8.4.41's trigger is
-    // deliberately `z`-only, pending a later root; this rule instead
-    // implements the full jhalāṁ jaś jhaśi condition, with no positional
-    // restriction and no restriction on which jhal or which jhaś. What
-    // keeps it from over-firing is upstream, not in this guard, in two
-    // separate ways for the two kinds of jhaś-initial affix in this
-    // grammar:
+    // NOT NARROWED THE WAY 8.4.41's CORRESPONDENCE side above still is.
+    // 8.4.41's TRIGGER side was deliberately `z`-only too, pending a later
+    // root, until rudhādi 7e widened it to the full ṣṭu class (see
+    // TRIGGER above); its correspondence side (t/T/D) remains narrow the
+    // same way. This rule instead implements the full jhalāṁ jaś jhaśi
+    // condition, with no positional restriction and no restriction on
+    // which jhal or which jhaś. What keeps it from over-firing is
+    // upstream, not in this guard, in two separate ways for the two kinds
+    // of jhaś-initial affix in this grammar:
     //
     // 8.2.40 (7b Task 7) is the only NEW source of a D-initial ending —
     // besides the pre-existing 6.4.101 her dhiḥ — and it requires a jhaṣ
