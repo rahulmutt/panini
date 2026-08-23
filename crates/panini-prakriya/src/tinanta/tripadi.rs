@@ -8,8 +8,8 @@ use crate::prakriya::Prakriya;
 use crate::rule::{Rule, RuleKind};
 use crate::term::Tag;
 use crate::tinanta::sound::{
-    cartva_of, is_jhal, is_jhash, is_khar, is_natva_intervener, is_natva_trigger, is_shtu,
-    is_savarna, is_vowel, jashtva_of, kutva_of, parasavarna_of,
+    cartva_of, is_jhal, is_jhash, is_khar, is_natva_intervener, is_natva_trigger, is_savarna,
+    is_shtu, is_vowel, jashtva_of, kutva_of, parasavarna_of,
 };
 use crate::tinanta::terms::{ANGA, ENDING, SHAP};
 
