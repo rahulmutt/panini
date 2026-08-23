@@ -1570,3 +1570,79 @@ fn anaktas_trace_is_the_kutva_path_on_a_vowel_initial_root() {
     assert!(at(&t, "8.3.24") < at(&t, "8.4.55"), "got {t:?}");
     assert!(at(&t, "8.4.55") < at(&t, "8.4.58"), "got {t:?}");
 }
+
+#[test]
+fn trneddhi_trace_puts_8_3_13_below_8_4_41() {
+    // tfh laT prathama eka, the whole im path in one cell: 7.3.92 inserts
+    // the Agama, 6.1.87 coalesces it (tfnaih -> tfneh), 8.2.31 takes the
+    // `h` to `Q`, 8.2.40 takes ti's `t` to `D`, 8.4.41 retroflexes that
+    // `D` to `Q`, and only THEN can 8.3.13 elide the first of the two.
+    //
+    // The order assertion is the point. 8.3.13's second ḍh is 8.4.41's own
+    // output, so in sūtra order the rule would see tfneQ + Di, decline,
+    // and the cell would surface *tfReQQi.
+    let (text, t) = cell_trace(
+        "07.0018",
+        Lakara::Lat,
+        Pada::Parasmaipada,
+        Purusha::Prathama,
+        Vacana::Eka,
+    );
+    assert_eq!(text, "tfReQi", "got {t:?}");
+    assert!(at(&t, "7.3.92") < at(&t, "6.1.87"), "got {t:?}");
+    assert!(at(&t, "8.2.31") < at(&t, "8.2.40"), "got {t:?}");
+    assert!(at(&t, "8.4.41") < at(&t, "8.3.13"), "got {t:?}");
+}
+
+#[test]
+fn trnaddhi_trace_has_8_3_13_and_no_8_4_65() {
+    // tfh loT madhyama eka. Every other stop-final rudhAdi root makes this
+    // cell a SIX-former: 8.4.53 voices, 8.4.65 Jaro Jari savarRe optionally
+    // elides, and 7.1.35 and 8.4.56 multiply that by three. √tṛh's holds
+    // three forms, because 8.3.13 obligatorily eats the very ḍh 8.4.65
+    // would have forked on.
+    //
+    // The negative half is the pin: move 8.3.13 below 8.4.65 in
+    // `tripadi.rs` and this cell silently grows to six forms, every one of
+    // them a plausible word. The ALTERNATES count is the second alarm; this
+    // is the one that says why.
+    let (text, t) = cell_trace(
+        "07.0018",
+        Lakara::Lot,
+        Pada::Parasmaipada,
+        Purusha::Madhyama,
+        Vacana::Eka,
+    );
+    assert_eq!(text, "tfRQi", "got {t:?}");
+    assert!(t.contains(&"8.3.13".to_string()), "got {t:?}");
+    assert!(!t.contains(&"8.4.65".to_string()), "got {t:?}");
+    // 6.4.101 huJalByo her DiH supplies the `Di` that 8.4.41 retroflexes;
+    // without it there is no second ḍh and 8.3.13 has nothing to elide.
+    assert!(at(&t, "6.4.101") < at(&t, "8.4.41"), "got {t:?}");
+}
+
+#[test]
+fn atrned_trace_takes_the_im_before_8_2_23_eats_tips_t() {
+    // tfh laN prathama eka. A cross-STAGE ordering fact that nothing else
+    // records: 7.3.92 lives in the `guna` stage and 8.2.23 in `tripadi`,
+    // so when 7.3.92 asks whether the following affix is hal-initial, laN
+    // tip's apRkta `t` is STILL THERE. Let 8.2.23 saMyogAntasya lopaH run
+    // first and ENDING is empty, the hal test fails, and the cell derives
+    // *atfRah.
+    //
+    // vidyut-prakriya credits 6.1.68 hal NyAb Byo dIrGAt sutisyapfktaM hal
+    // with that same deletion, here and for every curated rudhAdi root
+    // (akfRat, aBinat, apinaw, aBanak). This engine has no 6.1.68 and
+    // reaches the same surface by 8.2.23; the divergence predates √tṛh and
+    // is audited clean, so it is not this slice's to correct.
+    let (text, t) = cell_trace(
+        "07.0018",
+        Lakara::Lan,
+        Pada::Parasmaipada,
+        Purusha::Prathama,
+        Vacana::Eka,
+    );
+    assert_eq!(text, "atfReq", "got {t:?}");
+    assert!(at(&t, "7.3.92") < at(&t, "8.2.23"), "got {t:?}");
+    assert!(!t.contains(&"6.1.68".to_string()), "got {t:?}");
+}

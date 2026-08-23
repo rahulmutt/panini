@@ -91,7 +91,7 @@ pub struct Dhatu {
     /// the honest arrangement; see the deferral in
     /// `docs/superpowers/specs/2026-08-16-pada-audit-design.md`.
     ///
-    /// The test covers the 63 roots curated here, not the dhātupāṭha's 2259.
+    /// The test covers the 64 roots curated here, not the dhātupāṭha's 2259.
     /// It catches a mis-assigned pada on a root a future slice adds; it does
     /// not make the table self-maintaining.
     pub pada: PadaAssignment,
@@ -706,6 +706,25 @@ static DHATUS: &[Dhatu] = &[
         pada: PadaAssignment::Atmanepada,
         artha: "vicAraRe",
     },
+    Dhatu {
+        // 07.0018 tfha~ hiMsAyAm. The gaṇa's ninth reachable
+        // non-ubhayapadī root and the only one that needed sūtras this
+        // engine lacked: 7.3.92 tfRaha im puts the *im* āgama into the
+        // stem (tfnah -> tfnaih -> tfneh by 6.1.87), 8.2.31 ho QaH takes
+        // the root's `h` to `Q`, and 8.3.13 Qo Qe lopaH elides it before
+        // the `Q` that 8.4.41 produces -- tfReQi.
+        //
+        // The im is conditioned on a HAL-INITIAL PIT sārvadhātuka, which
+        // is why this one root's paradigm splits three ways rather than
+        // two: tfReQi/tfRekzi/tfRehmi take it, tfRQaH/tfMhanti do not
+        // (apit, hence ṅit by 1.2.4), and atfRaham does not either
+        // (`am` is vowel-initial).
+        dhatupatha: "07.0018",
+        code: "tfh",
+        gana: Gana::Rudhadi,
+        pada: PadaAssignment::Parasmaipada,
+        artha: "hiMsAyAm",
+    },
 ];
 
 pub fn dhatus() -> &'static [Dhatu] {
@@ -747,7 +766,7 @@ mod tests {
 
     #[test]
     fn curated_roots_have_expected_ganas_and_padas() {
-        assert_eq!(dhatus().len(), 63);
+        assert_eq!(dhatus().len(), 64);
         let bu = dhatus().iter().find(|d| d.dhatupatha == "01.0001").unwrap();
         assert!(matches!(bu.pada, PadaAssignment::Parasmaipada));
         let labh = dhatus().iter().find(|d| d.dhatupatha == "01.1130").unwrap();
@@ -916,7 +935,7 @@ mod tests {
     }
 
     #[test]
-    fn rudhadi_rows_are_the_twenty_one_curated_roots() {
+    fn rudhadi_rows_are_the_twenty_two_curated_roots() {
         // √rudh, the gaṇa's eponym, arrived with 1.3.72 svaritaYitaH and
         // PadaAssignment::Ubhayapada. Slice 7c added √bhid, √kṣud, √yuj and
         // √tṛd; the 8.2.30/8.2.39 generalization slice added √ric and √vic
@@ -937,12 +956,26 @@ mod tests {
         // surfaces agree. This is the slice that would have paid for the
         // retired scheme, and does not.
         //
-        // The gaṇa is still PARTIAL: 21 of its 25 dhātupāṭha roots, so FOUR
-        // remain out, and they do not all cost the same. √tṛh wants 7.3.92
-        // tfRaha im with 8.2.31 ho QaH and 8.3.13 Qo Qe lopaH -- slice 7e.
-        // √chid and √chṛd want 6.1.73 Ce ca plus 8.4.40 stoH ScunA ScuH.
+        // After slice 7d the gaṇa was still PARTIAL: 21 of its 25
+        // dhātupāṭha roots, so FOUR remained out, and they did not all
+        // cost the same. √tṛh wanted 7.3.92 tfRaha im with 8.2.31 ho QaH
+        // and 8.3.13 Qo Qe lopaH -- slice 7e curated it, below. √chid and
+        // √chṛd still want 6.1.73 Ce ca plus 8.4.40 stoH ScunA ScuH.
         // And √bhuj is out on different grounds again: 1.3.66 Bujo'navane
         // forks its pada on sense.
+        //
+        // Slice 7e adds √tṛh, the ninth and last of the "reachable
+        // non-ubhayapadī" roots 7d's probe separated out. It was the one
+        // that did NOT come free: 7.3.92 tfRaha im, 8.2.31 ho QaH and
+        // 8.3.13 Qo Qe lopaH are all new in this slice, and 8.4.41, 8.2.41
+        // and 6.1.87 all had to widen to carry it. Parasmaipada: `tfha~`
+        // carries no anudātta and no ñi, so 1.3.78 SezAt kartari
+        // parasmaipadam settles it, and vidyut-prakriya derives no
+        // ātmanepada forms for the entry.
+        //
+        // Three of rudhādi's 25 are still out after this: √chid and √chṛd
+        // (6.1.73 Ce ca with 8.4.40 stoH ScunA ScuH) and √bhuj (1.3.66
+        // Bujo'navane, which forks its pada on sense).
         let rows: Vec<_> = dhatus()
             .iter()
             .filter(|d| d.gana == Gana::Rudhadi)
@@ -972,6 +1005,7 @@ mod tests {
                 ("07.0024", "vfj", PadaAssignment::Parasmaipada),
                 ("07.0025", "pfc", PadaAssignment::Parasmaipada),
                 ("07.0013", "vid", PadaAssignment::Atmanepada),
+                ("07.0018", "tfh", PadaAssignment::Parasmaipada),
             ]
         );
     }
@@ -1099,7 +1133,7 @@ mod tests {
     /// AFTER the `~` that marks an anunāsika it, so `~\` is an anudātta it and
     /// `~^` a svarita it — whereas a `\` sitting directly on a vowel elsewhere
     /// is the ROOT's own accent and says nothing about pada. Counted off the
-    /// vendored upadeśa: 42 of the 63 curated roots carry a `\` at all, and 29
+    /// vendored upadeśa: 42 of the 64 curated roots carry a `\` at all, and 29
     /// of those carry one on a root vowel — `01.0642 ji\`, `01.1082 smf\` and
     /// `02.0001 a\da~` among them — so conflating the two does not fail
     /// loudly; it silently calls most of the table ātmanepada.
@@ -1295,7 +1329,7 @@ mod tests {
     #[test]
     fn a_root_vowel_accent_does_not_assign_pada() {
         // The failure mode that would make the whole audit vacuous: 42 of the
-        // 63 curated roots carry a `\` somewhere in their upadeśa, 29 of them
+        // 64 curated roots carry a `\` somewhere in their upadeśa, 29 of them
         // on a root vowel rather than on an it. Reading every `\` as 1.3.12's
         // anudātta would call 23 of the 42 ātmanepada wrongly (15 curated
         // parasmaipada, 8 ubhayapada); the other 19 carry a genuine `~\` and

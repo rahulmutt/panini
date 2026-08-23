@@ -9,7 +9,7 @@ use crate::rule::{Rule, RuleKind};
 use crate::term::Tag;
 use crate::tinanta::sound::{
     cartva_of, is_jhal, is_jhash, is_khar, is_natva_intervener, is_natva_trigger, is_savarna,
-    is_vowel, jashtva_of, kutva_of, parasavarna_of,
+    is_shtu, is_vowel, jashtva_of, kutva_of, parasavarna_of,
 };
 use crate::tinanta::terms::{ANGA, ENDING, SHAP};
 
@@ -326,6 +326,41 @@ pub(crate) static TRIPADI: &[Rule] = &[
             true
         },
     },
+    // 8.2.31 ho ḍhaḥ: `h` becomes `Q` (ḍh). The *jhali* and *padasya*
+    // conditions come by anuvṛtti from the same place 8.2.30 coH kuH reads
+    // them, so the guard is written the same way — find the first `h` that
+    // is genuinely word-final or jhal-followed, rather than the first `h`
+    // in the word, so a non-applicable `h` earlier can never hide a later
+    // applicable one.
+    //
+    // tfneh + ti → tfneQ + ti; tfnh + tas → tfnQ + tas; atfneh → atfneQ
+    // (pada-final, the laṅ arm, after 8.2.23 above has eaten tip's `t`).
+    //
+    // It must DECLINE before `m` and `v` — neither is a jhal — which is
+    // exactly what leaves tfRehmi and tfMhvaH their `h`, and before a
+    // vowel, which leaves tfMhanti its own. `is_jhal` already carries `h`
+    // itself, so an `h h` junction would qualify; none arises here (6.4.101
+    // has already taken loṭ's `hi` to `Di` by this point), and the general
+    // form is kept rather than special-cased.
+    Rule {
+        id: "8.2.31",
+        name: "ho QaH",
+        kind: RuleKind::Vidhi,
+        vikalpa: false,
+        apply: |p| {
+            let w = word_chars(p);
+            let Some(pos) = w.iter().enumerate().position(|(i, (_, _, c))| {
+                *c == 'h' && w.get(i + 1).is_none_or(|(_, _, next)| is_jhal(*next))
+            }) else {
+                return false;
+            };
+            let (term, idx, _) = w[pos];
+            let before = p.snapshot();
+            set_char(p, term, idx, 'Q');
+            p.record("8.2.31", "ho QaH", before);
+            true
+        },
+    },
     // 8.2.39 jhalāṁ jaśo'nte: a pada-final jhal becomes its jaś (voiced
     // unaspirated). This is what makes `aBavad` the engine's DECLINED form —
     // it is obligatory, and 8.4.56 below optionally undoes it. Before this
@@ -458,11 +493,16 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // 8.3.59 (widened below) then retroflexes that `s` back to `z` after
     // the new `k`: pinakzi.
     //
-    // NARROW GUARD, by design, matching 8.4.41's discipline -- the discipline
-    // 8.2.30 followed until it widened (see `kutva_of` above): only the
-    // `z` arm is reachable this slice (rudhādi's one z-final curated root is
-    // √piṣ; no curated root's aṅga ends in `Q`). Widen the match the moment
-    // a Q-tailed root lands.
+    // NO LONGER NARROW. This guard used to be narrow "by design," matching
+    // the discipline 8.2.30 followed before `kutva_of` widened it (see
+    // above) and the discipline 8.4.41's CORRESPONDENCE half (below) still
+    // follows: implement only the reachable arm, and widen the match the
+    // moment a new one lands. rudhādi 7e is that widening for this guard —
+    // see BOTH SOUNDS THE SŪTRA NAMES below (past the two guard-mechanics
+    // paragraphs) for why. ṣaḍhoḥ names exactly two sounds and both are
+    // now covered, so nothing is left narrow here; a future widening on
+    // this guard would mean the sūtra itself was misread, not that a new
+    // root arrived.
     //
     // Read via `word_chars`, not a term-boundary check, for the same reason
     // 8.2.30/8.4.41 do: śnam's infix leaves √piṣ's own tail — the `z` — at
@@ -481,6 +521,14 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // `apinak`: a real-word-looking form that splits madhyama eka from
     // prathama eka and that no guard test would flag; only the golden and
     // the trace pin catch it.
+    //
+    // BOTH SOUNDS THE SŪTRA NAMES. *ṣaḍhoḥ* is a dvandva — ṣ **and** ḍh —
+    // and until rudhādi 7e the guard read `z` alone, because √piṣ was the
+    // only root that reached the rule and it presents a `z`. √tṛh presents
+    // the other: 8.2.31 ho ḍhaḥ turns its `h` into a `Q`, and tfneQ + si
+    // must become tfnek + si (→ tfRekzi by 8.3.59 and 8.4.1). Same shape as
+    // the 8.2.30 episode — a rule whose own name promised two cases and
+    // whose code implemented one — caught here before an audit had to.
     Rule {
         id: "8.2.41",
         name: "zaQoH kaH si",
@@ -489,7 +537,7 @@ pub(crate) static TRIPADI: &[Rule] = &[
         apply: |p| {
             let w = word_chars(p);
             for i in 1..w.len() {
-                if w[i].2 != 's' || w[i - 1].2 != 'z' {
+                if w[i].2 != 's' || !matches!(w[i - 1].2, 'z' | 'Q') {
                     continue;
                 }
                 let (term, idx, _) = w[i - 1];
@@ -863,24 +911,28 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // then voices that same `z` to `q` before the new `Q`, giving piMqQi.
     // Run 8.4.53 first instead and it would read piMz + Di's `z` as the
     // jaśtva target — jashtva_of('z') is no longer a no-op — and rewrite it
-    // to `q` before 8.4.41 ever ran; with 8.4.41's trigger still `z`-only,
-    // that `z` is gone by the time 8.4.41 runs and it has nothing left to
-    // fire on, giving piMqDi instead.
+    // to `q` before 8.4.41 ever ran; with 8.4.41's trigger `z`-only, as it
+    // was through 7b Task 6 (before rudhādi 7e's widening below), that `z`
+    // is gone by the time 8.4.41 runs and it has nothing left to fire on,
+    // giving piMqDi instead.
     //
-    // The two orders fail to converge for an implementation reason, not a
-    // sūtra one. BEFORE 7b Task 6, two separate narrowings held them apart:
-    // THIS rule's trigger set is `z` only (see NARROW GUARD below), not the
-    // full ṭ-varga ṣṭunā ṣṭuḥ names (`w W q Q R`); and 8.4.53's guard used
-    // to check for a literal penult `D`, not "any jhaś." 7b Task 6 generalised
-    // 8.4.53 from literal-`D` to jhal-before-jhaś (Q qualifies), which
-    // removed 8.4.53's narrowing — the AS-IMPLEMENTED order (8.4.41 above
-    // 8.4.53) now converges correctly to piMqQi, as traced above and pinned
-    // by `pish_lot_madhyama_eka_is_pinddhi`'s piRqQi. THIS rule's `z`-only
-    // trigger is now the ONE narrowing left standing: reorder the two rules
-    // (8.4.53 above 8.4.41) and it still stalls at piMqDi, restorable only
-    // by also widening this trigger to include `q` — the full `w W q Q R`
-    // — so a q-triggered 8.4.41 can still retroflex D → Q afterward. Do not
-    // reorder these two rules without re-deriving this cell.
+    // The two orders failed to converge for an implementation reason, not
+    // a sūtra one. BEFORE 7b Task 6, two separate narrowings held them
+    // apart: THIS rule's trigger set was `z` only (see the TRIGGER
+    // paragraph below — titled NARROW GUARD until rudhādi 7e renamed it),
+    // not the full ṭ-varga ṣṭunā ṣṭuḥ names (`w W q Q R`); and 8.4.53's
+    // guard used to check for a literal penult `D`, not "any jhaś." 7b
+    // Task 6 generalised 8.4.53 from literal-`D` to jhal-before-jhaś (Q
+    // qualifies), which removed 8.4.53's narrowing — the AS-IMPLEMENTED
+    // order (8.4.41 above 8.4.53) now converges correctly to piMqQi, as
+    // traced above and pinned by `pish_lot_madhyama_eka_is_pinddhi`'s
+    // piRqQi. THIS rule's `z`-only trigger then became the ONE narrowing
+    // left standing: reorder the two rules (8.4.53 above 8.4.41) and it
+    // still stalled at piMqDi, restorable only by also widening this
+    // trigger to include `q` — the full `w W q Q R` — so a q-triggered
+    // 8.4.41 could still retroflex D → Q afterward. rudhādi 7e made
+    // exactly that widening (see TRIGGER below). Do not reorder these two
+    // rules without re-deriving this cell.
     //
     // STRICT ADJACENCY is the load-bearing part of the guard: only the
     // IMMEDIATELY preceding character is read, never scanned past. A
@@ -891,12 +943,20 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // `super::derivation_tests` is the witness that the two rules stay
     // disjoint.
     //
-    // NARROW GUARD, by design, matching 8.3.59's discipline just above: the
-    // only trigger √piṣ ever presents is its own `z`, so only `z` is checked
-    // here — no curated root reaches a ṭ-varga-stop trigger yet. The
-    // correspondence match below is narrowed the same way: only t/T/D have
-    // a witness (d/n/s do not). Widen both the moment a root or a junction
-    // reaches the wider cases.
+    // TRIGGER: the full ṣṭu class (`is_shtu`), widened from a bare `z`
+    // literal in rudhādi 7e. That literal was, as the paragraph above says,
+    // the ONE narrowing left holding this rule and 8.4.53 apart under a
+    // reordering — so widening it does not weaken the pair, it removes the
+    // pair's last order-dependence. 8.2.31 ho ḍhaḥ is what made the wider
+    // class reachable: it produces a `Q` that must retroflex 8.2.40's `D`
+    // (tfneQ + Di → tfneQ + Qi → 8.3.13 → tfneQi). Verified inert against
+    // the pre-7e 2592-cell corpus by a byte-for-byte dump diff before any
+    // new root was curated.
+    //
+    // The CORRESPONDENCE side stays narrow, and deliberately: only t/T/D
+    // have a witness. √tṛh reaches `D` → `Q` and nothing wider, so d/n/s
+    // are still absent. Widen that half the moment a junction reaches it —
+    // it is a separate claim from the trigger's, with separate evidence.
     Rule {
         id: "8.4.41",
         name: "zwunA zwuH",
@@ -905,7 +965,7 @@ pub(crate) static TRIPADI: &[Rule] = &[
         apply: |p| {
             let w = word_chars(p);
             for i in 1..w.len() {
-                if w[i - 1].2 != 'z' {
+                if !is_shtu(w[i - 1].2) {
                     continue;
                 }
                 let sub = match w[i].2 {
@@ -921,6 +981,103 @@ pub(crate) static TRIPADI: &[Rule] = &[
                 return true;
             }
             false
+        },
+    },
+    // 8.3.13 ḍho ḍhe lopaḥ: a `Q` is elided before a `Q`.
+    // tfReQ + Qi → tfRe + Qi; tfMQ + QaH → tfM + QaH.
+    //
+    // OUT OF SŪTRA ORDER, immediately below 8.4.41, and this is
+    // load-bearing twice over.
+    //
+    // First, the condition. The SECOND ḍh does not exist until ṣṭutva has
+    // run: 8.2.31 makes the stem-final `Q`, 8.2.40 makes the ending's `t`
+    // into `D`, and only 8.4.41 above turns that `D` into the `Q` this rule
+    // needs. Placed in numeric order it would see tfneQ + Di, decline, and
+    // the cell would surface *tfReQQi. The file already orders by operation
+    // where the derivation demands it — 8.2.73 sits below 8.2.75, and
+    // 8.4.56 sits last, below 8.4.65.
+    //
+    // Second, the fork count. √tṛh reaches loṭ madhyama eka in the same
+    // kfnt + Di shape that makes every other stop-final rudhādi root a
+    // SIX-form cell (8.4.53 voices, 8.4.65 optionally elides, 7.1.35 and
+    // 8.4.56 multiply). √tṛh's is a three-former, because this rule
+    // obligatorily eats the very ḍh 8.4.65 would have forked on. Move this
+    // rule below 8.4.65 and the cell silently grows to six forms —
+    // `trnaddhi_trace_has_8_3_13_and_no_8_4_65` in `panini`'s trace suite
+    // is the pin, and the ALTERNATES count is the second alarm.
+    //
+    // 6.3.111 ḍhralope pūrvasya dīrgho'ṇaḥ does NOT follow this elision
+    // here, and its absence is deliberate rather than an omission: it
+    // lengthens a preceding **aṇ**, and in every √tṛh cell the sound before
+    // the elided ḍh is `e` (tfRe + Qi) or `M` (tfM + QaH), neither of which
+    // is one. vidyut-prakriya's traces do not emit it either. Implement it
+    // when a root presents a short a/i/u there — this comment is the note
+    // that says why there is nothing to implement yet.
+    Rule {
+        id: "8.3.13",
+        name: "Qo Qe lopaH",
+        kind: RuleKind::Vidhi,
+        vikalpa: false,
+        apply: |p| {
+            let w = word_chars(p);
+            let Some(i) = (1..w.len()).find(|&i| w[i - 1].2 == 'Q' && w[i].2 == 'Q') else {
+                return false;
+            };
+            // EQUIVALENT MUTANT, documented on purpose (rudhādi 7e
+            // mutation campaign, 8.3.13's own guard, `replace - with /`
+            // i.e. `w[i - 1]` -> `w[i]`, eliding the second ḍh instead of
+            // the first): both `Q`s here are the identical character, so
+            // removing either one concatenates to the same surface string
+            // — the golden suite's full 2628 cells, its ALTERNATES, and
+            // its traces cannot and will not distinguish which of the two
+            // was elided.
+            //
+            // This engine has a dual representation — per-term text plus
+            // the flattened `word_chars`/`p.text()` view — and two later
+            // tripādī rules DO read term structure directly rather than
+            // going through the flattened view: 8.4.55 (`Kari ca`) reads
+            // `ENDING`'s own first char and walks `p.terms[..ENDING]` for
+            // the last non-empty term before it; 8.4.56 (`vA'vasAne`, the
+            // pipeline's last rule) does `p.terms.rposition(|t|
+            // !t.text.is_empty())` and pops/pushes on that specific term.
+            // Both were checked individually rather than assumed safe:
+            // 8.4.55 is unaffected because `is_khar('Q')` is always false
+            // (ḍh is a voiced aspirate, khar is voiceless) — the rule
+            // declines to fire before it ever looks at which term holds
+            // the surviving `Q`, whichever term that is. 8.4.56 is
+            // unaffected because its `rposition` search for the last
+            // non-empty term is self-correcting: it always lands on
+            // whichever term physically holds the word's trailing
+            // character, the same character `p.text()` already read one
+            // line above, so mutant and non-mutant land on the same `sub`
+            // regardless of which term is credited with holding it. That
+            // second case is a currently LATENT non-divergence, not a
+            // structural one: today's golden suite's actual `ENDING`
+            // values (`"Qi"`, `"QaH"`) are both two-plus characters, so
+            // `ENDING` never empties out in practice — a hypothetical
+            // single-character `ENDING` fully elided by the mutant would
+            // still need re-checking against this argument, not assumed
+            // to inherit it.
+            //
+            // `w[i - 1]` is still the only correct choice: the sūtra is
+            // ḍho ḍhe lopaḥ, "of ḍh, before ḍh, elision" — the FIRST ḍh is
+            // the one the grammar elides, and `w[i]` would elide the
+            // second, a different (wrong) analysis that happens to be
+            // unobservable at the surface. Do not add a test to try to
+            // kill this mutant; do not treat a surviving mutant here as a
+            // missing test without first checking whether it is this
+            // exact index-choice mutation, and without re-running the
+            // 8.4.55/8.4.56 argument above rather than assuming it still
+            // applies. (An earlier task-9 planning note in this slice
+            // predicted this survivor but reasoned "eliding the second
+            // gives tfReQ" — that arithmetic was wrong: eliding the second
+            // Q gives the same tfReQi as eliding the first, which is
+            // exactly why the mutant survives.)
+            let (term, idx, _) = w[i - 1];
+            let before = p.snapshot();
+            remove_char(p, term, idx);
+            p.record("8.3.13", "Qo Qe lopaH", before);
+            true
         },
     },
     // 8.4.53 jhalāṁ jaś jhaśi: a jhal becomes its jaś before a jhaś (a
@@ -955,13 +1112,15 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // supplies the substitute, checked at every adjacent pair
     // `word_chars` reports.
     //
-    // NOT NARROWED THE WAY 8.4.41 ABOVE IS. 8.4.41's trigger is
-    // deliberately `z`-only, pending a later root; this rule instead
-    // implements the full jhalāṁ jaś jhaśi condition, with no positional
-    // restriction and no restriction on which jhal or which jhaś. What
-    // keeps it from over-firing is upstream, not in this guard, in two
-    // separate ways for the two kinds of jhaś-initial affix in this
-    // grammar:
+    // NOT NARROWED THE WAY 8.4.41's CORRESPONDENCE side above still is.
+    // 8.4.41's TRIGGER side was deliberately `z`-only too, pending a later
+    // root, until rudhādi 7e widened it to the full ṣṭu class (see
+    // TRIGGER above); its correspondence side (t/T/D) remains narrow the
+    // same way. This rule instead implements the full jhalāṁ jaś jhaśi
+    // condition, with no positional restriction and no restriction on
+    // which jhal or which jhaś. What keeps it from over-firing is
+    // upstream, not in this guard, in two separate ways for the two kinds
+    // of jhaś-initial affix in this grammar:
     //
     // 8.2.40 (7b Task 7) is the only NEW source of a D-initial ending —
     // besides the pre-existing 6.4.101 her dhiḥ — and it requires a jhaṣ

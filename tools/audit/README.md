@@ -27,7 +27,7 @@ is ruleless.
 comment states that a blocked prakriyā's `text()` is a partial string — often the
 bare root code — not a surface form.
 
-**It asserts the corpus totals** (63 roots, 2592 cells, 3014 forms) rather than
+**It asserts the corpus totals** (64 roots, 2628 cells, 3057 forms) rather than
 reporting whatever it enumerated. Those are facts about the repo, pinned
 independently by `derivation_set_shape_matches_the_audited_numbers` in
 `crates/panini/tests/paradigm.rs`. If the harness disagrees, the harness is wrong.
@@ -106,18 +106,19 @@ PANINI_AUDIT_DUMP=/tmp/audit-table.tsv mise exec rust@1.98.0 -- cargo run --rele
 
 ## Last recorded result
 
-2026-08-21, rudhādi 7d slice, vidyut `8da2f90`:
-**zero differences across 2592 cells / 3014 forms / 63 roots**, with the
-`entry` negative control verified failing first (exit 1, 36 √bhū cells,
-`Bavati` vs `paWati` and so on). This slice curated eight further rudhādi
-roots — Siz, und, anj, tanc, vij, vfj, pfc, vid — that a probe showed need
-no new `Rule`. Because no `Rule` changed in this slice, the zero-difference
-verdict is a statement about those eight rows alone: the engine was already
-correct about every rule they exercise, and this audit is the proof. Corpus
-totals moved from 55/2304/2654 to 63/2592/3014 (63 = 55 + 8 curated roots;
-2592 = 2304 + 8 × 36 cells per root; 3014 = 2654 + 360, where the 360 new
-forms are 288 new cells' canonical forms plus 72 new `ALTERNATES` rows;
-`ALTERNATES` now totals 422 rows, up from 350).
+2026-08-23, rudhādi 7e slice, vidyut `8da2f90bee3ce1c07505fa432fc3729e3f7e02ea`:
+**zero differences across 2628 cells / 3057 forms / 64 roots**, with both
+negative controls verified failing first — `entry` (exit 1, 36 √bhū cells,
+`Bavati` vs `paWati` and so on) and `form` (exit 1, 1 flagged cell,
+`BavatiXX` vs `Bavati`). This is the first audit run after 7e's six rule
+changes: the new √tṛh (`07.0018`) data row, its three new sūtras (7.3.92,
+8.2.31, 8.3.13), and two widenings of pre-existing rules that an earlier
+task in this slice already proved inert on the pre-7e 2592-cell corpus by a
+byte-for-byte dump diff (with its own negative control). Corpus totals moved
+from 63/2592/3014 to 64/2628/3057 (64 = 63 + 1 curated root, √tṛh; 2628 =
+2592 + 36 cells for the one new root; 3057 = 3014 + 43, where the 43 new
+forms are 36 new cells' canonical forms plus 7 new `ALTERNATES` rows;
+`ALTERNATES` now totals 429 rows, up from 422).
 
 ## Scope
 

@@ -48,6 +48,9 @@ recorded below.
   the slice 7a bullet above) — so this slice records no per-entry
   deviation. `dhatupatha_numbers_resolve_upstream` already proved it in
   Task 1 Step 5; this bullet records it.
+- Cross-reference: the rudhādi gaṇa (gaṇa 7), slice 7e, entries correspond
+  to Dhātupāṭha number 07.0018 (`tfha~`). It stores a `code` of `tfh`, its
+  it-stripped upadeśa, so this slice too records no per-entry deviation.
 - The gaṇa is **partial**: nine of rudhādi's 25 entries are ubhayapadī
   (`~^r`-marked), seven of them now curated — √rudh (`ru\Di~^r`), slice 7c's
   `Bi\di~^r`, `kzu\di~^r`, `yu\ji~^r` and `u~tfdi~^r`, and the 8.2.30/8.2.39
@@ -55,13 +58,14 @@ recorded below.
   so the ubhayapada deferral is discharged; only `Ci\di~^r` and `u~Cfdi~^r`
   remain, awaiting 6.1.73 *che ca* with 8.4.40 *stoḥ ścunā ścuḥ*. The
   gaṇa's other axis, non-ubhayapadī, is narrower now: sixteen of the 25
-  entries are non-ubhayapadī, and slice 7d's eight take the curated count
-  there to fourteen, on the audited numbers alone with no new sūtra.
-  Only two non-ubhayapadī entries remain out — `tfha~` (07.0018, √tṛh,
-  deferred to slice 7e behind 7.3.92 *tṛṇaha im* with 8.2.31 *ho ḍhaḥ* and
-  8.3.13 *ḍho ḍhe lopaḥ*) and `Bu\ja~` (07.0017, √bhuj, deferred behind
-  1.3.66 *bhujo'navane*, which forks its pada on sense) — so what was, before
-  this slice, an "ubhayapadī vs. everything else" story is now a four-root
-  remainder: two ubhayapadī (`Ci\di~^r`, `u~Cfdi~^r`) and two
-  non-ubhayapadī (`tfha~`, `Bu\ja~`), each held out by its own named
+  entries are non-ubhayapadī, slice 7d's eight took the curated count
+  there to fourteen on the audited numbers alone with no new sūtra, and
+  slice 7e's `tfha~` (07.0018, √tṛh, with 7.3.92 *tṛṇaha im*, 8.2.31 *ho
+  ḍhaḥ* and 8.3.13 *ḍho ḍhe lopaḥ*) takes it to fifteen.
+  Only one non-ubhayapadī entry remains out — `Bu\ja~` (07.0017, √bhuj,
+  deferred behind 1.3.66 *bhujo'navane*, which forks its pada on sense) —
+  so what was, before slice 7e, a four-root
+  remainder is now a three-root one: two ubhayapadī (`Ci\di~^r`,
+  `u~Cfdi~^r`) and one
+  non-ubhayapadī (`Bu\ja~`), each held out by its own named
   sūtra cost rather than by curation lag.

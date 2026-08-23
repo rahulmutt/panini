@@ -136,6 +136,118 @@ pub(crate) static GUNA: &[Rule] = &[
             true
         },
     },
+    // 7.3.92 tṛṇaha im: √tṛh takes the *im* āgama before a hal-initial pit
+    // sārvadhātuka. tfnah + ti → tfnaih, which 6.1.87 ād guṇaḥ (in
+    // `super::adesha`) then coalesces to tfneh → tfReQi.
+    //
+    // The āgama is **mit**, so 1.1.47 mid aco'ntyāt paraḥ places it after
+    // the last vowel of what it attaches to. 1.1.47 is cited here, not
+    // implemented as its own Rule — the treatment 3.1.78 already gives
+    // śnam, and 1.4.13 and 1.1.5 get elsewhere. This is the engine's first
+    // ĀGAMA placed that way; the placement itself is not new.
+    //
+    // REPRESENTATION. The aṅga is `tfnah`, but 3.1.78 splits the rudhādi
+    // stem across ANGA and SHAP, so it is held as [tf, nah]. The last vowel
+    // of the COMBINED stem is śnam's own `a`, which lives in SHAP — so both
+    // this insertion and 6.1.87's coalescence are SHAP-internal and neither
+    // touches ANGA. The guard reads the combined text rather than the two
+    // slots separately on purpose: the split is an implementation artifact,
+    // `tfnah` is what the sūtra names. `ends_with` rather than `==` because
+    // 6.4.71 has already prefixed the laṅ aṭ-augment onto ANGA (atf) by
+    // this point — the same allowance 7.4.21's guard makes.
+    //
+    // FOUR CONJUNCTS, but only THREE have a negative control among
+    // √tṛh's own 36 golden cells:
+    //   - the stem is tfnah        every other rudhādi root
+    //   - hal-initial follower     `am` → atfRaham; loṭ uttama Ani/Ava/Ama
+    //   - pit sārvadhātuka         NO CONTROL — see below
+    //   - NOT ṅit                  tātaṅ (7.1.35) → tfRQAt; yāsuṭ → tfMhyAt
+    //
+    // EQUIVALENT IN THEORY, BUT NOT AS TESTED — corrected after the
+    // rudhādi 7e mutation campaign (547 mutants, `-j 4 --timeout 4800`).
+    // The theory still holds: literally removing the pit conjunct from the
+    // guard (so the disjunction reads `Ngit || !Sarvadhatuka`, with no
+    // reference to Pit at all) changes no derivation among all 238 tests.
+    // Root cause is 1.2.4 sārvadhātukam apit (`samjna.rs`), which tags
+    // EVERY apit sārvadhātuka ending ṅit; the one exception, loṭ uttama, is
+    // vowel-initial and already excluded by the hal conjunct above. So for
+    // everything that reaches this guard, !Pit implies Ngit, and the ṅit
+    // check alone already rejects tas/Ta/vas — the pit conjunct's own
+    // CONTRIBUTION to the disjunction is redundant.
+    //
+    // But that is not the mutation cargo-mutants actually generates here,
+    // and the prior version of this comment was wrong to predict survival
+    // on that basis. cargo-mutants does not synthesize a "delete this
+    // disjunct" mutant for a `||` chain; at this guard it only generates
+    // negation flips and `||`↔`&&` swaps, and the 7e campaign caught every
+    // one of them:
+    // all four on 7.3.92's guard, `!ending.has(Tag::Pit) ||
+    // ending.has(Tag::Ngit) || !ending.has(Tag::Sarvadhatuka)`:
+    //   delete ! on the Pit check           (flips it to `ending.has(Tag::Pit)`)
+    //   replace the first || with &&
+    //   replace the second || with &&
+    //   delete ! on the Sarvadhatuka check  (flips it to `ending.has(Tag::Sarvadhatuka)`)
+    // Flipping `!ending.has(Tag::Pit)` to `ending.has(Tag::Pit)` does not
+    // disable the conjunct, it inverts it: the guard then rejects exactly
+    // the four cells that must fire (the ones where Pit IS true), which is
+    // caught, correctly. The redundancy argument above only licenses
+    // removing the conjunct outright — a mutation this repo has never
+    // actually observed cargo-mutants produce at this site. If a future
+    // mutation campaign reports a new surviving mutant on this guard, do
+    // NOT assume this is the same documented case without first checking
+    // that it is, in fact, a delete-the-disjunct mutation and not a flip.
+    //
+    // Kept anyway: it states the sūtra's own condition (7.3.92 IS a pit
+    // rule), and this repo prefers guards faithful to the grammar over
+    // guards minimised against the current engine's incidental behavior.
+    // The redundancy is a property of how 1.2.4 is implemented today, not
+    // a theorem — if that tagging ever changes, the pit check is what
+    // keeps 7.3.92 correct. Same reasoning that keeps `is_shtu`'s
+    // unreachable `R` arm.
+    //
+    // The fourth conjunct (not ṅit) is genuinely distinct from the third
+    // and DOES have its own control: under yāsuṭ the ending's own `t` is
+    // still pit, and it is the ĀGAMA that carries the ṅ — pit alone would
+    // wrongly admit that cell, and only the ṅit check rejects it.
+    //
+    // The sārvadhātuka clause is a real guard here, not a structural
+    // always-true as at 7.3.84: it is read off the ending directly, and
+    // costs nothing to state.
+    Rule {
+        id: "7.3.92",
+        name: "tfRaha im",
+        kind: RuleKind::Vidhi,
+        vikalpa: false,
+        apply: |p| {
+            let stem = format!("{}{}", p.terms[ANGA].text, p.terms[SHAP].text);
+            if !stem.ends_with("tfnah") {
+                return false;
+            }
+            let ending = &p.terms[ENDING];
+            if !ending.has(Tag::Pit) || ending.has(Tag::Ngit) || !ending.has(Tag::Sarvadhatuka) {
+                return false;
+            }
+            // *hali*: the ending must lead with a consonant. "Not a vowel"
+            // is exact here — every ending in scope is vowel- or
+            // consonant-initial, with no third case.
+            let Some(first) = ending.text.chars().next() else {
+                return false;
+            };
+            if is_vowel(first) {
+                return false;
+            }
+            let before = p.snapshot();
+            let mut s: Vec<char> = p.terms[SHAP].text.chars().collect();
+            let last = s
+                .pop()
+                .expect("ends_with(\"tfnah\") implies a non-empty SHAP");
+            s.push('i');
+            s.push(last);
+            p.terms[SHAP].text = s.into_iter().collect();
+            p.record("7.3.92", "tfRaha im", before);
+            true
+        },
+    },
     // 7.3.84 sārvadhātukārdhadhātukayoḥ — SECOND APPLICATION, on the
     // vikaraṇa. This is not a duplicate: by 1.4.13 yasmāt pratyayavidhis
     // tadādi pratyaye'ṅgam the aṅga is defined relative to the affix, so
@@ -155,10 +267,14 @@ pub(crate) static GUNA: &[Rule] = &[
     //
     // NO DELTA on any pre-existing form, by guard rather than by argument.
     // The complete inventory of SHAP texts reaching this point is `a`
-    // (śap/śa), `ya` (śyan), `` (adādi luk), `Ana` (śānac), `nA`/`n`
-    // (śnā, 6.4.112) and `nI` (śnā, 6.4.113). Only `nI` is ik-final, and
-    // 6.4.113 produces it ONLY before a ṅit ending — so the 1.1.5 test
-    // below declines there. Two tests pin both halves.
+    // (śap/śa), `ya` (śyan), `` (adādi luk), `Ana` (śānac), `nA`/`n` (śnā,
+    // 6.4.112), `nI` (śnā, 6.4.113), and — for rudhādi, where SHAP holds
+    // śnam followed by the root's own tail (3.1.78) — `nat`, `nah`, `nans`
+    // and their kin, plus `naih` once 7.3.92 above has put the im in.
+    // Only `nI` is ik-final; every rudhādi shape is consonant-final, so
+    // `guna_of` returns None for all of them. 6.4.113 produces `nI` ONLY
+    // before a ṅit ending — so the 1.1.5 test below declines there. Two
+    // tests pin both halves.
     //
     // Ordered BEFORE 6.1.78: the loṭ uttama endings are vowel-initial and
     // pit, so guṇa leaves `no`, which 6.1.78 must then make `nav`. Ordered
