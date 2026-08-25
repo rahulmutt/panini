@@ -906,22 +906,33 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // them, in √bhañj's, √añj's and √tañc's own root text (`Banj`, `anj`,
     // `tanc`: an `n` immediately before `j`/`c`) — but none of them are
     // still stu-before-ścu by the time this rule's turn comes. Both rules
-    // that consume them sit ABOVE this one in the array. 8.3.24 naS
+    // that consume them sit ABOVE this one in the array, but only ONE of
+    // the two is unconditionally sufficient on its own. 8.3.24 naS
     // cApadAntasya jhali fires unconditionally here: its trigger is `n`
     // before ANY jhal, and `j`/`c` are themselves jhal, so it needs no
     // jhal-initial ending to act — it turns the root's `n` into `M` before
     // this rule ever sees it, and `shcutva_of('M')` is `None`. 8.2.30 coH
-    // kuH additionally turns a word-final or jhal-followed `j`/`c` into its
-    // velar, which is not needed for THIS rule's inertness but is real and
-    // independent. Either rule alone is enough. 8.3.24's guard is
-    // `Tag::Rudhadi`, a gaṇa tag rather than a grammatical predicate, so
-    // this coverage is contingent on that tag rather than derived from the
-    // sūtra itself — a documentation gap, not a latent wrongness: were
-    // 8.3.24 ever to decline on one of these roots, `shcutva_of('n')` is
-    // `Some('Y')`, the same `Y` that 8.3.24's `M` reaches anyway once 8.4.58
-    // anusvArasya yayi parasavarRaH parasavarnas it against the following
-    // `j`/`c` (`parasavarna_of` maps the whole c-varga to `Y` too), so the
-    // two paths converge on one surface form either way.
+    // kuH is NOT independently sufficient: it turns a word-final or
+    // jhal-followed `j`/`c` into its velar, but its own comment above (and
+    // `coh_kuh_fires_only_word_finally_or_before_a_jhal`'s `Banjanti` case)
+    // records that it DECLINES on exactly this shape when the ending is
+    // vowel-initial — `Ba`/`nj`/`anti` leaves the `j` untouched, since a
+    // following `a` is neither jhal nor word-final. Were 8.3.24 hypothetically
+    // absent, that cell's `n`-`j` pair would reach this rule's turn intact
+    // and this rule WOULD fire on it. It is 8.3.24 alone that is guaranteed
+    // to have already run, in every cell, because its trigger needs nothing
+    // from what follows `j`/`c`. 8.3.24's guard is `Tag::Rudhadi`, a gaṇa
+    // tag rather than a grammatical predicate, so this coverage is
+    // contingent on that tag rather than derived from the sūtra itself — a
+    // documentation gap, not a latent wrongness: were 8.3.24 ever to decline
+    // on one of these roots, `shcutva_of('n')` is `Some('Y')`, the same `Y`
+    // that 8.3.24's `M` reaches anyway once 8.4.58 anusvArasya yayi
+    // parasavarRaH parasavarnas it against the following `j`/`c`
+    // (`parasavarna_of` maps the whole c-varga to `Y` too) — so even in that
+    // counterfactual, THIS rule firing directly reaches the same surface
+    // form 8.3.24's path would have. That is a claim about the output being
+    // the same either way, not a claim that this rule fails to fire in that
+    // counterfactual; keep the two distinct.
     //
     // The rules below are inert on the site this one writes. 8.4.55 Kari ca
     // reads the SHAP/ENDING junction rather than the tuk's position inside
