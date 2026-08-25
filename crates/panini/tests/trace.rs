@@ -1646,3 +1646,132 @@ fn atrned_trace_takes_the_im_before_8_2_23_eats_tips_t() {
     assert!(at(&t, "7.3.92") < at(&t, "8.2.23"), "got {t:?}");
     assert!(!t.contains(&"6.1.68".to_string()), "got {t:?}");
 }
+
+#[test]
+fn acchinat_trace_orders_the_tuk_between_the_augment_and_shcutva() {
+    // Cid laN prathama eka. The slice's central ordering fact, and it
+    // spans three stages: 6.4.71 is in `anga`, 6.1.73 immediately below it
+    // in the same stage, and 8.4.40 in `tripadi`. Each link is load-bearing
+    // in a different way.
+    //
+    // 6.4.71 < 6.1.73: the aT-augment IS the short vowel 6.1.73 attaches
+    // to. Run 6.1.73 first and the `C` is word-initial, the guard declines,
+    // and the cell surfaces *aCinat.
+    //
+    // 6.1.73 < 8.4.40: the tuk IS the stu that Scutva palatalizes. Without
+    // it there is nothing before the `C` for 8.4.40 to read, and the cell
+    // surfaces *aCinat again -- by a different route, which is why both
+    // links are pinned rather than just the surface.
+    //
+    // 8.4.56 vA'vasAne is optional, and `cell_trace` reads the DECLINED
+    // branch (see its doc comment above): `acCinad` is definitionally the
+    // reading on which 8.4.56 did not fire, so this cell can pin only its
+    // absence, not its position relative to 8.4.40. The position itself --
+    // that 8.4.56 sits last in the pipeline, below 8.4.40, whenever it DOES
+    // fire -- is pinned exactly and more strongly by
+    // `tinanta_rule_order_is_pinned` in
+    // `crates/panini-prakriya/src/tinanta/derivation_tests.rs`, which
+    // asserts the full flattened rule array those two ids sit in. A
+    // relative-order check on one declined trace would only ever be a
+    // weaker echo of that array; it would never catch an ordering
+    // regression the array pin doesn't already catch, and it can't even be
+    // written here in the first place. What CAN be written here, and is a
+    // real invariant of this branch, is that a declined vikalpa rule
+    // records no step at all -- so 8.4.56 must be absent from this trace,
+    // and its absence is what this cell checks.
+    let (text, t) = cell_trace(
+        "07.0003",
+        Lakara::Lan,
+        Pada::Parasmaipada,
+        Purusha::Prathama,
+        Vacana::Eka,
+    );
+    assert_eq!(text, "acCinad", "got {t:?}");
+    assert!(at(&t, "6.4.71") < at(&t, "6.1.73"), "got {t:?}");
+    assert!(at(&t, "6.1.73") < at(&t, "8.4.40"), "got {t:?}");
+    assert!(!t.contains(&"8.4.56".to_string()), "got {t:?}");
+}
+
+#[test]
+fn acchrnat_trace_runs_natva_and_shcutva_on_disjoint_sites() {
+    // Cfd laN prathama eka -- the one cell in the corpus that reaches both
+    // Natva and Scutva. They touch different characters of the same word:
+    // 8.4.1 rewrites the `n` of Cfnad, whose trigger is the root's own `f`
+    // directly before it, while 8.4.40 rewrites the tuk sitting IN FRONT of
+    // that `f`.
+    //
+    // The negative half is the pin. If the tuk were ever placed between the
+    // `f` and the `n`, 8.4.2's intervener test would decide the cell
+    // instead -- `t` is not an aT member, so Natva would be blocked and the
+    // cell would surface *acCfnad. That this test asserts both rules fired
+    // is what says the tuk did not land there.
+    let (text, t) = cell_trace(
+        "07.0008",
+        Lakara::Lan,
+        Pada::Parasmaipada,
+        Purusha::Prathama,
+        Vacana::Eka,
+    );
+    assert_eq!(text, "acCfRad", "got {t:?}");
+    assert!(t.contains(&"8.4.1".to_string()), "got {t:?}");
+    assert!(t.contains(&"8.4.40".to_string()), "got {t:?}");
+    assert!(at(&t, "6.1.73") < at(&t, "8.4.40"), "got {t:?}");
+}
+
+#[test]
+fn chinatti_trace_cites_neither_new_sutra() {
+    // Cid laT prathama eka. Both new sutras are laN-only, and for one
+    // reason: outside laN there is no aT-augment, so the root's `C` is
+    // word-initial and 6.1.73 has no short vowel to attach the tuk to.
+    // 8.4.40 then has no stu to read.
+    //
+    // This is the cheapest guard against 6.1.73's `is_hrasva(w[i - 1].2)`
+    // conjunct being dropped: without it the scan would fire at index 0 on
+    // any C-initial word and every one of these 54 non-laN cells would grow
+    // a spurious `t`.
+    let (text, t) = cell_trace(
+        "07.0003",
+        Lakara::Lat,
+        Pada::Parasmaipada,
+        Purusha::Prathama,
+        Vacana::Eka,
+    );
+    assert_eq!(text, "Cinatti", "got {t:?}");
+    assert!(!t.contains(&"6.1.73".to_string()), "got {t:?}");
+    assert!(!t.contains(&"8.4.40".to_string()), "got {t:?}");
+}
+
+#[test]
+fn acchinat_has_exactly_two_forms() {
+    // Cid laN prathama eka holds acCinad and acCinat, and nothing else --
+    // the 8.4.56 vA'vasAne fork alone.
+    //
+    // The pin is that 8.4.65 Jaro Jari savarRe does NOT also fire. After
+    // 8.4.40 the word carries `c` followed by `C`: same sthana, same
+    // abhyantara prayatna, so savarna jhars, and the sutra read bare would
+    // optionally elide the `c` and give a third form *aCinat. It declines
+    // because 8.4.65 carries 8.4.64 halo yamAM yami lopaH's *halaH* by
+    // anuvrtti -- implemented as `!is_vowel(w[i - 1])` -- and the sound
+    // before that `c` is the aT-augment's own `a`.
+    //
+    // No previously curated root could put a savarna jhar pair directly
+    // after a vowel, so this is the first cell to exercise that guard in
+    // the direction that proves it necessary. Weaken it and the ALTERNATES
+    // count is the second alarm; this is the one that says why.
+    let d = dhatus()
+        .iter()
+        .find(|d| d.dhatupatha == "07.0003")
+        .expect("07.0003 is curated");
+    let forms: Vec<String> = derive(
+        d,
+        Lakara::Lan,
+        Pada::Parasmaipada,
+        Purusha::Prathama,
+        Vacana::Eka,
+    )
+    .iter()
+    .filter(|p| !p.blocked)
+    .map(|p| p.text())
+    .collect();
+    assert_eq!(forms, vec!["acCinad", "acCinat"], "got {forms:?}");
+}
