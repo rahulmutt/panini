@@ -5541,12 +5541,32 @@ fn paradigm_covers_every_enumerable_cell() {
     // adādi × vidhiliṅ was gated in slice 5a and ungated in slice 5b; √śī was
     // gated in slice 5f task 1 and ungated there; √nī and √tud's ātmanepada
     // blocks were gated for one commit by the pada audit, between the column
-    // being corrected and the audited goldens landing. There are no gated
-    // cells any more. This constant stays (empty) so the two assertions below
-    // keep documenting that EVERY enumerable (root, lakara, pada) triple must
-    // be pinned in PARADIGM — a future partial slice may repopulate it, but it
-    // must never silently hide a missing golden block.
-    const GATED: &[(&str, &str, Pada)] = &[];
+    // being corrected and the audited goldens landing.
+    //
+    // Slice 7f curates √chid (`07.0003`) and √chṛd (`07.0008`) as Dhatu rows
+    // but does not add their PARADIGM blocks: those wait on a
+    // cross-implementation audit to certify the derivations, same as every
+    // other slice that lands a root ahead of its goldens. All sixteen
+    // enumerable (root, lakara, pada) triples for the two roots -- 2 roots ×
+    // 2 padas × 4 lakāras -- are gated here until that audit lands them.
+    const GATED: &[(&str, &str, Pada)] = &[
+        ("07.0003", "laT", Pada::Parasmaipada),
+        ("07.0003", "laT", Pada::Atmanepada),
+        ("07.0003", "laN", Pada::Parasmaipada),
+        ("07.0003", "laN", Pada::Atmanepada),
+        ("07.0003", "loT", Pada::Parasmaipada),
+        ("07.0003", "loT", Pada::Atmanepada),
+        ("07.0003", "viDiliN", Pada::Parasmaipada),
+        ("07.0003", "viDiliN", Pada::Atmanepada),
+        ("07.0008", "laT", Pada::Parasmaipada),
+        ("07.0008", "laT", Pada::Atmanepada),
+        ("07.0008", "laN", Pada::Parasmaipada),
+        ("07.0008", "laN", Pada::Atmanepada),
+        ("07.0008", "loT", Pada::Parasmaipada),
+        ("07.0008", "loT", Pada::Atmanepada),
+        ("07.0008", "viDiliN", Pada::Parasmaipada),
+        ("07.0008", "viDiliN", Pada::Atmanepada),
+    ];
 
     let pinned: Vec<(&str, &str, Pada)> =
         PARADIGM.iter().map(|(r, l, p, _)| (*r, *l, *p)).collect();
