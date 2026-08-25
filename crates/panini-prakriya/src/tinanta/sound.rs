@@ -33,6 +33,15 @@ pub(crate) fn is_vowel(c: char) -> bool {
     )
 }
 
+/// The short (*hrasva*) vowels — 6.1.73 Ce ca's conditioning class.
+///
+/// `f` and `x` are the vocalic ṛ and ḷ; their long counterparts `F` and `X`
+/// are deliberately absent, as are `e o E O`, which 1.2.27 ūkālo'j
+/// hrasvadīrghaplutaḥ makes long by having no short counterpart at all.
+pub(crate) fn is_hrasva(c: char) -> bool {
+    matches!(c, 'a' | 'i' | 'u' | 'f' | 'x')
+}
+
 /// A jhal (obstruent) — the set 8.4.55's target ranges over. `d` was the
 /// only member this suite exercised when that comment was first written;
 /// rudhādi has since brought `t`, `s` and `D` into play too (via 8.3.24,
@@ -91,6 +100,16 @@ pub(crate) fn is_jhash(c: char) -> bool {
 /// it (tfneQ + Di → tfneQ + Qi), and a `z`-only trigger cannot see it.
 pub(crate) fn is_shtu(c: char) -> bool {
     matches!(c, 'z' | 'w' | 'W' | 'q' | 'Q' | 'R')
+}
+
+/// 8.4.40's conditioning class — *ścunā*, the ś-and-cu the sūtra names on
+/// its trigger side: `S` (ś) plus the whole c-varga.
+///
+/// Deliberately disjoint from `is_shtu`, which is 8.4.41's `z`-and-ṭu. The
+/// two sūtras sit adjacent in the tripādī and both operate on stu; keeping
+/// their trigger classes disjoint is what stops them contending.
+pub(crate) fn is_shcu(c: char) -> bool {
+    matches!(c, 'S' | 'c' | 'C' | 'j' | 'J' | 'Y')
 }
 
 /// 8.4.1's trigger set: `r`, `z`, and the r-vowels `f`/`F`, which contain the
@@ -180,6 +199,33 @@ pub(crate) fn kutva_of(c: char) -> Option<char> {
         'C' => 'K',
         'j' => 'g',
         'J' => 'G',
+        _ => return None,
+    })
+}
+
+/// The *ścu* (palatal) counterpart of a *stu* sound — 8.4.40 stoH ScunA
+/// ScuH's substitute. *stu* is `s` plus the whole t-varga, and by 1.1.50
+/// sthAne'ntaratamaH the nearest substitute preserves voicing, aspiration
+/// and nasality, so `t` goes to `c` and `n` to `Y`, never both to one
+/// letter.
+///
+/// Only `t -> c` has a witness: the tuk 6.1.73 Ce ca inserts before √chid's
+/// and √chṛd's initial `C`. The other five arms are present because the
+/// table covers every stu arm — the same reason `parasavarna_of` carries
+/// all five vargas — and `shcutva_of_stu_all_arms` is what keeps them from
+/// rotting.
+///
+/// The palatals are deliberately absent rather than mapped to themselves:
+/// they are already ścu, not stu, and `None` is what lets 8.4.40 use this
+/// single lookup as its match test as well as its substitute.
+pub(crate) fn shcutva_of(c: char) -> Option<char> {
+    Some(match c {
+        's' => 'S',
+        't' => 'c',
+        'T' => 'C',
+        'd' => 'j',
+        'D' => 'J',
+        'n' => 'Y',
         _ => return None,
     })
 }
@@ -306,6 +352,53 @@ mod tests {
         // guard case (hiMs + taH keeps its anusvAra before `s`).
         for c in ['s', 'S', 'z', 'h'] {
             assert_eq!(parasavarna_of(c), None, "{c} should not parasavarna");
+        }
+    }
+
+    #[test]
+    fn shcutva_of_stu_all_arms() {
+        // 8.4.40 stoH ScunA ScuH: pin every arm of the stu -> Scu
+        // substitution table directly. Only `t -> c` is reachable from any
+        // golden -- the tuk 6.1.73 inserts before √chid's and √chṛd's
+        // initial `C` -- so without this test a mutant rewriting any of the
+        // other five arms would be invisible to the whole suite.
+        assert_eq!(shcutva_of('s'), Some('S'));
+        assert_eq!(shcutva_of('t'), Some('c'));
+        assert_eq!(shcutva_of('T'), Some('C'));
+        assert_eq!(shcutva_of('d'), Some('j'));
+        assert_eq!(shcutva_of('D'), Some('J'));
+        assert_eq!(shcutva_of('n'), Some('Y'));
+        // Already Scu, so not stu. `None` here is what lets 8.4.40 use this
+        // one lookup as its match test as well as its substitute.
+        for c in ['S', 'c', 'C', 'j', 'J', 'Y'] {
+            assert_eq!(shcutva_of(c), None, "{c} is Scu, not stu");
+        }
+        // Not stu at all: a velar, and the retroflex sibilant that belongs
+        // to 8.4.41 rather than to this rule.
+        assert_eq!(shcutva_of('k'), None);
+        assert_eq!(shcutva_of('z'), None);
+    }
+
+    #[test]
+    fn is_shcu_and_is_hrasva_membership() {
+        // 8.4.40's trigger class: `S` plus the whole c-varga, and nothing
+        // else. `z` is the one that must NOT be in it -- that is 8.4.41's
+        // trigger, and conflating the two would put stutva and Scutva in
+        // contention on every cell either reaches.
+        for c in ['S', 'c', 'C', 'j', 'J', 'Y'] {
+            assert!(is_shcu(c), "{c} is Scu");
+        }
+        for c in ['z', 'w', 'W', 'q', 'Q', 'R', 's', 't', 'k'] {
+            assert!(!is_shcu(c), "{c} is not Scu");
+        }
+        // 6.1.73's conditioning class: the short vowels only. `F` and `X`
+        // are the long vocalic r and l, and e/o/E/O are long by 1.2.27
+        // having no short counterpart at all.
+        for c in ['a', 'i', 'u', 'f', 'x'] {
+            assert!(is_hrasva(c), "{c} is hrasva");
+        }
+        for c in ['A', 'I', 'U', 'F', 'X', 'e', 'o', 'E', 'O', 't'] {
+            assert!(!is_hrasva(c), "{c} is not hrasva");
         }
     }
 

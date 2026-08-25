@@ -194,6 +194,19 @@ pub(crate) fn remove_char(p: &mut Prakriya, term: usize, idx: usize) {
     p.terms[term].text = s.into_iter().collect();
 }
 
+/// Insert one character into a term, before the character `word_chars`
+/// reports at `idx`. Companion to `set_char` and `remove_char`, for the
+/// rules that augment rather than substitute or elide.
+///
+/// `idx == term.text.chars().count()` appends, which is exactly what a kit
+/// āgama attaching after a term's last character needs (1.1.46 ādyantau
+/// ṭakitau).
+pub(crate) fn insert_char(p: &mut Prakriya, term: usize, idx: usize, c: char) {
+    let mut s: Vec<char> = p.terms[term].text.chars().collect();
+    s.insert(idx, c);
+    p.terms[term].text = s.into_iter().collect();
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
