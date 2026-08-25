@@ -27,7 +27,7 @@ is ruleless.
 comment states that a blocked prakriyā's `text()` is a partial string — often the
 bare root code — not a surface form.
 
-**It asserts the corpus totals** (64 roots, 2628 cells, 3057 forms) rather than
+**It asserts the corpus totals** (66 roots, 2772 cells, 3259 forms) rather than
 reporting whatever it enumerated. Those are facts about the repo, pinned
 independently by `derivation_set_shape_matches_the_audited_numbers` in
 `crates/panini/tests/paradigm.rs`. If the harness disagrees, the harness is wrong.
@@ -106,19 +106,23 @@ PANINI_AUDIT_DUMP=/tmp/audit-table.tsv mise exec rust@1.98.0 -- cargo run --rele
 
 ## Last recorded result
 
-2026-08-23, rudhādi 7e slice, vidyut `8da2f90bee3ce1c07505fa432fc3729e3f7e02ea`:
-**zero differences across 2628 cells / 3057 forms / 64 roots**, with both
+2026-08-25, rudhādi 7f slice, vidyut `8da2f90bee3ce1c07505fa432fc3729e3f7e02ea`:
+**zero differences across 2772 cells / 3259 forms / 66 roots**, with both
 negative controls verified failing first — `entry` (exit 1, 36 √bhū cells,
 `Bavati` vs `paWati` and so on) and `form` (exit 1, 1 flagged cell,
-`BavatiXX` vs `Bavati`). This is the first audit run after 7e's six rule
-changes: the new √tṛh (`07.0018`) data row, its three new sūtras (7.3.92,
-8.2.31, 8.3.13), and two widenings of pre-existing rules that an earlier
-task in this slice already proved inert on the pre-7e 2592-cell corpus by a
-byte-for-byte dump diff (with its own negative control). Corpus totals moved
-from 63/2592/3014 to 64/2628/3057 (64 = 63 + 1 curated root, √tṛh; 2628 =
-2592 + 36 cells for the one new root; 3057 = 3014 + 43, where the 43 new
-forms are 36 new cells' canonical forms plus 7 new `ALTERNATES` rows;
-`ALTERNATES` now totals 429 rows, up from 422).
+`BavatiXX` vs `Bavati`). This is the first audit run after 7f curated
+√chid (`07.0003`) and √chṛd (`07.0008`), the pre-existing 6.1.73 *che ca* and
+8.4.40 *stoḥ ścunā ścuḥ* that those two roots' laṅ cells depend on, and a
+gate that already proved those two rules inert on the pre-7f 2628-cell
+corpus by a byte-for-byte dump diff (with its own negative control). Corpus
+totals moved from 64/2628/3057 to 66/2772/3259 (66 = 64 + 2 curated roots,
+√chid and √chṛd; 2772 = 2628 + 144 cells, where 144 = 2 roots × 2 padas ×
+4 lakāras × 9; 3259 = 3057 + 202, the measured form total — this run's
+`n_forms` matched the projected 3259 exactly, so no assertion adjustment was
+needed). The growth in `ALTERNATES` rows this implies, 429 → 487, is not yet
+reflected in `crates/panini/tests/paradigm.rs`'s golden table as of this
+audit; those rows land in a later task of this slice, generated from this
+certified run.
 
 ## Scope
 
