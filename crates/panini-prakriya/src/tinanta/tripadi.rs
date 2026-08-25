@@ -872,11 +872,21 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // ścu (`S` and the c-varga) takes its own ścu counterpart.
     // atCinad → acCinad; atCfRad → acCfRad.
     //
-    // SŪTRA ORDER, immediately above 8.4.41 — and for once in this file
-    // that is ALL it is, because the two rules cannot contend. 8.4.41's
-    // trigger is the ṣṭu class and `C` is not in it; this rule's trigger is
-    // the ścu class and no ṣṭu sound is in that. Neither reads what the
-    // other writes on any reachable input.
+    // SŪTRA ORDER, immediately above 8.4.41. The two rules' TRIGGER classes
+    // are disjoint — 8.4.41's is the ṣṭu class and `C` is not in it; this
+    // rule's is the ścu class and no ṣṭu sound is in that — so neither rule
+    // ever reads a sound the other one writes. Their TARGET classes are NOT
+    // disjoint: this rule targets `s t T d D n`, 8.4.41 targets `t T D`, so
+    // a `t` with `z` to its left and `C` to its right is applicable to both,
+    // and array order rather than disjointness would decide it. No curated
+    // root presents that shape, so the two rules do not contend on any
+    // reachable input — but that is placement doing the work, not the
+    // trigger-class argument above; do not conflate the two.
+    //
+    // 8.4.41 next door scans the mirror image of this rule's search —
+    // trigger-then-target rather than this rule's target-then-trigger — for
+    // the same "a stu takes its neighbour's class" pattern, against the
+    // ṭu-varga instead of the c-varga.
     //
     // ONE DIRECTION ONLY — stu before ścu, never ścu before stu — and that
     // is a deliberate non-implementation of the converse arm rather than an
@@ -891,6 +901,27 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // reports as a survivor because deleting it changes nothing. Add the two
     // together the moment a curated root puts a stu after a ścu that SAt
     // does not cover.
+    //
+    // THIS CORPUS DOES present stu-immediately-before-ścu sites — three of
+    // them, in √bhañj's, √añj's and √tañc's own root text (`Banj`, `anj`,
+    // `tanc`: an `n` immediately before `j`/`c`) — but none of them are
+    // still stu-before-ścu by the time this rule's turn comes. Both rules
+    // that consume them sit ABOVE this one in the array. 8.3.24 naS
+    // cApadAntasya jhali fires unconditionally here: its trigger is `n`
+    // before ANY jhal, and `j`/`c` are themselves jhal, so it needs no
+    // jhal-initial ending to act — it turns the root's `n` into `M` before
+    // this rule ever sees it, and `shcutva_of('M')` is `None`. 8.2.30 coH
+    // kuH additionally turns a word-final or jhal-followed `j`/`c` into its
+    // velar, which is not needed for THIS rule's inertness but is real and
+    // independent. Either rule alone is enough. 8.3.24's guard is
+    // `Tag::Rudhadi`, a gaṇa tag rather than a grammatical predicate, so
+    // this coverage is contingent on that tag rather than derived from the
+    // sūtra itself — a documentation gap, not a latent wrongness: were
+    // 8.3.24 ever to decline on one of these roots, `shcutva_of('n')` is
+    // `Some('Y')`, the same `Y` that 8.3.24's `M` reaches anyway once 8.4.58
+    // anusvArasya yayi parasavarRaH parasavarnas it against the following
+    // `j`/`c` (`parasavarna_of` maps the whole c-varga to `Y` too), so the
+    // two paths converge on one surface form either way.
     //
     // The rules below are inert on the site this one writes. 8.4.55 Kari ca
     // reads the SHAP/ENDING junction rather than the tuk's position inside

@@ -65,11 +65,13 @@ pub(crate) static ANGA_RULES: &[Rule] = &[
     // placed AFTER the vowel by 1.1.46 ādyantau ṭakitau, since tuk is kit.
     // aCid → atCid, which 8.4.40 stoH ScunA ScuH then carries to acCid.
     //
-    // Immediately below 6.4.71, which manufactures the whole of its
-    // precondition: the only short vowel any curated root presents before a
-    // `C` is the aṭ-āgama laṅ prefixes onto a C-initial aṅga. Outside laṅ
-    // the `C` is word-initial and this rule has nothing to sit after, which
-    // is why √chid's and √chṛd's laṭ, loṭ and vidhiliṅ cells never take it.
+    // Below the 6.4.71/6.4.72 āgama pair (6.4.72 sits between this rule
+    // and 6.4.71 in the array), and 6.4.71 is what manufactures the whole
+    // of this rule's precondition: the only short vowel any curated root
+    // presents before a `C` is the aṭ-āgama laṅ prefixes onto a C-initial
+    // aṅga. Outside laṅ the `C` is word-initial and this rule has nothing
+    // to sit after, which is why √chid's and √chṛd's laṭ, loṭ and
+    // vidhiliṅ cells never take it.
     //
     // WHOLE-WORD, not ANGA-local, and deliberately. 6.1.73's condition is a
     // saṁhitā condition; the aṭ-plus-root site is where this corpus happens
