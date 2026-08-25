@@ -163,6 +163,37 @@ pub(crate) fn shnu_asamyogapurva(p: &Prakriya) -> bool {
     p.terms[ANGA].text.chars().last().is_some_and(is_vowel)
 }
 
+/// The assembled word as `(term index, char index, char)`, so a rule can
+/// reason over the whole pada and still write back into the right term.
+///
+/// Lived in `tripadi.rs` until slice 7f, when 6.1.73 Ce ca — an aṅga-stage
+/// rule with a saṁhitā condition — became the first rule outside the
+/// tripādī to need whole-word addressing.
+pub(crate) fn word_chars(p: &Prakriya) -> Vec<(usize, usize, char)> {
+    let mut out = Vec::new();
+    for (ti, t) in p.terms.iter().enumerate() {
+        for (ci, c) in t.text.chars().enumerate() {
+            out.push((ti, ci, c));
+        }
+    }
+    out
+}
+
+/// Replace one character of one term, addressed as `word_chars` reports it.
+pub(crate) fn set_char(p: &mut Prakriya, term: usize, idx: usize, to: char) {
+    let mut s: Vec<char> = p.terms[term].text.chars().collect();
+    s[idx] = to;
+    p.terms[term].text = s.into_iter().collect();
+}
+
+/// Delete one character of one term, addressed as `word_chars` reports it.
+/// Companion to `set_char`, for the rules that elide rather than substitute.
+pub(crate) fn remove_char(p: &mut Prakriya, term: usize, idx: usize) {
+    let mut s: Vec<char> = p.terms[term].text.chars().collect();
+    s.remove(idx);
+    p.terms[term].text = s.into_iter().collect();
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
