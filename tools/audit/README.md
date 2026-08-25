@@ -28,9 +28,12 @@ comment states that a blocked prakriyā's `text()` is a partial string — often
 bare root code — not a surface form.
 
 **It asserts the corpus totals** (66 roots, 2772 cells, 3259 forms) rather than
-reporting whatever it enumerated. Those are facts about the repo, pinned
-independently by `derivation_set_shape_matches_the_audited_numbers` in
-`crates/panini/tests/paradigm.rs`. If the harness disagrees, the harness is wrong.
+reporting whatever it enumerated. Those totals are corroborated by
+`derivation_set_shape_matches_the_audited_numbers` in
+`crates/panini/tests/paradigm.rs`, which each slice raises to the same totals
+alongside the golden rows that justify them — the two can be out of step
+mid-slice, while that landing is in progress. Once both are current, if the
+harness disagrees, the harness is wrong.
 
 **A zero-difference result means nothing on its own.** Prove the harness can
 detect a difference before believing one — see Negative controls below.
