@@ -9,36 +9,9 @@ use crate::rule::{Rule, RuleKind};
 use crate::term::Tag;
 use crate::tinanta::sound::{
     cartva_of, is_jhal, is_jhash, is_khar, is_natva_intervener, is_natva_trigger, is_savarna,
-    is_shtu, is_vowel, jashtva_of, kutva_of, parasavarna_of,
+    is_shcu, is_shtu, is_vowel, jashtva_of, kutva_of, parasavarna_of, shcutva_of,
 };
-use crate::tinanta::terms::{ANGA, ENDING, SHAP};
-
-/// The assembled word as `(term index, char index, char)`, so a tripādī rule
-/// can reason over the whole pada and still write back into the right term.
-fn word_chars(p: &Prakriya) -> Vec<(usize, usize, char)> {
-    let mut out = Vec::new();
-    for (ti, t) in p.terms.iter().enumerate() {
-        for (ci, c) in t.text.chars().enumerate() {
-            out.push((ti, ci, c));
-        }
-    }
-    out
-}
-
-/// Replace one character of one term, addressed as `word_chars` reports it.
-fn set_char(p: &mut Prakriya, term: usize, idx: usize, to: char) {
-    let mut s: Vec<char> = p.terms[term].text.chars().collect();
-    s[idx] = to;
-    p.terms[term].text = s.into_iter().collect();
-}
-
-/// Delete one character of one term, addressed as `word_chars` reports it.
-/// Companion to `set_char`, for the rules that elide rather than substitute.
-fn remove_char(p: &mut Prakriya, term: usize, idx: usize) {
-    let mut s: Vec<char> = p.terms[term].text.chars().collect();
-    s.remove(idx);
-    p.terms[term].text = s.into_iter().collect();
-}
+use crate::tinanta::terms::{ANGA, ENDING, SHAP, remove_char, set_char, word_chars};
 
 /// Whether the dhātu — held across `ANGA`/`SHAP` — still sits at the pada
 /// boundary, i.e. nothing with real text occupies `ENDING` or beyond.
@@ -895,6 +868,113 @@ pub(crate) static TRIPADI: &[Rule] = &[
             true
         },
     },
+    // 8.4.40 stoH ScunA ScuH: a stu (`s` and the t-varga) in contact with a
+    // ścu (`S` and the c-varga) takes its own ścu counterpart.
+    // atCinad → acCinad; atCfRad → acCfRad.
+    //
+    // SŪTRA ORDER, immediately above 8.4.41. The two rules' TRIGGER classes
+    // are disjoint — 8.4.41's is the ṣṭu class and `C` is not in it; this
+    // rule's is the ścu class and no ṣṭu sound is in that — so neither rule
+    // ever reads a sound the other one writes. Their TARGET classes are NOT
+    // disjoint: this rule targets `s t T d D n`, 8.4.41 targets `t T D`, so
+    // a `t` with `z` to its left and `C` to its right is applicable to both,
+    // and array order rather than disjointness would decide it. No curated
+    // root presents that shape, so the two rules do not contend on any
+    // reachable input — but that is placement doing the work, not the
+    // trigger-class argument above; do not conflate the two.
+    //
+    // 8.4.41 next door scans the mirror image of this rule's search —
+    // trigger-then-target rather than this rule's target-then-trigger — for
+    // the same "a stu takes its neighbour's class" pattern, against the
+    // ṭu-varga instead of the c-varga.
+    //
+    // ONE DIRECTION ONLY — stu before ścu, never ścu before stu — and that
+    // is a deliberate non-implementation of the converse arm rather than an
+    // oversight. 8.4.44 SAt exempts a stu that FOLLOWS a `S`, and across the
+    // whole curated corpus that exemption is the only thing the converse arm
+    // would ever meet: vidyut-prakriya invokes 8.4.40 ZERO times over these
+    // cells and 8.4.44 one hundred and eighteen, every one of them an `S`
+    // before an `n` — aSnoti (`05.0020`, 36; `09.0059`, 41) and kliSnAti
+    // (`09.0058`, 41). So the converse arm has exactly two fates and no
+    // third: shipped without SAt it turns kliSnAti into *kliSYAti, and
+    // shipped with SAt it is code that cannot fire, which the mutation gate
+    // reports as a survivor because deleting it changes nothing. Add the two
+    // together the moment a curated root puts a stu after a ścu that SAt
+    // does not cover.
+    //
+    // THIS CORPUS DOES present stu-immediately-before-ścu sites — three of
+    // them, in √bhañj's, √añj's and √tañc's own root text (`Banj`, `anj`,
+    // `tanc`: an `n` immediately before `j`/`c`) — but none of them are
+    // still stu-before-ścu by the time this rule's turn comes. Both rules
+    // that consume them sit ABOVE this one in the array, but only ONE of
+    // the two is unconditionally sufficient on its own. 8.3.24 naS
+    // cApadAntasya jhali fires unconditionally here: its trigger is `n`
+    // before ANY jhal, and `j`/`c` are themselves jhal, so it needs no
+    // jhal-initial ending to act — it turns the root's `n` into `M` before
+    // this rule ever sees it, and `shcutva_of('M')` is `None`. 8.2.30 coH
+    // kuH is NOT independently sufficient: it turns a word-final or
+    // jhal-followed `j`/`c` into its velar, but its own comment above (and
+    // `coh_kuh_fires_only_word_finally_or_before_a_jhal`'s `Banjanti` case)
+    // records that it DECLINES on exactly this shape when the ending is
+    // vowel-initial — `Ba`/`nj`/`anti` leaves the `j` untouched, since a
+    // following `a` is neither jhal nor word-final. Were 8.3.24 hypothetically
+    // absent, that cell's `n`-`j` pair would reach this rule's turn intact
+    // and this rule WOULD fire on it. It is 8.3.24 alone that is guaranteed
+    // to have already run, in every cell, because its trigger needs nothing
+    // from what follows `j`/`c`. 8.3.24's guard is `Tag::Rudhadi`, a gaṇa
+    // tag rather than a grammatical predicate, so this coverage is
+    // contingent on that tag rather than derived from the sūtra itself — a
+    // documentation gap, not a latent wrongness: were 8.3.24 ever to decline
+    // on one of these roots, `shcutva_of('n')` is `Some('Y')`, the same `Y`
+    // that 8.3.24's `M` reaches anyway once 8.4.58 anusvArasya yayi
+    // parasavarRaH parasavarnas it against the following `j`/`c`
+    // (`parasavarna_of` maps the whole c-varga to `Y` too) — so even in that
+    // counterfactual, THIS rule firing directly reaches the same surface
+    // form 8.3.24's path would have. That is a claim about the output being
+    // the same either way, not a claim that this rule fails to fire in that
+    // counterfactual; keep the two distinct.
+    //
+    // The rules below are inert on the site this one writes. 8.4.55 Kari ca
+    // reads the SHAP/ENDING junction rather than the tuk's position inside
+    // ANGA, and refuses vacuous fires anyway (`sub == last`). 8.4.53 wants a
+    // jhaś after the jhal, and `C` is voiceless. 8.4.1 works on Cfnad's
+    // adjacent `f` and `n`, which the tuk sits in front of rather than
+    // between — so it is not an 8.4.2 intervener question either.
+    //
+    // 8.4.65 Jaro Jari savarRe does NOT fork the cell this rule creates,
+    // and the reason is worth stating because the surface looks like it
+    // should: `c` and `C` are savarṇa jhars. 8.4.65 carries 8.4.64's
+    // *halaḥ* by anuvṛtti, implemented there as `!is_vowel(w[i - 1])`, and
+    // the character before this rule's `c` is the aṭ's own `a`.
+    // `acchinat_has_exactly_two_forms` in `panini`'s trace suite is the pin.
+    //
+    // The substitute IS the map: `shcutva_of` carries every stu arm and a
+    // `None` from it is this rule's match test as well. That is the shape
+    // 8.2.30 coH kuH had to be rewritten into once a hardcoded pair proved
+    // wrong for √ric and √vic; do not reintroduce a literal here.
+    Rule {
+        id: "8.4.40",
+        name: "stoH ScunA ScuH",
+        kind: RuleKind::Vidhi,
+        vikalpa: false,
+        apply: |p| {
+            let w = word_chars(p);
+            for i in 0..w.len().saturating_sub(1) {
+                if !is_shcu(w[i + 1].2) {
+                    continue;
+                }
+                let Some(sub) = shcutva_of(w[i].2) else {
+                    continue;
+                };
+                let (term, idx, _) = w[i];
+                let before = p.snapshot();
+                set_char(p, term, idx, sub);
+                p.record("8.4.40", "stoH ScunA ScuH", before);
+                return true;
+            }
+            false
+        },
+    },
     // 8.4.41 ṣṭunā ṣṭuḥ: a dental (`s`, or a t-varga stop) retroflexes when
     // it immediately neighbours `ṣ` (z) or a ṭ-varga stop. pinaz + ti →
     // pinaz + wi → pinazwi; piMz + tas → piMzwaH; piMz + Di — in the loṭ
@@ -957,6 +1037,16 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // have a witness. √tṛh reaches `D` → `Q` and nothing wider, so d/n/s
     // are still absent. Widen that half the moment a junction reaches it —
     // it is a separate claim from the trigger's, with separate evidence.
+    //
+    // The neighbour just above, 8.4.40, took the opposite route: a full
+    // substitution table (`shcutva_of`), with `shcutva_of_stu_all_arms`
+    // pinning all six stu arms, five of them unwitnessed by the corpus.
+    // Both choices are defensible here, not a repeat of 8.2.30's old
+    // defect — that bug was two independent literals (a match testing `j`,
+    // a substitute writing `'g'`) that could drift apart, and did. This
+    // rule fuses match and substitute into one `match` expression, so
+    // CORRESPONDENCE staying narrow can go stale but cannot go
+    // inconsistent the way 8.2.30 did.
     Rule {
         id: "8.4.41",
         name: "zwunA zwuH",
@@ -1028,7 +1118,7 @@ pub(crate) static TRIPADI: &[Rule] = &[
             // i.e. `w[i - 1]` -> `w[i]`, eliding the second ḍh instead of
             // the first): both `Q`s here are the identical character, so
             // removing either one concatenates to the same surface string
-            // — the golden suite's full 2628 cells, its ALTERNATES, and
+            // — the golden suite's full 2772 cells, its ALTERNATES, and
             // its traces cannot and will not distinguish which of the two
             // was elided.
             //
@@ -2160,5 +2250,46 @@ mod tests {
                 d.code
             );
         }
+    }
+
+    #[test]
+    fn shcutva_fires_on_stu_before_shcu_and_declines_after_sha() {
+        let rule = rules().find(|r| r.id == "8.4.40").unwrap();
+
+        // √chid laṅ prathama eka, after 6.1.73 has inserted the tuk: the
+        // `t` is a stu, the `C` a ścu, so the `t` takes its palatal.
+        let mut p = Prakriya {
+            terms: vec![Term::new("atCi"), Term::new("nad")],
+            ..Default::default()
+        };
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.text(), "acCinad");
+
+        // 8.4.44 SAt: a stu FOLLOWING a `S` is exempt, and this engine
+        // implements that exemption by not implementing the direction at
+        // all. Fire here and √kliś surfaces *kliSYAti -- 41 invocations of
+        // 8.4.44 on that one root in vidyut-prakriya over this corpus.
+        let mut p = Prakriya {
+            terms: vec![Term::new("kliS"), Term::new("nA"), Term::new("ti")],
+            ..Default::default()
+        };
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.text(), "kliSnAti");
+
+        // Not a ścu after it: `z` is 8.4.41's trigger, not this rule's, and
+        // this is √piṣ's laṭ prathama eka mid-derivation.
+        let mut p = Prakriya {
+            terms: vec![Term::new("pina"), Term::new("zwi")],
+            ..Default::default()
+        };
+        assert!(!(rule.apply)(&mut p));
+
+        // Not a stu before it: a velar is neither `s` nor t-varga, so
+        // `shcutva_of` returns None and the scan moves on.
+        let mut p = Prakriya {
+            terms: vec![Term::new("ak"), Term::new("Ci")],
+            ..Default::default()
+        };
+        assert!(!(rule.apply)(&mut p));
     }
 }

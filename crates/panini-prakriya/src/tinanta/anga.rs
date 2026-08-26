@@ -5,8 +5,8 @@
 
 use crate::rule::{Rule, RuleKind};
 use crate::term::Tag;
-use crate::tinanta::sound::is_vowel;
-use crate::tinanta::terms::{ANGA, ENDING, SHAP};
+use crate::tinanta::sound::{is_hrasva, is_vowel};
+use crate::tinanta::terms::{ANGA, ENDING, SHAP, insert_char, word_chars};
 use panini_data::{Lakara, Pada};
 
 pub(crate) static ANGA_RULES: &[Rule] = &[
@@ -58,6 +58,55 @@ pub(crate) static ANGA_RULES: &[Rule] = &[
             let before = p.snapshot();
             p.terms[ANGA].text = format!("A{}", p.terms[ANGA].text);
             p.record("6.4.72", "Aq ajAdInAm", before);
+            true
+        },
+    },
+    // 6.1.73 Ce ca: a short vowel before `C` takes the tuk-āgama — a `t`,
+    // placed AFTER the vowel by 1.1.46 ādyantau ṭakitau, since tuk is kit.
+    // aCid → atCid, which 8.4.40 stoH ScunA ScuH then carries to acCid.
+    //
+    // Below the 6.4.71/6.4.72 āgama pair (6.4.72 sits between this rule
+    // and 6.4.71 in the array), and 6.4.71 is what manufactures the whole
+    // of this rule's precondition: the only short vowel any curated root
+    // presents before a `C` is the aṭ-āgama laṅ prefixes onto a C-initial
+    // aṅga. Outside laṅ the `C` is word-initial and this rule has nothing
+    // to sit after, which is why √chid's and √chṛd's laṭ, loṭ and
+    // vidhiliṅ cells never take it.
+    //
+    // WHOLE-WORD, not ANGA-local, and deliberately. 6.1.73's condition is a
+    // saṁhitā condition; the aṭ-plus-root site is where this corpus happens
+    // to present one, not what the sūtra says. An ANGA-local scan would need
+    // a NARROW GUARD comment arguing that a `C` can only ever be
+    // root-initial — true today, and the shape of argument that has twice
+    // cost this repo a real defect (8.2.39's three-literal guard, 8.4.41's
+    // `z`-only trigger).
+    //
+    // The tuk lands INSIDE `ANGA`, because 6.4.71 models the aṭ as a text
+    // prefix on the aṅga rather than as its own term. ANGA's first character
+    // stays `a` and its penult stays `C`, so 6.4.72's `is_vowel(first)`
+    // guard and every upadhā read below this point are unmoved.
+    //
+    // 6.1.76 padāntād vā, which makes the tuk OPTIONAL after a PADA-final
+    // short vowel, is deliberately absent rather than overlooked: the aṭ is
+    // word-internal here, so no site in this corpus is pada-final and the
+    // augment is obligatory. Implement it when an upasarga or a preceding
+    // pada enters scope — and note it would be this engine's eighth vikalpa
+    // rule, so `exactly_the_pinned_vikalpa_rules_are_optional` must change
+    // with it.
+    Rule {
+        id: "6.1.73",
+        name: "Ce ca",
+        kind: RuleKind::Vidhi,
+        vikalpa: false,
+        apply: |p| {
+            let w = word_chars(p);
+            let Some(pos) = (1..w.len()).find(|i| w[*i].2 == 'C' && is_hrasva(w[i - 1].2)) else {
+                return false;
+            };
+            let (term, idx, _) = w[pos - 1];
+            let before = p.snapshot();
+            insert_char(p, term, idx + 1, 't');
+            p.record("6.1.73", "Ce ca", before);
             true
         },
     },
@@ -515,5 +564,50 @@ mod tests {
                 );
             }
         }
+    }
+
+    #[test]
+    fn che_ca_inserts_tuk_only_after_a_short_vowel() {
+        let rule = rules().find(|r| r.id == "6.1.73").unwrap();
+
+        // The one site this corpus reaches: 6.4.71's aṭ before a C-initial
+        // aṅga. The `t` lands inside ANGA, after the augment's own `a`,
+        // because 6.4.71 models the augment as a text prefix rather than as
+        // its own term.
+        let mut p = Prakriya {
+            terms: vec![Term::new("aCi"), Term::new("nad"), Term::new("t")],
+            ..Default::default()
+        };
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "atCi");
+        assert_eq!(p.text(), "atCinadt");
+
+        // Word-initial `C`: nothing precedes it, so there is no short vowel
+        // to attach to. This is every laṭ, loṭ and vidhiliṅ cell of √chid
+        // and √chṛd, and it is why the two new sūtras are laṅ-only.
+        let mut p = Prakriya {
+            terms: vec![Term::new("Ci"), Term::new("nad"), Term::new("ti")],
+            ..Default::default()
+        };
+        assert!(!(rule.apply)(&mut p));
+
+        // A long vowel before the `C`: *hrasva* is the sūtra's own
+        // condition and a dīrgha does not satisfy it.
+        let mut p = Prakriya {
+            terms: vec![Term::new("ACi"), Term::new("nad"), Term::new("t")],
+            ..Default::default()
+        };
+        assert!(!(rule.apply)(&mut p));
+
+        // Across a term boundary — the whole-word scan's reason for being.
+        // No curated root presents this shape today; the scan states
+        // 6.1.73's saṁhitā condition rather than the one site that happens
+        // to reach it.
+        let mut p = Prakriya {
+            terms: vec![Term::new("a"), Term::new("Cid")],
+            ..Default::default()
+        };
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.text(), "atCid");
     }
 }
