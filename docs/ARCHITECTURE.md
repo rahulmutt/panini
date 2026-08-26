@@ -33,17 +33,19 @@ implements; `tinanta::rules()` yields that flattened sequence.
 | `samjna.rs` | 1.3.12, 1.3.72, 1.3.78, 3.4.78, 1.3.9, 1.2.4 | before 3.1.68 |
 | `tin.rs` | 3.4.85 … 3.4.102, 7.1.35 | before 3.1.68 |
 | `vikarana.rs` | 3.1.69, 3.1.73, 3.1.77, 3.1.78, 3.1.81, 3.1.68, 2.4.72, 3.4.111, 3.1.83, 1.2.4 | contains 3.1.68 |
-| `anga.rs` | 6.4.71 … 7.2.81, 6.4.23 | after 3.1.68 |
-| `guna.rs` | 7.4.21, 7.3.84, 7.3.86, 7.3.84 (again — see below), 6.4.87, 6.4.77, 6.1.78, 7.3.101, 6.4.112, 6.4.113 — vowel gradation and vikaraṇa reshaping | after 3.1.68 |
+| `anga.rs` | 6.4.71, 6.1.73 … 7.2.81, 6.4.23 | after 3.1.68 |
+| `guna.rs` | 7.4.21, 7.3.84, 7.3.86, 7.3.92, 7.3.84 (again — see below), 6.4.87, 6.4.77, 6.1.78, 7.3.101, 6.4.112, 6.4.113 — vowel gradation and vikaraṇa reshaping | after 3.1.68 |
 | `adesha.rs` | 6.1.101 … 6.4.107, 6.4.101, 6.4.111 | after 3.1.68 |
-| `tripadi.rs` | 8.2.77, 8.2.23, 8.2.25, 8.2.30, 8.2.39, 8.2.40, 8.2.41, 8.2.74, 8.2.75, 8.2.73, 8.3.15 … 8.3.59, 8.4.41, 8.4.53, 8.4.55, 8.4.1, 8.4.2, 8.4.58, 8.4.65, 8.4.56 | after 3.1.68 |
+| `tripadi.rs` | 8.2.77, 8.2.23, 8.2.25, 8.2.30, 8.2.31, 8.2.39, 8.2.40, 8.2.41, 8.2.74, 8.2.75, 8.2.73, 8.3.15 … 8.3.59, 8.4.40, 8.4.41, 8.3.13, 8.4.53, 8.4.55, 8.4.1, 8.4.2, 8.4.58, 8.4.65, 8.4.56 | after 3.1.68 |
 
 The stage boundary is file organisation, not grammar: the flattened order is
 what matters, and `tinanta_rule_order_is_pinned` in `derivation_tests.rs`
-pins all 87 ids verbatim (72 pre-rudhādi, the fifteen rudhādi added:
+pins all 92 ids verbatim (72 pre-rudhādi, the twenty rudhādi added:
 3.1.78, 6.4.23, 6.4.111, 8.2.74, 8.2.75, 8.2.73, 8.3.24, 8.4.53, 8.4.58 and
-8.4.65 in slice 7a, then 8.2.30, 8.2.40, 8.2.41 and 8.4.41 in 7b, and
-1.3.72 *svaritañitaḥ*, which arrived with √rudh in the ubhayapada slice).
+8.4.65 in slice 7a, then 8.2.30, 8.2.40, 8.2.41 and 8.4.41 in 7b, then
+1.3.72 *svaritañitaḥ*, which arrived with √rudh in the ubhayapada slice,
+then 7.3.92, 8.2.31 and 8.3.13 in slice 7e, and 6.1.73 and 8.4.40 in
+slice 7f).
 `tinanta/terms.rs` holds the term-index constants and the reason 3.1.68
 bisects the pipeline; `tinanta/sound.rs` holds the varṇa classifiers.
 
@@ -269,7 +271,7 @@ all apply), for a 2³ bound of eight, but only **six** branches result
 because 8.4.56 declines on the vowel-final, non-tātaṅ branches (`kfndDi`
 and its 8.4.65 fork `kfnDi`), so only the two tātaṅ branches (7.1.35 alone,
 and 7.1.35+8.4.65) go on to fork a third time. That six-form cell is no
-longer alone at the top, and now has five companions rather than one.
+longer alone at the top, and now has seven companions rather than one.
 √rudh's loṭ **parasmaipada** madhyama eka tied it first,
 with the same k = 3 (7.1.35, 8.4.65, 8.4.56), the same 2³ bound of eight,
 and the same six branches — `rundDi`, `runDi`, `rundDAd`, `runDAd`,

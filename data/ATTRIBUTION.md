@@ -51,21 +51,29 @@ recorded below.
 - Cross-reference: the rudhādi gaṇa (gaṇa 7), slice 7e, entries correspond
   to Dhātupāṭha number 07.0018 (`tfha~`). It stores a `code` of `tfh`, its
   it-stripped upadeśa, so this slice too records no per-entry deviation.
+- Cross-reference: the rudhādi gaṇa (gaṇa 7), slice 7f, entries correspond
+  to Dhātupāṭha numbers 07.0003 (`Ci\di~^r`) and 07.0008 (`u~Cfdi~^r`).
+  Both store a `code` that is a plain it-strip of its vendored upadeśa —
+  `Cid` and `Cfd` — so this slice too records no per-entry deviation.
 - The gaṇa is **partial**: nine of rudhādi's 25 entries are ubhayapadī
-  (`~^r`-marked), seven of them now curated — √rudh (`ru\Di~^r`), slice 7c's
-  `Bi\di~^r`, `kzu\di~^r`, `yu\ji~^r` and `u~tfdi~^r`, and the 8.2.30/8.2.39
-  generalization slice's `ri\ci~^r` and `vi\ci~^r`. 1.3.72 is implemented,
-  so the ubhayapada deferral is discharged; only `Ci\di~^r` and `u~Cfdi~^r`
-  remain, awaiting 6.1.73 *che ca* with 8.4.40 *stoḥ ścunā ścuḥ*. The
+  (`~^r`-marked), nine of them now curated — √rudh (`ru\Di~^r`), slice 7c's
+  `Bi\di~^r`, `kzu\di~^r`, `yu\ji~^r` and `u~tfdi~^r`, the 8.2.30/8.2.39
+  generalization slice's `ri\ci~^r` and `vi\ci~^r`, and slice 7f's
+  `Ci\di~^r` and `u~Cfdi~^r` (with 6.1.73 *che ca* and 8.4.40 *stoḥ ścunā
+  ścuḥ*). 1.3.72 is implemented, so the ubhayapada deferral is discharged;
+  none of the nine remain out. The
   gaṇa's other axis, non-ubhayapadī, is narrower now: sixteen of the 25
   entries are non-ubhayapadī, slice 7d's eight took the curated count
   there to fourteen on the audited numbers alone with no new sūtra, and
   slice 7e's `tfha~` (07.0018, √tṛh, with 7.3.92 *tṛṇaha im*, 8.2.31 *ho
   ḍhaḥ* and 8.3.13 *ḍho ḍhe lopaḥ*) takes it to fifteen.
   Only one non-ubhayapadī entry remains out — `Bu\ja~` (07.0017, √bhuj,
-  deferred behind 1.3.66 *bhujo'navane*, which forks its pada on sense) —
+  deferred behind 1.3.66 *bhujo'navane*: vidyut derives all 72 of its
+  cells, and 1.3.66 is the only rule this engine lacks for it, a
+  root-keyed pada assignment structurally identical to 1.3.72's, which
+  the engine already implements; what keeps it out is the *anavane*
+  **sense** restriction, which neither engine models, not the cost) —
   so what was, before slice 7e, a four-root
-  remainder is now a three-root one: two ubhayapadī (`Ci\di~^r`,
-  `u~Cfdi~^r`) and one
-  non-ubhayapadī (`Bu\ja~`), each held out by its own named
-  sūtra cost rather than by curation lag.
+  remainder is now a one-root one: √bhuj alone,
+  held out by the *anavane* sense restriction rather than by curation
+  lag or sūtra cost.

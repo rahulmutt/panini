@@ -791,8 +791,8 @@
   vidyut commit `8da2f90`, over the corpus grown by √chid and √chṛd: zero
   differences across 2772 cells / 3259 forms / 66 roots**, with both
   `entry` and `form` negative controls verified failing first — the
-  current record, and the first of these runs with new `Rule`s behind it
-  since 7e: 6.1.73 and 8.4.40.
+  current record, and, like 7e's run, one with new `Rule`s behind it:
+  6.1.73 and 8.4.40 this time, where 7e's were 7.3.92, 8.2.31 and 8.3.13.
   Those
   totals are asserted by the harness itself rather than reported from
   whatever it happened to enumerate, so a corpus that grows without the
@@ -817,7 +817,7 @@
   2592/2584-of-2592 as of rudhādi 7d, stood at 2628/2620-of-2628 as of
   rudhādi 7e, and stands at 2772/2764-of-2772 as of rudhādi 7f — the same 8
   cells 6.4.107 always fired on (`key_count("6.4.107") == 8`, pinned at
-  `paradigm.rs:5444`), unmoved by 7d, 7e or 7f since 6.4.107 concerns only
+  `paradigm.rs:5934`), unmoved by 7d, 7e or 7f since 6.4.107 concerns only
   svādi's
   √hi and √ri. Rudhādi 7d touched neither comment — its one permitted
   engine-comment edit is the comment above
@@ -852,7 +852,7 @@
   comment instead.** That is narrower than "every rule gets a guard test",
   and it is not the blanket exemption 7a's deferred #5 asked for ("per-rule
   guard tests for tripādī rules are not achievable"): `tripadi.rs` carries
-  eighteen of them today, including
+  nineteen of them today, including
   `jhalam_jasho_ante_fires_on_any_pada_final_jhal_jashtva_of_resolves` and
   `va_avasane_fires_only_on_a_pada_final_jhal`. Whole-word scope is not what
   blocks a guard test; an unconstructible precondition is. `derive` carries
@@ -877,15 +877,18 @@
   7.1.35, 3.4.111, 6.4.107, 8.2.74, 8.2.75, 8.4.65, 8.4.56.** 7.1.35 and
   8.4.56 can both fire on one derivation, stacking into a three-branch
   cell — loṭ prathama eka forks twice, giving `Bavatu` / `BavatAd` /
-  `BavatAt`. Five rudhādi roots — √kṛt, √rudh, √bhid, √kṣud and √tṛd — each
+  `BavatAt`. Eight rudhādi roots — √kṛt, √rudh, √bhid, √kṣud, √tṛd, √und,
+  √chid and √chṛd — each
   stack three of the seven (7.1.35,
   8.4.65, 8.4.56) on their own loṭ parasmaipada cells — five branches at
   prathama eka, six at madhyama eka
   (`kfndDi` / `kfnDi` / `kfnttAd` / `kfntAd` / `kfnttAt` /
   `kfntAt`, and `rundDi` / `runDi` / `rundDAd` / `runDAd` / `rundDAt` /
-  `runDAt`, and likewise for √bhid, √kṣud and √tṛd) — because 8.4.56 only
+  `runDAt`, and likewise for √bhid, √kṣud, √tṛd, √und, √chid and √chṛd) —
+  because 8.4.56 only
   reaches the two tātaṅ (7.1.35) branches,
-  not the two vowel-final ones. √yuj, ubhayapadī like those last three but
+  not the two vowel-final ones. √yuj, ubhayapadī like √bhid, √kṣud and
+  √tṛd (its own 7c cohort) but
   not dental-final, stops at three forms in the same two cells
   (`yunaktu`/`yuNktAd`/`yuNktAt`, `yuNgDi`/`yuNktAd`/`yuNktAt`): 8.2.30 *coḥ
   kuḥ* replaces its stem-final palatal `j` with the velar `g` (8.4.55 *khari

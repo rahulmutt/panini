@@ -122,10 +122,9 @@ totals moved from 64/2628/3057 to 66/2772/3259 (66 = 64 + 2 curated roots,
 √chid and √chṛd; 2772 = 2628 + 144 cells, where 144 = 2 roots × 2 padas ×
 4 lakāras × 9; 3259 = 3057 + 202, the measured form total — this run's
 `n_forms` matched the projected 3259 exactly, so no assertion adjustment was
-needed). The growth in `ALTERNATES` rows this implies, 429 → 487, is not yet
-reflected in `crates/panini/tests/paradigm.rs`'s golden table as of this
-audit; those rows land in a later task of this slice, generated from this
-certified run.
+needed). The growth in `ALTERNATES` rows this implies, 429 → 487, landed in
+`crates/panini/tests/paradigm.rs`'s golden table in a later task of this
+slice, generated from this certified run.
 
 ## Scope
 
