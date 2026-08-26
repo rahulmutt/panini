@@ -27,7 +27,7 @@ is ruleless.
 comment states that a blocked prakriyā's `text()` is a partial string — often the
 bare root code — not a surface form.
 
-**It asserts the corpus totals** (66 roots, 2772 cells, 3259 forms) rather than
+**It asserts the corpus totals** (67 roots, 2844 cells, 3338 forms) rather than
 reporting whatever it enumerated. Those totals are corroborated by
 `derivation_set_shape_matches_the_audited_numbers` in
 `crates/panini/tests/paradigm.rs`, which each slice raises to the same totals
@@ -109,22 +109,22 @@ PANINI_AUDIT_DUMP=/tmp/audit-table.tsv mise exec rust@1.98.0 -- cargo run --rele
 
 ## Last recorded result
 
-2026-08-25, rudhādi 7f slice, vidyut `8da2f90bee3ce1c07505fa432fc3729e3f7e02ea`:
-**zero differences across 2772 cells / 3259 forms / 66 roots**, with both
+2026-08-26, √bhuj/1.3.66 slice, vidyut `8da2f90bee3ce1c07505fa432fc3729e3f7e02ea`:
+**zero differences across 2844 cells / 3338 forms / 67 roots**, with both
 negative controls verified failing first — `entry` (exit 1, 36 √bhū cells,
 `Bavati` vs `paWati` and so on) and `form` (exit 1, 1 flagged cell,
-`BavatiXX` vs `Bavati`). This is the first audit run after 7f curated
-√chid (`07.0003`) and √chṛd (`07.0008`), its two new sūtras 6.1.73 *che ca*
-and 8.4.40 *stoḥ ścunā ścuḥ* that those two roots' laṅ cells depend on, and a
-gate that already proved those two rules inert on the pre-7f 2628-cell
-corpus by a byte-for-byte dump diff (with its own negative control). Corpus
-totals moved from 64/2628/3057 to 66/2772/3259 (66 = 64 + 2 curated roots,
-√chid and √chṛd; 2772 = 2628 + 144 cells, where 144 = 2 roots × 2 padas ×
-4 lakāras × 9; 3259 = 3057 + 202, the measured form total — this run's
-`n_forms` matched the projected 3259 exactly, so no assertion adjustment was
-needed). The growth in `ALTERNATES` rows this implies, 429 → 487, landed in
-`crates/panini/tests/paradigm.rs`'s golden table in a later task of this
-slice, generated from this certified run.
+`BavatiXX` vs `Bavati`). This is the first audit run after this slice's
+1.3.66 *Bujo'navane* and the widened 1.3.78 landed the curated row for
+√bhuj (`07.0017`, `PadaAssignment::UbhayapadaAnavane`), the twelfth root
+in the corpus (after the eleven ubhayapadī by 1.3.72) to derive both
+padas. Corpus totals moved from 66/2772/3259 to 67/2844/3338 (67 = 66 + 1
+curated root, √bhuj; 2844 = 2772 + 72 cells, where 72 = 1 root × 2 padas ×
+4 lakāras × 9; 3338 = 3259 + 79, the measured form total — this run's
+`n_forms` matched the projected 3338 exactly, so no assertion adjustment
+was needed). The growth in `ALTERNATES` rows this implies, 487 → 494
+(expected; a later task of this slice measures and lands it in
+`crates/panini/tests/paradigm.rs`'s golden table, generated from this
+certified run).
 
 ## Scope
 
