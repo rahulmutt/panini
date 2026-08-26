@@ -95,9 +95,10 @@ pub struct Dhatu {
     pub gana: Gana,
     /// Which pada(s) this engine derives for this root. Curated rather than
     /// read from the upadeśa's it-markers — but no longer a *deferral*:
-    /// `curated_pada_agrees_with_upadesha_markers` re-derives every one of
-    /// these 66 verdicts from the vendored upadeśa via 1.3.12 / 1.3.72 /
-    /// 1.3.78 and requires it to match, the same way
+    /// `curated_pada_agrees_with_upadesha_markers` re-derives 66 of these 67
+    /// verdicts from the vendored upadeśa via 1.3.12 / 1.3.72 / 1.3.78 and
+    /// requires them to match; the 67th, √bhuj's, is 1.3.66's root-keyed
+    /// exception, asserted explicitly from both sides, the same way
     /// `dhatupatha_numbers_resolve_upstream` holds `code` to upstream.
     ///
     /// The column stayed hand-written because deriving it in production means
@@ -107,7 +108,7 @@ pub struct Dhatu {
     /// the honest arrangement; see the deferral in
     /// `docs/superpowers/specs/2026-08-16-pada-audit-design.md`.
     ///
-    /// The test covers the 66 roots curated here, not the dhātupāṭha's 2259.
+    /// The test covers the 67 roots curated here, not the dhātupāṭha's 2259.
     /// It catches a mis-assigned pada on a root a future slice adds; it does
     /// not make the table self-maintaining.
     pub pada: PadaAssignment,
@@ -776,6 +777,26 @@ static DHATUS: &[Dhatu] = &[
         pada: PadaAssignment::Ubhayapada,
         artha: "dIptidevanayoH",
     },
+    Dhatu {
+        // 07.0017 Bu\ja~ pAlanAByavahArayoH. The row that closes rudhādi
+        // at 25 of 25. Its `\` sits on the ROOT VOWEL — no pada anubandha
+        // at all — so the markers say parasmaipada, and the ātmanepada arm
+        // comes from 1.3.66 Bujo'navane, the one curated verdict a sūtra
+        // carries rather than a marker; UbhayapadaAnavane is that fact
+        // stated as data, and `curated_pada_agrees_with_upadesha_markers`
+        // asserts both sides of the divergence explicitly.
+        //
+        // No new phonology: √bhuj is √yuj (`07.0007`) with a `B` for its
+        // `y` — śnam, 8.2.30's kutva on the final `j`, the same 8.4.56
+        // and 7.1.35 forks, and no 8.4.65 anywhere (a velar junction is
+        // never savarṇa with a dental). 7f's design probe certified 1.3.66
+        // as the only rule vidyut invokes for it that this engine lacked.
+        dhatupatha: "07.0017",
+        code: "Buj",
+        gana: Gana::Rudhadi,
+        pada: PadaAssignment::UbhayapadaAnavane,
+        artha: "pAlanAByavahArayoH",
+    },
 ];
 
 pub fn dhatus() -> &'static [Dhatu] {
@@ -817,7 +838,7 @@ mod tests {
 
     #[test]
     fn curated_roots_have_expected_ganas_and_padas() {
-        assert_eq!(dhatus().len(), 66);
+        assert_eq!(dhatus().len(), 67);
         let bu = dhatus().iter().find(|d| d.dhatupatha == "01.0001").unwrap();
         assert!(matches!(bu.pada, PadaAssignment::Parasmaipada));
         let labh = dhatus().iter().find(|d| d.dhatupatha == "01.1130").unwrap();
@@ -986,7 +1007,7 @@ mod tests {
     }
 
     #[test]
-    fn rudhadi_rows_are_the_twenty_four_curated_roots() {
+    fn rudhadi_rows_are_the_twenty_five_curated_roots() {
         // √rudh, the gaṇa's eponym, arrived with 1.3.72 svaritaYitaH and
         // PadaAssignment::Ubhayapada. Slice 7c added √bhid, √kṣud, √yuj and
         // √tṛd; the 8.2.30/8.2.39 generalization slice added √ric and √vic
@@ -1032,12 +1053,15 @@ mod tests {
         // √tṛd with a `C` for its `t`, ṇatva included, so every cell outside
         // laṅ derives on rules that were already in the pipeline.
         //
-        // ONE of rudhādi's 25 is still out after this: √bhuj (`07.0017`),
-        // and not for want of phonology -- vidyut derives all 72 of its
-        // cells and 1.3.66 Bujo'navane is the only rule this engine lacks,
-        // a root-keyed pada assignment structurally identical to 1.3.72's.
-        // What keeps it out is that 1.3.66 restricts ātmanepada to senses
-        // other than protecting, and neither engine models sense.
+        // The √bhuj slice then closed the gaṇa at TWENTY-FIVE OF
+        // TWENTY-FIVE: √bhuj (`07.0017`) needed no phonology at all — it
+        // is √yuj with a `B` — and exactly one rule, 1.3.66 Bujo'navane, a
+        // root-keyed pada assignment structurally identical to 1.3.72's.
+        // 1.3.66 restricts ātmanepada to senses other than protecting, and
+        // neither engine models sense, so the row ships an UNCONDITIONAL
+        // ubhayapada assignment (PadaAssignment::UbhayapadaAnavane) with
+        // anavane recorded as unimplemented — the same precedent 1.3.72
+        // set for kartrabhiprAye kriyAPale. No rudhādi entry remains out.
         let rows: Vec<_> = dhatus()
             .iter()
             .filter(|d| d.gana == Gana::Rudhadi)
@@ -1070,6 +1094,7 @@ mod tests {
                 ("07.0018", "tfh", PadaAssignment::Parasmaipada),
                 ("07.0003", "Cid", PadaAssignment::Ubhayapada),
                 ("07.0008", "Cfd", PadaAssignment::Ubhayapada),
+                ("07.0017", "Buj", PadaAssignment::UbhayapadaAnavane),
             ]
         );
     }
@@ -1205,7 +1230,7 @@ mod tests {
     /// AFTER the `~` that marks an anunāsika it, so `~\` is an anudātta it and
     /// `~^` a svarita it — whereas a `\` sitting directly on a vowel elsewhere
     /// is the ROOT's own accent and says nothing about pada. Counted off the
-    /// vendored upadeśa: 43 of the 66 curated roots carry a `\` at all, and 30
+    /// vendored upadeśa: 44 of the 67 curated roots carry a `\` at all, and 31
     /// of those carry one on a root vowel — `01.0642 ji\`, `01.1082 smf\` and
     /// `02.0001 a\da~` among them — so conflating the two does not fail
     /// loudly; it silently calls most of the table ātmanepada.
@@ -1359,6 +1384,28 @@ mod tests {
                 .find(|(n, _, _)| *n == d.dhatupatha)
                 .unwrap_or_else(|| panic!("{} names no upstream row", d.dhatupatha));
             let derived = pada_from_upadesha(upadesha);
+            // 1.3.66 Bujo'navane: the one curated verdict no marker can
+            // carry. `Bu\ja~` has no pada anubandha at all — its `\` sits
+            // on the root vowel, the exact conflation this function's doc
+            // comment warns against — so the markers CORRECTLY derive
+            // parasmaipada, and the ātmanepada arm comes from a sūtra that
+            // names the root, which is why Pāṇini needed 1.3.66 in the
+            // first place. Both sides are asserted so this exception fails
+            // loudly if either the upadeśa reading or the curated column
+            // ever drifts.
+            if d.dhatupatha == "07.0017" {
+                assert_eq!(
+                    derived,
+                    PadaAssignment::Parasmaipada,
+                    "Bu\\ja~ grew a pada marker; 1.3.66's exception is stale"
+                );
+                assert_eq!(
+                    d.pada,
+                    PadaAssignment::UbhayapadaAnavane,
+                    "07.0017 is the root 1.3.66 names; its pada is curated, not marker-derived"
+                );
+                continue;
+            }
             if derived != d.pada {
                 wrong.push(format!(
                     "{} {} ({upadesha}): curated {:?}, markers say {derived:?}",

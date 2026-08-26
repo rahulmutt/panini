@@ -309,9 +309,12 @@ mod tests {
         // The guard is Tag::Ubhayapadin and nothing else. A parasmaipada-only
         // root (√bhū, untagged) is 1.3.78's business and an ātmanepada-only
         // one (√khid, √indh) is 1.3.12's; 1.3.72 must leave both alone in
-        // both padas, without recording and without blocking.
+        // both padas, without recording and without blocking. And the root
+        // 1.3.66 names (√bhuj, Anavane-tagged) must never reach 1.3.72
+        // either — the dhatus()-backed twin of
+        // `svaritanit_declines_the_root_1_3_66_names`.
         let rule = rules().find(|r| r.id == "1.3.72").unwrap();
-        for number in ["01.0001", "07.0012", "07.0011"] {
+        for number in ["01.0001", "07.0012", "07.0011", "07.0017"] {
             let code = pada_anga_text(number);
             for pada in [Pada::Parasmaipada, Pada::Atmanepada] {
                 let mut p = pada_prakriya(number, pada);
@@ -393,7 +396,10 @@ mod tests {
         // both fire; and where 1.3.72 and 1.3.78 overlap — an ubhayapadī root
         // is `!Atmanepadin`, so 1.3.78's guard admits it — they split on
         // `ctx.pada`, with 1.3.78's ātmanepada arm declining in exactly the
-        // case 1.3.72 handles.
+        // case 1.3.72 handles. 1.3.66 joins the family with the same
+        // disjointness: Anavane is exclusive with the other tags on the
+        // root, and where it overlaps 1.3.78 (an Anavane root is
+        // `!Atmanepadin`) they split on `ctx.pada` exactly as 1.3.72 does.
         //
         // Commit ee35a30 had to go back and qualify an order-independence
         // claim that prose had overstated, so this one is a test: the three
@@ -401,14 +407,32 @@ mod tests {
         // (blocked, text, pada-sūtra log) triple every time. Blocking stops
         // the run, mirroring `run_pipeline`, so the claim covers the
         // pipeline's actual semantics rather than an idealised sweep.
-        const IDS: [&str; 3] = ["1.3.12", "1.3.72", "1.3.78"];
-        const ORDERS: [[usize; 3]; 6] = [
-            [0, 1, 2],
-            [0, 2, 1],
-            [1, 0, 2],
-            [1, 2, 0],
-            [2, 0, 1],
-            [2, 1, 0],
+        const IDS: [&str; 4] = ["1.3.12", "1.3.66", "1.3.72", "1.3.78"];
+        const ORDERS: [[usize; 4]; 24] = [
+            [0, 1, 2, 3],
+            [0, 1, 3, 2],
+            [0, 2, 1, 3],
+            [0, 2, 3, 1],
+            [0, 3, 1, 2],
+            [0, 3, 2, 1],
+            [1, 0, 2, 3],
+            [1, 0, 3, 2],
+            [1, 2, 0, 3],
+            [1, 2, 3, 0],
+            [1, 3, 0, 2],
+            [1, 3, 2, 0],
+            [2, 0, 1, 3],
+            [2, 0, 3, 1],
+            [2, 1, 0, 3],
+            [2, 1, 3, 0],
+            [2, 3, 0, 1],
+            [2, 3, 1, 0],
+            [3, 0, 1, 2],
+            [3, 0, 2, 1],
+            [3, 1, 0, 2],
+            [3, 1, 2, 0],
+            [3, 2, 0, 1],
+            [3, 2, 1, 0],
         ];
         // `None` = the request is blocked; `Some(id)` = the sūtra that
         // sanctions it. Pinned so a mutant that turned all three rules into
@@ -422,6 +446,8 @@ mod tests {
             ("01.0001", Pada::Atmanepada, None),
             ("07.0012", Pada::Parasmaipada, None),
             ("07.0012", Pada::Atmanepada, Some("1.3.12")),
+            ("07.0017", Pada::Parasmaipada, Some("1.3.78")),
+            ("07.0017", Pada::Atmanepada, Some("1.3.66")),
         ];
         for (number, pada, expected) in cells {
             let mut results = Vec::new();

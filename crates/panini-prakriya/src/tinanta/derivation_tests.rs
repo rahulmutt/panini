@@ -710,6 +710,44 @@ fn rudh_derives_in_both_padas() {
 }
 
 #[test]
+fn bhuj_derives_in_both_padas() {
+    // The end-to-end pin on derive's UbhayapadaAnavane → Anavane tagging
+    // arm, mirroring `rudh_derives_in_both_padas` for the Ubhayapada arm:
+    // with that arm missing, the ātmanepada cell would block. The trace
+    // must credit 1.3.66 — not 1.3.72, which √bhuj can never reach —
+    // for the ātmanepada cell, and 1.3.78's śeṣa for the parasmaipada one.
+    let bhuj = dhatus().iter().find(|d| d.dhatupatha == "07.0017").unwrap();
+
+    let p = sole(derive(
+        bhuj,
+        Lakara::Lat,
+        Pada::Parasmaipada,
+        Purusha::Prathama,
+        Vacana::Eka,
+    ));
+    assert!(
+        !p.blocked,
+        "the root 1.3.66 names must derive in parasmaipada"
+    );
+    assert_eq!(p.text(), "Bunakti");
+    assert_eq!(p.log.first().unwrap().sutra, "1.3.78");
+
+    let p = sole(derive(
+        bhuj,
+        Lakara::Lat,
+        Pada::Atmanepada,
+        Purusha::Prathama,
+        Vacana::Eka,
+    ));
+    assert!(
+        !p.blocked,
+        "the root 1.3.66 names must derive in ātmanepada"
+    );
+    assert_eq!(p.text(), "BuNkte");
+    assert_eq!(p.log.first().unwrap().sutra, "1.3.66");
+}
+
+#[test]
 fn indh_is_atmanepada_only_despite_its_nit() {
     // This test is what protects the whole data-model choice, so it is worth
     // stating why. √indh's upadeśa is `YiinDI~\`: it carries a ñi, and 1.3.72
