@@ -396,10 +396,17 @@
       This slice's own new code was exercised and caught, not merely
       present: 6.1.73's guard, its `- 1`, and its `idx + 1` (`anga.rs:103`,
       `:106`, `:108`) are all in `caught.txt`, together with eight caught
-      mutants touching `shcutva_of` / `saturating_sub` — the three risk
-      areas the brief itself flagged (`shcutva_of`'s five unwitnessed
-      arms, 8.4.40's `saturating_sub(1)`, and 6.1.73's non-equivalent
-      `idx + 1` `+`→`*`) all came back caught, not survived.
+      mutants touching `shcutva_of` (two function-replacement plus six
+      delete-match-arm mutants at `sound.rs:222`–`228`) — two of the three
+      risk areas the brief itself flagged (`shcutva_of`'s five unwitnessed
+      arms, and 6.1.73's non-equivalent `idx + 1` `+`→`*`) came back
+      caught, not survived. **The third, 8.4.40's `saturating_sub(1)`, was
+      never tested at all**: `caught.txt`, `missed.txt`, `timeout.txt` and
+      `unviable.txt` contain zero mentions of `saturating_sub`, and
+      `mutants.json` has no mutant span at either call site
+      (`tripadi.rs:962`, `tripadi.rs:1516`) — cargo-mutants simply did not
+      generate one there. That boundary is a real mutation-coverage gap,
+      not a passed check — record it as untested, not as caught.
     `outcomes.json`'s per-mutant test-phase durations (**n = 532** — 571
     mutants minus the 39 unviable ones, which fail at the Build phase and
     never reach a Test phase) put the median at 91.20s, p90 at 1070.91s
