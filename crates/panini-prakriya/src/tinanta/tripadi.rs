@@ -1040,7 +1040,7 @@ pub(crate) static TRIPADI: &[Rule] = &[
     //
     // The neighbour just above, 8.4.40, took the opposite route: a full
     // substitution table (`shcutva_of`), with `shcutva_of_stu_all_arms`
-    // pinning all five stu arms whether or not the corpus witnesses them.
+    // pinning all six stu arms, five of them unwitnessed by the corpus.
     // Both choices are defensible here, not a repeat of 8.2.30's old
     // defect — that bug was two independent literals (a match testing `j`,
     // a substitute writing `'g'`) that could drift apart, and did. This
