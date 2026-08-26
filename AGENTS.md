@@ -345,6 +345,87 @@
     floor and this **1.02×–1.43×** range — or a fresh direct measurement of
     its own — rather than re-deriving 2.1–2.5× as settled, and rather than
     quoting only the lowest sample as if it were the ceiling.
+    **This slice (rudhādi gaṇa 7f, √chid and √chṛd) re-measured both at
+    2772 cells.** Uncontended floor: paradigm 486.69s, roundtrip 576.91s,
+    trace 2.39s — an uncaught total of **1066.834s** (`time mise run
+    test`'s own wall clock). Cell count grew **+5.5%** this slice (2628 →
+    2772); the floor grew from 7e's 943.70s to 1066.834s, **+13.05%** — a
+    **2.37×** under-prediction, the sixth consecutive slice where scaling
+    the floor by cell count would have been wrong (smaller miss than 7e's
+    own ~6×, but still the wrong model in the same direction). `roundtrip`
+    carried most of the growth (508.54s → 576.91s, +13.4%, above the
+    overall rate); `paradigm` also outgrew cells (432.94s → 486.69s,
+    +12.4%); `trace` stayed flat in absolute terms (2.22s → 2.39s, +7.7%
+    on a floor too small for the multiplier to mean much).
+    Cap sanity check before the campaign: 1066.834s × the 7e-measured
+    **1.02×–1.43×** `-j 4` contention range (not the retired 2.1–2.5×,
+    and not the 1.02× end read alone) projects an uncaught mutant at
+    **1088–1526s**. Against the standing `--timeout 4800` cap, that is a
+    margin of **3.15×–4.41×**, in the same "roughly 3×" territory the cap
+    was raised into during 7e and comfortably clear of the brief's own
+    (older, pre-4800-cap) ~2400s alarm threshold. **Ruling: keep 4800,
+    unchanged.** No controller escalation was needed because the
+    projection concluded "adequate," not "raise it."
+    Campaign at `-j 4 --timeout 4800`: **571 mutants, 529 caught, 2
+    missed, 39 unviable, 1 timeout** (529 + 39 + 1 = 569, plus the 2
+    missed = 571), wall clock **10h**. Both the timeout and the two missed
+    mutants were verified in place against the brief's predictions, not
+    assumed from the shape of a "clean" result:
+    - The timeout is the known-permanent `tripadi.rs`, 8.4.2's backward
+      ṇatva scan, non-terminating-loop mutant (`j -= 1` -> `j /= 1` at
+      `tripadi.rs:1396`, making `j` constant so the mutated run never
+      reaches an assertion), confirmed by re-reading the construct at its
+      current line rather than trusting the line number to have held
+      still across two slices of drift — it hadn't (7e reported it at a
+      different line; this slice adds a rule above it in the same file).
+      Ran the full 4800.02s cap, the correct verdict at any cap.
+    - Both missed mutants are 7e's own two verified equivalent mutants,
+      confirmed unchanged at their guards: `adesha.rs:393`, 6.1.87's im
+      arm (`s.remove(pos + 1)` -> `s.remove(pos)`, still documented
+      in-place as equivalent because whichever half of the adjacent `a i`
+      pair survives the removal is immediately clobbered by the `'e'`
+      assignment that follows), and `tripadi.rs:1156`, 8.3.13's guard
+      (`w[i - 1]` -> `w[i]`, still documented in-place as equivalent
+      because both `Q`s at that position are the same character, so the
+      surface form cannot distinguish which one the grammar actually
+      elides). Neither site nor its reasoning has changed since 7e; no
+      new equivalence argument was needed. **Step 5 (fix any genuine
+      survivor) is a no-op this slice** — there is no genuine survivor,
+      only the same two documented equivalents and the one documented
+      permanent timeout, so nothing was added or deleted.
+      This slice's own new code was exercised and caught, not merely
+      present: 6.1.73's guard, its `- 1`, and its `idx + 1` (`anga.rs:103`,
+      `:106`, `:108`) are all in `caught.txt`, together with eight caught
+      mutants touching `shcutva_of` / `saturating_sub` — the three risk
+      areas the brief itself flagged (`shcutva_of`'s five unwitnessed
+      arms, 8.4.40's `saturating_sub(1)`, and 6.1.73's non-equivalent
+      `idx + 1` `+`→`*`) all came back caught, not survived.
+    `outcomes.json`'s per-mutant test-phase durations (**n = 532** — 571
+    mutants minus the 39 unviable ones, which fail at the Build phase and
+    never reach a Test phase) put the median at 91.20s, p90 at 1070.91s
+    (nearest-rank, as in 7e), p99 at 1299.80s, and the max at 4800.02s —
+    that max being the known-permanent timeout itself, not a caught or
+    missed mutant, exactly as in 7e. 64 of the 532 runs exceeded 600s.
+    Excluding the timeout, the max is **1521.45s** (`tripadi.rs:1391`,
+    `replace < with <=`, `CaughtMutant`) — within 0.3% of this slice's own
+    pre-campaign projected ceiling of 1525.57s (1.43× × 1066.834s), which
+    converts that contention model from a projection into a corroborated
+    one rather than a coincidence.
+    **Two margins, measured, not projected, and labelled:**
+    - Against the worst **caught** mutant (1521.45s, measured): 4800 /
+      1521.45 ≈ **3.15×**.
+    - Against the worst **uncaught** run (1118.96s, measured — this
+      slice's two missed mutants ran the full golden suite to completion
+      without being caught, at 1118.96s and 1115.81s, both genuine
+      uncaught `-j 4` runs, not projections): 4800 / 1118.96 ≈ **4.29×**.
+    Consistent with 7e's own finding, the worst-case run this campaign
+    was a **caught** mutant, not an uncaught one — scheduling overlap
+    under `-j 4`, not catch/miss status, still dominates wall clock.
+    **Ruling: keep 4800.** Both margins comfortably clear 1×, the
+    caught-mutant margin (3.15×) lands almost exactly on this slice's own
+    pre-campaign projection, and the one-time cost of a wrong-direction
+    cap remains the same ~40 minutes 7e already paid for the permanent
+    timeout, not a repeat of the vacuous-zero failure mode from 7a/7b.
   - `cargo-deny` + `cargo-audit` (supply-chain checks) — `mise run audit` runs
     `cargo audit && cargo deny check` and is expected to pass, including
     `cargo deny check advisories`.
