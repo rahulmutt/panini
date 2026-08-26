@@ -1694,8 +1694,12 @@ fn acchinat_trace_orders_the_tuk_between_the_augment_and_shcutva() {
 
 #[test]
 fn acchrnat_trace_runs_natva_and_shcutva_on_disjoint_sites() {
-    // Cfd laN prathama eka -- the one cell in the corpus that reaches both
-    // Natva and Scutva. They touch different characters of the same word:
+    // Cfd laN prathama eka -- a cell in the corpus that reaches both
+    // Natva and Scutva (√chfd's laN parasmaipada PARADIGM block runs the
+    // same pair at prathama, madhyama and uttama eka -- acCfRad, acCfRad
+    // and acCfRadam all carry the R and are all laN -- so three cells reach
+    // both; this is simply the cheapest of the three to pin). They touch
+    // different characters of the same word:
     // 8.4.1 rewrites the `n` of Cfnad, whose trigger is the root's own `f`
     // directly before it, while 8.4.40 rewrites the tuk sitting IN FRONT of
     // that `f`.
@@ -1725,10 +1729,17 @@ fn chinatti_trace_cites_neither_new_sutra() {
     // word-initial and 6.1.73 has no short vowel to attach the tuk to.
     // 8.4.40 then has no stu to read.
     //
-    // This is the cheapest guard against 6.1.73's `is_hrasva(w[i - 1].2)`
-    // conjunct being dropped: without it the scan would fire at index 0 on
-    // any C-initial word and every one of these 54 non-laN cells would grow
-    // a spurious `t`.
+    // This is the cheapest guard against 6.1.73's `&&` collapsing to `||`
+    // on the scan below: that mutant no longer requires the matched char to
+    // be `C`, so it fires the moment it sees ANY hrasva vowel one position
+    // back. For Cid that is always the root's own `i` at word index 1, so
+    // every one of these 54 non-laN cells -- these are √chid's alone, 3
+    // lakaras x 2 padas x 9 puruSa-vacana combinations; √chRd is a separate
+    // count -- would grow a spurious `t` one slot later than the rule ever
+    // places one (`Citnatti`, not `Cinatti`). The `is_hrasva` conjunct
+    // itself is pinned elsewhere, by
+    // `che_ca_inserts_tuk_only_after_a_short_vowel`'s dirgha `ACi` case in
+    // this file's test module.
     let (text, t) = cell_trace(
         "07.0003",
         Lakara::Lat,

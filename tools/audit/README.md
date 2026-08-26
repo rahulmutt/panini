@@ -114,8 +114,8 @@ PANINI_AUDIT_DUMP=/tmp/audit-table.tsv mise exec rust@1.98.0 -- cargo run --rele
 negative controls verified failing first — `entry` (exit 1, 36 √bhū cells,
 `Bavati` vs `paWati` and so on) and `form` (exit 1, 1 flagged cell,
 `BavatiXX` vs `Bavati`). This is the first audit run after 7f curated
-√chid (`07.0003`) and √chṛd (`07.0008`), the pre-existing 6.1.73 *che ca* and
-8.4.40 *stoḥ ścunā ścuḥ* that those two roots' laṅ cells depend on, and a
+√chid (`07.0003`) and √chṛd (`07.0008`), its two new sūtras 6.1.73 *che ca*
+and 8.4.40 *stoḥ ścunā ścuḥ* that those two roots' laṅ cells depend on, and a
 gate that already proved those two rules inert on the pre-7f 2628-cell
 corpus by a byte-for-byte dump diff (with its own negative control). Corpus
 totals moved from 64/2628/3057 to 66/2772/3259 (66 = 64 + 2 curated roots,

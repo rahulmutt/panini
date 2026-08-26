@@ -1037,6 +1037,16 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // have a witness. √tṛh reaches `D` → `Q` and nothing wider, so d/n/s
     // are still absent. Widen that half the moment a junction reaches it —
     // it is a separate claim from the trigger's, with separate evidence.
+    //
+    // The neighbour just above, 8.4.40, took the opposite route: a full
+    // substitution table (`shcutva_of`), with `shcutva_of_stu_all_arms`
+    // pinning all five stu arms whether or not the corpus witnesses them.
+    // Both choices are defensible here, not a repeat of 8.2.30's old
+    // defect — that bug was two independent literals (a match testing `j`,
+    // a substitute writing `'g'`) that could drift apart, and did. This
+    // rule fuses match and substitute into one `match` expression, so
+    // CORRESPONDENCE staying narrow can go stale but cannot go
+    // inconsistent the way 8.2.30 did.
     Rule {
         id: "8.4.41",
         name: "zwunA zwuH",

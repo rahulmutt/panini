@@ -6263,11 +6263,14 @@ fn pada_ambiguous_surfaces_are_exactly_these() {
     // one new pada-bearing addition to the bucket, √vid (`07.0013`,
     // ātmanepada-only), gets compared against every parasmaipada surface
     // in the corpus, and the result is no new collision — the set is
-    // unchanged at twenty-two surfaces. Slice 7f's two new ubhayapadī
-    // roots contribute four more, the same shape as √bhid's and √tṛd's
-    // pairs: `CfnttAm`/`acCfntta` (√chṛd `07.0008`) and `CinttAm`/
-    // `acCintta` (√chid `07.0003`), taking the set to twenty-six with no
-    // new collision against any pre-slice surface.
+    // unchanged at twenty-two surfaces. Slice 7e contributed nothing to
+    // this bucket: its one root, √tṛh (`07.0018`), is parasmaipada-only, so
+    // it has no second pada to collide against and never enters this
+    // check. Slice 7f's two new ubhayapadī roots contribute four more, the
+    // same shape as √bhid's and √tṛd's pairs: `CfnttAm`/`acCfntta`
+    // (√chṛd `07.0008`) and `CinttAm`/`acCintta` (√chid `07.0003`), taking
+    // the set to twenty-six with no new collision against any pre-slice
+    // surface.
     assert_eq!(
         both,
         vec![
