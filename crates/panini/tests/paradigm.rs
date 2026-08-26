@@ -5666,7 +5666,7 @@ const VIKALPA_RULES: &[&str] = &[
     "7.1.35", "3.4.111", "6.4.107", "8.2.74", "8.2.75", "8.4.65", "8.4.56",
 ];
 
-/// `ALTERNATES` is otherwise 429 bare strings, and a string can be right for
+/// `ALTERNATES` is otherwise 487 bare strings, and a string can be right for
 /// the wrong reason — `BavatAt` is a real form whether or not 8.4.56 is what
 /// produced it. This ties each row to the grammar: find the branch that
 /// derives the row's form, intersect its log with the optional-rule set, and
@@ -5763,7 +5763,7 @@ fn derivation_set_is_exactly_pinned() {
 /// √śiṣ (Siz), √und (und), √añj (anj), √tañc (tanc), √vij (vij), √vṛj (vfj)
 /// and √pṛc (pfc), all parasmaipadī, plus √vid (vid), ātmanepadī, curated
 /// with no new sūtra and cleared by their own cross-implementation audit:
-/// every one of the twenty-two rudhādi roots forks in both loṭ and laṅ,
+/// every one of the twenty-four rudhādi roots forks in both loṭ and laṅ,
 /// and two of them — kft and ruD — fork
 /// in all four lakāras: laṭ (kft
 /// cells 1/4/5, Kid cells 0/5, inD cells 0/5, and — new in the ubhayapada

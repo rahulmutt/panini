@@ -1376,11 +1376,11 @@ mod tests {
 
     #[test]
     fn a_root_vowel_accent_does_not_assign_pada() {
-        // The failure mode that would make the whole audit vacuous: 42 of the
-        // 64 curated roots carry a `\` somewhere in their upadeśa, 29 of them
+        // The failure mode that would make the whole audit vacuous: 43 of the
+        // 66 curated roots carry a `\` somewhere in their upadeśa, 30 of them
         // on a root vowel rather than on an it. Reading every `\` as 1.3.12's
-        // anudātta would call 23 of the 42 ātmanepada wrongly (15 curated
-        // parasmaipada, 8 ubhayapada); the other 19 carry a genuine `~\` and
+        // anudātta would call 24 of the 43 ātmanepada wrongly (15 curated
+        // parasmaipada, 9 ubhayapada); the other 19 carry a genuine `~\` and
         // are curated ātmanepada anyway, which is why agreement with the
         // column would still hold on every genuinely ātmanepada root, and only
         // a parasmaipada witness catches it.
