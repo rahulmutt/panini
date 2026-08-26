@@ -25,6 +25,20 @@ pub enum PadaAssignment {
     Parasmaipada,
     Atmanepada,
     Ubhayapada,
+    /// Both padas derive, exactly as for `Ubhayapada` — but the ātmanepada
+    /// arm is sanctioned by 1.3.66 *bhujo'navane*, a sūtra that names the
+    /// root, rather than by a svarita/ñit marker read through 1.3.72. The
+    /// distinction is what the TRACE needs: a root carrying this assignment
+    /// must never reach 1.3.72, or the derivation credits the wrong sūtra.
+    ///
+    /// 1.3.66 restricts ātmanepada to senses other than protecting
+    /// (*anavane*). Neither this engine nor vidyut-prakriya models sense,
+    /// so the assignment is UNCONDITIONAL — both readings derive, the
+    /// parasmaipada one by 1.3.78's śeṣa (the *avane* reading), and the
+    /// reader selects by sense. Same precedent as 1.3.72's own unmodelled
+    /// *kartrabhiprāye kriyāphale*; see the 1.3.66 comment block in
+    /// panini-prakriya's `tinanta/samjna.rs`.
+    UbhayapadaAnavane,
 }
 impl PadaAssignment {
     /// The padas this assignment derives. `Ubhayapada` lists parasmaipada
@@ -34,7 +48,9 @@ impl PadaAssignment {
         match self {
             PadaAssignment::Parasmaipada => &[Pada::Parasmaipada],
             PadaAssignment::Atmanepada => &[Pada::Atmanepada],
-            PadaAssignment::Ubhayapada => &[Pada::Parasmaipada, Pada::Atmanepada],
+            PadaAssignment::Ubhayapada | PadaAssignment::UbhayapadaAnavane => {
+                &[Pada::Parasmaipada, Pada::Atmanepada]
+            }
         }
     }
 }
@@ -1066,6 +1082,10 @@ mod tests {
             PadaAssignment::Ubhayapada.padas(),
             &[Pada::Parasmaipada, Pada::Atmanepada]
         );
+        assert_eq!(
+            PadaAssignment::UbhayapadaAnavane.padas(),
+            &[Pada::Parasmaipada, Pada::Atmanepada]
+        );
     }
 
     #[test]
@@ -1078,6 +1098,10 @@ mod tests {
         // test able to catch it — the same shape as the three `Context::is_tip`
         // survivors slice 7b found — so the order is asserted directly here.
         assert_eq!(PadaAssignment::Ubhayapada.padas()[0], Pada::Parasmaipada);
+        assert_eq!(
+            PadaAssignment::UbhayapadaAnavane.padas()[0],
+            Pada::Parasmaipada
+        );
     }
 
     #[test]
