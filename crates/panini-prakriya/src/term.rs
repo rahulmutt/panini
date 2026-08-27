@@ -33,6 +33,21 @@ pub enum Tag {
     /// atmanepada-only. This tag is false on Vindh, which is the point.
     /// Pinned by `indh_is_atmanepada_only_despite_its_nit`.
     Ubhayapadin,
+    /// The dhatu is the root 1.3.66 bhujo'navane names -- today exactly
+    /// √bhuj (`07.0017`). Its ātmanepada is sanctioned by that root-keyed
+    /// sūtra (in senses other than protecting, a restriction recorded but
+    /// not modelled -- see the 1.3.66 comment block in `tinanta/samjna.rs`),
+    /// its parasmaipada by 1.3.78's śeṣa.
+    ///
+    /// Deliberately distinct from Ubhayapadin even though the derivational
+    /// behavior is identical: the tag keys the TRACE. Tagged Ubhayapadin,
+    /// √bhuj would reach 1.3.72 and the trace would credit the wrong sūtra
+    /// -- the mirror image of the √indh counterexample above, where a
+    /// marker-named tag would have fired 1.3.72 on a root whose pada
+    /// 1.3.12 had already settled. Read only by 1.3.66, and by 1.3.78's
+    /// ātmanepada arm, which declines rather than blocks when it is
+    /// present. Pinned by `svaritanit_declines_the_root_1_3_66_names`.
+    Anavane,
     /// The term behaves as Nit (set by the atidesha 1.2.4 sarvadhatukam apit;
     /// consumed by 7.2.81 Ato NitaH).
     Ngit,

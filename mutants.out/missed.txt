@@ -1,0 +1,2 @@
+crates/panini-prakriya/src/tinanta/adesha.rs:393:30: replace + with *
+crates/panini-prakriya/src/tinanta/tripadi.rs:1166:38: replace - with /

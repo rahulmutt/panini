@@ -3668,6 +3668,106 @@ const PARADIGM: &[(&str, &str, Pada, [&str; 9])] = &[
             "CfndImahi",
         ],
     ),
+    (
+        "07.0017",
+        "laT",
+        Pada::Parasmaipada,
+        [
+            "Bunakti", "BuNktaH", "BuYjanti", "Bunakzi", "BuNkTaH", "BuNkTa", "Bunajmi", "BuYjvaH",
+            "BuYjmaH",
+        ],
+    ),
+    (
+        "07.0017",
+        "laN",
+        Pada::Parasmaipada,
+        [
+            "aBunag", "aBuNktAm", "aBuYjan", "aBunag", "aBuNktam", "aBuNkta", "aBunajam",
+            "aBuYjva", "aBuYjma",
+        ],
+    ),
+    (
+        "07.0017",
+        "loT",
+        Pada::Parasmaipada,
+        [
+            "Bunaktu", "BuNktAm", "BuYjantu", "BuNgDi", "BuNktam", "BuNkta", "BunajAni",
+            "BunajAva", "BunajAma",
+        ],
+    ),
+    (
+        "07.0017",
+        "viDiliN",
+        Pada::Parasmaipada,
+        [
+            "BuYjyAd",
+            "BuYjyAtAm",
+            "BuYjyuH",
+            "BuYjyAH",
+            "BuYjyAtam",
+            "BuYjyAta",
+            "BuYjyAm",
+            "BuYjyAva",
+            "BuYjyAma",
+        ],
+    ),
+    (
+        "07.0017",
+        "laT",
+        Pada::Atmanepada,
+        [
+            "BuNkte", "BuYjAte", "BuYjate", "BuNkze", "BuYjATe", "BuNgDve", "BuYje", "BuYjvahe",
+            "BuYjmahe",
+        ],
+    ),
+    (
+        "07.0017",
+        "laN",
+        Pada::Atmanepada,
+        [
+            "aBuNkta",
+            "aBuYjAtAm",
+            "aBuYjata",
+            "aBuNkTAH",
+            "aBuYjATAm",
+            "aBuNgDvam",
+            "aBuYji",
+            "aBuYjvahi",
+            "aBuYjmahi",
+        ],
+    ),
+    (
+        "07.0017",
+        "loT",
+        Pada::Atmanepada,
+        [
+            "BuNktAm",
+            "BuYjAtAm",
+            "BuYjatAm",
+            "BuNkzva",
+            "BuYjATAm",
+            "BuNgDvam",
+            "BunajE",
+            "BunajAvahE",
+            "BunajAmahE",
+        ],
+    ),
+    (
+        "07.0017",
+        "viDiliN",
+        Pada::Atmanepada,
+        [
+            "BuYjIta",
+            "BuYjIyAtAm",
+            "BuYjIran",
+            "BuYjITAH",
+            "BuYjIyATAm",
+            "BuYjIDvam",
+            "BuYjIya",
+            "BuYjIvahi",
+            "BuYjImahi",
+        ],
+    ),
 ];
 
 /// Second and third valid forms, for cells where an optional (vikalpa) rule
@@ -5531,6 +5631,34 @@ const ALTERNATES: &[(&str, &str, Pada, usize, &str, &str)] = &[
     ("07.0008", "laN", Pada::Atmanepada, 5, "acCfnDvam", "8.4.65"),
     ("07.0008", "loT", Pada::Atmanepada, 0, "CfntAm", "8.4.65"),
     ("07.0008", "loT", Pada::Atmanepada, 5, "CfnDvam", "8.4.65"),
+    ("07.0017", "laN", Pada::Parasmaipada, 0, "aBunak", "8.4.56"),
+    ("07.0017", "laN", Pada::Parasmaipada, 3, "aBunak", "8.4.56"),
+    ("07.0017", "loT", Pada::Parasmaipada, 0, "BuNktAd", "7.1.35"),
+    (
+        "07.0017",
+        "loT",
+        Pada::Parasmaipada,
+        0,
+        "BuNktAt",
+        "7.1.35+8.4.56",
+    ),
+    ("07.0017", "loT", Pada::Parasmaipada, 3, "BuNktAd", "7.1.35"),
+    (
+        "07.0017",
+        "loT",
+        Pada::Parasmaipada,
+        3,
+        "BuNktAt",
+        "7.1.35+8.4.56",
+    ),
+    (
+        "07.0017",
+        "viDiliN",
+        Pada::Parasmaipada,
+        0,
+        "BuYjyAt",
+        "8.4.56",
+    ),
 ];
 
 fn lan_a_form(number: &str, pu: Purusha, va: Vacana) -> String {
@@ -5666,7 +5794,7 @@ const VIKALPA_RULES: &[&str] = &[
     "7.1.35", "3.4.111", "6.4.107", "8.2.74", "8.2.75", "8.4.65", "8.4.56",
 ];
 
-/// `ALTERNATES` is otherwise 487 bare strings, and a string can be right for
+/// `ALTERNATES` is otherwise 494 bare strings, and a string can be right for
 /// the wrong reason — `BavatAt` is a real form whether or not 8.4.56 is what
 /// produced it. This ties each row to the grammar: find the branch that
 /// derives the row's form, intersect its log with the optional-rule set, and
@@ -5763,7 +5891,7 @@ fn derivation_set_is_exactly_pinned() {
 /// √śiṣ (Siz), √und (und), √añj (anj), √tañc (tanc), √vij (vij), √vṛj (vfj)
 /// and √pṛc (pfc), all parasmaipadī, plus √vid (vid), ātmanepadī, curated
 /// with no new sūtra and cleared by their own cross-implementation audit:
-/// every one of the twenty-four rudhādi roots forks in both loṭ and laṅ,
+/// every one of the twenty-five rudhādi roots forks in both loṭ and laṅ,
 /// and two of them — kft and ruD — fork
 /// in all four lakāras: laṭ (kft
 /// cells 1/4/5, Kid cells 0/5, inD cells 0/5, and — new in the ubhayapada
@@ -5773,7 +5901,7 @@ fn derivation_set_is_exactly_pinned() {
 /// śa-luk jaśtva 8.4.56 branch), loṭ (on 7.1.35/8.4.65/8.4.56, stacking up to
 /// three deep, and piṣ's loṭ madhyama eka, which stacks 8.4.65 alongside
 /// 7.1.35/8.4.56 four deep), and vidhiliṅ
-/// (kft/his/Banj/piz/ruD/Bid/kzud/yuj/tfd/ric/vic/Siz/und/anj/tanc/vij/vfj/pfc/tfh/Cid/Cfd
+/// (kft/his/Banj/piz/ruD/Bid/kzud/yuj/tfd/ric/vic/Siz/und/anj/tanc/vij/vfj/pfc/tfh/Cid/Cfd/Buj
 /// cell 0, on 8.4.56 — Kid, inD and vid do not fork here). Slice 7c curated four more roots —
 /// √bhid (Bid), √kṣud (kzud), √yuj (yuj) and √tṛd (tfd), all four ubhayapadī
 /// by 1.3.72 and pinned in both padas — and three of them join kft and ruD as
@@ -5809,8 +5937,8 @@ fn derivation_set_is_exactly_pinned() {
 /// 7.1.35/8.4.65/8.4.56 exactly as kft/ruD/Bid/kzud/tfd's do (a five-form
 /// cell), and its loṭ parasmaipada madhyama eka ties the six-form record
 /// with the same k = 3 against the 2³ bound of eight:
-/// 2772 cells total (308 root×lakāra blocks × 9), of which 2426 hold exactly one form,
-/// 247 hold two, 81 hold three, two hold four (piṣ's loṭ madhyama eka, the
+/// 2844 cells total (316 root×lakāra blocks × 9), of which 2493 hold exactly one form,
+/// 250 hold two, 83 hold three, two hold four (piṣ's loṭ madhyama eka, the
 /// deepest fork added in 7b, and — new in slice 7d — Siz's loṭ parasmaipada
 /// madhyama eka), and — the sharpest branch-count witnesses in
 /// the repo, per `docs/ARCHITECTURE.md` — exactly eight hold five (√kṛt's loṭ
@@ -5826,7 +5954,7 @@ fn derivation_set_is_exactly_pinned() {
 /// (7.1.35, 8.4.65, 8.4.56) against a 2³ bound of eight — ric and vic do not
 /// join this record; per the 8.2.30/8.2.39 slice's own audit their deepest
 /// cells are three forms). `ALTERNATES`
-/// itself has 487 rows, keyed 111 `8.4.56`, 90 `7.1.35`, 90 `7.1.35+8.4.56`,
+/// itself has 494 rows, keyed 114 `8.4.56`, 92 `7.1.35`, 92 `7.1.35+8.4.56`,
 /// 2 `3.4.111`, 8 `6.4.107`, 145 `8.4.65`, 8 `8.2.75`, 1 `8.2.74`, 16
 /// `7.1.35+8.4.65`, and 16 `7.1.35+8.4.65+8.4.56` — the assertions below are
 /// complete. The audit probe that produced the original numbers ran against
@@ -5854,7 +5982,11 @@ fn derivation_set_is_exactly_pinned() {
 /// control verified failing, and rudhādi 7f's cross-implementation audit
 /// re-ran the same probe against vidyut-prakriya at commit `8da2f90` over
 /// all 2772 cells / 3259 forms / 66 roots with zero differences, its
-/// `entry` negative control verified failing. √tṛh joins none of the fork
+/// `entry` negative control verified failing, and the √bhuj/1.3.66 slice's
+/// cross-implementation audit re-ran the same probe against
+/// vidyut-prakriya at commit `8da2f90` over all 2844 cells / 3338 forms /
+/// 67 roots with zero differences, its `entry` negative control verified
+/// failing. √tṛh joins none of the fork
 /// records: its deepest cells hold three forms, because 8.3.13 Qo Qe lopaH
 /// obligatorily elides the ḍh that 8.4.65 forks on for every other
 /// stop-final rudhādi root.
@@ -5868,11 +6000,17 @@ fn derivation_set_is_exactly_pinned() {
 /// acCinad's `c` and `C` being savarṇa jhars: 8.4.65 carries 8.4.64's
 /// *halaḥ* by anuvṛtti and the sound before that `c` is the aṭ's own
 /// vowel.
+///
+/// √bhuj joins neither fork record, exactly as √yuj does not: its `j`
+/// junctions are velar after 8.2.30's kutva, never savarṇa with a dental,
+/// so 8.4.65 has nothing to elide anywhere in its paradigm — it forks
+/// only on 8.4.56 (laṅ and vidhiliṅ finals) and 7.1.35 (loṭ tātaṅ),
+/// seven ALTERNATES rows with √yuj's exact key profile.
 /// This test is what keeps the numbers true day to day.
 #[test]
 fn derivation_set_shape_matches_the_audited_numbers() {
     let total_cells = PARADIGM.len() * 9;
-    assert_eq!(total_cells, 2772, "308 root×lakāra blocks × 9 cells each");
+    assert_eq!(total_cells, 2844, "316 root×lakāra blocks × 9 cells each");
 
     let mut ones = 0usize;
     let mut twos = 0usize;
@@ -5899,9 +6037,9 @@ fn derivation_set_shape_matches_the_audited_numbers() {
             }
         }
     }
-    assert_eq!(ones, 2426, "one-form cells");
-    assert_eq!(twos, 247, "two-form cells");
-    assert_eq!(threes, 81, "three-form cells");
+    assert_eq!(ones, 2493, "one-form cells");
+    assert_eq!(twos, 250, "two-form cells");
+    assert_eq!(threes, 83, "three-form cells");
     assert_eq!(
         fours, 2,
         "four-form cells — piṣ's loṭ madhyama eka, and — new in slice 7d — Siz's loṭ \
@@ -5920,16 +6058,16 @@ fn derivation_set_shape_matches_the_audited_numbers() {
          Cid's and Cfd's loṭ parasmaipada madhyama eka"
     );
 
-    assert_eq!(ALTERNATES.len(), 487, "ALTERNATES row count");
+    assert_eq!(ALTERNATES.len(), 494, "ALTERNATES row count");
     let key_count = |key: &str| {
         ALTERNATES
             .iter()
             .filter(|(_, _, _, _, _, k)| *k == key)
             .count()
     };
-    assert_eq!(key_count("8.4.56"), 111, "8.4.56-only alternates");
-    assert_eq!(key_count("7.1.35"), 90, "7.1.35-only alternates");
-    assert_eq!(key_count("7.1.35+8.4.56"), 90, "7.1.35+8.4.56 alternates");
+    assert_eq!(key_count("8.4.56"), 114, "8.4.56-only alternates");
+    assert_eq!(key_count("7.1.35"), 92, "7.1.35-only alternates");
+    assert_eq!(key_count("7.1.35+8.4.56"), 92, "7.1.35+8.4.56 alternates");
     assert_eq!(key_count("3.4.111"), 2, "3.4.111 alternates");
     assert_eq!(key_count("6.4.107"), 8, "6.4.107 alternates");
     assert_eq!(key_count("8.4.65"), 145, "8.4.65-only alternates");
@@ -5957,6 +6095,10 @@ fn paradigm_covers_every_enumerable_cell() {
     // sixteen (root, lakāra, pada) triples -- 2 roots × 2 padas × 4 lakāras
     // -- were likewise gated for one commit in slice 7f, between their Dhatu
     // rows landing and their cross-implementation-audited goldens arriving.
+    // √bhuj's eight (root, lakāra, pada) triples -- 1 root × 2 padas × 4
+    // lakāras -- were likewise gated for one commit in the Buj/1.3.66
+    // slice, between its Dhatu row landing and its audited goldens
+    // arriving.
     const GATED: &[(&str, &str, Pada)] = &[];
 
     let pinned: Vec<(&str, &str, Pada)> =
@@ -6270,14 +6412,17 @@ fn pada_ambiguous_surfaces_are_exactly_these() {
     // same shape as √bhid's and √tṛd's pairs: `CfnttAm`/`acCfntta`
     // (√chṛd `07.0008`) and `CinttAm`/`acCintta` (√chid `07.0003`), taking
     // the set to twenty-six with no new collision against any pre-slice
+    // surface. The Buj/1.3.66 slice's one new both-pada root contributes two
+    // more, the same shape as √yuj's pair: `BuNktAm`/`aBuNkta`, taking the
+    // set to twenty-eight with no new collision against any pre-slice
     // surface.
     assert_eq!(
         both,
         vec![
-            "BinttAm", "CfnttAm", "CinttAm", "aBintta", "acCfntta", "acCintta", "akzuntta",
-            "anayata", "ariNkta", "arundDa", "atfntta", "atudata", "aviNkta", "ayuNkta",
-            "kzunttAm", "nayatAm", "nayetAm", "nayeta", "riNktAm", "rundDAm", "tfnttAm", "tudatAm",
-            "tudetAm", "tudeta", "viNktAm", "yuNktAm",
+            "BinttAm", "BuNktAm", "CfnttAm", "CinttAm", "aBintta", "aBuNkta", "acCfntta",
+            "acCintta", "akzuntta", "anayata", "ariNkta", "arundDa", "atfntta", "atudata",
+            "aviNkta", "ayuNkta", "kzunttAm", "nayatAm", "nayetAm", "nayeta", "riNktAm", "rundDAm",
+            "tfnttAm", "tudatAm", "tudetAm", "tudeta", "viNktAm", "yuNktAm",
         ]
     );
 }

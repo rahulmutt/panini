@@ -433,6 +433,108 @@
     pre-campaign projection, and the one-time cost of a wrong-direction
     cap remains the same ~40 minutes 7e already paid for the permanent
     timeout, not a repeat of the vacuous-zero failure mode from 7a/7b.
+    **This slice (rudhādi's twenty-fifth root, √bhuj, and rule 1.3.66)
+    re-measured both at 2844 cells.** Uncontended floor: paradigm 521.77s,
+    roundtrip 606.79s, trace 2.67s — a wall clock of **1132.12s** (measured
+    from the redirected output file's birth-to-last-write timestamps rather
+    than a `time`-wrapped invocation; the ~0.9s overhead over the 1131.23s
+    component sum matches the ~0.8–4s build overhead seen in every prior
+    slice's `time mise run test` figure, so the two methods agree). Cell
+    count grew **+2.6%** this slice (2772 → 2844); the floor grew from 7f's
+    1066.834s to 1132.12s, **+6.12%** — a **2.35×** under-prediction, the
+    **seventh** consecutive slice where scaling the floor by cell count
+    would have been wrong. `paradigm` carried the most growth this time
+    (486.69s → 521.77s, +7.21%, above the overall rate); `roundtrip` grew
+    more slowly than usual (576.91s → 606.79s, +5.18%, below the overall
+    rate — the first slice where `roundtrip` did not lead); `trace` again
+    moved the most in relative terms on a floor too small for the
+    multiplier to mean much (2.39s → 2.67s, +11.72%).
+    Cap sanity check before the campaign: 1132.12s × the **1.02×–1.43×**
+    `-j 4` contention range projects an uncaught mutant at
+    **1154.76–1618.93s**. Against the standing `--timeout 4800` cap, that
+    is a margin of **2.96×–4.16×** — the worst-case end sits just under
+    the "roughly 3×" territory the cap was raised into during 7e, but
+    still comfortably inside it. **Ruling: keep 4800.**
+    Campaign at `-j 4 --timeout 4800`: **573 mutants, 531 caught, 2
+    missed, 39 unviable, 1 timeout** (531 + 39 + 1 = 571, plus the 2 missed
+    = 573). **This campaign did not run as a single continuous
+    invocation**: the execution environment killed every backgrounded
+    `cargo-mutants` process at approximately 60 minutes elapsed regardless
+    of what was running — an infrastructure constraint of this run, not a
+    property of the suite or any mutant — so the campaign was carried out
+    across 12 resumed segments (11 interrupted by the environment's cap,
+    the twelfth completing the final 15 mutants) plus one isolated
+    single-mutant confirmation run, using `--iterate` (which skips mutants
+    already recorded caught or unviable) together with manual merging of
+    each segment's `caught.txt`/`unviable.txt` into the next segment's
+    `mutants.out` before relaunch, since `--iterate` only reads the
+    immediately-prior segment's own output rather than the full history.
+    The merge was verified gap- and overlap-free at every step: the final
+    combined `caught.txt` (531) plus `unviable.txt` (39) plus the 2 missed
+    and 1 timeout sum to exactly 573 with zero duplicate mutant names
+    across all 13 sources, matching the campaign's own `--list` count from
+    the first segment. Total elapsed wall clock across all segments, start
+    to finish, was **~11h40m** (01:13:13–12:53:07 UTC) — longer than 7f's
+    10h continuous run, but the difference is restart overhead (a build
+    at the start of each of the 12 main segments) rather than added
+    mutant-testing cost.
+    Both the timeout and the two missed mutants were verified in place
+    against the brief's predictions:
+    - The timeout is the known-permanent `tripadi.rs`, 8.4.2's backward
+      ṇatva scan, non-terminating-loop mutant (`j -= 1` -> `j /= 1` at
+      `tripadi.rs:1406:23`, making `j` constant so the mutated run never
+      reaches an assertion), confirmed by shape. Because its own 4800s
+      internal timeout cannot complete inside a ~60-minute segment, it was
+      resolved in an isolated single-mutant run (`-F` targeting only that
+      mutant) at a reduced **2700s** timeout instead of the standing 4800s
+      cap — legitimate per the brief's own statement that the verdict is
+      cap-invariant, and confirmed directly: `TIMEOUT ... in 5s build +
+      2700s test`, exit code 3.
+    - Both missed mutants are documented equivalents, confirmed unchanged
+      at their guards: `adesha.rs:393:30`, 6.1.87's im arm
+      (`s.remove(pos + 1)` -> `s.remove(pos)`, equivalent because the
+      surviving half of the adjacent `a i` pair is immediately clobbered
+      by the following `'e'` assignment), and `tripadi.rs:1166:38`,
+      8.3.13's guard (`w[i - 1]` -> `w[i]` at the elision-target
+      extraction, not the `find` closure itself — the line drifted from
+      7f's `:1156` reference as expected, and the site now carries an
+      explicit in-place comment from the 7e campaign documenting the
+      exact equivalence: both `Q`s at the matched position are identical,
+      so eliding either produces the same surface string). **Step 5 (fix
+      any genuine survivor) is a no-op this slice** — no genuine survivor
+      turned up among the brief's five flagged candidates. Two are
+      confirmed caught: 1.3.66's guard (`samjna.rs:74:16`, `delete !`) and
+      1.3.78's `||`→`&&` (`samjna.rs:147:60`). The other three — the
+      `Atmanepada` arm's own inversion, the `mod.rs` `UbhayapadaAnavane`
+      arm, and `padas()`'s combined arm — never had a mutant generated at
+      all: `mutants.json` has no span in either match block in
+      `samjna.rs`/`mod.rs` beyond the one guard mutant, and `padas()`
+      lives in `panini-data`, outside this campaign's
+      `--package panini-prakriya` scope entirely. These are mutation
+      **coverage gaps**, the same category as 7f's own `saturating_sub`
+      finding — record as untested, not as caught.
+    `outcomes.json`'s per-mutant test-phase durations (**n = 534** — 573
+    minus the 39 unviable, which fail at Build and never reach Test) put
+    the median at 94.98s, p90 (nearest-rank) at 1161.65s, p99 at 1216.85s,
+    and the max at 2700.05s — that max being the isolated timeout mutant
+    at its reduced cap, not comparable to a "ran the full 4800s cap"
+    figure. Excluding the timeout, the max is **1949.85s**
+    (`anga.rs:103:83`, `replace - with +`, `CaughtMutant` — pre-existing
+    6.1.73 code from slice 7f, not new to this slice). **64** of the 534
+    runs exceeded 600s.
+    **Two margins, measured, not projected:**
+    - Against the worst **caught** mutant (1949.85s, measured, excluding
+      the timeout): 4800 / 1949.85 ≈ **2.46×**.
+    - Against the worst **uncaught** run (1189.81s, measured — this
+      slice's two missed mutants ran the full golden suite to completion
+      without being caught, at 1182.91s and 1189.81s): 4800 / 1189.81 ≈
+      **4.03×**.
+    **Ruling: keep 4800.** Both margins clear 1× comfortably; the
+    caught-mutant margin (2.46×) sits at the lower end of this series'
+    historical range (alongside 7d's 1.96×/2.46×) but not below it, and no
+    single mutant approached the cap under its own 4800s budget — the
+    only mutant that did was the known-permanent timeout, tested this
+    campaign at a deliberately reduced 2700s and not at 4800s.
   - `cargo-deny` + `cargo-audit` (supply-chain checks) — `mise run audit` runs
     `cargo audit && cargo deny check` and is expected to pass, including
     `cargo deny check advisories`.
@@ -446,10 +548,10 @@
   target under `crates/panini-lipi/fuzz` legitimately omits it, since it uses
   `#![no_main]` plus the libfuzzer harness macro).
 - Grammar changes are gated by the golden paradigm test
-  (`crates/panini/tests/paradigm.rs`, 2772 cells, six complete gaṇas plus
-  rudhādi partial — `PARADIGM`
+  (`crates/panini/tests/paradigm.rs`, 2844 cells, seven complete gaṇas —
+  `PARADIGM`
     stays one-form-per-cell: a cell forked by an optional rule keeps its
-    other forms — a second (247 cells), a third (81 cells), a fourth (2
+    other forms — a second (250 cells), a third (83 cells), a fourth (2
     cells, rudhādi's √piṣ and — new in slice 7d — √śiṣ loṭ madhyama eka) and
     — the loṭ parasmaipada cells of
     rudhādi's √kṛt, √rudh, √bhid, √kṣud, √tṛd, √und and — new in slice 7f —
@@ -457,7 +559,11 @@
     eight ways tied as the
     sharpest forks in the suite — a fourth
     and fifth (prathama eka) or a fourth through sixth (madhyama eka) — in
-    `ALTERNATES` (487 rows in all, so 2772 + 487 = 3259 forms total), and
+    `ALTERNATES` (494 rows in all, so 2844 + 494 = 3338 forms total); √bhuj
+    joins neither fork record — its forks stack only 7.1.35 and 8.4.56, the
+    same two-deep profile as √yuj — but the √bhuj/1.3.66 slice adds two
+    trace pins of its own, `bhunkte_trace_credits_1_3_66_not_1_3_72` and
+    `bhunakti_trace_credits_the_shesa_1_3_78`, and
     `derivation_set_is_exactly_pinned` asserts each cell's derivation set is
     exactly the union of the two. The suite is no longer filtered by any
     one-form-per-cell convention — the
@@ -504,8 +610,8 @@
     conjunct decides both the yaṇ alternation (6.4.87 / 6.4.77: `hinvanti`
     against `Apnuvanti`) and the hi-luk (6.4.106: `hinu` against `Apnuhi`) —
     see `docs/superpowers/specs/2026-07-29-svadi-gana-design.md`.) rudhādi
-    (gaṇa 7, vikaraṇa śnam) is **partial**, not complete — the first gaṇa
-    described that way. Nine of its 25 dhātupāṭha roots are ubhayapadī
+    (gaṇa 7, vikaraṇa śnam) is now **complete** — the first gaṇa curated at
+    its full dhātupāṭha strength. Nine of its 25 dhātupāṭha roots are ubhayapadī
     (`~^`-marked); slice 7a lands three roots that need nothing beyond the
     gaṇa's own spine (√kṛt, √hiṃs — stored `hins` — and √khid), 7b adds
     three more, one per consonant family: √bhañj (cu-class final), √piṣ
@@ -615,6 +721,14 @@
     8.4.40 — an earlier task in this slice had already proved both inert
     on the pre-7f 2628-cell corpus by a byte-for-byte dump diff of its
     own, before √chid and √chṛd were curated at all.
+    **The √bhuj/1.3.66 slice's own cross-implementation audit** ran the
+    same probe against vidyut-prakriya at commit
+    `8da2f90bee3ce1c07505fa432fc3729e3f7e02ea`, over the corpus grown by
+    √bhuj: **zero differences across all 2844 cells / 3338 forms / 67
+    roots**, with both negative controls (`entry` and `form`) verified
+    failing first. 1.3.66 is √bhuj's only new `Rule`, and it is a
+    root-keyed pada assignment structurally identical to 1.3.72's, which
+    this engine already implements.
     **√ric and √vic** needed no new sūtra, but 8.2.30 *coḥ kuḥ* needed more
     than the one-line guard widening it looked like: they are c-final, and
     the rule was hardcoded to a single `j` → `g` pair — its match read `j`
@@ -659,19 +773,15 @@
     ścunā ścuḥ* (the ścutva that follows it) — without which their laṅ
     cells would surface `aCinat` for `acCinat`. Both are pinned in both
     padas. √bhuj (`07.0017 Bu\ja~`)
-    is the twenty-fifth entry and out on
-    different grounds again: vidyut derives all 72 of its cells, and
-    1.3.66 *bhujo'navane* — a root-keyed pada assignment structurally
-    identical to 1.3.72's, which this engine already implements — is the
-    only rule this engine lacks for it; what keeps √bhuj out is the
-    **sense** restriction *anavane* imposes, which neither engine models,
-    not the cost of implementing 1.3.66. 24 curated + √bhuj = 25,
-    so **1 of the 25 remains out**.
-    The root count is not what keeps the gaṇa partial — twenty-four is well
-    past the six every completed gaṇa *after bhvādi* has here (bhvādi,
-    the first, has twelve) — and neither, any longer, is 1.3.72: what
-    remains is
-    √bhuj's sense axis. √indh's pada was **verified, not inferred from its
+    is the twenty-fifth entry, and the √bhuj/1.3.66 slice curated it: 1.3.66
+    *bhujo'navane* is implemented as an unconditional ubhayapada assignment
+    (`PadaAssignment::UbhayapadaAnavane` → `Tag::Anavane`, so the trace
+    credits 1.3.66 and can never reach 1.3.72), with *anavane* — the
+    **sense** restriction the sūtra actually imposes — recorded as an
+    unimplemented sense restriction on 1.3.72's own precedent, since neither
+    engine models sense. **25 curated — no rudhādi entry remains out.**
+    Rudhādi is the first gaṇa curated at its full dhātupāṭha strength.
+    √indh's pada was **verified, not inferred from its
     ñi**: `YiinDI~\`'s ñi it-marker is one of the two things 1.3.72 reads,
     which would have made the root ubhayapadī alongside √rudh, so it was
     checked against vidyut-prakriya — which derives √indh in ātmanepada
@@ -790,10 +900,17 @@
   **Rudhādi 7f re-ran the same committed harness once more, at the same
   vidyut commit `8da2f90`, over the corpus grown by √chid and √chṛd: zero
   differences across 2772 cells / 3259 forms / 66 roots**, with both
-  `entry` and `form` negative controls verified failing first — the
-  current record, and, like 7e's run, one with new `Rule`s behind it:
-  6.1.73 and 8.4.40 this time, where 7e's were 7.3.92, 8.2.31 and 8.3.13.
-  Those
+  `entry` and `form` negative controls verified failing first, and, like
+  7e's run, one with new `Rule`s behind it: 6.1.73 and 8.4.40 this time,
+  where 7e's were 7.3.92, 8.2.31 and 8.3.13. **The √bhuj/1.3.66 slice
+  re-ran the same committed harness once more, at the same vidyut commit
+  `8da2f90bee3ce1c07505fa432fc3729e3f7e02ea`, over the corpus grown by
+  √bhuj: zero differences across 2844 cells / 3338 forms / 67 roots**,
+  with both `entry` and `form` negative controls verified failing first —
+  the current record. Its one new `Rule`, 1.3.66, is a root-keyed pada
+  assignment structurally identical to 1.3.72's already-implemented one —
+  the same pattern the pipeline already carries, applied to a second
+  root-list. Those
   totals are asserted by the harness itself rather than reported from
   whatever it happened to enumerate, so a corpus that grows without the
   harness being updated fails loudly instead of quietly auditing a subset.
@@ -812,17 +929,19 @@
   artha alone (upstream has 8- and 15-way artha collisions).
   Two comments inside `crates/panini-prakriya/src` still carry pre-7c
   figures — `controller.rs:130` and `tinanta/guna.rs:943` cite the corpus
-  size as 1872/1864-of-1872, now four slices further stale: the corpus
+  size as 1872/1864-of-1872, now five slices further stale: the corpus
   stood at 2304/2296-of-2304 as of the 8.2.30/8.2.39 slice, stood at
   2592/2584-of-2592 as of rudhādi 7d, stood at 2628/2620-of-2628 as of
-  rudhādi 7e, and stands at 2772/2764-of-2772 as of rudhādi 7f — the same 8
+  rudhādi 7e, stood at 2772/2764-of-2772 as of rudhādi 7f, and stands at
+  2844/2836-of-2844 as of the √bhuj/1.3.66 slice — the same 8
   cells 6.4.107 always fired on (`key_count("6.4.107") == 8`, pinned at
-  `paradigm.rs:5934`), unmoved by 7d, 7e or 7f since 6.4.107 concerns only
+  `paradigm.rs:5934`), unmoved by 7d, 7e, 7f or √bhuj/1.3.66 since 6.4.107
+  concerns only
   svādi's
   √hi and √ri. Rudhādi 7d touched neither comment — its one permitted
   engine-comment edit is the comment above
-  `vrddhi_of_ac_vowels_all_arms` in `tinanta/sound.rs`. Rudhādi 7e and
-  rudhādi 7f touched neither comment either. A third,
+  `vrddhi_of_ac_vowels_all_arms` in `tinanta/sound.rs`. Rudhādi 7e, rudhādi
+  7f and the √bhuj/1.3.66 slice touched neither comment either. A third,
   `tinanta/tripadi.rs`'s comment on 8.2.30 (formerly the one calling √bhañj
   rudhādi's one cu-final curated root), was **not** left stale the same
   way: the 8.2.30/8.2.39 generalization slice rewrote it in place, since

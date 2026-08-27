@@ -1786,3 +1786,53 @@ fn acchinat_has_exactly_two_forms() {
     .collect();
     assert_eq!(forms, vec!["acCinad", "acCinat"], "got {forms:?}");
 }
+
+#[test]
+fn bhunkte_trace_credits_1_3_66_not_1_3_72() {
+    // Buj laT ātmanepada prathama eka — the slice's one new fact, read off
+    // the trace. √bhuj's ātmanepada is sanctioned by the root-keyed 1.3.66
+    // Bujo'navane, and the pada sanction opens every trace, so 1.3.66 is
+    // at index 0. 1.3.72 must NOT appear: the root carries Tag::Anavane,
+    // not Ubhayapadin, precisely so the trace cannot credit a svarita/ñit
+    // sanction that `Bu\ja~`'s upadeśa does not carry. 1.3.78 must not
+    // appear either — it declined this reading rather than blocking it.
+    let (text, t) = cell_trace(
+        "07.0017",
+        Lakara::Lat,
+        Pada::Atmanepada,
+        Purusha::Prathama,
+        Vacana::Eka,
+    );
+    assert_eq!(text, "BuNkte", "got {t:?}");
+    assert_eq!(
+        at(&t, "1.3.66"),
+        0,
+        "the pada sanction opens the trace, got {t:?}"
+    );
+    assert!(!t.contains(&"1.3.72".to_string()), "got {t:?}");
+    assert!(!t.contains(&"1.3.78".to_string()), "got {t:?}");
+}
+
+#[test]
+fn bhunakti_trace_credits_the_shesa_1_3_78() {
+    // The arm an UNCONDITIONAL 1.3.66 must leave open: the engine models
+    // no sense, so the avane reading derives too, sanctioned by 1.3.78's
+    // śeṣa exactly as for 1.3.72's roots — which is what "1.3.66 declines
+    // rather than blocks" buys. 1.3.66 must not appear in this trace: it
+    // declined without recording.
+    let (text, t) = cell_trace(
+        "07.0017",
+        Lakara::Lat,
+        Pada::Parasmaipada,
+        Purusha::Prathama,
+        Vacana::Eka,
+    );
+    assert_eq!(text, "Bunakti", "got {t:?}");
+    assert_eq!(
+        at(&t, "1.3.78"),
+        0,
+        "the pada sanction opens the trace, got {t:?}"
+    );
+    assert!(!t.contains(&"1.3.66".to_string()), "got {t:?}");
+    assert!(!t.contains(&"1.3.72".to_string()), "got {t:?}");
+}

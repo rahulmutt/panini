@@ -1,5 +1,5 @@
-//! Saṃjñā, pada sanction and ending insertion: 1.3.12, 1.3.72, 1.3.78,
-//! 3.4.78, 1.3.9, 1.2.4.
+//! Saṃjñā, pada sanction and ending insertion: 1.3.12, 1.3.66, 1.3.72,
+//! 1.3.78, 3.4.78, 1.3.9, 1.2.4.
 //!
 //! Ordered **BEFORE** 3.1.68 — the ending lives at `ENDING_PRE_SHAP`
 //! (index 1) and śap does not exist yet. See `super::terms`.
@@ -40,6 +40,47 @@ pub(crate) static SAMJNA: &[Rule] = &[
                     p.blocked = true;
                     false
                 }
+            }
+        },
+    },
+    // 1.3.66 Bujo'navane: √bhuj takes ātmanepada in senses other than
+    // protecting (avane); in the protecting sense it falls to 1.3.78's
+    // śeṣa. Root-keyed — the sūtra names the root — which is why the guard
+    // is Tag::Anavane, the data layer's UbhayapadaAnavane, rather than any
+    // marker: `Bu\ja~` carries no pada anubandha at all
+    // (`curated_pada_agrees_with_upadesha_markers` asserts that from the
+    // vendored upadeśa).
+    //
+    // THE SENSE RESTRICTION IS NOT MODELLED, and that is deliberate — the
+    // exact precedent 1.3.72 sets for *kartrabhiprāye kriyāphale*
+    // immediately below. Both arms derive, each trace crediting the sūtra
+    // that sanctioned it, and the reader selects by sense. NOT vikalpa,
+    // for 1.3.72's reason verbatim: pada is a context coordinate, so the
+    // two readings are two CELLS, not two branches of one cell.
+    //
+    // The parasmaipada arm DECLINES rather than blocks — 1.3.78 sanctions
+    // it, and blocking here would collapse the ubhayapada behavior this
+    // rule exists to open. Structural twin of 1.3.72 in every clause; only
+    // the guard tag and the credited sūtra differ.
+    Rule {
+        id: "1.3.66",
+        name: "Bujo'navane",
+        kind: RuleKind::Vidhi,
+        vikalpa: false,
+        apply: |p| {
+            // svarita/ñit ubhayapadī roots are 1.3.72's business;
+            // parasmaipada-only roots 1.3.78's; ātmanepada-only ones
+            // 1.3.12's.
+            if !p.terms[ANGA].has(Tag::Anavane) {
+                return false;
+            }
+            match p.ctx.pada {
+                Pada::Atmanepada => {
+                    let before = p.snapshot();
+                    p.record("1.3.66", "Bujo'navane", before);
+                    true
+                }
+                Pada::Parasmaipada => false,
             }
         },
     },
@@ -99,13 +140,12 @@ pub(crate) static SAMJNA: &[Rule] = &[
                     true
                 }
                 // The guard above already admits an ubhayapadī root — it is
-                // `!Atmanepadin` — so this arm is where the two sūtras
-                // overlap, and where they split on ctx.pada: 1.3.72 has
-                // already sanctioned this cell, so decline instead of
-                // blocking. Only the genuine śeṣa (no pada tag at all)
-                // blocks here.
+                // `!Atmanepadin` — so this arm is where the two sūtras overlap, and where
+                // they split on ctx.pada: 1.3.72 (Ubhayapadin) or 1.3.66 (Anavane) has
+                // already sanctioned this cell, so decline instead of blocking. Only the
+                // genuine śeṣa (no pada tag at all) blocks here.
                 Pada::Atmanepada => {
-                    if p.terms[ANGA].has(Tag::Ubhayapadin) {
+                    if p.terms[ANGA].has(Tag::Ubhayapadin) || p.terms[ANGA].has(Tag::Anavane) {
                         return false;
                     }
                     p.blocked = true;
@@ -218,6 +258,7 @@ mod tests {
             PadaAssignment::Parasmaipada => {}
             PadaAssignment::Atmanepada => t.add(Tag::Atmanepadin),
             PadaAssignment::Ubhayapada => t.add(Tag::Ubhayapadin),
+            PadaAssignment::UbhayapadaAnavane => t.add(Tag::Anavane),
         }
         t
     }
@@ -229,6 +270,22 @@ mod tests {
             ..Default::default()
         };
         p.terms.push(pada_anga(d));
+        p
+    }
+
+    /// `pada_prakriya` for the root 1.3.66 names, hand-built: √bhuj's
+    /// `Dhatu` row lands in the data task after this one, and the rule
+    /// reads only `Tag::Anavane`, so the term is constructed directly
+    /// rather than looked up in `dhatus()`.
+    fn anavane_prakriya(pada: Pada) -> Prakriya {
+        let mut t = Term::new("Buj");
+        t.add(Tag::Dhatu);
+        t.add(Tag::Anavane);
+        let mut p = Prakriya {
+            ctx: Context::new(Lakara::Lat, pada, Purusha::Prathama, Vacana::Eka),
+            ..Default::default()
+        };
+        p.terms.push(t);
         p
     }
 
@@ -253,9 +310,12 @@ mod tests {
         // The guard is Tag::Ubhayapadin and nothing else. A parasmaipada-only
         // root (√bhū, untagged) is 1.3.78's business and an ātmanepada-only
         // one (√khid, √indh) is 1.3.12's; 1.3.72 must leave both alone in
-        // both padas, without recording and without blocking.
+        // both padas, without recording and without blocking. And the root
+        // 1.3.66 names (√bhuj, Anavane-tagged) must never reach 1.3.72
+        // either — the dhatus()-backed twin of
+        // `svaritanit_declines_the_root_1_3_66_names`.
         let rule = rules().find(|r| r.id == "1.3.72").unwrap();
-        for number in ["01.0001", "07.0012", "07.0011"] {
+        for number in ["01.0001", "07.0012", "07.0011", "07.0017"] {
             let code = pada_anga_text(number);
             for pada in [Pada::Parasmaipada, Pada::Atmanepada] {
                 let mut p = pada_prakriya(number, pada);
@@ -267,31 +327,116 @@ mod tests {
     }
 
     #[test]
+    fn bhujo_anavane_reports_firing_only_on_atmanepada() {
+        // Same shape as `svaritanit_reports_firing_only_on_atmanepada`:
+        // 1.3.66 sanctions the ātmanepada reading and DECLINES the
+        // parasmaipada one — declines, not blocks: 1.3.78 is what
+        // sanctions parasmaipada (the avane reading), and blocking here
+        // would collapse the ubhayapada behavior this rule exists to open.
+        let rule = rules().find(|r| r.id == "1.3.66").unwrap();
+        for (pada, fires) in [(Pada::Atmanepada, true), (Pada::Parasmaipada, false)] {
+            let mut p = anavane_prakriya(pada);
+            assert_eq!((rule.apply)(&mut p), fires, "1.3.66 on {pada:?}");
+            assert!(!p.blocked, "1.3.66 must never block, {pada:?}");
+        }
+    }
+
+    #[test]
+    fn bhujo_anavane_declines_for_roots_it_does_not_name() {
+        // The guard is Tag::Anavane and nothing else. A svarita/ñit
+        // ubhayapadī root (√rudh) is 1.3.72's business, a parasmaipada-only
+        // root (√bhū, untagged) 1.3.78's, and an ātmanepada-only one
+        // (√khid) 1.3.12's; 1.3.66 must leave all three alone in both
+        // padas, without recording and without blocking.
+        let rule = rules().find(|r| r.id == "1.3.66").unwrap();
+        for number in ["07.0001", "01.0001", "07.0012"] {
+            let code = pada_anga_text(number);
+            for pada in [Pada::Parasmaipada, Pada::Atmanepada] {
+                let mut p = pada_prakriya(number, pada);
+                assert!(!(rule.apply)(&mut p), "1.3.66 fired on {code} {pada:?}");
+                assert!(!p.blocked, "1.3.66 blocked {code} {pada:?}");
+                assert!(p.log.is_empty(), "1.3.66 recorded on {code} {pada:?}");
+            }
+        }
+    }
+
+    #[test]
+    fn svaritanit_declines_the_root_1_3_66_names() {
+        // The wrong-sūtra-credit case, pinned: 1.3.72 reads Ubhayapadin
+        // and must never fire on an Anavane-tagged aṅga — were √bhuj to
+        // reach it, the trace would credit a svarita/ñit sanction the
+        // root's upadeśa does not carry. The mirror image of the √indh
+        // counterexample in Tag::Ubhayapadin's doc comment.
+        let rule = rules().find(|r| r.id == "1.3.72").unwrap();
+        for pada in [Pada::Parasmaipada, Pada::Atmanepada] {
+            let mut p = anavane_prakriya(pada);
+            assert!(!(rule.apply)(&mut p), "1.3.72 fired on Buj {pada:?}");
+            assert!(!p.blocked, "1.3.72 blocked Buj {pada:?}");
+            assert!(p.log.is_empty(), "1.3.72 recorded on Buj {pada:?}");
+        }
+    }
+
+    #[test]
+    fn shesat_declines_the_root_1_3_66_names() {
+        // 1.3.78's ātmanepada arm must DECLINE an Anavane-tagged request
+        // — 1.3.66 has sanctioned that cell — while its parasmaipada arm
+        // still fires: the śeṣa (the avane reading) is 1.3.78's own.
+        let rule = rules().find(|r| r.id == "1.3.78").unwrap();
+        let mut p = anavane_prakriya(Pada::Atmanepada);
+        assert!(!(rule.apply)(&mut p), "1.3.78 fired on Buj Atmanepada");
+        assert!(!p.blocked, "1.3.78 blocked Buj Atmanepada");
+        let mut p = anavane_prakriya(Pada::Parasmaipada);
+        assert!((rule.apply)(&mut p), "1.3.78 declined Buj Parasmaipada");
+        assert!(!p.blocked);
+    }
+
+    #[test]
     fn pada_sutras_are_order_independent() {
         // Every pair of the three is disjoint. Atmanepadin and Ubhayapadin
         // are mutually exclusive on the root, so 1.3.12 and 1.3.72 can never
         // both fire; and where 1.3.72 and 1.3.78 overlap — an ubhayapadī root
         // is `!Atmanepadin`, so 1.3.78's guard admits it — they split on
         // `ctx.pada`, with 1.3.78's ātmanepada arm declining in exactly the
-        // case 1.3.72 handles.
+        // case 1.3.72 handles. 1.3.66 joins the family with the same
+        // disjointness: Anavane is exclusive with the other tags on the
+        // root, and where it overlaps 1.3.78 (an Anavane root is
+        // `!Atmanepadin`) they split on `ctx.pada` exactly as 1.3.72 does.
         //
         // Commit ee35a30 had to go back and qualify an order-independence
-        // claim that prose had overstated, so this one is a test: the three
-        // rules are run in each of the 3! orders and must leave the same
+        // claim that prose had overstated, so this one is a test: the four
+        // rules are run in each of the 24 orders and must leave the same
         // (blocked, text, pada-sūtra log) triple every time. Blocking stops
         // the run, mirroring `run_pipeline`, so the claim covers the
         // pipeline's actual semantics rather than an idealised sweep.
-        const IDS: [&str; 3] = ["1.3.12", "1.3.72", "1.3.78"];
-        const ORDERS: [[usize; 3]; 6] = [
-            [0, 1, 2],
-            [0, 2, 1],
-            [1, 0, 2],
-            [1, 2, 0],
-            [2, 0, 1],
-            [2, 1, 0],
+        const IDS: [&str; 4] = ["1.3.12", "1.3.66", "1.3.72", "1.3.78"];
+        const ORDERS: [[usize; 4]; 24] = [
+            [0, 1, 2, 3],
+            [0, 1, 3, 2],
+            [0, 2, 1, 3],
+            [0, 2, 3, 1],
+            [0, 3, 1, 2],
+            [0, 3, 2, 1],
+            [1, 0, 2, 3],
+            [1, 0, 3, 2],
+            [1, 2, 0, 3],
+            [1, 2, 3, 0],
+            [1, 3, 0, 2],
+            [1, 3, 2, 0],
+            [2, 0, 1, 3],
+            [2, 0, 3, 1],
+            [2, 1, 0, 3],
+            [2, 1, 3, 0],
+            [2, 3, 0, 1],
+            [2, 3, 1, 0],
+            [3, 0, 1, 2],
+            [3, 0, 2, 1],
+            [3, 1, 0, 2],
+            [3, 1, 2, 0],
+            [3, 2, 0, 1],
+            [3, 2, 1, 0],
         ];
         // `None` = the request is blocked; `Some(id)` = the sūtra that
-        // sanctions it. Pinned so a mutant that turned all three rules into
+        // sanctions it. Pinned so a mutant that turned all four rules into
         // no-ops could not pass by being trivially order-independent.
         let cells = [
             ("07.0001", Pada::Parasmaipada, Some("1.3.78")),
@@ -302,6 +447,8 @@ mod tests {
             ("01.0001", Pada::Atmanepada, None),
             ("07.0012", Pada::Parasmaipada, None),
             ("07.0012", Pada::Atmanepada, Some("1.3.12")),
+            ("07.0017", Pada::Parasmaipada, Some("1.3.78")),
+            ("07.0017", Pada::Atmanepada, Some("1.3.66")),
         ];
         for (number, pada, expected) in cells {
             let mut results = Vec::new();
