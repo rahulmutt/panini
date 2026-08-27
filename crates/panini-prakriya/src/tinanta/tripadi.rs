@@ -1118,7 +1118,7 @@ pub(crate) static TRIPADI: &[Rule] = &[
             // i.e. `w[i - 1]` -> `w[i]`, eliding the second ḍh instead of
             // the first): both `Q`s here are the identical character, so
             // removing either one concatenates to the same surface string
-            // — the golden suite's full 2772 cells, its ALTERNATES, and
+            // — the golden suite's full corpus, its ALTERNATES, and
             // its traces cannot and will not distinguish which of the two
             // was elided.
             //

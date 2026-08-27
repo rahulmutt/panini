@@ -140,9 +140,10 @@ pub(crate) static SAMJNA: &[Rule] = &[
                     true
                 }
                 // The guard above already admits an ubhayapadī root — it is
-                // `!Atmanepadin` — so this arm is where the two sūtras
-                // overlap, and where they split on ctx.pada: 1.3.72 (Ubhayapadin) or 1.3.66 (Anavane) has already sanctioned this cell, so decline instead of blocking. Only the genuine śeṣa (no pada tag at all)
-                // blocks here.
+                // `!Atmanepadin` — so this arm is where the two sūtras overlap, and where
+                // they split on ctx.pada: 1.3.72 (Ubhayapadin) or 1.3.66 (Anavane) has
+                // already sanctioned this cell, so decline instead of blocking. Only the
+                // genuine śeṣa (no pada tag at all) blocks here.
                 Pada::Atmanepada => {
                     if p.terms[ANGA].has(Tag::Ubhayapadin) || p.terms[ANGA].has(Tag::Anavane) {
                         return false;
@@ -402,8 +403,8 @@ mod tests {
         // `!Atmanepadin`) they split on `ctx.pada` exactly as 1.3.72 does.
         //
         // Commit ee35a30 had to go back and qualify an order-independence
-        // claim that prose had overstated, so this one is a test: the three
-        // rules are run in each of the 3! orders and must leave the same
+        // claim that prose had overstated, so this one is a test: the four
+        // rules are run in each of the 24 orders and must leave the same
         // (blocked, text, pada-sūtra log) triple every time. Blocking stops
         // the run, mirroring `run_pipeline`, so the claim covers the
         // pipeline's actual semantics rather than an idealised sweep.
@@ -435,7 +436,7 @@ mod tests {
             [3, 2, 1, 0],
         ];
         // `None` = the request is blocked; `Some(id)` = the sūtra that
-        // sanctions it. Pinned so a mutant that turned all three rules into
+        // sanctions it. Pinned so a mutant that turned all four rules into
         // no-ops could not pass by being trivially order-independent.
         let cells = [
             ("07.0001", Pada::Parasmaipada, Some("1.3.78")),

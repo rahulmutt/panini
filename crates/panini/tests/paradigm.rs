@@ -5794,7 +5794,7 @@ const VIKALPA_RULES: &[&str] = &[
     "7.1.35", "3.4.111", "6.4.107", "8.2.74", "8.2.75", "8.4.65", "8.4.56",
 ];
 
-/// `ALTERNATES` is otherwise 487 bare strings, and a string can be right for
+/// `ALTERNATES` is otherwise 494 bare strings, and a string can be right for
 /// the wrong reason — `BavatAt` is a real form whether or not 8.4.56 is what
 /// produced it. This ties each row to the grammar: find the branch that
 /// derives the row's form, intersect its log with the optional-rule set, and
@@ -5891,7 +5891,7 @@ fn derivation_set_is_exactly_pinned() {
 /// √śiṣ (Siz), √und (und), √añj (anj), √tañc (tanc), √vij (vij), √vṛj (vfj)
 /// and √pṛc (pfc), all parasmaipadī, plus √vid (vid), ātmanepadī, curated
 /// with no new sūtra and cleared by their own cross-implementation audit:
-/// every one of the twenty-four rudhādi roots forks in both loṭ and laṅ,
+/// every one of the twenty-five rudhādi roots forks in both loṭ and laṅ,
 /// and two of them — kft and ruD — fork
 /// in all four lakāras: laṭ (kft
 /// cells 1/4/5, Kid cells 0/5, inD cells 0/5, and — new in the ubhayapada
@@ -5937,8 +5937,8 @@ fn derivation_set_is_exactly_pinned() {
 /// 7.1.35/8.4.65/8.4.56 exactly as kft/ruD/Bid/kzud/tfd's do (a five-form
 /// cell), and its loṭ parasmaipada madhyama eka ties the six-form record
 /// with the same k = 3 against the 2³ bound of eight:
-/// 2772 cells total (308 root×lakāra blocks × 9), of which 2426 hold exactly one form,
-/// 247 hold two, 81 hold three, two hold four (piṣ's loṭ madhyama eka, the
+/// 2844 cells total (316 root×lakāra blocks × 9), of which 2493 hold exactly one form,
+/// 250 hold two, 83 hold three, two hold four (piṣ's loṭ madhyama eka, the
 /// deepest fork added in 7b, and — new in slice 7d — Siz's loṭ parasmaipada
 /// madhyama eka), and — the sharpest branch-count witnesses in
 /// the repo, per `docs/ARCHITECTURE.md` — exactly eight hold five (√kṛt's loṭ
@@ -5954,7 +5954,7 @@ fn derivation_set_is_exactly_pinned() {
 /// (7.1.35, 8.4.65, 8.4.56) against a 2³ bound of eight — ric and vic do not
 /// join this record; per the 8.2.30/8.2.39 slice's own audit their deepest
 /// cells are three forms). `ALTERNATES`
-/// itself has 487 rows, keyed 111 `8.4.56`, 90 `7.1.35`, 90 `7.1.35+8.4.56`,
+/// itself has 494 rows, keyed 114 `8.4.56`, 92 `7.1.35`, 92 `7.1.35+8.4.56`,
 /// 2 `3.4.111`, 8 `6.4.107`, 145 `8.4.65`, 8 `8.2.75`, 1 `8.2.74`, 16
 /// `7.1.35+8.4.65`, and 16 `7.1.35+8.4.65+8.4.56` — the assertions below are
 /// complete. The audit probe that produced the original numbers ran against
