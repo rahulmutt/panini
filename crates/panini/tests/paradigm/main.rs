@@ -773,21 +773,3 @@ fn pada_ambiguous_surfaces_are_exactly_these() {
         ]
     );
 }
-
-/// TEMPORARY split-proof harness — removed at the end of the test-split
-/// slice. Prints every golden row in a canonical sorted line form so the
-/// pre-split and post-split tables can be diffed byte-for-byte.
-#[test]
-fn dump_goldens() {
-    let mut rows: Vec<String> = Vec::new();
-    for (root, lakara, pada, forms) in PARADIGM.iter() {
-        rows.push(format!("P|{root}|{lakara}|{pada:?}|{}", forms.join(",")));
-    }
-    for (root, lakara, pada, cell, form, key) in ALTERNATES.iter() {
-        rows.push(format!("A|{root}|{lakara}|{pada:?}|{cell}|{form}|{key}"));
-    }
-    rows.sort();
-    for row in &rows {
-        println!("{row}");
-    }
-}
