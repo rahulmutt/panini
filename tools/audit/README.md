@@ -30,7 +30,7 @@ bare root code — not a surface form.
 **It asserts the corpus totals** (67 roots, 2844 cells, 3338 forms) rather than
 reporting whatever it enumerated. Those totals are corroborated by
 `derivation_set_shape_matches_the_audited_numbers` in
-`crates/panini/tests/paradigm.rs`, which each slice raises to the same totals
+`crates/panini/tests/paradigm/main.rs`, which each slice raises to the same totals
 alongside the golden rows that justify them — the two can be out of step
 mid-slice, while that landing is in progress. Once both are current, if the
 harness disagrees, the harness is wrong.
@@ -123,7 +123,7 @@ curated root, √bhuj; 2844 = 2772 + 72 cells, where 72 = 1 root × 2 padas ×
 `n_forms` matched the projected 3338 exactly, so no assertion adjustment
 was needed). The growth in `ALTERNATES` rows this implies, 487 → 494
 (expected; a later task of this slice measures and lands it in
-`crates/panini/tests/paradigm.rs`'s golden table, generated from this
+`crates/panini/tests/paradigm/data/`'s golden tables, generated from this
 certified run).
 
 ## Scope

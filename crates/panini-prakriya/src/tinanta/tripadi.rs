@@ -245,7 +245,7 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // and still reached the right surface, 8.4.55 khari ca devoicing it to
     // `k` afterwards. Every paradigm golden would have passed. Do not
     // "simplify" `kutva_of` back into a hardcoded char: only
-    // `rinakti_trace_reaches_k_in_one_step` in `crates/panini/tests/trace.rs`
+    // `rinakti_trace_reaches_k_in_one_step` in `crates/panini/tests/trace/rudhadi.rs`
     // can tell the two implementations apart.
     //
     // The 1.1.50 sthAne'ntaratamaH account above is therefore a description
@@ -357,7 +357,7 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // with the ubhayapada 1.3.72 slice's √rudh (`ruD`): √rudh's laṅ
     // prathama/madhyama eka expose the dhātu's OWN final — `D`, not an
     // ending's `t` — once 8.2.23 saṁyogāntasya lopaḥ elides tip/sip's own
-    // consonant. The golden `aruRad` (`crates/panini/tests/paradigm.rs`,
+    // consonant. The golden `aruRad` (`crates/panini/tests/paradigm/data/rudhadi.rs`,
     // `ruD laN Parasmaipada` cell 0) is the witness that made that arm
     // reachable, and 8.2.75 daś ca's own `ends_with('d')` guard depends on
     // it too: without the `D` arm here, 8.2.75 never sees a `d` to act on
@@ -648,7 +648,7 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // √piṣ are the first roots ADDED SINCE THE WARNING WAS WRITTEN to
     // empty `ENDING` under 8.2.23 — NOT the first roots after √hiṃs to do
     // so at all: √kṛt has emptied it at these same cells since 7a too
-    // (8.2.75 fires for it there — `crates/panini/tests/paradigm.rs` pins
+    // (8.2.75 fires for it there — `crates/panini/tests/paradigm/` pins
     // `("kft", "laN", 3, "akfRaH", "8.2.75")` — and firing requires
     // `dhatu_is_pada_final`). The warning was about widening the root set
     // beyond 7a's two, not about a single prior witness. √bhañj and √piṣ
@@ -1507,7 +1507,7 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // both `t`s are savarṇa either way. What the stated order fixes is the
     // sequence each branch's trace records the two rules in — 8.4.65 before
     // 8.4.56 — which 7a Task 9's `kfntAt` trace pin in
-    // `crates/panini/tests/trace.rs` asserts directly
+    // `crates/panini/tests/trace/` asserts directly
     // (`at(&t, "8.4.65") < at(&t, "8.4.56")`). `tinanta_rule_order_is_pinned`
     // in `super::derivation_tests` is what holds this file's order today.
     //
@@ -1876,7 +1876,7 @@ mod tests {
         // curated root; this case is constructed to exercise that break.
         //
         // a + varta + nta: avartanta IS an existing golden (see
-        // paradigm.rs), but t is a jhal immediately after n, so this case is
+        // tests/paradigm/), but t is a jhal immediately after n, so this case is
         // decided by is_natva_target's jhal guard (8.3.24) before the scan
         // ever runs -- it does not exercise the intervener break above.
         for (anga, vikarana, ending) in [("varS", "A", "ni"), ("a", "varta", "nta")] {
@@ -2018,7 +2018,7 @@ mod tests {
 
         // already-jaś pada-final: this pins the `Some(jash) == last` no-op
         // guard directly. `aBanag` is √bhañj's laṅ prathama eka intermediate
-        // (the golden `aBanag` is pinned in `paradigm.rs`) once 8.2.30 has
+        // (the golden `aBanag` is pinned in `tests/paradigm/`) once 8.2.30 has
         // already velarised its stem to a `g` — `jashtva_of('g')` is `g`
         // itself, a fixed point, so this rule must decline rather than
         // "voice" it again. Without the no-op guard this would fire

@@ -74,7 +74,7 @@ Twenty-eight surfaces are, each of them a pinned cell in both padas at once:
 instance, is √rudh's loṭ parasmaipada prathama dvi *and* its loṭ ātmanepada
 prathama eka. That enumeration is no longer maintained by hand:
 `pada_ambiguous_surfaces_are_exactly_these` in
-`crates/panini/tests/paradigm.rs` walks `PARADIGM` and asserts exactly this
+`crates/panini/tests/paradigm/main.rs` walks `PARADIGM` and asserts exactly this
 set. It is therefore a list of ambiguous **pinned cells**. An *alternate* form
 can be pada-ambiguous in its own right — √rudh's `runDAm` is the 8.4.65
 alternate of both those `rundDAm` cells — but alternates live in `ALTERNATES`,
