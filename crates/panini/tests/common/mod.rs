@@ -1,5 +1,5 @@
 //! Shared fixtures for the integration test binaries under `tests/`. Each
-//! test file (`paradigm.rs`, `roundtrip.rs`, ...) compiles this module
+//! test binary (`paradigm/`, `trace/`, `roundtrip.rs`, ...) compiles this module
 //! separately as its own crate, so an item only one of them uses still
 //! triggers `dead_code` in the others; allow it here rather than contorting
 //! the tests to use everything.

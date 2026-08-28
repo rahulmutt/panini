@@ -53,7 +53,7 @@ bisects the pipeline; `tinanta/sound.rs` holds the varṇa classifiers.
 Rule order is load-bearing and several orderings are non-obvious; the
 constraints and their justifications are documented in the design specs
 under `docs/superpowers/specs/`. The exact ordered traces in
-`crates/panini/tests/trace.rs` are what pin them.
+`crates/panini/tests/trace/` are what pin them.
 
 Seven gaṇas are covered: bhvādi (1), divādi (4), tudādi (6), adādi (2),
 kryādi (9), svādi (5) and rudhādi (7). gaṇa is carried
@@ -249,7 +249,7 @@ blocks: it sanctions the ātmanepada of a root tagged `Tag::Ubhayapadin`, and
 padas derive. `INVALID` means "not derivable within the covered grammar,"
 not "ungrammatical in Sanskrit." Coverage of the enumerable (root × lakāra)
 space is pinned by
-`crates/panini/tests/paradigm.rs::paradigm_covers_every_enumerable_cell`.
+`crates/panini/tests/paradigm/main.rs::paradigm_covers_every_enumerable_cell`.
 
 ## Optional rules and the derivation set
 

@@ -123,7 +123,7 @@ pub(crate) static ANGA_RULES: &[Rule] = &[
     //
     // The `||`→`&&` mutant on the guard line below is killed by the
     // `akupyat_trace_shows_7_3_100_declines_for_non_adadi_roots` pin in
-    // `crates/panini/tests/trace.rs`: the mutant fires for laṅ non-adādi
+    // `crates/panini/tests/trace/`: the mutant fires for laṅ non-adādi
     // derivations and 6.1.97 repairs the surface form, so only the ordered
     // trace exposes it. (Slice 5e parked this mutant as unkillable on a case
     // analysis that slice 5f corrected.)

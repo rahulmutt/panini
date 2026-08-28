@@ -54,6 +54,10 @@
     defeated by the environment alone. Keep `-j` at or below 4 with the
     1200s cap, or raise the cap in step, and re-measure both the floor and
     the margin the next time the golden suite grows.
+    The 2026-08-28 test-split slice restructured both golden files into
+    directory form (`tests/paradigm/`, `tests/trace/`) with the
+    timing-relevant shape — the same two integration binaries — unchanged,
+    so no timing figure above was invalidated by it.
     Re-running those 9 at `--timeout 1200` resolved them into two different
     outcomes, both worth knowing about: **3 were genuine survivors** — all
     three mutants of `Context::is_tip`, whose only caller was 8.2.73's
@@ -548,7 +552,7 @@
   target under `crates/panini-lipi/fuzz` legitimately omits it, since it uses
   `#![no_main]` plus the libfuzzer harness macro).
 - Grammar changes are gated by the golden paradigm test
-  (`crates/panini/tests/paradigm.rs`, 2844 cells, seven complete gaṇas —
+  (`crates/panini/tests/paradigm/`, 2844 cells, seven complete gaṇas —
   `PARADIGM`
     stays one-form-per-cell: a cell forked by an optional rule keeps its
     other forms — a second (250 cells), a third (83 cells), a fourth (2
@@ -760,7 +764,7 @@
     keying makes moot, rather than needing anything new. (vidyut-prakriya
     credits 6.4.24 *aniditāṁ hala upadhāyāḥ kṅiti* for √und's `unad → und`
     step; this engine rejects that credit, does not implement 6.4.24 at
-    all, and pins the rejection in `trace.rs`.) That left √tṛh as the
+    all, and pins the rejection in `tests/trace/.)` That left √tṛh as the
     ninth and only reachable non-ubhayapadī root still out, deferred to
     slice 7e behind three sūtras the engine did not implement: 7.3.92
     *tṛṇaha im* (the *im* augment), 8.2.31 *ho ḍhaḥ* and 8.3.13 *ḍho ḍhe
@@ -849,9 +853,9 @@
     and the wrong order only changes which intermediate form each optional
     branch's trace passes through
     (`krntat_trace_shows_savarna_elision_above_pausal` in
-    `crates/panini/tests/trace.rs` is the sole pin; no surface-form golden
+    `crates/panini/tests/trace/rudhadi.rs` is the sole pin; no surface-form golden
     catches a reversal).
-  and by the ordered-trace test (`crates/panini/tests/trace.rs`), which pins
+  and by the ordered-trace test (`crates/panini/tests/trace/`), which pins
   rule order. Surface forms and trace order there are the source of truth;
   sūtra ids/names in traces must match the cited reference. In practice that
   reference is vidyut-prakriya's machine-readable `data/sutrapatha.tsv`
@@ -934,8 +938,9 @@
   2592/2584-of-2592 as of rudhādi 7d, stood at 2628/2620-of-2628 as of
   rudhādi 7e, stood at 2772/2764-of-2772 as of rudhādi 7f, and stands at
   2844/2836-of-2844 as of the √bhuj/1.3.66 slice — the same 8
-  cells 6.4.107 always fired on (`key_count("6.4.107") == 8`, pinned at
-  `paradigm.rs:5934`), unmoved by 7d, 7e, 7f or √bhuj/1.3.66 since 6.4.107
+  cells 6.4.107 always fired on (`key_count("6.4.107") == 8`, pinned in
+  `derivation_set_shape_matches_the_audited_numbers`,
+  `crates/panini/tests/paradigm/main.rs`), unmoved by 7d, 7e, 7f or √bhuj/1.3.66 since 6.4.107
   concerns only
   svādi's
   √hi and √ri. Rudhādi 7d touched neither comment — its one permitted

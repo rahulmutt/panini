@@ -576,7 +576,7 @@ fn known_nonforms_are_invalid() {
         // and catch it. The rule actually responsible for the guṇa is
         // pinned independently by the ordered-trace test
         // `shete_trace_is_the_minimal_shing_guna_path` in
-        // `crates/panini/tests/trace.rs`, which asserts `7.4.21` present and
+        // `crates/panini/tests/trace/adadi.rs`, which asserts `7.4.21` present and
         // `7.3.84` absent.
         "Sese",  // 8.3.59 not applied: ṣatva missing (real form Seze)
         "Seate", // NOT what removing 7.1.6 emits: without the ruṭ the ending

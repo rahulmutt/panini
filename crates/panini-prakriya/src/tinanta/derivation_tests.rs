@@ -94,7 +94,7 @@ pub(super) fn lin_a_form(number: &str, pu: Purusha, va: Vacana) -> String {
 
 /// The ordered rule list IS the grammar this crate implements, so its
 /// sequence is pinned verbatim, not merely by the per-derivation traces
-/// in `crates/panini/tests/trace.rs` (which only pin order along the
+/// in `crates/panini/tests/trace/` (which only pin order along the
 /// paths representative forms happen to take).
 ///
 /// If you add a rule, add its id here in position. If this test fails
@@ -309,7 +309,7 @@ fn adadi_root_final_a_coalesces_with_vowel_endings() {
         "yAntu"
     );
     // Now forks: 3.4.111 (Task 4) adds the Śākaṭāyana jus branch (ayuH,
-    // pinned in `paradigm.rs`'s ALTERNATES). Branch 0 is still the declined
+    // pinned in `tests/paradigm/`'s ALTERNATES). Branch 0 is still the declined
     // derivation.
     assert_eq!(
         form_g_forked("02.0044", Lakara::Lan, Purusha::Prathama, Vacana::Bahu, 2),
@@ -1009,7 +1009,7 @@ fn shi_takes_guna_despite_the_ngit_ending() {
     // leave the aṅga un-guṇated (`SIte`/`aSIta`), not `Sete`/`aSeta`.
     // The attribution is still pinned independently by the
     // ordered-trace test `shete_trace_is_the_minimal_shing_guna_path` in
-    // `crates/panini/tests/trace.rs`.
+    // `crates/panini/tests/trace/`.
     assert_eq!(
         form_g("02.0026", Lakara::Lat, Purusha::Prathama, Vacana::Eka),
         "Sete"
@@ -1123,7 +1123,7 @@ fn dhi_ca_does_not_elide_a_non_s_before_dh() {
         "alaBaDvam"
     );
     // adDi (√ad loṭ 2sg, pinned at paradigm level in
-    // crates/panini/tests/paradigm.rs) is the one cell in the current
+    // crates/panini/tests/paradigm/) is the one cell in the current
     // root set that actually reaches the "ends in `s`" arm: śap is
     // luk'd (adādi) so ENDING (`Di`, from 6.4.101 her dhiḥ) is the first
     // non-empty term after the aṅga and the `D`-initial arm PASSES; the
@@ -1993,8 +1993,8 @@ fn trh_takes_the_im_agama_only_before_a_hal_initial_pit_sarvadhatuka() {
         (Lakara::Lat, Purusha::Madhyama, Vacana::Eka, "si"),
         (Lakara::Lat, Purusha::Uttama, Vacana::Eka, "mi"),
         // laN tip's apRkta `t`. 8.2.23 saMyogAntasya lopaH eats it, but not
-        // until the tripAdI -- one stage BELOW this rule -- so the hal test
-        // still sees it here. That ordering is pinned again in trace.rs.
+        // until the tripAdī -- one stage BELOW this rule -- so the hal test
+        // still sees it here. That ordering is pinned again in tests/trace/.
         (Lakara::Lan, Purusha::Prathama, Vacana::Eka, "t"),
     ] {
         assert_eq!(fired(la, pu, va), (true, true), "{why}");
