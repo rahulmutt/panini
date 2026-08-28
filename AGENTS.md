@@ -764,7 +764,7 @@
     keying makes moot, rather than needing anything new. (vidyut-prakriya
     credits 6.4.24 *aniditāṁ hala upadhāyāḥ kṅiti* for √und's `unad → und`
     step; this engine rejects that credit, does not implement 6.4.24 at
-    all, and pins the rejection in `tests/trace/.)` That left √tṛh as the
+    all, and pins the rejection in `tests/trace/`.) That left √tṛh as the
     ninth and only reachable non-ubhayapadī root still out, deferred to
     slice 7e behind three sūtras the engine did not implement: 7.3.92
     *tṛṇaha im* (the *im* augment), 8.2.31 *ho ḍhaḥ* and 8.3.13 *ḍho ḍhe

@@ -1993,7 +1993,7 @@ fn trh_takes_the_im_agama_only_before_a_hal_initial_pit_sarvadhatuka() {
         (Lakara::Lat, Purusha::Madhyama, Vacana::Eka, "si"),
         (Lakara::Lat, Purusha::Uttama, Vacana::Eka, "mi"),
         // laN tip's apRkta `t`. 8.2.23 saMyogAntasya lopaH eats it, but not
-        // until the tripAdī -- one stage BELOW this rule -- so the hal test
+        // until the tripAdI -- one stage BELOW this rule -- so the hal test
         // still sees it here. That ordering is pinned again in tests/trace/.
         (Lakara::Lan, Purusha::Prathama, Vacana::Eka, "t"),
     ] {
