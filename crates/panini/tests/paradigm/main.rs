@@ -653,7 +653,7 @@ fn known_nonforms_are_invalid() {
         "hinyAma", // `starts_with` mistaken for `contains`: vidhiliṅ's
         // yAma has an `m` but does not begin with one — real form hinuyAma
         "BavmaH", // fired where the vikaraṇa is not śnu at all, i.e. the
-        // shnu_asamyogapurva guard dropped — real form BavAmaH
+        // vikarana_u_asamyogapurva guard dropped — real form BavAmaH
         // 8.2.39 jhalāṁ jaśo'nte guard pins.
         "Bavatd", // `ends_with('t')` mistaken for `contains('t')`: fires on
         // BU laṭ 3sg (which merely contains a medial `t`, not a pada-final

@@ -25,17 +25,17 @@ pub struct Rule {
     /// must be ordered after every consumer of a predicate its own
     /// mutation invalidates — unless that consumer's guard is provably
     /// disjoint from the optional rule's own guard. 6.4.107 leaves
-    /// `SHAP.text == "n"`, which invalidates two predicates:
-    /// `shnu_asamyogapurva` (whose consumers all precede 6.4.107) and
-    /// `sound_before_ending` (`u` before the mutation, `n` after). Either
-    /// returning the wrong answer downstream, on the forked branch only,
-    /// surfaces as half a paradigm being wrong with both halves
-    /// individually plausible. `sound_before_ending` does have one
-    /// consumer below 6.4.107 — 6.4.101 `her DiH` — but it is safe: its
-    /// guard requires `ENDING.text == "hi"`, which 6.4.107 already
-    /// excludes by requiring an m- or v-initial ending, so the two never
-    /// contend. See 6.4.107's own comment in `tinanta/adesha.rs` for the
-    /// worked argument.
+    /// `SHAP.text == "n"` for svādi and `SHAP.text == ""` for tanādi, which
+    /// invalidates two predicates: `vikarana_u_asamyogapurva` (whose
+    /// consumers all precede 6.4.107) and `sound_before_ending` (`u` before
+    /// the mutation, `n`/`` after). Either returning the wrong answer
+    /// downstream, on the forked branch only, surfaces as half a paradigm
+    /// being wrong with both halves individually plausible.
+    /// `sound_before_ending` does have one consumer below 6.4.107 — 6.4.101
+    /// `her DiH` — but it is safe: its guard requires `ENDING.text == "hi"`,
+    /// which 6.4.107 already excludes by requiring an m- or v-initial
+    /// ending, so the two never contend. See 6.4.107's own comment in
+    /// `tinanta/adesha.rs` for the worked argument.
     pub vikalpa: bool,
     /// Returns true if it mutated the prakriya (and recorded a RuleStep).
     pub apply: fn(&mut Prakriya) -> bool,
