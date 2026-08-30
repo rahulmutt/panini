@@ -51,7 +51,7 @@ pub(crate) const ENDING: usize = 2;
 // (kft), `nans` (hins) or `nad` (Kid) — never a bare `na`. A rule that reads
 // SHAP expecting the vikaraṇa alone must guard on the gaṇa. This is a
 // stronger form of a hazard the file already carries: 6.4.107 leaves
-// `terms[SHAP].text == "n"` for svādi, which is why `shnu_asamyogapurva` and
+// `terms[SHAP].text == "n"` for svādi, which is why `vikarana_u_asamyogapurva` and
 // `sound_before_ending` both have ordering constraints written around them.
 //
 // Two structural consequences of that split, recorded here because nothing
@@ -98,11 +98,13 @@ pub(crate) const ENDING: usize = 2;
 /// after it. Returns `None` when there is no follower at all (a hand-built
 /// one-term prakriya in a unit test), in which case nothing can block.
 ///
-/// This helper never checks `Tag::Sarvadhatuka` by name — it is safe only
-/// because every tiṅ ending in scope is tagged Sarvadhatuka when introduced
-/// (see `anga.rs`'s 7.4.21 comment). It must become a real guard the moment
-/// an ārdhadhātuka affix enters scope; 7.3.84's own ṅit-only narrowness
-/// carries the same restore trigger locally.
+/// The name is now one affix too narrow: since 3.1.79, the follower can be
+/// the tanādi `u`, which is ārdhadhātuka, not sārvadhātuka. The callers'
+/// question — 1.1.5's "is the follower kṅit?" — is saṁjñā-independent, and
+/// the u is never ṅit (the second 1.2.4 excludes it by tag), so returning
+/// it is correct. The guard this comment used to demand exists as
+/// Tag::Ardhadhatuka on the u itself; a future ārdhadhātuka affix that CAN
+/// be ṅit is the new restore trigger.
 pub(crate) fn following_sarvadhatuka(p: &Prakriya) -> Option<&Term> {
     match p.terms.get(SHAP) {
         Some(shap) if !shap.text.is_empty() => Some(shap),
@@ -139,28 +141,45 @@ pub(crate) fn sound_before_ending(p: &Prakriya) -> Option<char> {
         .find_map(|t| t.text.chars().last())
 }
 
-/// Is śnu's `u` *asaṁyogapūrva* — preceded by a single consonant rather
-/// than a conjunct?
+/// Is the vikaraṇa's final `u` *asaṁyogapūrva* — preceded by a single
+/// consonant (or directly by a vowel) rather than by a conjunct?
 ///
 /// The condition 6.4.87 inherits by anuvṛtti from 6.4.82 *er anekāco'saṁ-
-/// yogapūrvasya*, and the same condition 6.4.106 states in its own text.
-/// The `u` is always preceded by śnu's own `n`, so the question reduces to
-/// whether that `n` follows a vowel — i.e. whether the aṅga's final
-/// character is a vowel.
+/// yogapūrvasya*, and the one 6.4.106 states in its own text. Two vikaraṇa
+/// shapes carry such a `u`: śnu's `nu` (the `u` preceded by śnu's own `n`,
+/// so the question is whether the AṄGA ends in a vowel — hinu yes, Apnu
+/// no) and tanādi's bare `u` (3.1.79 — the question is whether the aṅga's
+/// final consonant follows a vowel: tanu and fRu yes, arRu no, since the
+/// guṇa branch's `rR` is a conjunct; that split is exactly vidyut's
+/// arRuhi-beside-fRu).
 ///
-/// √hi and √ri qualify (`hinu`, `riRu`); √āp, √śak, √aś and √ṣṭigh do not
-/// (`Apnu`, `Saknu`, `aSnu`, `stiGnu`). √aś is the counter-intuitive one:
-/// it looks like √su, but the root's own final `S` joins śnu's `n` into a
-/// conjunct — which is why `aSnumahe` has no lopa alternate while
-/// `sunmahe` does.
-///
-/// Returns false whenever the vikaraṇa is not śnu, so callers do not need
-/// their own gaṇa test.
-pub(crate) fn shnu_asamyogapurva(p: &Prakriya) -> bool {
-    if p.terms.get(SHAP).map(|t| t.text.as_str()) != Some("nu") {
+/// Returns false for every other SHAP text (śap/śa `a`, śyan `ya`, śnā's
+/// shapes, śnam-plus-tail, adādi's empty string, and the post-6.4.107
+/// remnants `n`/``), so callers still need no gaṇa test of their own.
+pub(crate) fn vikarana_u_asamyogapurva(p: &Prakriya) -> bool {
+    let Some(shap) = p.terms.get(SHAP) else {
         return false;
+    };
+    let anga: Vec<char> = p.terms[ANGA].text.chars().collect();
+    // The two sounds before the vikaraṇa's `u`, nearest first.
+    let (c1, c2) = match shap.text.as_str() {
+        "nu" => (Some('n'), anga.last().copied()),
+        "u" => (
+            anga.last().copied(),
+            anga.len().checked_sub(2).and_then(|i| anga.get(i).copied()),
+        ),
+        _ => return false,
+    };
+    match (c1, c2) {
+        // `u` directly after a vowel: trivially not conjunct-preceded. No
+        // curated root reaches this arm; it is written because it is what
+        // the sūtra says, not because a form needs it.
+        (Some(v), _) if is_vowel(v) => true,
+        // One consonant after a vowel: hinu, tanu, fRu, kuru.
+        (Some(c), Some(v)) if !is_vowel(c) && is_vowel(v) => true,
+        // A conjunct (Apnu, aSnu, arRu) or nothing readable.
+        _ => false,
     }
-    p.terms[ANGA].text.chars().last().is_some_and(is_vowel)
 }
 
 /// The assembled word as `(term index, char index, char)`, so a rule can
@@ -213,19 +232,21 @@ mod tests {
     use crate::term::{Tag, Term};
 
     #[test]
-    fn shnu_asamyogapurva_is_true_exactly_for_the_vowel_final_roots() {
-        // The `u` of śnu is asaṁyogapūrva iff the `n` follows a vowel — i.e.
-        // iff the aṅga's final character is a vowel. A wrong predicate here
-        // turns hinu into *hinuhi and Apnuhi into *Apnu, both of which look
-        // like plausible Sanskrit, so enumerate rather than rely on goldens.
+    fn vikarana_u_asamyogapurva_is_true_exactly_for_the_non_conjunct_stems() {
+        // The `u` of śnu (or tanādi's bare `u`) is asaṁyogapūrva iff it is
+        // not conjunct-preceded. A wrong predicate here turns hinu into
+        // *hinuhi and Apnuhi into *Apnu (the false-negative risks are now
+        // *tanuhi — a missed luk — and *arRu — a wrong one — beside that
+        // svādi pair), so enumerate rather than rely on goldens.
         //
-        // BU carries its real bhvādi vikaraṇa text ("a", not "nu"): unlike
-        // the other controls, its point is to pin the helper's OTHER guard —
-        // "vikaraṇa is not śnu at all" — which only engages when SHAP's text
-        // truly isn't "nu". BU ends in the vowel U, so pairing it with a
-        // literal "nu" SHAP (as every other row does) would make the
-        // vowel-final check itself return true, giving a false positive that
-        // masks exactly the silent-failure risk this test exists to catch.
+        // BU carries its real bhvādi vikaraṇa text ("a", not "nu"/"u"):
+        // unlike the other controls, its point is to pin the helper's OTHER
+        // guard — "vikaraṇa is neither śnu nor tanādi's bare u" — which only
+        // engages when SHAP's text truly isn't "nu" or "u". BU ends in the
+        // vowel U, so pairing it with a literal "nu" SHAP (as every other
+        // row does) would make the vowel-final check itself return true,
+        // giving a false positive that masks exactly the silent-failure
+        // risk this test exists to catch.
         for (root, vikarana, expected) in [
             ("hi", "nu", true),    // svādi, vowel-final
             ("ri", "nu", true),    // svādi, vowel-final
@@ -235,6 +256,11 @@ mod tests {
             ("stiG", "nu", false), // svādi, `Gn` conjunct
             ("kliS", "nu", false), // kryādi control (consonant-final guard)
             ("BU", "a", false),    // bhvādi control (vikaraṇa-is-not-śnu guard)
+            ("tan", "u", true),    // tanādi: single n after a vowel
+            ("fR", "u", true),     // tanādi: R after the vowel f
+            ("kur", "u", true),    // 8b's √kṛ after 6.4.110: r after u
+            ("arR", "u", false),   // guṇa'd fR: rR conjunct — arRuhi keeps hi
+            ("tan", "nu", false),  // control: an n-final stem under śnu is a conjunct
         ] {
             let mut p = Prakriya {
                 terms: vec![Term::new(root), Term::new(vikarana), Term::new("anti")],
@@ -242,7 +268,7 @@ mod tests {
             };
             p.terms[SHAP].add(Tag::Vikarana);
             assert_eq!(
-                shnu_asamyogapurva(&p),
+                vikarana_u_asamyogapurva(&p),
                 expected,
                 "{root}: asaṁyogapūrva should be {expected}"
             );

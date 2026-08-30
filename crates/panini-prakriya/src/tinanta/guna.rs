@@ -16,7 +16,7 @@
 use crate::rule::{Rule, RuleKind};
 use crate::term::Tag;
 use crate::tinanta::sound::{guna_of, is_vowel};
-use crate::tinanta::terms::{ANGA, ENDING, SHAP, following_sarvadhatuka, shnu_asamyogapurva};
+use crate::tinanta::terms::{ANGA, ENDING, SHAP, following_sarvadhatuka, vikarana_u_asamyogapurva};
 use panini_data::Lakara;
 
 pub(crate) static GUNA: &[Rule] = &[
@@ -328,7 +328,14 @@ pub(crate) static GUNA: &[Rule] = &[
         kind: RuleKind::Vidhi,
         vikalpa: false,
         apply: |p| {
-            if !shnu_asamyogapurva(p) {
+            // The sūtra names hu and śnu. Tanādi's bare `u` (which the
+            // shared asaṁyogapūrva helper now also admits) is 6.1.77's
+            // business below — without this test 6.4.87 would write śnu's
+            // `nv` over a vikaraṇa that has no `n`.
+            if p.terms[SHAP].text != "nu" {
+                return false;
+            }
+            if !vikarana_u_asamyogapurva(p) {
                 return false;
             }
             let Some(next) = p.terms[ENDING].text.chars().next() else {
@@ -373,6 +380,45 @@ pub(crate) static GUNA: &[Rule] = &[
             let before = p.snapshot();
             p.terms[SHAP].text = "nuv".into();
             p.record("6.4.77", "aci SnuDAtuBruvAM yvoriyaNuvaNO", before);
+            true
+        },
+    },
+    // 6.1.77 iko yaṇ aci: the tanādi vikaraṇa's `u` becomes `v` before a
+    // vowel-initial ending. tan + u + anti → tanvanti; tan + u + ate →
+    // tanvate; tan + u + Ita → tanvIta. This is the utsarga whose apavādas
+    // the pipeline already carries for śnu — 6.4.87 (yaṇ, now self-guarded
+    // to `nu`) and 6.4.77 (uvaṅ) — ordered above it as apavādas are
+    // elsewhere; neither can contend here, since both test śnu's text and
+    // this rule tests the bare `u`. vidyut-prakriya credits exactly this
+    // sūtra for these cells.
+    //
+    // Only the vikaraṇa arm is written: no other ik-vowel hiatus survives
+    // to this point in the pipeline, the same narrowness 6.1.78's three
+    // arms and 6.4.77's śnu-only arm document. Widen by arm, with a
+    // witness, when a root needs one.
+    //
+    // Ordered AFTER 7.3.84's second application: the loṭ uttama endings
+    // are vowel-initial and pit, so guṇa takes `u` → `o` first and 6.1.78
+    // then yields tanavAni — this rule's `u` test declines on the `o`, the
+    // same self-guarding 6.4.87/6.4.77 rely on for ApnavAni.
+    Rule {
+        id: "6.1.77",
+        name: "iko yaR aci",
+        kind: RuleKind::Vidhi,
+        vikalpa: false,
+        apply: |p| {
+            if p.terms[SHAP].text != "u" || !p.terms[SHAP].has(Tag::Vikarana) {
+                return false;
+            }
+            let Some(next) = p.terms.get(ENDING).and_then(|t| t.text.chars().next()) else {
+                return false;
+            };
+            if !is_vowel(next) {
+                return false;
+            }
+            let before = p.snapshot();
+            p.terms[SHAP].text = "v".into();
+            p.record("6.1.77", "iko yaR aci", before);
             true
         },
     },

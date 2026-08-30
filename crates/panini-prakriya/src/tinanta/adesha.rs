@@ -50,7 +50,7 @@
 use crate::rule::{Rule, RuleKind};
 use crate::term::Tag;
 use crate::tinanta::sound::{is_jhal, is_vowel, vrddhi_of};
-use crate::tinanta::terms::{ANGA, ENDING, SHAP, shnu_asamyogapurva, sound_before_ending};
+use crate::tinanta::terms::{ANGA, ENDING, SHAP, sound_before_ending, vikarana_u_asamyogapurva};
 use panini_data::Lakara;
 
 pub(crate) static ADESHA: &[Rule] = &[
@@ -533,7 +533,7 @@ pub(crate) static ADESHA: &[Rule] = &[
             if p.terms[ENDING].text != "hi" {
                 return false;
             }
-            if !shnu_asamyogapurva(p) {
+            if !vikarana_u_asamyogapurva(p) {
                 return false;
             }
             let before = p.snapshot();
@@ -559,13 +559,14 @@ pub(crate) static ADESHA: &[Rule] = &[
     // v-initial.
     //
     // ORDERING, load-bearing and invisible: this rule must stay after
-    // EVERY consumer of `shnu_asamyogapurva`. Its mutation leaves
-    // `SHAP.text == "n"`, so the helper's first guard (`== "nu"`) makes it
-    // return false for the rest of the pipeline — on the forked branch
-    // only. A consumer placed below this rule would read the wrong answer
-    // for half a paradigm, with both halves individually plausible. Every
-    // rule that reads śnu's `nu` text must precede it — 6.4.87 and 6.4.106
-    // (just above) via `shnu_asamyogapurva`, and 6.4.77 in guna.rs, which
+    // EVERY consumer of `vikarana_u_asamyogapurva`. Its mutation leaves
+    // `SHAP.text == "n"` for svādi and `SHAP.text == ""` for tanādi, so the
+    // helper's text match (`"nu"` / `"u"`) makes it return false for the
+    // rest of the pipeline — on the forked branch only. A consumer placed
+    // below this rule would read the wrong answer for half a paradigm, with
+    // both halves individually plausible. Every rule that reads the
+    // vikaraṇa's u-bearing text must precede it — 6.4.87 and 6.4.106 (just
+    // above) via `vikarana_u_asamyogapurva`, and 6.4.77 in guna.rs, which
     // open-codes the same `text == "nu"` test — and all three do.
     Rule {
         id: "6.4.107",
@@ -576,7 +577,7 @@ pub(crate) static ADESHA: &[Rule] = &[
             if !p.terms[ENDING].text.starts_with(['m', 'v']) {
                 return false;
             }
-            if !shnu_asamyogapurva(p) {
+            if !vikarana_u_asamyogapurva(p) {
                 return false;
             }
             let before = p.snapshot();
