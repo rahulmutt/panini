@@ -17,11 +17,13 @@ pub(crate) fn guna_of(v: char) -> Option<&'static str> {
 
 /// Vṛddhi substitute of a vowel (1.1.1 vṛddhir ādaic; only the arms the
 /// curated roots exercise via 6.1.90 — e/I from eD/Ikz, E from loṭ's 3.4.93).
-pub(crate) fn vrddhi_of(v: char) -> Option<char> {
+pub(crate) fn vrddhi_of(v: char) -> Option<&'static str> {
     match v {
-        'a' | 'A' => Some('A'),
-        'i' | 'I' | 'e' | 'E' => Some('E'),
-        'u' | 'U' | 'o' | 'O' => Some('O'),
+        'a' | 'A' => Some("A"),
+        'i' | 'I' | 'e' | 'E' => Some("E"),
+        'u' | 'U' | 'o' | 'O' => Some("O"),
+        // 1.1.51 uraR raparaH: a vṛddhi substitute for f carries the r.
+        'f' => Some("Ar"),
         _ => None,
     }
 }
@@ -309,20 +311,23 @@ mod tests {
         // arm is no longer unreachable that way; the remaining arms
         // (a/A/U/o/O) are still unit-test-only, and this test remains the
         // only thing covering them. Mirrors
-        // guna_of_ik_vowels_all_arms above.
-        assert_eq!(vrddhi_of('a'), Some('A'));
-        assert_eq!(vrddhi_of('A'), Some('A'));
-        assert_eq!(vrddhi_of('i'), Some('E'));
-        assert_eq!(vrddhi_of('I'), Some('E'));
-        assert_eq!(vrddhi_of('e'), Some('E'));
-        assert_eq!(vrddhi_of('E'), Some('E'));
-        assert_eq!(vrddhi_of('u'), Some('O'));
-        assert_eq!(vrddhi_of('U'), Some('O'));
-        assert_eq!(vrddhi_of('o'), Some('O'));
-        assert_eq!(vrddhi_of('O'), Some('O'));
+        // guna_of_ik_vowels_all_arms above. The `f` arm is `Ar` by 1.1.51
+        // uraR raparaH (the r-appendage on an f-substitute), reached by a
+        // golden derivation once fR's laN (`ArRot`) lands -- the same path
+        // 7d's `Onad` opened for `u`.
+        assert_eq!(vrddhi_of('a'), Some("A"));
+        assert_eq!(vrddhi_of('A'), Some("A"));
+        assert_eq!(vrddhi_of('i'), Some("E"));
+        assert_eq!(vrddhi_of('I'), Some("E"));
+        assert_eq!(vrddhi_of('e'), Some("E"));
+        assert_eq!(vrddhi_of('E'), Some("E"));
+        assert_eq!(vrddhi_of('u'), Some("O"));
+        assert_eq!(vrddhi_of('U'), Some("O"));
+        assert_eq!(vrddhi_of('o'), Some("O"));
+        assert_eq!(vrddhi_of('O'), Some("O"));
+        assert_eq!(vrddhi_of('f'), Some("Ar"));
         // Non-ac letters (consonants) have no vRddhi substitute.
         assert_eq!(vrddhi_of('t'), None);
-        assert_eq!(vrddhi_of('f'), None);
     }
 
     #[test]

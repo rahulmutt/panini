@@ -230,7 +230,7 @@ pub(crate) static ADESHA: &[Rule] = &[
             {
                 let before = p.snapshot();
                 let mut s = String::new();
-                s.push(v);
+                s.push_str(v);
                 s.extend(&anga[2..]);
                 p.terms[ANGA].text = s;
                 p.record("6.1.90", "AwaS ca", before);
@@ -247,8 +247,9 @@ pub(crate) static ADESHA: &[Rule] = &[
                 let before = p.snapshot();
                 let mut s: Vec<char> = p.terms[SHAP].text.chars().collect();
                 s.pop();
-                s.push(vrddhi_of(first).unwrap());
-                p.terms[SHAP].text = s.into_iter().collect();
+                let mut s: String = s.into_iter().collect();
+                s.push_str(vrddhi_of(first).unwrap());
+                p.terms[SHAP].text = s;
                 p.terms[ENDING].text = p.terms[ENDING].text.chars().skip(1).collect();
                 p.record("6.1.90", "AwaS ca", before);
                 return true;
@@ -289,7 +290,7 @@ pub(crate) static ADESHA: &[Rule] = &[
                 {
                     let before = p.snapshot();
                     let mut s = String::new();
-                    s.push(vrddhi_of(ec).unwrap());
+                    s.push_str(vrddhi_of(ec).unwrap());
                     s.extend(p.terms[ENDING].text.chars().skip(2));
                     p.terms[ENDING].text = s;
                     p.record("6.1.90", "AwaS ca", before);
