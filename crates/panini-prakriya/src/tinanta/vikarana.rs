@@ -185,6 +185,45 @@ pub(crate) static VIKARANA: &[Rule] = &[
             true
         },
     },
+    // 3.1.79 tanādikṛñbhya uḥ: tanādi (gaṇa 8) takes the bare `u`, not śap.
+    // Apavāda to 3.1.68, ordered before it exactly as 3.1.69, 3.1.73,
+    // 3.1.77, 3.1.78 and 3.1.81 are. The sūtra's own text names √kṛ
+    // (*kṛñbhya*), so slice 8b's √kṛ rides this same rule.
+    //
+    // `u` is the pipeline's FIRST NON-ŚIT VIKARAṆA. With no ś it-marker it
+    // is not sārvadhātuka by 3.4.113 tiṅśit sārvadhātukam, hence
+    // ārdhadhātuka by 3.4.114 ārdhadhātukaṁ śeṣaḥ — recorded as
+    // Tag::Ardhadhatuka rather than as rules, the same way other saṁjñā
+    // verdicts live as tags. Two load-bearing consequences: the second
+    // 1.2.4 below must not tag it ṅit (its guard now demands
+    // Tag::Sarvadhatuka), which is what lets 7.3.84's second application
+    // guṇate `u` -> `o` (tanoti) while sunoti's śnu stays blocked; and the
+    // four ik-upadhā roots take 7.3.86 against a follower 1.1.5 cannot
+    // block (tarRvanti beside tarRoti — see guna.rs's vikalpa arm).
+    //
+    // No run_it_samjna call: the affix is the bare vowel `u` (the ḥ of
+    // `uḥ` is the citation's visarga, not an anubandha), so there is
+    // nothing to strip and no 1.3.x step to record — which is why tanoti's
+    // trace, unlike Apnoti's, shows no second 1.3.9.
+    Rule {
+        id: "3.1.79",
+        name: "tanAdikfYBya uH",
+        kind: RuleKind::Vidhi,
+        vikalpa: false,
+        apply: |p| {
+            if !p.terms[ANGA].has(Tag::Tanadi) {
+                return false;
+            }
+            let before = p.snapshot();
+            let mut s = Term::new("u");
+            s.add(Tag::Vikarana);
+            s.add(Tag::Ardhadhatuka);
+            p.terms.insert(SHAP, s);
+            p.record("3.1.79", "tanAdikfYBya uH", before);
+            p.terms[ANGA].add(Tag::Anga);
+            true
+        },
+    },
     // 3.1.81 kryādibhyaḥ śnā: kryādi (gaṇa 9) takes śnā, not śap. Apavāda to
     // 3.1.68, ordered before it, exactly as 3.1.69 and 3.1.77 are. śnā is
     // apit; the second 1.2.4 makes it ṅit and 1.1.5 then blocks guṇa — which
@@ -450,6 +489,11 @@ pub(crate) static VIKARANA: &[Rule] = &[
     // skipped — so bhvādi is untouched. NOT pada-gated: śyan/śa are apit in
     // parasmaipada derivations too, which is what blocks guṇa in dīvyati /
     // kupyati / tudati.
+    //
+    // Tanādi's bare `u` (3.1.79) carries Tag::Ardhadhatuka and NO
+    // Sarvadhatuka tag, so the positive Sarvadhatuka test added with it
+    // excludes exactly that vikaraṇa: sārvadhātukam apit reads the
+    // sārvadhātukas, and `u` is not one.
     Rule {
         id: "1.2.4",
         name: "sArvaDAtukam apit",
@@ -458,6 +502,7 @@ pub(crate) static VIKARANA: &[Rule] = &[
         apply: |p| {
             if !(p.terms.len() > SHAP
                 && p.terms[SHAP].has(Tag::Vikarana)
+                && p.terms[SHAP].has(Tag::Sarvadhatuka)
                 && !p.terms[SHAP].has(Tag::Pit)
                 && !p.terms[SHAP].has(Tag::Ngit))
             {
@@ -523,6 +568,46 @@ mod tests {
         assert_eq!(rules().filter(|r| r.id == "1.2.4").count(), 2);
         let second = rules().filter(|r| r.id == "1.2.4").nth(1).unwrap();
         assert!((second.apply)(&mut p));
+        assert!(p.terms[SHAP].has(Tag::Ngit));
+    }
+
+    #[test]
+    fn tanadi_takes_the_bare_u_and_it_stays_anit() {
+        // 3.1.79 tanAdikfYBya uH. The u is the pipeline's first non-śit
+        // vikaraṇa: ārdhadhātuka by 3.4.114, so the second 1.2.4 must NOT
+        // tag it ṅit. That non-ṅit-ness is what 7.3.84's second application
+        // reads when it guṇates u -> o (tanoti) where sunoti's śnu stays
+        // blocked — the whole gaṇa hangs on this test.
+        let mut p = Prakriya {
+            terms: vec![Term::new("tan"), Term::new("ti")],
+            ..Default::default()
+        };
+        p.terms[0].add(Tag::Dhatu);
+        p.terms[0].add(Tag::Tanadi);
+        let r_79 = rules().find(|r| r.id == "3.1.79").unwrap();
+        assert!((r_79.apply)(&mut p));
+        assert_eq!(p.terms[SHAP].text, "u");
+        assert!(p.terms[SHAP].has(Tag::Vikarana));
+        assert!(p.terms[SHAP].has(Tag::Ardhadhatuka));
+        assert!(!p.terms[SHAP].has(Tag::Sarvadhatuka));
+        // The second 1.2.4 (the vikaraṇa application) must decline.
+        let r_124 = rules().filter(|r| r.id == "1.2.4").last().unwrap();
+        assert!(!(r_124.apply)(&mut p));
+        assert!(!p.terms[SHAP].has(Tag::Ngit));
+    }
+
+    #[test]
+    fn second_1_2_4_still_tags_the_shit_vikaranas() {
+        // The 1.2.4 guard gains a positive Sarvadhatuka test; śnu (śit,
+        // apit) must still come out ṅit or hinoti becomes *henoti.
+        let mut p = Prakriya {
+            terms: vec![Term::new("hi"), Term::new("nu"), Term::new("ti")],
+            ..Default::default()
+        };
+        p.terms[SHAP].add(Tag::Vikarana);
+        p.terms[SHAP].add(Tag::Sarvadhatuka);
+        let r_124 = rules().filter(|r| r.id == "1.2.4").last().unwrap();
+        assert!((r_124.apply)(&mut p));
         assert!(p.terms[SHAP].has(Tag::Ngit));
     }
 

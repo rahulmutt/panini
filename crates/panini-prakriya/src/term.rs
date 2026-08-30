@@ -72,6 +72,9 @@ pub enum Tag {
     /// The dhātu belongs to rudhādi (gaṇa 7), whose vikaraṇa is śnam. Read
     /// by 3.1.78 alone. Mirrors Divadi/Tudadi/Adadi/Kryadi/Svadi.
     Rudhadi,
+    /// The dhātu belongs to tanādi (gaṇa 8), whose vikaraṇa is the bare `u`.
+    /// Read by 3.1.79 alone. Mirrors Divadi/Tudadi/Adadi/Kryadi/Svadi/Rudhadi.
+    Tanadi,
     /// The term at `SHAP` IS one of the four a-final vikaraṇas — śap
     /// (3.1.68), śyan (3.1.69), śa (3.1.77) or śānac (3.1.83) — each
     /// a-final once its own it-lopa runs ("a"/"ya"/"a"/"Ana"). This is an
