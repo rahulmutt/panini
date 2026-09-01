@@ -114,6 +114,10 @@ pub(crate) static GUNA: &[Rule] = &[
             if following_sarvadhatuka(p).is_some_and(|t| t.has(Tag::Ngit)) {
                 return false;
             }
+            if p.terms[ANGA].has(Tag::Tanadi) {
+                // Gaṇa 8 is the vikalpa arm's below (Kaumudī 2547.1).
+                return false;
+            }
             let chars: Vec<char> = p.terms[ANGA].text.chars().collect();
             let n = chars.len();
             if n < 2 || is_vowel(chars[n - 1]) {
@@ -127,6 +131,58 @@ pub(crate) static GUNA: &[Rule] = &[
             if !matches!(chars[n - 2], 'i' | 'u' | 'f' | 'x') {
                 return false;
             }
+            let before = p.snapshot();
+            let mut s: String = chars[..n - 2].iter().collect();
+            s.push_str(g);
+            s.push(chars[n - 1]);
+            p.terms[ANGA].text = s;
+            p.record("7.3.86", "pugantalaGUpaDasya ca", before);
+            true
+        },
+    },
+    // 7.3.86 pugantalaghūpadhasya ca — VIKALPA ARM, gaṇa 8 only. The four
+    // tanādi roots whose laghu upadhā is an ik guṇate OPTIONALLY before
+    // the vikaraṇa `u`: kziRoti/kzeRoti, fRoti/arRoti, tfRoti/tarRoti,
+    // GfRoti/GarRoti. The optionality is not the sūtra's own: it is the
+    // tanādi gaṇasūtra the Siddhānta-kaumudī carries (vidyut-prakriya
+    // applies it at Kaumudī 2547.1, an optional guṇa-apavāda tag on
+    // exactly those four upadeśas). This engine keeps the Pāṇinian id on
+    // the branch that applies guṇa and records the Kaumudī source here,
+    // so ALTERNATES keys stay inside the Aṣṭādhyāyī.
+    //
+    // Guarded structurally — gaṇa 8, an ik upadhā, the `u` still standing
+    // — not by a root list: within gaṇa 8 that selects exactly the
+    // gaṇasūtra's four (a-upadhā roots have nothing to guṇate; √kṛ's ik is
+    // FINAL, 7.3.84's business). The nitya entry declines the gaṇa on the
+    // same tag, so the two entries partition and can never double-apply.
+    //
+    // NO 1.1.5 test, deliberately: the trigger is the ārdhadhātuka `u`
+    // (never ṅit — see 3.1.79), not the tiṅ ending, which is why the guṇa
+    // branch exists even before ṅit endings (tarRvanti). This is the
+    // hardcoded-follower lesson of the adādi slices applied in advance.
+    Rule {
+        id: "7.3.86",
+        name: "pugantalaGUpaDasya ca",
+        kind: RuleKind::Vidhi,
+        vikalpa: true,
+        apply: |p| {
+            if !p.terms[ANGA].has(Tag::Tanadi) {
+                return false;
+            }
+            if p.terms.get(SHAP).map(|t| t.text.as_str()) != Some("u") {
+                return false;
+            }
+            let chars: Vec<char> = p.terms[ANGA].text.chars().collect();
+            let n = chars.len();
+            if n < 2 || is_vowel(chars[n - 1]) {
+                return false;
+            }
+            if !matches!(chars[n - 2], 'i' | 'u' | 'f' | 'x') {
+                return false;
+            }
+            let Some(g) = guna_of(chars[n - 2]) else {
+                return false;
+            };
             let before = p.snapshot();
             let mut s: String = chars[..n - 2].iter().collect();
             s.push_str(g);
@@ -948,6 +1004,47 @@ mod tests {
         let rule = rules().find(|r| r.id == "7.3.86").unwrap();
         assert!((rule.apply)(&mut p));
         assert_eq!(p.terms[ANGA].text, "vart");
+    }
+
+    #[test]
+    fn pugantalaghupadhasya_tanadi_arm_is_vikalpa_and_ngit_blind() {
+        // tfR + u + anti: the vikalpa arm fires (its trigger is the
+        // ārdhadhātuka u, on which 1.1.5 has no purchase — vidyut derives
+        // tarRvanti), while the nitya entry declines the gaṇa entirely.
+        let mut p = Prakriya {
+            terms: vec![Term::new("tfR"), Term::new("u"), Term::new("anti")],
+            ..Default::default()
+        };
+        p.terms[0].add(Tag::Dhatu);
+        p.terms[0].add(Tag::Tanadi);
+        p.terms[1].add(Tag::Vikarana);
+        p.terms[1].add(Tag::Ardhadhatuka);
+        p.terms[2].add(Tag::Ngit);
+        let mut entries = rules().filter(|r| r.id == "7.3.86");
+        let nitya = entries.next().unwrap();
+        let vikalpa = entries.next().expect("the tanādi arm");
+        assert!(!nitya.vikalpa);
+        assert!(vikalpa.vikalpa);
+        assert!(!(nitya.apply)(&mut p), "gaṇa 8 belongs to the vikalpa arm");
+        assert!((vikalpa.apply)(&mut p));
+        assert_eq!(p.terms[0].text, "tarR");
+    }
+
+    #[test]
+    fn pugantalaghupadhasya_tanadi_arm_declines_a_upadha_and_final_ik() {
+        // tan (a upadhā — nothing to guṇate) and kf (ik FINAL — 7.3.84's
+        // business): both outside the gaṇasūtra's four.
+        for root in ["tan", "kf"] {
+            let mut p = Prakriya {
+                terms: vec![Term::new(root), Term::new("u"), Term::new("ti")],
+                ..Default::default()
+            };
+            p.terms[0].add(Tag::Dhatu);
+            p.terms[0].add(Tag::Tanadi);
+            p.terms[1].add(Tag::Vikarana);
+            let vikalpa = rules().filter(|r| r.id == "7.3.86").nth(1).unwrap();
+            assert!(!(vikalpa.apply)(&mut p), "{root}");
+        }
     }
 
     #[test]

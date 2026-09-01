@@ -54,6 +54,29 @@ pub fn run_pipeline(p: Prakriya, stages: &[&[Rule]]) -> Vec<Prakriya> {
             }
         }
     }
+    // Convergent forks collapse: two LIVE branches that assemble the same
+    // text are one form, and every consumer — the golden suite's
+    // derivation-set comparison, the audit's n_branches == n_forms
+    // invariant ("no cell may yield two live branches with the same
+    // text") — is written against that invariant. The first real case is
+    // the 7.3.86 vikalpa arm under 6.1.90's āṭ-vṛddhi: A+fR and A+arR
+    // both surface ArRot. Keep the FIRST occurrence — the declined
+    // branch — so index 0 remains the ruleless derivation. Blocked
+    // branches are exempt: their partial text is not a surface form and
+    // callers filter them on `blocked`.
+    let mut seen: Vec<String> = Vec::new();
+    branches.retain(|b| {
+        if b.blocked {
+            return true;
+        }
+        let text = b.text();
+        if seen.contains(&text) {
+            false
+        } else {
+            seen.push(text);
+            true
+        }
+    });
     branches
 }
 
@@ -220,5 +243,28 @@ mod tests {
         // The logged `before` snapshot must be the pre-mutation text, not a
         // placeholder (pins `Prakriya::snapshot`).
         assert_eq!(p.log.last().unwrap().before, "Boa");
+    }
+
+    #[test]
+    fn convergent_forks_collapse_to_the_declined_branch() {
+        // Two branches that assemble the same text are one form. The first
+        // real case is fR's laṅ: A+fR and A+arR both surface ArRot once
+        // 6.1.90's vṛddhi runs. Keep the FIRST (declined) branch so index
+        // 0 stays the ruleless derivation.
+        // Build: one vikalpa rule that fires but leaves the text equal.
+        let noop_fork = Rule {
+            id: "test.noop",
+            name: "noop",
+            kind: RuleKind::Vidhi,
+            vikalpa: true,
+            apply: |p| {
+                let before = p.snapshot();
+                p.record("test.noop", "noop", before);
+                true
+            },
+        };
+        let out = run_pipeline(p1("x"), &[&[noop_fork]]);
+        assert_eq!(out.len(), 1, "the converged fork must be pruned");
+        assert!(out[0].log.iter().all(|s| s.sutra != "test.noop"));
     }
 }
