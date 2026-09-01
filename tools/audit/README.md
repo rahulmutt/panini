@@ -27,7 +27,7 @@ is ruleless.
 comment states that a blocked prakriyā's `text()` is a partial string — often the
 bare root code — not a surface form.
 
-**It asserts the corpus totals** (67 roots, 2844 cells, 3338 forms) rather than
+**It asserts the corpus totals** (76 roots, 3420 cells, 4321 forms) rather than
 reporting whatever it enumerated. Those totals are corroborated by
 `derivation_set_shape_matches_the_audited_numbers` in
 `crates/panini/tests/paradigm/main.rs`, which each slice raises to the same totals
@@ -109,22 +109,49 @@ PANINI_AUDIT_DUMP=/tmp/audit-table.tsv mise exec rust@1.98.0 -- cargo run --rele
 
 ## Last recorded result
 
-2026-08-26, √bhuj/1.3.66 slice, vidyut `8da2f90bee3ce1c07505fa432fc3729e3f7e02ea`:
-**zero differences across 2844 cells / 3338 forms / 67 roots**, with both
-negative controls verified failing first — `entry` (exit 1, 36 √bhū cells,
-`Bavati` vs `paWati` and so on) and `form` (exit 1, 1 flagged cell,
-`BavatiXX` vs `Bavati`). This is the first audit run after this slice's
-1.3.66 *Bujo'navane* and the widened 1.3.78 landed the curated row for
-√bhuj (`07.0017`, `PadaAssignment::UbhayapadaAnavane`), the twelfth root
-in the corpus (after the eleven ubhayapadī by 1.3.72) to derive both
-padas. Corpus totals moved from 66/2772/3259 to 67/2844/3338 (67 = 66 + 1
-curated root, √bhuj; 2844 = 2772 + 72 cells, where 72 = 1 root × 2 padas ×
-4 lakāras × 9; 3338 = 3259 + 79, the measured form total — this run's
-`n_forms` matched the projected 3338 exactly, so no assertion adjustment
-was needed). The growth in `ALTERNATES` rows this implies, 487 → 494
-(expected; a later task of this slice measures and lands it in
-`crates/panini/tests/paradigm/data/`'s golden tables, generated from this
-certified run).
+2026-09-01, tanādi 8a slice, vidyut `8da2f90bee3ce1c07505fa432fc3729e3f7e02ea`:
+**zero differences across 3420 cells / 4321 forms / 76 roots**, with the
+`entry` negative control verified failing first (exit 1, 36 √bhū cells,
+`Bavati` vs `paWati` and so on). This run is the audit gate for the tanādi
+(gaṇa 8, 8a) slice's nine curated roots (`08.0001`–`08.0009`; the tenth,
+√kṛ `08.0010`, is deferred to 8b). It first ran non-clean: an initial pass
+found 4 differing cells, all `08.0005` (fR) laṅ uttama-puruṣa dvi/bahu, both
+padas. Diagnosis and fix (commit `88cae65`) before the clean re-run below.
+
+Two structural engine changes this verdict now covers:
+
+- **The u-vikaraṇa generalization.** 3.1.79 *tanādikṛñbhya uḥ* gives gaṇa 8
+  the bare `u` vikaraṇa; `terms.rs`'s `shnu_asamyogapurva` widened to
+  `vikarana_u_asamyogapurva` so every rule that used to read only śnu's
+  `nu` now also reads the bare `u`. This needed `run_pipeline`'s
+  convergent-fork collapse (dedup live branches on identical final surface
+  text, first/declined branch kept) once 7.3.86's new tanādi vikalpa arm
+  could put a guṇa'd and an āṭ-vṛddhi'd branch on the same surface (`A+fR`
+  and `A+arR` both → `ArRot`).
+- **The 6.4.106/6.4.107-before-6.1.90 reorder.** The widened
+  asaṁyogapūrva helper must read the aṅga *before* laṅ's āṭ-vṛddhi ekādeśa
+  (6.1.90) merges the augment into it — read after, a genuinely
+  non-conjunct `u` (fR's) and a guṇa'd conjunct one (arR's) render as the
+  same three characters (`rR`) and become indistinguishable, which is what
+  produced the four-cell divergence above. Fixed by moving 6.4.106/6.4.107
+  ahead of 6.1.90's aṅga arm, order confirmed by tracing vidyut's own
+  credited rule sequence for `08.0005` laṅ uttama dvi/bahu; `arRuhi`'s
+  decline (the genuinely conjunct, guṇa'd branch) is unaffected and pinned
+  by a regression test.
+
+Corpus totals moved from 67/2844/3338 to 76/3420/4321 (76 = 67 + 9 curated
+tanādi roots; 3420 = 2844 + 576 cells, where 576 = 64 root×pada×lakāra
+blocks × 9 — 64 blocks = 16 pada-blocks (7 ubhayapadī roots × 2 padas + 2
+ātmanepada-only roots × 1 pada) × 4 lakāras; 4321 = 3338 + 983, the
+measured form total for the new cells). The `ALTERNATES` growth this
+implies, 494 → 901 (+407, all from the 576 new tanādi cells), is a
+noticeably steeper rate than the rest of the corpus — ~0.71 alternates per
+tanādi cell vs. ~0.17 elsewhere. Expected, not a defect: every one of the
+nine tanādi roots takes the bare `u` directly after a single non-conjunct
+final consonant, so 6.4.107's optional m/v-lopa is asaṁyogapūrva (and
+therefore live) far more broadly than it ever was for svādi's `śnu`, and
+7.3.86's new vikalpa arm compounds it for four of the nine roots. Measured
+via `PANINI_AUDIT_DUMP`, not assumed.
 
 ## Scope
 
