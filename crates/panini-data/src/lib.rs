@@ -798,6 +798,105 @@ static DHATUS: &[Dhatu] = &[
         pada: PadaAssignment::UbhayapadaAnavane,
         artha: "pAlanAByavahArayoH",
     },
+    Dhatu {
+        // 08.0001 tanu~^ vistAre. The gaṇa's eponym and its plainest row:
+        // a-upadhā (nothing for 7.3.86 to touch), n-final after a vowel
+        // (asaṁyogapūrva: tanu, tanvaH/tanuvaH), svarita-it → 1.3.72 →
+        // ubhayapadī. tanoti / tanute.
+        dhatupatha: "08.0001",
+        code: "tan",
+        gana: Gana::Tanadi,
+        pada: PadaAssignment::Ubhayapada,
+        artha: "vistAre",
+    },
+    Dhatu {
+        // 08.0002 zaRu~^ dAne. Stored per 6.1.64 dhAtvAdeH SaH saH like
+        // √ṣṭigh (stiG): the upadeśa's z becomes s, and with the z gone
+        // its conditioned retroflex R reverts to n (nimitta-nāśa) —
+        // sanoti / sanute, as vidyut derives. stored_form's z-arm carries
+        // the same reversal so the resolve test derives san, not saR.
+        dhatupatha: "08.0002",
+        code: "san",
+        gana: Gana::Tanadi,
+        pada: PadaAssignment::Ubhayapada,
+        artha: "dAne",
+    },
+    Dhatu {
+        // 08.0003 kzaRu~^ hiMsAyAm. a-upadhā like √tan; the root's own R
+        // (retroflex by its z) stays. kzaRoti / kzaRute.
+        dhatupatha: "08.0003",
+        code: "kzaR",
+        gana: Gana::Tanadi,
+        pada: PadaAssignment::Ubhayapada,
+        artha: "hiMsAyAm",
+    },
+    Dhatu {
+        // 08.0004 kziRu~^ hiMsAyAm. First of the four ik-upadhā roots the
+        // tanādi gaṇasūtra (Kaumudī 2547.1; see guna.rs's 7.3.86 vikalpa
+        // arm) forks: kziRoti / kzeRoti, and likewise through the whole
+        // paradigm. Same artha as its neighbour kzaR — the number, not
+        // the meaning, is the identity.
+        dhatupatha: "08.0004",
+        code: "kziR",
+        gana: Gana::Tanadi,
+        pada: PadaAssignment::Ubhayapada,
+        artha: "hiMsAyAm",
+    },
+    Dhatu {
+        // 08.0005 fRu~^ gatO. Vowel-initial AND ik-upadhā (the f is both):
+        // the 7.3.86 fork (fRoti/arRoti), the laṅ āṭ (6.4.72 + 6.1.90,
+        // whose f → Ar vṛddhi arm this root is the first to reach:
+        // ArRot), and the fork CONVERGING under that vṛddhi — A+fR and
+        // A+arR are both ArR — which is what run_pipeline's convergent-
+        // fork collapse exists for. In loṭ the two stems split the
+        // asaṁyogapūrva test: fRu luks hi, arRu (rR conjunct) keeps it —
+        // fRu beside arRuhi, the widened helper's sharpest witness.
+        dhatupatha: "08.0005",
+        code: "fR",
+        gana: Gana::Tanadi,
+        pada: PadaAssignment::Ubhayapada,
+        artha: "gatO",
+    },
+    Dhatu {
+        // 08.0006 tfRu~^ adane. ik-upadhā fork: tfRoti / tarRoti.
+        dhatupatha: "08.0006",
+        code: "tfR",
+        gana: Gana::Tanadi,
+        pada: PadaAssignment::Ubhayapada,
+        artha: "adane",
+    },
+    Dhatu {
+        // 08.0007 GfRu~^ dIptO. ik-upadhā fork: GfRoti / GarRoti.
+        dhatupatha: "08.0007",
+        code: "GfR",
+        gana: Gana::Tanadi,
+        pada: PadaAssignment::Ubhayapada,
+        artha: "dIptO",
+    },
+    Dhatu {
+        // 08.0008 vanu~\ yAcane. Anudātta → 1.3.12 → ātmanepadī: vanute.
+        // vidyut-prakriya ALSO derives vanoti, via Kaumudī 2547.2 — a
+        // gaṇasūtra that optionally removes this one root's anudātta-it.
+        // Curated on the dhātupāṭha marker alone, the same record-don't-
+        // model posture as 1.3.72's sense condition: the audit enumerates
+        // this table's padas, so the parasmaipada column it does not have
+        // is a documented deviation, not a latent diff.
+        dhatupatha: "08.0008",
+        code: "van",
+        gana: Gana::Tanadi,
+        pada: PadaAssignment::Atmanepada,
+        artha: "yAcane",
+    },
+    Dhatu {
+        // 08.0009 manu~\ avaboDane. Anudātta → 1.3.12 → ātmanepadī:
+        // manute. Unlike van, no gaṇasūtra clouds it — vidyut derives no
+        // parasmaipada either.
+        dhatupatha: "08.0009",
+        code: "man",
+        gana: Gana::Tanadi,
+        pada: PadaAssignment::Atmanepada,
+        artha: "avaboDane",
+    },
 ];
 
 pub fn dhatus() -> &'static [Dhatu] {
@@ -839,7 +938,7 @@ mod tests {
 
     #[test]
     fn curated_roots_have_expected_ganas_and_padas() {
-        assert_eq!(dhatus().len(), 67);
+        assert_eq!(dhatus().len(), 76);
         let bu = dhatus().iter().find(|d| d.dhatupatha == "01.0001").unwrap();
         assert!(matches!(bu.pada, PadaAssignment::Parasmaipada));
         let labh = dhatus().iter().find(|d| d.dhatupatha == "01.1130").unwrap();
@@ -1101,6 +1200,34 @@ mod tests {
     }
 
     #[test]
+    fn tanadi_rows_are_the_nine_curated_roots() {
+        // Slice 8a: the gaṇa's nine plain rows, on 3.1.79's bare u. Seven
+        // svarita-it (1.3.72, ubhayapadī), two anudātta (1.3.12,
+        // ātmanepadī). 08.0010 qukf\Y — √kṛ, ñit, ubhayapadī — is slice
+        // 8b's, with the 6.4.108–110 specials; until it lands the gaṇa is
+        // PARTIAL at 9 of its 10 dhātupāṭha rows.
+        let rows: Vec<_> = dhatus()
+            .iter()
+            .filter(|d| d.gana == Gana::Tanadi)
+            .map(|d| (d.dhatupatha, d.code, d.pada))
+            .collect();
+        assert_eq!(
+            rows,
+            vec![
+                ("08.0001", "tan", PadaAssignment::Ubhayapada),
+                ("08.0002", "san", PadaAssignment::Ubhayapada),
+                ("08.0003", "kzaR", PadaAssignment::Ubhayapada),
+                ("08.0004", "kziR", PadaAssignment::Ubhayapada),
+                ("08.0005", "fR", PadaAssignment::Ubhayapada),
+                ("08.0006", "tfR", PadaAssignment::Ubhayapada),
+                ("08.0007", "GfR", PadaAssignment::Ubhayapada),
+                ("08.0008", "van", PadaAssignment::Atmanepada),
+                ("08.0009", "man", PadaAssignment::Atmanepada),
+            ]
+        );
+    }
+
+    #[test]
     fn padas_maps_each_assignment_to_its_derivable_padas() {
         assert_eq!(PadaAssignment::Parasmaipada.padas(), &[Pada::Parasmaipada]);
         assert_eq!(PadaAssignment::Atmanepada.padas(), &[Pada::Atmanepada]);
@@ -1280,21 +1407,28 @@ mod tests {
     /// retroflex immediately after goes with it, under the vārttika on
     /// 6.1.64 (ṣṭ → st), which is exactly what `stiG` records.
     ///
-    /// Only the `zw` → `st` arm of that vārttika (6.1.64.2) is handled here.
-    /// Its other arms — `zW` → `sT`, `zR` → `sn`, `zaR` → `san` — and the
+    /// The `zw` → `st` arm of that vārttika (6.1.64.2) is handled here, and
+    /// so is the plain `z`/`zR`/`zaR` arm — a lone `z` becomes `s`, and any
+    /// `R` left in what follows (conditioned by the now-gone retroflex)
+    /// reverts to `n`: `zaRu~` stores as `san`. Only `zW` → `sT` and the
     /// companion vārttika 6.1.64.1 exempting `zWiv`/`zvazk` from any change
-    /// are unimplemented: no curated root needs them today. `01.1077 zWA\`
-    /// (√sthā), `01.0641`/`04.0004 zWivu~`, `01.0105 zvazka~\` and
-    /// `01.0535 zaRa~` are the upstream roots that would exercise them; a
-    /// future slice curating any of those must extend this function first,
-    /// or `dhatupatha_numbers_resolve_upstream` fails loudly (√sthā would
+    /// remain unimplemented: no curated root needs them today. `01.1077
+    /// zWA\` (√sthā), `01.0641`/`04.0004 zWivu~` and `01.0105 zvazka~\` are
+    /// the upstream roots that would exercise them; a future slice curating
+    /// any of those must extend this function first, or
+    /// `dhatupatha_numbers_resolve_upstream` fails loudly (√sthā would
     /// demand `sWA`, which this function does not produce).
     fn dhatvadeh_sha_sa(code: String) -> String {
         if let Some(rest) = code.strip_prefix('z') {
             let rest = rest
                 .strip_prefix('w')
                 .map_or_else(|| rest.to_string(), |r| format!("t{r}"));
-            return format!("s{rest}");
+            // With the z gone, the retroflexion it conditioned goes too
+            // (nimitte naṣṭe naimittikasya apy anivṛttiḥ is the paribhāṣā
+            // AGAINST this — but 6.1.64 is nipātana territory and the
+            // attested stems are san (zaRu~), stiG (zwiGa~): the R
+            // reverts, the w hardens to t). vidyut derives sanoti.
+            return format!("s{}", rest.replace('R', "n"));
         }
         if let Some(rest) = code.strip_prefix('R') {
             return format!("n{rest}");
