@@ -39,4 +39,5 @@ mod divadi;
 mod kryadi;
 mod rudhadi;
 mod svadi;
+mod tanadi;
 mod tudadi;
