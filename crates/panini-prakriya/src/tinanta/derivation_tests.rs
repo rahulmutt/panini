@@ -125,6 +125,19 @@ pub(super) fn lin_a_form(number: &str, pu: Purusha, va: Vacana) -> String {
 /// (never gaṇa 8); the vikalpa entry immediately after it is gaṇa 8's own
 /// Kaumudī 2547.1 optional guṇa, kept under the Pāṇinian id. Both entries
 /// are real; do not deduplicate.
+///
+/// 6.4.106/6.4.107 sit BELOW 6.1.96 but ABOVE 6.1.90, against sūtra order
+/// and against where Task 3 first placed them (after 6.4.105, below all
+/// four of 6.1.90/97/87/66). 6.4.107's move is load-bearing: laṅ's āṭ-
+/// vṛddhi ekādeśa (6.1.90's aṅga arm) can rewrite a vowel-initial tanādi
+/// root's aṅga (fR → ArR) in a way that manufactures a surface consonant
+/// cluster indistinguishable, by `vikarana_u_asamyogapurva`'s character
+/// reads alone, from a genuinely guṇa'd conjunct — so this rule must read
+/// the aṅga BEFORE that ekādeśa, not after. 6.4.106 travels with it only
+/// because they share the ordering comment and the helper; its own
+/// position is provably inert (`hi` is loṭ-only, the ekādeśa is laṅ-only).
+/// See both rules' own comments in `tinanta/adesha.rs` for the full
+/// argument and vidyut-prakriya's independently-traced order.
 #[test]
 fn tinanta_rule_order_is_pinned() {
     let expected = [
@@ -135,8 +148,8 @@ fn tinanta_rule_order_is_pinned() {
         "3.1.83", "1.2.4", "6.4.71", "6.4.72", "6.1.73", "7.3.100", "7.1.5", "7.1.6", "7.1.3",
         "7.2.79", "7.2.80", "7.2.81", "6.4.23", "7.4.21", "7.3.84", "7.3.86", "7.3.86", "7.3.92",
         "7.3.84", "6.4.87", "6.4.77", "6.1.77", "6.1.78", "7.3.101", "6.4.112", "6.4.113",
-        "6.1.101", "6.1.96", "6.1.90", "6.1.97", "6.1.87", "6.1.66", "6.4.105", "6.4.106",
-        "6.4.107", "6.4.101", "6.4.111", "8.2.77", "8.2.23", "8.2.25", "8.2.30", "8.2.31",
+        "6.1.101", "6.1.96", "6.4.106", "6.4.107", "6.1.90", "6.1.97", "6.1.87", "6.1.66",
+        "6.4.105", "6.4.101", "6.4.111", "8.2.77", "8.2.23", "8.2.25", "8.2.30", "8.2.31",
         "8.2.39", "8.2.40", "8.2.41", "8.2.74", "8.2.75", "8.2.73", "8.3.15", "8.3.24", "8.3.59",
         "8.4.40", "8.4.41", "8.3.13", "8.4.53", "8.4.55", "8.4.1", "8.4.2", "8.4.58", "8.4.65",
         "8.4.56",

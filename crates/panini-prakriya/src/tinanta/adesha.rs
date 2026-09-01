@@ -207,6 +207,117 @@ pub(crate) static ADESHA: &[Rule] = &[
             true
         },
     },
+    // 6.4.106 utaś ca pratyayād asaṁyogapūrvāt: `hi` is luk'd after an
+    // affix-final `u` that is not conjunct-preceded. hi + nu + hi → hinu;
+    // ri + nu + hi → riRu (ṇatva lands later). Ap + nu + hi keeps its `hi`
+    // → Apnuhi, and that pair is the rule's pin.
+    //
+    // PLACEMENT: sūtra order (and the luk-and-lopa narrative) would put
+    // this right after 6.4.105 ato heḥ, well below — that is where it
+    // lived through Task 3. It moved up here, ahead of 6.1.90, to travel
+    // with 6.4.107 immediately below, whose own move IS load-bearing (see
+    // that rule's comment for why). This rule's own move is inert: `hi` is
+    // loṭ-only and 6.1.90's aṅga arm (the mechanism 6.4.107 must dodge) is
+    // laṅ-only (gated by 6.4.71/6.4.72), so `hi` and the āṭ-vṛddhi ekādeśa
+    // never co-occur in one derivation — 6.4.106 would read the identical
+    // answer wherever it sat. 6.4.105 still declines for svādi/tanādi on
+    // its own guard (the stem ends in `u`, not a short `a`), so the two
+    // never contend regardless of which comes first.
+    //
+    // Must precede 6.4.101 her DhiH (further below, unmoved): for the
+    // conjunct roots this rule deliberately leaves `hi` standing, and
+    // 6.4.101 is what must then also decline — see its own comment on
+    // reading the sound before the ending.
+    Rule {
+        id: "6.4.106",
+        name: "utaSca pratyayAdasaMyogapUrvAt",
+        kind: RuleKind::Vidhi,
+        vikalpa: false,
+        apply: |p| {
+            if p.terms[ENDING].text != "hi" {
+                return false;
+            }
+            if !vikarana_u_asamyogapurva(p) {
+                return false;
+            }
+            let before = p.snapshot();
+            p.terms[ENDING].text = String::new();
+            p.record("6.4.106", "utaSca pratyayAdasaMyogapUrvAt", before);
+            true
+        },
+    },
+    // 6.4.107 lopaś cāsyānyatarasyāṁ mvoḥ: the same `u` 6.4.106 spoke of —
+    // affix-final, asaṁyogapūrva — is OPTIONALLY elided before `m` and `v`.
+    // hi + nu + mas → hinmaH ~ hinumaH, both valid. This is the engine's
+    // first vikalpa rule: `run_pipeline` forks here, and both readings are
+    // reported by `Panini::check`.
+    //
+    // 6.4.108 nityaṁ karoteḥ is what makes this one optional — it states
+    // the same lopa as *nitya* for √kṛ, against this rule's anyatarasyām.
+    // √kṛ is out of scope (it wants 7.1.100 and the 6.4.10x kṛ-specials),
+    // so 6.4.108 is not implemented.
+    //
+    // PLACEMENT, load-bearing (unlike 6.4.106's, which only rides along —
+    // see its comment above): moved here, ahead of 6.1.90's aṅga arm, to
+    // fix a Task-3-era bug the cross-implementation audit caught. Tanādi's
+    // vowel-initial ik-upadha roots (fR, tfR, GfR) take laṅ's āṭ-augment
+    // (6.4.72) and then its vṛddhi ekādeśa (6.1.90 aṅga arm) — and 6.1.90's
+    // merge can MANUFACTURE a spurious tail conjunct: vṛddhi expands the
+    // one-character vowel `f` to the two-character `Ar`, so `AfR` → `ArR`,
+    // and the vikaraṇa's `u` now sits after `rR` — textually identical to
+    // arRu's genuinely guṇa'd, genuinely conjunct-preceded `rR` (7.3.86's
+    // alternate guṇa arm, which correctly declines this rule; see
+    // `utash_ca_declines_after_a_conjunct_u`-style tests and the loṭ
+    // madhyama-eka witness `arRuhi` in this file's tests). Evaluated after
+    // 6.1.90, `vikarana_u_asamyogapurva` cannot tell these two `rR`s apart
+    // — it reads only surface characters — and wrongly declines the
+    // augmented branch too. Evaluated HERE, before 6.1.90 has run, the
+    // aṅga is still `AfR`: `u` is asaṁyogapūrva (`R` preceded directly by
+    // the vowel `f`), and this rule can fork correctly — matching
+    // vidyut-prakriya's own credited order, confirmed by tracing its
+    // derivation of 08.0005 laṅ uttama dvi/bahu (both padas): its 6.4.107
+    // fires-or-declines strictly before its āṭaś-ca ekādeśa merges the
+    // terms. `arRuhi`'s decline (6.4.106, above) is untouched by this move
+    // — see that rule's own placement note — and this reordering changes
+    // no cell outside fR/tfR/GfR's laṅ: the helper's `"nu"` arm (svādi)
+    // reads only the aṅga's OWN final character, never the two-character
+    // window this vṛddhi expansion perturbs, and no other curated root's
+    // aṅga is short enough (and ik-vowel-initial) for 6.1.90's aṅga arm to
+    // reach that window at all.
+    //
+    // It cannot contend with 6.4.101 (further below), whose guard requires
+    // the ending to be `hi` — neither m- nor v-initial.
+    //
+    // ORDERING, load-bearing and invisible: this rule must stay after
+    // EVERY consumer of `vikarana_u_asamyogapurva`. Its mutation leaves
+    // `SHAP.text == "n"` for svādi and `SHAP.text == ""` for tanādi, so the
+    // helper's text match (`"nu"` / `"u"`) makes it return false for the
+    // rest of the pipeline — on the forked branch only. A consumer placed
+    // below this rule would read the wrong answer for half a paradigm, with
+    // both halves individually plausible. Every rule that reads the
+    // vikaraṇa's u-bearing text must precede it — 6.4.87 and 6.4.106 (just
+    // above) via `vikarana_u_asamyogapurva`, and 6.4.77 in guna.rs, which
+    // open-codes the same `text == "nu"` test — and all three do (and now
+    // so must 6.1.90's aṅga arm, immediately below, for the reason above).
+    Rule {
+        id: "6.4.107",
+        name: "lopaScAsyAnyatarasyAM mvoH",
+        kind: RuleKind::Vidhi,
+        vikalpa: true,
+        apply: |p| {
+            if !p.terms[ENDING].text.starts_with(['m', 'v']) {
+                return false;
+            }
+            if !vikarana_u_asamyogapurva(p) {
+                return false;
+            }
+            let before = p.snapshot();
+            // lopa OF THE `u` — not a rewrite of śnu's text to "n".
+            p.terms[SHAP].text.pop();
+            p.record("6.4.107", "lopaScAsyAnyatarasyAM mvoH", before);
+            true
+        },
+    },
     // 6.1.90 āṭaś ca: āṭ + a following vowel yield a single vṛddhi. Two
     // shapes, one sūtra:
     // - Aṅga arm (laṅ, the ātmanepada slice's Task 8): 6.4.72's āṭ + the
@@ -493,9 +604,9 @@ pub(crate) static ADESHA: &[Rule] = &[
     // current text, for the same reason the other four rules in this file
     // do (see `Tag::Thematic`'s own comment). This is what makes 6.4.105
     // decline outright for svādi — the stem there ends in śnu's `u`, never
-    // a short `a`, and śnu is not one of the four — leaving 6.4.106 below
-    // as the rule that must handle (or deliberately not handle) the `hi`
-    // ending for that gaṇa.
+    // a short `a`, and śnu is not one of the four — leaving 6.4.106 (well
+    // above now — see its own placement note) as the rule that must handle
+    // (or deliberately not handle) the `hi` ending for that gaṇa.
     Rule {
         id: "6.4.105",
         name: "ato heH",
@@ -508,82 +619,6 @@ pub(crate) static ADESHA: &[Rule] = &[
             let before = p.snapshot();
             p.terms[ENDING].text = String::new();
             p.record("6.4.105", "ato heH", before);
-            true
-        },
-    },
-    // 6.4.106 utaś ca pratyayād asaṁyogapūrvāt: `hi` is luk'd after an
-    // affix-final `u` that is not conjunct-preceded. hi + nu + hi → hinu;
-    // ri + nu + hi → riRu (ṇatva lands later). Ap + nu + hi keeps its `hi`
-    // → Apnuhi, and that pair is the rule's pin.
-    //
-    // Continues the luk of 6.4.105 ato heḥ immediately above, which is why
-    // it sits here rather than in sūtra-number order elsewhere. 6.4.105
-    // declines for svādi on its own guard (the stem ends in `u`, not a
-    // short `a`), so the two never contend.
-    //
-    // Must precede 6.4.101 her DhiH below: for the conjunct roots this rule
-    // deliberately leaves `hi` standing, and 6.4.101 is what must then also
-    // decline — see its own comment on reading the sound before the ending.
-    Rule {
-        id: "6.4.106",
-        name: "utaSca pratyayAdasaMyogapUrvAt",
-        kind: RuleKind::Vidhi,
-        vikalpa: false,
-        apply: |p| {
-            if p.terms[ENDING].text != "hi" {
-                return false;
-            }
-            if !vikarana_u_asamyogapurva(p) {
-                return false;
-            }
-            let before = p.snapshot();
-            p.terms[ENDING].text = String::new();
-            p.record("6.4.106", "utaSca pratyayAdasaMyogapUrvAt", before);
-            true
-        },
-    },
-    // 6.4.107 lopaś cāsyānyatarasyāṁ mvoḥ: the same `u` 6.4.106 spoke of —
-    // affix-final, asaṁyogapūrva — is OPTIONALLY elided before `m` and `v`.
-    // hi + nu + mas → hinmaH ~ hinumaH, both valid. This is the engine's
-    // first vikalpa rule: `run_pipeline` forks here, and both readings are
-    // reported by `Panini::check`.
-    //
-    // 6.4.108 nityaṁ karoteḥ is what makes this one optional — it states
-    // the same lopa as *nitya* for √kṛ, against this rule's anyatarasyām.
-    // √kṛ is out of scope (it wants 7.1.100 and the 6.4.10x kṛ-specials),
-    // so 6.4.108 is not implemented.
-    //
-    // Continues the 6.4.105 / 6.4.106 luk-and-lopa run above, which is also
-    // where sūtra order puts it. It cannot contend with 6.4.101 below,
-    // whose guard requires the ending to be `hi` — neither m- nor
-    // v-initial.
-    //
-    // ORDERING, load-bearing and invisible: this rule must stay after
-    // EVERY consumer of `vikarana_u_asamyogapurva`. Its mutation leaves
-    // `SHAP.text == "n"` for svādi and `SHAP.text == ""` for tanādi, so the
-    // helper's text match (`"nu"` / `"u"`) makes it return false for the
-    // rest of the pipeline — on the forked branch only. A consumer placed
-    // below this rule would read the wrong answer for half a paradigm, with
-    // both halves individually plausible. Every rule that reads the
-    // vikaraṇa's u-bearing text must precede it — 6.4.87 and 6.4.106 (just
-    // above) via `vikarana_u_asamyogapurva`, and 6.4.77 in guna.rs, which
-    // open-codes the same `text == "nu"` test — and all three do.
-    Rule {
-        id: "6.4.107",
-        name: "lopaScAsyAnyatarasyAM mvoH",
-        kind: RuleKind::Vidhi,
-        vikalpa: true,
-        apply: |p| {
-            if !p.terms[ENDING].text.starts_with(['m', 'v']) {
-                return false;
-            }
-            if !vikarana_u_asamyogapurva(p) {
-                return false;
-            }
-            let before = p.snapshot();
-            // lopa OF THE `u` — not a rewrite of śnu's text to "n".
-            p.terms[SHAP].text.pop();
-            p.record("6.4.107", "lopaScAsyAnyatarasyAM mvoH", before);
             true
         },
     },
@@ -1351,6 +1386,73 @@ mod tests {
     #[test]
     fn lopa_of_shnu_u_is_optional() {
         assert!(rule_6_4_107().vikalpa, "6.4.107 is anyatarasyām");
+    }
+
+    #[test]
+    fn fr_lan_uttama_forks_into_both_asamyogapurva_readings() {
+        // The cross-implementation audit's fix-round-1 witness. Task 3's
+        // widened helper originally read the aṅga's surface characters
+        // AFTER 6.1.90's āṭ-vṛddhi ekādeśa had already merged laṅ's
+        // augment into fR's own vowel (fR -> AfR -> ArR), so it saw the
+        // SAME "rR" shape guṇa produces (a genuine conjunct — see
+        // `arruhi_guna_conjunct_still_declines_hi_luk_after_the_reorder`
+        // below) and wrongly declined the augmented branch too — this
+        // engine derived only "ArRuva", never forking. Moving 6.4.106 and
+        // 6.4.107 ahead of 6.1.90's aṅga arm lets the helper read the
+        // PRE-ekādeśa "AfR", where the vikaraṇa's `u` is asaṁyogapūrva
+        // (`R` preceded directly by the vowel `f`) — matching
+        // vidyut-prakriya's own traced order (its 6.4.107 fires-or-
+        // declines strictly before its āṭaś-ca ekādeśa merges the terms).
+        // All four cells the audit flagged: 08.0005 fR laṅ uttama-puruṣa
+        // dvi/bahu, both padas.
+        let d = dhatus().iter().find(|d| d.dhatupatha == "08.0005").unwrap();
+        let cases: [(Pada, Vacana, &str, &str); 4] = [
+            (Pada::Parasmaipada, Vacana::Dvi, "ArRuva", "ArRva"),
+            (Pada::Parasmaipada, Vacana::Bahu, "ArRuma", "ArRma"),
+            (Pada::Atmanepada, Vacana::Dvi, "ArRuvahi", "ArRvahi"),
+            (Pada::Atmanepada, Vacana::Bahu, "ArRumahi", "ArRmahi"),
+        ];
+        for (pada, vacana, declined_form, accepted_form) in cases {
+            let branches = derive(d, Lakara::Lan, pada, Purusha::Uttama, vacana);
+            let mut forms: Vec<String> = branches.iter().map(|p| p.text()).collect();
+            forms.sort();
+            let mut expected = [declined_form.to_string(), accepted_form.to_string()];
+            expected.sort();
+            assert_eq!(
+                forms, expected,
+                "{pada:?} {vacana:?}: expected both asaṁyogapūrva readings, got {forms:?}"
+            );
+        }
+    }
+
+    #[test]
+    fn arruhi_guna_conjunct_still_declines_hi_luk_after_the_reorder() {
+        // Regression guard for the fix above: reordering 6.4.106/6.4.107
+        // ahead of 6.1.90 must NOT touch this cell. fR's 7.3.86 guṇa arm
+        // produces `arR` — a REAL conjunct (unlike the laṅ cells above,
+        // where 6.1.90's ekādeśa only manufactures a surface-identical
+        // one) — so loṭ madhyama-eka's `hi` must still survive: arRuhi,
+        // never *arRu. 6.4.106's own placement is provably inert (`hi` is
+        // loṭ-only; the āṭ-vṛddhi ekādeśa this fix dodges is laṅ-only), so
+        // this cell's rule order — and therefore its answer — is
+        // unchanged by the move; this test pins that it stayed unchanged.
+        let d = dhatus().iter().find(|d| d.dhatupatha == "08.0005").unwrap();
+        let branches = derive(
+            d,
+            Lakara::Lot,
+            Pada::Parasmaipada,
+            Purusha::Madhyama,
+            Vacana::Eka,
+        );
+        let forms: Vec<String> = branches.iter().map(|p| p.text()).collect();
+        assert!(
+            forms.iter().any(|f| f == "arRuhi"),
+            "expected arRuhi among {forms:?}"
+        );
+        assert!(
+            !forms.iter().any(|f| f == "arRu"),
+            "6.4.106 must still decline for the guṇa'd conjunct: got {forms:?}"
+        );
     }
 
     #[test]
