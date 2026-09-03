@@ -1048,6 +1048,32 @@ mod tests {
     }
 
     #[test]
+    fn pugantalaghupadhasya_tanadi_arm_declines_a_vowel_final_anga() {
+        // The vikalpa arm's own guard, `n < 2 || is_vowel(chars[n - 1])`, has
+        // an `||` that no curated tanādi root exercises: kziR/fR/tfR/GfR all
+        // close on the consonant R, so `is_vowel(chars[n - 1])` is always
+        // false for them and the guard's verdict comes entirely from `n < 2`.
+        // A synthetic vowel-final aṅga ("fu") isolates the other disjunct:
+        // `n < 2` is false (n=2) but `is_vowel(chars[n - 1] = 'u')` is true,
+        // so `||` declines immediately. Under `&&` the guard would instead
+        // fall through to the ik-penult check — `f` matches — and wrongly
+        // guṇate, turning "fu" into "aru".
+        let mut p = Prakriya {
+            terms: vec![Term::new("fu"), Term::new("u"), Term::new("ti")],
+            ..Default::default()
+        };
+        p.terms[0].add(Tag::Dhatu);
+        p.terms[0].add(Tag::Tanadi);
+        p.terms[1].add(Tag::Vikarana);
+        let vikalpa = rules().filter(|r| r.id == "7.3.86").nth(1).unwrap();
+        assert!(!(vikalpa.apply)(&mut p));
+        assert_eq!(
+            p.terms[0].text, "fu",
+            "guard must decline before any mutation"
+        );
+    }
+
+    #[test]
     fn shings_guna_leaves_every_other_adadi_root_alone() {
         // 7.4.21 is root-specific. The other five adādi roots must be
         // untouched by it: their finals (`A`, `d`, `s`) are outside the guard,

@@ -261,6 +261,10 @@ mod tests {
             ("kur", "u", true),    // 8b's √kṛ after 6.4.110: r after u
             ("arR", "u", false),   // guṇa'd fR: rR conjunct — arRuhi keeps hi
             ("tan", "nu", false),  // control: an n-final stem under śnu is a conjunct
+            ("ti", "u", true),     // synthetic: no curated root is vowel-final
+                                   // under tanādi's bare `u`, so this pins the `(Some(v), _) if
+                                   // is_vowel(v) => true` arm on its own — every other "u" row
+                                   // ends in a consonant and only ever reaches the second arm.
         ] {
             let mut p = Prakriya {
                 terms: vec![Term::new(root), Term::new(vikarana), Term::new("anti")],

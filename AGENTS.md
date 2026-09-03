@@ -539,6 +539,117 @@
     single mutant approached the cap under its own 4800s budget — the
     only mutant that did was the known-permanent timeout, tested this
     campaign at a deliberately reduced 2700s and not at 4800s.
+    **This slice (tanādi gaṇa, 8a/8b) re-measured both at 3420 cells.**
+    Uncontended floor: paradigm 823.70s, roundtrip 1044.78s, trace 3.47s —
+    a wall clock of **1872.979s** (`time mise run test`'s own wall clock;
+    the 1871.95s component sum leaves ~1.03s of build overhead, within the
+    ~0.8–4s range every prior slice's two methods have agreed on). Cell
+    count grew **+20.3%** this slice (2844 → 3420), the largest single-
+    slice growth since the gaṇa began; the floor grew from 7g's 1132.12s
+    to 1872.979s, **+65.4%** — a **~3.23×** under-prediction, the
+    **eighth** consecutive slice where scaling the floor by cell count
+    would have been wrong, and by the widest margin yet. `roundtrip`
+    carried the most growth this time (606.79s → 1044.78s, +72.2%, well
+    above the overall rate); `paradigm` grew more slowly (521.77s →
+    823.70s, +57.9%, below the overall rate); `trace`, unlike most of this
+    series, did NOT move the most in relative terms this time (2.67s →
+    3.47s, +30.0%, below the overall rate rather than above it — tanādi's
+    ik-vowel arms evidently cost `paradigm`/`roundtrip` far more than
+    `trace`).
+    Cap sanity check before the campaign: 1872.979s × the standing
+    **1.02×–1.43×** `-j 4` contention range projects an uncaught mutant at
+    **1910.44–2678.36s**. Against the standing `--timeout 4800` cap, that
+    is a margin of **1.79×–2.51×** — inside the brief's own pre-campaign
+    estimate (~1943s, "ample margin"), but the tightest pre-campaign range
+    in this series to date (previous low: 7g's 2.96×–4.16×). Still
+    comfortably under 4800s, so the brief's own stop condition (projection
+    exceeding the cap) was not triggered. **Ruling: keep 4800, proceed.**
+    Campaign at `-j 4 --timeout 4800`: **604 mutants, 560 caught, 4
+    missed, 39 unviable, 1 timeout** (560 + 39 + 1 = 600, plus the 4
+    missed = 604), a single continuous run — not chunked with `--iterate`
+    — wall clock **~16h07m** (2026-09-01 09:39:25 – 2026-09-02 01:46:57
+    UTC; the `cargo-mutants` process was launched detached from its
+    dispatching shell via `nohup`/background-disown, which let it survive
+    past the ~60-minute background-shell limit that forced 7g's 12-segment
+    run). This slice ADDS engine code — 3.1.79's vikaraṇa arm, 6.1.77, the
+    7.3.86 vikalpa arm, `vikarana_u_asamyogapurva`, `vrddhi_of`'s `f` arm,
+    and the controller's convergent-fork collapse — so the mutant
+    population grew with it: 573 → 604, **+5.4%**.
+    The timeout is the known-permanent `tripadi.rs`, 8.4.2's backward
+    ṇatva scan, non-terminating-loop mutant (`j -= 1` -> `j /= 1` at
+    `tripadi.rs:1406:23`, making `j` constant so the mutated run never
+    reaches an assertion), confirmed by diff shape rather than by line
+    number — unmoved from 7e/7f/7g's own report of the same construct.
+    **Of the four missed mutants, two are 7e's own documented equivalent
+    pair, relocated but otherwise unchanged, and two are genuine new-code
+    gaps that were resolved with narrow unit tests, each verified caught
+    by an isolated re-run at the standing `-j 4 --timeout 4800` cap:**
+    - `adesha.rs:505:30` (moved from 7g's `:393:30` by this slice's own
+      new code earlier in the file), 6.1.87's im arm, `replace + with *`
+      (`s.remove(pos + 1)` -> `s.remove(pos)`) — the same documented
+      equivalence as 7e/7f/7g: whichever half of the adjacent `a i` pair
+      survives the removal is immediately clobbered by the following
+      `'e'` assignment. No test added, per the guard's own in-place
+      comment.
+    - `tripadi.rs:1166:38` (unmoved from 7f/7g), 8.3.13's guard, `replace
+      - with /` (`w[i - 1]` -> `w[i / 1]`, i.e. `w[i]`) — the same
+      documented equivalence as before: both `Q`s at the matched position
+      are identical, so eliding either produces the same surface string.
+      No test added.
+    - `guna.rs:177:22`, the 7.3.86 vikalpa arm's own guard, `replace ||
+      with &&` (`n < 2 || is_vowel(chars[n - 1])`) — a genuine gap: every
+      curated tanādi root (kziR/fR/tfR/GfR) closes on the consonant `R`,
+      so `is_vowel(chars[n - 1])` is always false for them and the
+      guard's verdict comes entirely from `n < 2`, itself always false
+      (every curated root is ≥ 2 chars). Neither the pre-existing "guard-
+      edge pin" tests (written for the *other* 7.3.86 entry, at line 123)
+      nor the vikalpa arm's own two tests exercise a vowel-final aṅga.
+      Added `pugantalaghupadhasya_tanadi_arm_declines_a_vowel_final_anga`
+      (`crates/panini-prakriya/src/tinanta/guna.rs`) with a synthetic
+      vowel-final aṅga (`"fu"`) that isolates the `||`/`&&` split;
+      isolated re-run confirms the mutant is now caught.
+    - `terms.rs:177:25`, `vikarana_u_asamyogapurva`'s `(Some(v), _) if
+      is_vowel(v) => true` match guard — a genuine gap: no curated root's
+      vikaraṇa-`u` is directly preceded by a vowel (every "u" row instead
+      reaches the helper's second, consonant-then-vowel arm), so the
+      guard's own in-place comment ("No curated root reaches this arm")
+      was literally true of the test suite too. Added a synthetic
+      `("ti", "u", true)` row to
+      `vikarana_u_asamyogapurva_is_true_exactly_for_the_non_conjunct_stems`
+      (`crates/panini-prakriya/src/tinanta/terms.rs`); isolated re-run
+      confirms the mutant is now caught.
+    Every other new-code risk area the brief flagged came back caught, not
+    merely present: 3.1.79's own guard (`vikarana.rs:214:16`), 6.1.77's
+    guard (`guna.rs:466`, `:472`), the controller's collapse
+    (`controller.rs:23`, `:53`), and all four arms of `vrddhi_of`
+    including the new `f` arm (`sound.rs:26:9`) are all in `caught.txt`.
+    `outcomes.json`'s per-mutant test-phase durations (**n = 565** — 604
+    mutants minus the 39 unviable ones, which fail at the Build phase and
+    never reach a Test phase) put the median at 140.30s, p90 (nearest-
+    rank, as in 7e/7f) at 1853.46s, p99 at 1996.95s, and the max at
+    4800.00s — that max being the known-permanent timeout itself, not a
+    caught or missed mutant. Excluding the timeout, the max is
+    **2592.40s** (`tripadi.rs:1401:33`, `replace < with <=`,
+    `CaughtMutant`). **129** of the 565 runs exceeded 600s and **62**
+    exceeded 1200s — both the highest counts yet in this series,
+    consistent with the floor's own outsized growth this slice.
+    **Two margins, measured, not projected:**
+    - Against the worst **caught** mutant (2592.40s, measured, excluding
+      the timeout): 4800 / 2592.40 ≈ **1.85×**.
+    - Against the worst **uncaught** run (1996.95s, measured — the four
+      originally-missed mutants ran the full golden suite to completion
+      without being caught, ranging 1895.55s–1996.95s; the `terms.rs`
+      mutant's 1996.95s was the slowest): 4800 / 1996.95 ≈ **2.40×**.
+    **Ruling: keep 4800.** Both margins clear 1× comfortably, but the
+    caught-mutant margin (1.85×) is the **lowest yet in this series** —
+    below 7d's previous low of 1.96×/2.46× — driven entirely by this
+    slice's outsized floor growth (+65.4% against a cap that has not
+    moved since 7e). The next slice should re-measure both figures rather
+    than assume this margin holds: if a future slice's pre-campaign
+    projection (Step 2) exceeds 4800s, or its measured caught-mutant
+    margin drops much below this slice's 1.85×, that is the trigger to
+    raise the cap — recorded in `AGENTS.md` and `mise.toml` together, per
+    the standing rule, not a silent widening.
   - `cargo-deny` + `cargo-audit` (supply-chain checks) — `mise run audit` runs
     `cargo audit && cargo deny check` and is expected to pass, including
     `cargo deny check advisories`.
