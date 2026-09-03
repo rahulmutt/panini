@@ -96,9 +96,9 @@ pub struct Dhatu {
     pub gana: Gana,
     /// Which pada(s) this engine derives for this root. Curated rather than
     /// read from the upadeśa's it-markers — but no longer a *deferral*:
-    /// `curated_pada_agrees_with_upadesha_markers` re-derives 66 of these 67
+    /// `curated_pada_agrees_with_upadesha_markers` re-derives 75 of these 76
     /// verdicts from the vendored upadeśa via 1.3.12 / 1.3.72 / 1.3.78 and
-    /// requires them to match; the 67th, √bhuj's, is 1.3.66's root-keyed
+    /// requires them to match; `07.0017`'s (√bhuj's) is 1.3.66's root-keyed
     /// exception, asserted explicitly from both sides, the same way
     /// `dhatupatha_numbers_resolve_upstream` holds `code` to upstream.
     ///
@@ -109,7 +109,7 @@ pub struct Dhatu {
     /// the honest arrangement; see the deferral in
     /// `docs/superpowers/specs/2026-08-16-pada-audit-design.md`.
     ///
-    /// The test covers the 67 roots curated here, not the dhātupāṭha's 2259.
+    /// The test covers the 76 roots curated here, not the dhātupāṭha's 2259.
     /// It catches a mis-assigned pada on a root a future slice adds; it does
     /// not make the table self-maintaining.
     pub pada: PadaAssignment,

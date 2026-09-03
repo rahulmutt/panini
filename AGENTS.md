@@ -1054,11 +1054,13 @@
   fork) — plus two structural engine changes the divergence exposed: the
   asaṁyogapūrva helper (`terms.rs`, renamed `shnu_asamyogapurva` →
   `vikarana_u_asamyogapurva` to read tanādi's bare `u` as well as svādi's
-  `nu`) had to move 6.4.106/6.4.107 ahead of laṅ's 6.1.90 āṭ-vṛddhi
-  ekādeśa, since read after it a genuinely non-conjunct `u` (fR's) and a
-  guṇa'd conjunct one (arR's) both render as the same three characters
-  (`rR`) and become indistinguishable to the helper's surface-text-only
-  reading; and `run_pipeline` gained a convergent-fork collapse (dedup on
+  `nu`) reads only surface characters, so evaluated after 6.1.90 it could
+  no longer tell a genuinely non-conjunct `u` (fR's) from a guṇa'd
+  conjunct one (arR's) — 6.1.90's āṭ-vṛddhi ekādeśa merges the augment
+  into both the same way, leaving the same three characters (`rR`) either
+  way — and the fix moved 6.4.106/6.4.107 themselves ahead of that
+  ekādeśa instead, so the helper reads the aṅga before the merge erases
+  the distinction; and `run_pipeline` gained a convergent-fork collapse (dedup on
   identical live-branch text, first/declined branch kept), needed once
   7.3.86's new vikalpa arm could put a guṇa'd and an āṭ-vṛddhi'd branch on
   the same surface (`A+fR` and `A+arR` both → `ArRot`). See
@@ -1081,18 +1083,30 @@
   be satisfied by copying back our own choice, unlike matching on number or
   artha alone (upstream has 8- and 15-way artha collisions).
   Two comments inside `crates/panini-prakriya/src` still carry pre-7c
-  figures — `controller.rs:130` and `tinanta/guna.rs:943` cite the corpus
-  size as 1872/1864-of-1872, now five slices further stale: the corpus
+  figures — `controller.rs:152` and `tinanta/guna.rs:1233` (drifted from
+  the `:130`/`:943` this ledger previously cited, as later slices added
+  code above them; confirmed by re-reading each construct at its current
+  line rather than trusting the old numbers to have held) cite the corpus
+  size as 1872/1864-of-1872, now seven slices further stale: the corpus
   stood at 2304/2296-of-2304 as of the 8.2.30/8.2.39 slice, stood at
   2592/2584-of-2592 as of rudhādi 7d, stood at 2628/2620-of-2628 as of
-  rudhādi 7e, stood at 2772/2764-of-2772 as of rudhādi 7f, and stands at
+  rudhādi 7e, stood at 2772/2764-of-2772 as of rudhādi 7f, stood at
   2844/2836-of-2844 as of the √bhuj/1.3.66 slice — the same 8
-  cells 6.4.107 always fired on (`key_count("6.4.107") == 8`, pinned in
+  cells 6.4.107 always fired on through all of those slices
+  (`key_count("6.4.107") == 8` back then, pinned in
   `derivation_set_shape_matches_the_audited_numbers`,
-  `crates/panini/tests/paradigm/main.rs`), unmoved by 7d, 7e, 7f or √bhuj/1.3.66 since 6.4.107
-  concerns only
-  svādi's
-  √hi and √ri. Rudhādi 7d touched neither comment — its one permitted
+  `crates/panini/tests/paradigm/main.rs`), unmoved by 7d, 7e, 7f or
+  √bhuj/1.3.66 since 6.4.107 concerned only svādi's √hi and √ri — and now
+  stands at 3420 cells as of tanādi 8a, where `controller.rs:152`'s own
+  claim ("only 8 cells fire it at all") is no longer merely
+  corpus-size-stale but flatly wrong: tanādi's bare `u` is asaṁyogapūrva
+  for every one of its nine curated roots, so 6.4.107 now fires on **72**
+  cells across eleven roots (`key_count("6.4.107") == 72`, the same
+  test), not 8 — the "8 cells" figure was never re-derived when the gaṇa
+  landed. `guna.rs:1233`'s own claim ("1872 goldens move") stays stale
+  only in the ordinary corpus-size sense, not wrong in kind: 3420 goldens
+  would move today. Neither comment was touched by tanādi 8a, consistent
+  with every slice since 7c. Rudhādi 7d touched neither comment — its one permitted
   engine-comment edit is the comment above
   `vrddhi_of_ac_vowels_all_arms` in `tinanta/sound.rs`. Rudhādi 7e, rudhādi
   7f and the √bhuj/1.3.66 slice touched neither comment either. A third,

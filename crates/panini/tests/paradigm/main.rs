@@ -138,7 +138,7 @@ fn every_alternate_names_a_real_cell() {
 /// duplicated here rather than exported because this is an integration test
 /// and the rule table is crate-internal.
 const VIKALPA_RULES: &[&str] = &[
-    "7.1.35", "3.4.111", "6.4.107", "7.3.86", "8.2.74", "8.2.75", "8.4.65", "8.4.56",
+    "7.1.35", "3.4.111", "7.3.86", "6.4.107", "8.2.74", "8.2.75", "8.4.65", "8.4.56",
 ];
 
 /// `ALTERNATES` is otherwise 901 bare strings, and a string can be right for
@@ -385,13 +385,20 @@ fn derivation_set_is_exactly_pinned() {
 /// AND madhyama eka each hold six live forms, stacking 7.1.35/7.3.86/8.4.56
 /// where every earlier six-form cell stacked 7.1.35/8.4.65/8.4.56 — 8.4.65
 /// has nothing to elide in tanādi's u-final stems, so 7.3.86's guṇa/aguṇa
-/// fork stands in its place. fR's laṅ parasmaipada prathama eka is the one
-/// 7.3.86-eligible cell that does not fork on it: the guṇa branch (`ArR-`)
-/// and the aguṇa branch converge on the same surface once 8.4.56's cartva
-/// applies, so the cell holds exactly two forms (`ArRod` golden, `ArRot`
-/// alternate, keyed `8.4.56` alone, no `7.3.86`-keyed row) rather than the
-/// three every other 7.3.86-bearing cell of theirs holds — the corpus's
-/// first convergent-fork collapse. √van and √man, ātmanepada-only, fork
+/// fork stands in its place. fR's laṅ cells are where the convergence is
+/// easiest to see, but not the only place it happens: all eighteen of
+/// them (both padas, all nine puruṣa/vacana cells) are 7.3.86-eligible,
+/// and none carries a 7.3.86-keyed `ALTERNATES` row — the guṇa branch
+/// (`ArR-`) and the aguṇa branch converge on the same surface under
+/// 6.1.90's āṭ-vṛddhi ekādeśa in every one of them, the corpus's first
+/// convergent-fork collapse, not a one-cell anomaly. Prathama eka is
+/// merely where the missing branch is most visible: it is the one laṅ
+/// cell that also stacks 8.4.56's pausal cartva, so the comparable cell
+/// at tfR's, GfR's and kziR's own laṅ parasmaipada prathama eka holds
+/// **four** forms (`atfRod`/`atfRot`/`atarRod`/`atarRot` for tfR, and
+/// likewise in shape for GfR and kziR), while fR's holds only two
+/// (`ArRod` golden, `ArRot` alternate, keyed `8.4.56` alone) — the
+/// missing branch is 7.3.86's, not 8.4.56's. √van and √man, ātmanepada-only, fork
 /// only in laṭ and laṅ uttama dvi/bahu, on 6.4.107 — unlike every other
 /// tanādi root, they take no loṭ fork at all, because 7.1.35 tātaṅ names
 /// only the parasmaipada loṭ ending and van/man never derive a

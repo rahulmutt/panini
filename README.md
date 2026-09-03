@@ -70,11 +70,16 @@ more cells, taking the record to sixteen): where the earlier eight fork on
 tanādi's u-final stems give 8.4.65 nothing to elide and 7.3.86's guṇa/aguṇa
 alternation stands in its place — fR's own prathama eka holds `fRotu` /
 `arRotu` / `fRutAd` / `fRutAt` / `arRutAd` / `arRutAt`. Nothing in the suite
-forks deeper than six — fR's laṅ parasmaipada prathama eka is the one
-7.3.86-eligible cell that does *not* reach that depth: its guṇa branch
-(`ArR-`) and aguṇa branch converge on the same surface once 8.4.56's cartva
-applies, so the cell holds only two forms, the corpus's first
-convergent-fork collapse. √yuj, ubhayapadī like the
+forks deeper than six. fR's own laṅ cells — all eighteen of them, both
+padas — show a different mechanism: each is 7.3.86-eligible, but the guṇa
+and aguṇa branches always converge on the same surface once 6.1.90's
+āṭ-vṛddhi ekādeśa merges the augment into `f`, so none of the eighteen
+carries a live second branch — the corpus's first convergent-fork
+collapse, not a one-cell anomaly. It is starkest at prathama eka, the one
+laṅ cell that also stacks 8.4.56's pausal cartva: tfR's, GfR's and
+kziR's own prathama eka hold **four** forms there (`atfRod` / `atfRot` /
+`atarRod` / `atarRot` for tfR), but fR's holds only **two** (`ArRod` /
+`ArRot`) — the missing branch is 7.3.86's, not 8.4.56's. √yuj, ubhayapadī like the
 other three roots 7c curated, does *not* fork that deep: 8.2.30 *coḥ kuḥ*
 replaces its palatal `j` with the velar `g` (which 8.4.55 *khari ca* later
 devoices to `k` before a `t`), and a velar is never savarṇa with the dental

@@ -95,7 +95,7 @@ recorded below.
 - The gaṇa is **partial**: nine of tanādi's ten dhātupāṭha rows are
   curated. Seven are ubhayapadī by 1.3.72 (`tan`, `san`, `kzaR`, `kziR`,
   `fR`, `tfR` and `GfR`) and two are ātmanepadī by 1.3.12 (`van` and
-  `man`). The tenth row, `08.0010` (`qukfY`, √kṛ, ñit, ubhayapadī), is
+  `man`). The tenth row, `08.0010` (`qukf\Y`, √kṛ, ñit, ubhayapadī), is
   out: 3.1.79 *tanādikṛñbhya uḥ* itself names it (*kṛñbhya*), but the root
   additionally wants 6.4.108 *nityaṁ karoteḥ* and the other 6.4.10x
   kṛ-specials this engine does not implement, deferred to slice 8b.

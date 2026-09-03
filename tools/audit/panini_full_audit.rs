@@ -10,7 +10,7 @@
 //! removes that circularity.
 //!
 //! What it compares: for each of the 76 curated roots, for each pada the root
-//! admits (two apiece for the twelve roots that admit both padas — eleven
+//! admits (two apiece for the nineteen roots that admit both padas — eighteen
 //! ubhayapadī by 1.3.72, plus √bhuj by 1.3.66), for each of the four
 //! lakāras this engine
 //! implements (laṭ, laṅ, loṭ, vidhiliṅ), for each of the nine puruṣa × vacana
