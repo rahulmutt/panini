@@ -77,3 +77,25 @@ recorded below.
   remainder is now a one-root one: √bhuj alone,
   held out by the *anavane* sense restriction rather than by curation
   lag or sūtra cost.
+- Cross-reference: the tanādi gaṇa (gaṇa 8), slice 8a, entries correspond to
+  Dhātupāṭha numbers 08.0001 (`tanu~^`), 08.0002 (`zaRu~^`), 08.0003
+  (`kzaRu~^`), 08.0004 (`kziRu~^`), 08.0005 (`fRu~^`), 08.0006 (`tfRu~^`),
+  08.0007 (`GfRu~^`), 08.0008 (`vanu~\`) and 08.0009 (`manu~\`). 08.0002
+  is the second `dhAtvAdeH SaH saH` row 6.1.64 stores — after √ṣṭigh
+  (`stiG`, gaṇa 5) — and shares its shape: the upadeśa's `z` becomes `s`,
+  and with the `z` gone its conditioned retroflex `R` reverts to `n`
+  (nimitta-nāśa), so the stored `code` is `san`, not `saR`, matching what
+  vidyut-prakriya derives (`sanoti`/`sanute`). `08.0008` (`vanu~\`) is
+  ātmanepadī by its own anudātta marker (1.3.12); vidyut-prakriya
+  additionally derives a parasmaipada `vanoti` via the gaṇasūtra Kaumudī
+  2547.2, which is recorded here, not modelled, on 1.3.72's own
+  sense-restriction precedent — the same record-don't-model posture, so
+  the parasmaipada column this table does not carry for `van` is a
+  documented deviation, not a latent diff.
+- The gaṇa is **partial**: nine of tanādi's ten dhātupāṭha rows are
+  curated. Seven are ubhayapadī by 1.3.72 (`tan`, `san`, `kzaR`, `kziR`,
+  `fR`, `tfR` and `GfR`) and two are ātmanepadī by 1.3.12 (`van` and
+  `man`). The tenth row, `08.0010` (`qukfY`, √kṛ, ñit, ubhayapadī), is
+  out: 3.1.79 *tanādikṛñbhya uḥ* itself names it (*kṛñbhya*), but the root
+  additionally wants 6.4.108 *nityaṁ karoteḥ* and the other 6.4.10x
+  kṛ-specials this engine does not implement, deferred to slice 8b.

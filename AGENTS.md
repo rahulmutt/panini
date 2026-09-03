@@ -663,18 +663,24 @@
   target under `crates/panini-lipi/fuzz` legitimately omits it, since it uses
   `#![no_main]` plus the libfuzzer harness macro).
 - Grammar changes are gated by the golden paradigm test
-  (`crates/panini/tests/paradigm/`, 2844 cells, seven complete gaṇas —
+  (`crates/panini/tests/paradigm/`, 3420 cells, eight gaṇas — seven complete,
+  tanādi partial (nine of its ten dhātupāṭha rows, slice 8a; √kṛ deferred to
+  8b) —
   `PARADIGM`
     stays one-form-per-cell: a cell forked by an optional rule keeps its
-    other forms — a second (250 cells), a third (83 cells), a fourth (2
-    cells, rudhādi's √piṣ and — new in slice 7d — √śiṣ loṭ madhyama eka) and
+    other forms — a second (520 cells), a third (109 cells), a fourth
+    (seventeen
+    cells, rudhādi's √piṣ and — new in slice 7d — √śiṣ loṭ madhyama eka, and
+    — new in slice 8a — fifteen more spread across tanādi's four ik-upadhā
+    roots kziR/fR/tfR/GfR) and
     — the loṭ parasmaipada cells of
     rudhādi's √kṛt, √rudh, √bhid, √kṣud, √tṛd, √und and — new in slice 7f —
     √chid and √chṛd,
-    eight ways tied as the
-    sharpest forks in the suite — a fourth
+    eight ways tied as the record until slice 8a, when the loṭ parasmaipada
+    prathama AND madhyama eka of tanādi's four ik-upadhā roots kziR, fR, tfR
+    and GfR doubled it to sixteen — a fourth
     and fifth (prathama eka) or a fourth through sixth (madhyama eka) — in
-    `ALTERNATES` (494 rows in all, so 2844 + 494 = 3338 forms total); √bhuj
+    `ALTERNATES` (901 rows in all, so 3420 + 901 = 4321 forms total); √bhuj
     joins neither fork record — its forks stack only 7.1.35 and 8.4.56, the
     same two-deep profile as √yuj — but the √bhuj/1.3.66 slice adds two
     trace pins of its own, `bhunkte_trace_credits_1_3_66_not_1_3_72` and
@@ -966,6 +972,15 @@
     (`krntat_trace_shows_savarna_elision_above_pausal` in
     `crates/panini/tests/trace/rudhadi.rs` is the sole pin; no surface-form golden
     catches a reversal).
+    tanādi (gaṇa 8, vikaraṇa the bare `u` of 3.1.79) is now **partial** —
+    slice 8a curated nine of its ten dhātupāṭha rows (√tan, √san, √kṣaṇ,
+    √kṣiṇ, √ṛ, √tṛ and √ghṛ, all seven ubhayapadī by 1.3.72, plus √van and
+    √man, both ātmanepadī by 1.3.12), taking the curated set from 67 to
+    **76** roots; √kṛ (`08.0010`), the one root 3.1.79 itself names, is
+    deferred to slice 8b behind the 6.4.108–110 kṛ-specials. See
+    `docs/ARCHITECTURE.md`'s tanādi paragraph and
+    `docs/superpowers/specs/2026-08-30-tanadi-gana-design.md` for the rule
+    analysis.
   and by the ordered-trace test (`crates/panini/tests/trace/`), which pins
   rule order. Surface forms and trace order there are the source of truth;
   sūtra ids/names in traces must match the cited reference. In practice that
@@ -1108,14 +1123,18 @@
   in its stage file, with its id in `tinanta_rule_order_is_pinned` in
   position — and also add it to
   `exactly_the_pinned_vikalpa_rules_are_optional`, which pins the whole
-  optional set by id. **Seven rules are optional today, in pipeline order:
-  7.1.35, 3.4.111, 6.4.107, 8.2.74, 8.2.75, 8.4.65, 8.4.56.** 7.1.35 and
+  optional set by id. **Eight rules are optional today, in pipeline order:
+  7.1.35, 3.4.111, 7.3.86, 6.4.107, 8.2.74, 8.2.75, 8.4.65, 8.4.56.** (7.3.86
+  is the vikalpa entry only — its *nitya* entry, just above it in the
+  pipeline, is not optional.) 7.1.35 and
   8.4.56 can both fire on one derivation, stacking into a three-branch
   cell — loṭ prathama eka forks twice, giving `Bavatu` / `BavatAd` /
   `BavatAt`. Eight rudhādi roots — √kṛt, √rudh, √bhid, √kṣud, √tṛd, √und,
   √chid and √chṛd — each
-  stack three of the seven (7.1.35,
-  8.4.65, 8.4.56) on their own loṭ parasmaipada cells — five branches at
+  stack three of the eight (7.1.35,
+  8.4.65, 8.4.56) on their own loṭ parasmaipada cells, and tanādi's
+  kziR/fR/tfR/GfR stack a different three (7.1.35, 7.3.86, 8.4.56) on
+  theirs — five branches at
   prathama eka, six at madhyama eka
   (`kfndDi` / `kfnDi` / `kfnttAd` / `kfntAd` / `kfnttAt` /
   `kfntAt`, and `rundDi` / `runDi` / `rundDAd` / `runDAd` / `rundDAt` /

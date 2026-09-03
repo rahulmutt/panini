@@ -296,9 +296,11 @@ pub(crate) static ADESHA: &[Rule] = &[
     // below this rule would read the wrong answer for half a paradigm, with
     // both halves individually plausible. Every rule that reads the
     // vikaraṇa's u-bearing text must precede it — 6.4.87 and 6.4.106 (just
-    // above) via `vikarana_u_asamyogapurva`, and 6.4.77 in guna.rs, which
-    // open-codes the same `text == "nu"` test — and all three do (and now
-    // so must 6.1.90's aṅga arm, immediately below, for the reason above).
+    // above) via `vikarana_u_asamyogapurva`, 6.4.77 in guna.rs, which
+    // open-codes the same `text == "nu"` test, and 6.1.77 in guna.rs, which
+    // open-codes the tanādi-specific `SHAP.text == "u"` test — and all four
+    // do (and now so must 6.1.90's aṅga arm, immediately below, for the
+    // reason above).
     Rule {
         id: "6.4.107",
         name: "lopaScAsyAnyatarasyAM mvoH",

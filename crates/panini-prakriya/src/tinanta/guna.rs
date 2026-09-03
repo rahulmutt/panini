@@ -324,13 +324,15 @@ pub(crate) static GUNA: &[Rule] = &[
     // NO DELTA on any pre-existing form, by guard rather than by argument.
     // The complete inventory of SHAP texts reaching this point is `a`
     // (śap/śa), `ya` (śyan), `` (adādi luk), `Ana` (śānac), `nA`/`n` (śnā,
-    // 6.4.112), `nI` (śnā, 6.4.113), and — for rudhādi, where SHAP holds
-    // śnam followed by the root's own tail (3.1.78) — `nat`, `nah`, `nans`
-    // and their kin, plus `naih` once 7.3.92 above has put the im in.
-    // Only `nI` is ik-final; every rudhādi shape is consonant-final, so
-    // `guna_of` returns None for all of them. 6.4.113 produces `nI` ONLY
-    // before a ṅit ending — so the 1.1.5 test below declines there. Two
-    // tests pin both halves.
+    // 6.4.112), `nI` (śnā, 6.4.113), `u` (tanādi, 3.1.79), and — for
+    // rudhādi, where SHAP holds śnam followed by the root's own tail
+    // (3.1.78) — `nat`, `nah`, `nans` and their kin, plus `naih` once
+    // 7.3.92 above has put the im in. `nI` and `u` are ik-final (`u`'s the
+    // whole point of 3.1.79's ārdhadhātuka status: tanoti's guṇa runs
+    // here); every rudhādi shape is consonant-final, so `guna_of` returns
+    // None for all of them. 6.4.113 produces `nI` ONLY before a ṅit
+    // ending — so the 1.1.5 test below declines there. Two tests pin both
+    // halves.
     //
     // Ordered BEFORE 6.1.78: the loṭ uttama endings are vowel-initial and
     // pit, so guṇa leaves `no`, which 6.1.78 must then make `nav`. Ordered
@@ -572,14 +574,17 @@ pub(crate) static GUNA: &[Rule] = &[
                 }
             }
 
-            // Vikaraṇa arm (svādi): 7.3.84's second application has just
-            // guṇated śnu's `u` to `o`, so the ec this sūtra converts sits
-            // on the VIKARAṆA, not on the aṅga — Ap + no + Ani → Apnav +
-            // Ani. Mutually exclusive with both arms above: those require the
-            // aṅga to end in e/o, which no svādi root does, and this one
-            // requires SHAP to end in e/o, which none of śap `a`, śyan `ya`,
-            // śa `a`, śnā `nA`/`n`/`nI`, śānac `Ana` or adādi's empty śap
-            // ever does.
+            // Vikaraṇa arm (svādi and tanādi): 7.3.84's second application
+            // has just guṇated śnu's `u` to `o`, so the ec this sūtra
+            // converts sits on the VIKARAṆA, not on the aṅga — Ap + no +
+            // Ani → Apnav + Ani. Tanādi's bare `u` (3.1.79) reaches the same
+            // arm the same way: tan + o + Ani → tanav + Ani (`tanavAni`).
+            // Mutually exclusive with both arms above: those require the
+            // aṅga to end in e/o, which no svādi or tanādi root does, and
+            // this one requires SHAP to end in e/o, which none of śap `a`,
+            // śyan `ya`, śa `a`, śnā `nA`/`n`/`nI`, śānac `Ana` or adādi's
+            // empty śap ever does — only svādi's guṇated `nu` and tanādi's
+            // guṇated `u` ever reach it.
             if p.terms.len() > ENDING
                 && let Some(shap_last) = p.terms[SHAP].text.chars().last()
                 && let Some(sub) = sub_for(shap_last)

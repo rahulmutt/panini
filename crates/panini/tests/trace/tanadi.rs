@@ -13,8 +13,13 @@ fn tanoti_trace_is_the_ardhadhatuka_u_core() {
     // pit; the u is ārdhadhātuka and the second 1.2.4's Sarvadhatuka
     // guard excludes it — tanoti exists BECAUSE that guard does), and no
     // second 1.3.9 (the bare u has no anubandha to strip, unlike śnu).
-    let (text, t) = cell_trace("08.0001", Lakara::Lat, Pada::Parasmaipada,
-        Purusha::Prathama, Vacana::Eka);
+    let (text, t) = cell_trace(
+        "08.0001",
+        Lakara::Lat,
+        Pada::Parasmaipada,
+        Purusha::Prathama,
+        Vacana::Eka,
+    );
     assert_eq!(text, "tanoti", "got {t:?}");
     assert!(at(&t, "3.1.79") < at(&t, "7.3.84"), "got {t:?}");
     assert!(!t.contains(&"1.2.4".to_string()), "got {t:?}");
@@ -28,8 +33,13 @@ fn tanvanti_trace_credits_6_1_77_not_the_shnu_rules() {
     // (names hu/śnu) or 6.4.77 (uvaṅ): a widened-guard regression on
     // either would derive the same surface by the wrong rule, which is
     // exactly what a trace pin exists to catch.
-    let (text, t) = cell_trace("08.0001", Lakara::Lat, Pada::Parasmaipada,
-        Purusha::Prathama, Vacana::Bahu);
+    let (text, t) = cell_trace(
+        "08.0001",
+        Lakara::Lat,
+        Pada::Parasmaipada,
+        Purusha::Prathama,
+        Vacana::Bahu,
+    );
     assert_eq!(text, "tanvanti", "got {t:?}");
     assert!(t.contains(&"6.1.77".to_string()), "got {t:?}");
     assert!(!t.contains(&"6.4.87".to_string()), "got {t:?}");
@@ -41,8 +51,13 @@ fn tanute_trace_opens_with_1_3_72() {
     // tan laT ātmanepada P.E: the svarita-it row reaches 1.3.72 (not
     // 1.3.12, not 1.3.66), and the u then survives unguṇated behind the
     // ṅit te.
-    let (text, t) = cell_trace("08.0001", Lakara::Lat, Pada::Atmanepada,
-        Purusha::Prathama, Vacana::Eka);
+    let (text, t) = cell_trace(
+        "08.0001",
+        Lakara::Lat,
+        Pada::Atmanepada,
+        Purusha::Prathama,
+        Vacana::Eka,
+    );
     assert_eq!(text, "tanute", "got {t:?}");
     assert!(at(&t, "1.3.72") < at(&t, "3.1.79"), "got {t:?}");
     assert!(!t.contains(&"1.3.66".to_string()), "got {t:?}");
@@ -55,9 +70,16 @@ fn trnoti_forks_on_7_3_86_and_only_there() {
     // log; the other live branch is tarRoti WITH it. Exactly two live
     // branches — the vikalpa arm is the only fork in this cell.
     let d = dhatus().iter().find(|d| d.dhatupatha == "08.0006").unwrap();
-    let branches: Vec<_> = derive(d, Lakara::Lat, Pada::Parasmaipada,
-        Purusha::Prathama, Vacana::Eka)
-        .into_iter().filter(|p| !p.blocked).collect();
+    let branches: Vec<_> = derive(
+        d,
+        Lakara::Lat,
+        Pada::Parasmaipada,
+        Purusha::Prathama,
+        Vacana::Eka,
+    )
+    .into_iter()
+    .filter(|p| !p.blocked)
+    .collect();
     let texts: Vec<String> = branches.iter().map(|p| p.text()).collect();
     assert_eq!(texts, vec!["tfRoti", "tarRoti"], "declined first");
     assert!(!branches[0].log.iter().any(|s| s.sutra == "7.3.86"));
@@ -72,9 +94,16 @@ fn rnu_and_arnuhi_split_the_asamyogapurva_test() {
     // (the sound before it is u, not jhal). The widened helper's whole
     // truth table in one cell.
     let d = dhatus().iter().find(|d| d.dhatupatha == "08.0005").unwrap();
-    let branches: Vec<_> = derive(d, Lakara::Lot, Pada::Parasmaipada,
-        Purusha::Madhyama, Vacana::Eka)
-        .into_iter().filter(|p| !p.blocked).collect();
+    let branches: Vec<_> = derive(
+        d,
+        Lakara::Lot,
+        Pada::Parasmaipada,
+        Purusha::Madhyama,
+        Vacana::Eka,
+    )
+    .into_iter()
+    .filter(|p| !p.blocked)
+    .collect();
     let texts: Vec<String> = branches.iter().map(|p| p.text()).collect();
     assert!(texts.contains(&"fRu".to_string()), "got {texts:?}");
     assert!(texts.contains(&"arRuhi".to_string()), "got {texts:?}");
@@ -94,16 +123,36 @@ fn arnot_trace_reaches_the_f_arm_of_vrddhi_and_the_fork_converges() {
     // leave exactly two live branches (the 8.2.39/8.4.56 pair), neither
     // carrying 7.3.86.
     let d = dhatus().iter().find(|d| d.dhatupatha == "08.0005").unwrap();
-    let branches: Vec<_> = derive(d, Lakara::Lan, Pada::Parasmaipada,
-        Purusha::Prathama, Vacana::Eka)
-        .into_iter().filter(|p| !p.blocked).collect();
+    let branches: Vec<_> = derive(
+        d,
+        Lakara::Lan,
+        Pada::Parasmaipada,
+        Purusha::Prathama,
+        Vacana::Eka,
+    )
+    .into_iter()
+    .filter(|p| !p.blocked)
+    .collect();
     let texts: Vec<String> = branches.iter().map(|p| p.text()).collect();
-    assert_eq!(texts, vec!["ArRod", "ArRot"], "collapsed to the 8.4.56 pair");
+    assert_eq!(
+        texts,
+        vec!["ArRod", "ArRot"],
+        "collapsed to the 8.4.56 pair"
+    );
     for b in &branches {
-        assert!(!b.log.iter().any(|s| s.sutra == "7.3.86"),
-            "a surviving branch may not carry the converged fork's rule");
-        assert!(at(&b.log.iter().map(|s| s.sutra.clone()).collect::<Vec<_>>(), "6.4.72")
-            < at(&b.log.iter().map(|s| s.sutra.clone()).collect::<Vec<_>>(), "6.1.90"));
+        assert!(
+            !b.log.iter().any(|s| s.sutra == "7.3.86"),
+            "a surviving branch may not carry the converged fork's rule"
+        );
+        assert!(
+            at(
+                &b.log.iter().map(|s| s.sutra.clone()).collect::<Vec<_>>(),
+                "6.4.72"
+            ) < at(
+                &b.log.iter().map(|s| s.sutra.clone()).collect::<Vec<_>>(),
+                "6.1.90"
+            )
+        );
     }
 }
 
@@ -111,8 +160,13 @@ fn arnot_trace_reaches_the_f_arm_of_vrddhi_and_the_fork_converges() {
 fn tanu_trace_is_the_hi_luk() {
     // tan loT M.E, declined branch: 6.4.106 luks hi behind the widened
     // helper — the tanādi twin of svādi's hinu.
-    let (text, t) = cell_trace("08.0001", Lakara::Lot, Pada::Parasmaipada,
-        Purusha::Madhyama, Vacana::Eka);
+    let (text, t) = cell_trace(
+        "08.0001",
+        Lakara::Lot,
+        Pada::Parasmaipada,
+        Purusha::Madhyama,
+        Vacana::Eka,
+    );
     assert_eq!(text, "tanu", "got {t:?}");
     assert!(t.contains(&"6.4.106".to_string()), "got {t:?}");
 }
