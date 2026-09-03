@@ -897,6 +897,22 @@ static DHATUS: &[Dhatu] = &[
         pada: PadaAssignment::Atmanepada,
         artha: "avaboDane",
     },
+    Dhatu {
+        // 08.0010 qukf\Y karaRe. √kṛ — ñit (the final Y; the qu is a
+        // ḍu-it, 1.3.5) → 1.3.72 → ubhayapadī: karoti / kurute. Rides the
+        // same 3.1.79 (the sūtra's own *kṛñbhya*), with the three
+        // root-keyed specials in guna.rs: 6.4.110 ata ut (kurutaH),
+        // 6.4.108 nityaṁ karoteḥ (kurmaH — the lopa 6.4.107 makes
+        // optional is nitya here, so NO alternates), 6.4.109 ye ca
+        // (kuryAt). 8.2.77's ur-lengthening is absent from this engine,
+        // so 8.2.79 na BakurCurAm — which vidyut records blocking it on
+        // every kur cell — has nothing to block and is likewise absent.
+        dhatupatha: "08.0010",
+        code: "kf",
+        gana: Gana::Tanadi,
+        pada: PadaAssignment::Ubhayapada,
+        artha: "karaRe",
+    },
 ];
 
 pub fn dhatus() -> &'static [Dhatu] {
@@ -938,7 +954,7 @@ mod tests {
 
     #[test]
     fn curated_roots_have_expected_ganas_and_padas() {
-        assert_eq!(dhatus().len(), 76);
+        assert_eq!(dhatus().len(), 77);
         let bu = dhatus().iter().find(|d| d.dhatupatha == "01.0001").unwrap();
         assert!(matches!(bu.pada, PadaAssignment::Parasmaipada));
         let labh = dhatus().iter().find(|d| d.dhatupatha == "01.1130").unwrap();
@@ -1200,12 +1216,12 @@ mod tests {
     }
 
     #[test]
-    fn tanadi_rows_are_the_nine_curated_roots() {
-        // Slice 8a: the gaṇa's nine plain rows, on 3.1.79's bare u. Seven
-        // svarita-it (1.3.72, ubhayapadī), two anudātta (1.3.12,
-        // ātmanepadī). 08.0010 qukf\Y — √kṛ, ñit, ubhayapadī — is slice
-        // 8b's, with the 6.4.108–110 specials; until it lands the gaṇa is
-        // PARTIAL at 9 of its 10 dhātupāṭha rows.
+    fn tanadi_rows_are_the_ten_curated_roots() {
+        // The gaṇa closes at 10/10 in this slice. Seven svarita-it (1.3.72,
+        // ubhayapadī) and two anudātta (1.3.12, ātmanepadī) ride 3.1.79's
+        // bare u; √kṛ is ñit (`qukf\Y` — the `qu` is a ḍu-it, 1.3.5; the
+        // `\` accent grave sits on the root vowel; the final `Y` is what
+        // 1.3.72 reads) → ubhayapadī: karoti / kurute.
         let rows: Vec<_> = dhatus()
             .iter()
             .filter(|d| d.gana == Gana::Tanadi)
@@ -1223,6 +1239,7 @@ mod tests {
                 ("08.0007", "GfR", PadaAssignment::Ubhayapada),
                 ("08.0008", "van", PadaAssignment::Atmanepada),
                 ("08.0009", "man", PadaAssignment::Atmanepada),
+                ("08.0010", "kf", PadaAssignment::Ubhayapada),
             ]
         );
     }
