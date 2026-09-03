@@ -539,6 +539,117 @@
     single mutant approached the cap under its own 4800s budget — the
     only mutant that did was the known-permanent timeout, tested this
     campaign at a deliberately reduced 2700s and not at 4800s.
+    **This slice (tanādi gaṇa, 8a/8b) re-measured both at 3420 cells.**
+    Uncontended floor: paradigm 823.70s, roundtrip 1044.78s, trace 3.47s —
+    a wall clock of **1872.979s** (`time mise run test`'s own wall clock;
+    the 1871.95s component sum leaves ~1.03s of build overhead, within the
+    ~0.8–4s range every prior slice's two methods have agreed on). Cell
+    count grew **+20.3%** this slice (2844 → 3420), the largest single-
+    slice growth since the gaṇa began; the floor grew from 7g's 1132.12s
+    to 1872.979s, **+65.4%** — a **~3.23×** under-prediction, the
+    **eighth** consecutive slice where scaling the floor by cell count
+    would have been wrong, and by the widest margin yet. `roundtrip`
+    carried the most growth this time (606.79s → 1044.78s, +72.2%, well
+    above the overall rate); `paradigm` grew more slowly (521.77s →
+    823.70s, +57.9%, below the overall rate); `trace`, unlike most of this
+    series, did NOT move the most in relative terms this time (2.67s →
+    3.47s, +30.0%, below the overall rate rather than above it — tanādi's
+    ik-vowel arms evidently cost `paradigm`/`roundtrip` far more than
+    `trace`).
+    Cap sanity check before the campaign: 1872.979s × the standing
+    **1.02×–1.43×** `-j 4` contention range projects an uncaught mutant at
+    **1910.44–2678.36s**. Against the standing `--timeout 4800` cap, that
+    is a margin of **1.79×–2.51×** — inside the brief's own pre-campaign
+    estimate (~1943s, "ample margin"), but the tightest pre-campaign range
+    in this series to date (previous low: 7g's 2.96×–4.16×). Still
+    comfortably under 4800s, so the brief's own stop condition (projection
+    exceeding the cap) was not triggered. **Ruling: keep 4800, proceed.**
+    Campaign at `-j 4 --timeout 4800`: **604 mutants, 560 caught, 4
+    missed, 39 unviable, 1 timeout** (560 + 39 + 1 = 600, plus the 4
+    missed = 604), a single continuous run — not chunked with `--iterate`
+    — wall clock **~16h07m** (2026-09-01 09:39:25 – 2026-09-02 01:46:57
+    UTC; the `cargo-mutants` process was launched detached from its
+    dispatching shell via `nohup`/background-disown, which let it survive
+    past the ~60-minute background-shell limit that forced 7g's 12-segment
+    run). This slice ADDS engine code — 3.1.79's vikaraṇa arm, 6.1.77, the
+    7.3.86 vikalpa arm, `vikarana_u_asamyogapurva`, `vrddhi_of`'s `f` arm,
+    and the controller's convergent-fork collapse — so the mutant
+    population grew with it: 573 → 604, **+5.4%**.
+    The timeout is the known-permanent `tripadi.rs`, 8.4.2's backward
+    ṇatva scan, non-terminating-loop mutant (`j -= 1` -> `j /= 1` at
+    `tripadi.rs:1406:23`, making `j` constant so the mutated run never
+    reaches an assertion), confirmed by diff shape rather than by line
+    number — unmoved from 7e/7f/7g's own report of the same construct.
+    **Of the four missed mutants, two are 7e's own documented equivalent
+    pair, relocated but otherwise unchanged, and two are genuine new-code
+    gaps that were resolved with narrow unit tests, each verified caught
+    by an isolated re-run at the standing `-j 4 --timeout 4800` cap:**
+    - `adesha.rs:505:30` (moved from 7g's `:393:30` by this slice's own
+      new code earlier in the file), 6.1.87's im arm, `replace + with *`
+      (`s.remove(pos + 1)` -> `s.remove(pos)`) — the same documented
+      equivalence as 7e/7f/7g: whichever half of the adjacent `a i` pair
+      survives the removal is immediately clobbered by the following
+      `'e'` assignment. No test added, per the guard's own in-place
+      comment.
+    - `tripadi.rs:1166:38` (unmoved from 7f/7g), 8.3.13's guard, `replace
+      - with /` (`w[i - 1]` -> `w[i / 1]`, i.e. `w[i]`) — the same
+      documented equivalence as before: both `Q`s at the matched position
+      are identical, so eliding either produces the same surface string.
+      No test added.
+    - `guna.rs:177:22`, the 7.3.86 vikalpa arm's own guard, `replace ||
+      with &&` (`n < 2 || is_vowel(chars[n - 1])`) — a genuine gap: every
+      curated tanādi root (kziR/fR/tfR/GfR) closes on the consonant `R`,
+      so `is_vowel(chars[n - 1])` is always false for them and the
+      guard's verdict comes entirely from `n < 2`, itself always false
+      (every curated root is ≥ 2 chars). Neither the pre-existing "guard-
+      edge pin" tests (written for the *other* 7.3.86 entry, at line 123)
+      nor the vikalpa arm's own two tests exercise a vowel-final aṅga.
+      Added `pugantalaghupadhasya_tanadi_arm_declines_a_vowel_final_anga`
+      (`crates/panini-prakriya/src/tinanta/guna.rs`) with a synthetic
+      vowel-final aṅga (`"fu"`) that isolates the `||`/`&&` split;
+      isolated re-run confirms the mutant is now caught.
+    - `terms.rs:177:25`, `vikarana_u_asamyogapurva`'s `(Some(v), _) if
+      is_vowel(v) => true` match guard — a genuine gap: no curated root's
+      vikaraṇa-`u` is directly preceded by a vowel (every "u" row instead
+      reaches the helper's second, consonant-then-vowel arm), so the
+      guard's own in-place comment ("No curated root reaches this arm")
+      was literally true of the test suite too. Added a synthetic
+      `("ti", "u", true)` row to
+      `vikarana_u_asamyogapurva_is_true_exactly_for_the_non_conjunct_stems`
+      (`crates/panini-prakriya/src/tinanta/terms.rs`); isolated re-run
+      confirms the mutant is now caught.
+    Every other new-code risk area the brief flagged came back caught, not
+    merely present: 3.1.79's own guard (`vikarana.rs:214:16`), 6.1.77's
+    guard (`guna.rs:466`, `:472`), the controller's collapse
+    (`controller.rs:23`, `:53`), and all four arms of `vrddhi_of`
+    including the new `f` arm (`sound.rs:26:9`) are all in `caught.txt`.
+    `outcomes.json`'s per-mutant test-phase durations (**n = 565** — 604
+    mutants minus the 39 unviable ones, which fail at the Build phase and
+    never reach a Test phase) put the median at 140.30s, p90 (nearest-
+    rank, as in 7e/7f) at 1853.46s, p99 at 1996.95s, and the max at
+    4800.00s — that max being the known-permanent timeout itself, not a
+    caught or missed mutant. Excluding the timeout, the max is
+    **2592.40s** (`tripadi.rs:1401:33`, `replace < with <=`,
+    `CaughtMutant`). **129** of the 565 runs exceeded 600s and **62**
+    exceeded 1200s — both the highest counts yet in this series,
+    consistent with the floor's own outsized growth this slice.
+    **Two margins, measured, not projected:**
+    - Against the worst **caught** mutant (2592.40s, measured, excluding
+      the timeout): 4800 / 2592.40 ≈ **1.85×**.
+    - Against the worst **uncaught** run (1996.95s, measured — the four
+      originally-missed mutants ran the full golden suite to completion
+      without being caught, ranging 1895.55s–1996.95s; the `terms.rs`
+      mutant's 1996.95s was the slowest): 4800 / 1996.95 ≈ **2.40×**.
+    **Ruling: keep 4800.** Both margins clear 1× comfortably, but the
+    caught-mutant margin (1.85×) is the **lowest yet in this series** —
+    below 7d's previous low of 1.96×/2.46× — driven entirely by this
+    slice's outsized floor growth (+65.4% against a cap that has not
+    moved since 7e). The next slice should re-measure both figures rather
+    than assume this margin holds: if a future slice's pre-campaign
+    projection (Step 2) exceeds 4800s, or its measured caught-mutant
+    margin drops much below this slice's 1.85×, that is the trigger to
+    raise the cap — recorded in `AGENTS.md` and `mise.toml` together, per
+    the standing rule, not a silent widening.
   - `cargo-deny` + `cargo-audit` (supply-chain checks) — `mise run audit` runs
     `cargo audit && cargo deny check` and is expected to pass, including
     `cargo deny check advisories`.
@@ -552,18 +663,24 @@
   target under `crates/panini-lipi/fuzz` legitimately omits it, since it uses
   `#![no_main]` plus the libfuzzer harness macro).
 - Grammar changes are gated by the golden paradigm test
-  (`crates/panini/tests/paradigm/`, 2844 cells, seven complete gaṇas —
+  (`crates/panini/tests/paradigm/`, 3420 cells, eight gaṇas — seven complete,
+  tanādi partial (nine of its ten dhātupāṭha rows, slice 8a; √kṛ deferred to
+  8b) —
   `PARADIGM`
     stays one-form-per-cell: a cell forked by an optional rule keeps its
-    other forms — a second (250 cells), a third (83 cells), a fourth (2
-    cells, rudhādi's √piṣ and — new in slice 7d — √śiṣ loṭ madhyama eka) and
+    other forms — a second (520 cells), a third (109 cells), a fourth
+    (seventeen
+    cells, rudhādi's √piṣ and — new in slice 7d — √śiṣ loṭ madhyama eka, and
+    — new in slice 8a — fifteen more spread across tanādi's four ik-upadhā
+    roots kziR/fR/tfR/GfR) and
     — the loṭ parasmaipada cells of
     rudhādi's √kṛt, √rudh, √bhid, √kṣud, √tṛd, √und and — new in slice 7f —
     √chid and √chṛd,
-    eight ways tied as the
-    sharpest forks in the suite — a fourth
+    eight ways tied as the record until slice 8a, when the loṭ parasmaipada
+    prathama AND madhyama eka of tanādi's four ik-upadhā roots kziR, fR, tfR
+    and GfR doubled it to sixteen — a fourth
     and fifth (prathama eka) or a fourth through sixth (madhyama eka) — in
-    `ALTERNATES` (494 rows in all, so 2844 + 494 = 3338 forms total); √bhuj
+    `ALTERNATES` (901 rows in all, so 3420 + 901 = 4321 forms total); √bhuj
     joins neither fork record — its forks stack only 7.1.35 and 8.4.56, the
     same two-deep profile as √yuj — but the √bhuj/1.3.66 slice adds two
     trace pins of its own, `bhunkte_trace_credits_1_3_66_not_1_3_72` and
@@ -855,6 +972,15 @@
     (`krntat_trace_shows_savarna_elision_above_pausal` in
     `crates/panini/tests/trace/rudhadi.rs` is the sole pin; no surface-form golden
     catches a reversal).
+    tanādi (gaṇa 8, vikaraṇa the bare `u` of 3.1.79) is now **partial** —
+    slice 8a curated nine of its ten dhātupāṭha rows (√tan, √san, √kṣaṇ,
+    √kṣiṇ, √ṛ, √tṛ and √ghṛ, all seven ubhayapadī by 1.3.72, plus √van and
+    √man, both ātmanepadī by 1.3.12), taking the curated set from 67 to
+    **76** roots; √kṛ (`08.0010`), the one root 3.1.79 itself names, is
+    deferred to slice 8b behind the 6.4.108–110 kṛ-specials. See
+    `docs/ARCHITECTURE.md`'s tanādi paragraph and
+    `docs/superpowers/specs/2026-08-30-tanadi-gana-design.md` for the rule
+    analysis.
   and by the ordered-trace test (`crates/panini/tests/trace/`), which pins
   rule order. Surface forms and trace order there are the source of truth;
   sūtra ids/names in traces must match the cited reference. In practice that
@@ -911,10 +1037,35 @@
   `8da2f90bee3ce1c07505fa432fc3729e3f7e02ea`, over the corpus grown by
   √bhuj: zero differences across 2844 cells / 3338 forms / 67 roots**,
   with both `entry` and `form` negative controls verified failing first —
-  the current record. Its one new `Rule`, 1.3.66, is a root-keyed pada
+  the record until tanādi 8a (below). Its one new `Rule`, 1.3.66, is a root-keyed pada
   assignment structurally identical to 1.3.72's already-implemented one —
   the same pattern the pipeline already carries, applied to a second
-  root-list. Those
+  root-list. **Tanādi 8a's own cross-implementation audit** ran the same
+  committed harness once more, at the same vidyut commit
+  `8da2f90bee3ce1c07505fa432fc3729e3f7e02ea`, over the corpus grown by its
+  nine curated roots: **zero differences across 3420 cells / 4321 forms /
+  76 roots**, with the `entry` negative control verified failing first
+  (exit 1, 36 √bhū cells, `Bavati` vs `paWati`) — the current record. It
+  did not come back clean on the first pass: an initial run found four
+  differing cells, all `08.0005` (√ṛ, `fR`) laṅ uttama-puruṣa dvi/bahu in
+  both padas, diagnosed and fixed in commit `88cae65` before the clean
+  re-run above. Two new `Rule`s are behind it — 3.1.79 (the bare `u`
+  vikaraṇa) and 7.3.86's new vikalpa arm (the gaṇa's own guṇa/aguṇa
+  fork) — plus two structural engine changes the divergence exposed: the
+  asaṁyogapūrva helper (`terms.rs`, renamed `shnu_asamyogapurva` →
+  `vikarana_u_asamyogapurva` to read tanādi's bare `u` as well as svādi's
+  `nu`) reads only surface characters, so evaluated after 6.1.90 it could
+  no longer tell a genuinely non-conjunct `u` (fR's) from a guṇa'd
+  conjunct one (arR's) — 6.1.90's āṭ-vṛddhi ekādeśa merges the augment
+  into both the same way, leaving the same three characters (`rR`) either
+  way — and the fix moved 6.4.106/6.4.107 themselves ahead of that
+  ekādeśa instead, so the helper reads the aṅga before the merge erases
+  the distinction; and `run_pipeline` gained a convergent-fork collapse (dedup on
+  identical live-branch text, first/declined branch kept), needed once
+  7.3.86's new vikalpa arm could put a guṇa'd and an āṭ-vṛddhi'd branch on
+  the same surface (`A+fR` and `A+arR` both → `ArRot`). See
+  `tools/audit/README.md`'s own recorded result for the full breakdown.
+  Those
   totals are asserted by the harness itself rather than reported from
   whatever it happened to enumerate, so a corpus that grows without the
   harness being updated fails loudly instead of quietly auditing a subset.
@@ -932,18 +1083,30 @@
   be satisfied by copying back our own choice, unlike matching on number or
   artha alone (upstream has 8- and 15-way artha collisions).
   Two comments inside `crates/panini-prakriya/src` still carry pre-7c
-  figures — `controller.rs:130` and `tinanta/guna.rs:943` cite the corpus
-  size as 1872/1864-of-1872, now five slices further stale: the corpus
+  figures — `controller.rs:152` and `tinanta/guna.rs:1233` (drifted from
+  the `:130`/`:943` this ledger previously cited, as later slices added
+  code above them; confirmed by re-reading each construct at its current
+  line rather than trusting the old numbers to have held) cite the corpus
+  size as 1872/1864-of-1872, now seven slices further stale: the corpus
   stood at 2304/2296-of-2304 as of the 8.2.30/8.2.39 slice, stood at
   2592/2584-of-2592 as of rudhādi 7d, stood at 2628/2620-of-2628 as of
-  rudhādi 7e, stood at 2772/2764-of-2772 as of rudhādi 7f, and stands at
+  rudhādi 7e, stood at 2772/2764-of-2772 as of rudhādi 7f, stood at
   2844/2836-of-2844 as of the √bhuj/1.3.66 slice — the same 8
-  cells 6.4.107 always fired on (`key_count("6.4.107") == 8`, pinned in
+  cells 6.4.107 always fired on through all of those slices
+  (`key_count("6.4.107") == 8` back then, pinned in
   `derivation_set_shape_matches_the_audited_numbers`,
-  `crates/panini/tests/paradigm/main.rs`), unmoved by 7d, 7e, 7f or √bhuj/1.3.66 since 6.4.107
-  concerns only
-  svādi's
-  √hi and √ri. Rudhādi 7d touched neither comment — its one permitted
+  `crates/panini/tests/paradigm/main.rs`), unmoved by 7d, 7e, 7f or
+  √bhuj/1.3.66 since 6.4.107 concerned only svādi's √hi and √ri — and now
+  stands at 3420 cells as of tanādi 8a, where `controller.rs:152`'s own
+  claim ("only 8 cells fire it at all") is no longer merely
+  corpus-size-stale but flatly wrong: tanādi's bare `u` is asaṁyogapūrva
+  for every one of its nine curated roots, so 6.4.107 now fires on **72**
+  cells across eleven roots (`key_count("6.4.107") == 72`, the same
+  test), not 8 — the "8 cells" figure was never re-derived when the gaṇa
+  landed. `guna.rs:1233`'s own claim ("1872 goldens move") stays stale
+  only in the ordinary corpus-size sense, not wrong in kind: 3420 goldens
+  would move today. Neither comment was touched by tanādi 8a, consistent
+  with every slice since 7c. Rudhādi 7d touched neither comment — its one permitted
   engine-comment edit is the comment above
   `vrddhi_of_ac_vowels_all_arms` in `tinanta/sound.rs`. Rudhādi 7e, rudhādi
   7f and the √bhuj/1.3.66 slice touched neither comment either. A third,
@@ -997,14 +1160,18 @@
   in its stage file, with its id in `tinanta_rule_order_is_pinned` in
   position — and also add it to
   `exactly_the_pinned_vikalpa_rules_are_optional`, which pins the whole
-  optional set by id. **Seven rules are optional today, in pipeline order:
-  7.1.35, 3.4.111, 6.4.107, 8.2.74, 8.2.75, 8.4.65, 8.4.56.** 7.1.35 and
+  optional set by id. **Eight rules are optional today, in pipeline order:
+  7.1.35, 3.4.111, 7.3.86, 6.4.107, 8.2.74, 8.2.75, 8.4.65, 8.4.56.** (7.3.86
+  is the vikalpa entry only — its *nitya* entry, just above it in the
+  pipeline, is not optional.) 7.1.35 and
   8.4.56 can both fire on one derivation, stacking into a three-branch
   cell — loṭ prathama eka forks twice, giving `Bavatu` / `BavatAd` /
   `BavatAt`. Eight rudhādi roots — √kṛt, √rudh, √bhid, √kṣud, √tṛd, √und,
   √chid and √chṛd — each
-  stack three of the seven (7.1.35,
-  8.4.65, 8.4.56) on their own loṭ parasmaipada cells — five branches at
+  stack three of the eight (7.1.35,
+  8.4.65, 8.4.56) on their own loṭ parasmaipada cells, and tanādi's
+  kziR/fR/tfR/GfR stack a different three (7.1.35, 7.3.86, 8.4.56) on
+  theirs — five branches at
   prathama eka, six at madhyama eka
   (`kfndDi` / `kfnDi` / `kfnttAd` / `kfntAd` / `kfnttAt` /
   `kfntAt`, and `rundDi` / `runDi` / `rundDAd` / `runDAd` / `rundDAt` /
@@ -1031,13 +1198,18 @@
     every such consumer, or a consumer placed below it would be right on one
     branch and wrong on the other — surfacing as half a paradigm being wrong
     with both halves individually plausible. 6.4.107 leaves
-    `terms[SHAP].text == "n"`, which invalidates two predicates:
-    `shnu_asamyogapurva` (whose first guard is `== "nu"`) and
+    `terms[SHAP].text == "n"` for svādi and `""` for tanādi, which
+    invalidates two predicates: `vikarana_u_asamyogapurva` (renamed from
+    `shnu_asamyogapurva`; its first guard now matches SHAP text of `"nu"`
+    (svādi) or `"u"` (tanādi)) and
     `sound_before_ending` (which reads the last char before the ending — `u`
-    before the mutation, `n` after) — the vikaraṇa *is* still śnu, but
-    nothing downstream can tell any more. Every rule that reads śnu's `nu`
-    text must precede it — 6.4.87 and 6.4.106 via `shnu_asamyogapurva`, and
-    6.4.77, which open-codes the same `text == "nu"` test — and all three do.
+    before the mutation, something else after) — the vikaraṇa *is* still
+    śnu or tanādi's bare `u`, but
+    nothing downstream can tell any more. Every rule that reads the
+    vikaraṇa's u-bearing
+    text must precede it — 6.4.87 and 6.4.106 via `vikarana_u_asamyogapurva`,
+    6.4.77, which open-codes the same `text == "nu"` test, and 6.1.77, which
+    open-codes the tanādi-specific `text == "u"` test — and all four do.
     `sound_before_ending`'s one consumer below 6.4.107, 6.4.101 (`her DiH`,
     `crates/panini-prakriya/src/tinanta/adesha.rs`), is the exception a
     provably disjoint guard covers: it requires `ENDING.text == "hi"`, which

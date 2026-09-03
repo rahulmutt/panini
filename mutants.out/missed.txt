@@ -1,2 +1,4 @@
-crates/panini-prakriya/src/tinanta/adesha.rs:393:30: replace + with *
+crates/panini-prakriya/src/tinanta/adesha.rs:505:30: replace + with *
+crates/panini-prakriya/src/tinanta/guna.rs:177:22: replace || with &&
+crates/panini-prakriya/src/tinanta/terms.rs:177:25: replace match guard is_vowel(v) with false in vikarana_u_asamyogapurva
 crates/panini-prakriya/src/tinanta/tripadi.rs:1166:38: replace - with /

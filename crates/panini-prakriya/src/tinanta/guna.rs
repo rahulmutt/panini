@@ -16,7 +16,7 @@
 use crate::rule::{Rule, RuleKind};
 use crate::term::Tag;
 use crate::tinanta::sound::{guna_of, is_vowel};
-use crate::tinanta::terms::{ANGA, ENDING, SHAP, following_sarvadhatuka, shnu_asamyogapurva};
+use crate::tinanta::terms::{ANGA, ENDING, SHAP, following_sarvadhatuka, vikarana_u_asamyogapurva};
 use panini_data::Lakara;
 
 pub(crate) static GUNA: &[Rule] = &[
@@ -114,6 +114,10 @@ pub(crate) static GUNA: &[Rule] = &[
             if following_sarvadhatuka(p).is_some_and(|t| t.has(Tag::Ngit)) {
                 return false;
             }
+            if p.terms[ANGA].has(Tag::Tanadi) {
+                // Gaṇa 8 is the vikalpa arm's below (Kaumudī 2547.1).
+                return false;
+            }
             let chars: Vec<char> = p.terms[ANGA].text.chars().collect();
             let n = chars.len();
             if n < 2 || is_vowel(chars[n - 1]) {
@@ -127,6 +131,58 @@ pub(crate) static GUNA: &[Rule] = &[
             if !matches!(chars[n - 2], 'i' | 'u' | 'f' | 'x') {
                 return false;
             }
+            let before = p.snapshot();
+            let mut s: String = chars[..n - 2].iter().collect();
+            s.push_str(g);
+            s.push(chars[n - 1]);
+            p.terms[ANGA].text = s;
+            p.record("7.3.86", "pugantalaGUpaDasya ca", before);
+            true
+        },
+    },
+    // 7.3.86 pugantalaghūpadhasya ca — VIKALPA ARM, gaṇa 8 only. The four
+    // tanādi roots whose laghu upadhā is an ik guṇate OPTIONALLY before
+    // the vikaraṇa `u`: kziRoti/kzeRoti, fRoti/arRoti, tfRoti/tarRoti,
+    // GfRoti/GarRoti. The optionality is not the sūtra's own: it is the
+    // tanādi gaṇasūtra the Siddhānta-kaumudī carries (vidyut-prakriya
+    // applies it at Kaumudī 2547.1, an optional guṇa-apavāda tag on
+    // exactly those four upadeśas). This engine keeps the Pāṇinian id on
+    // the branch that applies guṇa and records the Kaumudī source here,
+    // so ALTERNATES keys stay inside the Aṣṭādhyāyī.
+    //
+    // Guarded structurally — gaṇa 8, an ik upadhā, the `u` still standing
+    // — not by a root list: within gaṇa 8 that selects exactly the
+    // gaṇasūtra's four (a-upadhā roots have nothing to guṇate; √kṛ's ik is
+    // FINAL, 7.3.84's business). The nitya entry declines the gaṇa on the
+    // same tag, so the two entries partition and can never double-apply.
+    //
+    // NO 1.1.5 test, deliberately: the trigger is the ārdhadhātuka `u`
+    // (never ṅit — see 3.1.79), not the tiṅ ending, which is why the guṇa
+    // branch exists even before ṅit endings (tarRvanti). This is the
+    // hardcoded-follower lesson of the adādi slices applied in advance.
+    Rule {
+        id: "7.3.86",
+        name: "pugantalaGUpaDasya ca",
+        kind: RuleKind::Vidhi,
+        vikalpa: true,
+        apply: |p| {
+            if !p.terms[ANGA].has(Tag::Tanadi) {
+                return false;
+            }
+            if p.terms.get(SHAP).map(|t| t.text.as_str()) != Some("u") {
+                return false;
+            }
+            let chars: Vec<char> = p.terms[ANGA].text.chars().collect();
+            let n = chars.len();
+            if n < 2 || is_vowel(chars[n - 1]) {
+                return false;
+            }
+            if !matches!(chars[n - 2], 'i' | 'u' | 'f' | 'x') {
+                return false;
+            }
+            let Some(g) = guna_of(chars[n - 2]) else {
+                return false;
+            };
             let before = p.snapshot();
             let mut s: String = chars[..n - 2].iter().collect();
             s.push_str(g);
@@ -268,13 +324,15 @@ pub(crate) static GUNA: &[Rule] = &[
     // NO DELTA on any pre-existing form, by guard rather than by argument.
     // The complete inventory of SHAP texts reaching this point is `a`
     // (śap/śa), `ya` (śyan), `` (adādi luk), `Ana` (śānac), `nA`/`n` (śnā,
-    // 6.4.112), `nI` (śnā, 6.4.113), and — for rudhādi, where SHAP holds
-    // śnam followed by the root's own tail (3.1.78) — `nat`, `nah`, `nans`
-    // and their kin, plus `naih` once 7.3.92 above has put the im in.
-    // Only `nI` is ik-final; every rudhādi shape is consonant-final, so
-    // `guna_of` returns None for all of them. 6.4.113 produces `nI` ONLY
-    // before a ṅit ending — so the 1.1.5 test below declines there. Two
-    // tests pin both halves.
+    // 6.4.112), `nI` (śnā, 6.4.113), `u` (tanādi, 3.1.79), and — for
+    // rudhādi, where SHAP holds śnam followed by the root's own tail
+    // (3.1.78) — `nat`, `nah`, `nans` and their kin, plus `naih` once
+    // 7.3.92 above has put the im in. `nI` and `u` are ik-final (`u`'s the
+    // whole point of 3.1.79's ārdhadhātuka status: tanoti's guṇa runs
+    // here); every rudhādi shape is consonant-final, so `guna_of` returns
+    // None for all of them. 6.4.113 produces `nI` ONLY before a ṅit
+    // ending — so the 1.1.5 test below declines there. Two tests pin both
+    // halves.
     //
     // Ordered BEFORE 6.1.78: the loṭ uttama endings are vowel-initial and
     // pit, so guṇa leaves `no`, which 6.1.78 must then make `nav`. Ordered
@@ -328,7 +386,14 @@ pub(crate) static GUNA: &[Rule] = &[
         kind: RuleKind::Vidhi,
         vikalpa: false,
         apply: |p| {
-            if !shnu_asamyogapurva(p) {
+            // The sūtra names hu and śnu. Tanādi's bare `u` (which the
+            // shared asaṁyogapūrva helper now also admits) is 6.1.77's
+            // business below — without this test 6.4.87 would write śnu's
+            // `nv` over a vikaraṇa that has no `n`.
+            if p.terms[SHAP].text != "nu" {
+                return false;
+            }
+            if !vikarana_u_asamyogapurva(p) {
                 return false;
             }
             let Some(next) = p.terms[ENDING].text.chars().next() else {
@@ -373,6 +438,45 @@ pub(crate) static GUNA: &[Rule] = &[
             let before = p.snapshot();
             p.terms[SHAP].text = "nuv".into();
             p.record("6.4.77", "aci SnuDAtuBruvAM yvoriyaNuvaNO", before);
+            true
+        },
+    },
+    // 6.1.77 iko yaṇ aci: the tanādi vikaraṇa's `u` becomes `v` before a
+    // vowel-initial ending. tan + u + anti → tanvanti; tan + u + ate →
+    // tanvate; tan + u + Ita → tanvIta. This is the utsarga whose apavādas
+    // the pipeline already carries for śnu — 6.4.87 (yaṇ, now self-guarded
+    // to `nu`) and 6.4.77 (uvaṅ) — ordered above it as apavādas are
+    // elsewhere; neither can contend here, since both test śnu's text and
+    // this rule tests the bare `u`. vidyut-prakriya credits exactly this
+    // sūtra for these cells.
+    //
+    // Only the vikaraṇa arm is written: no other ik-vowel hiatus survives
+    // to this point in the pipeline, the same narrowness 6.1.78's three
+    // arms and 6.4.77's śnu-only arm document. Widen by arm, with a
+    // witness, when a root needs one.
+    //
+    // Ordered AFTER 7.3.84's second application: the loṭ uttama endings
+    // are vowel-initial and pit, so guṇa takes `u` → `o` first and 6.1.78
+    // then yields tanavAni — this rule's `u` test declines on the `o`, the
+    // same self-guarding 6.4.87/6.4.77 rely on for ApnavAni.
+    Rule {
+        id: "6.1.77",
+        name: "iko yaR aci",
+        kind: RuleKind::Vidhi,
+        vikalpa: false,
+        apply: |p| {
+            if p.terms[SHAP].text != "u" || !p.terms[SHAP].has(Tag::Vikarana) {
+                return false;
+            }
+            let Some(next) = p.terms.get(ENDING).and_then(|t| t.text.chars().next()) else {
+                return false;
+            };
+            if !is_vowel(next) {
+                return false;
+            }
+            let before = p.snapshot();
+            p.terms[SHAP].text = "v".into();
+            p.record("6.1.77", "iko yaR aci", before);
             true
         },
     },
@@ -470,14 +574,17 @@ pub(crate) static GUNA: &[Rule] = &[
                 }
             }
 
-            // Vikaraṇa arm (svādi): 7.3.84's second application has just
-            // guṇated śnu's `u` to `o`, so the ec this sūtra converts sits
-            // on the VIKARAṆA, not on the aṅga — Ap + no + Ani → Apnav +
-            // Ani. Mutually exclusive with both arms above: those require the
-            // aṅga to end in e/o, which no svādi root does, and this one
-            // requires SHAP to end in e/o, which none of śap `a`, śyan `ya`,
-            // śa `a`, śnā `nA`/`n`/`nI`, śānac `Ana` or adādi's empty śap
-            // ever does.
+            // Vikaraṇa arm (svādi and tanādi): 7.3.84's second application
+            // has just guṇated śnu's `u` to `o`, so the ec this sūtra
+            // converts sits on the VIKARAṆA, not on the aṅga — Ap + no +
+            // Ani → Apnav + Ani. Tanādi's bare `u` (3.1.79) reaches the same
+            // arm the same way: tan + o + Ani → tanav + Ani (`tanavAni`).
+            // Mutually exclusive with both arms above: those require the
+            // aṅga to end in e/o, which no svādi or tanādi root does, and
+            // this one requires SHAP to end in e/o, which none of śap `a`,
+            // śyan `ya`, śa `a`, śnā `nA`/`n`/`nI`, śānac `Ana` or adādi's
+            // empty śap ever does — only svādi's guṇated `nu` and tanādi's
+            // guṇated `u` ever reach it.
             if p.terms.len() > ENDING
                 && let Some(shap_last) = p.terms[SHAP].text.chars().last()
                 && let Some(sub) = sub_for(shap_last)
@@ -902,6 +1009,73 @@ mod tests {
         let rule = rules().find(|r| r.id == "7.3.86").unwrap();
         assert!((rule.apply)(&mut p));
         assert_eq!(p.terms[ANGA].text, "vart");
+    }
+
+    #[test]
+    fn pugantalaghupadhasya_tanadi_arm_is_vikalpa_and_ngit_blind() {
+        // tfR + u + anti: the vikalpa arm fires (its trigger is the
+        // ārdhadhātuka u, on which 1.1.5 has no purchase — vidyut derives
+        // tarRvanti), while the nitya entry declines the gaṇa entirely.
+        let mut p = Prakriya {
+            terms: vec![Term::new("tfR"), Term::new("u"), Term::new("anti")],
+            ..Default::default()
+        };
+        p.terms[0].add(Tag::Dhatu);
+        p.terms[0].add(Tag::Tanadi);
+        p.terms[1].add(Tag::Vikarana);
+        p.terms[1].add(Tag::Ardhadhatuka);
+        p.terms[2].add(Tag::Ngit);
+        let mut entries = rules().filter(|r| r.id == "7.3.86");
+        let nitya = entries.next().unwrap();
+        let vikalpa = entries.next().expect("the tanādi arm");
+        assert!(!nitya.vikalpa);
+        assert!(vikalpa.vikalpa);
+        assert!(!(nitya.apply)(&mut p), "gaṇa 8 belongs to the vikalpa arm");
+        assert!((vikalpa.apply)(&mut p));
+        assert_eq!(p.terms[0].text, "tarR");
+    }
+
+    #[test]
+    fn pugantalaghupadhasya_tanadi_arm_declines_a_upadha_and_final_ik() {
+        // tan (a upadhā — nothing to guṇate) and kf (ik FINAL — 7.3.84's
+        // business): both outside the gaṇasūtra's four.
+        for root in ["tan", "kf"] {
+            let mut p = Prakriya {
+                terms: vec![Term::new(root), Term::new("u"), Term::new("ti")],
+                ..Default::default()
+            };
+            p.terms[0].add(Tag::Dhatu);
+            p.terms[0].add(Tag::Tanadi);
+            p.terms[1].add(Tag::Vikarana);
+            let vikalpa = rules().filter(|r| r.id == "7.3.86").nth(1).unwrap();
+            assert!(!(vikalpa.apply)(&mut p), "{root}");
+        }
+    }
+
+    #[test]
+    fn pugantalaghupadhasya_tanadi_arm_declines_a_vowel_final_anga() {
+        // The vikalpa arm's own guard, `n < 2 || is_vowel(chars[n - 1])`, has
+        // an `||` that no curated tanādi root exercises: kziR/fR/tfR/GfR all
+        // close on the consonant R, so `is_vowel(chars[n - 1])` is always
+        // false for them and the guard's verdict comes entirely from `n < 2`.
+        // A synthetic vowel-final aṅga ("fu") isolates the other disjunct:
+        // `n < 2` is false (n=2) but `is_vowel(chars[n - 1] = 'u')` is true,
+        // so `||` declines immediately. Under `&&` the guard would instead
+        // fall through to the ik-penult check — `f` matches — and wrongly
+        // guṇate, turning "fu" into "aru".
+        let mut p = Prakriya {
+            terms: vec![Term::new("fu"), Term::new("u"), Term::new("ti")],
+            ..Default::default()
+        };
+        p.terms[0].add(Tag::Dhatu);
+        p.terms[0].add(Tag::Tanadi);
+        p.terms[1].add(Tag::Vikarana);
+        let vikalpa = rules().filter(|r| r.id == "7.3.86").nth(1).unwrap();
+        assert!(!(vikalpa.apply)(&mut p));
+        assert_eq!(
+            p.terms[0].text, "fu",
+            "guard must decline before any mutation"
+        );
     }
 
     #[test]

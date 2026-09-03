@@ -138,10 +138,10 @@ fn every_alternate_names_a_real_cell() {
 /// duplicated here rather than exported because this is an integration test
 /// and the rule table is crate-internal.
 const VIKALPA_RULES: &[&str] = &[
-    "7.1.35", "3.4.111", "6.4.107", "8.2.74", "8.2.75", "8.4.65", "8.4.56",
+    "7.1.35", "3.4.111", "7.3.86", "6.4.107", "8.2.74", "8.2.75", "8.4.65", "8.4.56",
 ];
 
-/// `ALTERNATES` is otherwise 494 bare strings, and a string can be right for
+/// `ALTERNATES` is otherwise 901 bare strings, and a string can be right for
 /// the wrong reason — `BavatAt` is a real form whether or not 8.4.56 is what
 /// produced it. This ties each row to the grammar: find the branch that
 /// derives the row's form, intersect its log with the optional-rule set, and
@@ -284,27 +284,35 @@ fn derivation_set_is_exactly_pinned() {
 /// 7.1.35/8.4.65/8.4.56 exactly as kft/ruD/Bid/kzud/tfd's do (a five-form
 /// cell), and its loṭ parasmaipada madhyama eka ties the six-form record
 /// with the same k = 3 against the 2³ bound of eight:
-/// 2844 cells total (316 root×lakāra blocks × 9), of which 2493 hold exactly one form,
-/// 250 hold two, 83 hold three, two hold four (piṣ's loṭ madhyama eka, the
-/// deepest fork added in 7b, and — new in slice 7d — Siz's loṭ parasmaipada
-/// madhyama eka), and — the sharpest branch-count witnesses in
+/// 3420 cells total (380 root×lakāra blocks × 9), of which 2750 hold exactly
+/// one form, 520 hold two, 109 hold three, seventeen hold four (piṣ's loṭ
+/// madhyama eka, the deepest fork added in 7b, Siz's loṭ parasmaipada
+/// madhyama eka (slice 7d), and — new in slice 8a — fifteen more spread
+/// across the four ik-upadhā tanādi roots kziR/fR/tfR/GfR), and — the
+/// sharpest branch-count witnesses in
 /// the repo, per `docs/ARCHITECTURE.md` — exactly eight hold five (√kṛt's loṭ
 /// prathama eka, ruD's loṭ parasmaipada prathama eka, Bid's, kzud's and
 /// tfd's loṭ parasmaipada prathama eka, und's (slice 7d), and — new in
-/// slice 7f — Cid's and Cfd's loṭ parasmaipada prathama eka) and eight
+/// slice 7f — Cid's and Cfd's loṭ parasmaipada prathama eka; tanādi 8a adds
+/// none to this bucket) and sixteen
 /// hold six (√kṛt's loṭ madhyama eka, `kfndDi`/`kfnDi`'s cell, ruD's loṭ
 /// parasmaipada madhyama eka, `rundDi`/`runDi`/`rundDAd`/`runDAd`/
 /// `rundDAt`/`runDAt`, Bid's, kzud's and tfd's loṭ
-/// parasmaipada madhyama eka, und's (slice 7d), and — new in slice 7f —
-/// Cid's and Cfd's loṭ parasmaipada madhyama eka, each tying √kṛt's record
-/// with the same k = 3
-/// (7.1.35, 8.4.65, 8.4.56) against a 2³ bound of eight — ric and vic do not
+/// parasmaipada madhyama eka, und's (slice 7d), Cid's and Cfd's loṭ
+/// parasmaipada madhyama eka (slice 7f — the record stood at eight cells
+/// there), and — new in slice 8a — kziR's, fR's, tfR's and GfR's loṭ
+/// parasmaipada prathama AND madhyama eka, each stacking 7.1.35/7.3.86/8.4.56
+/// (k = 3 against the same 2³ bound of eight, this slice's own guṇa/aguṇa
+/// fork standing in for 8.4.65's junction): the six-form record now stands
+/// at sixteen cells, not eight — ric and vic do not
 /// join this record; per the 8.2.30/8.2.39 slice's own audit their deepest
 /// cells are three forms). `ALTERNATES`
-/// itself has 494 rows, keyed 114 `8.4.56`, 92 `7.1.35`, 92 `7.1.35+8.4.56`,
-/// 2 `3.4.111`, 8 `6.4.107`, 145 `8.4.65`, 8 `8.2.75`, 1 `8.2.74`, 16
-/// `7.1.35+8.4.65`, and 16 `7.1.35+8.4.65+8.4.56` — the assertions below are
-/// complete. The audit probe that produced the original numbers ran against
+/// itself has 901 rows, keyed 128 `8.4.56`, 106 `7.1.35`, 106 `7.1.35+8.4.56`,
+/// 2 `3.4.111`, 72 `6.4.107`, 145 `8.4.65`, 8 `8.2.75`, 1 `8.2.74`, 16
+/// `7.1.35+8.4.65`, 16 `7.1.35+8.4.65+8.4.56`, and — new in slice 8a, all
+/// on tanādi's 7.3.86 guṇa/aguṇa fork — 270 `7.3.86`, 8 `7.1.35+7.3.86`,
+/// 8 `7.1.35+7.3.86+8.4.56`, 8 `7.3.86+6.4.107`, and 7 `7.3.86+8.4.56` —
+/// the assertions below are complete. The audit probe that produced the original numbers ran against
 /// a vidyut-prakriya checkout during design; slice 9's cross-implementation
 /// audit re-ran the full check against a scratchpad vidyut-prakriya checkout
 /// across all 1620 pre-7b cells with zero differences, every 7b form was
@@ -333,7 +341,11 @@ fn derivation_set_is_exactly_pinned() {
 /// cross-implementation audit re-ran the same probe against
 /// vidyut-prakriya at commit `8da2f90` over all 2844 cells / 3338 forms /
 /// 67 roots with zero differences, its `entry` negative control verified
-/// failing. √tṛh joins none of the fork
+/// failing, and tanādi 8a's cross-implementation audit re-ran the same
+/// probe against vidyut-prakriya at commit
+/// `8da2f90bee3ce1c07505fa432fc3729e3f7e02ea` over all 3420 cells / 4321
+/// forms / 76 roots with zero differences, its `entry` negative control
+/// verified failing (36 √bhū cells) first. √tṛh joins none of the fork
 /// records: its deepest cells hold three forms, because 8.3.13 Qo Qe lopaH
 /// obligatorily elides the ḍh that 8.4.65 forks on for every other
 /// stop-final rudhādi root.
@@ -353,11 +365,49 @@ fn derivation_set_is_exactly_pinned() {
 /// so 8.4.65 has nothing to elide anywhere in its paradigm — it forks
 /// only on 8.4.56 (laṅ and vidhiliṅ finals) and 7.1.35 (loṭ tātaṅ),
 /// seven ALTERNATES rows with √yuj's exact key profile.
+///
+/// Slice 8a leaves rudhādi behind and curates the tanādi gaṇa's first nine
+/// roots — √tan (tan), √san (san), √kṣaṇ (kzaR), √kṣiṇ (kziR), √ṛ (fR),
+/// √tṛ (tfR) and √ghṛ (GfR), all seven ubhayapadī by 1.3.72, plus
+/// √van (van) and √man (man), both ātmanepada-only by 1.3.12 — on the
+/// gaṇa's own vikaraṇa, 3.1.79 tanādikṛñbhya uḥ, and one optional rule new
+/// to this repo, 7.3.86 (a guṇa/aguṇa fork available only to the four
+/// ik-upadhā roots kziR/fR/tfR/GfR). tan, san and kzaR, the three regular
+/// a-upadhā roots, fork exactly on the shape bhvādi's -oti roots already
+/// established — 6.4.107 (laṭ and laṅ uttama dvi/bahu, both padas), 7.1.35
+/// alone and stacked with 8.4.56 (loṭ parasmaipada tātaṅ, prathama and
+/// madhyama eka), and 8.4.56 alone (laṅ parasmaipada prathama eka pausal
+/// cartva, vidhiliṅ parasmaipada cell 0) — no new sūtra, nothing deeper
+/// than two branches. The four ik-upadhā roots ride the same skeleton with
+/// 7.3.86 layered on nearly every cell, reaching the corpus's first
+/// four-deep stack (7.1.35+7.3.86+8.4.56, loṭ parasmaipada tātaṅ) and its
+/// sharpest cells: kziR's, fR's, tfR's and GfR's loṭ parasmaipada prathama
+/// AND madhyama eka each hold six live forms, stacking 7.1.35/7.3.86/8.4.56
+/// where every earlier six-form cell stacked 7.1.35/8.4.65/8.4.56 — 8.4.65
+/// has nothing to elide in tanādi's u-final stems, so 7.3.86's guṇa/aguṇa
+/// fork stands in its place. fR's laṅ cells are where the convergence is
+/// easiest to see, but not the only place it happens: all eighteen of
+/// them (both padas, all nine puruṣa/vacana cells) are 7.3.86-eligible,
+/// and none carries a 7.3.86-keyed `ALTERNATES` row — the guṇa branch
+/// (`ArR-`) and the aguṇa branch converge on the same surface under
+/// 6.1.90's āṭ-vṛddhi ekādeśa in every one of them, the corpus's first
+/// convergent-fork collapse, not a one-cell anomaly. Prathama eka is
+/// merely where the missing branch is most visible: it is the one laṅ
+/// cell that also stacks 8.4.56's pausal cartva, so the comparable cell
+/// at tfR's, GfR's and kziR's own laṅ parasmaipada prathama eka holds
+/// **four** forms (`atfRod`/`atfRot`/`atarRod`/`atarRot` for tfR, and
+/// likewise in shape for GfR and kziR), while fR's holds only two
+/// (`ArRod` golden, `ArRot` alternate, keyed `8.4.56` alone) — the
+/// missing branch is 7.3.86's, not 8.4.56's. √van and √man, ātmanepada-only, fork
+/// only in laṭ and laṅ uttama dvi/bahu, on 6.4.107 — unlike every other
+/// tanādi root, they take no loṭ fork at all, because 7.1.35 tātaṅ names
+/// only the parasmaipada loṭ ending and van/man never derive a
+/// parasmaipada branch for it to apply to.
 /// This test is what keeps the numbers true day to day.
 #[test]
 fn derivation_set_shape_matches_the_audited_numbers() {
     let total_cells = PARADIGM.len() * 9;
-    assert_eq!(total_cells, 2844, "316 root×lakāra blocks × 9 cells each");
+    assert_eq!(total_cells, 3420, "380 root×lakāra blocks × 9 cells each");
 
     let mut ones = 0usize;
     let mut twos = 0usize;
@@ -384,13 +434,14 @@ fn derivation_set_shape_matches_the_audited_numbers() {
             }
         }
     }
-    assert_eq!(ones, 2493, "one-form cells");
-    assert_eq!(twos, 250, "two-form cells");
-    assert_eq!(threes, 83, "three-form cells");
+    assert_eq!(ones, 2750, "one-form cells");
+    assert_eq!(twos, 520, "two-form cells");
+    assert_eq!(threes, 109, "three-form cells");
     assert_eq!(
-        fours, 2,
-        "four-form cells — piṣ's loṭ madhyama eka, and — new in slice 7d — Siz's loṭ \
-         parasmaipada madhyama eka"
+        fours, 17,
+        "four-form cells — piṣ's loṭ madhyama eka, Siz's loṭ parasmaipada madhyama eka (slice \
+         7d), and — new in slice 8a — fifteen more across the four ik-upadhā roots (kziR, fR, \
+         tfR, GfR), each forking on 7.3.86 alongside the pre-existing rules"
     );
     assert_eq!(
         fives, 8,
@@ -399,24 +450,26 @@ fn derivation_set_shape_matches_the_audited_numbers() {
          Cid's and Cfd's loṭ parasmaipada prathama eka"
     );
     assert_eq!(
-        sixes, 8,
+        sixes, 16,
         "six-form cells — kft loṭ madhyama eka, ruD loṭ parasmaipada madhyama eka, Bid, kzud \
-         and tfd's loṭ parasmaipada madhyama eka, und's (slice 7d), and — new in slice 7f — \
-         Cid's and Cfd's loṭ parasmaipada madhyama eka"
+         and tfd's loṭ parasmaipada madhyama eka, und's (slice 7d), Cid's and Cfd's loṭ \
+         parasmaipada madhyama eka (slice 7f), and — new in slice 8a — kziR, fR, tfR and GfR's \
+         loṭ parasmaipada prathama AND madhyama eka (the four ik-upadhā roots, each stacking \
+         7.3.86 alongside 7.1.35/8.4.56)"
     );
 
-    assert_eq!(ALTERNATES.len(), 494, "ALTERNATES row count");
+    assert_eq!(ALTERNATES.len(), 901, "ALTERNATES row count");
     let key_count = |key: &str| {
         ALTERNATES
             .iter()
             .filter(|(_, _, _, _, _, k)| *k == key)
             .count()
     };
-    assert_eq!(key_count("8.4.56"), 114, "8.4.56-only alternates");
-    assert_eq!(key_count("7.1.35"), 92, "7.1.35-only alternates");
-    assert_eq!(key_count("7.1.35+8.4.56"), 92, "7.1.35+8.4.56 alternates");
+    assert_eq!(key_count("8.4.56"), 128, "8.4.56-only alternates");
+    assert_eq!(key_count("7.1.35"), 106, "7.1.35-only alternates");
+    assert_eq!(key_count("7.1.35+8.4.56"), 106, "7.1.35+8.4.56 alternates");
     assert_eq!(key_count("3.4.111"), 2, "3.4.111 alternates");
-    assert_eq!(key_count("6.4.107"), 8, "6.4.107 alternates");
+    assert_eq!(key_count("6.4.107"), 72, "6.4.107 alternates");
     assert_eq!(key_count("8.4.65"), 145, "8.4.65-only alternates");
     assert_eq!(key_count("8.2.75"), 8, "8.2.75-only alternates");
     assert_eq!(key_count("8.2.74"), 1, "8.2.74-only alternates");
@@ -426,6 +479,15 @@ fn derivation_set_shape_matches_the_audited_numbers() {
         16,
         "7.1.35+8.4.65+8.4.56 alternates"
     );
+    assert_eq!(key_count("7.3.86"), 270, "7.3.86-only alternates");
+    assert_eq!(key_count("7.1.35+7.3.86"), 8, "7.1.35+7.3.86 alternates");
+    assert_eq!(
+        key_count("7.1.35+7.3.86+8.4.56"),
+        8,
+        "7.1.35+7.3.86+8.4.56 alternates"
+    );
+    assert_eq!(key_count("7.3.86+6.4.107"), 8, "7.3.86+6.4.107 alternates");
+    assert_eq!(key_count("7.3.86+8.4.56"), 7, "7.3.86+8.4.56 alternates");
 }
 
 /// `every_form_validates_and_matches` only walks `PARADIGM`, so a root or
@@ -653,7 +715,7 @@ fn known_nonforms_are_invalid() {
         "hinyAma", // `starts_with` mistaken for `contains`: vidhiliṅ's
         // yAma has an `m` but does not begin with one — real form hinuyAma
         "BavmaH", // fired where the vikaraṇa is not śnu at all, i.e. the
-        // shnu_asamyogapurva guard dropped — real form BavAmaH
+        // vikarana_u_asamyogapurva guard dropped — real form BavAmaH
         // 8.2.39 jhalāṁ jaśo'nte guard pins.
         "Bavatd", // `ends_with('t')` mistaken for `contains('t')`: fires on
         // BU laṭ 3sg (which merely contains a medial `t`, not a pada-final
@@ -762,14 +824,27 @@ fn pada_ambiguous_surfaces_are_exactly_these() {
     // surface. The Buj/1.3.66 slice's one new both-pada root contributes two
     // more, the same shape as √yuj's pair: `BuNktAm`/`aBuNkta`, taking the
     // set to twenty-eight with no new collision against any pre-slice
-    // surface.
+    // surface. Tanādi 8a's seven ubhayapadī roots — tan, san, kzaR, kziR,
+    // fR, tfR and GfR — each contribute two more, a new shape: a laṅ
+    // `-uta` collision (ātmanepada prathama eka equals parasmaipada
+    // madhyama bahu — `atanuta`, `asanuta`, `akzaRuta`, `akziRuta`,
+    // `ArRuta`, `atfRuta`, `aGfRuta`) and a loṭ `-utAm` collision
+    // (ātmanepada prathama eka equals parasmaipada prathama dvi —
+    // `tanutAm`, `sanutAm`, `kzaRutAm`, `kziRutAm`, `fRutAm`, `tfRutAm`,
+    // `GfRutAm`) — fourteen more, taking the set from twenty-eight to
+    // forty-two with no new collision against any pre-slice surface. √van
+    // and √man, ātmanepada-only, never enter this bucket: with no
+    // parasmaipada branch of their own, they have nothing to collide
+    // against.
     assert_eq!(
         both,
         vec![
-            "BinttAm", "BuNktAm", "CfnttAm", "CinttAm", "aBintta", "aBuNkta", "acCfntta",
-            "acCintta", "akzuntta", "anayata", "ariNkta", "arundDa", "atfntta", "atudata",
-            "aviNkta", "ayuNkta", "kzunttAm", "nayatAm", "nayetAm", "nayeta", "riNktAm", "rundDAm",
-            "tfnttAm", "tudatAm", "tudetAm", "tudeta", "viNktAm", "yuNktAm",
+            "ArRuta", "BinttAm", "BuNktAm", "CfnttAm", "CinttAm", "GfRutAm", "aBintta", "aBuNkta",
+            "aGfRuta", "acCfntta", "acCintta", "akzaRuta", "akziRuta", "akzuntta", "anayata",
+            "ariNkta", "arundDa", "asanuta", "atanuta", "atfRuta", "atfntta", "atudata", "aviNkta",
+            "ayuNkta", "fRutAm", "kzaRutAm", "kziRutAm", "kzunttAm", "nayatAm", "nayetAm",
+            "nayeta", "riNktAm", "rundDAm", "sanutAm", "tanutAm", "tfRutAm", "tfnttAm", "tudatAm",
+            "tudetAm", "tudeta", "viNktAm", "yuNktAm",
         ]
     );
 }
