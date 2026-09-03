@@ -1037,10 +1037,33 @@
   `8da2f90bee3ce1c07505fa432fc3729e3f7e02ea`, over the corpus grown by
   √bhuj: zero differences across 2844 cells / 3338 forms / 67 roots**,
   with both `entry` and `form` negative controls verified failing first —
-  the current record. Its one new `Rule`, 1.3.66, is a root-keyed pada
+  the record until tanādi 8a (below). Its one new `Rule`, 1.3.66, is a root-keyed pada
   assignment structurally identical to 1.3.72's already-implemented one —
   the same pattern the pipeline already carries, applied to a second
-  root-list. Those
+  root-list. **Tanādi 8a's own cross-implementation audit** ran the same
+  committed harness once more, at the same vidyut commit
+  `8da2f90bee3ce1c07505fa432fc3729e3f7e02ea`, over the corpus grown by its
+  nine curated roots: **zero differences across 3420 cells / 4321 forms /
+  76 roots**, with the `entry` negative control verified failing first
+  (exit 1, 36 √bhū cells, `Bavati` vs `paWati`) — the current record. It
+  did not come back clean on the first pass: an initial run found four
+  differing cells, all `08.0005` (√ṛ, `fR`) laṅ uttama-puruṣa dvi/bahu in
+  both padas, diagnosed and fixed in commit `88cae65` before the clean
+  re-run above. Two new `Rule`s are behind it — 3.1.79 (the bare `u`
+  vikaraṇa) and 7.3.86's new vikalpa arm (the gaṇa's own guṇa/aguṇa
+  fork) — plus two structural engine changes the divergence exposed: the
+  asaṁyogapūrva helper (`terms.rs`, renamed `shnu_asamyogapurva` →
+  `vikarana_u_asamyogapurva` to read tanādi's bare `u` as well as svādi's
+  `nu`) had to move 6.4.106/6.4.107 ahead of laṅ's 6.1.90 āṭ-vṛddhi
+  ekādeśa, since read after it a genuinely non-conjunct `u` (fR's) and a
+  guṇa'd conjunct one (arR's) both render as the same three characters
+  (`rR`) and become indistinguishable to the helper's surface-text-only
+  reading; and `run_pipeline` gained a convergent-fork collapse (dedup on
+  identical live-branch text, first/declined branch kept), needed once
+  7.3.86's new vikalpa arm could put a guṇa'd and an āṭ-vṛddhi'd branch on
+  the same surface (`A+fR` and `A+arR` both → `ArRot`). See
+  `tools/audit/README.md`'s own recorded result for the full breakdown.
+  Those
   totals are asserted by the harness itself rather than reported from
   whatever it happened to enumerate, so a corpus that grows without the
   harness being updated fails loudly instead of quietly auditing a subset.
@@ -1161,13 +1184,18 @@
     every such consumer, or a consumer placed below it would be right on one
     branch and wrong on the other — surfacing as half a paradigm being wrong
     with both halves individually plausible. 6.4.107 leaves
-    `terms[SHAP].text == "n"`, which invalidates two predicates:
-    `shnu_asamyogapurva` (whose first guard is `== "nu"`) and
+    `terms[SHAP].text == "n"` for svādi and `""` for tanādi, which
+    invalidates two predicates: `vikarana_u_asamyogapurva` (renamed from
+    `shnu_asamyogapurva`; its first guard now matches SHAP text of `"nu"`
+    (svādi) or `"u"` (tanādi)) and
     `sound_before_ending` (which reads the last char before the ending — `u`
-    before the mutation, `n` after) — the vikaraṇa *is* still śnu, but
-    nothing downstream can tell any more. Every rule that reads śnu's `nu`
-    text must precede it — 6.4.87 and 6.4.106 via `shnu_asamyogapurva`, and
-    6.4.77, which open-codes the same `text == "nu"` test — and all three do.
+    before the mutation, something else after) — the vikaraṇa *is* still
+    śnu or tanādi's bare `u`, but
+    nothing downstream can tell any more. Every rule that reads the
+    vikaraṇa's u-bearing
+    text must precede it — 6.4.87 and 6.4.106 via `vikarana_u_asamyogapurva`,
+    6.4.77, which open-codes the same `text == "nu"` test, and 6.1.77, which
+    open-codes the tanādi-specific `text == "u"` test — and all four do.
     `sound_before_ending`'s one consumer below 6.4.107, 6.4.101 (`her DiH`,
     `crates/panini-prakriya/src/tinanta/adesha.rs`), is the exception a
     provably disjoint guard covers: it requires `ENDING.text == "hi"`, which
