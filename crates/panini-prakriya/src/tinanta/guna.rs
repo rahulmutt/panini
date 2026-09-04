@@ -371,13 +371,29 @@ pub(crate) static GUNA: &[Rule] = &[
     // to v (kurvanti), and stage files are an organisational boundary,
     // not a grammatical one — the flattened order is the grammar (the
     // same argument that put 7.3.92 in this file). All three are keyed to
-    // √kṛ by 6.4.108's *karoteḥ*, carried by anuvṛtti into 109 and 110;
-    // the guards read the post-guṇa root text (kar / kur) plus the gaṇa
-    // tag rather than a Dhatu identity the pipeline does not carry.
-    // vidyut-prakriya additionally records 8.2.79 na BakurCurAm blocking
-    // ur-lengthening on every kur cell; this engine implements neither
-    // 8.2.77 (the lengthening) nor 8.2.79 (its block), and the forms are
-    // identical — recorded here so the absence reads as a decision.
+    // √kṛ by 6.4.108's *karoteḥ*, carried by anuvṛtti into 109 and 110.
+    //
+    // The guard is the aṅga-text tail (`kar`/`kur`) plus the tanādi `u`
+    // SHAP alone, with NO `Tag::Tanadi` clause: no other aṅga in the
+    // curated corpus ends in kar/kur while carrying a `u` vikaraṇa (only
+    // 3.1.79 ever produces one), so a gaṇa tag would be redundant AND
+    // unkillable under mutation — the same reasoning 7.4.21's comment
+    // gives above for its bare `SI` guard. `ends_with` rather than `==`,
+    // also as 7.4.21 and 7.3.92 do above: 6.4.71 has already prefixed
+    // laṅ's aṭ-augment onto the aṅga's own text (`tinanta/anga.rs`) by
+    // this point, so a laṅ derivation reads `akar`/`akur`, not the bare
+    // root — `==` would silently decline for the whole lakāra.
+    //
+    // 8.2.77 hali ca (`tinanta/tripadi.rs`) IS implemented in this engine
+    // — it lengthens div's upadhā, dīvyati — and its shape guard matches
+    // `kur` just as readily (short `u` upadhā, `r` final); left alone it
+    // would derive *kUrvanti here. 8.2.79 na BakurCurAm is modelled as a
+    // named exclusion guard inside 8.2.77's own `apply`, rather than a
+    // separate `Rule` entry (this engine has no niṣedha `RuleKind`, and
+    // the exclusion never touches a cell 8.2.77 wasn't already about to
+    // mutate) — see that rule's comment for the full argument. The
+    // resulting forms are byte-identical to vidyut-prakriya's, which
+    // records 8.2.79 on every kur cell for the same reason.
     // ------------------------------------------------------------------
     // 6.4.110 ata ut sārvadhātuke (kṅiti, anuvṛtti from 6.4.98/6.4.108's
     // context): kar's `a` becomes `u` before a ṅit sārvadhātuka —
@@ -389,7 +405,7 @@ pub(crate) static GUNA: &[Rule] = &[
         kind: RuleKind::Vidhi,
         vikalpa: false,
         apply: |p| {
-            if !p.terms[ANGA].has(Tag::Tanadi) || p.terms[ANGA].text != "kar" {
+            if !p.terms[ANGA].text.ends_with("kar") {
                 return false;
             }
             if p.terms.get(SHAP).map(|t| t.text.as_str()) != Some("u") {
@@ -399,7 +415,10 @@ pub(crate) static GUNA: &[Rule] = &[
                 return false;
             }
             let before = p.snapshot();
-            p.terms[ANGA].text = "kur".into();
+            let mut s: Vec<char> = p.terms[ANGA].text.chars().collect();
+            let n = s.len();
+            s[n - 2] = 'u';
+            p.terms[ANGA].text = s.into_iter().collect();
             p.record("6.4.110", "ata ut sArvaDAtuke", before);
             true
         },
@@ -415,7 +434,7 @@ pub(crate) static GUNA: &[Rule] = &[
         kind: RuleKind::Vidhi,
         vikalpa: false,
         apply: |p| {
-            if !p.terms[ANGA].has(Tag::Tanadi) || p.terms[ANGA].text != "kur" {
+            if !p.terms[ANGA].text.ends_with("kur") {
                 return false;
             }
             if p.terms.get(SHAP).map(|t| t.text.as_str()) != Some("u") {
@@ -439,7 +458,7 @@ pub(crate) static GUNA: &[Rule] = &[
         kind: RuleKind::Vidhi,
         vikalpa: false,
         apply: |p| {
-            if !p.terms[ANGA].has(Tag::Tanadi) || p.terms[ANGA].text != "kur" {
+            if !p.terms[ANGA].text.ends_with("kur") {
                 return false;
             }
             if p.terms.get(SHAP).map(|t| t.text.as_str()) != Some("u") {
@@ -1519,10 +1538,17 @@ mod tests {
         // karoti's pit ti: no ut.
         let mut p = kr_prakriya("ti", false);
         assert!(!(r.apply)(&mut p));
-        // Another tanādi root's a is not karoti's: tan stays tan.
+        // Another root's `a` is not karoti's: the text guard alone
+        // (there is no Tag::Tanadi clause left to save this) rejects it.
         let mut p = kr_prakriya("tas", true);
         p.terms[0].text = "tan".into();
         assert!(!(r.apply)(&mut p));
+        // laN's aT-augmented aGga (6.4.71 prefixes onto ANGA's own text):
+        // akarutAm must become akurutAm, not decline on `!= "kar"`.
+        let mut p = kr_prakriya("tas", true);
+        p.terms[0].text = "akar".into();
+        assert!((r.apply)(&mut p));
+        assert_eq!(p.terms[0].text, "akur");
     }
 
     #[test]
@@ -1538,6 +1564,14 @@ mod tests {
         let mut p = kr_prakriya("tas", true);
         p.terms[0].text = "kur".into();
         assert!(!(r.apply)(&mut p));
+        // laN's akur must fire too (akurva, akurma — single branch, no
+        // 6.4.107 fork): the guard reads the aGga tail, not its whole text.
+        for ending in ["mas", "vas"] {
+            let mut p = kr_prakriya(ending, true);
+            p.terms[0].text = "akur".into();
+            assert!((r.apply)(&mut p), "{ending}");
+            assert_eq!(p.terms[1].text, "", "{ending}");
+        }
     }
 
     #[test]
@@ -1545,6 +1579,16 @@ mod tests {
         let r = rules().find(|r| r.id == "6.4.109").unwrap();
         let mut p = kr_prakriya("yAt", true);
         p.terms[0].text = "kur".into();
+        assert!((r.apply)(&mut p));
+        assert_eq!(p.terms[1].text, "");
+        // Not before tas — kuryAt's lopa is y-specific, kurutaH keeps its u.
+        let mut p = kr_prakriya("tas", true);
+        p.terms[0].text = "kur".into();
+        assert!(!(r.apply)(&mut p));
+        // The guard reads the aGga tail, not its whole text — pin that
+        // directly against an aT-prefixed akur, same as 6.4.108 above.
+        let mut p = kr_prakriya("yAt", true);
+        p.terms[0].text = "akur".into();
         assert!((r.apply)(&mut p));
         assert_eq!(p.terms[1].text, "");
     }
