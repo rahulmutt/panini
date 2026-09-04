@@ -1,1 +1,1 @@
-crates/panini-prakriya/src/tinanta/tripadi.rs:1406:23: replace -= with /=
+crates/panini-prakriya/src/tinanta/tripadi.rs:1415:23: replace -= with /=

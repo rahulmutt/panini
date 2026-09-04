@@ -254,8 +254,14 @@ pub(crate) static ADESHA: &[Rule] = &[
     //
     // 6.4.108 nityaṁ karoteḥ is what makes this one optional — it states
     // the same lopa as *nitya* for √kṛ, against this rule's anyatarasyām.
-    // √kṛ is out of scope (it wants 7.1.100 and the 6.4.10x kṛ-specials),
-    // so 6.4.108 is not implemented.
+    // 6.4.108 IS implemented (tanādi 8b, `guna.rs`, one of the three
+    // root-keyed √kṛ specials alongside 6.4.110 and 6.4.109), and it runs
+    // ahead of this rule in the pipeline: for √kṛ's uttama dvi/bahu it
+    // empties the vikaraṇa's `u` unconditionally, so by the time this
+    // helper reads `SHAP.text` there is nothing left asaṁyogapūrva to
+    // elide — the helper self-declines on the already-empty text, and
+    // `kurvaH`/`kurmaH` derive as single live branches with no
+    // 6.4.107-keyed alternate at all.
     //
     // PLACEMENT, load-bearing (unlike 6.4.106's, which only rides along —
     // see its comment above): moved here, ahead of 6.1.90's aṅga arm, to

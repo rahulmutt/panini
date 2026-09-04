@@ -84,10 +84,12 @@ fn is_natva_target(w: &[(usize, usize, char)], i: usize) -> bool {
 pub(crate) static TRIPADI: &[Rule] = &[
     // 8.2.77 hali ca: a root ending in `r`/`v` with a short ik upadhā
     // lengthens that upadhā before a hal (8.2.76 rvorupadhāyā dīrghaḥ is the
-    // anuvṛtti source). The only curated root reaching this is div, after
-    // guṇa is blocked: div + śyan (y-initial) → dīv → dīvyati. Self-guards on
-    // shape; no other curated root fires it (sev has an e-upadhā, vart ends
-    // in t).
+    // anuvṛtti source). div, after guṇa is blocked, reaches this shape:
+    // div + śyan (y-initial) → dīv → dīvyati. Self-guards on shape; no other
+    // curated root fires it (sev has an e-upadhā, vart ends in t) — except
+    // √kṛ's own `kur` (6.4.110, `tinanta/guna.rs`), which this rule's shape
+    // guard matches just as readily (short `u` upadhā, `r` final) and which
+    // 8.2.79 na BakurCurAm below carves back out.
     Rule {
         id: "8.2.77",
         name: "hali ca",
@@ -102,6 +104,13 @@ pub(crate) static TRIPADI: &[Rule] = &[
             let final_c = chars[n - 1];
             let upadha = chars[n - 2];
             if !matches!(final_c, 'r' | 'v') || !matches!(upadha, 'i' | 'u') {
+                return false;
+            }
+            // 8.2.79 na BakurCurAm: kur is exempted from this lengthening
+            // — kurvanti, not kUrvanti. `ends_with` rather than `==` so
+            // laN's aT-augmented `akur` (6.4.71 prefixes onto the aGga's
+            // own text) is caught too: akurutAm, not akUrutAm.
+            if p.terms[ANGA].text.ends_with("kur") {
                 return false;
             }
             // Reads śap as "the segment following the aṅga"; when śap is luk'd
@@ -1661,6 +1670,38 @@ mod tests {
         let rule = rules().find(|r| r.id == "8.2.77").unwrap();
         assert!((rule.apply)(&mut p));
         assert_eq!(p.terms[ANGA].text, "aBiUr");
+    }
+
+    #[test]
+    fn hali_ca_declines_for_kur_per_8_2_79() {
+        // 8.2.79 na BakurCurAm carves kur back out of 8.2.77's shape --
+        // kurvanti, not kUrvanti. `akur` (laN's aT-augmented aGga, 6.4.71)
+        // must decline too, since the guard reads the tail of the text.
+        for anga in ["kur", "akur"] {
+            let mut p = Prakriya {
+                terms: vec![Term::new(anga), Term::new("v"), Term::new("anti")],
+                log: vec![],
+                ..Default::default()
+            };
+            let rule = rules().find(|r| r.id == "8.2.77").unwrap();
+            assert!(!(rule.apply)(&mut p), "{anga}");
+            assert_eq!(p.terms[ANGA].text, anga, "{anga}");
+        }
+    }
+
+    #[test]
+    fn hali_ca_still_lengthens_the_divyati_shaped_root() {
+        // Positive control alongside the 8.2.79 carve-out above: div
+        // itself -- the rule's original target -- is unaffected by the
+        // new kur-specific guard.
+        let mut p = Prakriya {
+            terms: vec![Term::new("div"), Term::new("ya"), Term::new("ti")],
+            log: vec![],
+            ..Default::default()
+        };
+        let rule = rules().find(|r| r.id == "8.2.77").unwrap();
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "dIv");
     }
 
     #[test]
