@@ -663,12 +663,12 @@
   target under `crates/panini-lipi/fuzz` legitimately omits it, since it uses
   `#![no_main]` plus the libfuzzer harness macro).
 - Grammar changes are gated by the golden paradigm test
-  (`crates/panini/tests/paradigm/`, 3420 cells, eight gaṇas — seven complete,
-  tanādi partial (nine of its ten dhātupāṭha rows, slice 8a; √kṛ deferred to
-  8b) —
+  (`crates/panini/tests/paradigm/`, 3492 cells, eight gaṇas — all complete,
+  tanādi closing at 10/10 in slice 8b (nine of its ten dhātupāṭha rows
+  curated in slice 8a; √kṛ, the tenth and last, in 8b) —
   `PARADIGM`
     stays one-form-per-cell: a cell forked by an optional rule keeps its
-    other forms — a second (520 cells), a third (109 cells), a fourth
+    other forms — a second (522 cells), a third (111 cells), a fourth
     (seventeen
     cells, rudhādi's √piṣ and — new in slice 7d — √śiṣ loṭ madhyama eka, and
     — new in slice 8a — fifteen more spread across tanādi's four ik-upadhā
@@ -680,7 +680,7 @@
     prathama AND madhyama eka of tanādi's four ik-upadhā roots kziR, fR, tfR
     and GfR doubled it to sixteen — a fourth
     and fifth (prathama eka) or a fourth through sixth (madhyama eka) — in
-    `ALTERNATES` (901 rows in all, so 3420 + 901 = 4321 forms total); √bhuj
+    `ALTERNATES` (907 rows in all, so 3492 + 907 = 4399 forms total); √bhuj
     joins neither fork record — its forks stack only 7.1.35 and 8.4.56, the
     same two-deep profile as √yuj — but the √bhuj/1.3.66 slice adds two
     trace pins of its own, `bhunkte_trace_credits_1_3_66_not_1_3_72` and
@@ -972,12 +972,15 @@
     (`krntat_trace_shows_savarna_elision_above_pausal` in
     `crates/panini/tests/trace/rudhadi.rs` is the sole pin; no surface-form golden
     catches a reversal).
-    tanādi (gaṇa 8, vikaraṇa the bare `u` of 3.1.79) is now **partial** —
+    tanādi (gaṇa 8, vikaraṇa the bare `u` of 3.1.79) is now **complete** —
     slice 8a curated nine of its ten dhātupāṭha rows (√tan, √san, √kṣaṇ,
     √kṣiṇ, √ṛ, √tṛ and √ghṛ, all seven ubhayapadī by 1.3.72, plus √van and
     √man, both ātmanepadī by 1.3.12), taking the curated set from 67 to
-    **76** roots; √kṛ (`08.0010`), the one root 3.1.79 itself names, is
-    deferred to slice 8b behind the 6.4.108–110 kṛ-specials. See
+    76 roots; slice 8b then curated √kṛ (`08.0010`), the tenth and last
+    row, the one root 3.1.79 itself names, behind three new root-keyed
+    rules — 6.4.110 *ata ut sārvadhātuke*, 6.4.108 *nityaṁ karoteḥ* and
+    6.4.109 *ye ca* — taking the curated set to **77** roots and closing
+    the gaṇa at 10/10. See
     `docs/ARCHITECTURE.md`'s tanādi paragraph and
     `docs/superpowers/specs/2026-08-30-tanadi-gana-design.md` for the rule
     analysis.
@@ -1045,7 +1048,8 @@
   `8da2f90bee3ce1c07505fa432fc3729e3f7e02ea`, over the corpus grown by its
   nine curated roots: **zero differences across 3420 cells / 4321 forms /
   76 roots**, with the `entry` negative control verified failing first
-  (exit 1, 36 √bhū cells, `Bavati` vs `paWati`) — the current record. It
+  (exit 1, 36 √bhū cells, `Bavati` vs `paWati`) — the record until tanādi
+  8b (below). It
   did not come back clean on the first pass: an initial run found four
   differing cells, all `08.0005` (√ṛ, `fR`) laṅ uttama-puruṣa dvi/bahu in
   both padas, diagnosed and fixed in commit `88cae65` before the clean
@@ -1063,7 +1067,19 @@
   the distinction; and `run_pipeline` gained a convergent-fork collapse (dedup on
   identical live-branch text, first/declined branch kept), needed once
   7.3.86's new vikalpa arm could put a guṇa'd and an āṭ-vṛddhi'd branch on
-  the same surface (`A+fR` and `A+arR` both → `ArRot`). See
+  the same surface (`A+fR` and `A+arR` both → `ArRot`). **Tanādi 8b's own
+  cross-implementation audit** ran the same committed harness once more,
+  at the same vidyut commit `8da2f90bee3ce1c07505fa432fc3729e3f7e02ea`,
+  over the corpus grown by √kṛ, the gaṇa's tenth and last root: **zero
+  differences across 3492 cells / 4399 forms / 77 roots**, with the
+  `entry` negative control verified failing first — the current record.
+  Three new `Rule`s are behind it, all root-keyed to √kṛ and all in
+  `guna.rs` — 6.4.110 *ata ut sārvadhātuke*, 6.4.108 *nityaṁ karoteḥ* and
+  6.4.109 *ye ca* — plus one engine change with no `Rule` of its own:
+  8.2.79 *na bhakurchurām* is modelled as a named exclusion guard inside
+  8.2.77 *hali ca*'s own `apply` (`tripadi.rs`), rather than as a
+  separate rule, so 8.2.77's lengthening declines on √kṛ's `kur` aṅga and
+  the log still records 8.2.79 on every `kur` cell. See
   `tools/audit/README.md`'s own recorded result for the full breakdown.
   Those
   totals are asserted by the harness itself rather than reported from
@@ -1096,16 +1112,19 @@
   (`key_count("6.4.107") == 8` back then, pinned in
   `derivation_set_shape_matches_the_audited_numbers`,
   `crates/panini/tests/paradigm/main.rs`), unmoved by 7d, 7e, 7f or
-  √bhuj/1.3.66 since 6.4.107 concerned only svādi's √hi and √ri — and now
-  stands at 3420 cells as of tanādi 8a, where `controller.rs:152`'s own
+  √bhuj/1.3.66 since 6.4.107 concerned only svādi's √hi and √ri — stood at
+  3420 cells as of tanādi 8a, and now
+  stands at 3492 cells as of tanādi 8b, where `controller.rs:152`'s own
   claim ("only 8 cells fire it at all") is no longer merely
   corpus-size-stale but flatly wrong: tanādi's bare `u` is asaṁyogapūrva
-  for every one of its nine curated roots, so 6.4.107 now fires on **72**
+  for every one of its nine 8a-curated roots (√kṛ, 8b's own root, does not
+  add to this count — 6.4.108 empties its `u` first), so 6.4.107 now fires
+  on **72**
   cells across eleven roots (`key_count("6.4.107") == 72`, the same
   test), not 8 — the "8 cells" figure was never re-derived when the gaṇa
   landed. `guna.rs:1233`'s own claim ("1872 goldens move") stays stale
-  only in the ordinary corpus-size sense, not wrong in kind: 3420 goldens
-  would move today. Neither comment was touched by tanādi 8a, consistent
+  only in the ordinary corpus-size sense, not wrong in kind: 3492 goldens
+  would move today. Neither comment was touched by tanādi 8a or 8b, consistent
   with every slice since 7c. Rudhādi 7d touched neither comment — its one permitted
   engine-comment edit is the comment above
   `vrddhi_of_ac_vowels_all_arms` in `tinanta/sound.rs`. Rudhādi 7e, rudhādi

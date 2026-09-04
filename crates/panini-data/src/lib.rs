@@ -96,7 +96,7 @@ pub struct Dhatu {
     pub gana: Gana,
     /// Which pada(s) this engine derives for this root. Curated rather than
     /// read from the upadeśa's it-markers — but no longer a *deferral*:
-    /// `curated_pada_agrees_with_upadesha_markers` re-derives 75 of these 76
+    /// `curated_pada_agrees_with_upadesha_markers` re-derives 76 of these 77
     /// verdicts from the vendored upadeśa via 1.3.12 / 1.3.72 / 1.3.78 and
     /// requires them to match; `07.0017`'s (√bhuj's) is 1.3.66's root-keyed
     /// exception, asserted explicitly from both sides, the same way
@@ -109,7 +109,7 @@ pub struct Dhatu {
     /// the honest arrangement; see the deferral in
     /// `docs/superpowers/specs/2026-08-16-pada-audit-design.md`.
     ///
-    /// The test covers the 76 roots curated here, not the dhātupāṭha's 2259.
+    /// The test covers the 77 roots curated here, not the dhātupāṭha's 2259.
     /// It catches a mis-assigned pada on a root a future slice adds; it does
     /// not make the table self-maintaining.
     pub pada: PadaAssignment,
@@ -904,9 +904,12 @@ static DHATUS: &[Dhatu] = &[
         // root-keyed specials in guna.rs: 6.4.110 ata ut (kurutaH),
         // 6.4.108 nityaṁ karoteḥ (kurmaH — the lopa 6.4.107 makes
         // optional is nitya here, so NO alternates), 6.4.109 ye ca
-        // (kuryAt). 8.2.77's ur-lengthening is absent from this engine,
-        // so 8.2.79 na BakurCurAm — which vidyut records blocking it on
-        // every kur cell — has nothing to block and is likewise absent.
+        // (kuryAt). 8.2.77 hali ca IS implemented in this engine (since
+        // the divādi slice, for dIvyati) and would lengthen `kur`'s `u`
+        // to `U` — but 8.2.79 na BakurCurAm is implemented too, as a
+        // named guard clause inside 8.2.77 itself (`tripadi.rs`, matching
+        // an aṅga ending `kur`), so every kur cell declines the
+        // lengthening and derives kurvanti, not kUrvanti.
         dhatupatha: "08.0010",
         code: "kf",
         gana: Gana::Tanadi,

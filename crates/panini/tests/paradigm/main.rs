@@ -318,8 +318,9 @@ fn derivation_set_is_exactly_pinned() {
 /// ik-upadhā fork), 8 `7.1.35+7.3.86`, 8 `7.1.35+7.3.86+8.4.56`, 8
 /// `7.3.86+6.4.107`, and 7 `7.3.86+8.4.56` — √kṛ (slice 8b) adds six more
 /// rows, all folded into the pre-existing `8.4.56`/`7.1.35`/`7.1.35+8.4.56`
-/// keys above, two apiece: `8.4.56` gains `akarot` (laṅ prathama eka) and
-/// `kuryAt` (vidhiliṅ prathama eka); `7.1.35` gains `kurutAd` from both loṭ
+/// keys above, two apiece: `8.4.56` gains `akarot` (laṅ parasmaipada
+/// prathama eka) and `kuryAt` (vidhiliṅ parasmaipada prathama eka);
+/// `7.1.35` gains `kurutAd` from both loṭ
 /// parasmaipada's tātaṅ cell and its madhyama eka, and `7.1.35+8.4.56`
 /// gains `kurutAt` from the same two cells — opening no new key —
 /// the assertions below are complete. The audit probe that produced the original numbers ran against
@@ -422,19 +423,21 @@ fn derivation_set_is_exactly_pinned() {
 /// last tanādi root, closing the gaṇa at 10/10. It rides the gaṇa's own
 /// vikaraṇa (3.1.79) but breaks the fork pattern every other tanādi root
 /// shares: three new aṅga-level rules landed for it alone — 6.4.110
-/// *ata ut sārvadhātuke* (guṇa's `kar` against the ārdhadhātuka u, then
-/// `kur` against a ṅit sārvadhātuka ending), 6.4.108 *nityaṃ karoteḥ*, and
+/// *ata ut sārvadhātuke* (7.3.84's guṇa has already turned the aṅga to
+/// `kar`; 6.4.110 itself then replaces that `a` with `u` before a ṅit
+/// sārvadhātuka ending, giving `kur`), 6.4.108 *nityaṃ karoteḥ*, and
 /// 6.4.109 *ye ca* — and 6.4.108 is nitya where 6.4.107 is optional for
 /// every other tanādi root: uttama dvi/bahu (`kurvaH`/`kurmaH`) derive as
 /// single live branches with no 6.4.107-keyed alternate at all, not the
 /// `tanuvaH`/`tanvaH`-style two-branch fork tan/san/kzaR/kziR/fR/tfR/GfR
 /// all show there. √kṛ's only forks are the shapes every -oti root already
 /// has: laṅ parasmaipada prathama eka (`akarod`/`akarot`, 8.4.56 pausal
-/// cartva), loṭ parasmaipada tātaṅ — prathama and madhyama eka alike
-/// (`kuru`/`kurutAd`/`kurutAt`, 7.1.35 alone and stacked with 8.4.56, a
-/// three-form cell) — and vidhiliṅ parasmaipada prathama eka
-/// (`kuryAd`/`kuryAt`, 8.4.56 alone, keeping 8.2.39's `d` on the declined
-/// branch and voicing to `t` only on the alternate — the `aBavad`
+/// cartva), loṭ parasmaipada tātaṅ — prathama eka (`karotu`/`kurutAd`/
+/// `kurutAt`) and madhyama eka (`kuru`/`kurutAd`/`kurutAt`) alike, each a
+/// three-form cell, 7.1.35 alone and stacked with 8.4.56 — and vidhiliṅ
+/// parasmaipada prathama eka (`kuryAd`/`kuryAt`, 8.4.56 alone, keeping
+/// 8.2.39's `d` on the declined
+/// branch and devoicing to `t` only on the alternate — the `aBavad`
 /// convention). Six `ALTERNATES` rows total, all folded into pre-existing
 /// keys; no cell reaches four forms, so √kṛ joins neither the four-, five-
 /// nor six-form record.
