@@ -170,3 +170,74 @@ fn tanu_trace_is_the_hi_luk() {
     assert_eq!(text, "tanu", "got {t:?}");
     assert!(t.contains(&"6.4.106".to_string()), "got {t:?}");
 }
+
+#[test]
+fn kurutah_trace_orders_guna_before_ata_ut() {
+    // kf laT P.D: 7.3.84 makes kar against the ārdhadhātuka u, then
+    // 6.4.110 makes kur against the ṅit tas. Reversed, 6.4.110's `kar`
+    // guard never matches and kurutaH is underivable.
+    let (text, t) = cell_trace(
+        "08.0010",
+        Lakara::Lat,
+        Pada::Parasmaipada,
+        Purusha::Prathama,
+        Vacana::Dvi,
+    );
+    assert_eq!(text, "kurutaH", "got {t:?}");
+    assert!(at(&t, "7.3.84") < at(&t, "6.4.110"), "got {t:?}");
+}
+
+#[test]
+fn kurmah_is_nitya_no_6_4_107_fork() {
+    // kf laT U.B: 6.4.108 does what 6.4.107 would only offer, so the
+    // cell must not fork at all — one live branch, 6.4.108 in its log,
+    // 6.4.107 in no branch's.
+    let d = dhatus().iter().find(|d| d.dhatupatha == "08.0010").unwrap();
+    let branches: Vec<_> = derive(
+        d,
+        Lakara::Lat,
+        Pada::Parasmaipada,
+        Purusha::Uttama,
+        Vacana::Bahu,
+    )
+    .into_iter()
+    .filter(|p| !p.blocked)
+    .collect();
+    assert_eq!(branches.len(), 1, "6.4.108 is nitya");
+    assert_eq!(branches[0].text(), "kurmaH");
+    assert!(branches[0].log.iter().any(|s| s.sutra == "6.4.108"));
+    assert!(!branches[0].log.iter().any(|s| s.sutra == "6.4.107"));
+}
+
+#[test]
+fn kuryat_trace_takes_ye_ca() {
+    // kf viDiliN P.E, declined branch: 6.4.110 then 6.4.109.
+    let (text, t) = cell_trace(
+        "08.0010",
+        Lakara::VidhiLin,
+        Pada::Parasmaipada,
+        Purusha::Prathama,
+        Vacana::Eka,
+    );
+    assert_eq!(text, "kuryAd", "got {t:?}");
+    assert!(at(&t, "6.4.110") < at(&t, "6.4.109"), "got {t:?}");
+}
+
+#[test]
+fn karoti_runs_7_3_84_twice_and_the_specials_not_at_all() {
+    // kf laT P.E: root guṇa against the u, vikaraṇa guṇa against pit ti
+    // — the double application the pipeline's two 7.3.84 entries exist
+    // for — and every 6.4.10x special declines on the pit ending.
+    let (text, t) = cell_trace(
+        "08.0010",
+        Lakara::Lat,
+        Pada::Parasmaipada,
+        Purusha::Prathama,
+        Vacana::Eka,
+    );
+    assert_eq!(text, "karoti", "got {t:?}");
+    assert_eq!(t.iter().filter(|s| *s == "7.3.84").count(), 2, "got {t:?}");
+    for absent in ["6.4.110", "6.4.108", "6.4.109"] {
+        assert!(!t.contains(&absent.to_string()), "{absent} in {t:?}");
+    }
+}
