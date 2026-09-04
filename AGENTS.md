@@ -650,6 +650,131 @@
     margin drops much below this slice's 1.85×, that is the trigger to
     raise the cap — recorded in `AGENTS.md` and `mise.toml` together, per
     the standing rule, not a silent widening.
+    **Slice 8b (√kṛ, the gaṇa's tenth and last root) re-measured both
+    again at 3492 cells.** Uncontended floor: paradigm 866.37s, roundtrip
+    1087.37s, trace 3.61s — a wall clock of **1958.411s** (`time mise run
+    test`'s own wall clock; the 1958.12s component sum leaves ~0.29s of
+    build overhead — narrower than the ~0.8–4s gap the prior slices'
+    two methods agreed on, but in the same direction, and expected on an
+    already-warm target directory). Cell count grew **+2.1%** this slice
+    (3420 → 3492, the 72 cells √kṛ contributes); the floor grew from
+    1872.979s to **1958.411s**, **+4.6%** — a **~2.17×** under-prediction,
+    the **ninth** consecutive slice where scaling the floor by cell count
+    would have been wrong. Per binary the three moved almost together for
+    the first time in this series, and `paradigm` — which owns the new
+    cells — led rather than `roundtrip`: paradigm 823.70s → 866.37s
+    (+5.2%), roundtrip 1044.78s → 1087.37s (+4.1%), trace 3.47s → 3.61s
+    (+4.0%).
+    Cap sanity check before the campaign: 1958.411s × the standing
+    **1.02×–1.43×** `-j 4` contention range projects an uncaught mutant at
+    **1997.58–2800.53s**. Against the standing `--timeout 4800` cap, that
+    is a margin of **2.40×–1.71×** — the tightest pre-campaign range in
+    this series to date, below 8a's own 1.79×–2.51×. Still under 4800s, so
+    the stop condition (projection exceeding the cap) was not triggered.
+    **Ruling: keep 4800, proceed.**
+    Campaign at `-j 4 --timeout 4800`, run on tree **025dacb** — every
+    engine commit of the slice; the two commits after it (bc53115,
+    736e899) are documentation and comments only, so the campaign covers
+    the shipped engine: **615 mutants, 572 caught, 3 missed, 39 unviable,
+    1 timeout** (572 + 39 + 1 = 612, plus the 3 missed = 615), a single
+    continuous run — not chunked with `--iterate` — wall clock **~17h06m**
+    (2026-09-04 03:11:32 – 2026-09-04 20:17:36 UTC; launched detached with
+    `setsid nohup` so it survived the ~60-minute background-shell limit).
+    **Toolchain note:** this campaign ran under **rustc 1.98.1**, from the
+    working tree's uncommitted `mise.toml` bump; the committed pin is
+    still **1.98.0**, which is what 8a and the whole 7-series were
+    measured under.
+    The mutant population grew 604 → 615, **+1.8%**, and the diff is
+    exactly localized: `guna.rs` 87 → 98 mutants — the eleven belonging to
+    this slice's three √kṛ rules (6.4.108/109/110) — with every other
+    file's count unchanged. Worth recording that the 8.2.79 *na
+    BakurCurAm* carve-out this slice added inside 8.2.77 (`tripadi.rs`)
+    generated **no mutant at all**: cargo-mutants does not mutate a bare
+    `if p.terms[ANGA].text.ends_with("kur") { return false; }`, so that
+    guard is a mutation-coverage gap of the same kind already recorded
+    above for `tripadi.rs:962`/`:1516`. It is pinned by a unit test
+    instead — `hali_ca_declines_for_kur_per_8_2_79` — not by the gate.
+    The timeout is the same known-permanent `tripadi.rs`, 8.4.2 backward-
+    ṇatva-scan, non-terminating-loop mutant (`j -= 1` -> `j /= 1`, now at
+    `tripadi.rs:1415:23`, moved +9 lines from 8a's `:1406:23` by this
+    slice's own 8.2.79 guard earlier in the same file), confirmed by diff
+    shape rather than by line number, and tested this campaign at the full
+    4800s rather than 8a's reduced 2700s.
+    **Of the three missed mutants, two are the documented equivalent pair
+    carried since 7e — relocated but otherwise unchanged — and one is a
+    genuine new-code gap, resolved with a narrow unit test and verified
+    caught by an isolated re-run at the standing `-j 4 --timeout 4800`
+    cap:**
+    - `adesha.rs:507:30` (moved +2 from 8a's `:505:30`), 6.1.87's im arm,
+      `replace + with *` (`s.remove(pos + 1)` -> `s.remove(pos)`) — the
+      same documented equivalence as 7e/7f/7g/8a: whichever half of the
+      adjacent `a i` pair survives the removal is immediately clobbered by
+      the following `'e'` assignment. No test added, per the guard's own
+      in-place comment.
+    - `tripadi.rs:1175:38` (moved +9 from 8a's `:1166:38`, by the same
+      8.2.79 guard that moved the timeout), 8.3.13's guard, `replace -
+      with /` (`w[i - 1]` -> `w[i / 1]`, i.e. `w[i]`) — the same
+      documented equivalence as before: both `Q`s at the matched position
+      are identical, so eliding either produces the same surface string.
+      No test added.
+    - `guna.rs:420:17`, 6.4.110 *ata ut sārvadhātuke*'s own write,
+      `replace - with /` (`s[n - 2] = 'u'` -> `s[n / 2] = 'u'`) — a
+      genuine gap, and one **no golden cell can ever close**: the only two
+      aṅga shapes the corpus reaches are `kar` (n = 3, n − 2 = n / 2 = 1)
+      and laṅ's aṭ-augmented `akar` (n = 4, n − 2 = n / 2 = 2), so both
+      expressions select the same character and the paradigm suite is
+      blind to the difference by arithmetic, not by omission — adding
+      cells would not help. Added `ata_ut_uses_n_minus_2_not_n_over_2`
+      (`crates/panini-prakriya/src/tinanta/guna.rs`), which drives 6.4.110
+      over an upasarga-prefixed `vikar` (n = 5, where n − 2 = 3 but
+      n / 2 = 2) and asserts `vikur`; the mutant yields `viuar`. Isolated
+      re-run (`-F 'guna\.rs:420:17: replace - with /'`, same `-j 4
+      --timeout 4800`, `-o /tmp/8b-verify-mutants` so the campaign's own
+      `mutants.out/` snapshot stayed intact) confirms the mutant is now
+      caught.
+    Every other new-code risk area came back caught, not merely present:
+    ten of the three √kṛ rules' eleven mutants are in `caught.txt` — both
+    `ends_with` aṅga guards and the śap-`u` check of each rule
+    (`guna.rs:408:16`, `:411:59`, `:414:16`, `:437:16`, `:440:59`,
+    `:443:16`, `:461:16`, `:464:59`, `:467:16`) plus 6.4.110's `replace -
+    with +` — and all thirteen mutants inside 8.2.77's body
+    (`tripadi.rs:101`, `:104`, `:105`, `:106`, `:130`, `:131`) are caught
+    too.
+    `outcomes.json`'s per-mutant test-phase durations (**n = 576** — 615
+    mutants minus the 39 unviable ones, which fail at the Build phase and
+    never reach a Test phase) put the median at 143.68s, p90 (nearest-
+    rank, as in 7e/7f/8a) at 1923.86s, p99 at 2039.50s, and the max at
+    4800.01s — that max being the known-permanent timeout itself, not a
+    caught or missed mutant. Excluding the timeout, the max is
+    **2471.08s** (`tripadi.rs:1410:33`, `replace < with <=`,
+    `CaughtMutant`). **147** of the 576 runs exceeded 600s (8a: 129 of
+    565) and **61** exceeded 1200s (8a: 62) — the over-600s count keeps
+    climbing while the over-1200s tail has now flattened.
+    **Two margins, measured, not projected:**
+    - Against the worst **caught** mutant (2471.08s, measured, excluding
+      the timeout): 4800 / 2471.08 ≈ **1.94×**.
+    - Against the worst **uncaught** run (2011.34s, measured — the three
+      missed mutants each ran the golden suite to completion without being
+      caught, spanning 1966.83s–2011.34s; the `adesha.rs` mutant's
+      2011.34s was the slowest): 4800 / 2011.34 ≈ **2.39×**.
+    Two observed contention factors, and the difference between them is
+    the whole point of the standing range: the *uncaught* runs came in at
+    2011.34 / 1958.411 = **1.027×**, the very bottom of 1.02×–1.43× (the
+    projected lower bound, 1997.58s, landed within 0.7% of what actually
+    happened), while the worst *caught* mutant came in at
+    2471.08 / 1958.411 = **1.26×**, mid-range. Do not read the 1.027× as
+    "contention is low on this machine" — that is the exact inference the
+    7c entry above records as luck, from a two-mutant sample. The caught
+    figure is the binding one, and it is the one the cap must clear.
+    **Ruling: keep 4800.** Both margins clear 1× comfortably. The caught-
+    mutant margin recovered from 8a's series low of 1.85× to **1.94×**,
+    and the uncaught-run margin is flat (2.40× → 2.39×) despite the
+    floor's +4.6% growth — this campaign's worst caught mutant was 121s
+    faster than 8a's, which absorbed the floor's growth. 8a's 1.85×
+    therefore still stands as the series low, and the trigger it recorded
+    is unchanged: raise the cap only if a pre-campaign projection exceeds
+    4800s or a measured caught-mutant margin drops much below 1.85×, and
+    record the change in `AGENTS.md` and `mise.toml` together.
   - `cargo-deny` + `cargo-audit` (supply-chain checks) — `mise run audit` runs
     `cargo audit && cargo deny check` and is expected to pass, including
     `cargo deny check advisories`.

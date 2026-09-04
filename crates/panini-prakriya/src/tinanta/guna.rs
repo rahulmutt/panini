@@ -1552,6 +1552,23 @@ mod tests {
     }
 
     #[test]
+    fn ata_ut_uses_n_minus_2_not_n_over_2() {
+        // 6.4.110 writes the ut at `s[n - 2]`, the `a` of the aGga's final
+        // `kar`. Both aGga shapes the golden corpus reaches -- "kar" (n=3,
+        // n-2 = 1, n/2 = 1) and laN's aT-augmented "akar" (n=4, n-2 = 2,
+        // n/2 = 2) -- give the SAME index for `n - 2` and `n / 2`, so no
+        // paradigm cell can tell the two apart. This test exists solely to
+        // distinguish them: an upasarga-prefixed "vikar" (vi + kf) has n=5,
+        // where n-2 = 3 (the `a`) but n/2 = 2 (the `k`). The rule must
+        // write "vikur"; the `-` -> `/` mutant would write "viuar".
+        let r = rules().find(|r| r.id == "6.4.110").unwrap();
+        let mut p = kr_prakriya("tas", true);
+        p.terms[0].text = "vikar".into();
+        assert!((r.apply)(&mut p));
+        assert_eq!(p.terms[0].text, "vikur");
+    }
+
+    #[test]
     fn nityam_karoteh_empties_the_u_before_m_and_v() {
         let r = rules().find(|r| r.id == "6.4.108").unwrap();
         for ending in ["mas", "vas"] {

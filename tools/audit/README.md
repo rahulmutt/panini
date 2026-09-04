@@ -132,8 +132,10 @@ The verdict now covers three engine changes added for √kṛ:
   r/v before a hal-initial sārvadhātuka, deriving a wrong `*kUrvanti`;
   8.2.79 carves `kur` (and the cur-class) back out. The guard sits inside
   8.2.77's branch, rather than as a second pass, so the exclusion never
-  touches a cell 8.2.77 wasn't already about to change, and the rule log
-  still records 8.2.79 on every `kur` cell.
+  touches a cell 8.2.77 wasn't already about to change. This engine's own
+  rule log never records 8.2.79 — the guard returns `false` before
+  `p.record` runs — while vidyut-prakriya's log does record it on every
+  `kur` cell; the forms agree regardless, which is what the audit checks.
 
 Corpus totals moved from 76/3420/4321 to 77/3492/4399: 77 = 76 + 1 (√kṛ,
 `08.0010`); 3492 = 3420 + 72 cells (one ubhayapadī root × 2 padas × 4

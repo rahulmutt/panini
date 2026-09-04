@@ -1,13 +1,13 @@
-crates/panini-prakriya/src/context.rs:40:13: replace && with || in Context::is_sip
+crates/panini-prakriya/src/context.rs:39:9: replace Context::is_sip -> bool with false
 crates/panini-prakriya/src/controller.rs:23:5: replace run_pipeline -> Vec<Prakriya> with vec![]
 crates/panini-prakriya/src/controller.rs:23:5: replace run_pipeline -> Vec<Prakriya> with vec![Default::default()]
 crates/panini-prakriya/src/controller.rs:53:35: replace + with - in run_pipeline
-crates/panini-prakriya/src/context.rs:39:9: replace Context::is_sip -> bool with true
-crates/panini-prakriya/src/context.rs:39:9: replace Context::is_sip -> bool with false
+crates/panini-prakriya/src/context.rs:41:13: replace && with || in Context::is_sip
+crates/panini-prakriya/src/context.rs:40:13: replace && with || in Context::is_sip
 crates/panini-prakriya/src/it_samjna.rs:6:5: replace is_hal -> bool with false
 crates/panini-prakriya/src/it_samjna.rs:6:5: delete ! in is_hal
+crates/panini-prakriya/src/context.rs:39:9: replace Context::is_sip -> bool with true
 crates/panini-prakriya/src/it_samjna.rs:13:5: replace run_it_samjna with ()
-crates/panini-prakriya/src/context.rs:41:13: replace && with || in Context::is_sip
 crates/panini-prakriya/src/it_samjna.rs:29:16: replace != with == in run_it_samjna
 crates/panini-prakriya/src/prakriya.rs:28:9: replace Prakriya::text -> String with String::new()
 crates/panini-prakriya/src/prakriya.rs:28:9: replace Prakriya::text -> String with "xyzzy".into()
@@ -53,59 +53,59 @@ crates/panini-prakriya/src/tinanta/adesha.rs:199:16: delete !
 crates/panini-prakriya/src/tinanta/adesha.rs:240:16: delete !
 crates/panini-prakriya/src/tinanta/adesha.rs:237:37: replace != with ==
 crates/panini-prakriya/src/tinanta/adesha.rs:129:30: replace > with >=
-crates/panini-prakriya/src/tinanta/adesha.rs:337:27: replace >= with <
-crates/panini-prakriya/src/tinanta/adesha.rs:338:28: replace == with !=
-crates/panini-prakriya/src/tinanta/adesha.rs:308:16: delete !
+crates/panini-prakriya/src/tinanta/adesha.rs:339:27: replace >= with <
+crates/panini-prakriya/src/tinanta/adesha.rs:340:28: replace == with !=
 crates/panini-prakriya/src/tinanta/adesha.rs:182:53: replace - with /
-crates/panini-prakriya/src/tinanta/adesha.rs:353:30: replace > with ==
-crates/panini-prakriya/src/tinanta/adesha.rs:311:16: delete !
-crates/panini-prakriya/src/tinanta/adesha.rs:353:30: replace > with <
-crates/panini-prakriya/src/tinanta/adesha.rs:393:30: replace > with ==
-crates/panini-prakriya/src/tinanta/adesha.rs:393:30: replace > with <
-crates/panini-prakriya/src/tinanta/adesha.rs:353:30: replace > with >=
-crates/panini-prakriya/src/tinanta/adesha.rs:395:17: replace && with ||
-crates/panini-prakriya/src/tinanta/adesha.rs:394:17: replace && with ||
-crates/panini-prakriya/src/tinanta/adesha.rs:398:30: replace == with !=
-crates/panini-prakriya/src/tinanta/adesha.rs:394:20: delete !
-crates/panini-prakriya/src/tinanta/adesha.rs:434:50: replace || with &&
-crates/panini-prakriya/src/tinanta/adesha.rs:434:53: delete !
-crates/panini-prakriya/src/tinanta/adesha.rs:485:45: replace == with !=
-crates/panini-prakriya/src/tinanta/adesha.rs:395:20: delete !
-crates/panini-prakriya/src/tinanta/adesha.rs:434:16: delete !
-crates/panini-prakriya/src/tinanta/adesha.rs:393:30: replace > with >=
-crates/panini-prakriya/src/tinanta/adesha.rs:512:50: replace || with &&
-crates/panini-prakriya/src/tinanta/adesha.rs:512:16: delete !
-crates/panini-prakriya/src/tinanta/adesha.rs:512:53: delete !
-crates/panini-prakriya/src/tinanta/adesha.rs:546:22: replace == with !=
-crates/panini-prakriya/src/tinanta/adesha.rs:574:16: delete !
-crates/panini-prakriya/src/tinanta/adesha.rs:487:65: replace == with !=
-crates/panini-prakriya/src/tinanta/adesha.rs:505:30: replace + with -
-crates/panini-prakriya/src/tinanta/adesha.rs:575:26: replace == with !=
-crates/panini-prakriya/src/tinanta/adesha.rs:616:50: replace || with &&
-crates/panini-prakriya/src/tinanta/adesha.rs:616:16: delete !
-crates/panini-prakriya/src/tinanta/adesha.rs:616:74: replace != with ==
-crates/panini-prakriya/src/tinanta/adesha.rs:576:33: replace == with !=
-crates/panini-prakriya/src/tinanta/adesha.rs:578:20: delete !
-crates/panini-prakriya/src/tinanta/adesha.rs:636:37: replace != with ==
-crates/panini-prakriya/src/tinanta/adesha.rs:648:16: delete !
-crates/panini-prakriya/src/tinanta/adesha.rs:682:16: delete !
+crates/panini-prakriya/src/tinanta/adesha.rs:310:16: delete !
+crates/panini-prakriya/src/tinanta/adesha.rs:355:30: replace > with ==
+crates/panini-prakriya/src/tinanta/adesha.rs:313:16: delete !
+crates/panini-prakriya/src/tinanta/adesha.rs:355:30: replace > with <
+crates/panini-prakriya/src/tinanta/adesha.rs:395:30: replace > with ==
+crates/panini-prakriya/src/tinanta/adesha.rs:395:30: replace > with <
+crates/panini-prakriya/src/tinanta/adesha.rs:355:30: replace > with >=
+crates/panini-prakriya/src/tinanta/adesha.rs:397:17: replace && with ||
+crates/panini-prakriya/src/tinanta/adesha.rs:396:17: replace && with ||
+crates/panini-prakriya/src/tinanta/adesha.rs:396:20: delete !
+crates/panini-prakriya/src/tinanta/adesha.rs:436:50: replace || with &&
+crates/panini-prakriya/src/tinanta/adesha.rs:397:20: delete !
+crates/panini-prakriya/src/tinanta/adesha.rs:436:53: delete !
+crates/panini-prakriya/src/tinanta/adesha.rs:487:45: replace == with !=
+crates/panini-prakriya/src/tinanta/adesha.rs:400:30: replace == with !=
+crates/panini-prakriya/src/tinanta/adesha.rs:436:16: delete !
+crates/panini-prakriya/src/tinanta/adesha.rs:395:30: replace > with >=
+crates/panini-prakriya/src/tinanta/adesha.rs:514:50: replace || with &&
+crates/panini-prakriya/src/tinanta/adesha.rs:514:16: delete !
+crates/panini-prakriya/src/tinanta/adesha.rs:514:53: delete !
+crates/panini-prakriya/src/tinanta/adesha.rs:548:22: replace == with !=
+crates/panini-prakriya/src/tinanta/adesha.rs:576:16: delete !
+crates/panini-prakriya/src/tinanta/adesha.rs:489:65: replace == with !=
+crates/panini-prakriya/src/tinanta/adesha.rs:507:30: replace + with -
+crates/panini-prakriya/src/tinanta/adesha.rs:577:26: replace == with !=
+crates/panini-prakriya/src/tinanta/adesha.rs:618:50: replace || with &&
+crates/panini-prakriya/src/tinanta/adesha.rs:618:16: delete !
+crates/panini-prakriya/src/tinanta/adesha.rs:618:74: replace != with ==
+crates/panini-prakriya/src/tinanta/adesha.rs:578:33: replace == with !=
+crates/panini-prakriya/src/tinanta/adesha.rs:580:20: delete !
+crates/panini-prakriya/src/tinanta/adesha.rs:638:37: replace != with ==
+crates/panini-prakriya/src/tinanta/adesha.rs:650:16: delete !
+crates/panini-prakriya/src/tinanta/adesha.rs:684:16: delete !
 crates/panini-prakriya/src/tinanta/anga.rs:25:53: replace || with &&
 crates/panini-prakriya/src/tinanta/anga.rs:25:16: delete !
 crates/panini-prakriya/src/tinanta/anga.rs:54:66: replace == with !=
 crates/panini-prakriya/src/tinanta/anga.rs:55:73: replace || with &&
 crates/panini-prakriya/src/tinanta/anga.rs:55:53: replace || with &&
+crates/panini-prakriya/src/tinanta/adesha.rs:693:16: delete !
 crates/panini-prakriya/src/tinanta/anga.rs:55:16: delete !
-crates/panini-prakriya/src/tinanta/adesha.rs:691:16: delete !
 crates/panini-prakriya/src/tinanta/anga.rs:103:66: replace && with ||
 crates/panini-prakriya/src/tinanta/anga.rs:103:59: replace == with !=
-crates/panini-prakriya/src/tinanta/adesha.rs:695:28: replace != with ==
+crates/panini-prakriya/src/tinanta/adesha.rs:697:28: replace != with ==
 crates/panini-prakriya/src/tinanta/anga.rs:55:56: delete !
 crates/panini-prakriya/src/tinanta/anga.rs:103:83: replace - with /
 crates/panini-prakriya/src/tinanta/anga.rs:106:40: replace - with +
 crates/panini-prakriya/src/tinanta/anga.rs:108:38: replace + with -
 crates/panini-prakriya/src/tinanta/anga.rs:136:53: replace || with &&
-crates/panini-prakriya/src/tinanta/anga.rs:106:40: replace - with /
 crates/panini-prakriya/src/tinanta/anga.rs:136:16: delete !
+crates/panini-prakriya/src/tinanta/anga.rs:106:40: replace - with /
 crates/panini-prakriya/src/tinanta/anga.rs:108:38: replace + with *
 crates/panini-prakriya/src/tinanta/anga.rs:136:56: delete !
 crates/panini-prakriya/src/tinanta/anga.rs:149:34: replace != with ==
@@ -154,58 +154,69 @@ crates/panini-prakriya/src/tinanta/guna.rs:131:16: delete !
 crates/panini-prakriya/src/tinanta/guna.rs:126:43: replace - with /
 crates/panini-prakriya/src/tinanta/guna.rs:169:16: delete !
 crates/panini-prakriya/src/tinanta/guna.rs:172:59: replace != with ==
-crates/panini-prakriya/src/tinanta/guna.rs:177:18: replace < with >
 crates/panini-prakriya/src/tinanta/guna.rs:177:18: replace < with ==
+crates/panini-prakriya/src/tinanta/guna.rs:177:18: replace < with >
 crates/panini-prakriya/src/tinanta/guna.rs:177:42: replace - with +
 crates/panini-prakriya/src/tinanta/guna.rs:177:42: replace - with /
 crates/panini-prakriya/src/tinanta/guna.rs:135:43: replace - with /
 crates/panini-prakriya/src/tinanta/guna.rs:183:43: replace - with +
+crates/panini-prakriya/src/tinanta/guna.rs:177:22: replace || with &&
 crates/panini-prakriya/src/tinanta/guna.rs:187:43: replace - with +
-crates/panini-prakriya/src/tinanta/guna.rs:180:16: delete !
+crates/panini-prakriya/src/tinanta/guna.rs:177:18: replace < with <=
 crates/panini-prakriya/src/tinanta/guna.rs:189:28: replace - with +
 crates/panini-prakriya/src/tinanta/guna.rs:189:28: replace - with /
 crates/panini-prakriya/src/tinanta/guna.rs:279:16: delete !
-crates/panini-prakriya/src/tinanta/guna.rs:177:18: replace < with <=
+crates/panini-prakriya/src/tinanta/guna.rs:180:16: delete !
 crates/panini-prakriya/src/tinanta/guna.rs:183:43: replace - with /
 crates/panini-prakriya/src/tinanta/guna.rs:187:43: replace - with /
 crates/panini-prakriya/src/tinanta/guna.rs:283:63: replace || with &&
 crates/panini-prakriya/src/tinanta/guna.rs:283:38: replace || with &&
 crates/panini-prakriya/src/tinanta/guna.rs:283:16: delete !
-crates/panini-prakriya/src/tinanta/guna.rs:394:16: delete !
-crates/panini-prakriya/src/tinanta/guna.rs:427:35: replace != with ==
-crates/panini-prakriya/src/tinanta/guna.rs:391:35: replace != with ==
-crates/panini-prakriya/src/tinanta/guna.rs:466:42: replace || with &&
-crates/panini-prakriya/src/tinanta/guna.rs:466:35: replace != with ==
-crates/panini-prakriya/src/tinanta/guna.rs:400:16: delete !
-crates/panini-prakriya/src/tinanta/guna.rs:433:16: delete !
-crates/panini-prakriya/src/tinanta/guna.rs:513:17: replace sub_for -> Option<&'static str> with None
-crates/panini-prakriya/src/tinanta/guna.rs:513:17: replace sub_for -> Option<&'static str> with Some("")
-crates/panini-prakriya/src/tinanta/guna.rs:513:17: replace sub_for -> Option<&'static str> with Some("xyzzy")
 crates/panini-prakriya/src/tinanta/guna.rs:283:66: delete !
-crates/panini-prakriya/src/tinanta/guna.rs:515:21: delete match arm 'o' in sub_for
-crates/panini-prakriya/src/tinanta/guna.rs:514:21: delete match arm 'e' in sub_for
-crates/panini-prakriya/src/tinanta/guna.rs:561:34: replace > with ==
-crates/panini-prakriya/src/tinanta/guna.rs:561:34: replace > with <
-crates/panini-prakriya/src/tinanta/guna.rs:583:30: replace > with ==
-crates/panini-prakriya/src/tinanta/guna.rs:466:45: delete !
-crates/panini-prakriya/src/tinanta/guna.rs:472:16: delete !
-crates/panini-prakriya/src/tinanta/guna.rs:614:51: replace || with &&
-crates/panini-prakriya/src/tinanta/guna.rs:614:16: delete !
-crates/panini-prakriya/src/tinanta/guna.rs:614:54: delete !
-crates/panini-prakriya/src/tinanta/guna.rs:583:30: replace > with <
-crates/panini-prakriya/src/tinanta/guna.rs:655:40: replace || with &&
-crates/panini-prakriya/src/tinanta/guna.rs:655:62: replace != with ==
-crates/panini-prakriya/src/tinanta/guna.rs:655:30: replace <= with >
-crates/panini-prakriya/src/tinanta/guna.rs:658:16: delete !
-crates/panini-prakriya/src/tinanta/guna.rs:686:40: replace || with &&
-crates/panini-prakriya/src/tinanta/guna.rs:664:16: delete !
-crates/panini-prakriya/src/tinanta/guna.rs:686:62: replace != with ==
-crates/panini-prakriya/src/tinanta/guna.rs:561:34: replace > with >=
+crates/panini-prakriya/src/tinanta/guna.rs:420:17: replace - with +
+crates/panini-prakriya/src/tinanta/guna.rs:408:16: delete !
+crates/panini-prakriya/src/tinanta/guna.rs:411:59: replace != with ==
+crates/panini-prakriya/src/tinanta/guna.rs:414:16: delete !
+crates/panini-prakriya/src/tinanta/guna.rs:437:16: delete !
+crates/panini-prakriya/src/tinanta/guna.rs:440:59: replace != with ==
+crates/panini-prakriya/src/tinanta/guna.rs:443:16: delete !
+crates/panini-prakriya/src/tinanta/guna.rs:461:16: delete !
+crates/panini-prakriya/src/tinanta/guna.rs:502:35: replace != with ==
+crates/panini-prakriya/src/tinanta/guna.rs:505:16: delete !
+crates/panini-prakriya/src/tinanta/guna.rs:538:35: replace != with ==
+crates/panini-prakriya/src/tinanta/guna.rs:464:59: replace != with ==
+crates/panini-prakriya/src/tinanta/guna.rs:577:42: replace || with &&
+crates/panini-prakriya/src/tinanta/guna.rs:577:35: replace != with ==
+crates/panini-prakriya/src/tinanta/guna.rs:511:16: delete !
+crates/panini-prakriya/src/tinanta/guna.rs:467:16: delete !
+crates/panini-prakriya/src/tinanta/guna.rs:624:17: replace sub_for -> Option<&'static str> with None
+crates/panini-prakriya/src/tinanta/guna.rs:624:17: replace sub_for -> Option<&'static str> with Some("")
+crates/panini-prakriya/src/tinanta/guna.rs:624:17: replace sub_for -> Option<&'static str> with Some("xyzzy")
+crates/panini-prakriya/src/tinanta/guna.rs:625:21: delete match arm 'e' in sub_for
+crates/panini-prakriya/src/tinanta/guna.rs:626:21: delete match arm 'o' in sub_for
+crates/panini-prakriya/src/tinanta/guna.rs:544:16: delete !
+crates/panini-prakriya/src/tinanta/guna.rs:672:34: replace > with ==
+crates/panini-prakriya/src/tinanta/guna.rs:672:34: replace > with <
+crates/panini-prakriya/src/tinanta/guna.rs:697:30: replace > with ==
+crates/panini-prakriya/src/tinanta/guna.rs:577:45: delete !
+crates/panini-prakriya/src/tinanta/guna.rs:583:16: delete !
+crates/panini-prakriya/src/tinanta/guna.rs:728:51: replace || with &&
+crates/panini-prakriya/src/tinanta/guna.rs:728:16: delete !
+crates/panini-prakriya/src/tinanta/guna.rs:728:54: delete !
+crates/panini-prakriya/src/tinanta/guna.rs:769:40: replace || with &&
+crates/panini-prakriya/src/tinanta/guna.rs:697:30: replace > with <
+crates/panini-prakriya/src/tinanta/guna.rs:769:62: replace != with ==
+crates/panini-prakriya/src/tinanta/guna.rs:769:30: replace <= with >
+crates/panini-prakriya/src/tinanta/guna.rs:772:16: delete !
+crates/panini-prakriya/src/tinanta/guna.rs:800:40: replace || with &&
+crates/panini-prakriya/src/tinanta/guna.rs:778:16: delete !
+crates/panini-prakriya/src/tinanta/guna.rs:800:62: replace != with ==
+crates/panini-prakriya/src/tinanta/guna.rs:672:34: replace > with >=
 crates/panini-prakriya/src/tinanta/samjna.rs:30:16: delete !
-crates/panini-prakriya/src/tinanta/guna.rs:686:30: replace <= with >
-crates/panini-prakriya/src/tinanta/guna.rs:583:30: replace > with >=
+crates/panini-prakriya/src/tinanta/guna.rs:800:30: replace <= with >
+crates/panini-prakriya/src/tinanta/guna.rs:697:30: replace > with >=
 crates/panini-prakriya/src/tinanta/samjna.rs:148:60: replace || with &&
-crates/panini-prakriya/src/tinanta/guna.rs:689:16: delete !
+crates/panini-prakriya/src/tinanta/guna.rs:803:16: delete !
 crates/panini-prakriya/src/tinanta/samjna.rs:228:17: replace || with &&
 crates/panini-prakriya/src/tinanta/samjna.rs:228:57: replace && with ||
 crates/panini-prakriya/src/tinanta/sound.rs:9:5: replace guna_of -> Option<&'static str> with None
@@ -215,93 +226,93 @@ crates/panini-prakriya/src/tinanta/sound.rs:10:9: delete match arm 'i' | 'I' in 
 crates/panini-prakriya/src/tinanta/sound.rs:11:9: delete match arm 'u' | 'U' in guna_of
 crates/panini-prakriya/src/tinanta/sound.rs:12:9: delete match arm 'f' | 'F' in guna_of
 crates/panini-prakriya/src/tinanta/samjna.rs:113:16: delete !
-crates/panini-prakriya/src/tinanta/sound.rs:21:5: replace vrddhi_of -> Option<&'static str> with None
+crates/panini-prakriya/src/tinanta/sound.rs:24:5: replace vrddhi_of -> Option<&'static str> with None
 crates/panini-prakriya/src/tinanta/samjna.rs:74:16: delete !
-crates/panini-prakriya/src/tinanta/sound.rs:21:5: replace vrddhi_of -> Option<&'static str> with Some("")
-crates/panini-prakriya/src/tinanta/sound.rs:21:5: replace vrddhi_of -> Option<&'static str> with Some("xyzzy")
-crates/panini-prakriya/src/tinanta/sound.rs:23:9: delete match arm 'i' | 'I' | 'e' | 'E' in vrddhi_of
-crates/panini-prakriya/src/tinanta/sound.rs:22:9: delete match arm 'a' | 'A' in vrddhi_of
+crates/panini-prakriya/src/tinanta/sound.rs:24:5: replace vrddhi_of -> Option<&'static str> with Some("")
+crates/panini-prakriya/src/tinanta/sound.rs:24:5: replace vrddhi_of -> Option<&'static str> with Some("xyzzy")
+crates/panini-prakriya/src/tinanta/sound.rs:26:9: delete match arm 'i' | 'I' | 'e' | 'E' in vrddhi_of
+crates/panini-prakriya/src/tinanta/sound.rs:25:9: delete match arm 'a' | 'A' in vrddhi_of
 crates/panini-prakriya/src/tinanta/samjna.rs:204:43: replace != with ==
-crates/panini-prakriya/src/tinanta/sound.rs:32:5: replace is_vowel -> bool with true
-crates/panini-prakriya/src/tinanta/sound.rs:32:5: replace is_vowel -> bool with false
-crates/panini-prakriya/src/tinanta/sound.rs:24:9: delete match arm 'u' | 'U' | 'o' | 'O' in vrddhi_of
+crates/panini-prakriya/src/tinanta/sound.rs:35:5: replace is_vowel -> bool with true
+crates/panini-prakriya/src/tinanta/sound.rs:35:5: replace is_vowel -> bool with false
+crates/panini-prakriya/src/tinanta/sound.rs:27:9: delete match arm 'u' | 'U' | 'o' | 'O' in vrddhi_of
 crates/panini-prakriya/src/tinanta/sound.rs:13:9: delete match arm 'x' | 'X' in guna_of
-crates/panini-prakriya/src/tinanta/sound.rs:53:5: replace is_jhal -> bool with true
-crates/panini-prakriya/src/tinanta/sound.rs:53:5: replace is_jhal -> bool with false
-crates/panini-prakriya/src/tinanta/sound.rs:83:5: replace is_khar -> bool with true
-crates/panini-prakriya/src/tinanta/sound.rs:83:5: replace is_khar -> bool with false
-crates/panini-prakriya/src/tinanta/sound.rs:94:5: replace is_jhash -> bool with true
-crates/panini-prakriya/src/tinanta/sound.rs:26:9: delete match arm 'f' in vrddhi_of
-crates/panini-prakriya/src/tinanta/sound.rs:104:5: replace is_shtu -> bool with true
-crates/panini-prakriya/src/tinanta/sound.rs:44:5: replace is_hrasva -> bool with false
-crates/panini-prakriya/src/tinanta/sound.rs:114:5: replace is_shcu -> bool with true
-crates/panini-prakriya/src/tinanta/sound.rs:94:5: replace is_jhash -> bool with false
-crates/panini-prakriya/src/tinanta/sound.rs:122:5: replace is_natva_trigger -> bool with true
-crates/panini-prakriya/src/tinanta/sound.rs:122:5: replace is_natva_trigger -> bool with false
-crates/panini-prakriya/src/tinanta/sound.rs:104:5: replace is_shtu -> bool with false
-crates/panini-prakriya/src/tinanta/sound.rs:139:5: replace is_natva_intervener -> bool with false
-crates/panini-prakriya/src/tinanta/sound.rs:140:9: replace || with && in is_natva_intervener
-crates/panini-prakriya/src/tinanta/sound.rs:149:5: replace cartva_of -> Option<char> with None
-crates/panini-prakriya/src/tinanta/sound.rs:149:5: replace cartva_of -> Option<char> with Some(Default::default())
-crates/panini-prakriya/src/tinanta/sound.rs:150:9: delete match arm 'd' | 'D' | 't' | 'T' in cartva_of
-crates/panini-prakriya/src/tinanta/sound.rs:139:5: replace is_natva_intervener -> bool with true
-crates/panini-prakriya/src/tinanta/sound.rs:114:5: replace is_shcu -> bool with false
-crates/panini-prakriya/src/tinanta/sound.rs:151:9: delete match arm 'g' | 'G' | 'k' | 'K' in cartva_of
-crates/panini-prakriya/src/tinanta/sound.rs:44:5: replace is_hrasva -> bool with true
-crates/panini-prakriya/src/tinanta/sound.rs:167:5: replace jashtva_of -> Option<char> with None
-crates/panini-prakriya/src/tinanta/sound.rs:167:5: replace jashtva_of -> Option<char> with Some(Default::default())
-crates/panini-prakriya/src/tinanta/sound.rs:154:9: delete match arm 'q' | 'Q' | 'w' | 'W' in cartva_of
-crates/panini-prakriya/src/tinanta/sound.rs:168:9: delete match arm 'k' | 'K' | 'g' | 'G' in jashtva_of
-crates/panini-prakriya/src/tinanta/sound.rs:170:9: delete match arm 'w' | 'W' | 'q' | 'Q' | 'z' in jashtva_of
-crates/panini-prakriya/src/tinanta/sound.rs:171:9: delete match arm 't' | 'T' | 'd' | 'D' in jashtva_of
-crates/panini-prakriya/src/tinanta/sound.rs:152:9: delete match arm 'b' | 'B' | 'p' | 'P' in cartva_of
-crates/panini-prakriya/src/tinanta/sound.rs:153:9: delete match arm 'j' | 'J' | 'c' | 'C' in cartva_of
-crates/panini-prakriya/src/tinanta/sound.rs:199:5: replace kutva_of -> Option<char> with Some(Default::default())
-crates/panini-prakriya/src/tinanta/sound.rs:199:5: replace kutva_of -> Option<char> with None
-crates/panini-prakriya/src/tinanta/sound.rs:200:9: delete match arm 'c' in kutva_of
-crates/panini-prakriya/src/tinanta/sound.rs:202:9: delete match arm 'j' in kutva_of
-crates/panini-prakriya/src/tinanta/sound.rs:169:9: delete match arm 'c' | 'C' | 'j' | 'J' in jashtva_of
-crates/panini-prakriya/src/tinanta/sound.rs:172:9: delete match arm 'p' | 'P' | 'b' | 'B' in jashtva_of
-crates/panini-prakriya/src/tinanta/sound.rs:224:5: replace shcutva_of -> Option<char> with Some(Default::default())
-crates/panini-prakriya/src/tinanta/sound.rs:224:5: replace shcutva_of -> Option<char> with None
-crates/panini-prakriya/src/tinanta/sound.rs:226:9: delete match arm 't' in shcutva_of
-crates/panini-prakriya/src/tinanta/sound.rs:201:9: delete match arm 'C' in kutva_of
-crates/panini-prakriya/src/tinanta/sound.rs:203:9: delete match arm 'J' in kutva_of
-crates/panini-prakriya/src/tinanta/sound.rs:225:9: delete match arm 's' in shcutva_of
-crates/panini-prakriya/src/tinanta/sound.rs:227:9: delete match arm 'T' in shcutva_of
-crates/panini-prakriya/src/tinanta/sound.rs:228:9: delete match arm 'd' in shcutva_of
-crates/panini-prakriya/src/tinanta/sound.rs:243:5: replace parasavarna_of -> Option<char> with None
-crates/panini-prakriya/src/tinanta/sound.rs:243:5: replace parasavarna_of -> Option<char> with Some(Default::default())
-crates/panini-prakriya/src/tinanta/sound.rs:244:9: delete match arm 'k' | 'K' | 'g' | 'G' | 'N' in parasavarna_of
-crates/panini-prakriya/src/tinanta/sound.rs:229:9: delete match arm 'D' in shcutva_of
-crates/panini-prakriya/src/tinanta/sound.rs:245:9: delete match arm 'c' | 'C' | 'j' | 'J' | 'Y' in parasavarna_of
-crates/panini-prakriya/src/tinanta/sound.rs:246:9: delete match arm 'w' | 'W' | 'q' | 'Q' | 'R' in parasavarna_of
-crates/panini-prakriya/src/tinanta/sound.rs:247:9: delete match arm 't' | 'T' | 'd' | 'D' | 'n' in parasavarna_of
-crates/panini-prakriya/src/tinanta/sound.rs:230:9: delete match arm 'n' in shcutva_of
-crates/panini-prakriya/src/tinanta/sound.rs:260:5: replace is_savarna -> bool with false
-crates/panini-prakriya/src/tinanta/sound.rs:260:5: replace is_savarna -> bool with true
-crates/panini-prakriya/src/tinanta/sound.rs:261:9: replace is_savarna::series -> Option<u8> with None
-crates/panini-prakriya/src/tinanta/sound.rs:248:9: delete match arm 'p' | 'P' | 'b' | 'B' | 'm' in parasavarna_of
-crates/panini-prakriya/src/tinanta/sound.rs:261:9: replace is_savarna::series -> Option<u8> with Some(0)
-crates/panini-prakriya/src/tinanta/sound.rs:261:9: replace is_savarna::series -> Option<u8> with Some(1)
-crates/panini-prakriya/src/tinanta/sound.rs:264:13: delete match arm 'w' | 'W' | 'q' | 'Q' in is_savarna::series
-crates/panini-prakriya/src/tinanta/sound.rs:265:13: delete match arm 't' | 'T' | 'd' | 'D' in is_savarna::series
-crates/panini-prakriya/src/tinanta/sound.rs:262:13: delete match arm 'k' | 'K' | 'g' | 'G' in is_savarna::series
-crates/panini-prakriya/src/tinanta/sound.rs:271:9: delete match arm (Some(x), Some(y)) in is_savarna
-crates/panini-prakriya/src/tinanta/sound.rs:280:5: replace is_vibhakti_protected_final -> bool with true
-crates/panini-prakriya/src/tinanta/sound.rs:263:13: delete match arm 'c' | 'C' | 'j' | 'J' in is_savarna::series
-crates/panini-prakriya/src/tinanta/sound.rs:280:5: replace is_vibhakti_protected_final -> bool with false
+crates/panini-prakriya/src/tinanta/sound.rs:56:5: replace is_jhal -> bool with true
+crates/panini-prakriya/src/tinanta/sound.rs:56:5: replace is_jhal -> bool with false
+crates/panini-prakriya/src/tinanta/sound.rs:86:5: replace is_khar -> bool with true
+crates/panini-prakriya/src/tinanta/sound.rs:86:5: replace is_khar -> bool with false
+crates/panini-prakriya/src/tinanta/sound.rs:97:5: replace is_jhash -> bool with true
+crates/panini-prakriya/src/tinanta/sound.rs:29:9: delete match arm 'f' in vrddhi_of
+crates/panini-prakriya/src/tinanta/sound.rs:107:5: replace is_shtu -> bool with true
+crates/panini-prakriya/src/tinanta/sound.rs:47:5: replace is_hrasva -> bool with false
+crates/panini-prakriya/src/tinanta/sound.rs:117:5: replace is_shcu -> bool with true
+crates/panini-prakriya/src/tinanta/sound.rs:97:5: replace is_jhash -> bool with false
+crates/panini-prakriya/src/tinanta/sound.rs:125:5: replace is_natva_trigger -> bool with true
+crates/panini-prakriya/src/tinanta/sound.rs:125:5: replace is_natva_trigger -> bool with false
+crates/panini-prakriya/src/tinanta/sound.rs:107:5: replace is_shtu -> bool with false
+crates/panini-prakriya/src/tinanta/sound.rs:142:5: replace is_natva_intervener -> bool with false
+crates/panini-prakriya/src/tinanta/sound.rs:143:9: replace || with && in is_natva_intervener
+crates/panini-prakriya/src/tinanta/sound.rs:152:5: replace cartva_of -> Option<char> with None
+crates/panini-prakriya/src/tinanta/sound.rs:152:5: replace cartva_of -> Option<char> with Some(Default::default())
+crates/panini-prakriya/src/tinanta/sound.rs:153:9: delete match arm 'd' | 'D' | 't' | 'T' in cartva_of
+crates/panini-prakriya/src/tinanta/sound.rs:142:5: replace is_natva_intervener -> bool with true
+crates/panini-prakriya/src/tinanta/sound.rs:117:5: replace is_shcu -> bool with false
+crates/panini-prakriya/src/tinanta/sound.rs:154:9: delete match arm 'g' | 'G' | 'k' | 'K' in cartva_of
+crates/panini-prakriya/src/tinanta/sound.rs:47:5: replace is_hrasva -> bool with true
+crates/panini-prakriya/src/tinanta/sound.rs:170:5: replace jashtva_of -> Option<char> with None
+crates/panini-prakriya/src/tinanta/sound.rs:170:5: replace jashtva_of -> Option<char> with Some(Default::default())
+crates/panini-prakriya/src/tinanta/sound.rs:157:9: delete match arm 'q' | 'Q' | 'w' | 'W' in cartva_of
+crates/panini-prakriya/src/tinanta/sound.rs:171:9: delete match arm 'k' | 'K' | 'g' | 'G' in jashtva_of
+crates/panini-prakriya/src/tinanta/sound.rs:173:9: delete match arm 'w' | 'W' | 'q' | 'Q' | 'z' in jashtva_of
+crates/panini-prakriya/src/tinanta/sound.rs:174:9: delete match arm 't' | 'T' | 'd' | 'D' in jashtva_of
+crates/panini-prakriya/src/tinanta/sound.rs:155:9: delete match arm 'b' | 'B' | 'p' | 'P' in cartva_of
+crates/panini-prakriya/src/tinanta/sound.rs:156:9: delete match arm 'j' | 'J' | 'c' | 'C' in cartva_of
+crates/panini-prakriya/src/tinanta/sound.rs:202:5: replace kutva_of -> Option<char> with Some(Default::default())
+crates/panini-prakriya/src/tinanta/sound.rs:202:5: replace kutva_of -> Option<char> with None
+crates/panini-prakriya/src/tinanta/sound.rs:203:9: delete match arm 'c' in kutva_of
+crates/panini-prakriya/src/tinanta/sound.rs:205:9: delete match arm 'j' in kutva_of
+crates/panini-prakriya/src/tinanta/sound.rs:172:9: delete match arm 'c' | 'C' | 'j' | 'J' in jashtva_of
+crates/panini-prakriya/src/tinanta/sound.rs:175:9: delete match arm 'p' | 'P' | 'b' | 'B' in jashtva_of
+crates/panini-prakriya/src/tinanta/sound.rs:227:5: replace shcutva_of -> Option<char> with Some(Default::default())
+crates/panini-prakriya/src/tinanta/sound.rs:227:5: replace shcutva_of -> Option<char> with None
+crates/panini-prakriya/src/tinanta/sound.rs:229:9: delete match arm 't' in shcutva_of
+crates/panini-prakriya/src/tinanta/sound.rs:204:9: delete match arm 'C' in kutva_of
+crates/panini-prakriya/src/tinanta/sound.rs:206:9: delete match arm 'J' in kutva_of
+crates/panini-prakriya/src/tinanta/sound.rs:228:9: delete match arm 's' in shcutva_of
+crates/panini-prakriya/src/tinanta/sound.rs:230:9: delete match arm 'T' in shcutva_of
+crates/panini-prakriya/src/tinanta/sound.rs:231:9: delete match arm 'd' in shcutva_of
+crates/panini-prakriya/src/tinanta/sound.rs:246:5: replace parasavarna_of -> Option<char> with None
+crates/panini-prakriya/src/tinanta/sound.rs:246:5: replace parasavarna_of -> Option<char> with Some(Default::default())
+crates/panini-prakriya/src/tinanta/sound.rs:232:9: delete match arm 'D' in shcutva_of
+crates/panini-prakriya/src/tinanta/sound.rs:247:9: delete match arm 'k' | 'K' | 'g' | 'G' | 'N' in parasavarna_of
+crates/panini-prakriya/src/tinanta/sound.rs:248:9: delete match arm 'c' | 'C' | 'j' | 'J' | 'Y' in parasavarna_of
+crates/panini-prakriya/src/tinanta/sound.rs:249:9: delete match arm 'w' | 'W' | 'q' | 'Q' | 'R' in parasavarna_of
+crates/panini-prakriya/src/tinanta/sound.rs:250:9: delete match arm 't' | 'T' | 'd' | 'D' | 'n' in parasavarna_of
+crates/panini-prakriya/src/tinanta/sound.rs:233:9: delete match arm 'n' in shcutva_of
+crates/panini-prakriya/src/tinanta/sound.rs:263:5: replace is_savarna -> bool with false
+crates/panini-prakriya/src/tinanta/sound.rs:263:5: replace is_savarna -> bool with true
+crates/panini-prakriya/src/tinanta/sound.rs:264:9: replace is_savarna::series -> Option<u8> with None
+crates/panini-prakriya/src/tinanta/sound.rs:251:9: delete match arm 'p' | 'P' | 'b' | 'B' | 'm' in parasavarna_of
+crates/panini-prakriya/src/tinanta/sound.rs:264:9: replace is_savarna::series -> Option<u8> with Some(0)
+crates/panini-prakriya/src/tinanta/sound.rs:264:9: replace is_savarna::series -> Option<u8> with Some(1)
+crates/panini-prakriya/src/tinanta/sound.rs:268:13: delete match arm 't' | 'T' | 'd' | 'D' in is_savarna::series
+crates/panini-prakriya/src/tinanta/sound.rs:267:13: delete match arm 'w' | 'W' | 'q' | 'Q' in is_savarna::series
+crates/panini-prakriya/src/tinanta/sound.rs:265:13: delete match arm 'k' | 'K' | 'g' | 'G' in is_savarna::series
+crates/panini-prakriya/src/tinanta/sound.rs:274:9: delete match arm (Some(x), Some(y)) in is_savarna
+crates/panini-prakriya/src/tinanta/sound.rs:283:5: replace is_vibhakti_protected_final -> bool with true
+crates/panini-prakriya/src/tinanta/sound.rs:283:5: replace is_vibhakti_protected_final -> bool with false
+crates/panini-prakriya/src/tinanta/sound.rs:266:13: delete match arm 'c' | 'C' | 'j' | 'J' in is_savarna::series
 crates/panini-prakriya/src/tinanta/terms.rs:109:5: replace following_sarvadhatuka -> Option<&Term> with None
 crates/panini-prakriya/src/tinanta/terms.rs:110:23: replace match guard !shap.text.is_empty() with false in following_sarvadhatuka
 crates/panini-prakriya/src/tinanta/terms.rs:110:23: delete ! in following_sarvadhatuka
-crates/panini-prakriya/src/tinanta/sound.rs:271:33: replace == with != in is_savarna
+crates/panini-prakriya/src/tinanta/sound.rs:274:33: replace == with != in is_savarna
 crates/panini-prakriya/src/tinanta/terms.rs:137:5: replace sound_before_ending -> Option<char> with None
-crates/panini-prakriya/src/tinanta/terms.rs:137:5: replace sound_before_ending -> Option<char> with Some(Default::default())
 crates/panini-prakriya/src/tinanta/terms.rs:160:5: replace vikarana_u_asamyogapurva -> bool with true
+crates/panini-prakriya/src/tinanta/terms.rs:137:5: replace sound_before_ending -> Option<char> with Some(Default::default())
 crates/panini-prakriya/src/tinanta/terms.rs:160:5: replace vikarana_u_asamyogapurva -> bool with false
 crates/panini-prakriya/src/tinanta/terms.rs:166:9: delete match arm "nu" in vikarana_u_asamyogapurva
 crates/panini-prakriya/src/tinanta/terms.rs:177:25: replace match guard is_vowel(v) with true in vikarana_u_asamyogapurva
-crates/panini-prakriya/src/tinanta/sound.rs:266:13: delete match arm 'p' | 'P' | 'b' | 'B' in is_savarna::series
+crates/panini-prakriya/src/tinanta/sound.rs:269:13: delete match arm 'p' | 'P' | 'b' | 'B' in is_savarna::series
 crates/panini-prakriya/src/tinanta/terms.rs:179:31: replace match guard !is_vowel(c) && is_vowel(v) with true in vikarana_u_asamyogapurva
 crates/panini-prakriya/src/tinanta/terms.rs:167:9: delete match arm "u" in vikarana_u_asamyogapurva
 crates/panini-prakriya/src/tinanta/terms.rs:179:31: replace match guard !is_vowel(c) && is_vowel(v) with false in vikarana_u_asamyogapurva
@@ -309,8 +320,8 @@ crates/panini-prakriya/src/tinanta/terms.rs:179:44: replace && with || in vikara
 crates/panini-prakriya/src/tinanta/terms.rs:192:5: replace word_chars -> Vec<(usize, usize, char)> with vec![]
 crates/panini-prakriya/src/tinanta/terms.rs:192:5: replace word_chars -> Vec<(usize, usize, char)> with vec![(0, 0, Default::default())]
 crates/panini-prakriya/src/tinanta/terms.rs:192:5: replace word_chars -> Vec<(usize, usize, char)> with vec![(0, 1, Default::default())]
-crates/panini-prakriya/src/tinanta/terms.rs:192:5: replace word_chars -> Vec<(usize, usize, char)> with vec![(1, 0, Default::default())]
 crates/panini-prakriya/src/tinanta/terms.rs:179:31: delete ! in vikarana_u_asamyogapurva
+crates/panini-prakriya/src/tinanta/terms.rs:192:5: replace word_chars -> Vec<(usize, usize, char)> with vec![(1, 0, Default::default())]
 crates/panini-prakriya/src/tinanta/terms.rs:192:5: replace word_chars -> Vec<(usize, usize, char)> with vec![(1, 1, Default::default())]
 crates/panini-prakriya/src/tinanta/terms.rs:203:5: replace set_char with ()
 crates/panini-prakriya/src/tinanta/terms.rs:110:23: replace match guard !shap.text.is_empty() with true in following_sarvadhatuka
@@ -331,47 +342,48 @@ crates/panini-prakriya/src/tinanta/tin.rs:122:36: replace || with &&
 crates/panini-prakriya/src/tinanta/tin.rs:122:16: delete !
 crates/panini-prakriya/src/tinanta/tin.rs:90:20: delete !
 crates/panini-prakriya/src/tinanta/tin.rs:126:17: delete match arm "tas"
+crates/panini-prakriya/src/tinanta/tin.rs:91:50: replace != with ==
 crates/panini-prakriya/src/tinanta/tin.rs:127:17: delete match arm "Tas"
 crates/panini-prakriya/src/tinanta/tin.rs:128:17: delete match arm "Ta"
-crates/panini-prakriya/src/tinanta/tin.rs:91:50: replace != with ==
-crates/panini-prakriya/src/tinanta/tin.rs:131:25: replace match guard !matches!(p.ctx.lakara, Lakara::Lot) with false
-crates/panini-prakriya/src/tinanta/tin.rs:149:17: replace || with &&
 crates/panini-prakriya/src/tinanta/tin.rs:131:25: replace match guard !matches!(p.ctx.lakara, Lakara::Lot) with true
+crates/panini-prakriya/src/tinanta/tin.rs:149:17: replace || with &&
+crates/panini-prakriya/src/tinanta/tin.rs:131:25: replace match guard !matches!(p.ctx.lakara, Lakara::Lot) with false
 crates/panini-prakriya/src/tinanta/tin.rs:149:20: delete !
-crates/panini-prakriya/src/tinanta/tin.rs:131:25: delete !
 crates/panini-prakriya/src/tinanta/tin.rs:148:16: delete !
+crates/panini-prakriya/src/tinanta/tin.rs:131:25: delete !
 crates/panini-prakriya/src/tinanta/tin.rs:169:53: replace || with &&
 crates/panini-prakriya/src/tinanta/tin.rs:169:16: delete !
-crates/panini-prakriya/src/tinanta/tin.rs:192:53: replace || with &&
 crates/panini-prakriya/src/tinanta/tin.rs:169:86: replace != with ==
+crates/panini-prakriya/src/tinanta/tin.rs:192:53: replace || with &&
 crates/panini-prakriya/src/tinanta/tin.rs:213:16: delete !
-crates/panini-prakriya/src/tinanta/tin.rs:192:86: replace != with ==
+crates/panini-prakriya/src/tinanta/terms.rs:177:25: replace match guard is_vowel(v) with false in vikarana_u_asamyogapurva
 crates/panini-prakriya/src/tinanta/tin.rs:245:17: replace || with &&
 crates/panini-prakriya/src/tinanta/tin.rs:244:17: replace || with &&
 crates/panini-prakriya/src/tinanta/tin.rs:243:17: replace || with &&
 crates/panini-prakriya/src/tinanta/tin.rs:242:16: delete !
-crates/panini-prakriya/src/tinanta/tin.rs:216:16: delete !
-crates/panini-prakriya/src/tinanta/tin.rs:270:17: replace || with &&
 crates/panini-prakriya/src/tinanta/tin.rs:245:20: delete !
+crates/panini-prakriya/src/tinanta/tin.rs:270:17: replace || with &&
+crates/panini-prakriya/src/tinanta/tin.rs:192:86: replace != with ==
 crates/panini-prakriya/src/tinanta/tin.rs:270:50: replace != with ==
 crates/panini-prakriya/src/tinanta/tin.rs:291:17: replace || with &&
+crates/panini-prakriya/src/tinanta/tin.rs:216:16: delete !
 crates/panini-prakriya/src/tinanta/tin.rs:291:20: delete !
 crates/panini-prakriya/src/tinanta/tin.rs:269:16: delete !
 crates/panini-prakriya/src/tinanta/tin.rs:290:16: delete !
 crates/panini-prakriya/src/tinanta/tin.rs:305:25: replace == with !=
 crates/panini-prakriya/src/tinanta/tin.rs:323:16: delete !
-crates/panini-prakriya/src/tinanta/tin.rs:192:16: delete !
 crates/panini-prakriya/src/tinanta/tin.rs:328:17: delete match arm "Dve"
+crates/panini-prakriya/src/tinanta/tin.rs:192:16: delete !
 crates/panini-prakriya/src/tinanta/tin.rs:348:17: replace || with &&
 crates/panini-prakriya/src/tinanta/tin.rs:347:17: replace || with &&
 crates/panini-prakriya/src/tinanta/tin.rs:347:20: delete !
 crates/panini-prakriya/src/tinanta/tin.rs:327:17: delete match arm "se"
 crates/panini-prakriya/src/tinanta/tin.rs:346:16: delete !
 crates/panini-prakriya/src/tinanta/tin.rs:374:17: replace || with &&
-crates/panini-prakriya/src/tinanta/tin.rs:373:17: replace || with &&
 crates/panini-prakriya/src/tinanta/tin.rs:348:20: delete !
-crates/panini-prakriya/src/tinanta/tin.rs:372:16: delete !
+crates/panini-prakriya/src/tinanta/tin.rs:373:17: replace || with &&
 crates/panini-prakriya/src/tinanta/tin.rs:349:20: delete !
+crates/panini-prakriya/src/tinanta/tin.rs:372:16: delete !
 crates/panini-prakriya/src/tinanta/tin.rs:373:20: delete !
 crates/panini-prakriya/src/tinanta/tin.rs:374:20: delete !
 crates/panini-prakriya/src/tinanta/tin.rs:404:17: replace || with &&
@@ -396,126 +408,126 @@ crates/panini-prakriya/src/tinanta/tripadi.rs:78:10: replace + with * in is_natv
 crates/panini-prakriya/src/tinanta/tripadi.rs:75:15: replace != with == in is_natva_target
 crates/panini-prakriya/src/tinanta/tripadi.rs:81:18: replace + with - in is_natva_target
 crates/panini-prakriya/src/tinanta/tripadi.rs:81:5: delete ! in is_natva_target
-crates/panini-prakriya/src/tinanta/tripadi.rs:99:18: replace < with ==
-crates/panini-prakriya/src/tinanta/tripadi.rs:99:18: replace < with >
+crates/panini-prakriya/src/tinanta/tripadi.rs:101:18: replace < with ==
+crates/panini-prakriya/src/tinanta/tripadi.rs:101:18: replace < with >
 crates/panini-prakriya/src/tinanta/tripadi.rs:56:5: replace dhatu_is_pada_final -> bool with false
-crates/panini-prakriya/src/tinanta/tripadi.rs:102:35: replace - with +
-crates/panini-prakriya/src/tinanta/tripadi.rs:102:35: replace - with /
-crates/panini-prakriya/src/tinanta/tripadi.rs:103:34: replace - with +
+crates/panini-prakriya/src/tinanta/tripadi.rs:104:35: replace - with +
+crates/panini-prakriya/src/tinanta/tripadi.rs:104:35: replace - with /
+crates/panini-prakriya/src/tinanta/tripadi.rs:105:34: replace - with +
 crates/panini-prakriya/src/tinanta/tripadi.rs:81:18: replace + with * in is_natva_target
-crates/panini-prakriya/src/tinanta/tripadi.rs:104:46: replace || with &&
+crates/panini-prakriya/src/tinanta/tripadi.rs:106:46: replace || with &&
 crates/panini-prakriya/src/tinanta/tin.rs:502:31: replace != with ==
-crates/panini-prakriya/src/tinanta/tripadi.rs:104:16: delete !
-crates/panini-prakriya/src/tinanta/tripadi.rs:104:49: delete !
-crates/panini-prakriya/src/tinanta/tripadi.rs:122:43: replace - with +
-crates/panini-prakriya/src/tinanta/tripadi.rs:121:34: replace == with !=
-crates/panini-prakriya/src/tinanta/tripadi.rs:143:31: replace || with &&
-crates/panini-prakriya/src/tinanta/tripadi.rs:160:58: delete !
-crates/panini-prakriya/src/tinanta/tripadi.rs:210:16: delete !
-crates/panini-prakriya/src/tinanta/tripadi.rs:218:32: delete !
-crates/panini-prakriya/src/tinanta/tripadi.rs:223:16: delete !
-crates/panini-prakriya/src/tinanta/tripadi.rs:288:40: replace && with ||
-crates/panini-prakriya/src/tinanta/tripadi.rs:288:51: replace + with -
-crates/panini-prakriya/src/tinanta/tripadi.rs:288:51: replace + with *
-crates/panini-prakriya/src/tinanta/tripadi.rs:326:27: replace && with ||
-crates/panini-prakriya/src/tinanta/tripadi.rs:326:20: replace == with !=
-crates/panini-prakriya/src/tinanta/tripadi.rs:326:38: replace + with -
-crates/panini-prakriya/src/tinanta/tripadi.rs:326:38: replace + with *
-crates/panini-prakriya/src/tinanta/tripadi.rs:395:27: replace == with !=
-crates/panini-prakriya/src/tinanta/tripadi.rs:401:58: delete !
-crates/panini-prakriya/src/tinanta/tripadi.rs:449:20: delete !
-crates/panini-prakriya/src/tinanta/tripadi.rs:452:20: delete !
-crates/panini-prakriya/src/tinanta/tripadi.rs:452:34: replace - with +
-crates/panini-prakriya/src/tinanta/tripadi.rs:99:18: replace < with <=
-crates/panini-prakriya/src/tinanta/tripadi.rs:513:34: replace || with &&
-crates/panini-prakriya/src/tinanta/tripadi.rs:103:34: replace - with /
-crates/panini-prakriya/src/tinanta/tripadi.rs:513:37: delete !
-crates/panini-prakriya/src/tinanta/tripadi.rs:513:27: replace != with ==
-crates/panini-prakriya/src/tinanta/tripadi.rs:452:34: replace - with /
-crates/panini-prakriya/src/tinanta/tripadi.rs:516:42: replace - with +
-crates/panini-prakriya/src/tinanta/tripadi.rs:516:42: replace - with /
-crates/panini-prakriya/src/tinanta/tripadi.rs:122:43: replace - with /
-crates/panini-prakriya/src/tinanta/tripadi.rs:542:49: replace || with &&
-crates/panini-prakriya/src/tinanta/tripadi.rs:542:16: delete !
-crates/panini-prakriya/src/tinanta/tripadi.rs:542:52: delete !
-crates/panini-prakriya/src/tinanta/tripadi.rs:545:16: delete !
-crates/panini-prakriya/src/tinanta/tripadi.rs:548:16: delete !
-crates/panini-prakriya/src/tinanta/tripadi.rs:552:58: delete !
-crates/panini-prakriya/src/tinanta/tripadi.rs:593:49: replace || with &&
-crates/panini-prakriya/src/tinanta/tripadi.rs:593:16: delete !
-crates/panini-prakriya/src/tinanta/tripadi.rs:593:52: delete !
-crates/panini-prakriya/src/tinanta/tripadi.rs:596:16: delete !
-crates/panini-prakriya/src/tinanta/tripadi.rs:599:16: delete !
-crates/panini-prakriya/src/tinanta/tripadi.rs:676:16: delete !
-crates/panini-prakriya/src/tinanta/tripadi.rs:603:58: delete !
-crates/panini-prakriya/src/tinanta/tripadi.rs:722:16: delete !
-crates/panini-prakriya/src/tinanta/tripadi.rs:725:58: delete !
-crates/panini-prakriya/src/tinanta/tripadi.rs:679:16: delete !
-crates/panini-prakriya/src/tinanta/tripadi.rs:686:58: delete !
-crates/panini-prakriya/src/tinanta/tripadi.rs:682:16: delete !
-crates/panini-prakriya/src/tinanta/tripadi.rs:770:16: delete !
-crates/panini-prakriya/src/tinanta/tripadi.rs:775:27: replace && with ||
-crates/panini-prakriya/src/tinanta/tripadi.rs:775:20: replace == with !=
-crates/panini-prakriya/src/tinanta/tripadi.rs:775:38: replace + with -
-crates/panini-prakriya/src/tinanta/tripadi.rs:860:51: delete !
-crates/panini-prakriya/src/tinanta/tripadi.rs:860:48: replace && with ||
-crates/panini-prakriya/src/tinanta/tripadi.rs:842:28: replace + with *
-crates/panini-prakriya/src/tinanta/tripadi.rs:775:38: replace + with *
-crates/panini-prakriya/src/tinanta/tripadi.rs:963:20: delete !
-crates/panini-prakriya/src/tinanta/tripadi.rs:963:33: replace + with -
-crates/panini-prakriya/src/tinanta/tripadi.rs:861:31: replace && with ||
-crates/panini-prakriya/src/tinanta/tripadi.rs:1058:20: delete !
-crates/panini-prakriya/src/tinanta/tripadi.rs:1058:33: replace - with +
-crates/panini-prakriya/src/tinanta/tripadi.rs:861:16: delete !
-crates/panini-prakriya/src/tinanta/tripadi.rs:861:34: delete !
-crates/panini-prakriya/src/tinanta/tripadi.rs:1058:33: replace - with /
-crates/panini-prakriya/src/tinanta/tripadi.rs:1062:21: delete match arm 't'
-crates/panini-prakriya/src/tinanta/tripadi.rs:1063:21: delete match arm 'T'
-crates/panini-prakriya/src/tinanta/tripadi.rs:963:33: replace + with *
-crates/panini-prakriya/src/tinanta/tripadi.rs:1113:54: replace - with +
-crates/panini-prakriya/src/tinanta/tripadi.rs:1064:21: delete match arm 'D'
-crates/panini-prakriya/src/tinanta/tripadi.rs:1113:68: replace && with ||
-crates/panini-prakriya/src/tinanta/tripadi.rs:1113:61: replace == with !=
-crates/panini-prakriya/src/tinanta/tripadi.rs:1113:54: replace - with /
-crates/panini-prakriya/src/tinanta/tripadi.rs:1254:20: delete !
-crates/panini-prakriya/src/tinanta/tripadi.rs:1113:78: replace == with !=
-crates/panini-prakriya/src/tinanta/tripadi.rs:1257:49: replace - with /
-crates/panini-prakriya/src/tinanta/tripadi.rs:1257:49: replace - with +
-crates/panini-prakriya/src/tinanta/tripadi.rs:1166:38: replace - with +
-crates/panini-prakriya/src/tinanta/tripadi.rs:1263:25: replace == with !=
-crates/panini-prakriya/src/tinanta/tripadi.rs:1266:42: replace - with +
-crates/panini-prakriya/src/tinanta/tripadi.rs:1266:42: replace - with /
-crates/panini-prakriya/src/tinanta/tripadi.rs:1310:16: delete !
-crates/panini-prakriya/src/tinanta/tripadi.rs:1322:62: replace - with +
-crates/panini-prakriya/src/tinanta/tripadi.rs:1322:62: replace - with /
-crates/panini-prakriya/src/tinanta/tripadi.rs:1329:16: delete !
-crates/panini-prakriya/src/tinanta/tripadi.rs:1335:20: replace == with !=
-crates/panini-prakriya/src/tinanta/tripadi.rs:1358:44: replace || with &&
-crates/panini-prakriya/src/tinanta/tripadi.rs:1358:20: delete !
-crates/panini-prakriya/src/tinanta/tripadi.rs:1358:49: replace == with !=
-crates/panini-prakriya/src/tinanta/tripadi.rs:1361:20: delete !
-crates/panini-prakriya/src/tinanta/tripadi.rs:1361:42: replace - with +
-crates/panini-prakriya/src/tinanta/tripadi.rs:1391:20: delete !
-crates/panini-prakriya/src/tinanta/tripadi.rs:1396:26: replace == with !=
-crates/panini-prakriya/src/tinanta/tripadi.rs:1399:33: replace - with +
-crates/panini-prakriya/src/tinanta/tripadi.rs:1399:33: replace - with /
-crates/panini-prakriya/src/tinanta/tripadi.rs:1401:33: replace < with ==
-crates/panini-prakriya/src/tinanta/tripadi.rs:1361:42: replace - with /
-crates/panini-prakriya/src/tinanta/tripadi.rs:1401:33: replace < with >
-crates/panini-prakriya/src/tinanta/tripadi.rs:1263:32: replace - with +
-crates/panini-prakriya/src/tinanta/tripadi.rs:1403:24: delete !
-crates/panini-prakriya/src/tinanta/tripadi.rs:1406:23: replace -= with +=
-crates/panini-prakriya/src/tinanta/tripadi.rs:1408:20: delete !
-crates/panini-prakriya/src/tinanta/tripadi.rs:1459:23: replace != with ==
-crates/panini-prakriya/src/tinanta/tripadi.rs:1263:32: replace - with /
-crates/panini-prakriya/src/tinanta/tripadi.rs:1462:36: replace + with -
-crates/panini-prakriya/src/tinanta/tripadi.rs:1462:36: replace + with *
-crates/panini-prakriya/src/tinanta/tripadi.rs:1527:27: delete !
-crates/panini-prakriya/src/tinanta/tripadi.rs:1527:49: replace && with ||
-crates/panini-prakriya/src/tinanta/tripadi.rs:1401:33: replace < with <=
-crates/panini-prakriya/src/tinanta/tripadi.rs:1527:41: replace - with +
-crates/panini-prakriya/src/tinanta/tripadi.rs:1527:41: replace - with /
-crates/panini-prakriya/src/tinanta/tripadi.rs:1587:58: delete !
+crates/panini-prakriya/src/tinanta/tripadi.rs:106:16: delete !
+crates/panini-prakriya/src/tinanta/tripadi.rs:106:49: delete !
+crates/panini-prakriya/src/tinanta/tripadi.rs:131:43: replace - with +
+crates/panini-prakriya/src/tinanta/tripadi.rs:130:34: replace == with !=
+crates/panini-prakriya/src/tinanta/tripadi.rs:152:31: replace || with &&
+crates/panini-prakriya/src/tinanta/tripadi.rs:169:58: delete !
+crates/panini-prakriya/src/tinanta/tripadi.rs:219:16: delete !
+crates/panini-prakriya/src/tinanta/tripadi.rs:227:32: delete !
+crates/panini-prakriya/src/tinanta/tripadi.rs:232:16: delete !
+crates/panini-prakriya/src/tinanta/tripadi.rs:297:40: replace && with ||
+crates/panini-prakriya/src/tinanta/tripadi.rs:297:51: replace + with -
+crates/panini-prakriya/src/tinanta/tripadi.rs:297:51: replace + with *
+crates/panini-prakriya/src/tinanta/tripadi.rs:335:27: replace && with ||
+crates/panini-prakriya/src/tinanta/tripadi.rs:335:20: replace == with !=
+crates/panini-prakriya/src/tinanta/tripadi.rs:335:38: replace + with -
+crates/panini-prakriya/src/tinanta/tripadi.rs:335:38: replace + with *
+crates/panini-prakriya/src/tinanta/tripadi.rs:404:27: replace == with !=
+crates/panini-prakriya/src/tinanta/tripadi.rs:410:58: delete !
+crates/panini-prakriya/src/tinanta/tripadi.rs:458:20: delete !
+crates/panini-prakriya/src/tinanta/tripadi.rs:461:20: delete !
+crates/panini-prakriya/src/tinanta/tripadi.rs:461:34: replace - with +
+crates/panini-prakriya/src/tinanta/tripadi.rs:101:18: replace < with <=
+crates/panini-prakriya/src/tinanta/tripadi.rs:522:34: replace || with &&
+crates/panini-prakriya/src/tinanta/tripadi.rs:105:34: replace - with /
+crates/panini-prakriya/src/tinanta/tripadi.rs:522:37: delete !
+crates/panini-prakriya/src/tinanta/tripadi.rs:522:27: replace != with ==
+crates/panini-prakriya/src/tinanta/tripadi.rs:461:34: replace - with /
+crates/panini-prakriya/src/tinanta/tripadi.rs:525:42: replace - with +
+crates/panini-prakriya/src/tinanta/tripadi.rs:525:42: replace - with /
+crates/panini-prakriya/src/tinanta/tripadi.rs:131:43: replace - with /
+crates/panini-prakriya/src/tinanta/tripadi.rs:551:49: replace || with &&
+crates/panini-prakriya/src/tinanta/tripadi.rs:551:16: delete !
+crates/panini-prakriya/src/tinanta/tripadi.rs:551:52: delete !
+crates/panini-prakriya/src/tinanta/tripadi.rs:554:16: delete !
+crates/panini-prakriya/src/tinanta/tripadi.rs:557:16: delete !
+crates/panini-prakriya/src/tinanta/tripadi.rs:561:58: delete !
+crates/panini-prakriya/src/tinanta/tripadi.rs:602:49: replace || with &&
+crates/panini-prakriya/src/tinanta/tripadi.rs:602:16: delete !
+crates/panini-prakriya/src/tinanta/tripadi.rs:602:52: delete !
+crates/panini-prakriya/src/tinanta/tripadi.rs:605:16: delete !
+crates/panini-prakriya/src/tinanta/tripadi.rs:608:16: delete !
+crates/panini-prakriya/src/tinanta/tripadi.rs:685:16: delete !
+crates/panini-prakriya/src/tinanta/tripadi.rs:612:58: delete !
+crates/panini-prakriya/src/tinanta/tripadi.rs:731:16: delete !
+crates/panini-prakriya/src/tinanta/tripadi.rs:734:58: delete !
+crates/panini-prakriya/src/tinanta/tripadi.rs:688:16: delete !
+crates/panini-prakriya/src/tinanta/tripadi.rs:695:58: delete !
+crates/panini-prakriya/src/tinanta/tripadi.rs:691:16: delete !
+crates/panini-prakriya/src/tinanta/tripadi.rs:779:16: delete !
+crates/panini-prakriya/src/tinanta/tripadi.rs:784:27: replace && with ||
+crates/panini-prakriya/src/tinanta/tripadi.rs:784:20: replace == with !=
+crates/panini-prakriya/src/tinanta/tripadi.rs:784:38: replace + with -
+crates/panini-prakriya/src/tinanta/tripadi.rs:869:51: delete !
+crates/panini-prakriya/src/tinanta/tripadi.rs:784:38: replace + with *
+crates/panini-prakriya/src/tinanta/tripadi.rs:851:28: replace + with *
+crates/panini-prakriya/src/tinanta/tripadi.rs:869:48: replace && with ||
+crates/panini-prakriya/src/tinanta/tripadi.rs:972:20: delete !
+crates/panini-prakriya/src/tinanta/tripadi.rs:972:33: replace + with -
+crates/panini-prakriya/src/tinanta/tripadi.rs:870:16: delete !
+crates/panini-prakriya/src/tinanta/tripadi.rs:1067:20: delete !
+crates/panini-prakriya/src/tinanta/tripadi.rs:1067:33: replace - with +
+crates/panini-prakriya/src/tinanta/tripadi.rs:870:31: replace && with ||
+crates/panini-prakriya/src/tinanta/tripadi.rs:870:34: delete !
+crates/panini-prakriya/src/tinanta/tripadi.rs:1067:33: replace - with /
+crates/panini-prakriya/src/tinanta/tripadi.rs:1071:21: delete match arm 't'
+crates/panini-prakriya/src/tinanta/tripadi.rs:1072:21: delete match arm 'T'
+crates/panini-prakriya/src/tinanta/tripadi.rs:972:33: replace + with *
+crates/panini-prakriya/src/tinanta/tripadi.rs:1122:54: replace - with +
+crates/panini-prakriya/src/tinanta/tripadi.rs:1073:21: delete match arm 'D'
+crates/panini-prakriya/src/tinanta/tripadi.rs:1122:68: replace && with ||
+crates/panini-prakriya/src/tinanta/tripadi.rs:1122:54: replace - with /
+crates/panini-prakriya/src/tinanta/tripadi.rs:1122:61: replace == with !=
+crates/panini-prakriya/src/tinanta/tripadi.rs:1263:20: delete !
+crates/panini-prakriya/src/tinanta/tripadi.rs:1122:78: replace == with !=
+crates/panini-prakriya/src/tinanta/tripadi.rs:1266:49: replace - with /
+crates/panini-prakriya/src/tinanta/tripadi.rs:1266:49: replace - with +
+crates/panini-prakriya/src/tinanta/tripadi.rs:1175:38: replace - with +
+crates/panini-prakriya/src/tinanta/tripadi.rs:1272:25: replace == with !=
+crates/panini-prakriya/src/tinanta/tripadi.rs:1275:42: replace - with +
+crates/panini-prakriya/src/tinanta/tripadi.rs:1275:42: replace - with /
+crates/panini-prakriya/src/tinanta/tripadi.rs:1319:16: delete !
+crates/panini-prakriya/src/tinanta/tripadi.rs:1331:62: replace - with +
+crates/panini-prakriya/src/tinanta/tripadi.rs:1331:62: replace - with /
+crates/panini-prakriya/src/tinanta/tripadi.rs:1338:16: delete !
+crates/panini-prakriya/src/tinanta/tripadi.rs:1344:20: replace == with !=
+crates/panini-prakriya/src/tinanta/tripadi.rs:1367:44: replace || with &&
+crates/panini-prakriya/src/tinanta/tripadi.rs:1367:20: delete !
+crates/panini-prakriya/src/tinanta/tripadi.rs:1367:49: replace == with !=
+crates/panini-prakriya/src/tinanta/tripadi.rs:1370:20: delete !
+crates/panini-prakriya/src/tinanta/tripadi.rs:1370:42: replace - with +
+crates/panini-prakriya/src/tinanta/tripadi.rs:1400:20: delete !
+crates/panini-prakriya/src/tinanta/tripadi.rs:1405:26: replace == with !=
+crates/panini-prakriya/src/tinanta/tripadi.rs:1408:33: replace - with +
+crates/panini-prakriya/src/tinanta/tripadi.rs:1408:33: replace - with /
+crates/panini-prakriya/src/tinanta/tripadi.rs:1410:33: replace < with ==
+crates/panini-prakriya/src/tinanta/tripadi.rs:1410:33: replace < with >
+crates/panini-prakriya/src/tinanta/tripadi.rs:1370:42: replace - with /
+crates/panini-prakriya/src/tinanta/tripadi.rs:1272:32: replace - with +
+crates/panini-prakriya/src/tinanta/tripadi.rs:1412:24: delete !
+crates/panini-prakriya/src/tinanta/tripadi.rs:1415:23: replace -= with +=
+crates/panini-prakriya/src/tinanta/tripadi.rs:1417:20: delete !
+crates/panini-prakriya/src/tinanta/tripadi.rs:1468:23: replace != with ==
+crates/panini-prakriya/src/tinanta/tripadi.rs:1272:32: replace - with /
+crates/panini-prakriya/src/tinanta/tripadi.rs:1471:36: replace + with -
+crates/panini-prakriya/src/tinanta/tripadi.rs:1471:36: replace + with *
+crates/panini-prakriya/src/tinanta/tripadi.rs:1536:27: delete !
+crates/panini-prakriya/src/tinanta/tripadi.rs:1536:49: replace && with ||
+crates/panini-prakriya/src/tinanta/tripadi.rs:1410:33: replace < with <=
+crates/panini-prakriya/src/tinanta/tripadi.rs:1536:41: replace - with +
+crates/panini-prakriya/src/tinanta/tripadi.rs:1536:41: replace - with /
+crates/panini-prakriya/src/tinanta/tripadi.rs:1596:58: delete !
 crates/panini-prakriya/src/tinanta/vikarana.rs:33:16: delete !
 crates/panini-prakriya/src/tinanta/vikarana.rs:67:16: delete !
 crates/panini-prakriya/src/tinanta/vikarana.rs:91:16: delete !
@@ -525,22 +537,22 @@ crates/panini-prakriya/src/tinanta/vikarana.rs:167:48: replace + with *
 crates/panini-prakriya/src/tinanta/vikarana.rs:214:16: delete !
 crates/panini-prakriya/src/tinanta/vikarana.rs:279:16: delete !
 crates/panini-prakriya/src/tinanta/vikarana.rs:307:37: replace && with ||
-crates/panini-prakriya/src/tinanta/tripadi.rs:1527:76: replace + with -
 crates/panini-prakriya/src/tinanta/vikarana.rs:307:30: replace > with ==
+crates/panini-prakriya/src/tinanta/tripadi.rs:1536:76: replace + with -
 crates/panini-prakriya/src/tinanta/vikarana.rs:307:30: replace > with <
 crates/panini-prakriya/src/tinanta/vikarana.rs:350:16: delete !
-crates/panini-prakriya/src/tinanta/tripadi.rs:1527:76: replace + with *
 crates/panini-prakriya/src/tinanta/vikarana.rs:353:16: delete !
+crates/panini-prakriya/src/tinanta/tripadi.rs:1536:76: replace + with *
 crates/panini-prakriya/src/tinanta/vikarana.rs:353:32: replace > with ==
 crates/panini-prakriya/src/tinanta/vikarana.rs:353:32: replace > with <
 crates/panini-prakriya/src/tinanta/vikarana.rs:307:30: replace > with >=
 crates/panini-prakriya/src/tinanta/vikarana.rs:355:20: delete !
-crates/panini-prakriya/src/tinanta/vikarana.rs:354:17: replace && with ||
 crates/panini-prakriya/src/tinanta/vikarana.rs:355:17: replace && with ||
+crates/panini-prakriya/src/tinanta/vikarana.rs:354:17: replace && with ||
 crates/panini-prakriya/src/tinanta/vikarana.rs:415:53: replace || with &&
-crates/panini-prakriya/src/tinanta/vikarana.rs:353:32: replace > with >=
 crates/panini-prakriya/src/tinanta/vikarana.rs:415:16: delete !
 crates/panini-prakriya/src/tinanta/vikarana.rs:415:77: replace != with ==
+crates/panini-prakriya/src/tinanta/vikarana.rs:353:32: replace > with >=
 crates/panini-prakriya/src/tinanta/vikarana.rs:460:40: replace || with &&
 crates/panini-prakriya/src/tinanta/vikarana.rs:418:52: replace || with &&
 crates/panini-prakriya/src/tinanta/vikarana.rs:418:39: replace != with ==
