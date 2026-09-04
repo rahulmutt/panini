@@ -364,6 +364,96 @@ pub(crate) static GUNA: &[Rule] = &[
             true
         },
     },
+    // ------------------------------------------------------------------
+    // The √kṛ specials, 6.4.108–110. They live HERE, not with their
+    // 6.4.10x siblings in adesha.rs, because 6.4.110 must precede 6.1.77
+    // below: kar + u + anti must become kur + u + anti before the u goes
+    // to v (kurvanti), and stage files are an organisational boundary,
+    // not a grammatical one — the flattened order is the grammar (the
+    // same argument that put 7.3.92 in this file). All three are keyed to
+    // √kṛ by 6.4.108's *karoteḥ*, carried by anuvṛtti into 109 and 110;
+    // the guards read the post-guṇa root text (kar / kur) plus the gaṇa
+    // tag rather than a Dhatu identity the pipeline does not carry.
+    // vidyut-prakriya additionally records 8.2.79 na BakurCurAm blocking
+    // ur-lengthening on every kur cell; this engine implements neither
+    // 8.2.77 (the lengthening) nor 8.2.79 (its block), and the forms are
+    // identical — recorded here so the absence reads as a decision.
+    // ------------------------------------------------------------------
+    // 6.4.110 ata ut sārvadhātuke (kṅiti, anuvṛtti from 6.4.98/6.4.108's
+    // context): kar's `a` becomes `u` before a ṅit sārvadhātuka —
+    // kurutaH, kurvanti, kurute, and (via 6.4.106 next) kuru. Before pit
+    // endings it declines and 7.3.84's guṇa run stands: karoti, karavAni.
+    Rule {
+        id: "6.4.110",
+        name: "ata ut sArvaDAtuke",
+        kind: RuleKind::Vidhi,
+        vikalpa: false,
+        apply: |p| {
+            if !p.terms[ANGA].has(Tag::Tanadi) || p.terms[ANGA].text != "kar" {
+                return false;
+            }
+            if p.terms.get(SHAP).map(|t| t.text.as_str()) != Some("u") {
+                return false;
+            }
+            if !p.terms[ENDING].has(Tag::Ngit) {
+                return false;
+            }
+            let before = p.snapshot();
+            p.terms[ANGA].text = "kur".into();
+            p.record("6.4.110", "ata ut sArvaDAtuke", before);
+            true
+        },
+    },
+    // 6.4.108 nityaṁ karoteḥ: the lopa 6.4.107 makes optional is NITYA
+    // for √kṛ before m/v — kurvaH, kurmaH, with no alternate. Ordered
+    // before 6.4.107 (adesha.rs) by stage order; once this empties the
+    // u, 6.4.107's helper declines on the empty text, so the vikalpa
+    // machinery never sees √kṛ — the self-guarding 6.4.87/6.4.77 use.
+    Rule {
+        id: "6.4.108",
+        name: "nityaM karoteH",
+        kind: RuleKind::Vidhi,
+        vikalpa: false,
+        apply: |p| {
+            if !p.terms[ANGA].has(Tag::Tanadi) || p.terms[ANGA].text != "kur" {
+                return false;
+            }
+            if p.terms.get(SHAP).map(|t| t.text.as_str()) != Some("u") {
+                return false;
+            }
+            if !p.terms[ENDING].text.starts_with(['m', 'v']) {
+                return false;
+            }
+            let before = p.snapshot();
+            p.terms[SHAP].text = String::new();
+            p.record("6.4.108", "nityaM karoteH", before);
+            true
+        },
+    },
+    // 6.4.109 ye ca: the same lopa before y — kuryAt and the rest of
+    // vidhiliṅ parasmaipada (the ending term reads `yAt`/`yAtAm`/… here:
+    // anga.rs has already fused yAsuṭ into it).
+    Rule {
+        id: "6.4.109",
+        name: "ye ca",
+        kind: RuleKind::Vidhi,
+        vikalpa: false,
+        apply: |p| {
+            if !p.terms[ANGA].has(Tag::Tanadi) || p.terms[ANGA].text != "kur" {
+                return false;
+            }
+            if p.terms.get(SHAP).map(|t| t.text.as_str()) != Some("u") {
+                return false;
+            }
+            if !p.terms[ENDING].text.starts_with('y') {
+                return false;
+            }
+            let before = p.snapshot();
+            p.terms[SHAP].text = String::new();
+            p.record("6.4.109", "ye ca", before);
+            true
+        },
+    },
     // 6.4.87 huśnuvoḥ sārvadhātuke: for √hu and śnu, before a sārvadhātuka,
     // yaṇ — `u` → `v` — rather than 6.4.77's uvaṅ. hi + nu + anti →
     // hinvanti; ri + nu + antu → riRvantu (ṇatva lands later, in tripadi).
@@ -1400,5 +1490,62 @@ mod tests {
                 assert!(!(rule.apply)(&mut p), "{id} fired on SHAP {shap:?}");
             }
         }
+    }
+
+    // --- 6.4.108/109/110: the √kṛ specials -------------------------------
+
+    fn kr_prakriya(ending: &str, ngit: bool) -> Prakriya {
+        // Post-first-7.3.84 shape: kar + u + ending.
+        let mut p = Prakriya {
+            terms: vec![Term::new("kar"), Term::new("u"), Term::new(ending)],
+            ..Default::default()
+        };
+        p.terms[0].add(Tag::Dhatu);
+        p.terms[0].add(Tag::Tanadi);
+        p.terms[1].add(Tag::Vikarana);
+        p.terms[1].add(Tag::Ardhadhatuka);
+        if ngit {
+            p.terms[2].add(Tag::Ngit);
+        }
+        p
+    }
+
+    #[test]
+    fn ata_ut_fires_only_before_ngit_sarvadhatuka() {
+        let r = rules().find(|r| r.id == "6.4.110").unwrap();
+        let mut p = kr_prakriya("tas", true);
+        assert!((r.apply)(&mut p));
+        assert_eq!(p.terms[0].text, "kur");
+        // karoti's pit ti: no ut.
+        let mut p = kr_prakriya("ti", false);
+        assert!(!(r.apply)(&mut p));
+        // Another tanādi root's a is not karoti's: tan stays tan.
+        let mut p = kr_prakriya("tas", true);
+        p.terms[0].text = "tan".into();
+        assert!(!(r.apply)(&mut p));
+    }
+
+    #[test]
+    fn nityam_karoteh_empties_the_u_before_m_and_v() {
+        let r = rules().find(|r| r.id == "6.4.108").unwrap();
+        for ending in ["mas", "vas"] {
+            let mut p = kr_prakriya(ending, true);
+            p.terms[0].text = "kur".into();
+            assert!((r.apply)(&mut p), "{ending}");
+            assert_eq!(p.terms[1].text, "", "{ending}");
+        }
+        // Not before tas — that u survives (kurutaH).
+        let mut p = kr_prakriya("tas", true);
+        p.terms[0].text = "kur".into();
+        assert!(!(r.apply)(&mut p));
+    }
+
+    #[test]
+    fn ye_ca_empties_the_u_before_y() {
+        let r = rules().find(|r| r.id == "6.4.109").unwrap();
+        let mut p = kr_prakriya("yAt", true);
+        p.terms[0].text = "kur".into();
+        assert!((r.apply)(&mut p));
+        assert_eq!(p.terms[1].text, "");
     }
 }
