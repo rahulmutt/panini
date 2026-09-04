@@ -27,7 +27,7 @@ is ruleless.
 comment states that a blocked prakriyā's `text()` is a partial string — often the
 bare root code — not a surface form.
 
-**It asserts the corpus totals** (76 roots, 3420 cells, 4321 forms) rather than
+**It asserts the corpus totals** (77 roots, 3492 cells, 4399 forms) rather than
 reporting whatever it enumerated. Those totals are corroborated by
 `derivation_set_shape_matches_the_audited_numbers` in
 `crates/panini/tests/paradigm/main.rs`, which each slice raises to the same totals
@@ -108,6 +108,40 @@ PANINI_AUDIT_DUMP=/tmp/audit-table.tsv mise exec rust@1.98.0 -- cargo run --rele
 ```
 
 ## Last recorded result
+
+2026-09-04, tanādi 8b slice, vidyut `8da2f90bee3ce1c07505fa432fc3729e3f7e02ea`:
+**zero differences across 3492 cells / 4399 forms / 77 roots**, with the
+`entry` negative control verified failing first (exit 1, 36 √bhū cells,
+`Bavati` vs `paWati` and so on — unchanged from 8a, as expected since the
+control targets `01.0001`/`01.0381`, both outside this slice's root). This
+run is the audit gate for √kṛ (`08.0010`), the tenth and final tanādi root,
+deferred from 8a.
+
+The verdict now covers three engine changes added for √kṛ:
+
+- **6.4.110 (`ata ut sArvaDAtuke`), 6.4.108 (`nityaM karoteH`), 6.4.109
+  (`ye ca`)** — the three √kṛ-specific aṅga rules, in `tinanta/guna.rs`.
+  6.4.110 turns `kar`'s `a` to `u` before a kṅit sārvadhātuka; 6.4.108 makes
+  6.4.107's optional u-lopa NITYA (obligatory) for √kṛ once the aṅga has
+  already become `kur`; 6.4.109 extends that same obligatory lopa to a
+  following `y`, producing `kuryāt`-shaped vidhiliṅ parasmaipada forms.
+- **8.2.79 (`na BakurCurAm`) modelled as a named exclusion guard inside
+  8.2.77's own `apply`**, in `tinanta/tripadi.rs`, rather than as a
+  separate rule — 8.2.77 (`hali ca`) would otherwise lengthen `kur`'s
+  upadhā the same way it does for other short-ik-upadhā roots ending in
+  r/v before a hal-initial sārvadhātuka, deriving a wrong `*kUrvanti`;
+  8.2.79 carves `kur` (and the cur-class) back out. The guard sits inside
+  8.2.77's branch, rather than as a second pass, so the exclusion never
+  touches a cell 8.2.77 wasn't already about to change, and the rule log
+  still records 8.2.79 on every `kur` cell.
+
+Corpus totals moved from 76/3420/4321 to 77/3492/4399: 77 = 76 + 1 (√kṛ,
+`08.0010`); 3492 = 3420 + 72 cells (one ubhayapadī root × 2 padas × 4
+lakāras × 9 puruṣa/vacana cells); 4399 = 4321 + 78, of which 72 are the new
+cells' baseline forms and 6 are new `ALTERNATES` rows (901 → 907) — exactly
+the plan's projected six: the loṭ tātaṅ pairs, laṅ's 8.4.56 row, and
+vidhiliṅ's `kuryAd`/`kuryAt`. Measured via the harness's own corpus block,
+not assumed.
 
 2026-09-01, tanādi 8a slice, vidyut `8da2f90bee3ce1c07505fa432fc3729e3f7e02ea`:
 **zero differences across 3420 cells / 4321 forms / 76 roots**, with the
