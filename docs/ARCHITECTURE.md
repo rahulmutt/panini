@@ -432,7 +432,7 @@ which pins the whole set by id.
 *asaṁyogapūrva*, forking 72 cells across eleven roots: svādi's √hi and √ri
 (the gaṇa's only asaṁyogapūrva roots) in laṭ and laṅ uttama dvi/bahu, whose
 `vas`/`mas`/`va`/`ma` are the only m/v-initial endings in scope — `hinvaH ~
-hinuvaH`, `ahinma ~ ahinuma` — and, new in tanādi 8a, all nine curated
+hinuvaH`, `ahinma ~ ahinuma` — and, new in tanādi 8a, all nine 8a-curated
 tanādi roots on the same four cells per pada: every one of them takes the
 bare `u` directly after a single non-conjunct final consonant, so this
 rule is *asaṁyogapūrva*-live far more broadly than it ever was for

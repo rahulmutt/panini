@@ -1079,7 +1079,8 @@
   8.2.79 *na bhakurchurām* is modelled as a named exclusion guard inside
   8.2.77 *hali ca*'s own `apply` (`tripadi.rs`), rather than as a
   separate rule, so 8.2.77's lengthening declines on √kṛ's `kur` aṅga and
-  the log still records 8.2.79 on every `kur` cell. See
+  vidyut-prakriya's own log still records 8.2.79 on every `kur` cell, which
+  is why the forms agree. See
   `tools/audit/README.md`'s own recorded result for the full breakdown.
   Those
   totals are asserted by the harness itself rather than reported from
