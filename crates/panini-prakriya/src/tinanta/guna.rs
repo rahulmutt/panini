@@ -1520,6 +1520,7 @@ mod tests {
             ..Default::default()
         };
         p.terms[0].add(Tag::Dhatu);
+        // for realism only — no guard reads it (see the block comment above 6.4.110)
         p.terms[0].add(Tag::Tanadi);
         p.terms[1].add(Tag::Vikarana);
         p.terms[1].add(Tag::Ardhadhatuka);

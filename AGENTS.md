@@ -705,7 +705,8 @@
     genuine new-code gap, resolved with a narrow unit test and verified
     caught by an isolated re-run at the standing `-j 4 --timeout 4800`
     cap:**
-    - `adesha.rs:507:30` (moved +2 from 8a's `:505:30`), 6.1.87's im arm,
+    - `adesha.rs:507:30` (moved +2 from 8a's `:505:30`; `:513` at HEAD —
+      bc53115's 6.4.107 comment rewrite added six lines above it), 6.1.87's im arm,
       `replace + with *` (`s.remove(pos + 1)` -> `s.remove(pos)`) — the
       same documented equivalence as 7e/7f/7g/8a: whichever half of the
       adjacent `a i` pair survives the removal is immediately clobbered by
@@ -742,7 +743,8 @@
     too.
     `outcomes.json`'s per-mutant test-phase durations (**n = 576** — 615
     mutants minus the 39 unviable ones, which fail at the Build phase and
-    never reach a Test phase) put the median at 143.68s, p90 (nearest-
+    never reach a Test phase) put the median (nearest-rank, 288th of
+    576) at 142.15s, p90 (nearest-
     rank, as in 7e/7f/8a) at 1923.86s, p99 at 2039.50s, and the max at
     4800.01s — that max being the known-permanent timeout itself, not a
     caught or missed mutant. Excluding the timeout, the max is
@@ -753,10 +755,11 @@
     **Two margins, measured, not projected:**
     - Against the worst **caught** mutant (2471.08s, measured, excluding
       the timeout): 4800 / 2471.08 ≈ **1.94×**.
-    - Against the worst **uncaught** run (2011.34s, measured — the three
-      missed mutants each ran the golden suite to completion without being
-      caught, spanning 1966.83s–2011.34s; the `adesha.rs` mutant's
-      2011.34s was the slowest): 4800 / 2011.34 ≈ **2.39×**.
+    - Against the worst **uncaught** run (2011.31s test phase, measured —
+      the three missed mutants each ran the golden suite to completion
+      without being caught, spanning 1966.77s–2011.31s in the Test phase
+      (not the Build+Test total); the `adesha.rs` mutant's 2011.31s was
+      the slowest): 4800 / 2011.31 ≈ **2.39×**.
     Two observed contention factors, and the difference between them is
     the whole point of the standing range: the *uncaught* runs came in at
     2011.34 / 1958.411 = **1.027×**, the very bottom of 1.02×–1.43× (the

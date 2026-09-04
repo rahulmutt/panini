@@ -130,7 +130,8 @@ The verdict now covers three engine changes added for √kṛ:
   separate rule — 8.2.77 (`hali ca`) would otherwise lengthen `kur`'s
   upadhā the same way it does for other short-ik-upadhā roots ending in
   r/v before a hal-initial sārvadhātuka, deriving a wrong `*kUrvanti`;
-  8.2.79 carves `kur` (and the cur-class) back out. The guard sits inside
+  8.2.79 carves `kur` back out (the sūtra's *bha*/*chur* members have no
+  curated root). The guard sits inside
   8.2.77's branch, rather than as a second pass, so the exclusion never
   touches a cell 8.2.77 wasn't already about to change. This engine's own
   rule log never records 8.2.79 — the guard returns `false` before
