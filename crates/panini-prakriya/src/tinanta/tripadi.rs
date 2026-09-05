@@ -1613,6 +1613,7 @@ mod tests {
     use crate::prakriya::Prakriya;
     use crate::term::Term;
     use crate::tinanta::rules;
+    use crate::tinanta::terms::with_slots;
     // `form_g` lives in `derivation_tests.rs`; `mod.rs` re-exports it, so
     // this import stays on the stable `crate::tinanta::form_g` path.
     use crate::tinanta::derivation_tests::sole;
@@ -1641,7 +1642,7 @@ mod tests {
         // true) both wrongly take the early-return branch and leave the
         // aGga untouched.
         let mut p = Prakriya {
-            terms: vec![Term::new("iv"), Term::new("ta")],
+            terms: with_slots(vec![Term::new("iv"), Term::new("ta")]),
             log: vec![],
             ..Default::default()
         };
@@ -1663,7 +1664,7 @@ mod tests {
         // (the prefix) to `chars[..n / 2]` would prefix with "aB"
         // instead of "aBi", giving "aBUr". Both diverge from "aBiUr".
         let mut p = Prakriya {
-            terms: vec![Term::new("aBiur"), Term::new("ta")],
+            terms: with_slots(vec![Term::new("aBiur"), Term::new("ta")]),
             log: vec![],
             ..Default::default()
         };
@@ -1679,7 +1680,7 @@ mod tests {
         // must decline too, since the guard reads the tail of the text.
         for anga in ["kur", "akur"] {
             let mut p = Prakriya {
-                terms: vec![Term::new(anga), Term::new("v"), Term::new("anti")],
+                terms: with_slots(vec![Term::new(anga), Term::new("v"), Term::new("anti")]),
                 log: vec![],
                 ..Default::default()
             };
@@ -1695,7 +1696,7 @@ mod tests {
         // itself -- the rule's original target -- is unaffected by the
         // new kur-specific guard.
         let mut p = Prakriya {
-            terms: vec![Term::new("div"), Term::new("ya"), Term::new("ti")],
+            terms: with_slots(vec![Term::new("div"), Term::new("ya"), Term::new("ti")]),
             log: vec![],
             ..Default::default()
         };
@@ -1728,7 +1729,7 @@ mod tests {
         // And a non-s-initial ending after √śī's `e` is left alone — the
         // clause an `||` → `&&` mutant would drop.
         let mut p = Prakriya {
-            terms: vec![Term::new("Se"), Term::new(""), Term::new("te")],
+            terms: with_slots(vec![Term::new("Se"), Term::new(""), Term::new("te")]),
             log: vec![],
             ..Default::default()
         };
@@ -1744,7 +1745,7 @@ mod tests {
         // pratyāhāra), so a future `a`-final aṅga must decline here too, not
         // silently retroflex.
         let mut p = Prakriya {
-            terms: vec![Term::new("a"), Term::new(""), Term::new("se")],
+            terms: with_slots(vec![Term::new("a"), Term::new(""), Term::new("se")]),
             log: vec![],
             ..Default::default()
         };
@@ -1756,7 +1757,7 @@ mod tests {
         // `g`/`k`, not the whole ku set (K/G/N), per the comment's own
         // "widen further" note.
         let mut p = Prakriya {
-            terms: vec![Term::new("pi"), Term::new("naK"), Term::new("si")],
+            terms: with_slots(vec![Term::new("pi"), Term::new("naK"), Term::new("si")]),
             log: vec![],
             ..Default::default()
         };
@@ -1769,7 +1770,7 @@ mod tests {
         // vf + nI + sva: the iN trigger is SnA's I, not the anga's f. The
         // pre-kryadi guard read ANGA and would have declined here.
         let mut p = Prakriya {
-            terms: vec![Term::new("vf"), Term::new("nI"), Term::new("sva")],
+            terms: with_slots(vec![Term::new("vf"), Term::new("nI"), Term::new("sva")]),
             log: vec![],
             ..Default::default()
         };
@@ -1781,7 +1782,7 @@ mod tests {
         // -- and not even an anga-final sound at all, since rudhAdi's Snam
         // split (3.1.78) puts piz's tail in SHAP, one term short of ANGA.
         let mut p = Prakriya {
-            terms: vec![Term::new("pi"), Term::new("nak"), Term::new("si")],
+            terms: with_slots(vec![Term::new("pi"), Term::new("nak"), Term::new("si")]),
             log: vec![],
             ..Default::default()
         };
@@ -1790,7 +1791,7 @@ mod tests {
         // And the thematic case still declines on the vikaraNa's `a`, which
         // is what keeps laBasva intact.
         let mut p = Prakriya {
-            terms: vec![Term::new("laB"), Term::new("a"), Term::new("sva")],
+            terms: with_slots(vec![Term::new("laB"), Term::new("a"), Term::new("sva")]),
             log: vec![],
             ..Default::default()
         };
@@ -1812,7 +1813,7 @@ mod tests {
         // finds `sva` at index 2; the preceding non-empty term's last char
         // is SnA's `I` (a non-a/A vowel), so 8.3.59 fires: sInIzva.
         let mut p = Prakriya {
-            terms: vec![Term::new("sI"), Term::new("nI"), Term::new("sva")],
+            terms: with_slots(vec![Term::new("sI"), Term::new("nI"), Term::new("sva")]),
             log: vec![],
             ..Default::default()
         };
@@ -1827,7 +1828,11 @@ mod tests {
 
     fn natva_prakriya(anga: &str, vikarana: &str, ending: &str) -> Prakriya {
         Prakriya {
-            terms: vec![Term::new(anga), Term::new(vikarana), Term::new(ending)],
+            terms: with_slots(vec![
+                Term::new(anga),
+                Term::new(vikarana),
+                Term::new(ending),
+            ]),
             log: vec![],
             ..Default::default()
         }
@@ -1945,7 +1950,7 @@ mod tests {
         // first character of the term after — the cross-term adjacency
         // `word_chars` exists for.
         let mut p = Prakriya {
-            terms: vec![Term::new("Ba"), Term::new("naj"), Term::new("ti")],
+            terms: with_slots(vec![Term::new("Ba"), Term::new("naj"), Term::new("ti")]),
             ..Default::default()
         };
         assert!((rule.apply)(&mut p));
@@ -1953,7 +1958,7 @@ mod tests {
 
         // word-final: nothing follows the `j` at all.
         let mut p = Prakriya {
-            terms: vec![Term::new("Ba"), Term::new("naj")],
+            terms: with_slots(vec![Term::new("Ba"), Term::new("naj")]),
             ..Default::default()
         };
         assert!((rule.apply)(&mut p));
@@ -1969,7 +1974,7 @@ mod tests {
         // happened yet at this rule's turn. These fixtures are the real
         // intermediates, not the finished surfaces.
         let mut p = Prakriya {
-            terms: vec![Term::new("ri"), Term::new("nac"), Term::new("ti")],
+            terms: with_slots(vec![Term::new("ri"), Term::new("nac"), Term::new("ti")]),
             ..Default::default()
         };
         assert!((rule.apply)(&mut p));
@@ -1977,7 +1982,7 @@ mod tests {
 
         // word-final `c`, same arm.
         let mut p = Prakriya {
-            terms: vec![Term::new("ari"), Term::new("nac")],
+            terms: with_slots(vec![Term::new("ari"), Term::new("nac")]),
             ..Default::default()
         };
         assert!((rule.apply)(&mut p));
@@ -1985,7 +1990,7 @@ mod tests {
 
         // before a vowel: neither jhal nor word-final, so the rule declines.
         let mut p = Prakriya {
-            terms: vec![Term::new("Ba"), Term::new("nj"), Term::new("anti")],
+            terms: with_slots(vec![Term::new("Ba"), Term::new("nj"), Term::new("anti")]),
             ..Default::default()
         };
         assert!(!(rule.apply)(&mut p));
@@ -2006,7 +2011,7 @@ mod tests {
         let rule = rules().find(|r| r.id == "8.2.39").unwrap();
 
         let mut p = Prakriya {
-            terms: vec![Term::new("aBav"), Term::new("a"), Term::new("t")],
+            terms: with_slots(vec![Term::new("aBav"), Term::new("a"), Term::new("t")]),
             ..Default::default()
         };
         assert!((rule.apply)(&mut p));
@@ -2014,7 +2019,7 @@ mod tests {
 
         // not pada-final: the `t` is followed by more of the ending
         let mut p = Prakriya {
-            terms: vec![Term::new("aBav"), Term::new("a"), Term::new("tAm")],
+            terms: with_slots(vec![Term::new("aBav"), Term::new("a"), Term::new("tAm")]),
             ..Default::default()
         };
         assert!(!(rule.apply)(&mut p));
@@ -2022,7 +2027,7 @@ mod tests {
         // word-final `z`: jashtva_of('z') is `q` (1.1.50 nearest-substitute,
         // not place-and-manner correspondence).
         let mut p = Prakriya {
-            terms: vec![Term::new("apina"), Term::new("z")],
+            terms: with_slots(vec![Term::new("apina"), Term::new("z")]),
             ..Default::default()
         };
         assert!((rule.apply)(&mut p));
@@ -2031,7 +2036,7 @@ mod tests {
         // word-final `D`: √rudh's laṅ prathama eka, once 8.2.23 has eaten
         // tip's own `t` and left the dhātu's own final exposed pada-finally.
         let mut p = Prakriya {
-            terms: vec![Term::new("aru"), Term::new("Ra"), Term::new("D")],
+            terms: with_slots(vec![Term::new("aru"), Term::new("Ra"), Term::new("D")]),
             ..Default::default()
         };
         assert!((rule.apply)(&mut p));
@@ -2039,7 +2044,7 @@ mod tests {
 
         // `s`-final belongs to 8.2.66/8.3.15, not here
         let mut p = Prakriya {
-            terms: vec![Term::new("aBav"), Term::new("a"), Term::new("s")],
+            terms: with_slots(vec![Term::new("aBav"), Term::new("a"), Term::new("s")]),
             ..Default::default()
         };
         assert!(!(rule.apply)(&mut p));
@@ -2051,7 +2056,7 @@ mod tests {
         // this rule must voice its `k` to `g` the same way it voices
         // `t`/`z`/`D`.
         let mut p = Prakriya {
-            terms: vec![Term::new("ari"), Term::new("nak")],
+            terms: with_slots(vec![Term::new("ari"), Term::new("nak")]),
             ..Default::default()
         };
         assert!((rule.apply)(&mut p));
@@ -2066,7 +2071,7 @@ mod tests {
         // vacuously and stamp a spurious 8.2.39 step into every already-jaś
         // trace in the corpus.
         let mut p = Prakriya {
-            terms: vec![Term::new("aBana"), Term::new("g")],
+            terms: with_slots(vec![Term::new("aBana"), Term::new("g")]),
             ..Default::default()
         };
         assert!(!(rule.apply)(&mut p));
@@ -2076,7 +2081,7 @@ mod tests {
         // across its whole domain, not just the `g` witness above.
         for already_jash in ["j", "q", "d", "b"] {
             let mut p = Prakriya {
-                terms: vec![Term::new("a"), Term::new(already_jash)],
+                terms: with_slots(vec![Term::new("a"), Term::new(already_jash)]),
                 ..Default::default()
             };
             assert!(!(rule.apply)(&mut p), "fired on already-{already_jash}");
@@ -2084,7 +2089,7 @@ mod tests {
 
         // vowel-final
         let mut p = Prakriya {
-            terms: vec![Term::new("Bav"), Term::new("a"), Term::new("ti")],
+            terms: with_slots(vec![Term::new("Bav"), Term::new("a"), Term::new("ti")]),
             ..Default::default()
         };
         assert!(!(rule.apply)(&mut p));
@@ -2099,7 +2104,7 @@ mod tests {
 
         // a `t` immediately after a jhaṣ (`D`) becomes `D`.
         let mut p = Prakriya {
-            terms: vec![Term::new("inD"), Term::new(""), Term::new("te")],
+            terms: with_slots(vec![Term::new("inD"), Term::new(""), Term::new("te")]),
             ..Default::default()
         };
         assert!((rule.apply)(&mut p));
@@ -2108,7 +2113,7 @@ mod tests {
         // a `t` after a non-jhaṣ: the rule declines.
         for stem in ["ind", "inn", "ins"] {
             let mut p = Prakriya {
-                terms: vec![Term::new(stem), Term::new(""), Term::new("te")],
+                terms: with_slots(vec![Term::new(stem), Term::new(""), Term::new("te")]),
                 ..Default::default()
             };
             assert!(!(rule.apply)(&mut p), "fired after {stem}");
@@ -2117,7 +2122,7 @@ mod tests {
 
         // an `s` after a jhaṣ: not a dental stop, so the rule declines.
         let mut p = Prakriya {
-            terms: vec![Term::new("inD"), Term::new(""), Term::new("se")],
+            terms: with_slots(vec![Term::new("inD"), Term::new(""), Term::new("se")]),
             ..Default::default()
         };
         assert!(!(rule.apply)(&mut p));
@@ -2136,7 +2141,7 @@ mod tests {
         // first character of the term after — the cross-term adjacency
         // `word_chars` exists for.
         let mut p = Prakriya {
-            terms: vec![Term::new("pi"), Term::new("naz"), Term::new("si")],
+            terms: with_slots(vec![Term::new("pi"), Term::new("naz"), Term::new("si")]),
             ..Default::default()
         };
         assert!((rule.apply)(&mut p));
@@ -2144,7 +2149,7 @@ mod tests {
 
         // before any other sound: the rule declines.
         let mut p = Prakriya {
-            terms: vec![Term::new("pi"), Term::new("naz"), Term::new("ti")],
+            terms: with_slots(vec![Term::new("pi"), Term::new("naz"), Term::new("ti")]),
             ..Default::default()
         };
         assert!(!(rule.apply)(&mut p));
@@ -2161,7 +2166,7 @@ mod tests {
 
         // immediately adjacent: the `t` retroflexes to `w`.
         let mut p = Prakriya {
-            terms: vec![Term::new("piz"), Term::new(""), Term::new("ti")],
+            terms: with_slots(vec![Term::new("piz"), Term::new(""), Term::new("ti")]),
             ..Default::default()
         };
         assert!((rule.apply)(&mut p));
@@ -2170,7 +2175,7 @@ mod tests {
         // the D arm, whose only derivation-level cell (loṭ madhyama eka) a
         // later task finishes; pinned here so the arm is not witness-free.
         let mut p = Prakriya {
-            terms: vec![Term::new("piz"), Term::new(""), Term::new("Di")],
+            terms: with_slots(vec![Term::new("piz"), Term::new(""), Term::new("Di")]),
             ..Default::default()
         };
         assert!((rule.apply)(&mut p));
@@ -2178,7 +2183,7 @@ mod tests {
 
         // one character between the `z` and the dental: no contact, decline.
         let mut p = Prakriya {
-            terms: vec![Term::new("piz"), Term::new("a"), Term::new("nti")],
+            terms: with_slots(vec![Term::new("piz"), Term::new("a"), Term::new("nti")]),
             ..Default::default()
         };
         assert!(!(rule.apply)(&mut p));
@@ -2188,7 +2193,7 @@ mod tests {
         // target, so the rule declines on each.
         for ending in ["ya", "va", "ma"] {
             let mut p = Prakriya {
-                terms: vec![Term::new("piz"), Term::new(""), Term::new(ending)],
+                terms: with_slots(vec![Term::new("piz"), Term::new(""), Term::new(ending)]),
                 ..Default::default()
             };
             assert!(!(rule.apply)(&mut p), "fired before {ending}");
@@ -2206,7 +2211,7 @@ mod tests {
 
         // non-final: the jhaś sits mid-word, with more of the affix after it.
         let mut p = Prakriya {
-            terms: vec![Term::new("kfnt"), Term::new(""), Term::new("Deva")],
+            terms: with_slots(vec![Term::new("kfnt"), Term::new(""), Term::new("Deva")]),
             ..Default::default()
         };
         assert!((rule.apply)(&mut p));
@@ -2214,7 +2219,7 @@ mod tests {
 
         // a jhal before a non-jhaś: nothing for the rule to see.
         let mut p = Prakriya {
-            terms: vec![Term::new("kfnt"), Term::new(""), Term::new("ati")],
+            terms: with_slots(vec![Term::new("kfnt"), Term::new(""), Term::new("ati")]),
             ..Default::default()
         };
         assert!(!(rule.apply)(&mut p));
@@ -2222,7 +2227,7 @@ mod tests {
 
         // a target already its own jaś: the no-op guard declines.
         let mut p = Prakriya {
-            terms: vec![Term::new("kfnd"), Term::new(""), Term::new("Di")],
+            terms: with_slots(vec![Term::new("kfnd"), Term::new(""), Term::new("Di")]),
             ..Default::default()
         };
         assert!(!(rule.apply)(&mut p));
@@ -2237,26 +2242,26 @@ mod tests {
         let rule = rules().find(|r| r.id == "8.4.56").unwrap();
 
         let mut p = Prakriya {
-            terms: vec![Term::new("aBav"), Term::new("a"), Term::new("d")],
+            terms: with_slots(vec![Term::new("aBav"), Term::new("a"), Term::new("d")]),
             ..Default::default()
         };
         assert!((rule.apply)(&mut p));
         assert_eq!(p.text(), "aBavat");
 
         let mut p = Prakriya {
-            terms: vec![Term::new("aBav"), Term::new("a"), Term::new("H")],
+            terms: with_slots(vec![Term::new("aBav"), Term::new("a"), Term::new("H")]),
             ..Default::default()
         };
         assert!(!(rule.apply)(&mut p));
 
         let mut p = Prakriya {
-            terms: vec![Term::new("aBav"), Term::new("a"), Term::new("m")],
+            terms: with_slots(vec![Term::new("aBav"), Term::new("a"), Term::new("m")]),
             ..Default::default()
         };
         assert!(!(rule.apply)(&mut p));
 
         let mut p = Prakriya {
-            terms: vec![Term::new("Bav"), Term::new("a"), Term::new("ti")],
+            terms: with_slots(vec![Term::new("Bav"), Term::new("a"), Term::new("ti")]),
             ..Default::default()
         };
         assert!(!(rule.apply)(&mut p));
@@ -2300,7 +2305,7 @@ mod tests {
         // √chid laṅ prathama eka, after 6.1.73 has inserted the tuk: the
         // `t` is a stu, the `C` a ścu, so the `t` takes its palatal.
         let mut p = Prakriya {
-            terms: vec![Term::new("atCi"), Term::new("nad")],
+            terms: with_slots(vec![Term::new("atCi"), Term::new("nad")]),
             ..Default::default()
         };
         assert!((rule.apply)(&mut p));
@@ -2311,7 +2316,7 @@ mod tests {
         // all. Fire here and √kliś surfaces *kliSYAti -- 41 invocations of
         // 8.4.44 on that one root in vidyut-prakriya over this corpus.
         let mut p = Prakriya {
-            terms: vec![Term::new("kliS"), Term::new("nA"), Term::new("ti")],
+            terms: with_slots(vec![Term::new("kliS"), Term::new("nA"), Term::new("ti")]),
             ..Default::default()
         };
         assert!(!(rule.apply)(&mut p));
@@ -2320,7 +2325,7 @@ mod tests {
         // Not a ścu after it: `z` is 8.4.41's trigger, not this rule's, and
         // this is √piṣ's laṭ prathama eka mid-derivation.
         let mut p = Prakriya {
-            terms: vec![Term::new("pina"), Term::new("zwi")],
+            terms: with_slots(vec![Term::new("pina"), Term::new("zwi")]),
             ..Default::default()
         };
         assert!(!(rule.apply)(&mut p));
@@ -2328,7 +2333,7 @@ mod tests {
         // Not a stu before it: a velar is neither `s` nor t-varga, so
         // `shcutva_of` returns None and the scan moves on.
         let mut p = Prakriya {
-            terms: vec![Term::new("ak"), Term::new("Ci")],
+            terms: with_slots(vec![Term::new("ak"), Term::new("Ci")]),
             ..Default::default()
         };
         assert!(!(rule.apply)(&mut p));

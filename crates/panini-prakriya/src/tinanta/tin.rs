@@ -531,12 +531,13 @@ mod tests {
     use crate::prakriya::Prakriya;
     use crate::term::Term;
     use crate::tinanta::rules;
+    use crate::tinanta::terms::with_slots;
     use panini_data::{Pada, Purusha, Vacana};
 
     #[test]
     fn jher_jus_replaces_ji_and_elides_the_j_marker() {
         let mut p = Prakriya {
-            terms: vec![Term::new("BU"), Term::new("Ji")],
+            terms: with_slots(vec![Term::new("BU"), Term::new("Ji")]),
             log: vec![],
             ctx: Context::new(
                 Lakara::VidhiLin,
@@ -560,7 +561,7 @@ mod tests {
         // 3.4.86 er uḥ (Bavantu).
         for lakara in [Lakara::Lat, Lakara::Lot] {
             let mut p = Prakriya {
-                terms: vec![Term::new("BU"), Term::new("Ji")],
+                terms: with_slots(vec![Term::new("BU"), Term::new("Ji")]),
                 log: vec![],
                 ctx: Context::new(lakara, Pada::Parasmaipada, Purusha::Prathama, Vacana::Bahu),
                 blocked: false,
@@ -574,7 +575,7 @@ mod tests {
     #[test]
     fn itash_ca_fires_for_vidhilin() {
         let mut p = Prakriya {
-            terms: vec![Term::new("BU"), Term::new("ti")],
+            terms: with_slots(vec![Term::new("BU"), Term::new("ti")]),
             log: vec![],
             ctx: Context::new(
                 Lakara::VidhiLin,
@@ -595,7 +596,7 @@ mod tests {
         // ending is `hi` — which is i-final. A bare ṅit guard would corrupt
         // it to `h`; the guard must exclude loṭ explicitly.
         let mut p = Prakriya {
-            terms: vec![Term::new("BU"), Term::new("hi")],
+            terms: with_slots(vec![Term::new("BU"), Term::new("hi")]),
             log: vec![],
             ctx: Context::new(
                 Lakara::Lot,
@@ -614,7 +615,7 @@ mod tests {
     #[test]
     fn mip_becomes_am_in_vidhilin() {
         let mut p = Prakriya {
-            terms: vec![Term::new("BU"), Term::new("mi")],
+            terms: with_slots(vec![Term::new("BU"), Term::new("mi")]),
             log: vec![],
             ctx: Context::new(
                 Lakara::VidhiLin,
@@ -638,7 +639,7 @@ mod tests {
         // this fire whenever loT holds and the ending matches, regardless
         // of puruSa.
         let mut p = Prakriya {
-            terms: vec![Term::new("BU"), Term::new("va")],
+            terms: with_slots(vec![Term::new("BU"), Term::new("va")]),
             log: vec![],
             ctx: Context::new(
                 Lakara::Lot,
@@ -656,7 +657,7 @@ mod tests {
     #[test]
     fn yasut_prefixes_the_substituted_ending() {
         let mut p = Prakriya {
-            terms: vec![Term::new("BU"), Term::new("t")],
+            terms: with_slots(vec![Term::new("BU"), Term::new("t")]),
             log: vec![],
             ctx: Context::new(
                 Lakara::VidhiLin,
@@ -674,7 +675,7 @@ mod tests {
     #[test]
     fn yasut_is_vidhilin_only() {
         let mut p = Prakriya {
-            terms: vec![Term::new("BU"), Term::new("t")],
+            terms: with_slots(vec![Term::new("BU"), Term::new("t")]),
             log: vec![],
             ctx: Context::new(
                 Lakara::Lan,
@@ -700,7 +701,7 @@ mod tests {
             ("3.4.103", "ta", Lakara::VidhiLin),
         ] {
             let mut p = Prakriya {
-                terms: vec![Term::new("laB"), Term::new(ending)],
+                terms: with_slots(vec![Term::new("laB"), Term::new(ending)]),
                 log: vec![],
                 ctx: Context::new(lakara, Pada::Atmanepada, Purusha::Uttama, Vacana::Dvi),
                 blocked: false,
@@ -717,7 +718,7 @@ mod tests {
         // TAs -> Te (wrong). And 3.4.79 must report false on "se" (ti of
         // "se" is already e) rather than record a no-op step.
         let mut p = Prakriya {
-            terms: vec![Term::new("laB"), Term::new("se")],
+            terms: with_slots(vec![Term::new("laB"), Term::new("se")]),
             log: vec![],
             ctx: Context::new(
                 Lakara::Lat,
@@ -750,7 +751,7 @@ mod tests {
         // and appends 'E', corrupting it to "svE". Asserting both the
         // false return AND the unchanged text kills the mutant.
         let mut p = Prakriya {
-            terms: vec![Term::new("BU"), Term::new("sva")],
+            terms: with_slots(vec![Term::new("BU"), Term::new("sva")]),
             log: vec![],
             ctx: Context::new(Lakara::Lot, Pada::Atmanepada, Purusha::Uttama, Vacana::Eka),
             blocked: false,
@@ -774,7 +775,7 @@ mod tests {
             ),
             ..Default::default()
         };
-        p.terms.push(Term::new("vrI"));
+        p.terms = with_slots(vec![Term::new("vrI")]);
         for id in ["3.4.78", "1.3.9", "1.2.4", "3.4.85", "3.4.87"] {
             let rule = rules().find(|r| r.id == id).unwrap();
             (rule.apply)(&mut p);
@@ -797,7 +798,7 @@ mod tests {
             ),
             ..Default::default()
         };
-        p.terms.push(Term::new("kliS"));
+        p.terms = with_slots(vec![Term::new("kliS")]);
         for id in ["3.4.78", "1.3.9", "1.2.4", "3.4.100", "3.4.103"] {
             let rule = rules().find(|r| r.id == id).unwrap();
             (rule.apply)(&mut p);
@@ -814,7 +815,7 @@ mod tests {
         let rule = rules().find(|r| r.id == "7.1.35").unwrap();
 
         let mut p = Prakriya {
-            terms: vec![Term::new("BU"), Term::new("tu")],
+            terms: with_slots(vec![Term::new("BU"), Term::new("tu")]),
             ..Default::default()
         };
         p.terms[ENDING_PRE_SHAP].add(Tag::Pit);
@@ -824,7 +825,7 @@ mod tests {
         assert!(!p.terms[ENDING_PRE_SHAP].has(Tag::Pit));
 
         let mut p = Prakriya {
-            terms: vec![Term::new("BU"), Term::new("hi")],
+            terms: with_slots(vec![Term::new("BU"), Term::new("hi")]),
             ..Default::default()
         };
         assert!((rule.apply)(&mut p));
@@ -833,7 +834,7 @@ mod tests {
 
         for ending in ["ti", "te", "tAm", "sva", "si", "mi", "Ji"] {
             let mut p = Prakriya {
-                terms: vec![Term::new("BU"), Term::new(ending)],
+                terms: with_slots(vec![Term::new("BU"), Term::new(ending)]),
                 ..Default::default()
             };
             assert!(!(rule.apply)(&mut p), "7.1.35 fired on {ending}");

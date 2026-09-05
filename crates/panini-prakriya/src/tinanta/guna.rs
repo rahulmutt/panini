@@ -824,6 +824,7 @@ mod tests {
     use crate::term::Term;
     use crate::tinanta::form_g;
     use crate::tinanta::rules;
+    use crate::tinanta::terms::with_slots;
     use panini_data::{Purusha, Vacana};
 
     // --- 7.3.86 pugantalaGUpaDasya ca: guard-edge pins -------------------
@@ -845,7 +846,7 @@ mod tests {
         // a usize underflow that panics. The original must return false
         // cleanly.
         let mut p = Prakriya {
-            terms: vec![Term::new("d"), Term::new("a")],
+            terms: with_slots(vec![Term::new("d"), Term::new("a")]),
             log: vec![],
             ..Default::default()
         };
@@ -862,7 +863,7 @@ mod tests {
         // guard short-circuits to true and wrongly returns false instead
         // of firing.
         let mut p = Prakriya {
-            terms: vec![Term::new("id"), Term::new("a")],
+            terms: with_slots(vec![Term::new("id"), Term::new("a")]),
             log: vec![],
             ..Default::default()
         };
@@ -879,7 +880,7 @@ mod tests {
         // `n < 2 && is_vowel(...)` = false && true = false, so the mutant
         // falls through and wrongly fires on the ik penult 'f'.
         let mut p = Prakriya {
-            terms: vec![Term::new("Bfu"), Term::new("a")],
+            terms: with_slots(vec![Term::new("Bfu"), Term::new("a")]),
             log: vec![],
             ..Default::default()
         };
@@ -900,7 +901,7 @@ mod tests {
         // slice to `chars[..n / 2]` would prefix with "aB" instead
         // of "aBi", yielding "aBor". Both diverge from "aBior".
         let mut p = Prakriya {
-            terms: vec![Term::new("aBiur"), Term::new("a")],
+            terms: with_slots(vec![Term::new("aBiur"), Term::new("a")]),
             log: vec![],
             ..Default::default()
         };
@@ -924,7 +925,7 @@ mod tests {
         // vft -> vart. `.get()` cannot panic regardless of arity, unlike the
         // old `p.terms[SHAP]` index it replaced.
         let mut p = Prakriya {
-            terms: vec![Term::new("vft")],
+            terms: with_slots(vec![Term::new("vft")]),
             log: vec![],
             ..Default::default()
         };
@@ -938,14 +939,14 @@ mod tests {
         // 6.1.78's ATHEMATIC arm (śap luk'd) reads p.terms[ENDING] (index 2)
         // once its guard passes. With only two terms (aGga + an empty śap,
         // no ending inserted yet), `p.terms.len() > ENDING` (2 > 2) is
-        // false, so the guard short-circuits before indexing terms[2]. The
+        // false, so the guard short-circuits before indexing terms[ENDING]. The
         // `>` -> `>=` mutant makes `2 >= 2` true; since the śap here is
         // empty, the mutant guard proceeds and indexes terms[ENDING], out of
         // bounds for a 2-term vector -> panics. The aGga ("Se") satisfies
         // the rule's own e/o-final precondition, isolating the athematic
         // arm's own third-term guard.
         let mut p = Prakriya {
-            terms: vec![Term::new("Se"), Term::new("")],
+            terms: with_slots(vec![Term::new("Se"), Term::new("")]),
             log: vec![],
             ..Default::default()
         };
@@ -959,7 +960,7 @@ mod tests {
         // 6.1.78's VIKARAṆA arm (svādi) reads p.terms[ENDING] (index 2) once
         // its guard passes. With only two terms (aṅga + a guṇated śnu, no
         // ending inserted yet), `p.terms.len() > ENDING` (2 > 2) is false,
-        // so the guard short-circuits before indexing terms[2]. The
+        // so the guard short-circuits before indexing terms[ENDING]. The
         // `>` -> `>=` mutant makes `2 >= 2` true; since the śap here ends in
         // `o` (guṇated śnu, as 7.3.84's second application leaves it), the
         // mutant guard proceeds and indexes terms[ENDING], out of bounds for
@@ -967,7 +968,7 @@ mod tests {
         // the thematic/athematic arms above decline, isolating the vikaraṇa
         // arm's own third-term guard.
         let mut p = Prakriya {
-            terms: vec![Term::new("Ap"), Term::new("no")],
+            terms: with_slots(vec![Term::new("Ap"), Term::new("no")]),
             log: vec![],
             ..Default::default()
         };
@@ -992,7 +993,7 @@ mod tests {
         // though the śap is a real (non-empty) buffer, not the śap-luk'd
         // adādi path this arm is for.
         let mut p = Prakriya {
-            terms: vec![Term::new("Se"), Term::new("ya"), Term::new("Iran")],
+            terms: with_slots(vec![Term::new("Se"), Term::new("ya"), Term::new("Iran")]),
             log: vec![],
             ..Default::default()
         };
@@ -1029,7 +1030,7 @@ mod tests {
         // `p.terms.get(ENDING)`, which is None here, so the mutant sees no
         // follower at all and wrongly applies guNa ("nI" -> "ne").
         let mut p = Prakriya {
-            terms: vec![Term::new("nI"), Term::new("ya")],
+            terms: with_slots(vec![Term::new("nI"), Term::new("ya")]),
             log: vec![],
             ..Default::default()
         };
@@ -1050,7 +1051,7 @@ mod tests {
         // guard, which would have panicked indexing a 1-element Vec,
         // `.get()` never panics here regardless of arity.
         let mut p = Prakriya {
-            terms: vec![Term::new("nI")],
+            terms: with_slots(vec![Term::new("nI")]),
             log: vec![],
             ..Default::default()
         };
@@ -1067,7 +1068,7 @@ mod tests {
         // terms[SHAP] -- which on this path carries Sap's own Tag::Pit and
         // can never be Ngit -- so the block was silently inoperative.
         let mut p = Prakriya {
-            terms: vec![Term::new("nI"), Term::new(""), Term::new("te")],
+            terms: with_slots(vec![Term::new("nI"), Term::new(""), Term::new("te")]),
             log: vec![],
             ..Default::default()
         };
@@ -1083,7 +1084,7 @@ mod tests {
         // This is the "just outside the guard" half of the pair -- without it
         // a mutant that always blocks on the athematic path would survive.
         let mut p = Prakriya {
-            terms: vec![Term::new("nI"), Term::new(""), Term::new("ti")],
+            terms: with_slots(vec![Term::new("nI"), Term::new(""), Term::new("ti")]),
             log: vec![],
             ..Default::default()
         };
@@ -1098,7 +1099,7 @@ mod tests {
         // pair. "vft" is a light ik penult before a single consonant, which is
         // this rule's shape; the Ngit ending must still block it.
         let mut p = Prakriya {
-            terms: vec![Term::new("vft"), Term::new(""), Term::new("te")],
+            terms: with_slots(vec![Term::new("vft"), Term::new(""), Term::new("te")]),
             log: vec![],
             ..Default::default()
         };
@@ -1111,7 +1112,7 @@ mod tests {
     #[test]
     fn pugantalaghupadhasya_applies_guna_when_luk_shap_ending_is_not_ngit() {
         let mut p = Prakriya {
-            terms: vec![Term::new("vft"), Term::new(""), Term::new("ti")],
+            terms: with_slots(vec![Term::new("vft"), Term::new(""), Term::new("ti")]),
             log: vec![],
             ..Default::default()
         };
@@ -1126,14 +1127,14 @@ mod tests {
         // ārdhadhātuka u, on which 1.1.5 has no purchase — vidyut derives
         // tarRvanti), while the nitya entry declines the gaṇa entirely.
         let mut p = Prakriya {
-            terms: vec![Term::new("tfR"), Term::new("u"), Term::new("anti")],
+            terms: with_slots(vec![Term::new("tfR"), Term::new("u"), Term::new("anti")]),
             ..Default::default()
         };
-        p.terms[0].add(Tag::Dhatu);
-        p.terms[0].add(Tag::Tanadi);
-        p.terms[1].add(Tag::Vikarana);
-        p.terms[1].add(Tag::Ardhadhatuka);
-        p.terms[2].add(Tag::Ngit);
+        p.terms[ANGA].add(Tag::Dhatu);
+        p.terms[ANGA].add(Tag::Tanadi);
+        p.terms[SHAP].add(Tag::Vikarana);
+        p.terms[SHAP].add(Tag::Ardhadhatuka);
+        p.terms[ENDING].add(Tag::Ngit);
         let mut entries = rules().filter(|r| r.id == "7.3.86");
         let nitya = entries.next().unwrap();
         let vikalpa = entries.next().expect("the tanādi arm");
@@ -1141,7 +1142,7 @@ mod tests {
         assert!(vikalpa.vikalpa);
         assert!(!(nitya.apply)(&mut p), "gaṇa 8 belongs to the vikalpa arm");
         assert!((vikalpa.apply)(&mut p));
-        assert_eq!(p.terms[0].text, "tarR");
+        assert_eq!(p.terms[ANGA].text, "tarR");
     }
 
     #[test]
@@ -1150,12 +1151,12 @@ mod tests {
         // business): both outside the gaṇasūtra's four.
         for root in ["tan", "kf"] {
             let mut p = Prakriya {
-                terms: vec![Term::new(root), Term::new("u"), Term::new("ti")],
+                terms: with_slots(vec![Term::new(root), Term::new("u"), Term::new("ti")]),
                 ..Default::default()
             };
-            p.terms[0].add(Tag::Dhatu);
-            p.terms[0].add(Tag::Tanadi);
-            p.terms[1].add(Tag::Vikarana);
+            p.terms[ANGA].add(Tag::Dhatu);
+            p.terms[ANGA].add(Tag::Tanadi);
+            p.terms[SHAP].add(Tag::Vikarana);
             let vikalpa = rules().filter(|r| r.id == "7.3.86").nth(1).unwrap();
             assert!(!(vikalpa.apply)(&mut p), "{root}");
         }
@@ -1173,16 +1174,16 @@ mod tests {
         // fall through to the ik-penult check — `f` matches — and wrongly
         // guṇate, turning "fu" into "aru".
         let mut p = Prakriya {
-            terms: vec![Term::new("fu"), Term::new("u"), Term::new("ti")],
+            terms: with_slots(vec![Term::new("fu"), Term::new("u"), Term::new("ti")]),
             ..Default::default()
         };
-        p.terms[0].add(Tag::Dhatu);
-        p.terms[0].add(Tag::Tanadi);
-        p.terms[1].add(Tag::Vikarana);
+        p.terms[ANGA].add(Tag::Dhatu);
+        p.terms[ANGA].add(Tag::Tanadi);
+        p.terms[SHAP].add(Tag::Vikarana);
         let vikalpa = rules().filter(|r| r.id == "7.3.86").nth(1).unwrap();
         assert!(!(vikalpa.apply)(&mut p));
         assert_eq!(
-            p.terms[0].text, "fu",
+            p.terms[ANGA].text, "fu",
             "guard must decline before any mutation"
         );
     }
@@ -1211,7 +1212,7 @@ mod tests {
         // And the rule declines outright on a prakriya whose aṅga is not √śī,
         // even when everything else about it looks like √śī's environment.
         let mut p = Prakriya {
-            terms: vec![Term::new("nI"), Term::new(""), Term::new("te")],
+            terms: with_slots(vec![Term::new("nI"), Term::new(""), Term::new("te")]),
             log: vec![],
             ..Default::default()
         };
@@ -1233,7 +1234,7 @@ mod tests {
             end.add(Tag::Ngit);
         }
         Prakriya {
-            terms: vec![Term::new(anga), vik, end],
+            terms: with_slots(vec![Term::new(anga), vik, end]),
             log: vec![],
             ..Default::default()
         }
@@ -1302,7 +1303,7 @@ mod tests {
     fn second_7_3_84_gunates_shnu_before_a_pit_ending() {
         // Ap + nu + ti → Ap + no + ti. `ti` is pit, so 1.1.5 does not block.
         let mut p = Prakriya {
-            terms: vec![Term::new("Ap"), Term::new("nu"), Term::new("ti")],
+            terms: with_slots(vec![Term::new("Ap"), Term::new("nu"), Term::new("ti")]),
             ..Default::default()
         };
         assert!((second_7_3_84().apply)(&mut p));
@@ -1315,7 +1316,7 @@ mod tests {
         // Ap + nu + taH → ApnutaH. `tas` is apit, so the first 1.2.4 tagged it
         // ṅit and 1.1.5 blocks guṇa. This is the gaṇa's signature contrast.
         let mut p = Prakriya {
-            terms: vec![Term::new("Ap"), Term::new("nu"), Term::new("taH")],
+            terms: with_slots(vec![Term::new("Ap"), Term::new("nu"), Term::new("taH")]),
             ..Default::default()
         };
         p.terms[ENDING].add(Tag::Ngit);
@@ -1327,7 +1328,7 @@ mod tests {
     fn second_7_3_84_declines_on_a_thematic_vikarana() {
         // bhvādi: SHAP is śap's `a`, not an ik. The no-delta guard, half one.
         let mut p = Prakriya {
-            terms: vec![Term::new("Bo"), Term::new("a"), Term::new("ti")],
+            terms: with_slots(vec![Term::new("Bo"), Term::new("a"), Term::new("ti")]),
             ..Default::default()
         };
         assert!(!(second_7_3_84().apply)(&mut p));
@@ -1341,7 +1342,7 @@ mod tests {
         // guard is always satisfied. The no-delta guard, half two. If this ever
         // fires, kryādi surfaces *kliSne and 1872 goldens move.
         let mut p = Prakriya {
-            terms: vec![Term::new("kliS"), Term::new("nI"), Term::new("taH")],
+            terms: with_slots(vec![Term::new("kliS"), Term::new("nI"), Term::new("taH")]),
             ..Default::default()
         };
         p.terms[ENDING].add(Tag::Ngit);
@@ -1353,7 +1354,7 @@ mod tests {
     fn second_7_3_84_declines_on_an_empty_shap() {
         // adādi: śap is luk'd to an empty string. Must not panic.
         let mut p = Prakriya {
-            terms: vec![Term::new("ad"), Term::new(""), Term::new("ti")],
+            terms: with_slots(vec![Term::new("ad"), Term::new(""), Term::new("ti")]),
             ..Default::default()
         };
         assert!(!(second_7_3_84().apply)(&mut p));
@@ -1373,7 +1374,7 @@ mod tests {
         }
         // A one-term prakriya must not panic indexing SHAP or ENDING.
         let mut p = Prakriya {
-            terms: vec![Term::new("kliS")],
+            terms: with_slots(vec![Term::new("kliS")]),
             log: vec![],
             ..Default::default()
         };
@@ -1389,7 +1390,7 @@ mod tests {
     fn eco_yavayavah_converts_the_vikaranas_o_before_a_vowel_ending() {
         // Ap + no + Ani → Ap + nav + Ani → ApnavAni.
         let mut p = Prakriya {
-            terms: vec![Term::new("Ap"), Term::new("no"), Term::new("Ani")],
+            terms: with_slots(vec![Term::new("Ap"), Term::new("no"), Term::new("Ani")]),
             ..Default::default()
         };
         let rule = rules().find(|r| r.id == "6.1.78").unwrap();
@@ -1402,7 +1403,7 @@ mod tests {
     fn eco_yavayavah_vikarana_arm_declines_before_a_consonant_ending() {
         // Apnoti: `ti` is consonant-initial, so nothing converts.
         let mut p = Prakriya {
-            terms: vec![Term::new("Ap"), Term::new("no"), Term::new("ti")],
+            terms: with_slots(vec![Term::new("Ap"), Term::new("no"), Term::new("ti")]),
             ..Default::default()
         };
         let rule = rules().find(|r| r.id == "6.1.78").unwrap();
@@ -1414,7 +1415,7 @@ mod tests {
     fn eco_yavayavah_thematic_arm_still_wins_for_bhvadi() {
         // Bo + a + ti → Bav + a + ti. The root's `o`, not the vikaraṇa's.
         let mut p = Prakriya {
-            terms: vec![Term::new("Bo"), Term::new("a"), Term::new("ti")],
+            terms: with_slots(vec![Term::new("Bo"), Term::new("a"), Term::new("ti")]),
             ..Default::default()
         };
         let rule = rules().find(|r| r.id == "6.1.78").unwrap();
@@ -1427,7 +1428,7 @@ mod tests {
     fn eco_yavayavah_athematic_arm_still_wins_for_adadi() {
         // Se + "" + Iyran → Say + "" + Iyran (√śī vidhiliṅ 3pl).
         let mut p = Prakriya {
-            terms: vec![Term::new("Se"), Term::new(""), Term::new("Iyran")],
+            terms: with_slots(vec![Term::new("Se"), Term::new(""), Term::new("Iyran")]),
             ..Default::default()
         };
         let rule = rules().find(|r| r.id == "6.1.78").unwrap();
@@ -1441,7 +1442,7 @@ mod tests {
     fn hushnuvoh_yields_yan_for_a_vowel_final_root() {
         // hi + nu + anti → hi + nv + anti → hinvanti.
         let mut p = Prakriya {
-            terms: vec![Term::new("hi"), Term::new("nu"), Term::new("anti")],
+            terms: with_slots(vec![Term::new("hi"), Term::new("nu"), Term::new("anti")]),
             ..Default::default()
         };
         p.terms[SHAP].add(Tag::Vikarana);
@@ -1453,7 +1454,7 @@ mod tests {
     #[test]
     fn hushnuvoh_declines_on_a_conjunct_and_leaves_it_to_6_4_77() {
         let mut p = Prakriya {
-            terms: vec![Term::new("Ap"), Term::new("nu"), Term::new("anti")],
+            terms: with_slots(vec![Term::new("Ap"), Term::new("nu"), Term::new("anti")]),
             ..Default::default()
         };
         p.terms[SHAP].add(Tag::Vikarana);
@@ -1468,7 +1469,7 @@ mod tests {
     fn shnu_vowel_rules_decline_before_a_consonant_ending() {
         // ApnutaH: `taH` is consonant-initial, so neither fires.
         let mut p = Prakriya {
-            terms: vec![Term::new("Ap"), Term::new("nu"), Term::new("taH")],
+            terms: with_slots(vec![Term::new("Ap"), Term::new("nu"), Term::new("taH")]),
             ..Default::default()
         };
         p.terms[SHAP].add(Tag::Vikarana);
@@ -1485,7 +1486,7 @@ mod tests {
         // neither rule matches `nu` any more. This is what keeps the ordering
         // constraint honest — *ApnuvAni is the failure it prevents.
         let mut p = Prakriya {
-            terms: vec![Term::new("Ap"), Term::new("no"), Term::new("Ani")],
+            terms: with_slots(vec![Term::new("Ap"), Term::new("no"), Term::new("Ani")]),
             ..Default::default()
         };
         p.terms[SHAP].add(Tag::Vikarana);
@@ -1500,7 +1501,7 @@ mod tests {
         // kryādi's `nA` and bhvādi's `a` must be invisible to both rules.
         for shap in ["nA", "nI", "n", "a", "ya", "Ana", ""] {
             let mut p = Prakriya {
-                terms: vec![Term::new("kliS"), Term::new(shap), Term::new("anti")],
+                terms: with_slots(vec![Term::new("kliS"), Term::new(shap), Term::new("anti")]),
                 ..Default::default()
             };
             p.terms[SHAP].add(Tag::Vikarana);
@@ -1516,16 +1517,16 @@ mod tests {
     fn kr_prakriya(ending: &str, ngit: bool) -> Prakriya {
         // Post-first-7.3.84 shape: kar + u + ending.
         let mut p = Prakriya {
-            terms: vec![Term::new("kar"), Term::new("u"), Term::new(ending)],
+            terms: with_slots(vec![Term::new("kar"), Term::new("u"), Term::new(ending)]),
             ..Default::default()
         };
-        p.terms[0].add(Tag::Dhatu);
+        p.terms[ANGA].add(Tag::Dhatu);
         // for realism only — no guard reads it (see the block comment above 6.4.110)
-        p.terms[0].add(Tag::Tanadi);
-        p.terms[1].add(Tag::Vikarana);
-        p.terms[1].add(Tag::Ardhadhatuka);
+        p.terms[ANGA].add(Tag::Tanadi);
+        p.terms[SHAP].add(Tag::Vikarana);
+        p.terms[SHAP].add(Tag::Ardhadhatuka);
         if ngit {
-            p.terms[2].add(Tag::Ngit);
+            p.terms[ENDING].add(Tag::Ngit);
         }
         p
     }
@@ -1535,21 +1536,21 @@ mod tests {
         let r = rules().find(|r| r.id == "6.4.110").unwrap();
         let mut p = kr_prakriya("tas", true);
         assert!((r.apply)(&mut p));
-        assert_eq!(p.terms[0].text, "kur");
+        assert_eq!(p.terms[ANGA].text, "kur");
         // karoti's pit ti: no ut.
         let mut p = kr_prakriya("ti", false);
         assert!(!(r.apply)(&mut p));
         // Another root's `a` is not karoti's: the text guard alone
         // (there is no Tag::Tanadi clause left to save this) rejects it.
         let mut p = kr_prakriya("tas", true);
-        p.terms[0].text = "tan".into();
+        p.terms[ANGA].text = "tan".into();
         assert!(!(r.apply)(&mut p));
         // laN's aT-augmented aGga (6.4.71 prefixes onto ANGA's own text):
         // akarutAm must become akurutAm, not decline on `!= "kar"`.
         let mut p = kr_prakriya("tas", true);
-        p.terms[0].text = "akar".into();
+        p.terms[ANGA].text = "akar".into();
         assert!((r.apply)(&mut p));
-        assert_eq!(p.terms[0].text, "akur");
+        assert_eq!(p.terms[ANGA].text, "akur");
     }
 
     #[test]
@@ -1564,9 +1565,9 @@ mod tests {
         // write "vikur"; the `-` -> `/` mutant would write "viuar".
         let r = rules().find(|r| r.id == "6.4.110").unwrap();
         let mut p = kr_prakriya("tas", true);
-        p.terms[0].text = "vikar".into();
+        p.terms[ANGA].text = "vikar".into();
         assert!((r.apply)(&mut p));
-        assert_eq!(p.terms[0].text, "vikur");
+        assert_eq!(p.terms[ANGA].text, "vikur");
     }
 
     #[test]
@@ -1574,21 +1575,21 @@ mod tests {
         let r = rules().find(|r| r.id == "6.4.108").unwrap();
         for ending in ["mas", "vas"] {
             let mut p = kr_prakriya(ending, true);
-            p.terms[0].text = "kur".into();
+            p.terms[ANGA].text = "kur".into();
             assert!((r.apply)(&mut p), "{ending}");
-            assert_eq!(p.terms[1].text, "", "{ending}");
+            assert_eq!(p.terms[SHAP].text, "", "{ending}");
         }
         // Not before tas — that u survives (kurutaH).
         let mut p = kr_prakriya("tas", true);
-        p.terms[0].text = "kur".into();
+        p.terms[ANGA].text = "kur".into();
         assert!(!(r.apply)(&mut p));
         // laN's akur must fire too (akurva, akurma — single branch, no
         // 6.4.107 fork): the guard reads the aGga tail, not its whole text.
         for ending in ["mas", "vas"] {
             let mut p = kr_prakriya(ending, true);
-            p.terms[0].text = "akur".into();
+            p.terms[ANGA].text = "akur".into();
             assert!((r.apply)(&mut p), "{ending}");
-            assert_eq!(p.terms[1].text, "", "{ending}");
+            assert_eq!(p.terms[SHAP].text, "", "{ending}");
         }
     }
 
@@ -1596,18 +1597,18 @@ mod tests {
     fn ye_ca_empties_the_u_before_y() {
         let r = rules().find(|r| r.id == "6.4.109").unwrap();
         let mut p = kr_prakriya("yAt", true);
-        p.terms[0].text = "kur".into();
+        p.terms[ANGA].text = "kur".into();
         assert!((r.apply)(&mut p));
-        assert_eq!(p.terms[1].text, "");
+        assert_eq!(p.terms[SHAP].text, "");
         // Not before tas — kuryAt's lopa is y-specific, kurutaH keeps its u.
         let mut p = kr_prakriya("tas", true);
-        p.terms[0].text = "kur".into();
+        p.terms[ANGA].text = "kur".into();
         assert!(!(r.apply)(&mut p));
         // The guard reads the aGga tail, not its whole text — pin that
         // directly against an aT-prefixed akur, same as 6.4.108 above.
         let mut p = kr_prakriya("yAt", true);
-        p.terms[0].text = "akur".into();
+        p.terms[ANGA].text = "akur".into();
         assert!((r.apply)(&mut p));
-        assert_eq!(p.terms[1].text, "");
+        assert_eq!(p.terms[SHAP].text, "");
     }
 }

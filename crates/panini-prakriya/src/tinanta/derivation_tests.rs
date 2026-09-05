@@ -9,6 +9,7 @@ use super::*;
 // `cartva_of` is otherwise only used by `tripadi.rs`; imported by path since
 // `mod.rs` re-exports nothing from `sound`.
 use crate::tinanta::sound::cartva_of;
+use crate::tinanta::terms::{ABHYASA, AGAMA, ANGA, ENDING, SHAP};
 use panini_data::{Lakara, Pada, Purusha, Vacana, dhatus};
 
 /// Unwrap a derivation that must not have forked.
@@ -1234,6 +1235,27 @@ fn a_augment_does_not_leak_into_dual_or_plural() {
         form_g("02.0001", Lakara::Lan, Purusha::Madhyama, Vacana::Dvi),
         "Attam"
     );
+}
+
+#[test]
+fn derive_seats_the_dhatu_at_anga_behind_two_empty_slots() {
+    // `derive` and `with_slots` must agree on the layout, or a hand-built
+    // test prakriya and a real derivation address different terms by the
+    // same constant.
+    let d = dhatus().iter().find(|d| d.dhatupatha == "01.0001").unwrap();
+    let p = sole(derive(
+        d,
+        Lakara::Lat,
+        Pada::Parasmaipada,
+        Purusha::Prathama,
+        Vacana::Eka,
+    ));
+    assert_eq!(p.text(), "Bavati");
+    assert_eq!(p.terms[AGAMA].text, "");
+    assert_eq!(p.terms[ABHYASA].text, "");
+    assert!(p.terms[ANGA].has(Tag::Dhatu));
+    assert!(p.terms[SHAP].has(Tag::Vikarana));
+    assert!(p.terms[ENDING].has(Tag::Tin));
 }
 
 #[test]

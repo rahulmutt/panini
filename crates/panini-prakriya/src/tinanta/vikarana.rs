@@ -524,12 +524,13 @@ mod tests {
     use crate::term::Term;
     use crate::tinanta::derive;
     use crate::tinanta::rules;
+    use crate::tinanta::terms::with_slots;
     use panini_data::{Lakara, Pada, Purusha, Vacana, dhatus};
 
     #[test]
     fn svadibhyah_shnu_inserts_nu_for_svadi_only() {
         let mut p = Prakriya {
-            terms: vec![Term::new("Ap"), Term::new("ti")],
+            terms: with_slots(vec![Term::new("Ap"), Term::new("ti")]),
             ..Default::default()
         };
         p.terms[ANGA].add(Tag::Svadi);
@@ -546,7 +547,7 @@ mod tests {
         // bhvādi: no Tag::Svadi, so the apavāda must not fire and 3.1.68 keeps
         // its utsarga job.
         let mut p = Prakriya {
-            terms: vec![Term::new("BU"), Term::new("ti")],
+            terms: with_slots(vec![Term::new("BU"), Term::new("ti")]),
             ..Default::default()
         };
         let rule = rules().find(|r| r.id == "3.1.73").unwrap();
@@ -559,7 +560,7 @@ mod tests {
         // ṅit with no edit. This is what blocks the FIRST 7.3.84 on ik-final
         // roots (hinoti, not *henoti).
         let mut p = Prakriya {
-            terms: vec![Term::new("hi"), Term::new("ti")],
+            terms: with_slots(vec![Term::new("hi"), Term::new("ti")]),
             ..Default::default()
         };
         p.terms[ANGA].add(Tag::Svadi);
@@ -579,11 +580,11 @@ mod tests {
         // reads when it guṇates u -> o (tanoti) where sunoti's śnu stays
         // blocked — the whole gaṇa hangs on this test.
         let mut p = Prakriya {
-            terms: vec![Term::new("tan"), Term::new("ti")],
+            terms: with_slots(vec![Term::new("tan"), Term::new("ti")]),
             ..Default::default()
         };
-        p.terms[0].add(Tag::Dhatu);
-        p.terms[0].add(Tag::Tanadi);
+        p.terms[ANGA].add(Tag::Dhatu);
+        p.terms[ANGA].add(Tag::Tanadi);
         let r_79 = rules().find(|r| r.id == "3.1.79").unwrap();
         assert!((r_79.apply)(&mut p));
         assert_eq!(p.terms[SHAP].text, "u");
@@ -601,7 +602,7 @@ mod tests {
         // The 1.2.4 guard gains a positive Sarvadhatuka test; śnu (śit,
         // apit) must still come out ṅit or hinoti becomes *henoti.
         let mut p = Prakriya {
-            terms: vec![Term::new("hi"), Term::new("nu"), Term::new("ti")],
+            terms: with_slots(vec![Term::new("hi"), Term::new("nu"), Term::new("ti")]),
             ..Default::default()
         };
         p.terms[SHAP].add(Tag::Vikarana);
@@ -626,7 +627,7 @@ mod tests {
     #[test]
     fn kartari_sap_single_term_anga_does_not_panic() {
         let mut p = Prakriya {
-            terms: vec![Term::new("kf")],
+            terms: with_slots(vec![Term::new("kf")]),
             log: vec![],
             ..Default::default()
         };
@@ -642,7 +643,7 @@ mod tests {
         // application, ordered after 3.1.68) is targeted here, not the
         // first (ENDING_PRE_SHAP) application above the 3.1.68 boundary.
         let mut p = Prakriya {
-            terms: vec![Term::new("kf")],
+            terms: with_slots(vec![Term::new("kf")]),
             log: vec![],
             ..Default::default()
         };
@@ -680,7 +681,7 @@ mod tests {
         let mut anga = Term::new("kf");
         anga.add(Tag::Adadi);
         let mut p = Prakriya {
-            terms: vec![anga],
+            terms: with_slots(vec![anga]),
             log: vec![],
             ..Default::default()
         };
@@ -698,7 +699,7 @@ mod tests {
         let mut anga = Term::new("kliS");
         anga.add(Tag::Kryadi);
         let mut p = Prakriya {
-            terms: vec![anga, Term::new("ti")],
+            terms: with_slots(vec![anga, Term::new("ti")]),
             log: vec![],
             ..Default::default()
         };
@@ -721,7 +722,7 @@ mod tests {
                 anga.add(t);
             }
             let mut p = Prakriya {
-                terms: vec![anga, Term::new("ti")],
+                terms: with_slots(vec![anga, Term::new("ti")]),
                 log: vec![],
                 ..Default::default()
             };
@@ -736,7 +737,7 @@ mod tests {
         vik.add(Tag::Vikarana);
         vik.add(Tag::Sarvadhatuka);
         Prakriya {
-            terms: vec![Term::new(anga), vik, Term::new(ending)],
+            terms: with_slots(vec![Term::new(anga), vik, Term::new(ending)]),
             log: vec![],
             ..Default::default()
         }
@@ -787,7 +788,7 @@ mod tests {
         }
         // A one-term prakriya must not panic indexing SHAP or ENDING.
         let mut p = Prakriya {
-            terms: vec![Term::new("kliS")],
+            terms: with_slots(vec![Term::new("kliS")]),
             log: vec![],
             ..Default::default()
         };
@@ -800,7 +801,7 @@ mod tests {
     /// reads the lakāra.
     fn lan_prakriya(anga: &str, shap: &str, ending: &str) -> Prakriya {
         Prakriya {
-            terms: vec![Term::new(anga), Term::new(shap), Term::new(ending)],
+            terms: with_slots(vec![Term::new(anga), Term::new(shap), Term::new(ending)]),
             ctx: Context::new(
                 Lakara::Lan,
                 Pada::Parasmaipada,

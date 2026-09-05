@@ -78,26 +78,24 @@ pub fn derive(
         ctx: Context::new(lakara, pada, purusha, vacana),
         ..Default::default()
     };
-    p.terms.push({
-        let mut t = Term::new(dhatu.code);
-        t.add(Tag::Dhatu);
-        match dhatu.pada {
-            PadaAssignment::Parasmaipada => {}
-            PadaAssignment::Atmanepada => t.add(Tag::Atmanepadin),
-            PadaAssignment::Ubhayapada => t.add(Tag::Ubhayapadin),
-            PadaAssignment::UbhayapadaAnavane => t.add(Tag::Anavane),
-        }
-        match dhatu.gana {
-            Gana::Divadi => t.add(Tag::Divadi),
-            Gana::Tudadi => t.add(Tag::Tudadi),
-            Gana::Adadi => t.add(Tag::Adadi),
-            Gana::Kryadi => t.add(Tag::Kryadi),
-            Gana::Svadi => t.add(Tag::Svadi),
-            Gana::Rudhadi => t.add(Tag::Rudhadi),
-            Gana::Tanadi => t.add(Tag::Tanadi),
-            Gana::Bhvadi => {}
-        }
-        t
-    });
+    let mut t = Term::new(dhatu.code);
+    t.add(Tag::Dhatu);
+    match dhatu.pada {
+        PadaAssignment::Parasmaipada => {}
+        PadaAssignment::Atmanepada => t.add(Tag::Atmanepadin),
+        PadaAssignment::Ubhayapada => t.add(Tag::Ubhayapadin),
+        PadaAssignment::UbhayapadaAnavane => t.add(Tag::Anavane),
+    }
+    match dhatu.gana {
+        Gana::Divadi => t.add(Tag::Divadi),
+        Gana::Tudadi => t.add(Tag::Tudadi),
+        Gana::Adadi => t.add(Tag::Adadi),
+        Gana::Kryadi => t.add(Tag::Kryadi),
+        Gana::Svadi => t.add(Tag::Svadi),
+        Gana::Rudhadi => t.add(Tag::Rudhadi),
+        Gana::Tanadi => t.add(Tag::Tanadi),
+        Gana::Bhvadi => {}
+    }
+    p.terms = terms::with_slots(vec![t]);
     run_pipeline(p, TINANTA_RULES)
 }

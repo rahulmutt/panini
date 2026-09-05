@@ -392,6 +392,7 @@ mod tests {
     use crate::tinanta::derive;
     use crate::tinanta::form_g;
     use crate::tinanta::rules;
+    use crate::tinanta::terms::with_slots;
     use panini_data::{Purusha, Vacana, dhatus};
 
     #[test]
@@ -400,7 +401,7 @@ mod tests {
         // non-final. Eliding both would derive *Bave for BaveH.
         for (ending, want) in [("yAst", "yAt"), ("yAss", "yAs"), ("yAsus", "yAus")] {
             let mut p = Prakriya {
-                terms: vec![Term::new("Bav"), Term::new("a"), Term::new(ending)],
+                terms: with_slots(vec![Term::new("Bav"), Term::new("a"), Term::new(ending)]),
                 log: vec![],
                 ctx: Context::new(
                     Lakara::VidhiLin,
@@ -419,7 +420,7 @@ mod tests {
     #[test]
     fn ato_yeyah_rewrites_the_ya_prefix_after_shap_a() {
         let mut p = Prakriya {
-            terms: vec![Term::new("Bav"), Term::new("a"), Term::new("yAt")],
+            terms: with_slots(vec![Term::new("Bav"), Term::new("a"), Term::new("yAt")]),
             log: vec![],
             ctx: Context::new(
                 Lakara::VidhiLin,
@@ -442,7 +443,7 @@ mod tests {
         // operator, which would otherwise let this fire whenever the other
         // two conditions hold regardless of lakara.
         let mut p = Prakriya {
-            terms: vec![Term::new("Bav"), Term::new("a"), Term::new("yAt")],
+            terms: with_slots(vec![Term::new("Bav"), Term::new("a"), Term::new("yAt")]),
             log: vec![],
             ctx: Context::new(
                 Lakara::Lan,
@@ -465,7 +466,7 @@ mod tests {
         // otherwise let this fire whenever lakara is vidhilin regardless of
         // shap.
         let mut p = Prakriya {
-            terms: vec![Term::new("i"), Term::new("i"), Term::new("yAt")],
+            terms: with_slots(vec![Term::new("i"), Term::new("i"), Term::new("yAt")]),
             log: vec![],
             ctx: Context::new(
                 Lakara::VidhiLin,
@@ -487,7 +488,7 @@ mod tests {
         let mut anga = Term::new("Bav");
         anga.add(Tag::Anga);
         let mut p = Prakriya {
-            terms: vec![anga, Term::new("a"), Term::new("Ani")],
+            terms: with_slots(vec![anga, Term::new("a"), Term::new("Ani")]),
             log: vec![],
             ctx: Context::new(
                 Lakara::Lot,
@@ -516,7 +517,7 @@ mod tests {
         // (b) The aṅga IS √śī, but 7.1.5 never fired (empty log): the rule
         //     must decline and leave the ending untouched.
         let mut p = Prakriya {
-            terms: vec![Term::new("SI"), Term::new(""), Term::new("ate")],
+            terms: with_slots(vec![Term::new("SI"), Term::new(""), Term::new("ate")]),
             log: vec![],
             ..Default::default()
         };
@@ -575,7 +576,7 @@ mod tests {
         // because 6.4.71 models the augment as a text prefix rather than as
         // its own term.
         let mut p = Prakriya {
-            terms: vec![Term::new("aCi"), Term::new("nad"), Term::new("t")],
+            terms: with_slots(vec![Term::new("aCi"), Term::new("nad"), Term::new("t")]),
             ..Default::default()
         };
         assert!((rule.apply)(&mut p));
@@ -586,7 +587,7 @@ mod tests {
         // to attach to. This is every laṭ, loṭ and vidhiliṅ cell of √chid
         // and √chṛd, and it is why the two new sūtras are laṅ-only.
         let mut p = Prakriya {
-            terms: vec![Term::new("Ci"), Term::new("nad"), Term::new("ti")],
+            terms: with_slots(vec![Term::new("Ci"), Term::new("nad"), Term::new("ti")]),
             ..Default::default()
         };
         assert!(!(rule.apply)(&mut p));
@@ -594,7 +595,7 @@ mod tests {
         // A long vowel before the `C`: *hrasva* is the sūtra's own
         // condition and a dīrgha does not satisfy it.
         let mut p = Prakriya {
-            terms: vec![Term::new("ACi"), Term::new("nad"), Term::new("t")],
+            terms: with_slots(vec![Term::new("ACi"), Term::new("nad"), Term::new("t")]),
             ..Default::default()
         };
         assert!(!(rule.apply)(&mut p));
@@ -604,7 +605,7 @@ mod tests {
         // 6.1.73's saṁhitā condition rather than the one site that happens
         // to reach it.
         let mut p = Prakriya {
-            terms: vec![Term::new("a"), Term::new("Cid")],
+            terms: with_slots(vec![Term::new("a"), Term::new("Cid")]),
             ..Default::default()
         };
         assert!((rule.apply)(&mut p));
