@@ -139,9 +139,12 @@ they are the whole of the prep's behaviour change:
 
 - **6.4.71** keeps its consonant-initial guard on `ANGA` and writes `a`
   into `AGAMA` instead of prefixing it onto `ANGA.text`.
-- **6.4.72** writes `A` into `AGAMA`. Its "did 6.4.71 fire" log scan
-  becomes "is `AGAMA` empty" — the check its own comment says it wanted
-  and could not have.
+- **6.4.72** writes `A` into `AGAMA`. Its "did 6.4.71 fire" log scan is
+  deleted with no replacement: once 6.4.71 leaves the aṅga's text alone,
+  `is_vowel(first)` alone separates a vowel-initial root from one 6.4.71
+  just augmented, and an "is `AGAMA` empty" clause in the scan's place
+  could never be falsified (6.4.71 declines for every vowel-initial aṅga),
+  which makes it a guaranteed mutation survivor.
 - **6.1.90's aṅga arm** reads `AGAMA`'s `A` plus the initial vowel of the
   first non-empty term after it, writes the vṛddhi into that term and
   empties `AGAMA` — vidyut's own shape. In the prep that term is only ever
