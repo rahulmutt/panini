@@ -936,15 +936,16 @@ mod tests {
 
     #[test]
     fn eco_yavayavah_athematic_arm_requires_a_third_term() {
-        // 6.1.78's ATHEMATIC arm (śap luk'd) reads p.terms[ENDING] (index 2)
-        // once its guard passes. With only two terms (aGga + an empty śap,
-        // no ending inserted yet), `p.terms.len() > ENDING` (2 > 2) is
-        // false, so the guard short-circuits before indexing terms[ENDING]. The
-        // `>` -> `>=` mutant makes `2 >= 2` true; since the śap here is
-        // empty, the mutant guard proceeds and indexes terms[ENDING], out of
-        // bounds for a 2-term vector -> panics. The aGga ("Se") satisfies
-        // the rule's own e/o-final precondition, isolating the athematic
-        // arm's own third-term guard.
+        // 6.1.78's ATHEMATIC arm (śap luk'd) reads p.terms[ENDING] (index 4)
+        // once its guard passes. With only two caller terms behind the two
+        // permanent empty slots (aGga + an empty śap, no ending inserted
+        // yet), `with_slots` makes `p.terms.len()` 4, so `p.terms.len() >
+        // ENDING` (4 > 4) is false and the guard short-circuits before
+        // indexing terms[ENDING]. The `>` -> `>=` mutant makes `4 >= 4`
+        // true; since the śap here is empty, the mutant guard proceeds and
+        // indexes terms[ENDING], out of bounds for this 4-term vector ->
+        // panics. The aGga ("Se") satisfies the rule's own e/o-final
+        // precondition, isolating the athematic arm's own third-term guard.
         let mut p = Prakriya {
             terms: with_slots(vec![Term::new("Se"), Term::new("")]),
             log: vec![],
@@ -957,15 +958,17 @@ mod tests {
 
     #[test]
     fn eco_yavayavah_vikarana_arm_requires_a_third_term() {
-        // 6.1.78's VIKARAṆA arm (svādi) reads p.terms[ENDING] (index 2) once
-        // its guard passes. With only two terms (aṅga + a guṇated śnu, no
-        // ending inserted yet), `p.terms.len() > ENDING` (2 > 2) is false,
-        // so the guard short-circuits before indexing terms[ENDING]. The
-        // `>` -> `>=` mutant makes `2 >= 2` true; since the śap here ends in
-        // `o` (guṇated śnu, as 7.3.84's second application leaves it), the
-        // mutant guard proceeds and indexes terms[ENDING], out of bounds for
-        // a 2-term vector -> panics. The aṅga ("Ap") does not end in e/o, so
-        // the thematic/athematic arms above decline, isolating the vikaraṇa
+        // 6.1.78's VIKARAṆA arm (svādi) reads p.terms[ENDING] (index 4) once
+        // its guard passes. With only two caller terms behind the two
+        // permanent empty slots (aṅga + a guṇated śnu, no ending inserted
+        // yet), `with_slots` makes `p.terms.len()` 4, so `p.terms.len() >
+        // ENDING` (4 > 4) is false and the guard short-circuits before
+        // indexing terms[ENDING]. The `>` -> `>=` mutant makes `4 >= 4`
+        // true; since the śap here ends in `o` (guṇated śnu, as 7.3.84's
+        // second application leaves it), the mutant guard proceeds and
+        // indexes terms[ENDING], out of bounds for this 4-term vector ->
+        // panics. The aṅga ("Ap") does not end in e/o, so the
+        // thematic/athematic arms above decline, isolating the vikaraṇa
         // arm's own third-term guard.
         let mut p = Prakriya {
             terms: with_slots(vec![Term::new("Ap"), Term::new("no")]),
