@@ -83,9 +83,22 @@ inserts śap (bhvādi and adādi share the same vikaraṇa rule), and **2.4.72
 kept in place with empty text rather than removed, so the `ANGA`/`SHAP`/
 `ENDING` term indices stay stable for downstream rules.
 
-rudhādi (gaṇa 7) stretches the same three fixed slots the other way: its
+The layout itself is five fixed slots: `AGAMA` (0), `ABHYASA` (1), `ANGA`
+(2), `SHAP` (3, also the ending's index before 3.1.68 inserts śap) and
+`ENDING` (4). The two leading slots are permanent and empty on most
+derivations: `AGAMA` holds laṅ's aṭ or āṭ (6.4.71 / 6.4.72) — written
+there rather than prefixed onto the aṅga's text since the juhotyādi prep,
+so the aṅga's text is always the root's own, and 6.1.90 *āṭaś ca* merges
+the āṭ into the first non-empty term after the slot and empties it —
+and `ABHYASA` is reserved for the reduplicant of 6.1.10 *ślau*, which
+the juhotyādi slices fill. Because `Prakriya::text` concatenates every
+term, an empty slot is invisible in the assembled word and in every
+logged step.
+
+rudhādi (gaṇa 7) stretches the fixed slots the other way: its
 vikaraṇa, śnam (3.1.78), is the engine's first **infix** rather than a
-suffix, and there is no fourth slot to hold one. The root is instead split
+suffix, and there is no slot between `ANGA` and `SHAP` to hold one. The
+root is instead split
 across `ANGA` and `SHAP` — `ANGA` keeps the head through the root's last
 vowel, `SHAP` holds śnam followed by whatever text of the root followed
 that vowel (`kft` → `[kf, nat, ti]`; `hins` → `[hi, nans, ti]`) — so

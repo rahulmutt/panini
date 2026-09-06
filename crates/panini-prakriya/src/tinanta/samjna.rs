@@ -2,7 +2,7 @@
 //! 1.3.78, 3.4.78, 1.3.9, 1.2.4.
 //!
 //! Ordered **BEFORE** 3.1.68 — the ending lives at `ENDING_PRE_SHAP`
-//! (index 1) and śap does not exist yet. See `super::terms`.
+//! (index 3) and śap does not exist yet. See `super::terms`.
 //!
 //! 3.4.78 is what inserts the ending; `super::tin` picks up from 3.4.85 and
 //! reshapes it. 1.2.4 appears here tagging apit sārvadhātuka endings ṅit

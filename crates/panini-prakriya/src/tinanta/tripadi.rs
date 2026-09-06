@@ -1,7 +1,7 @@
 //! Tripādī: 8.2.77 … 8.4.56.
 //!
-//! Ordered AFTER 3.1.68, so the ending is at `ENDING` (index 2) and śap at
-//! `SHAP` (index 1); `terms[SHAP].text` may be empty (2.4.72). See
+//! Ordered AFTER 3.1.68, so the ending is at `ENDING` (index 4) and śap at
+//! `SHAP` (index 3); `terms[SHAP].text` may be empty (2.4.72). See
 //! `super::terms`.
 
 use crate::prakriya::Prakriya;
@@ -107,9 +107,10 @@ pub(crate) static TRIPADI: &[Rule] = &[
                 return false;
             }
             // 8.2.79 na BakurCurAm: kur is exempted from this lengthening
-            // — kurvanti, not kUrvanti. `ends_with` rather than `==` so
-            // laN's aT-augmented `akur` (6.4.71 prefixes onto the aGga's
-            // own text) is caught too: akurutAm, not akUrutAm.
+            // — kurvanti, not kUrvanti. `ends_with` rather than `==` is a
+            // tolerance for a prefixed aṅga: `akur` is that prefixed shape,
+            // not laṅ's own — laṅ's aṅga stays `kur`. Caught too: akurutAm,
+            // not akUrutAm.
             if p.terms[ANGA].text.ends_with("kur") {
                 return false;
             }
@@ -1676,8 +1677,9 @@ mod tests {
     #[test]
     fn hali_ca_declines_for_kur_per_8_2_79() {
         // 8.2.79 na BakurCurAm carves kur back out of 8.2.77's shape --
-        // kurvanti, not kUrvanti. `akur` (laN's aT-augmented aGga, 6.4.71)
-        // must decline too, since the guard reads the tail of the text.
+        // kurvanti, not kUrvanti. `akur` (a prefixed-aṅga tolerance, not
+        // laṅ's own shape) must decline too, since the guard reads the
+        // tail of the text.
         for anga in ["kur", "akur"] {
             let mut p = Prakriya {
                 terms: with_slots(vec![Term::new(anga), Term::new("v"), Term::new("anti")]),
@@ -1802,16 +1804,19 @@ mod tests {
     #[test]
     fn shatva_affix_search_skips_the_anga_itself() {
         // Pins that the s-initial affix search starts AFTER the aGga
-        // (`.skip(ANGA + 1)`), not AT it (`.skip(ANGA * 1)` == `.skip(0)`,
-        // since ANGA == 0). The corpus alone can't catch a `+` -> `*`
+        // (`.skip(ANGA + 1)`), not AT it (`.skip(ANGA * 1)` == `.skip(2)`,
+        // since ANGA == 2). With the mutant the search would start at the
+        // aṅga itself instead of skipping the two leading `AGAMA`/`ABHYASA`
+        // slots plus the aṅga. The corpus alone can't catch a `+` -> `*`
         // mutant here: its only s-initial roots (smf, sev) both decline
         // 8.3.59 on other grounds, so both versions of the search agree on
         // every golden and every known-nonform. An s-initial aGga is
         // needed to force the two versions apart.
         //
-        // sI + nI + sva: with skip(1), the search starts past the aGga and
-        // finds `sva` at index 2; the preceding non-empty term's last char
-        // is SnA's `I` (a non-a/A vowel), so 8.3.59 fires: sInIzva.
+        // sI + nI + sva: with skip(ANGA + 1) == skip(3), the search starts
+        // past the aGga and finds `sva` at index 4; the preceding non-empty
+        // term's last char is SnA's `I` (a non-a/A vowel), so 8.3.59 fires:
+        // sInIzva.
         let mut p = Prakriya {
             terms: with_slots(vec![Term::new("sI"), Term::new("nI"), Term::new("sva")]),
             log: vec![],
@@ -1820,10 +1825,12 @@ mod tests {
         let rule = rules().find(|r| r.id == "8.3.59").unwrap();
         assert!((rule.apply)(&mut p));
         assert_eq!(p.text(), "sInIzva");
-        // With the `ANGA * 1` mutant, the search would instead match the
-        // aGga `sI` itself at index 0 (it too starts with `s`), leaving no
-        // preceding term to read a trigger sound from, so the rule would
-        // wrongly decline and `sva` would surface unchanged.
+        // With the `ANGA * 1` mutant (skip(2)), the search would instead
+        // match the aGga `sI` itself at index 2 (it too starts with `s`).
+        // The two leading `AGAMA`/`ABHYASA` slots before it are both empty,
+        // so no preceding non-empty term is found to read a trigger sound
+        // from, and the rule would wrongly decline and `sva` would surface
+        // unchanged.
     }
 
     fn natva_prakriya(anga: &str, vikarana: &str, ending: &str) -> Prakriya {

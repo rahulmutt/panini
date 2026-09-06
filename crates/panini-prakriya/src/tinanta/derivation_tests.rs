@@ -1044,9 +1044,8 @@ fn shi_takes_guna_despite_the_ngit_ending() {
         form_g("02.0026", Lakara::Lat, Purusha::Prathama, Vacana::Eka),
         "Sete"
     );
-    // laṅ: 6.4.71 has already prefixed the aṭ-augment, so the aṅga is
-    // `aSI` when 7.4.21 runs — the guard must match on the tail, not the
-    // whole string.
+    // laṅ: the aṭ sits in `AGAMA`, so 7.4.21 sees the bare `SI`; the cell
+    // still pins the augment's presence in the assembled word.
     assert_eq!(
         form_g("02.0026", Lakara::Lan, Purusha::Prathama, Vacana::Eka),
         "aSeta"

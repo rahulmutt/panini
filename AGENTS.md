@@ -1038,7 +1038,7 @@
     the root's own anudātta settles its pada by 1.3.12 *anudāttaṅita
     ātmanepadam*. śnam is the engine's first **infix**: unlike every other
     vikaraṇa it is not a suffix, and the pipeline's fixed
-    `[ANGA, SHAP, ENDING]` slots have
+    `[AGAMA, ABHYASA, ANGA, SHAP, ENDING]` slots have
     nowhere to put one, so 3.1.78 splits the root across the first two
     instead — `terms[SHAP].text` for rudhādi is śnam followed by the root's
     own tail, not the vikaraṇa alone (`kft` → `[kf, nat, ti]`); see the
@@ -1276,9 +1276,11 @@
   `tinanta_rule_order_is_pinned` in the same position. Which stage a rule
   belongs to is decided by its position relative to **3.1.68**, not by its
   sūtra family: rules before
-  3.1.68 address the ending as `ENDING_PRE_SHAP` (index 1), rules after it as
-  `ENDING` (index 2), and `terms[SHAP].text` may be empty for adādi. See
-  `tinanta/terms.rs`. Per-rule guard tests go beside the rule in its stage
+  3.1.68 address the ending as `ENDING_PRE_SHAP` (index 3), rules after it as
+  `ENDING` (index 4), and `terms[SHAP].text` may be empty for adādi. Two
+  permanent, usually-empty slots — `AGAMA` (0) and `ABHYASA` (1) — precede
+  the aṅga; see `tinanta/terms.rs`. Per-rule guard tests go beside the rule
+  in its stage
   file; tests asserting a surface form or trace go in
   `tinanta/derivation_tests.rs`. **Write a per-rule guard test where the
   rule's precondition can be built directly on a hand-built `Prakriya`.

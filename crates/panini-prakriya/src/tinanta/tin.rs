@@ -1,8 +1,8 @@
 //! Lakāra → tiṅ substitution and ending reshaping: 3.4.85 … 3.4.102.
 //!
 //! Ordered **BEFORE** 3.1.68, so every rule here addresses the ending as
-//! `ENDING_PRE_SHAP` (index 1) — śap does not exist yet, and `ENDING`
-//! (index 2) would panic. See `super::terms`.
+//! `ENDING_PRE_SHAP` (index 3) — śap does not exist yet, and `ENDING`
+//! (index 4) would panic. See `super::terms`.
 //!
 //! The split from `super::samjna` falls at 3.4.78, which is what *inserts*
 //! the ending; everything from 3.4.85 on substitutes and reshapes it.
@@ -417,8 +417,9 @@ pub(crate) static TIN: &[Rule] = &[
     },
     // 3.4.103 yāsuṭ parasmaipadeṣūdātto ṅic ca: the yāsuṭ-āgama is prefixed
     // to liṅ's parasmaipada endings. Modelled as a text prefix on the ending
-    // term (the āṭ 3.4.92 / aṭ 6.4.71 precedent) so the term indices stay
-    // stable. The sutra's own text says parasmaipadeṣu, now enforced;
+    // term (the āṭ 3.4.92 precedent; laṅ's aṭ has its own `AGAMA` slot since
+    // the juhotyādi prep) so the term indices stay stable. The sutra's own
+    // text says parasmaipadeṣu, now enforced;
     // ātmanepada liṅ takes sīyuṭ instead (3.4.102, Task 9).
     //
     // MUST follow the 3.4.9x/10x ending substitutions above: their guards

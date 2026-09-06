@@ -493,7 +493,7 @@ pub(crate) static ADESHA: &[Rule] = &[
             // on sniffing SHAP for an `ai`: the āgama IS the condition, not
             // a proxy for it, and the gate makes the arm structurally
             // unable to fire for a root that does not take it. Same idiom
-            // 6.4.72 and 7.1.6 use to read the log for a prior rule.
+            // 7.1.6 uses to read the log for a prior rule.
             if p.log.iter().any(|s| s.sutra == "7.3.92") {
                 let chars: Vec<char> = p.terms[SHAP].text.chars().collect();
                 let Some(pos) = chars.windows(2).position(|w| w == ['a', 'i']) else {
@@ -851,15 +851,17 @@ mod tests {
     #[test]
     fn awas_ca_ending_arm_requires_a_third_term() {
         // 6.1.90's ending arm reads p.terms[SHAP] and p.terms[ENDING]
-        // (index 2) once its guard passes. With only two terms (aGga +
-        // SHAP, no ending inserted yet), `p.terms.len() > ENDING` (2 > 2)
-        // is false, so the guard short-circuits before ever indexing
-        // terms[2]. The `>` -> `>=` mutant makes `2 >= 2` true, so the
-        // mutant guard proceeds to check terms[SHAP].text == "A" (true
-        // here) and then indexes terms[ENDING], which is out of bounds
-        // for a 2-term vector and panics. The aGga itself ("kf") also
-        // must not satisfy the aGga arm (it doesn't start with 'A'), so
-        // this isolates the ending-arm guard alone.
+        // (index 4) once its guard passes. With only two caller terms
+        // behind the two permanent empty slots (aGga + SHAP, no ending
+        // inserted yet), `with_slots` makes `p.terms.len()` 4, so
+        // `p.terms.len() > ENDING` (4 > 4) is false, so the guard
+        // short-circuits before ever indexing terms[ENDING]. The `>` ->
+        // `>=` mutant makes `4 >= 4` true, so the mutant guard proceeds to
+        // check terms[SHAP].text == "A" (true here) and then indexes
+        // terms[ENDING], which is out of bounds for this 4-term vector and
+        // panics. The aGga itself ("kf") also must not satisfy the aGga
+        // arm (it doesn't start with 'A'), so this isolates the
+        // ending-arm guard alone.
         let mut p = Prakriya {
             terms: with_slots(vec![Term::new("kf"), Term::new("A")]),
             log: vec![],
@@ -874,14 +876,16 @@ mod tests {
     #[test]
     fn awas_ca_athematic_arm_requires_a_third_term() {
         // 6.1.90's ATHEMATIC ending arm (śap luk'd) reads p.terms[ENDING]
-        // (index 2) once its guard passes. With only two terms (aGga + an
-        // empty śap, no ending inserted yet), `p.terms.len() > ENDING`
-        // (2 > 2) is false, so the guard short-circuits before indexing
-        // terms[2]. The `>` -> `>=` mutant makes `2 >= 2` true; since the
-        // śap here is empty, the mutant guard proceeds and indexes
-        // terms[ENDING], out of bounds for a 2-term vector -> panics. The
-        // aGga ("As") does not satisfy the aGga arm (its 2nd char 's' is
-        // not a vowel), isolating the athematic ending-arm guard.
+        // (index 4) once its guard passes. With only two caller terms
+        // behind the two permanent empty slots (aGga + an empty śap, no
+        // ending inserted yet), `with_slots` makes `p.terms.len()` 4, so
+        // `p.terms.len() > ENDING` (4 > 4) is false, so the guard
+        // short-circuits before indexing terms[ENDING]. The `>` -> `>=`
+        // mutant makes `4 >= 4` true; since the śap here is empty, the
+        // mutant guard proceeds and indexes terms[ENDING], out of bounds
+        // for this 4-term vector -> panics. The aGga ("As") does not
+        // satisfy the aGga arm (its 2nd char 's' is not a vowel),
+        // isolating the athematic ending-arm guard.
         let mut p = Prakriya {
             terms: with_slots(vec![Term::new("As"), Term::new("")]),
             log: vec![],
@@ -1108,14 +1112,15 @@ mod tests {
     //
     // The adAdi arm's own guard is `len() > ENDING && SHAP.is_empty() &&
     // ANGA.ends_with('A') && matches!(ENDING.chars().next(), ...)`. Build a
-    // 2-term Prakriya (aGga "yA" + an empty, luk'd Sap slot, no ending term
-    // at all) so `len() > ENDING` (2 > 2) is false in the original: the
-    // if-block short-circuits before ever indexing terms[ENDING], and
-    // control falls to the rule's second (pre-adAdi) branch, whose own
-    // `!SHAP.text.ends_with('a')` is true for an empty SHAP (`""` does not
-    // end with `'a'`) and short-circuits the `||` there too — so the
-    // original returns false with no panic, on only 2 terms. The `>` ->
-    // `>=` mutant lets the first if-block through at `len() == ENDING`,
+    // 4-term Prakriya (the two permanent leading slots, aGga "yA", and an
+    // empty, luk'd Sap slot, no ending term at all) so `len() > ENDING`
+    // (4 > 4) is false in the original: the if-block short-circuits before
+    // ever indexing terms[ENDING], and control falls to the rule's second
+    // (pre-adAdi) branch, whose own `!SHAP.text.ends_with('a')` is true
+    // for an empty SHAP (`""` does not end with `'a'`) and short-circuits
+    // the `||` there too — so the original returns false with no panic,
+    // on only 4 terms. The `>` -> `>=` mutant lets the first if-block
+    // through at `len() == ENDING`,
     // and its fourth conjunct indexes the nonexistent terms[ENDING],
     // panicking.
     #[test]
@@ -1191,21 +1196,22 @@ mod tests {
     //
     // 6.1.101's first arm's guard, above, is `len() > ENDING && lakara ==
     // VidhiLin && !SHAP.ends_with('a') && ENDING.starts_with("yA") && ...`. A
-    // 2-term Prakriya (aGga "yA" + an empty Sap slot, no ENDING term at
-    // all) makes `len() > ENDING` (2 > 2) false in the original, so the
-    // if-block short-circuits before ever indexing terms[ENDING]; control
-    // falls through the second (pre-adAdi) and third (kryAdi) arms (both
-    // guarded by the same `len() > ENDING`, equally false) to the fourth
-    // (thematic) branch, whose `!SHAP.text.ends_with('a')` is true for an
-    // empty SHAP and short-circuits the `||` there too -- so the original
-    // returns false with no panic. Unlike the existing two-term regression
-    // test for the adAdi arm above, this one pins the lakara to VidhiLin:
-    // the `>` -> `>=` mutant needs `lakara == VidhiLin` to be true to reach
-    // its fourth conjunct, which indexes the nonexistent terms[ENDING]
-    // (index 2 on a 2-element Vec) and panics. A default-lakara (Lat)
-    // Prakriya would let the mutant's second conjunct short-circuit first
-    // and never distinguish it -- this is why the earlier two-term test
-    // alone didn't kill this mutant.
+    // 4-term Prakriya (the two permanent leading slots, aGga "yA", and an
+    // empty Sap slot, no ENDING term at all) makes `len() > ENDING`
+    // (4 > 4) false in the original, so the if-block short-circuits before
+    // ever indexing terms[ENDING]; control falls through the second
+    // (pre-adAdi) and third (kryAdi) arms (both guarded by the same
+    // `len() > ENDING`, equally false) to the fourth (thematic) branch,
+    // whose `!SHAP.text.ends_with('a')` is true for an empty SHAP and
+    // short-circuits the `||` there too -- so the original returns false
+    // with no panic. Unlike the existing regression test for the adAdi arm
+    // above (also a 4-term Prakriya), this one pins the lakara to
+    // VidhiLin: the `>` -> `>=` mutant needs `lakara == VidhiLin` to be
+    // true to reach its fourth conjunct, which indexes the nonexistent
+    // terms[ENDING] (index 4 on a 4-element Vec) and panics. A
+    // default-lakara (Lat) Prakriya would let the mutant's second conjunct
+    // short-circuit first and never distinguish it -- this is why the
+    // earlier test alone didn't kill this mutant.
     #[test]
     fn savarna_dirgha_adadi_lin_1sg_arm_two_term_prakriya_does_not_panic() {
         let mut p = Prakriya {
@@ -1266,9 +1272,10 @@ mod tests {
     // --- 6.1.101 kryAdi arm: `len() > ENDING` boundary pin -----------------
     //
     // The kryādi arm's own guard, above, is `len() > ENDING &&
-    // SHAP.ends_with('A') && ...`. A 2-term Prakriya (aṅga + the śnā
-    // vikaraṇa at SHAP, no ENDING term at all) makes `len() > ENDING`
-    // (2 > 2) false in the original, so the if-block short-circuits before
+    // SHAP.ends_with('A') && ...`. A 4-term Prakriya (the two permanent
+    // leading slots, aṅga, and the śnā vikaraṇa at SHAP, no ENDING term at
+    // all) makes `len() > ENDING` (4 > 4) false in the original, so the
+    // if-block short-circuits before
     // ever indexing terms[ENDING]. Lat (the default context) keeps the
     // vidhiliṅ 1sg arm above out of the way regardless of the length
     // operator (its own guard requires `lakara == VidhiLin`), and the

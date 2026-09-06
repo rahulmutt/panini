@@ -32,6 +32,22 @@ pub(crate) const ENDING_PRE_SHAP: usize = 3;
 pub(crate) const SHAP: usize = 3;
 pub(crate) const ENDING: usize = 4;
 
+// NOTE: the two slots BEFORE the aṅga are permanent and usually empty.
+// `AGAMA` holds laṅ's aṭ/āṭ (6.4.71 / 6.4.72) and nothing else; 6.1.90
+// empties it again when the āṭ merges into the following vowel. `ABHYASA`
+// holds the reduplicant 6.1.10 copies for juhotyādi and is empty for every
+// other gaṇa. Both exist on every prakriya so the constants below are
+// stable, on the same in-place-empty idiom 2.4.72 uses for śap. Two
+// consequences:
+//   - Any rule that reads "the term before the aṅga" or "the first term"
+//     must skip empty terms (`AGAMA` is empty outside laṅ; `ABHYASA` is
+//     empty outside juhotyādi). `word_chars` already does, by construction.
+//   - The aṅga's text is the ROOT'S text. Nothing is ever prefixed onto it.
+//     A guard that matches the aṅga with `ends_with` rather than `==` is
+//     tolerating a hypothetical upasarga, not the augment — the augment
+//     lived in the text until the juhotyādi prep, and several comments
+//     downstream still say so historically.
+
 // NOTE: `ENDING_PRE_SHAP` and `SHAP` are deliberately the same value (3), not
 // a typo. Rule 3.1.68 (kartari śap) inserts śap between the aṅga and the
 // ending, which shifts the ending from index 3 to index 4. This bisects the

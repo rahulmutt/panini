@@ -41,8 +41,9 @@ pub(crate) static GUNA: &[Rule] = &[
     // Tag::Adadi clause: √śī is the only SI-final root, so a gaṇa clause would
     // be redundant AND unkillable under mutation (with the clause dropped, the
     // other adādi roots still change nothing — guna_of returns None for their
-    // `d`/`A`/`s` finals). `ends_with` rather than `==` because 6.4.71 has
-    // already prefixed the laṅ aṭ-augment onto the aṅga (aSI) by this point.
+    // `d`/`A`/`s` finals). `ends_with` rather than `==` is a tolerance for a
+    // prefixed aṅga; laṅ's aṭ lives in `AGAMA` since the juhotyādi prep, so
+    // ANGA reads `SI` in every lakāra.
     //
     // The sūtra's *sārvadhātuke* condition is structurally satisfied, not
     // guarded: every tiṅ ending in scope is tagged Sarvadhatuka when it is
@@ -208,9 +209,9 @@ pub(crate) static GUNA: &[Rule] = &[
     // this insertion and 6.1.87's coalescence are SHAP-internal and neither
     // touches ANGA. The guard reads the combined text rather than the two
     // slots separately on purpose: the split is an implementation artifact,
-    // `tfnah` is what the sūtra names. `ends_with` rather than `==` because
-    // 6.4.71 has already prefixed the laṅ aṭ-augment onto ANGA (atf) by
-    // this point — the same allowance 7.4.21's guard makes.
+    // `tfnah` is what the sūtra names. `ends_with` rather than `==` — the
+    // same allowance 7.4.21's guard makes; the laṅ aṭ that once made ANGA
+    // read `atf` now sits in `AGAMA`.
     //
     // FOUR CONJUNCTS, but only THREE have a negative control among
     // √tṛh's own 36 golden cells:
@@ -379,10 +380,9 @@ pub(crate) static GUNA: &[Rule] = &[
     // 3.1.79 ever produces one), so a gaṇa tag would be redundant AND
     // unkillable under mutation — the same reasoning 7.4.21's comment
     // gives above for its bare `SI` guard. `ends_with` rather than `==`,
-    // also as 7.4.21 and 7.3.92 do above: 6.4.71 has already prefixed
-    // laṅ's aṭ-augment onto the aṅga's own text (`tinanta/anga.rs`) by
-    // this point, so a laṅ derivation reads `akar`/`akur`, not the bare
-    // root — `==` would silently decline for the whole lakāra.
+    // as 7.4.21 and 7.3.92 do above — a tolerance for a prefixed aṅga;
+    // laṅ's aṭ no longer lives in the text, so ANGA reads `kar`/`kur` in
+    // laṅ too.
     //
     // 8.2.77 hali ca (`tinanta/tripadi.rs`) IS implemented in this engine
     // — it lengthens div's upadhā, dīvyati — and its shape guard matches
@@ -1045,14 +1045,16 @@ mod tests {
 
     #[test]
     fn sarvadhatukardhadhatukayoh_single_term_anga_still_applies_guna() {
-        // len == 1 (no vikaraNa term, no ending, no follower at all):
+        // A bare one-term prakriya (aGga only, so with_slots makes
+        // p.terms.len() == 3: the two permanent leading slots plus the
+        // aGga, no vikaraNa term, no ending, no follower at all):
         // `following_sarvadhatuka`'s `p.terms.get(SHAP)` is already None, so
         // the match's `None => None` arm returns None without ever calling
         // `p.terms.get(ENDING)` or indexing anything -- nothing can block,
         // and guNa proceeds normally: "nI" -> "ne". This pins that `None`
         // arm and its no-panic guarantee: unlike the old `p.terms[SHAP]`
-        // guard, which would have panicked indexing a 1-element Vec,
-        // `.get()` never panics here regardless of arity.
+        // guard, which would have panicked indexing out of bounds on this
+        // 3-element Vec, `.get()` never panics here regardless of arity.
         let mut p = Prakriya {
             terms: with_slots(vec![Term::new("nI")]),
             log: vec![],
@@ -1548,8 +1550,9 @@ mod tests {
         let mut p = kr_prakriya("tas", true);
         p.terms[ANGA].text = "tan".into();
         assert!(!(r.apply)(&mut p));
-        // laN's aT-augmented aGga (6.4.71 prefixes onto ANGA's own text):
-        // akarutAm must become akurutAm, not decline on `!= "kar"`.
+        // A prefixed aṅga (`akar` — the shape laN's aT gave ANGA before the
+        // augment slot existed) must still pass the tail guard; this pins
+        // the `ends_with → ==` mutant.
         let mut p = kr_prakriya("tas", true);
         p.terms[ANGA].text = "akar".into();
         assert!((r.apply)(&mut p));

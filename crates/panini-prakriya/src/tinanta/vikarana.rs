@@ -2,8 +2,8 @@
 //! 3.1.68, 2.4.72, 3.1.83, 1.2.4.
 //!
 //! **This stage contains the 3.1.68 boundary.** Rules before 3.1.68 in this
-//! file address the ending as `ENDING_PRE_SHAP` (index 1); rules after it use
-//! `ENDING` (index 2) and may use `SHAP`. Get this wrong and a rule mutates
+//! file address the ending as `ENDING_PRE_SHAP` (index 3); rules after it use
+//! `ENDING` (index 4) and may use `SHAP`. Get this wrong and a rule mutates
 //! śap while believing it is mutating the ending, or panics indexing a slot
 //! that does not exist yet. See `super::terms`.
 //!
@@ -324,7 +324,7 @@ pub(crate) static VIKARANA: &[Rule] = &[
     },
     // 2.4.72 adiprabhṛtibhyaḥ śapaḥ: adādi (gaṇa 2) luks the śap that 3.1.68
     // inserts, so the tiṅ ending attaches directly to the root. Modelled by
-    // emptying the śap term's text (the term stays, keeping ENDING at index 2
+    // emptying the śap term's text (the term stays, keeping ENDING at index 4
     // and text() = root + "" + ending). Guarded on Tag::Adadi and on a real
     // śap being present, so it never touches divādi/tudādi (śyan/śa) or bhvādi
     // that has already been processed differently.
@@ -448,7 +448,7 @@ pub(crate) static VIKARANA: &[Rule] = &[
     // vrIRIhi. That pair — kliSAna against vrIRIhi — is the rule's pin.
     //
     // Its id is 3.1.x but it lives after the 3.1.68 boundary, so it addresses
-    // the ending as ENDING (index 2). Stage placement is by pipeline position,
+    // the ending as ENDING (index 4). Stage placement is by pipeline position,
     // not sūtra family; see `super::terms`. The `hi` it reads already exists:
     // 3.4.87 ser hyapic ca runs in the earlier `tin` stage.
     Rule {
@@ -616,14 +616,16 @@ mod tests {
     //
     // Both guards read `p.terms.len() > SHAP && p.terms[SHAP]. ...` to
     // avoid indexing the not-yet-inserted vikaraNa slot. Every real
-    // derivation always has an ending term present (terms.len() >= 2)
-    // before either rule runs, so `> SHAP` (i.e. `> 1`) and `>= SHAP`
-    // never diverge on any golden or negative derivation: len() is never
-    // exactly 1 there. Pin the boundary directly with a single-term
-    // Prakriya (aGga only, no ending) so the two outcomes diverge: the
-    // original short-circuits before indexing terms[SHAP]; the `>` -> `>=`
-    // mutant does not, and panics indexing out of bounds on a 1-element
-    // Vec (an unexpected panic still fails the test).
+    // derivation always has an ending term present (terms.len() >= 4,
+    // counting the two permanent leading slots) before either rule runs,
+    // so `> SHAP` (i.e. `> 3`) and `>= SHAP` never diverge on any golden
+    // or negative derivation: len() is never exactly 3 there. Pin the
+    // boundary directly with a caller-supplied single-term Prakriya (aGga
+    // only, no ending, so `with_slots` makes it three terms total) so the
+    // two outcomes diverge: the original short-circuits before indexing
+    // terms[SHAP]; the `>` -> `>=` mutant does not, and panics indexing
+    // out of bounds on this 3-element Vec (an unexpected panic still
+    // fails the test).
     #[test]
     fn kartari_sap_single_term_anga_does_not_panic() {
         let mut p = Prakriya {
@@ -662,15 +664,17 @@ mod tests {
     // 2.4.72's guard is `len() > SHAP && has(Vikarana) && !text.is_empty()`,
     // each conjunct short-circuiting before the next would index the
     // not-yet-inserted vikaraNa slot. Every real derivation reaches this
-    // rule only after 3.1.68 has already inserted Sap (terms.len() >= 2),
-    // so `> SHAP` vs `>= SHAP`, and `&&` vs `||` at either join, never
-    // diverge on any golden or negative derivation. Pin the boundary
-    // directly: a single-term Prakriya (aGga only, tagged Adadi so the
-    // outer gana guard passes) makes `len() > SHAP` (1 > 1) false, so the
-    // original short-circuits before ever touching terms[SHAP]. Each of
-    // the three mutants below removes a different short-circuit and
-    // indexes terms[SHAP] out of bounds on this 1-element Vec, panicking:
-    //   - `>` -> `>=`: `1 >= 1` is true, so `has(Vikarana)` is evaluated.
+    // rule only after 3.1.68 has already inserted Sap (terms.len() >= 4,
+    // counting the two permanent leading slots), so `> SHAP` vs `>= SHAP`,
+    // and `&&` vs `||` at either join, never diverge on any golden or
+    // negative derivation. Pin the boundary directly: a caller-supplied
+    // single-term Prakriya (aGga only, tagged Adadi so the outer gana
+    // guard passes; `with_slots` makes it three terms total) makes
+    // `len() > SHAP` (3 > 3) false, so the original short-circuits before
+    // ever touching terms[SHAP]. Each of the three mutants below removes
+    // a different short-circuit and indexes terms[SHAP] out of bounds on
+    // this 3-element Vec, panicking:
+    //   - `>` -> `>=`: `3 >= 3` is true, so `has(Vikarana)` is evaluated.
     //   - first `&&` -> `||`: `len() > SHAP` (false) forces evaluation of
     //     `has(Vikarana)` to resolve the OR.
     //   - second `&&` -> `||`: `(len() > SHAP && has(Vikarana))` (false)

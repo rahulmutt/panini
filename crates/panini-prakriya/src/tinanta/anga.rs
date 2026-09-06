@@ -206,8 +206,9 @@ pub(crate) static ANGA_RULES: &[Rule] = &[
     // Guarded on 7.1.5 having FIRED IN THIS DERIVATION rather than on the
     // ending's surface shape: the ruṭ attaches to the `at` that 7.1.5
     // produced, so that is the condition itself and not a proxy for it.
-    // Reading the log for a prior rule is the idiom 6.4.72 already uses to
-    // test whether 6.4.71 augmented the aṅga.
+    // Reading the log for a prior rule is the idiom 6.4.72 used, until the
+    // augment moved into its own slot, to test whether 6.4.71 had fired;
+    // here it remains the condition itself.
     //
     // This is why vidhiliṅ needs no special case: 3.4.105 jhasya ran (in
     // `super::tin`) has already replaced the jha with `ran` earlier in the
