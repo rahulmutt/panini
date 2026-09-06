@@ -50,7 +50,9 @@
 use crate::rule::{Rule, RuleKind};
 use crate::term::Tag;
 use crate::tinanta::sound::{is_jhal, is_vowel, vrddhi_of};
-use crate::tinanta::terms::{ANGA, ENDING, SHAP, sound_before_ending, vikarana_u_asamyogapurva};
+use crate::tinanta::terms::{
+    AGAMA, ANGA, ENDING, SHAP, sound_before_ending, vikarana_u_asamyogapurva,
+};
 use panini_data::Lakara;
 
 pub(crate) static ADESHA: &[Rule] = &[
@@ -328,8 +330,11 @@ pub(crate) static ADESHA: &[Rule] = &[
     },
     // 6.1.90 āṭaś ca: āṭ + a following vowel yield a single vṛddhi. Two
     // shapes, one sūtra:
-    // - Aṅga arm (laṅ, the ātmanepada slice's Task 8): 6.4.72's āṭ + the
-    //   root's initial vowel. AeD → ED, AIkz → Ekz.
+    // - Aṅga arm (laṅ, the ātmanepada slice's Task 8): 6.4.72's āṭ in
+    //   `AGAMA` + the initial vowel of the first non-empty term after it —
+    //   the aṅga today, the abhyāsa once juhotyādi reduplicates a
+    //   vowel-initial root. The vṛddhi is written into that term and the
+    //   augment slot is emptied. A+eD → ED, A+Ikz → Ekz.
     // - Ending arm (loṭ uttama eka, ātmanepada): after 6.1.101 has coalesced
     //   śap a + āṭ A into śap A, that A + the ending's E merge to E
     //   (laB+A+E → laBE). MUST follow 6.1.101 — before it the shape is
@@ -340,18 +345,17 @@ pub(crate) static ADESHA: &[Rule] = &[
         kind: RuleKind::Vidhi,
         vikalpa: false,
         apply: |p| {
-            // Aṅga arm: āṭ prefix on a vowel-initial aṅga.
-            let anga: Vec<char> = p.terms[ANGA].text.chars().collect();
-            if anga.len() >= 2
-                && anga[0] == 'A'
-                && is_vowel(anga[1])
-                && let Some(v) = vrddhi_of(anga[1])
+            // Aṅga arm: āṭ in AGAMA + the first non-empty term after it.
+            if p.terms[AGAMA].text == "A"
+                && let Some(i) = (AGAMA + 1..p.terms.len()).find(|&i| !p.terms[i].text.is_empty())
+                && let Some(v0) = p.terms[i].text.chars().next()
+                && is_vowel(v0)
+                && let Some(v) = vrddhi_of(v0)
             {
                 let before = p.snapshot();
-                let mut s = String::new();
-                s.push_str(v);
-                s.extend(&anga[2..]);
-                p.terms[ANGA].text = s;
+                let rest: String = p.terms[i].text.chars().skip(1).collect();
+                p.terms[i].text = format!("{v}{rest}");
+                p.terms[AGAMA].text.clear();
                 p.record("6.1.90", "AwaS ca", before);
                 return true;
             }
@@ -722,7 +726,7 @@ mod tests {
     use crate::tinanta::derivation_tests::sole;
     use crate::tinanta::derive;
     use crate::tinanta::rules;
-    use crate::tinanta::terms::with_slots;
+    use crate::tinanta::terms::{ABHYASA, AGAMA, with_slots};
     use panini_data::{Pada, Purusha, Vacana, dhatus};
 
     #[test]
@@ -788,6 +792,60 @@ mod tests {
         let rule = rules().find(|r| r.id == "6.1.66").unwrap();
         assert!((rule.apply)(&mut p));
         assert_eq!(p.terms[ENDING].text, "Ita");
+    }
+
+    #[test]
+    fn awas_ca_anga_arm_merges_the_agama_into_the_first_non_empty_term() {
+        // 6.1.90 AwaS ca, aṅga arm: āṭ + the following initial vowel yield
+        // one vṛddhi, written into the term that held the vowel; the
+        // augment slot is emptied. A+ad → Ad, A+eD → ED.
+        let rule = rules().find(|r| r.id == "6.1.90").unwrap();
+        for (root, expected) in [("ad", "Ad"), ("eD", "ED"), ("Ikz", "Ekz")] {
+            let mut p = Prakriya {
+                terms: with_slots(vec![Term::new(root), Term::new(""), Term::new("t")]),
+                ..Default::default()
+            };
+            p.terms[AGAMA].text = "A".into();
+            assert!((rule.apply)(&mut p), "{root}");
+            assert_eq!(p.terms[AGAMA].text, "", "{root}");
+            assert_eq!(p.terms[ANGA].text, expected, "{root}");
+            assert_eq!(p.text(), format!("{expected}t"), "{root}");
+        }
+        // "First non-empty term after AGAMA", not "ANGA": an abhyāsa in
+        // front of the aṅga is what meets the āṭ (slice 3d's √ṛ, A+iy+ar →
+        // Eyar). Nothing fills ABHYASA before juhotyādi lands; this pins
+        // the arm's addressing so 3d inherits it rather than re-deriving it.
+        let mut p = Prakriya {
+            terms: with_slots(vec![Term::new("ar"), Term::new(""), Term::new("t")]),
+            ..Default::default()
+        };
+        p.terms[AGAMA].text = "A".into();
+        p.terms[ABHYASA].text = "iy".into();
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.terms[AGAMA].text, "");
+        assert_eq!(p.terms[ABHYASA].text, "Ey");
+        assert_eq!(p.terms[ANGA].text, "ar");
+        assert_eq!(p.text(), "Eyart");
+    }
+
+    #[test]
+    fn awas_ca_anga_arm_declines_without_the_agama() {
+        let rule = rules().find(|r| r.id == "6.1.90").unwrap();
+        // No augment: a vowel-initial aṅga in laṭ is left alone.
+        let mut p = Prakriya {
+            terms: with_slots(vec![Term::new("ad"), Term::new(""), Term::new("ti")]),
+            ..Default::default()
+        };
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "ad");
+        // An `A`-initial aṅga text with an empty AGAMA is not an āṭ: the
+        // arm reads the slot, never the aṅga's own first character.
+        let mut p = Prakriya {
+            terms: with_slots(vec![Term::new("Aad"), Term::new(""), Term::new("ti")]),
+            ..Default::default()
+        };
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "Aad");
     }
 
     #[test]

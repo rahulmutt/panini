@@ -34,8 +34,18 @@ pub(crate) static ANGA_RULES: &[Rule] = &[
         },
     },
     // 6.4.72 āḍ ajādīnām: vowel-initial aṅgas take the āṭ-āgama in laṅ
-    // (apavāda to 6.4.71's aṭ). The A then merges with the root's initial
-    // vowel by 6.1.90 āṭaś ca into vṛddhi: a+eD → ED, a+Ikz → Ekz, a+ad → Ad.
+    // (apavāda to 6.4.71's aṭ). The A then merges by 6.1.90 āṭaś ca into
+    // vṛddhi with the initial vowel of the term that follows it: A+eD → ED,
+    // A+Ikz → Ekz, A+ad → Ad.
+    //
+    // Written into `AGAMA`, like aṭ. The guard is the aṅga's own shape and
+    // nothing else: 6.4.71 leaves ANGA's text untouched, so `is_vowel(first)`
+    // tells a genuinely vowel-initial root from one 6.4.71 just augmented.
+    // This rule used to scan the log for a prior 6.4.71 because the aṭ was
+    // once a text prefix (`aBU` reads as vowel-initial); an "is AGAMA empty"
+    // clause in its place would be unkillable — 6.4.71 declines for every
+    // vowel-initial aṅga, so the slot is always empty when this rule looks
+    // — and is deliberately not written.
     Rule {
         id: "6.4.72",
         name: "Aq ajAdInAm",
@@ -43,22 +53,11 @@ pub(crate) static ANGA_RULES: &[Rule] = &[
         vikalpa: false,
         apply: |p| {
             let first = p.terms[ANGA].text.chars().next().unwrap();
-            // Only apply to true vowel-initial roots, not to an aṅga that
-            // already carries 6.4.71's aṭ augment. 6.4.71's augment is
-            // itself the character `a`, which is indistinguishable from a
-            // genuinely a-initial root (√ad) by first-char alone — so check
-            // whether 6.4.71 actually fired in this derivation (the trace)
-            // rather than sniffing the character. Roots 6.4.71 augmented are
-            // consonant-initial by its own guard, so this never double-fires;
-            // genuinely a-initial roots (√ad) never trigger 6.4.71 (their
-            // first char is already a vowel), so they reach here untouched
-            // and correctly take āṭ.
-            let already_augmented = p.log.iter().any(|s| s.sutra == "6.4.71");
-            if !matches!(p.ctx.lakara, Lakara::Lan) || !is_vowel(first) || already_augmented {
+            if !matches!(p.ctx.lakara, Lakara::Lan) || !is_vowel(first) {
                 return false;
             }
             let before = p.snapshot();
-            p.terms[ANGA].text = format!("A{}", p.terms[ANGA].text);
+            p.terms[AGAMA].text = "A".into();
             p.record("6.4.72", "Aq ajAdInAm", before);
             true
         },
@@ -449,6 +448,63 @@ mod tests {
             ..Default::default()
         };
         assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[AGAMA].text, "");
+    }
+
+    #[test]
+    fn aat_augment_lands_in_the_agama_slot_for_vowel_initial_angas() {
+        // 6.4.72 Aq ajAdInAm: āṭ, like aṭ, is its own term.
+        let rule = rules().find(|r| r.id == "6.4.72").unwrap();
+        let mut p = Prakriya {
+            ctx: Context::new(
+                Lakara::Lan,
+                Pada::Parasmaipada,
+                Purusha::Prathama,
+                Vacana::Eka,
+            ),
+            terms: with_slots(vec![Term::new("ad"), Term::new(""), Term::new("t")]),
+            ..Default::default()
+        };
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.terms[AGAMA].text, "A");
+        assert_eq!(p.terms[ANGA].text, "ad");
+        assert_eq!(p.text(), "Aadt");
+        assert_eq!(p.log.last().unwrap().sutra, "6.4.72");
+    }
+
+    #[test]
+    fn aat_declines_by_the_angas_own_shape_with_no_log_lookup() {
+        // A consonant-initial aṅga that 6.4.71 has just augmented must not
+        // take āṭ too. With the augment in its own slot, ANGA's first
+        // character is still the consonant, so the shape guard alone
+        // decides — there is no log scan left to mutate.
+        let r71 = rules().find(|r| r.id == "6.4.71").unwrap();
+        let r72 = rules().find(|r| r.id == "6.4.72").unwrap();
+        let mut p = Prakriya {
+            ctx: Context::new(
+                Lakara::Lan,
+                Pada::Parasmaipada,
+                Purusha::Prathama,
+                Vacana::Eka,
+            ),
+            terms: with_slots(vec![Term::new("BU"), Term::new("a"), Term::new("t")]),
+            ..Default::default()
+        };
+        assert!((r71.apply)(&mut p));
+        assert!(!(r72.apply)(&mut p));
+        assert_eq!(p.terms[AGAMA].text, "a");
+        // laṭ, vowel-initial: no augment in any slot.
+        let mut p = Prakriya {
+            ctx: Context::new(
+                Lakara::Lat,
+                Pada::Parasmaipada,
+                Purusha::Prathama,
+                Vacana::Eka,
+            ),
+            terms: with_slots(vec![Term::new("ad"), Term::new(""), Term::new("ti")]),
+            ..Default::default()
+        };
+        assert!(!(r72.apply)(&mut p));
         assert_eq!(p.terms[AGAMA].text, "");
     }
 
