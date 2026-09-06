@@ -6,15 +6,17 @@
 use crate::rule::{Rule, RuleKind};
 use crate::term::Tag;
 use crate::tinanta::sound::{is_hrasva, is_vowel};
-use crate::tinanta::terms::{ANGA, ENDING, SHAP, insert_char, word_chars};
+use crate::tinanta::terms::{AGAMA, ANGA, ENDING, SHAP, insert_char, word_chars};
 use panini_data::{Lakara, Pada};
 
 pub(crate) static ANGA_RULES: &[Rule] = &[
-    // 6.4.71 luṅlaṅlṛṅkṣvaḍudāttaḥ: the aṭ-āgama is prefixed to the aṅga in laṅ.
+    // 6.4.71 luṅlaṅlṛṅkṣvaḍudāttaḥ: the aṭ-āgama precedes the aṅga in laṅ.
     //
-    // Modelled as a prefix on the aṅga's text rather than as a separate term,
-    // so the ANGA/SHAP/ENDING indices stay stable for every later rule. The
-    // trace still cites 6.4.71, which is what the reader checks.
+    // Written into the permanent `AGAMA` slot, not prefixed onto the aṅga's
+    // text: the aṅga's own first character and text stay the root's, so a
+    // rule reading either needs no allowance for the augment. (Until the
+    // juhotyādi prep this was a text prefix, which is why several guards
+    // downstream match with `ends_with` — see their comments.)
     Rule {
         id: "6.4.71",
         name: "luNlaNlfNkzvaqudAttaH",
@@ -26,7 +28,7 @@ pub(crate) static ANGA_RULES: &[Rule] = &[
                 return false;
             }
             let before = p.snapshot();
-            p.terms[ANGA].text = format!("a{}", p.terms[ANGA].text);
+            p.terms[AGAMA].text = "a".into();
             p.record("6.4.71", "luNlaNlfNkzvaqudAttaH", before);
             true
         },
@@ -81,10 +83,11 @@ pub(crate) static ANGA_RULES: &[Rule] = &[
     // cost this repo a real defect (8.2.39's three-literal guard, 8.4.41's
     // `z`-only trigger).
     //
-    // The tuk lands INSIDE `ANGA`, because 6.4.71 models the aṭ as a text
-    // prefix on the aṅga rather than as its own term. ANGA's first character
-    // stays `a` and its penult stays `C`, so 6.4.72's `is_vowel(first)`
-    // guard and every upadhā read below this point are unmoved.
+    // The tuk lands in whichever term holds the short vowel — `AGAMA`, for
+    // the laṅ aṭ that is this corpus's only site — because `word_chars`
+    // addresses the whole word. ANGA's first character stays `C` and its
+    // penult is untouched, so 6.4.72's `is_vowel(first)` guard and every
+    // upadhā read below this point are unmoved.
     //
     // 6.1.76 padāntād vā, which makes the tuk OPTIONAL after a PADA-final
     // short vowel, is deliberately absent rather than overlooked: the aṭ is
@@ -392,8 +395,62 @@ mod tests {
     use crate::tinanta::derive;
     use crate::tinanta::form_g;
     use crate::tinanta::rules;
-    use crate::tinanta::terms::with_slots;
+    use crate::tinanta::terms::{AGAMA, with_slots};
     use panini_data::{Purusha, Vacana, dhatus};
+
+    #[test]
+    fn at_augment_lands_in_the_agama_slot_not_the_anga_text() {
+        // 6.4.71 luNlaNlfNkzvaqudAttaH. The augment is its own term now:
+        // ANGA keeps the bare root, so no later guard has to tolerate a
+        // leading `a` that is not the root's.
+        let rule = rules().find(|r| r.id == "6.4.71").unwrap();
+        let mut p = Prakriya {
+            ctx: Context::new(
+                Lakara::Lan,
+                Pada::Parasmaipada,
+                Purusha::Prathama,
+                Vacana::Eka,
+            ),
+            terms: with_slots(vec![Term::new("BU"), Term::new("a"), Term::new("t")]),
+            ..Default::default()
+        };
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.terms[AGAMA].text, "a");
+        assert_eq!(p.terms[ANGA].text, "BU");
+        assert_eq!(p.text(), "aBUat");
+        assert_eq!(p.log.last().unwrap().sutra, "6.4.71");
+    }
+
+    #[test]
+    fn at_augment_declines_outside_lan_and_for_vowel_initial_angas() {
+        let rule = rules().find(|r| r.id == "6.4.71").unwrap();
+        // laṭ: no augment at all.
+        let mut p = Prakriya {
+            ctx: Context::new(
+                Lakara::Lat,
+                Pada::Parasmaipada,
+                Purusha::Prathama,
+                Vacana::Eka,
+            ),
+            terms: with_slots(vec![Term::new("BU"), Term::new("a"), Term::new("ti")]),
+            ..Default::default()
+        };
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[AGAMA].text, "");
+        // laṅ, vowel-initial aṅga: 6.4.72's business, not this rule's.
+        let mut p = Prakriya {
+            ctx: Context::new(
+                Lakara::Lan,
+                Pada::Parasmaipada,
+                Purusha::Prathama,
+                Vacana::Eka,
+            ),
+            terms: with_slots(vec![Term::new("ad"), Term::new(""), Term::new("t")]),
+            ..Default::default()
+        };
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[AGAMA].text, "");
+    }
 
     #[test]
     fn salopa_elides_only_the_non_final_s() {
@@ -572,15 +629,17 @@ mod tests {
         let rule = rules().find(|r| r.id == "6.1.73").unwrap();
 
         // The one site this corpus reaches: 6.4.71's aṭ before a C-initial
-        // aṅga. The `t` lands inside ANGA, after the augment's own `a`,
-        // because 6.4.71 models the augment as a text prefix rather than as
-        // its own term.
+        // aṅga. The augment is its own term, so `word_chars` finds the short
+        // vowel at (AGAMA, 0) and the tuk lands after it — in AGAMA, which
+        // then reads `at`. The word is atCinadt exactly as before.
         let mut p = Prakriya {
-            terms: with_slots(vec![Term::new("aCi"), Term::new("nad"), Term::new("t")]),
+            terms: with_slots(vec![Term::new("Ci"), Term::new("nad"), Term::new("t")]),
             ..Default::default()
         };
+        p.terms[AGAMA].text = "a".into();
         assert!((rule.apply)(&mut p));
-        assert_eq!(p.terms[ANGA].text, "atCi");
+        assert_eq!(p.terms[AGAMA].text, "at");
+        assert_eq!(p.terms[ANGA].text, "Ci");
         assert_eq!(p.text(), "atCinadt");
 
         // Word-initial `C`: nothing precedes it, so there is no short vowel

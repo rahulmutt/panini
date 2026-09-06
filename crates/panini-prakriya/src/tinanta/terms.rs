@@ -12,11 +12,6 @@ use crate::tinanta::sound::is_vowel;
 /// Index of the laṅ augment — aṭ (6.4.71) or āṭ (6.4.72). Permanent slot,
 /// empty in every other lakāra; 6.1.90 empties it again when the āṭ merges
 /// into the following vowel. Stable across the pipeline.
-// No production rule writes through this constant yet — that lands with
-// 6.4.71/6.4.72 (Tasks 2-3) — so it is presently reachable only from the
-// test modules that exercise the layout. Remove this allow once a rule
-// body reads or writes `AGAMA`.
-#[allow(dead_code)]
 pub(crate) const AGAMA: usize = 0;
 
 /// Index of the abhyāsa — the reduplicant 6.1.10 ślau copies in front of
