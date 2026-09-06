@@ -1562,13 +1562,15 @@ mod tests {
     #[test]
     fn ata_ut_uses_n_minus_2_not_n_over_2() {
         // 6.4.110 writes the ut at `s[n - 2]`, the `a` of the aGga's final
-        // `kar`. Both aGga shapes the golden corpus reaches -- "kar" (n=3,
-        // n-2 = 1, n/2 = 1) and laN's aT-augmented "akar" (n=4, n-2 = 2,
-        // n/2 = 2) -- give the SAME index for `n - 2` and `n / 2`, so no
-        // paradigm cell can tell the two apart. This test exists solely to
-        // distinguish them: an upasarga-prefixed "vikar" (vi + kf) has n=5,
-        // where n-2 = 3 (the `a`) but n/2 = 2 (the `k`). The rule must
-        // write "vikur"; the `-` -> `/` mutant would write "viuar".
+        // `kar`. The plain shape "kar" (n=3, n-2 = 1, n/2 = 1) and a
+        // prefixed aṅga "akar" (n=4, n-2 = 2, n/2 = 2 — the shape laN's aT
+        // gave ANGA before the augment slot existed, and the `ends_with`
+        // guard above still tolerates) give the SAME index for `n - 2` and
+        // `n / 2`, so no fixture on either shape can tell the two apart.
+        // This test exists solely to distinguish them: an
+        // upasarga-prefixed "vikar" (vi + kf) has n=5, where n-2 = 3 (the
+        // `a`) but n/2 = 2 (the `k`). The rule must write "vikur"; the `-`
+        // -> `/` mutant would write "viuar".
         let r = rules().find(|r| r.id == "6.4.110").unwrap();
         let mut p = kr_prakriya("tas", true);
         p.terms[ANGA].text = "vikar".into();
@@ -1589,8 +1591,10 @@ mod tests {
         let mut p = kr_prakriya("tas", true);
         p.terms[ANGA].text = "kur".into();
         assert!(!(r.apply)(&mut p));
-        // laN's akur must fire too (akurva, akurma — single branch, no
-        // 6.4.107 fork): the guard reads the aGga tail, not its whole text.
+        // A prefixed aṅga (`akur` — the shape laN's aT gave ANGA before
+        // the augment slot existed) must fire too (akurva, akurma —
+        // single branch, no 6.4.107 fork): the guard reads the aGga tail,
+        // not its whole text.
         for ending in ["mas", "vas"] {
             let mut p = kr_prakriya(ending, true);
             p.terms[ANGA].text = "akur".into();
@@ -1611,7 +1615,9 @@ mod tests {
         p.terms[ANGA].text = "kur".into();
         assert!(!(r.apply)(&mut p));
         // The guard reads the aGga tail, not its whole text — pin that
-        // directly against an aT-prefixed akur, same as 6.4.108 above.
+        // directly against a prefixed aṅga (`akur` — the shape laN's aT
+        // gave ANGA before the augment slot existed), same as 6.4.108
+        // above.
         let mut p = kr_prakriya("yAt", true);
         p.terms[ANGA].text = "akur".into();
         assert!((r.apply)(&mut p));

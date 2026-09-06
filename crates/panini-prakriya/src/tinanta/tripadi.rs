@@ -109,8 +109,8 @@ pub(crate) static TRIPADI: &[Rule] = &[
             // 8.2.79 na BakurCurAm: kur is exempted from this lengthening
             // — kurvanti, not kUrvanti. `ends_with` rather than `==` is a
             // tolerance for a prefixed aṅga: `akur` is that prefixed shape,
-            // not laṅ's own — laṅ's aṅga stays `kur`. Caught too: akurutAm,
-            // not akUrutAm.
+            // not laṅ's own — laṅ's aṅga stays `kur`. A prefixed aṅga is
+            // caught too: akurutAm, not akUrutAm.
             if p.terms[ANGA].text.ends_with("kur") {
                 return false;
             }

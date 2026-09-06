@@ -1039,7 +1039,7 @@
     ātmanepadam*. śnam is the engine's first **infix**: unlike every other
     vikaraṇa it is not a suffix, and the pipeline's fixed
     `[AGAMA, ABHYASA, ANGA, SHAP, ENDING]` slots have
-    nowhere to put one, so 3.1.78 splits the root across the first two
+    nowhere to put one, so 3.1.78 splits the root across `ANGA` and `SHAP`
     instead — `terms[SHAP].text` for rudhādi is śnam followed by the root's
     own tail, not the vikaraṇa alone (`kft` → `[kf, nat, ti]`); see the
     "REPRESENTATION" note on 3.1.78 in `tinanta/vikarana.rs` and the caveat
