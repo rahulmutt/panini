@@ -27,7 +27,7 @@ is ruleless.
 comment states that a blocked prakriyā's `text()` is a partial string — often the
 bare root code — not a surface form.
 
-**It asserts the corpus totals** (77 roots, 3492 cells, 4399 forms) rather than
+**It asserts the corpus totals** (79 roots, 3564 cells, 4483 forms) rather than
 reporting whatever it enumerated. Those totals are corroborated by
 `derivation_set_shape_matches_the_audited_numbers` in
 `crates/panini/tests/paradigm/main.rs`, which each slice raises to the same totals
@@ -108,6 +108,35 @@ PANINI_AUDIT_DUMP=/tmp/audit-table.tsv mise exec rust@1.98.0 -- cargo run --rele
 ```
 
 ## Last recorded result
+
+2026-09-07, juhotyādi 3a slice, vidyut
+`8da2f90bee3ce1c07505fa432fc3729e3f7e02ea`: **zero differences across 3564
+cells / 4483 forms / 79 roots**, with the `entry` negative control verified
+failing first: exit 1, 36 √bhū cells, `Bavati` vs `paWati` and so on —
+identical DIFF signature to every prior slice, since the control targets
+`01.0001`/`01.0381`, both outside this slice's scope. (An earlier run of
+the same control, taken before this entry's total-assertion updates below
+were in place, hit the harness's then-stale `assert_eq!(roots_seen.len(),
+77)` and panicked with exit 101 immediately after printing the same 36
+DIFFs; re-run after the totals were updated, it exits 1 via the intended
+DIFF path.)
+
+The verdict now covers the whole juhotyādi 3a slice: the eight new rules
+(2.4.75, 6.1.10, 7.4.62, 3.4.109, 7.1.4, 7.3.83, 6.4.82, 8.4.54), the two
+widened arms (6.4.87, 6.4.101), the new `abhyasa` stage, and the
+dvitva-before-guṇa order (forms identical, trace order not) — added for
+the gaṇa's first two curated roots, √hu (`03.0001`) and √ki (`03.0020`).
+A zero-difference result across every laṭ/laṅ/loṭ/vidhiliṅ cell of both
+roots' derivations is the audit's confirmation that all eight new rules,
+both widened arms, and the reduplication (abhyāsa) machinery they depend
+on reproduce vidyut-prakriya's forms exactly, not merely this engine's own
+goldens.
+
+Totals: 79 = 77 + 2 (√hu, √ki); 3564 = 3492 + 72 (2 roots × 1 pada ×
+4 lakāras × 9 cells — both roots are parasmaipada-only); 4483 = 4399 + 72
++ 12 new `ALTERNATES` rows (907 → 919), the 72 being the new cells'
+baseline forms and the 12 measured via the harness's own corpus block, not
+assumed.
 
 2026-09-06, juhotyādi prep — five-slot layout, vidyut
 `8da2f90bee3ce1c07505fa432fc3729e3f7e02ea`: **zero differences across 3492
