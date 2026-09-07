@@ -208,6 +208,32 @@ pub(crate) fn kutva_of(c: char) -> Option<char> {
     })
 }
 
+/// The *cu* (palatal) counterpart of a *ku* sound or of `h` — 7.4.62 kuhoś
+/// cuḥ's substitute, on the abhyāsa. The inverse of `kutva_of` for the four
+/// stops (1.1.50 sthAne'ntaratamaH keeps voicing and aspiration: `k` to
+/// `c`, `g` to `j`), plus the two arms `kutva_of` has no mirror for: `N`
+/// (ṅ) to `Y` (ñ) — `ku~` is udit, so 1.1.69 pulls the nasal in — and `h`
+/// to `J` (jh), the voiced aspirate `h` is nearest to; that is how
+/// vidyut-prakriya writes it, and 8.4.54 then deaspirates it to `j`
+/// (juhoti).
+///
+/// Only `k -> c` (√ki) and `h -> J` (√hu) have a curated witness; the other
+/// four arms are present because the table covers the whole varga, the
+/// same reason `kutva_of` carries `C`/`J`. `cutva_of_ku_and_h_all_arms`
+/// keeps them from rotting. The palatals themselves are absent rather than
+/// mapped to themselves, so `None` doubles as 7.4.62's match test.
+pub(crate) fn cutva_of(c: char) -> Option<char> {
+    Some(match c {
+        'k' => 'c',
+        'K' => 'C',
+        'g' => 'j',
+        'G' => 'J',
+        'N' => 'Y',
+        'h' => 'J',
+        _ => return None,
+    })
+}
+
 /// The *ścu* (palatal) counterpart of a *stu* sound — 8.4.40 stoH ScunA
 /// ScuH's substitute. *stu* is `s` plus the whole t-varga, and by 1.1.50
 /// sthAne'ntaratamaH the nearest substitute preserves voicing, aspiration
@@ -477,6 +503,26 @@ mod tests {
         // Off-domain sanity: a vowel and a dental.
         for c in ['a', 't'] {
             assert_eq!(kutva_of(c), None, "{c} should not kutva");
+        }
+    }
+
+    #[test]
+    fn cutva_of_ku_and_h_all_arms() {
+        // 7.4.62 kuhoś cuḥ: pin every arm directly. Only k -> c (√ki) and
+        // h -> J (√hu) are reachable from the golden forms, so a mutant on
+        // the other arms would be invisible without this. Mirrors
+        // kutva_of_cu_all_arms, of which the four stop arms are the inverse.
+        assert_eq!(cutva_of('k'), Some('c'));
+        assert_eq!(cutva_of('K'), Some('C'));
+        assert_eq!(cutva_of('g'), Some('j'));
+        assert_eq!(cutva_of('G'), Some('J'));
+        assert_eq!(cutva_of('N'), Some('Y'));
+        assert_eq!(cutva_of('h'), Some('J'));
+        for c in ['c', 'C', 'j', 'J', 'Y'] {
+            assert_eq!(cutva_of(c), None, "{c} is cu already");
+        }
+        for c in ['t', 'p', 's', 'S', 'y', 'a', 'u'] {
+            assert_eq!(cutva_of(c), None, "{c} is neither ku nor h");
         }
     }
 

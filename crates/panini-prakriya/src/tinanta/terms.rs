@@ -15,11 +15,8 @@ use crate::tinanta::sound::is_vowel;
 pub(crate) const AGAMA: usize = 0;
 
 /// Index of the abhyāsa — the reduplicant 6.1.10 ślau copies in front of
-/// the aṅga for juhotyādi. Permanent slot, empty for every other gaṇa (and,
-/// until slice 3a lands, for every derivation). Stable across the pipeline.
-// Unused outside tests until slice 3a (6.1.10) lands. Remove this allow
-// once a rule body reads or writes `ABHYASA`.
-#[allow(dead_code)]
+/// the aṅga for juhotyādi. Permanent slot, empty for every other gaṇa
+/// (6.1.10 fills it). Stable across the pipeline.
 pub(crate) const ABHYASA: usize = 1;
 
 /// Index of the aṅga (the dhātu) in `terms`. Stable across the pipeline.
