@@ -36,6 +36,7 @@ mod helpers;
 mod adadi;
 mod bhvadi;
 mod divadi;
+mod juhotyadi;
 mod kryadi;
 mod rudhadi;
 mod svadi;
