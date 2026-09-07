@@ -823,7 +823,7 @@
     backward-ṇatva-scan, non-terminating-loop mutant (`j -= 1` -> `j /=
     1`, now at `tripadi.rs:1416:23`, moved +1 line from 8b's `:1415:23`),
     confirmed by diff shape rather than by line number; it ran the full
-    4800.02s cap, the correct verdict at any cap.
+    4800.01s cap, the correct verdict at any cap.
     **Both missed mutants are the same documented equivalent pair carried
     since 7e — relocated but otherwise unchanged, confirmed at their
     in-place comments:**

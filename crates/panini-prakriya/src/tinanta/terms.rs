@@ -1,9 +1,9 @@
 //! Term layout for the tiṅanta pipeline: which index holds what, when that
 //! changes, and which term counts as "the follower" for rules that ask.
 //!
-//! Every rule in this pipeline addresses terms by these constants. The two
-//! caveats below are load-bearing — a rule that ignores either produces a
-//! non-word or panics, with no test able to name the cause.
+//! Every rule in this pipeline addresses terms by these constants. The
+//! caveats below are load-bearing — a rule that ignores any of them produces
+//! a non-word or panics, with no test able to name the cause.
 
 use crate::prakriya::Prakriya;
 use crate::term::Term;
@@ -36,7 +36,7 @@ pub(crate) const ENDING: usize = 4;
 // `AGAMA` holds laṅ's aṭ/āṭ (6.4.71 / 6.4.72) and nothing else; 6.1.90
 // empties it again when the āṭ merges into the following vowel. `ABHYASA`
 // holds the reduplicant 6.1.10 copies for juhotyādi and is empty for every
-// other gaṇa. Both exist on every prakriya so the constants below are
+// other gaṇa. Both exist on every prakriya so the constants above are
 // stable, on the same in-place-empty idiom 2.4.72 uses for śap. Two
 // consequences:
 //   - Any rule that reads "the term before the aṅga" or "the first term"

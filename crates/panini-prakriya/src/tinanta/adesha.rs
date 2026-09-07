@@ -271,17 +271,19 @@ pub(crate) static ADESHA: &[Rule] = &[
     // vowel-initial ik-upadha roots (fR, tfR, GfR) take laṅ's āṭ-augment
     // (6.4.72) and then its vṛddhi ekādeśa (6.1.90 aṅga arm) — and 6.1.90's
     // merge can MANUFACTURE a spurious tail conjunct: vṛddhi expands the
-    // one-character vowel `f` to the two-character `Ar`, so `AfR` → `ArR`,
-    // and the vikaraṇa's `u` now sits after `rR` — textually identical to
-    // arRu's genuinely guṇa'd, genuinely conjunct-preceded `rR` (7.3.86's
+    // one-character vowel `f` to the two-character `Ar`, so `A` + `fR` →
+    // `ArR` (two terms merging into one), and the vikaraṇa's `u` now sits
+    // after `rR` — textually identical to arRu's genuinely guṇa'd,
+    // genuinely conjunct-preceded `rR` (7.3.86's
     // alternate guṇa arm, which correctly declines this rule; see
     // `utash_ca_declines_after_a_conjunct_u`-style tests and the loṭ
     // madhyama-eka witness `arRuhi` in this file's tests). Evaluated after
     // 6.1.90, `vikarana_u_asamyogapurva` cannot tell these two `rR`s apart
     // — it reads only surface characters — and wrongly declines the
     // augmented branch too. Evaluated HERE, before 6.1.90 has run, the
-    // aṅga is still `AfR`: `u` is asaṁyogapūrva (`R` preceded directly by
-    // the vowel `f`), and this rule can fork correctly — matching
+    // aṅga is still `fR` with the āṭ sitting in `AGAMA`, not yet merged:
+    // `u` is asaṁyogapūrva (`R` preceded directly by the vowel `f`), and
+    // this rule can fork correctly — matching
     // vidyut-prakriya's own credited order, confirmed by tracing its
     // derivation of 08.0005 laṅ uttama dvi/bahu (both padas): its 6.4.107
     // fires-or-declines strictly before its āṭaś-ca ekādeśa merges the
@@ -859,9 +861,10 @@ mod tests {
         // `>=` mutant makes `4 >= 4` true, so the mutant guard proceeds to
         // check terms[SHAP].text == "A" (true here) and then indexes
         // terms[ENDING], which is out of bounds for this 4-term vector and
-        // panics. The aGga itself ("kf") also must not satisfy the aGga
-        // arm (it doesn't start with 'A'), so this isolates the
-        // ending-arm guard alone.
+        // panics. The aGga arm itself declines regardless of the aGga's own
+        // text ("kf") — its guard reads `AGAMA`, which is empty here, and
+        // never inspects the aGga at all — so this isolates the ending-arm
+        // guard alone.
         let mut p = Prakriya {
             terms: with_slots(vec![Term::new("kf"), Term::new("A")]),
             log: vec![],
@@ -883,9 +886,10 @@ mod tests {
         // short-circuits before indexing terms[ENDING]. The `>` -> `>=`
         // mutant makes `4 >= 4` true; since the śap here is empty, the
         // mutant guard proceeds and indexes terms[ENDING], out of bounds
-        // for this 4-term vector -> panics. The aGga ("As") does not
-        // satisfy the aGga arm (its 2nd char 's' is not a vowel),
-        // isolating the athematic ending-arm guard.
+        // for this 4-term vector -> panics. The aGga arm declines outright
+        // because `AGAMA` is empty here — the arm never reads the aGga, so
+        // "As"'s own leading 'A' is irrelevant to it — isolating the
+        // athematic ending-arm guard.
         let mut p = Prakriya {
             terms: with_slots(vec![Term::new("As"), Term::new("")]),
             log: vec![],
@@ -1465,20 +1469,24 @@ mod tests {
     #[test]
     fn fr_lan_uttama_forks_into_both_asamyogapurva_readings() {
         // The cross-implementation audit's fix-round-1 witness. Task 3's
-        // widened helper originally read the aṅga's surface characters
-        // AFTER 6.1.90's āṭ-vṛddhi ekādeśa had already merged laṅ's
-        // augment into fR's own vowel (fR -> AfR -> ArR), so it saw the
-        // SAME "rR" shape guṇa produces (a genuine conjunct — see
+        // widened helper originally read the aṅga's surface characters AFTER
+        // 6.1.90's āṭ-vṛddhi ekādeśa had already merged laṅ's augment into
+        // fR's own vowel — at the time, before the juhotyādi prep gave the
+        // augment its own `AGAMA` slot, a single aṅga term held the whole
+        // prefixed shape, so that merge read as fR -> AfR -> ArR — and it saw
+        // the SAME "rR" shape guṇa produces (a genuine conjunct — see
         // `arruhi_guna_conjunct_still_declines_hi_luk_after_the_reorder`
-        // below) and wrongly declined the augmented branch too — this
-        // engine derived only "ArRuva", never forking. Moving 6.4.106 and
-        // 6.4.107 ahead of 6.1.90's aṅga arm lets the helper read the
-        // PRE-ekādeśa "AfR", where the vikaraṇa's `u` is asaṁyogapūrva
-        // (`R` preceded directly by the vowel `f`) — matching
-        // vidyut-prakriya's own traced order (its 6.4.107 fires-or-
-        // declines strictly before its āṭaś-ca ekādeśa merges the terms).
-        // All four cells the audit flagged: 08.0005 fR laṅ uttama-puruṣa
-        // dvi/bahu, both padas.
+        // below) and wrongly declined the augmented branch too — this engine
+        // derived only "ArRuva", never forking.
+        //
+        // Moving 6.4.106 and 6.4.107 ahead of 6.1.90's aṅga arm lets the
+        // helper read `ANGA` before that merge runs, when it still holds the
+        // bare "fR" and the āṭ sits separately in `AGAMA`: the vikaraṇa's `u`
+        // is asaṁyogapūrva (`R` preceded directly by the vowel `f`) — matching
+        // vidyut-prakriya's own traced order (its 6.4.107 fires-or-declines
+        // strictly before its āṭaś-ca ekādeśa merges the terms). All four
+        // cells the audit flagged: 08.0005 fR laṅ uttama-puruṣa dvi/bahu, both
+        // padas.
         let d = dhatus().iter().find(|d| d.dhatupatha == "08.0005").unwrap();
         let cases: [(Pada, Vacana, &str, &str); 4] = [
             (Pada::Parasmaipada, Vacana::Dvi, "ArRuva", "ArRva"),
