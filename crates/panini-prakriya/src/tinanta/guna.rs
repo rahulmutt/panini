@@ -16,7 +16,9 @@
 use crate::rule::{Rule, RuleKind};
 use crate::term::Tag;
 use crate::tinanta::sound::{guna_of, is_vowel};
-use crate::tinanta::terms::{ANGA, ENDING, SHAP, following_sarvadhatuka, vikarana_u_asamyogapurva};
+use crate::tinanta::terms::{
+    ABHYASA, ANGA, ENDING, SHAP, following_sarvadhatuka, vikarana_u_asamyogapurva,
+};
 use panini_data::Lakara;
 
 pub(crate) static GUNA: &[Rule] = &[
@@ -67,6 +69,43 @@ pub(crate) static GUNA: &[Rule] = &[
             let before = p.snapshot();
             p.terms[ANGA].text = s.into_iter().collect::<String>() + g;
             p.record("7.4.21", "SINaH sArvaDAtuke guRaH", before);
+            true
+        },
+    },
+    // 7.3.83 jusi ca: guṇa of the aṅga's final ik before jus — ajuhavuH,
+    // acikayuH — overriding the 1.1.5 block that jus, apit and so ṅit by
+    // 1.2.4, would impose on 7.3.84. Ordered immediately before 7.3.84 as
+    // its apavāda, the 7.4.21 shape: the trace credits the guṇa to the
+    // sūtra that licenses it, and 7.3.84 then declines on the guṇated vowel
+    // by its own shape guard.
+    //
+    // "Before jus" means IMMEDIATELY before: the follower is read with
+    // `following_sarvadhatuka`, and its text must be the bare `us` that
+    // 3.4.108 / 3.4.109 leave after 1.3.9. Vidhiliṅ's jus never matches —
+    // yāsuṭ sits in front of it (`yAus` at this point; 6.1.96 makes it
+    // `yus` later), so juhuyuH, not *juhoyuH. The one other laṅ `us` in
+    // scope, 3.4.111's optional jus after an ā-final adādi aṅga (ayuH), has
+    // no ik to guṇate and declines on `guna_of`. No lakāra clause: the
+    // follower's text already separates every case, and a clause no cell
+    // could falsify would be a mutation survivor.
+    Rule {
+        id: "7.3.83",
+        name: "jusi ca",
+        kind: RuleKind::Vidhi,
+        vikalpa: false,
+        apply: |p| {
+            if !following_sarvadhatuka(p).is_some_and(|t| t.text == "us") {
+                return false;
+            }
+            let last = p.terms[ANGA].text.chars().last().unwrap();
+            let Some(g) = guna_of(last) else {
+                return false;
+            };
+            let before = p.snapshot();
+            let mut s: Vec<char> = p.terms[ANGA].text.chars().collect();
+            s.pop();
+            p.terms[ANGA].text = s.into_iter().collect::<String>() + g;
+            p.record("7.3.83", "jusi ca", before);
             true
         },
     },
@@ -482,8 +521,14 @@ pub(crate) static GUNA: &[Rule] = &[
     // is why the guard would otherwise look invented. It is what separates
     // hinvanti from Apnuvanti.
     //
-    // The √hu arm is not implemented: √hu is juhotyādi, out of scope. Widen
-    // when gaṇa 3 lands.
+    // The √hu arm (slice 3a): the sūtra names the root, and the yaṇ goes
+    // into the ROOT's own final — hu + ati → hv + ati, juhvati — where the
+    // śnu arm rewrites the vikaraṇa. `ANGA.text == "hu"` alone identifies
+    // it: no other curated root reads `hu`, so a Tag::Juhotyadi clause
+    // beside it could never be falsified (the 7.4.21 reasoning) and is
+    // deliberately not written. `==`, not `ends_with`: ANGA is the root's
+    // own text (terms.rs). Ordered after 7.3.84, so the pit cells have
+    // already guṇated to `ho` and decline here (juhavAni goes to 6.1.78).
     //
     // APAVĀDA to 6.4.77 below, and ordered before it as the pipeline's other
     // apavāda pairs are (3.1.69 before 3.1.68; 6.4.72 before 6.4.71). It
@@ -495,10 +540,22 @@ pub(crate) static GUNA: &[Rule] = &[
         kind: RuleKind::Vidhi,
         vikalpa: false,
         apply: |p| {
-            // The sūtra names hu and śnu. Tanādi's bare `u` (which the
-            // shared asaṁyogapūrva helper now also admits) is 6.1.77's
-            // business below — without this test 6.4.87 would write śnu's
-            // `nv` over a vikaraṇa that has no `n`.
+            if p.terms[ANGA].text == "hu" {
+                let Some(next) = p.terms[ENDING].text.chars().next() else {
+                    return false;
+                };
+                if !is_vowel(next) {
+                    return false;
+                }
+                let before = p.snapshot();
+                p.terms[ANGA].text = "hv".into();
+                p.record("6.4.87", "huSnuvoH sArvaDAtuke", before);
+                return true;
+            }
+            // The śnu arm. The sūtra names hu and śnu; tanādi's bare `u`
+            // (which the shared asaṁyogapūrva helper now also admits) is
+            // 6.1.77's business below — without this test 6.4.87 would
+            // write śnu's `nv` over a vikaraṇa that has no `n`.
             if p.terms[SHAP].text != "nu" {
                 return false;
             }
@@ -517,12 +574,79 @@ pub(crate) static GUNA: &[Rule] = &[
             true
         },
     },
+    // 6.4.82 er anekāco'saṁyogapūrvasya: a final `i` of a polysyllabic
+    // aṅga, not preceded by a conjunct, becomes `y` (yaṇ) before a vowel —
+    // cikyati, cikyatu — where 6.4.77's dhātu arm (iyaṅ) would otherwise
+    // apply (as it will for √hrī's conjunct-preceded ī, jihriyati, in slice
+    // 3b). Apavāda to 6.4.77, ordered before it.
+    //
+    // *Anekāc* is counted over ABHYASA + ANGA together: after 6.1.10 the
+    // aṅga before the affix is the abhyasta pair (1.4.13), and ci-ki has two
+    // vowels where ki alone has one. *Asaṁyogapūrva*: the sound before the
+    // final `i` is a single consonant, itself after a vowel (the k of
+    // ci-ki) — or a vowel. The follower is the first non-empty term after
+    // ANGA, which on the ślu path is the ending itself; a yāsuṭ (`yA…`) or
+    // a consonant-initial ending declines it (cikiyAt, cikitaH).
+    //
+    // ORDER: after 7.3.84, or the loṭ uttama cells break — Ani is pit, so
+    // cikayAni takes guṇa (ke) and then 6.1.78 (kay); a 6.4.82 that saw
+    // the `i` first would write *cikyAni. The cikayAni trace pin holds this.
+    Rule {
+        id: "6.4.82",
+        name: "er anekAco'saMyogapUrvasya",
+        kind: RuleKind::Vidhi,
+        vikalpa: false,
+        apply: |p| {
+            let mut anga: Vec<char> = p.terms[ANGA].text.chars().collect();
+            if anga.last() != Some(&'i') {
+                return false;
+            }
+            let stem: Vec<char> = p.terms[ABHYASA]
+                .text
+                .chars()
+                .chain(p.terms[ANGA].text.chars())
+                .collect();
+            if stem.iter().filter(|&&c| is_vowel(c)).count() < 2 {
+                return false;
+            }
+            // The two sounds before the final i, nearest first.
+            let n = stem.len();
+            let before_i = n.checked_sub(2).and_then(|i| stem.get(i)).copied();
+            let before_that = n.checked_sub(3).and_then(|i| stem.get(i)).copied();
+            let asamyogapurva = match (before_i, before_that) {
+                (Some(v), _) if is_vowel(v) => true,
+                (Some(c), Some(v)) if !is_vowel(c) && is_vowel(v) => true,
+                _ => false,
+            };
+            if !asamyogapurva {
+                return false;
+            }
+            let Some(next) = p.terms[ANGA + 1..]
+                .iter()
+                .find(|t| !t.text.is_empty())
+                .and_then(|t| t.text.chars().next())
+            else {
+                return false;
+            };
+            if !is_vowel(next) {
+                return false;
+            }
+            let before = p.snapshot();
+            anga.pop();
+            anga.push('y');
+            p.terms[ANGA].text = anga.into_iter().collect();
+            p.record("6.4.82", "er anekAco'saMyogapUrvasya", before);
+            true
+        },
+    },
     // 6.4.77 aci śnudhātubhruvāṁ yvor iyaṅuvaṅau: before a vowel, śnu's `u`
     // becomes uvaṅ. Ap + nu + anti → Apnuvanti; aS + nu + ate → aSnuvate;
     // aS + nu + Iyta → aSnuvIta (6.1.66 drops the y later, in `adesha`).
     //
     // Only the śnu arm is implemented. The *dhātu* arm (ī/ū-final roots) and
-    // the *bhrū* arm have no root in scope — recorded rather than written,
+    // the *bhrū* arm have no root in scope: 6.4.82 above is the dhātu arm's
+    // apavāda for the asaṁyogapūrva i-final case (√ki); the iyaṅ case
+    // itself arrives with √hrī in slice 3b — recorded rather than written,
     // as 6.4.112's *abhyasta* half and 6.4.113's *aghoḥ* are. Widen when a
     // root reaches either.
     //
@@ -1483,6 +1607,127 @@ mod tests {
             assert!(!(rule.apply)(&mut p), "{id} should decline");
         }
         assert_eq!(p.terms[SHAP].text, "nu");
+    }
+
+    // --- 7.3.83 jusi ca ----------------------------------------------------
+
+    #[test]
+    fn jusi_ca_gunates_before_a_bare_us_and_7_3_84_then_declines() {
+        // hu + "" + us → ho + us (ajuhavuH after 6.1.78). us is ṅit, so
+        // 7.3.84 alone would leave *ajuhuvuH; and once 7.3.83 has written
+        // `o`, 7.3.84 must not record a second step.
+        let mut p = Prakriya {
+            terms: with_slots(vec![Term::new("hu"), Term::new(""), Term::new("us")]),
+            ..Default::default()
+        };
+        p.terms[ENDING].add(Tag::Ngit);
+        let r_83 = rules().find(|r| r.id == "7.3.83").unwrap();
+        assert!((r_83.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "ho");
+        assert_eq!(p.log.last().unwrap().sutra, "7.3.83");
+        let r_84 = rules().find(|r| r.id == "7.3.84").unwrap();
+        assert!(!(r_84.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "ho");
+    }
+
+    #[test]
+    fn jusi_ca_wants_jus_immediately_after_the_anga() {
+        let rule = rules().find(|r| r.id == "7.3.83").unwrap();
+        for (root, shap, ending, why) in [
+            ("hu", "", "yAus", "vidhiliṅ: yāsuṭ intervenes (juhuyuH)"),
+            ("hu", "a", "us", "a live vikaraṇa is the follower"),
+            ("yA", "", "us", "3.4.111's jus after an ā-final aṅga: no ik"),
+            ("hu", "", "taH", "not jus at all"),
+        ] {
+            let mut p = Prakriya {
+                terms: with_slots(vec![Term::new(root), Term::new(shap), Term::new(ending)]),
+                ..Default::default()
+            };
+            assert!(!(rule.apply)(&mut p), "{why}");
+            assert_eq!(p.terms[ANGA].text, root, "{why}");
+        }
+    }
+
+    // --- 6.4.87's hu arm ---------------------------------------------------
+
+    #[test]
+    fn hushnuvoh_hu_arm_writes_yan_into_the_root_before_a_vowel() {
+        // hu + "" + ati → hv + ati (juhvati). Consonant-initial endings, the
+        // guṇated `ho` (juhavAni's shape here) and any other u-final root
+        // with an empty śap decline; the śnu arm is untouched.
+        let rule = rules().find(|r| r.id == "6.4.87").unwrap();
+        let mut p = Prakriya {
+            terms: with_slots(vec![Term::new("hu"), Term::new(""), Term::new("ati")]),
+            ..Default::default()
+        };
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "hv");
+        assert_eq!(p.terms[SHAP].text, "");
+        assert_eq!(p.log.last().unwrap().sutra, "6.4.87");
+        for (root, ending) in [("hu", "taH"), ("ho", "Ani"), ("su", "ati")] {
+            let mut p = Prakriya {
+                terms: with_slots(vec![Term::new(root), Term::new(""), Term::new(ending)]),
+                ..Default::default()
+            };
+            assert!(!(rule.apply)(&mut p), "{root}+{ending}");
+            assert_eq!(p.terms[ANGA].text, root);
+        }
+    }
+
+    // --- 6.4.82 er anekāco'saṁyogapūrvasya ---------------------------------
+
+    #[test]
+    fn er_anekaco_yan_for_the_reduplicated_i_final_anga() {
+        // ci + ki + "" + ati → ci + ky + ati (cikyati). 6.4.77's śnu arm
+        // must not be what fires: SHAP is empty, not `nu`.
+        let mut p = Prakriya {
+            terms: with_slots(vec![Term::new("ki"), Term::new(""), Term::new("ati")]),
+            ..Default::default()
+        };
+        p.terms[ABHYASA].text = "ci".into();
+        let rule = rules().find(|r| r.id == "6.4.82").unwrap();
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "ky");
+        assert_eq!(p.text(), "cikyati");
+        assert_eq!(p.log.last().unwrap().sutra, "6.4.82");
+        let utsarga = rules().find(|r| r.id == "6.4.77").unwrap();
+        assert!(!(utsarga.apply)(&mut p));
+    }
+
+    #[test]
+    fn er_anekaco_declines_on_each_of_its_conditions() {
+        let rule = rules().find(|r| r.id == "6.4.82").unwrap();
+        for (abhyasa, anga, ending, why) in [
+            ("", "ci", "ati", "ekāc: one vowel over the whole aṅga"),
+            ("ci", "kri", "ati", "saṁyogapūrva: kr before the i"),
+            (
+                "ci",
+                "ki",
+                "yAt",
+                "yāsuṭ, consonant-initial, is the follower",
+            ),
+            ("ci", "ki", "taH", "consonant-initial ending"),
+            ("ci", "ke", "ati", "not i-final (guṇa already applied)"),
+        ] {
+            let mut p = Prakriya {
+                terms: with_slots(vec![Term::new(anga), Term::new(""), Term::new(ending)]),
+                ..Default::default()
+            };
+            p.terms[ABHYASA].text = abhyasa.into();
+            assert!(!(rule.apply)(&mut p), "{why}");
+            assert_eq!(p.terms[ANGA].text, anga, "{why}");
+        }
+        // The vowel-before-i arm of asaṁyogapūrva, pinned on its own: no
+        // curated root reaches it (every juhotyādi i-final root has a
+        // consonant before its i), so it is exercised synthetically, as
+        // `vikarana_u_asamyogapurva`'s own test does for its vowel arm.
+        let mut p = Prakriya {
+            terms: with_slots(vec![Term::new("i"), Term::new(""), Term::new("ati")]),
+            ..Default::default()
+        };
+        p.terms[ABHYASA].text = "a".into();
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "y");
     }
 
     #[test]
