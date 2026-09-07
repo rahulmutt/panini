@@ -8,7 +8,8 @@
 //! that does not exist yet. See `super::terms`.
 //!
 //! 2.4.72 luks śap by emptying its text in place rather than removing the
-//! term, which is what keeps every later index valid — and what makes
+//! term, which is what keeps every later index valid — and 2.4.75 elides it
+//! by ślu the same way, tagging the term `Slu` for 6.1.10 — and what makes
 //! `terms[SHAP].text` possibly empty for the rest of the pipeline. 3.1.78
 //! carries a second SHAP hazard of its own — `terms[SHAP].text` may hold the
 //! root's tail, not just the vikaraṇa — see `super::terms`'s second caveat.
