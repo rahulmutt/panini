@@ -659,6 +659,21 @@ mod tests {
         };
         assert!(!(rule.apply)(&mut p));
         assert_eq!(p.terms[ENDING_PRE_SHAP].text, "Ji");
+        // And laṅ's other endings are not Ji: ajuhot keeps its t.
+        let mut p = Prakriya {
+            terms: with_slots(vec![Term::new("hu"), Term::new("t")]),
+            log: vec![],
+            ctx: Context::new(
+                Lakara::Lan,
+                Pada::Parasmaipada,
+                Purusha::Prathama,
+                Vacana::Eka,
+            ),
+            blocked: false,
+        };
+        p.terms[ANGA].add(Tag::Juhotyadi);
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[ENDING_PRE_SHAP].text, "t");
     }
 
     #[test]
