@@ -637,10 +637,14 @@ pub(crate) static ADESHA: &[Rule] = &[
         },
     },
     // 6.4.101 hujhalbhyo her dhiḥ: the loṭ 2sg `hi` becomes `Di` after a
-    // jhal-final aṅga (and after √hu, out of scope). √ad: 6.4.105 ato heḥ
-    // declined (its aṅga ends in `d`, not a short `a`), so `hi` survives to
-    // here → adDi. Thematic roots never reach this: their `hi` is luk'd by
-    // 6.4.105 behind śap's `a`.
+    // jhal-final aṅga and after √hu. √ad: 6.4.105 ato heḥ declined (its aṅga
+    // ends in `d`, not a short `a`), so `hi` survives to here → adDi. √hu:
+    // juhuDi — the root is named by the sūtra and `u` is no jhal, so it is
+    // its own arm, `ANGA.text == "hu"`, the same root-keyed test 6.4.87's hu
+    // arm uses and for the same reason with no gaṇa clause beside it (no
+    // other curated root reads `hu`; see 7.4.21). Thematic roots never
+    // reach this — their `hi` is luk'd by 6.4.105 behind śap's `a` — and
+    // √ki's stays (cikihi: `i` is no jhal and the root is not √hu).
     Rule {
         id: "6.4.101",
         name: "her DiH",
@@ -650,17 +654,20 @@ pub(crate) static ADESHA: &[Rule] = &[
             if p.terms[ENDING].text != "hi" {
                 return false;
             }
-            // NOT terms[ANGA]. The jhal this sūtra tests is the sound the
-            // ending attaches to, which for a gaṇa with a live vikaraṇa is
-            // the vikaraṇa's final, not the root's. Reading ANGA fired on
-            // √āp's `p` and √śak's `k` and gave *ApnuDi / *SaknuDi, even
-            // though śnu's `u` sits between. adādi still reaches the root
-            // because its śap is empty and the helper walks past it.
-            let Some(last) = sound_before_ending(p) else {
-                return false;
-            };
-            if !is_jhal(last) {
-                return false;
+            if p.terms[ANGA].text != "hu" {
+                // NOT terms[ANGA] for the jhal test. The jhal this sūtra
+                // tests is the sound the ending attaches to, which for a
+                // gaṇa with a live vikaraṇa is the vikaraṇa's final, not
+                // the root's. Reading ANGA fired on √āp's `p` and √śak's
+                // `k` and gave *ApnuDi / *SaknuDi, even though śnu's `u`
+                // sits between. adādi still reaches the root because its
+                // śap is empty and the helper walks past it.
+                let Some(last) = sound_before_ending(p) else {
+                    return false;
+                };
+                if !is_jhal(last) {
+                    return false;
+                }
             }
             let before = p.snapshot();
             p.terms[ENDING].text = "Di".into();
@@ -1341,6 +1348,26 @@ mod tests {
         };
         let rule = rules().find(|r| r.id == "6.4.101").unwrap();
         assert!(!(rule.apply)(&mut p));
+    }
+
+    #[test]
+    fn her_dhih_hu_arm_fires_on_the_named_root_and_not_on_ki() {
+        // hu + "" + hi → hu + Di (juhuDi): `u` is no jhal, so this is the
+        // sūtra's own *hu* arm. √ki keeps hi (cikihi) — i is no jhal and the
+        // root is not √hu.
+        let rule = rules().find(|r| r.id == "6.4.101").unwrap();
+        let mut p = Prakriya {
+            terms: with_slots(vec![Term::new("hu"), Term::new(""), Term::new("hi")]),
+            ..Default::default()
+        };
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.terms[ENDING].text, "Di");
+        let mut p = Prakriya {
+            terms: with_slots(vec![Term::new("ki"), Term::new(""), Term::new("hi")]),
+            ..Default::default()
+        };
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[ENDING].text, "hi");
     }
 
     #[test]

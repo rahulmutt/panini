@@ -17,6 +17,18 @@ pub(crate) static ANGA_RULES: &[Rule] = &[
     // rule reading either needs no allowance for the augment. (Until the
     // juhotyādi prep this was a text prefix, which is why several guards
     // downstream match with `ends_with` — see their comments.)
+    //
+    // READS `ANGA`, NOT THE FIRST NON-EMPTY TERM AFTER `AGAMA`. Grammatically
+    // the augment precedes the whole aṅga, abhyāsa included, and 6.1.90
+    // already merges the āṭ into the first non-empty term after the slot.
+    // The consonant/vowel verdict is the same either way for every
+    // juhotyādi row: the abhyāsa is a copy of the root's first ekāc, and no
+    // rule in 7.4.59–7.4.78 changes its initial's class — 7.4.60 keeps the
+    // first consonant, 7.4.62 substitutes consonant for consonant, 7.4.66
+    // and 7.4.77 vowel for vowel. Reading the abhyāsa instead would add a
+    // clause no 3a root can falsify (both are consonant-initial), so the
+    // ANGA read stays; slice 3d's √ṛ (iyarti, aiyaḥ) is the vowel-initial
+    // row that re-checks this argument against a live witness.
     Rule {
         id: "6.4.71",
         name: "luNlaNlfNkzvaqudAttaH",
@@ -46,6 +58,7 @@ pub(crate) static ANGA_RULES: &[Rule] = &[
     // clause in its place would be unkillable — 6.4.71 declines for every
     // vowel-initial aṅga, so the slot is always empty when this rule looks
     // — and is deliberately not written.
+    // Reads ANGA's own initial for the same reason 6.4.71 does — see its comment.
     Rule {
         id: "6.4.72",
         name: "Aq ajAdInAm",
