@@ -10,6 +10,14 @@ pub enum Tag {
     Sarvadhatuka,
     Ardhadhatuka,
     It,
+    /// 6.1.4 pūrvo'bhyāsaḥ: the earlier of the two copies dvitva makes —
+    /// the reduplicant at `ABHYASA`. Set by 6.1.10. No rule reads it in
+    /// slice 3a: the rules whose locative *abhyāse* names it (7.4.62,
+    /// 8.4.54) read the slot's text instead, because the slot is non-empty
+    /// exactly when 6.1.10 has filled it and a tag test there could never
+    /// be falsified. The tag is the saṁjñā verdict itself, pinned by
+    /// 6.1.10's unit test, for the abhyāsa rules slice 3b brings (7.4.59,
+    /// 7.4.60).
     Abhyasa,
     /// The dhatu takes atmanepada (the data-layer stand-in for the anudatta
     /// it-marker that 1.3.12 reads; see the spec's pada-sanction section).
@@ -75,6 +83,22 @@ pub enum Tag {
     /// The dhātu belongs to tanādi (gaṇa 8), whose vikaraṇa is the bare `u`.
     /// Read by 3.1.79 alone. Mirrors Divadi/Tudadi/Adadi/Kryadi/Svadi/Rudhadi.
     Tanadi,
+    /// The dhātu belongs to juhotyādi (gaṇa 3), the ślu gaṇa. Read by
+    /// 2.4.75 once the vikaraṇa exists — and, before it, by 3.4.109 as the
+    /// data-layer stand-in for *abhyasta* (see that rule's comment).
+    /// Mirrors Divadi/Tudadi/Adadi/Kryadi/Svadi/Rudhadi/Tanadi.
+    Juhotyadi,
+    /// The śap at `SHAP` was elided by ŚLU (2.4.75), not luk (2.4.72). Both
+    /// leave the term empty in place; only ślu triggers reduplication
+    /// (6.1.10 *ślau*), and this tag is what 6.1.10 reads. Nothing else
+    /// reads it.
+    Slu,
+    /// 6.1.5 ubhe abhyastam: the reduplicant AND the root it was copied
+    /// from, together, are *abhyasta*. Set on both `ABHYASA` and `ANGA` by
+    /// 6.1.10; read by 7.1.4 *ad abhyastāt* on `ANGA` — the aṅga before the
+    /// tiṅ affix (1.4.13) is the pair, and its root half is the term the
+    /// ending follows. `Abhyasa` marks the copy alone; this marks both.
+    Abhyasta,
     /// The term at `SHAP` IS one of the four a-final vikaraṇas — śap
     /// (3.1.68), śyan (3.1.69), śa (3.1.77) or śānac (3.1.83) — each
     /// a-final once its own it-lopa runs ("a"/"ya"/"a"/"Ana"). This is an

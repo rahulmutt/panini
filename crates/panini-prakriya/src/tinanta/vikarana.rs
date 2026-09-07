@@ -1,5 +1,5 @@
 //! Vikaraṇa selection and luk: 3.1.69, 3.1.73, 3.1.77, 3.1.78, 3.1.81,
-//! 3.1.68, 2.4.72, 3.1.83, 1.2.4.
+//! 3.1.68, 2.4.72, 2.4.75, 3.1.83, 1.2.4.
 //!
 //! **This stage contains the 3.1.68 boundary.** Rules before 3.1.68 in this
 //! file address the ending as `ENDING_PRE_SHAP` (index 3); rules after it use
@@ -363,6 +363,42 @@ pub(crate) static VIKARANA: &[Rule] = &[
             true
         },
     },
+    // 2.4.75 juhotyādibhyaḥ śluḥ: juhotyādi (gaṇa 3) elides the śap that
+    // 3.1.68 inserts by ŚLU, not luk. Same representation as 2.4.72 — the
+    // term stays in place with empty text, so ENDING keeps its index and
+    // every athematic arm downstream sees the empty SHAP it already handles
+    // for adādi — and the same Tag::Thematic removal, for the same reason
+    // (1.1.61: the vikaraṇa itself is gone, identity included).
+    //
+    // What ślu adds is Tag::Slu. 1.1.61 names luk, ślu and lup as three
+    // kinds of adarśana, and the grammar tells them apart exactly once:
+    // 6.1.10 *ślau* reduplicates the aṅga after ślu and after nothing else.
+    // The tag IS that distinction, read by 6.1.10 alone; an "is SHAP empty
+    // and the aṅga juhotyādi" test in its place would re-derive from two
+    // terms the verdict this rule has already reached.
+    Rule {
+        id: "2.4.75",
+        name: "juhotyAdiByaH SluH",
+        kind: RuleKind::Vidhi,
+        vikalpa: false,
+        apply: |p| {
+            if !p.terms[ANGA].has(Tag::Juhotyadi) {
+                return false;
+            }
+            if !(p.terms.len() > SHAP
+                && p.terms[SHAP].has(Tag::Vikarana)
+                && !p.terms[SHAP].text.is_empty())
+            {
+                return false;
+            }
+            let before = p.snapshot();
+            p.terms[SHAP].text = String::new();
+            p.terms[SHAP].remove(Tag::Thematic);
+            p.terms[SHAP].add(Tag::Slu);
+            p.record("2.4.75", "juhotyAdiByaH SluH", before);
+            true
+        },
+    },
     // 3.4.110 ātaḥ / 3.4.111 laṅaḥ śākaṭāyanasyaiva: after an ā-final aṅga,
     // jhi is replaced by jus — and in laṅ that replacement is Śākaṭāyana's,
     // i.e. OPTIONAL. One rule implements the pair, cited under 3.4.111,
@@ -610,6 +646,84 @@ mod tests {
         let r_124 = rules().filter(|r| r.id == "1.2.4").last().unwrap();
         assert!((r_124.apply)(&mut p));
         assert!(p.terms[SHAP].has(Tag::Ngit));
+    }
+
+    #[test]
+    fn juhotyadi_slu_empties_shap_in_place_and_tags_it_slu() {
+        // 2.4.75 juhotyAdiByaH SluH. The same in-place emptying as 2.4.72,
+        // plus the one thing that separates ślu from luk: Tag::Slu, which
+        // 6.1.10 reads. Thematic must go — 6.4.105 would otherwise luk
+        // juhuDi's hi behind a śap that no longer exists.
+        let mut p = Prakriya {
+            terms: with_slots(vec![Term::new("hu"), Term::new("ti")]),
+            ..Default::default()
+        };
+        p.terms[ANGA].add(Tag::Dhatu);
+        p.terms[ANGA].add(Tag::Juhotyadi);
+        let r_68 = rules().find(|r| r.id == "3.1.68").unwrap();
+        assert!((r_68.apply)(&mut p));
+        assert_eq!(p.terms[SHAP].text, "a");
+        let r_75 = rules().find(|r| r.id == "2.4.75").unwrap();
+        assert!((r_75.apply)(&mut p));
+        assert_eq!(p.terms[SHAP].text, "");
+        assert!(p.terms[SHAP].has(Tag::Slu));
+        assert!(p.terms[SHAP].has(Tag::Vikarana));
+        assert!(!p.terms[SHAP].has(Tag::Thematic));
+        assert_eq!(p.terms.len(), ENDING + 1);
+        assert_eq!(p.terms[ENDING].text, "ti");
+        assert_eq!(p.text(), "huti");
+        assert_eq!(p.log.last().unwrap().sutra, "2.4.75");
+        // Nothing left to elide: a second application declines rather
+        // than recording a vacuous step (this is what the non-empty test
+        // in the guard is for).
+        assert!(!(r_75.apply)(&mut p));
+    }
+
+    #[test]
+    fn slu_declines_for_every_other_gana_and_luk_never_tags_slu() {
+        // adādi's 2.4.72 and juhotyādi's 2.4.75 must not cross: √ad keeps
+        // its luk with no Slu (so 6.1.10 stays silent — atti, not *atatti),
+        // and a bhvādi śap is nobody's to elide.
+        let r_68 = rules().find(|r| r.id == "3.1.68").unwrap();
+        let r_72 = rules().find(|r| r.id == "2.4.72").unwrap();
+        let r_75 = rules().find(|r| r.id == "2.4.75").unwrap();
+        for (root, tag) in [("ad", Some(Tag::Adadi)), ("BU", None)] {
+            let mut p = Prakriya {
+                terms: with_slots(vec![Term::new(root), Term::new("ti")]),
+                ..Default::default()
+            };
+            if let Some(tag) = tag {
+                p.terms[ANGA].add(tag);
+            }
+            assert!((r_68.apply)(&mut p));
+            assert!(!(r_75.apply)(&mut p), "{root}");
+            assert!(!p.terms[SHAP].has(Tag::Slu), "{root}");
+        }
+        let mut p = Prakriya {
+            terms: with_slots(vec![Term::new("ad"), Term::new("ti")]),
+            ..Default::default()
+        };
+        p.terms[ANGA].add(Tag::Adadi);
+        assert!((r_68.apply)(&mut p));
+        assert!((r_72.apply)(&mut p));
+        assert_eq!(p.terms[SHAP].text, "");
+        assert!(!p.terms[SHAP].has(Tag::Slu));
+    }
+
+    #[test]
+    fn slu_single_term_anga_does_not_panic() {
+        // The `len() > SHAP` boundary, pinned the way
+        // `kartari_sap_single_term_anga_does_not_panic` pins 3.1.68's: a
+        // three-term prakriya (aṅga only) must short-circuit before
+        // indexing terms[SHAP].
+        let mut p = Prakriya {
+            terms: with_slots(vec![Term::new("hu")]),
+            ..Default::default()
+        };
+        p.terms[ANGA].add(Tag::Juhotyadi);
+        let r_75 = rules().find(|r| r.id == "2.4.75").unwrap();
+        assert!(!(r_75.apply)(&mut p));
+        assert_eq!(p.terms.len(), ANGA + 1);
     }
 
     // --- 3.1.68 / second 1.2.4: `len() > SHAP` boundary pins --------------

@@ -94,6 +94,7 @@ pub fn derive(
         Gana::Svadi => t.add(Tag::Svadi),
         Gana::Rudhadi => t.add(Tag::Rudhadi),
         Gana::Tanadi => t.add(Tag::Tanadi),
+        Gana::Juhotyadi => t.add(Tag::Juhotyadi),
         Gana::Bhvadi => {}
     }
     p.terms = terms::with_slots(vec![t]);

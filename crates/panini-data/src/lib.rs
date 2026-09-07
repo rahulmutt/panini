@@ -10,6 +10,7 @@ pub enum Gana {
     Svadi,
     Rudhadi,
     Tanadi,
+    Juhotyadi,
 }
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Pada {
@@ -1627,12 +1628,13 @@ mod tests {
         // typed into the wrong gaṇa's block still names a real upstream row,
         // so nothing else would catch it.
         //
-        // Mapped variant → prefix, not the inverse: this engine covers eight
-        // of the ten gaṇas, so 03 and 10 have no `Gana` variant.
+        // Mapped variant → prefix, not the inverse: this engine covers nine
+        // of the ten gaṇas, so only 10 has no `Gana` variant.
         for d in dhatus() {
             let expected = match d.gana {
                 Gana::Bhvadi => "01",
                 Gana::Adadi => "02",
+                Gana::Juhotyadi => "03",
                 Gana::Divadi => "04",
                 Gana::Svadi => "05",
                 Gana::Tudadi => "06",
