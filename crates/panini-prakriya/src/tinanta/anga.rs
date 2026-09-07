@@ -229,6 +229,28 @@ pub(crate) static ANGA_RULES: &[Rule] = &[
             true
         },
     },
+    // 7.1.4 ad abhyastāt: after an abhyasta aṅga the jh of the ending is
+    // replaced by `at`, not by 7.1.3's `ant` — juhvati, cikyati; juhvatu,
+    // cikyatu. Apavāda to 7.1.3 and ordered before it; self-guarding in
+    // the usual way, since once the J is gone 7.1.3 has nothing to match.
+    // Reads Tag::Abhyasta on ANGA: the aṅga before the tiṅ affix (1.4.13)
+    // is the abhyasta pair, and 6.1.10 tagged its root half.
+    Rule {
+        id: "7.1.4",
+        name: "ad aByastAt",
+        kind: RuleKind::Vidhi,
+        vikalpa: false,
+        apply: |p| {
+            if !p.terms[ANGA].has(Tag::Abhyasta) || !p.terms[ENDING].text.starts_with('J') {
+                return false;
+            }
+            let before = p.snapshot();
+            let rest: String = p.terms[ENDING].text.chars().skip(1).collect();
+            p.terms[ENDING].text = format!("at{rest}");
+            p.record("7.1.4", "ad aByastAt", before);
+            true
+        },
+    },
     // 7.1.3 jho'ntaḥ: a leading `J` of the ending → `ant`.
     Rule {
         id: "7.1.3",
@@ -507,6 +529,41 @@ mod tests {
         };
         assert!(!(r72.apply)(&mut p));
         assert_eq!(p.terms[AGAMA].text, "");
+    }
+
+    #[test]
+    fn ad_abhyastat_preempts_jho_ntah_after_an_abhyasta_anga() {
+        // Ji → ati (laṭ), Ju → atu (loṭ) when ANGA is abhyasta; 7.1.3 then
+        // finds no J. Without the tag, 7.1.3's ant is the answer (Bavanti).
+        let r_4 = rules().find(|r| r.id == "7.1.4").unwrap();
+        let r_3 = rules().find(|r| r.id == "7.1.3").unwrap();
+        for (ending, expected) in [("Ji", "ati"), ("Ju", "atu")] {
+            let mut p = Prakriya {
+                terms: with_slots(vec![Term::new("hu"), Term::new(""), Term::new(ending)]),
+                ..Default::default()
+            };
+            p.terms[ANGA].add(Tag::Abhyasta);
+            assert!((r_4.apply)(&mut p), "{ending}");
+            assert_eq!(p.terms[ENDING].text, expected);
+            assert_eq!(p.log.last().unwrap().sutra, "7.1.4");
+            assert!(!(r_3.apply)(&mut p), "7.1.3 must find no J after 7.1.4");
+            assert_eq!(p.terms[ENDING].text, expected);
+        }
+        let mut p = Prakriya {
+            terms: with_slots(vec![Term::new("BU"), Term::new("a"), Term::new("Ji")]),
+            ..Default::default()
+        };
+        assert!(!(r_4.apply)(&mut p));
+        assert!((r_3.apply)(&mut p));
+        assert_eq!(p.terms[ENDING].text, "anti");
+        // An abhyasta aṅga before a J-less ending: nothing to do (juhoti).
+        let mut p = Prakriya {
+            terms: with_slots(vec![Term::new("hu"), Term::new(""), Term::new("ti")]),
+            ..Default::default()
+        };
+        p.terms[ANGA].add(Tag::Abhyasta);
+        assert!(!(r_4.apply)(&mut p));
+        assert_eq!(p.terms[ENDING].text, "ti");
     }
 
     #[test]

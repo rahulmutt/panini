@@ -1,4 +1,4 @@
-//! Lakāra → tiṅ substitution and ending reshaping: 3.4.85 … 3.4.102.
+//! Lakāra → tiṅ substitution and ending reshaping: 3.4.85 … 3.4.102, 3.4.109.
 //!
 //! Ordered **BEFORE** 3.1.68, so every rule here addresses the ending as
 //! `ENDING_PRE_SHAP` (index 3) — śap does not exist yet, and `ENDING`
@@ -10,7 +10,7 @@
 use crate::rule::{Rule, RuleKind};
 use crate::term::Tag;
 use crate::tinanta::sound::is_vowel;
-use crate::tinanta::terms::ENDING_PRE_SHAP;
+use crate::tinanta::terms::{ANGA, ENDING_PRE_SHAP};
 use panini_data::{Lakara, Pada, Purusha};
 
 pub(crate) static TIN: &[Rule] = &[
@@ -54,6 +54,44 @@ pub(crate) static TIN: &[Rule] = &[
             let before = p.snapshot();
             p.terms[ENDING_PRE_SHAP].text = "jus".into();
             p.record("3.4.108", "Jer jus", before);
+            let before = p.snapshot();
+            p.terms[ENDING_PRE_SHAP].text = "us".into();
+            p.record("1.3.9", "tasya lopaH", before);
+            true
+        },
+    },
+    // 3.4.109 sijabhyastavidibhyaś ca: after an abhyasta aṅga, laṅ's Ji is
+    // replaced by jus — ajuhavuH, acikayuH — the laṅ counterpart of 3.4.108's
+    // liṅ rule, and like it an apavāda to 3.4.100 itaś ca, hence ordered
+    // before it. The j is elided and recorded as 1.3.9 exactly as 3.4.108
+    // does. Guarded on Lakara::Lan itself, NOT ctx.is_ngit_like: loṭ is
+    // laṅvat for 3.4.99–101 only, and its Ji must survive for 3.4.86 and
+    // 7.1.4 (juhvatu).
+    //
+    // THE GUARD IS A STAND-IN. This rule runs before 3.1.68 — before 2.4.75
+    // and 6.1.10 exist — so no term is abhyasta yet; it reads Tag::Juhotyadi
+    // instead, which every cell of this gaṇa in these four lakāras entails
+    // (ślu → dvitva, unconditionally). vidyut-prakriya applies the rule
+    // after dvitva and reads a real abhyasta tag. The equivalence breaks the
+    // moment a lakāra reduplicates CONDITIONALLY, or an aṅga outside gaṇa 3
+    // is abhyasta in laṅ; liṭ is the slice that must revisit this (its
+    // abhyasta aṅgas are everyone's), and the *sic* and *vid* arms are
+    // that slice's too.
+    Rule {
+        id: "3.4.109",
+        name: "sijaByastavidiByaSca",
+        kind: RuleKind::Vidhi,
+        vikalpa: false,
+        apply: |p| {
+            if !matches!(p.ctx.lakara, Lakara::Lan)
+                || !p.terms[ANGA].has(Tag::Juhotyadi)
+                || p.terms[ENDING_PRE_SHAP].text != "Ji"
+            {
+                return false;
+            }
+            let before = p.snapshot();
+            p.terms[ENDING_PRE_SHAP].text = "jus".into();
+            p.record("3.4.109", "sijaByastavidiByaSca", before);
             let before = p.snapshot();
             p.terms[ENDING_PRE_SHAP].text = "us".into();
             p.record("1.3.9", "tasya lopaH", before);
@@ -571,6 +609,56 @@ mod tests {
             assert!(!(rule.apply)(&mut p), "{lakara:?}");
             assert_eq!(p.terms[ENDING_PRE_SHAP].text, "Ji");
         }
+    }
+
+    #[test]
+    fn sijabhyasta_jus_replaces_lan_jhi_for_juhotyadi_only() {
+        // 3.4.109. laṅ Ji → jus → us for a juhotyādi aṅga, traced with its
+        // 1.3.9 like 3.4.108; laṭ and loṭ keep Ji (7.1.4 and 3.4.86 want
+        // it), vidhiliṅ is 3.4.108's, and a non-juhotyādi laṅ Ji is
+        // 3.4.100 + 7.1.3's business (aBavan).
+        let rule = rules().find(|r| r.id == "3.4.109").unwrap();
+        let mut p = Prakriya {
+            terms: with_slots(vec![Term::new("hu"), Term::new("Ji")]),
+            log: vec![],
+            ctx: Context::new(
+                Lakara::Lan,
+                Pada::Parasmaipada,
+                Purusha::Prathama,
+                Vacana::Bahu,
+            ),
+            blocked: false,
+        };
+        p.terms[ANGA].add(Tag::Juhotyadi);
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.terms[ENDING_PRE_SHAP].text, "us");
+        assert!(p.log.iter().any(|s| s.sutra == "3.4.109"));
+        assert!(p.log.iter().any(|s| s.sutra == "1.3.9"));
+
+        for lakara in [Lakara::Lat, Lakara::Lot, Lakara::VidhiLin] {
+            let mut p = Prakriya {
+                terms: with_slots(vec![Term::new("hu"), Term::new("Ji")]),
+                log: vec![],
+                ctx: Context::new(lakara, Pada::Parasmaipada, Purusha::Prathama, Vacana::Bahu),
+                blocked: false,
+            };
+            p.terms[ANGA].add(Tag::Juhotyadi);
+            assert!(!(rule.apply)(&mut p), "{lakara:?}");
+            assert_eq!(p.terms[ENDING_PRE_SHAP].text, "Ji");
+        }
+        let mut p = Prakriya {
+            terms: with_slots(vec![Term::new("BU"), Term::new("Ji")]),
+            log: vec![],
+            ctx: Context::new(
+                Lakara::Lan,
+                Pada::Parasmaipada,
+                Purusha::Prathama,
+                Vacana::Bahu,
+            ),
+            blocked: false,
+        };
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[ENDING_PRE_SHAP].text, "Ji");
     }
 
     #[test]
