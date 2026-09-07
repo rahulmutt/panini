@@ -441,11 +441,23 @@ fn derivation_set_is_exactly_pinned() {
 /// convention). Six `ALTERNATES` rows total, all folded into pre-existing
 /// keys; no cell reaches four forms, so √kṛ joins neither the four-, five-
 /// nor six-form record.
+///
+/// Slice 3a opens the ninth gaṇa, juhotyādi (3), the ślu gaṇa, with its
+/// eponym √hu (`03.0001`) and √ki (`03.0020`), both parasmaipadī by 1.3.78
+/// — the first roots whose derivations put a term in the `ABHYASA` slot.
+/// Eight new sūtras (2.4.75 *ślu*, 6.1.10 *ślau* dvitva, 7.4.62, 3.4.109,
+/// 7.1.4, 7.3.83, 6.4.82, 8.4.54) and two widened arms (6.4.87's and
+/// 6.4.101's *hu*), yet no new fork kind: each root forks exactly where
+/// every -oti parasmaipada root already does — laṅ prathama eka and
+/// vidhiliṅ prathama eka on 8.4.56 (`ajuhod`/`ajuhot`, `juhuyAd`/`juhuyAt`),
+/// and the two loṭ tātaṅ cells three ways (`juhotu`/`juhutAd`/`juhutAt`,
+/// `juhuDi`/`juhutAd`/`juhutAt`) — six `ALTERNATES` rows per root, all in
+/// pre-existing keys. The gaṇa is PARTIAL at 2 of its 26 rows.
 /// This test is what keeps the numbers true day to day.
 #[test]
 fn derivation_set_shape_matches_the_audited_numbers() {
     let total_cells = PARADIGM.len() * 9;
-    assert_eq!(total_cells, 3492, "388 root×lakāra blocks × 9 cells each");
+    assert_eq!(total_cells, 3564, "396 root×lakāra blocks × 9 cells each");
 
     let mut ones = 0usize;
     let mut twos = 0usize;
@@ -472,9 +484,9 @@ fn derivation_set_shape_matches_the_audited_numbers() {
             }
         }
     }
-    assert_eq!(ones, 2818, "one-form cells");
-    assert_eq!(twos, 522, "two-form cells");
-    assert_eq!(threes, 111, "three-form cells");
+    assert_eq!(ones, 2882, "one-form cells");
+    assert_eq!(twos, 526, "two-form cells");
+    assert_eq!(threes, 115, "three-form cells");
     assert_eq!(
         fours, 17,
         "four-form cells — piṣ's loṭ madhyama eka, Siz's loṭ parasmaipada madhyama eka (slice \
@@ -496,16 +508,16 @@ fn derivation_set_shape_matches_the_audited_numbers() {
          7.3.86 alongside 7.1.35/8.4.56)"
     );
 
-    assert_eq!(ALTERNATES.len(), 907, "ALTERNATES row count");
+    assert_eq!(ALTERNATES.len(), 919, "ALTERNATES row count");
     let key_count = |key: &str| {
         ALTERNATES
             .iter()
             .filter(|(_, _, _, _, _, k)| *k == key)
             .count()
     };
-    assert_eq!(key_count("8.4.56"), 130, "8.4.56-only alternates");
-    assert_eq!(key_count("7.1.35"), 108, "7.1.35-only alternates");
-    assert_eq!(key_count("7.1.35+8.4.56"), 108, "7.1.35+8.4.56 alternates");
+    assert_eq!(key_count("8.4.56"), 134, "8.4.56-only alternates");
+    assert_eq!(key_count("7.1.35"), 112, "7.1.35-only alternates");
+    assert_eq!(key_count("7.1.35+8.4.56"), 112, "7.1.35+8.4.56 alternates");
     assert_eq!(key_count("3.4.111"), 2, "3.4.111 alternates");
     assert_eq!(key_count("6.4.107"), 72, "6.4.107 alternates");
     assert_eq!(key_count("8.4.65"), 145, "8.4.65-only alternates");
@@ -545,22 +557,10 @@ fn paradigm_covers_every_enumerable_cell() {
     // √bhuj's eight (root, lakāra, pada) triples -- 1 root × 2 padas × 4
     // lakāras -- were likewise gated for one commit in the Buj/1.3.66
     // slice, between its Dhatu row landing and its audited goldens
-    // arriving.
-    //
-    // Slice 3a gates √hu's and √ki's eight (root, lakāra, pada) triples —
-    // 2 roots × 1 pada × 4 lakāras — for one commit, between their Dhatu
-    // rows landing and their cross-implementation-audited goldens
-    // arriving, the same window 7f and the Buj slice used.
-    const GATED: &[(&str, &str, Pada)] = &[
-        ("03.0001", "laT", Pada::Parasmaipada),
-        ("03.0001", "laN", Pada::Parasmaipada),
-        ("03.0001", "loT", Pada::Parasmaipada),
-        ("03.0001", "viDiliN", Pada::Parasmaipada),
-        ("03.0020", "laT", Pada::Parasmaipada),
-        ("03.0020", "laN", Pada::Parasmaipada),
-        ("03.0020", "loT", Pada::Parasmaipada),
-        ("03.0020", "viDiliN", Pada::Parasmaipada),
-    ];
+    // arriving. √hu's and √ki's eight (root, lakāra, pada) triples -- 2
+    // roots × 1 pada × 4 lakāras -- were likewise gated for one commit in
+    // slice 3a.
+    const GATED: &[(&str, &str, Pada)] = &[];
 
     let pinned: Vec<(&str, &str, Pada)> =
         PARADIGM.iter().map(|(r, l, p, _)| (*r, *l, *p)).collect();
@@ -893,6 +893,8 @@ fn pada_ambiguous_surfaces_are_exactly_these() {
     // and a loṭ `-utAm` collision (`kurutAm`, ātmanepada prathama eka =
     // parasmaipada prathama dvi), taking the set from forty-two to
     // forty-four with no new collision against any pre-slice surface.
+    // Slice 3a's two roots, √hu and √ki, are parasmaipada-only and
+    // contribute nothing; the set stands at forty-four.
     assert_eq!(
         both,
         vec![
