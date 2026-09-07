@@ -50,7 +50,9 @@
 use crate::rule::{Rule, RuleKind};
 use crate::term::Tag;
 use crate::tinanta::sound::{is_jhal, is_vowel, vrddhi_of};
-use crate::tinanta::terms::{ANGA, ENDING, SHAP, sound_before_ending, vikarana_u_asamyogapurva};
+use crate::tinanta::terms::{
+    AGAMA, ANGA, ENDING, SHAP, sound_before_ending, vikarana_u_asamyogapurva,
+};
 use panini_data::Lakara;
 
 pub(crate) static ADESHA: &[Rule] = &[
@@ -269,17 +271,19 @@ pub(crate) static ADESHA: &[Rule] = &[
     // vowel-initial ik-upadha roots (fR, tfR, GfR) take laṅ's āṭ-augment
     // (6.4.72) and then its vṛddhi ekādeśa (6.1.90 aṅga arm) — and 6.1.90's
     // merge can MANUFACTURE a spurious tail conjunct: vṛddhi expands the
-    // one-character vowel `f` to the two-character `Ar`, so `AfR` → `ArR`,
-    // and the vikaraṇa's `u` now sits after `rR` — textually identical to
-    // arRu's genuinely guṇa'd, genuinely conjunct-preceded `rR` (7.3.86's
+    // one-character vowel `f` to the two-character `Ar`, so `A` + `fR` →
+    // `ArR` (two terms merging into one), and the vikaraṇa's `u` now sits
+    // after `rR` — textually identical to arRu's genuinely guṇa'd,
+    // genuinely conjunct-preceded `rR` (7.3.86's
     // alternate guṇa arm, which correctly declines this rule; see
     // `utash_ca_declines_after_a_conjunct_u`-style tests and the loṭ
     // madhyama-eka witness `arRuhi` in this file's tests). Evaluated after
     // 6.1.90, `vikarana_u_asamyogapurva` cannot tell these two `rR`s apart
     // — it reads only surface characters — and wrongly declines the
     // augmented branch too. Evaluated HERE, before 6.1.90 has run, the
-    // aṅga is still `AfR`: `u` is asaṁyogapūrva (`R` preceded directly by
-    // the vowel `f`), and this rule can fork correctly — matching
+    // aṅga is still `fR` with the āṭ sitting in `AGAMA`, not yet merged:
+    // `u` is asaṁyogapūrva (`R` preceded directly by the vowel `f`), and
+    // this rule can fork correctly — matching
     // vidyut-prakriya's own credited order, confirmed by tracing its
     // derivation of 08.0005 laṅ uttama dvi/bahu (both padas): its 6.4.107
     // fires-or-declines strictly before its āṭaś-ca ekādeśa merges the
@@ -328,8 +332,11 @@ pub(crate) static ADESHA: &[Rule] = &[
     },
     // 6.1.90 āṭaś ca: āṭ + a following vowel yield a single vṛddhi. Two
     // shapes, one sūtra:
-    // - Aṅga arm (laṅ, the ātmanepada slice's Task 8): 6.4.72's āṭ + the
-    //   root's initial vowel. AeD → ED, AIkz → Ekz.
+    // - Aṅga arm (laṅ, the ātmanepada slice's Task 8): 6.4.72's āṭ in
+    //   `AGAMA` + the initial vowel of the first non-empty term after it —
+    //   the aṅga today, the abhyāsa once juhotyādi reduplicates a
+    //   vowel-initial root. The vṛddhi is written into that term and the
+    //   augment slot is emptied. A+eD → ED, A+Ikz → Ekz.
     // - Ending arm (loṭ uttama eka, ātmanepada): after 6.1.101 has coalesced
     //   śap a + āṭ A into śap A, that A + the ending's E merge to E
     //   (laB+A+E → laBE). MUST follow 6.1.101 — before it the shape is
@@ -340,18 +347,17 @@ pub(crate) static ADESHA: &[Rule] = &[
         kind: RuleKind::Vidhi,
         vikalpa: false,
         apply: |p| {
-            // Aṅga arm: āṭ prefix on a vowel-initial aṅga.
-            let anga: Vec<char> = p.terms[ANGA].text.chars().collect();
-            if anga.len() >= 2
-                && anga[0] == 'A'
-                && is_vowel(anga[1])
-                && let Some(v) = vrddhi_of(anga[1])
+            // Aṅga arm: āṭ in AGAMA + the first non-empty term after it.
+            if p.terms[AGAMA].text == "A"
+                && let Some(i) = (AGAMA + 1..p.terms.len()).find(|&i| !p.terms[i].text.is_empty())
+                && let Some(v0) = p.terms[i].text.chars().next()
+                && is_vowel(v0)
+                && let Some(v) = vrddhi_of(v0)
             {
                 let before = p.snapshot();
-                let mut s = String::new();
-                s.push_str(v);
-                s.extend(&anga[2..]);
-                p.terms[ANGA].text = s;
+                let rest: String = p.terms[i].text.chars().skip(1).collect();
+                p.terms[i].text = format!("{v}{rest}");
+                p.terms[AGAMA].text.clear();
                 p.record("6.1.90", "AwaS ca", before);
                 return true;
             }
@@ -489,7 +495,7 @@ pub(crate) static ADESHA: &[Rule] = &[
             // on sniffing SHAP for an `ai`: the āgama IS the condition, not
             // a proxy for it, and the gate makes the arm structurally
             // unable to fire for a root that does not take it. Same idiom
-            // 6.4.72 and 7.1.6 use to read the log for a prior rule.
+            // 7.1.6 uses to read the log for a prior rule.
             if p.log.iter().any(|s| s.sutra == "7.3.92") {
                 let chars: Vec<char> = p.terms[SHAP].text.chars().collect();
                 let Some(pos) = chars.windows(2).position(|w| w == ['a', 'i']) else {
@@ -722,6 +728,7 @@ mod tests {
     use crate::tinanta::derivation_tests::sole;
     use crate::tinanta::derive;
     use crate::tinanta::rules;
+    use crate::tinanta::terms::{ABHYASA, AGAMA, with_slots};
     use panini_data::{Pada, Purusha, Vacana, dhatus};
 
     #[test]
@@ -730,7 +737,7 @@ mod tests {
         // loses it because `v` is. Pin the guard at the rule level.
         for (ending, fires, want) in [("yva", true, "va"), ("yus", false, "yus")] {
             let mut p = Prakriya {
-                terms: vec![Term::new("Bav"), Term::new("e"), Term::new(ending)],
+                terms: with_slots(vec![Term::new("Bav"), Term::new("e"), Term::new(ending)]),
                 log: vec![],
                 ctx: Context::new(
                     Lakara::VidhiLin,
@@ -762,7 +769,7 @@ mod tests {
         let mut shap = Term::new("a");
         shap.add(Tag::Thematic);
         let mut p = Prakriya {
-            terms: vec![Term::new("laB"), shap, Term::new("Iyta")],
+            terms: with_slots(vec![Term::new("laB"), shap, Term::new("Iyta")]),
             log: vec![],
             ..Default::default()
         };
@@ -780,7 +787,7 @@ mod tests {
         // natva). A guard that tested emptiness instead of `!ends_with('a')`
         // would wrongly decline here and leave the y in place.
         let mut p = Prakriya {
-            terms: vec![Term::new("vf"), Term::new("n"), Term::new("Iyta")],
+            terms: with_slots(vec![Term::new("vf"), Term::new("n"), Term::new("Iyta")]),
             log: vec![],
             ..Default::default()
         };
@@ -790,19 +797,76 @@ mod tests {
     }
 
     #[test]
+    fn awas_ca_anga_arm_merges_the_agama_into_the_first_non_empty_term() {
+        // 6.1.90 AwaS ca, aṅga arm: āṭ + the following initial vowel yield
+        // one vṛddhi, written into the term that held the vowel; the
+        // augment slot is emptied. A+ad → Ad, A+eD → ED.
+        let rule = rules().find(|r| r.id == "6.1.90").unwrap();
+        for (root, expected) in [("ad", "Ad"), ("eD", "ED"), ("Ikz", "Ekz")] {
+            let mut p = Prakriya {
+                terms: with_slots(vec![Term::new(root), Term::new(""), Term::new("t")]),
+                ..Default::default()
+            };
+            p.terms[AGAMA].text = "A".into();
+            assert!((rule.apply)(&mut p), "{root}");
+            assert_eq!(p.terms[AGAMA].text, "", "{root}");
+            assert_eq!(p.terms[ANGA].text, expected, "{root}");
+            assert_eq!(p.text(), format!("{expected}t"), "{root}");
+        }
+        // "First non-empty term after AGAMA", not "ANGA": an abhyāsa in
+        // front of the aṅga is what meets the āṭ (slice 3d's √ṛ, A+iy+ar →
+        // Eyar). Nothing fills ABHYASA before juhotyādi lands; this pins
+        // the arm's addressing so 3d inherits it rather than re-deriving it.
+        let mut p = Prakriya {
+            terms: with_slots(vec![Term::new("ar"), Term::new(""), Term::new("t")]),
+            ..Default::default()
+        };
+        p.terms[AGAMA].text = "A".into();
+        p.terms[ABHYASA].text = "iy".into();
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.terms[AGAMA].text, "");
+        assert_eq!(p.terms[ABHYASA].text, "Ey");
+        assert_eq!(p.terms[ANGA].text, "ar");
+        assert_eq!(p.text(), "Eyart");
+    }
+
+    #[test]
+    fn awas_ca_anga_arm_declines_without_the_agama() {
+        let rule = rules().find(|r| r.id == "6.1.90").unwrap();
+        // No augment: a vowel-initial aṅga in laṭ is left alone.
+        let mut p = Prakriya {
+            terms: with_slots(vec![Term::new("ad"), Term::new(""), Term::new("ti")]),
+            ..Default::default()
+        };
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "ad");
+        // An `A`-initial aṅga text with an empty AGAMA is not an āṭ: the
+        // arm reads the slot, never the aṅga's own first character.
+        let mut p = Prakriya {
+            terms: with_slots(vec![Term::new("Aad"), Term::new(""), Term::new("ti")]),
+            ..Default::default()
+        };
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "Aad");
+    }
+
+    #[test]
     fn awas_ca_ending_arm_requires_a_third_term() {
         // 6.1.90's ending arm reads p.terms[SHAP] and p.terms[ENDING]
-        // (index 2) once its guard passes. With only two terms (aGga +
-        // SHAP, no ending inserted yet), `p.terms.len() > ENDING` (2 > 2)
-        // is false, so the guard short-circuits before ever indexing
-        // terms[2]. The `>` -> `>=` mutant makes `2 >= 2` true, so the
-        // mutant guard proceeds to check terms[SHAP].text == "A" (true
-        // here) and then indexes terms[ENDING], which is out of bounds
-        // for a 2-term vector and panics. The aGga itself ("kf") also
-        // must not satisfy the aGga arm (it doesn't start with 'A'), so
-        // this isolates the ending-arm guard alone.
+        // (index 4) once its guard passes. With only two caller terms
+        // behind the two permanent empty slots (aGga + SHAP, no ending
+        // inserted yet), `with_slots` makes `p.terms.len()` 4, so
+        // `p.terms.len() > ENDING` (4 > 4) is false, so the guard
+        // short-circuits before ever indexing terms[ENDING]. The `>` ->
+        // `>=` mutant makes `4 >= 4` true, so the mutant guard proceeds to
+        // check terms[SHAP].text == "A" (true here) and then indexes
+        // terms[ENDING], which is out of bounds for this 4-term vector and
+        // panics. The aGga arm itself declines regardless of the aGga's own
+        // text ("kf") — its guard reads `AGAMA`, which is empty here, and
+        // never inspects the aGga at all — so this isolates the ending-arm
+        // guard alone.
         let mut p = Prakriya {
-            terms: vec![Term::new("kf"), Term::new("A")],
+            terms: with_slots(vec![Term::new("kf"), Term::new("A")]),
             log: vec![],
             ..Default::default()
         };
@@ -815,16 +879,19 @@ mod tests {
     #[test]
     fn awas_ca_athematic_arm_requires_a_third_term() {
         // 6.1.90's ATHEMATIC ending arm (śap luk'd) reads p.terms[ENDING]
-        // (index 2) once its guard passes. With only two terms (aGga + an
-        // empty śap, no ending inserted yet), `p.terms.len() > ENDING`
-        // (2 > 2) is false, so the guard short-circuits before indexing
-        // terms[2]. The `>` -> `>=` mutant makes `2 >= 2` true; since the
-        // śap here is empty, the mutant guard proceeds and indexes
-        // terms[ENDING], out of bounds for a 2-term vector -> panics. The
-        // aGga ("As") does not satisfy the aGga arm (its 2nd char 's' is
-        // not a vowel), isolating the athematic ending-arm guard.
+        // (index 4) once its guard passes. With only two caller terms
+        // behind the two permanent empty slots (aGga + an empty śap, no
+        // ending inserted yet), `with_slots` makes `p.terms.len()` 4, so
+        // `p.terms.len() > ENDING` (4 > 4) is false, so the guard
+        // short-circuits before indexing terms[ENDING]. The `>` -> `>=`
+        // mutant makes `4 >= 4` true; since the śap here is empty, the
+        // mutant guard proceeds and indexes terms[ENDING], out of bounds
+        // for this 4-term vector -> panics. The aGga arm declines outright
+        // because `AGAMA` is empty here — the arm never reads the aGga, so
+        // "As"'s own leading 'A' is irrelevant to it — isolating the
+        // athematic ending-arm guard.
         let mut p = Prakriya {
-            terms: vec![Term::new("As"), Term::new("")],
+            terms: with_slots(vec![Term::new("As"), Term::new("")]),
             log: vec![],
             ..Default::default()
         };
@@ -849,7 +916,7 @@ mod tests {
         // regardless of the two `ends_with` conjuncts short-circuiting it, so
         // the mutant fires and wrongly coalesces "AE" -> "E".
         let mut p = Prakriya {
-            terms: vec![Term::new("laB"), Term::new("a"), Term::new("AE")],
+            terms: with_slots(vec![Term::new("laB"), Term::new("a"), Term::new("AE")]),
             log: vec![],
             ..Default::default()
         };
@@ -862,7 +929,7 @@ mod tests {
     fn atash_ca_athematic_arm_fires_for_a_svadi_stem() {
         // aS + nav + AE → aS + nav + E → aSnavE (loṭ ātmanepada uttama eka).
         let mut p = Prakriya {
-            terms: vec![Term::new("aS"), Term::new("nav"), Term::new("AE")],
+            terms: with_slots(vec![Term::new("aS"), Term::new("nav"), Term::new("AE")]),
             ..Default::default()
         };
         let rule = rules().find(|r| r.id == "6.1.90").unwrap();
@@ -875,7 +942,7 @@ mod tests {
     fn atash_ca_athematic_arm_still_fires_for_adadi() {
         // As + "" + AE → AsE. The arm's original job; must not regress.
         let mut p = Prakriya {
-            terms: vec![Term::new("As"), Term::new(""), Term::new("AE")],
+            terms: with_slots(vec![Term::new("As"), Term::new(""), Term::new("AE")]),
             ..Default::default()
         };
         let rule = rules().find(|r| r.id == "6.1.90").unwrap();
@@ -911,7 +978,7 @@ mod tests {
         // fail on unmodified code (not just under a guard-deletion mutant).
         for shap in ["a", "A", "ya", "yA", "nA", "Ana"] {
             let mut p = Prakriya {
-                terms: vec![Term::new("laB"), Term::new(shap), Term::new("AE")],
+                terms: with_slots(vec![Term::new("laB"), Term::new(shap), Term::new("AE")]),
                 ..Default::default()
             };
             let rule = rules().find(|r| r.id == "6.1.90").unwrap();
@@ -925,7 +992,7 @@ mod tests {
     fn atash_ca_declines_when_the_ending_is_not_a_plus_ec() {
         // ApnavAni: `Ani` is A + n, not A + ec, so nothing coalesces.
         let mut p = Prakriya {
-            terms: vec![Term::new("Ap"), Term::new("nav"), Term::new("Ani")],
+            terms: with_slots(vec![Term::new("Ap"), Term::new("nav"), Term::new("Ani")]),
             ..Default::default()
         };
         let rule = rules().find(|r| r.id == "6.1.90").unwrap();
@@ -938,7 +1005,7 @@ mod tests {
         // Fires: after 7.2.79 the adādi liṅ 3pl ending is `yAus`; the ā
         // before `us` drops -> `yus`.
         let mut p = Prakriya {
-            terms: vec![Term::new("yA"), Term::new(""), Term::new("yAus")],
+            terms: with_slots(vec![Term::new("yA"), Term::new(""), Term::new("yAus")]),
             log: vec![],
             ctx: Context::new(
                 Lakara::VidhiLin,
@@ -955,7 +1022,7 @@ mod tests {
         // Declines: the thematic liṅ 3pl ending is `iyus` (7.2.80 rewrote yA
         // -> iy); the char before `us` is `y`, not a/ā, so nothing changes.
         let mut q = Prakriya {
-            terms: vec![Term::new("Bav"), Term::new("a"), Term::new("iyus")],
+            terms: with_slots(vec![Term::new("Bav"), Term::new("a"), Term::new("iyus")]),
             log: vec![],
             ctx: Context::new(
                 Lakara::VidhiLin,
@@ -983,7 +1050,7 @@ mod tests {
     #[test]
     fn usyapadantat_uses_n_minus_3_not_n_over_3() {
         let mut p = Prakriya {
-            terms: vec![Term::new("yA"), Term::new(""), Term::new("yAaus")],
+            terms: with_slots(vec![Term::new("yA"), Term::new(""), Term::new("yAaus")]),
             log: vec![],
             ctx: Context::new(
                 Lakara::VidhiLin,
@@ -1008,7 +1075,7 @@ mod tests {
 
         // junction arm: ayA + us -> ay + us
         let mut p = Prakriya {
-            terms: vec![Term::new("ayA"), Term::new(""), Term::new("us")],
+            terms: with_slots(vec![Term::new("ayA"), Term::new(""), Term::new("us")]),
             ..Default::default()
         };
         assert!((rule.apply)(&mut p));
@@ -1016,7 +1083,7 @@ mod tests {
 
         // ending arm, unchanged: the a/ā is inside the ending
         let mut p = Prakriya {
-            terms: vec![Term::new("yA"), Term::new(""), Term::new("yAus")],
+            terms: with_slots(vec![Term::new("yA"), Term::new(""), Term::new("yAus")]),
             ..Default::default()
         };
         assert!((rule.apply)(&mut p));
@@ -1024,7 +1091,7 @@ mod tests {
 
         // junction arm declines when the aṅga is not a/ā-final
         let mut p = Prakriya {
-            terms: vec![Term::new("yAy"), Term::new(""), Term::new("us")],
+            terms: with_slots(vec![Term::new("yAy"), Term::new(""), Term::new("us")]),
             ..Default::default()
         };
         assert!(!(rule.apply)(&mut p));
@@ -1038,7 +1105,7 @@ mod tests {
         // decline rather than panic on it — pinned directly so that guard
         // has a witness under mutation testing.
         let mut p = Prakriya {
-            terms: vec![Term::new(""), Term::new(""), Term::new("us")],
+            terms: with_slots(vec![Term::new(""), Term::new(""), Term::new("us")]),
             ..Default::default()
         };
         let rule = rules().find(|r| r.id == "6.1.96").unwrap();
@@ -1049,14 +1116,15 @@ mod tests {
     //
     // The adAdi arm's own guard is `len() > ENDING && SHAP.is_empty() &&
     // ANGA.ends_with('A') && matches!(ENDING.chars().next(), ...)`. Build a
-    // 2-term Prakriya (aGga "yA" + an empty, luk'd Sap slot, no ending term
-    // at all) so `len() > ENDING` (2 > 2) is false in the original: the
-    // if-block short-circuits before ever indexing terms[ENDING], and
-    // control falls to the rule's second (pre-adAdi) branch, whose own
-    // `!SHAP.text.ends_with('a')` is true for an empty SHAP (`""` does not
-    // end with `'a'`) and short-circuits the `||` there too — so the
-    // original returns false with no panic, on only 2 terms. The `>` ->
-    // `>=` mutant lets the first if-block through at `len() == ENDING`,
+    // 4-term Prakriya (the two permanent leading slots, aGga "yA", and an
+    // empty, luk'd Sap slot, no ending term at all) so `len() > ENDING`
+    // (4 > 4) is false in the original: the if-block short-circuits before
+    // ever indexing terms[ENDING], and control falls to the rule's second
+    // (pre-adAdi) branch, whose own `!SHAP.text.ends_with('a')` is true
+    // for an empty SHAP (`""` does not end with `'a'`) and short-circuits
+    // the `||` there too — so the original returns false with no panic,
+    // on only 4 terms. The `>` -> `>=` mutant lets the first if-block
+    // through at `len() == ENDING`,
     // and its fourth conjunct indexes the nonexistent terms[ENDING],
     // panicking.
     #[test]
@@ -1064,7 +1132,7 @@ mod tests {
         let mut anga = Term::new("yA");
         anga.add(Tag::Adadi);
         let mut p = Prakriya {
-            terms: vec![anga, Term::new("")],
+            terms: with_slots(vec![anga, Term::new("")]),
             log: vec![],
             ..Default::default()
         };
@@ -1079,7 +1147,7 @@ mod tests {
 
         // Fires: adādi liṅ 1sg ending `yAam` (śap empty) -> `yAm`.
         let mut p = Prakriya {
-            terms: vec![Term::new("yA"), Term::new(""), Term::new("yAam")],
+            terms: with_slots(vec![Term::new("yA"), Term::new(""), Term::new("yAam")]),
             log: vec![],
             ctx: Context::new(
                 Lakara::VidhiLin,
@@ -1095,7 +1163,7 @@ mod tests {
         // Declines: the `yA` of `yAt` (2sg-shape) is followed by a consonant,
         // not a vowel, so no savarṇa coalescence.
         let mut q = Prakriya {
-            terms: vec![Term::new("yA"), Term::new(""), Term::new("yAt")],
+            terms: with_slots(vec![Term::new("yA"), Term::new(""), Term::new("yAt")]),
             log: vec![],
             ctx: Context::new(
                 Lakara::VidhiLin,
@@ -1114,7 +1182,7 @@ mod tests {
         // scopes it away from every thematic gaṇa, where 7.2.80 has already
         // consumed the `yA` shape anyway.
         let mut r = Prakriya {
-            terms: vec![Term::new("Bav"), Term::new("a"), Term::new("iyam")],
+            terms: with_slots(vec![Term::new("Bav"), Term::new("a"), Term::new("iyam")]),
             log: vec![],
             ctx: Context::new(
                 Lakara::VidhiLin,
@@ -1132,25 +1200,26 @@ mod tests {
     //
     // 6.1.101's first arm's guard, above, is `len() > ENDING && lakara ==
     // VidhiLin && !SHAP.ends_with('a') && ENDING.starts_with("yA") && ...`. A
-    // 2-term Prakriya (aGga "yA" + an empty Sap slot, no ENDING term at
-    // all) makes `len() > ENDING` (2 > 2) false in the original, so the
-    // if-block short-circuits before ever indexing terms[ENDING]; control
-    // falls through the second (pre-adAdi) and third (kryAdi) arms (both
-    // guarded by the same `len() > ENDING`, equally false) to the fourth
-    // (thematic) branch, whose `!SHAP.text.ends_with('a')` is true for an
-    // empty SHAP and short-circuits the `||` there too -- so the original
-    // returns false with no panic. Unlike the existing two-term regression
-    // test for the adAdi arm above, this one pins the lakara to VidhiLin:
-    // the `>` -> `>=` mutant needs `lakara == VidhiLin` to be true to reach
-    // its fourth conjunct, which indexes the nonexistent terms[ENDING]
-    // (index 2 on a 2-element Vec) and panics. A default-lakara (Lat)
-    // Prakriya would let the mutant's second conjunct short-circuit first
-    // and never distinguish it -- this is why the earlier two-term test
-    // alone didn't kill this mutant.
+    // 4-term Prakriya (the two permanent leading slots, aGga "yA", and an
+    // empty Sap slot, no ENDING term at all) makes `len() > ENDING`
+    // (4 > 4) false in the original, so the if-block short-circuits before
+    // ever indexing terms[ENDING]; control falls through the second
+    // (pre-adAdi) and third (kryAdi) arms (both guarded by the same
+    // `len() > ENDING`, equally false) to the fourth (thematic) branch,
+    // whose `!SHAP.text.ends_with('a')` is true for an empty SHAP and
+    // short-circuits the `||` there too -- so the original returns false
+    // with no panic. Unlike the existing regression test for the adAdi arm
+    // above (also a 4-term Prakriya), this one pins the lakara to
+    // VidhiLin: the `>` -> `>=` mutant needs `lakara == VidhiLin` to be
+    // true to reach its fourth conjunct, which indexes the nonexistent
+    // terms[ENDING] (index 4 on a 4-element Vec) and panics. A
+    // default-lakara (Lat) Prakriya would let the mutant's second conjunct
+    // short-circuit first and never distinguish it -- this is why the
+    // earlier test alone didn't kill this mutant.
     #[test]
     fn savarna_dirgha_adadi_lin_1sg_arm_two_term_prakriya_does_not_panic() {
         let mut p = Prakriya {
-            terms: vec![Term::new("yA"), Term::new("")],
+            terms: with_slots(vec![Term::new("yA"), Term::new("")]),
             log: vec![],
             ctx: Context::new(
                 Lakara::VidhiLin,
@@ -1176,7 +1245,7 @@ mod tests {
         // Fires: mip's 3.4.101 `am` ending meets the vikaraṇa's `A` -> `nAm`
         // (kliS laṅ uttama eka, akliSnAm).
         let mut p = Prakriya {
-            terms: vec![Term::new("kliS"), Term::new("nA"), Term::new("am")],
+            terms: with_slots(vec![Term::new("kliS"), Term::new("nA"), Term::new("am")]),
             log: vec![],
             ..Default::default()
         };
@@ -1186,7 +1255,7 @@ mod tests {
         // Fires: the loṭ uttama āḍ-augmented ending `Ani` meets the same
         // vikaraṇa -> `nAni` (kliS loṭ uttama eka, kliSnAni).
         let mut q = Prakriya {
-            terms: vec![Term::new("kliS"), Term::new("nA"), Term::new("Ani")],
+            terms: with_slots(vec![Term::new("kliS"), Term::new("nA"), Term::new("Ani")]),
             log: vec![],
             ..Default::default()
         };
@@ -1196,7 +1265,7 @@ mod tests {
         // Declines: a consonant-initial ending (e.g. `ti`) is untouched --
         // this arm is only for a/ā-initial endings meeting the vikaraṇa's ā.
         let mut r = Prakriya {
-            terms: vec![Term::new("kliS"), Term::new("nA"), Term::new("ti")],
+            terms: with_slots(vec![Term::new("kliS"), Term::new("nA"), Term::new("ti")]),
             log: vec![],
             ..Default::default()
         };
@@ -1207,9 +1276,10 @@ mod tests {
     // --- 6.1.101 kryAdi arm: `len() > ENDING` boundary pin -----------------
     //
     // The kryādi arm's own guard, above, is `len() > ENDING &&
-    // SHAP.ends_with('A') && ...`. A 2-term Prakriya (aṅga + the śnā
-    // vikaraṇa at SHAP, no ENDING term at all) makes `len() > ENDING`
-    // (2 > 2) false in the original, so the if-block short-circuits before
+    // SHAP.ends_with('A') && ...`. A 4-term Prakriya (the two permanent
+    // leading slots, aṅga, and the śnā vikaraṇa at SHAP, no ENDING term at
+    // all) makes `len() > ENDING` (4 > 4) false in the original, so the
+    // if-block short-circuits before
     // ever indexing terms[ENDING]. Lat (the default context) keeps the
     // vidhiliṅ 1sg arm above out of the way regardless of the length
     // operator (its own guard requires `lakara == VidhiLin`), and the
@@ -1226,7 +1296,7 @@ mod tests {
     #[test]
     fn akah_savarne_dirghah_kryadi_arm_two_term_prakriya_does_not_panic() {
         let mut p = Prakriya {
-            terms: vec![Term::new("kliS"), Term::new("nA")],
+            terms: with_slots(vec![Term::new("kliS"), Term::new("nA")]),
             log: vec![],
             ..Default::default()
         };
@@ -1240,7 +1310,7 @@ mod tests {
         // Ap + nu + hi must stay Apnuhi. `p` is a jhal, but it is not what
         // precedes `hi` — śnu's `u` is, and `u` is not a jhal.
         let mut p = Prakriya {
-            terms: vec![Term::new("Ap"), Term::new("nu"), Term::new("hi")],
+            terms: with_slots(vec![Term::new("Ap"), Term::new("nu"), Term::new("hi")]),
             ..Default::default()
         };
         let rule = rules().find(|r| r.id == "6.4.101").unwrap();
@@ -1253,7 +1323,7 @@ mod tests {
         // √ad: śap is luk'd, so the nearest non-empty term before the ending is
         // the root itself and `d` is still the right character. adDi.
         let mut p = Prakriya {
-            terms: vec![Term::new("ad"), Term::new(""), Term::new("hi")],
+            terms: with_slots(vec![Term::new("ad"), Term::new(""), Term::new("hi")]),
             ..Default::default()
         };
         let rule = rules().find(|r| r.id == "6.4.101").unwrap();
@@ -1266,7 +1336,7 @@ mod tests {
         // vrI + nI + hi → vrIRIhi. `I` is not a jhal. Unchanged by this task,
         // pinned so the change is provably a no-op here too.
         let mut p = Prakriya {
-            terms: vec![Term::new("vrI"), Term::new("nI"), Term::new("hi")],
+            terms: with_slots(vec![Term::new("vrI"), Term::new("nI"), Term::new("hi")]),
             ..Default::default()
         };
         let rule = rules().find(|r| r.id == "6.4.101").unwrap();
@@ -1277,7 +1347,7 @@ mod tests {
     fn utash_ca_luks_hi_after_a_non_conjunct_u() {
         // hi + nu + hi → hinu.
         let mut p = Prakriya {
-            terms: vec![Term::new("hi"), Term::new("nu"), Term::new("hi")],
+            terms: with_slots(vec![Term::new("hi"), Term::new("nu"), Term::new("hi")]),
             ..Default::default()
         };
         p.terms[SHAP].add(Tag::Vikarana);
@@ -1290,7 +1360,7 @@ mod tests {
     fn utash_ca_declines_after_a_conjunct_u() {
         // Ap + nu + hi → Apnuhi. The asaṁyogapūrva clause is the whole rule.
         let mut p = Prakriya {
-            terms: vec![Term::new("Ap"), Term::new("nu"), Term::new("hi")],
+            terms: with_slots(vec![Term::new("Ap"), Term::new("nu"), Term::new("hi")]),
             ..Default::default()
         };
         p.terms[SHAP].add(Tag::Vikarana);
@@ -1302,7 +1372,7 @@ mod tests {
     #[test]
     fn utash_ca_declines_when_the_ending_is_not_hi() {
         let mut p = Prakriya {
-            terms: vec![Term::new("hi"), Term::new("nu"), Term::new("ti")],
+            terms: with_slots(vec![Term::new("hi"), Term::new("nu"), Term::new("ti")]),
             ..Default::default()
         };
         p.terms[SHAP].add(Tag::Vikarana);
@@ -1313,7 +1383,7 @@ mod tests {
     /// Build a post-3.1.68 svādi prakriyā: root, śnu, ending.
     fn shnu_p(root: &str, ending: &str) -> Prakriya {
         let mut p = Prakriya {
-            terms: vec![Term::new(root), Term::new("nu"), Term::new(ending)],
+            terms: with_slots(vec![Term::new(root), Term::new("nu"), Term::new(ending)]),
             ..Default::default()
         };
         p.terms[SHAP].add(Tag::Vikarana);
@@ -1399,20 +1469,24 @@ mod tests {
     #[test]
     fn fr_lan_uttama_forks_into_both_asamyogapurva_readings() {
         // The cross-implementation audit's fix-round-1 witness. Task 3's
-        // widened helper originally read the aṅga's surface characters
-        // AFTER 6.1.90's āṭ-vṛddhi ekādeśa had already merged laṅ's
-        // augment into fR's own vowel (fR -> AfR -> ArR), so it saw the
-        // SAME "rR" shape guṇa produces (a genuine conjunct — see
+        // widened helper originally read the aṅga's surface characters AFTER
+        // 6.1.90's āṭ-vṛddhi ekādeśa had already merged laṅ's augment into
+        // fR's own vowel — at the time, before the juhotyādi prep gave the
+        // augment its own `AGAMA` slot, a single aṅga term held the whole
+        // prefixed shape, so that merge read as fR -> AfR -> ArR — and it saw
+        // the SAME "rR" shape guṇa produces (a genuine conjunct — see
         // `arruhi_guna_conjunct_still_declines_hi_luk_after_the_reorder`
-        // below) and wrongly declined the augmented branch too — this
-        // engine derived only "ArRuva", never forking. Moving 6.4.106 and
-        // 6.4.107 ahead of 6.1.90's aṅga arm lets the helper read the
-        // PRE-ekādeśa "AfR", where the vikaraṇa's `u` is asaṁyogapūrva
-        // (`R` preceded directly by the vowel `f`) — matching
-        // vidyut-prakriya's own traced order (its 6.4.107 fires-or-
-        // declines strictly before its āṭaś-ca ekādeśa merges the terms).
-        // All four cells the audit flagged: 08.0005 fR laṅ uttama-puruṣa
-        // dvi/bahu, both padas.
+        // below) and wrongly declined the augmented branch too — this engine
+        // derived only "ArRuva", never forking.
+        //
+        // Moving 6.4.106 and 6.4.107 ahead of 6.1.90's aṅga arm lets the
+        // helper read `ANGA` before that merge runs, when it still holds the
+        // bare "fR" and the āṭ sits separately in `AGAMA`: the vikaraṇa's `u`
+        // is asaṁyogapūrva (`R` preceded directly by the vowel `f`) — matching
+        // vidyut-prakriya's own traced order (its 6.4.107 fires-or-declines
+        // strictly before its āṭaś-ca ekādeśa merges the terms). All four
+        // cells the audit flagged: 08.0005 fR laṅ uttama-puruṣa dvi/bahu, both
+        // padas.
         let d = dhatus().iter().find(|d| d.dhatupatha == "08.0005").unwrap();
         let cases: [(Pada, Vacana, &str, &str); 4] = [
             (Pada::Parasmaipada, Vacana::Dvi, "ArRuva", "ArRva"),

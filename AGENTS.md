@@ -778,6 +778,136 @@
     is unchanged: raise the cap only if a pre-campaign projection exceeds
     4800s or a measured caught-mutant margin drops much below 1.85×, and
     record the change in `AGENTS.md` and `mise.toml` together.
+    **The juhotyādi prep (five-slot layout, no new cell) re-measured both at
+    3492 cells.** Uncontended floor: paradigm 895.91s, roundtrip 1124.11s,
+    trace 3.74s — a wall clock of **2025.227s** (`time mise run test`'s own
+    wall clock; the 2023.76s component sum leaves ~1.47s of build overhead,
+    within the ~0.8–4s range this series' two methods have agreed on since
+    7f). Cell count did **not** move this slice (3492 → 3492 — the layout
+    adds two permanent leading slots per prakriya, not a cell); the floor
+    nonetheless grew from 8b's 1958.411s to 2025.227s, **+3.41%** — the
+    first slice in this series with a floor move to explain without a
+    cell-count change to blame it on. That move is not a mystery: it lands
+    inside the Task 1–3 branch's own uncontended calibration for this exact
+    layout (paradigm 906–916s, roundtrip 1123–1146s, measured on that
+    branch contended by nothing but itself), so the ~3.4% cost is the
+    five-slot layout's own two extra terms per prakriya, not noise or
+    regression. All three binaries moved together this time, within a
+    percentage point of each other: paradigm 866.37s → 895.91s (+3.41%),
+    roundtrip 1087.37s → 1124.11s (+3.38%), trace 3.61s → 3.74s (+3.60%).
+    Cap sanity check before the campaign: 2025.227s × the standing
+    **1.02×–1.43×** `-j 4` contention range (the recorded range from prior
+    slices' direct measurements, not a fresh guess) projects an uncaught
+    mutant at **2065.73–2896.07s**. Against the standing `--timeout 4800`
+    cap, that is a margin of **2.32×–1.66×** — slightly tighter than 8b's
+    own 2.40×–1.71× (the floor grew, the cap didn't), but still comfortably
+    clear of the brief's own stop condition (a projection exceeding 4800s).
+    **Ruling: keep 4800, proceed.**
+    Campaign: `mise run mutants` failed instantly in the background shell
+    used to launch it (`mise ERROR No version is set for shim:
+    cargo-mutants`) — the same shim-resolution issue 8a and 8b both hit;
+    run via the `cargo-mutants` binary directly instead, with `mise.toml`'s
+    task's exact arguments (`cargo mutants --package panini-prakriya
+    --test-workspace=true --timeout 4800 -j 4`), confirmed correct by `ps`
+    and by `debug.log` showing four genuinely concurrent build+test
+    workers, not a cached no-op. Run at HEAD (`bb58e10`). **618 mutants,
+    574 caught, 2 missed, 41 unviable, 1 timeout** (574 + 41 + 1 = 616,
+    plus the 2 missed = 618), a single continuous run — not chunked with
+    `--iterate` — wall clock **18h31m** (2026-09-06 19:16:28 – 2026-09-07
+    13:47:17 UTC; cargo-mutants' own summary line rounds this to "19h").
+    The mutant population grew 615 → 618, **+0.49%** — this slice's three
+    new code sites (`with_slots`, 6.1.90's aṅga-arm `find`, and the `AGAMA`
+    string writes in 6.4.71/6.4.72) account for the new-code share of it;
+    see below for the site-by-site count, which does not split evenly.
+    The timeout is the same known-permanent `tripadi.rs`, 8.4.2
+    backward-ṇatva-scan, non-terminating-loop mutant (`j -= 1` -> `j /=
+    1`, now at `tripadi.rs:1416:23`, moved +1 line from 8b's `:1415:23`),
+    confirmed by diff shape rather than by line number; it ran the full
+    4800.01s cap, the correct verdict at any cap.
+    **Both missed mutants are the same documented equivalent pair carried
+    since 7e — relocated but otherwise unchanged, confirmed at their
+    in-place comments:**
+    - `adesha.rs:517:30` (moved +10 from 8b's `:507:30`, by this slice's
+      own new code earlier in the file), 6.1.87's im arm, `replace + with
+      *` (`s.remove(pos + 1)` -> `s.remove(pos)`) — the same documented
+      equivalence as every prior slice: whichever half of the adjacent `a
+      i` pair survives the removal is immediately clobbered by the
+      following `'e'` assignment.
+    - `tripadi.rs:1176:38` (moved +1 from 8b's `:1175:38`), 8.3.13's guard,
+      `replace - with /` (`w[i - 1]` -> `w[i / 1]`, i.e. `w[i]`) — the same
+      documented equivalence as before: both `Q`s at the matched position
+      are identical, so eliding either produces the same surface string.
+    **Step 5 (fix any genuine survivor) is a no-op this slice** — no
+    genuine survivor turned up.
+    This slice's own new code was exercised and largely caught, with one
+    real coverage gap:
+    - `with_slots` (`terms.rs:116:5`) has two mutants: `vec![]` is caught
+      (fast — 0.1s test phase — by five `panini_analyze` unit tests that
+      immediately fail on an empty term vector: `analysis_reports_its_
+      lakara`, `analysis_reports_its_pada`, `devanagari_input_is_
+      accepted`, `non_covered_word_is_invalid`, `valid_word_returns_
+      trace`); `vec![Default::default()]` is unviable (`Term` has no
+      `Default` impl, so it fails to build).
+    - 6.1.90's aṅga arm (`adesha.rs:349`–`350`, the `find` over `AGAMA +
+      1..p.terms.len()`) has three mutants, all caught: `AGAMA].text ==
+      "A"` -> `!=` (`:349:36`), `AGAMA + 1` -> `AGAMA * 1` (`:350:41`), and
+      deleting the `!` on `!p.terms[i].text.is_empty()` (`:350:71`) — the
+      plan's own prediction (`AGAMA + 1` -> `* 1`, `is_empty` inverted),
+      confirmed almost verbatim.
+    - The plan's third prediction — literal `"a"`/`"A"` replacements on
+      the `AGAMA` writes in 6.4.71/6.4.72 (`anga.rs:31`, `:60`) — never
+      generated a mutant at all: `mutants.json` has no entry at either
+      line. cargo-mutants 27.1.0 only mutates a string literal when it is
+      itself a function's return value, not when it is assigned to a
+      struct field inside a statement, so `p.terms[AGAMA].text =
+      "a".into();` is invisible to this tool's mutation genres. This is a
+      coverage gap of the same shape already recorded in this series
+      (7f's `saturating_sub`, 8a's `Atmanepada` arms, 8b's `kur` guard) —
+      not a missed test, and not one a unit test can retroactively "catch"
+      since no mutant exists to catch.
+    `outcomes.json`'s per-mutant test-phase durations, restricted to the
+    **574 caught mutants** (this campaign's Step 5 snippet scopes strictly
+    to `CaughtMutant` outcomes, unlike some earlier entries' broader `n =
+    mutants − unviable`, so the two are not directly comparable
+    slice-over-slice): `caught=574 median=154.8 p90=1822.1 p99=2259.7
+    max=2821.6` / `over 600s: 149  over 1200s: 61`. The max, **2821.64s**
+    (`tripadi.rs:1411:33`, `replace < with <=`), is a new max-of-record for
+    this series, above 8b's 2471.08s. **149** of the 574 exceeded 600s (8b:
+    147 of 576) and **61** exceeded 1200s (8b: 61) — both essentially flat,
+    tracking the floor's own modest (+3.4%, not double-digit) growth this
+    slice rather than jumping with it.
+    **Two margins, measured, not projected:**
+    - Against the worst **caught** mutant (2821.64s, measured): 4800 /
+      2821.64 ≈ **1.70×** — the tightest caught-mutant margin yet in this
+      series, below 8b's 1.94× and 8a's own low of 1.85×. This is now the
+      series' new low; the next slice should treat 1.70×, not 1.85×, as
+      the trigger reference.
+    - Against the worst **uncaught** run (2229.34s, measured — both missed
+      mutants ran the golden suite to completion without being caught, the
+      `adesha.rs` one slower at 2229.34s against `tripadi.rs`'s 2127.28s):
+      4800 / 2229.34 ≈ **2.15×**.
+    **A direct calibration point for the standing 1.02×–1.43× range,
+    recorded for the first time against a named, individual, permanent
+    mutant rather than an averaged batch:** the `tripadi.rs:1176` (8.3.13)
+    equivalent — the same one carried since 7e — ran its full uncaught test
+    phase in **2127.28s** this campaign, against the 2023.76s uncontended
+    floor measured above: **2127.28 / 2023.76 ≈ 1.05×**, near the bottom of
+    the recorded range and consistent with (not contradicting) 8b's own
+    finding that its uncaught runs landed at the range's bottom too. Its
+    two margins: against the standing 4800s cap, 4800 / 2127.28 ≈ **2.26×**
+    measured; against the cap-sanity check's own ×1.43 projected ceiling
+    (2896.07s), 4800 / 2896.07 ≈ **1.66×** — the same figure as this
+    slice's own pre-campaign worst-case margin above, since both derive
+    from the same ×1.43 endpoint.
+    **Ruling: keep 4800.** Both margins clear 1× comfortably, but the
+    caught-mutant margin (1.70×) is now the lowest of this entire series —
+    tighter than 8a's 1.85× and 8b's 1.94× — while the floor grew only
+    +3.41% (no new cell) rather than a double-digit jump. The next slice
+    should re-measure both figures rather than assume this margin holds:
+    if a future slice's pre-campaign projection (Step 2) exceeds 4800s, or
+    its measured caught-mutant margin drops much below 1.70×, that is the
+    trigger to raise the cap — recorded in `AGENTS.md` and `mise.toml`
+    together, per the standing rule, not a silent widening.
   - `cargo-deny` + `cargo-audit` (supply-chain checks) — `mise run audit` runs
     `cargo audit && cargo deny check` and is expected to pass, including
     `cargo deny check advisories`.
@@ -1038,8 +1168,8 @@
     the root's own anudātta settles its pada by 1.3.12 *anudāttaṅita
     ātmanepadam*. śnam is the engine's first **infix**: unlike every other
     vikaraṇa it is not a suffix, and the pipeline's fixed
-    `[ANGA, SHAP, ENDING]` slots have
-    nowhere to put one, so 3.1.78 splits the root across the first two
+    `[AGAMA, ABHYASA, ANGA, SHAP, ENDING]` slots have
+    nowhere to put one, so 3.1.78 splits the root across `ANGA` and `SHAP`
     instead — `terms[SHAP].text` for rudhādi is śnam followed by the root's
     own tail, not the vikaraṇa alone (`kft` → `[kf, nat, ti]`); see the
     "REPRESENTATION" note on 3.1.78 in `tinanta/vikarana.rs` and the caveat
@@ -1276,9 +1406,11 @@
   `tinanta_rule_order_is_pinned` in the same position. Which stage a rule
   belongs to is decided by its position relative to **3.1.68**, not by its
   sūtra family: rules before
-  3.1.68 address the ending as `ENDING_PRE_SHAP` (index 1), rules after it as
-  `ENDING` (index 2), and `terms[SHAP].text` may be empty for adādi. See
-  `tinanta/terms.rs`. Per-rule guard tests go beside the rule in its stage
+  3.1.68 address the ending as `ENDING_PRE_SHAP` (index 3), rules after it as
+  `ENDING` (index 4), and `terms[SHAP].text` may be empty for adādi. Two
+  permanent, usually-empty slots — `AGAMA` (0) and `ABHYASA` (1) — precede
+  the aṅga; see `tinanta/terms.rs`. Per-rule guard tests go beside the rule
+  in its stage
   file; tests asserting a surface form or trace go in
   `tinanta/derivation_tests.rs`. **Write a per-rule guard test where the
   rule's precondition can be built directly on a hand-built `Prakriya`.

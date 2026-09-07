@@ -109,6 +109,22 @@ PANINI_AUDIT_DUMP=/tmp/audit-table.tsv mise exec rust@1.98.0 -- cargo run --rele
 
 ## Last recorded result
 
+2026-09-06, juhotyādi prep — five-slot layout, vidyut
+`8da2f90bee3ce1c07505fa432fc3729e3f7e02ea`: **zero differences across 3492
+cells / 4399 forms / 77 roots**, with the `entry` negative control verified
+failing first (exit 1, 36 √bhū cells, `Bavati` vs `paWati` and so on —
+unchanged from 8b, as expected since the control targets `01.0001`/
+`01.0381`, both outside this slice's scope). Totals are unchanged from 8b:
+this slice touched no root, rule, or golden; it only reshaped every
+prakriya's term layout into five fixed slots (`AGAMA` 0, `ABHYASA` 1,
+`ANGA` 2, `SHAP` 3, `ENDING` 4) and moved laṅ's augment into the `AGAMA`
+slot. The verdict now covers two structural changes: **6.4.71/6.4.72**
+writing the augment into its own `AGAMA` term instead of prefixing it onto
+the aṅga's text, and **6.1.90**'s aṅga arm merging that `AGAMA` term's text
+into the first non-empty term after it (rather than reading a single
+already-prefixed aṅga term) — a zero-difference, unchanged-totals result
+confirms the reslotting is transparent to every derived form.
+
 2026-09-04, tanādi 8b slice, vidyut `8da2f90bee3ce1c07505fa432fc3729e3f7e02ea`:
 **zero differences across 3492 cells / 4399 forms / 77 roots**, with the
 `entry` negative control verified failing first (exit 1, 36 √bhū cells,

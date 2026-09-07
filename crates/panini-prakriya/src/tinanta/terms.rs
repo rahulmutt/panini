@@ -1,37 +1,66 @@
 //! Term layout for the tiṅanta pipeline: which index holds what, when that
 //! changes, and which term counts as "the follower" for rules that ask.
 //!
-//! Every rule in this pipeline addresses terms by these constants. The two
-//! caveats below are load-bearing — a rule that ignores either produces a
-//! non-word or panics, with no test able to name the cause.
+//! Every rule in this pipeline addresses terms by these constants. The
+//! caveats below are load-bearing — a rule that ignores any of them produces
+//! a non-word or panics, with no test able to name the cause.
 
 use crate::prakriya::Prakriya;
 use crate::term::Term;
 use crate::tinanta::sound::is_vowel;
 
+/// Index of the laṅ augment — aṭ (6.4.71) or āṭ (6.4.72). Permanent slot,
+/// empty in every other lakāra; 6.1.90 empties it again when the āṭ merges
+/// into the following vowel. Stable across the pipeline.
+pub(crate) const AGAMA: usize = 0;
+
+/// Index of the abhyāsa — the reduplicant 6.1.10 ślau copies in front of
+/// the aṅga for juhotyādi. Permanent slot, empty for every other gaṇa (and,
+/// until slice 3a lands, for every derivation). Stable across the pipeline.
+// Unused outside tests until slice 3a (6.1.10) lands. Remove this allow
+// once a rule body reads or writes `ABHYASA`.
+#[allow(dead_code)]
+pub(crate) const ABHYASA: usize = 1;
+
 /// Index of the aṅga (the dhātu) in `terms`. Stable across the pipeline.
-pub(crate) const ANGA: usize = 0;
+pub(crate) const ANGA: usize = 2;
 
 /// Index of the tiṅ ending *before* śap is inserted (3.1.68).
-pub(crate) const ENDING_PRE_SHAP: usize = 1;
+pub(crate) const ENDING_PRE_SHAP: usize = 3;
 
 /// Index of śap once inserted, and of the ending thereafter.
-pub(crate) const SHAP: usize = 1;
-pub(crate) const ENDING: usize = 2;
+pub(crate) const SHAP: usize = 3;
+pub(crate) const ENDING: usize = 4;
 
-// NOTE: `ENDING_PRE_SHAP` and `SHAP` are deliberately the same value (1), not
+// NOTE: the two slots BEFORE the aṅga are permanent and usually empty.
+// `AGAMA` holds laṅ's aṭ/āṭ (6.4.71 / 6.4.72) and nothing else; 6.1.90
+// empties it again when the āṭ merges into the following vowel. `ABHYASA`
+// holds the reduplicant 6.1.10 copies for juhotyādi and is empty for every
+// other gaṇa. Both exist on every prakriya so the constants above are
+// stable, on the same in-place-empty idiom 2.4.72 uses for śap. Two
+// consequences:
+//   - Any rule that reads "the term before the aṅga" or "the first term"
+//     must skip empty terms (`AGAMA` is empty outside laṅ; `ABHYASA` is
+//     empty outside juhotyādi). `word_chars` already does, by construction.
+//   - The aṅga's text is the ROOT'S text. Nothing is ever prefixed onto it.
+//     A guard that matches the aṅga with `ends_with` rather than `==` is
+//     tolerating a hypothetical upasarga, not the augment — the augment
+//     lived in the text until the juhotyādi prep, and several comments
+//     downstream still say so historically.
+
+// NOTE: `ENDING_PRE_SHAP` and `SHAP` are deliberately the same value (3), not
 // a typo. Rule 3.1.68 (kartari śap) inserts śap between the aṅga and the
-// ending, which shifts the ending from index 1 to index 2. This bisects the
+// ending, which shifts the ending from index 3 to index 4. This bisects the
 // flattened `TINANTA_RULES` sequence (across its six stage files) into two
 // halves along that sequence's position, not along any lakāra or
 // rule-family boundary:
 //   - Rules ordered BEFORE 3.1.68 must address the ending via
-//     `ENDING_PRE_SHAP` (index 1, where the ending still lives).
+//     `ENDING_PRE_SHAP` (index 3, where the ending still lives).
 //   - Rules ordered AFTER 3.1.68 must address the ending via `ENDING`
-//     (index 2, where it lives once śap has been inserted) and may address
-//     śap itself via `SHAP` (also index 1).
+//     (index 4, where it lives once śap has been inserted) and may address
+//     śap itself via `SHAP` (also index 3).
 // A rule placed on the wrong side of 3.1.68 either mutates śap while
-// believing it is mutating the ending, or panics indexing `terms[2]` before
+// believing it is mutating the ending, or panics indexing `terms[4]` before
 // that slot exists. This matters in particular for new `3.4.x` rules, which
 // look like they could go "anywhere in the first block" but must in fact be
 // placed relative to 3.1.68, not just relative to other 3.4.x rules.
@@ -75,6 +104,19 @@ pub(crate) const ENDING: usize = 2;
 //     treat śnam as śap. No such root exists in the dhātupāṭha's gaṇa 7,
 //     so this is a caveat for a future slice to re-check, not a live
 //     defect.
+
+/// The pipeline's term vector for the terms a caller actually has: the two
+/// permanent leading slots — `AGAMA` and `ABHYASA` — are prepended empty,
+/// so `terms[ANGA]` is the first term the caller supplied. `derive` builds
+/// every prakriya through this, and so does every hand-built test prakriya
+/// in the stage files' test modules; routing both through one function is
+/// what keeps a unit test and a real derivation addressing the same term by
+/// the same constant.
+pub(crate) fn with_slots(terms: Vec<Term>) -> Vec<Term> {
+    let mut out = vec![Term::new(""), Term::new("")];
+    out.extend(terms);
+    out
+}
 
 /// The sārvadhātuka that immediately follows the aṅga — the term **1.1.5
 /// *kṅiti ca*** interrogates when it asks whether guṇa is blocked.
@@ -232,6 +274,31 @@ mod tests {
     use crate::term::{Tag, Term};
 
     #[test]
+    fn with_slots_seats_the_callers_terms_behind_two_empty_leading_slots() {
+        // The layout contract every rule addresses terms through: AGAMA
+        // and ABHYASA exist on every prakriya and are empty until 6.4.71/
+        // 6.4.72 (laṅ) or 6.1.10 (juhotyādi) fill them. text() ignores
+        // them, which is what keeps every existing golden byte-identical.
+        let terms = with_slots(vec![Term::new("BU"), Term::new("a"), Term::new("ti")]);
+        assert_eq!(terms.len(), ENDING + 1);
+        assert_eq!(terms[AGAMA].text, "");
+        assert_eq!(terms[ABHYASA].text, "");
+        assert_eq!(terms[ANGA].text, "BU");
+        assert_eq!(terms[SHAP].text, "a");
+        assert_eq!(terms[ENDING].text, "ti");
+        let p = Prakriya {
+            terms,
+            ..Default::default()
+        };
+        assert_eq!(p.text(), "BUati");
+        assert_eq!(p.snapshot(), "BUati");
+        // The pre-3.1.68 shape: dhātu + ending only.
+        let terms = with_slots(vec![Term::new("BU"), Term::new("ti")]);
+        assert_eq!(terms.len(), ENDING_PRE_SHAP + 1);
+        assert_eq!(terms[ENDING_PRE_SHAP].text, "ti");
+    }
+
+    #[test]
     fn vikarana_u_asamyogapurva_is_true_exactly_for_the_non_conjunct_stems() {
         // The `u` of śnu (or tanādi's bare `u`) is asaṁyogapūrva iff it is
         // not conjunct-preceded. A wrong predicate here turns hinu into
@@ -267,7 +334,11 @@ mod tests {
                                    // ends in a consonant and only ever reaches the second arm.
         ] {
             let mut p = Prakriya {
-                terms: vec![Term::new(root), Term::new(vikarana), Term::new("anti")],
+                terms: with_slots(vec![
+                    Term::new(root),
+                    Term::new(vikarana),
+                    Term::new("anti"),
+                ]),
                 ..Default::default()
             };
             p.terms[SHAP].add(Tag::Vikarana);
@@ -285,7 +356,7 @@ mod tests {
         // rudhādi, terms[SHAP].text is NOT the vikaraṇa's own text. Any
         // rule that reads SHAP expecting `na` must guard on the gaṇa.
         let mut p = Prakriya {
-            terms: vec![Term::new("hi"), Term::new("nans"), Term::new("ti")],
+            terms: with_slots(vec![Term::new("hi"), Term::new("nans"), Term::new("ti")]),
             ..Default::default()
         };
         p.terms[SHAP].add(Tag::Vikarana);

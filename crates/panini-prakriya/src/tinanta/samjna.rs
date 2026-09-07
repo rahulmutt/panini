@@ -2,7 +2,7 @@
 //! 1.3.78, 3.4.78, 1.3.9, 1.2.4.
 //!
 //! Ordered **BEFORE** 3.1.68 — the ending lives at `ENDING_PRE_SHAP`
-//! (index 1) and śap does not exist yet. See `super::terms`.
+//! (index 3) and śap does not exist yet. See `super::terms`.
 //!
 //! 3.4.78 is what inserts the ending; `super::tin` picks up from 3.4.85 and
 //! reshapes it. 1.2.4 appears here tagging apit sārvadhātuka endings ṅit
@@ -243,6 +243,7 @@ mod tests {
     use crate::context::Context;
     use crate::prakriya::Prakriya;
     use crate::tinanta::rules;
+    use crate::tinanta::terms::with_slots;
     use panini_data::{Dhatu, PadaAssignment, Vacana, dhatus};
 
     /// The aṅga the three pada sūtras read, tagged the way `super::derive`
@@ -269,7 +270,7 @@ mod tests {
             ctx: Context::new(Lakara::Lat, pada, Purusha::Prathama, Vacana::Eka),
             ..Default::default()
         };
-        p.terms.push(pada_anga(d));
+        p.terms = with_slots(vec![pada_anga(d)]);
         p
     }
 
@@ -285,7 +286,7 @@ mod tests {
             ctx: Context::new(Lakara::Lat, pada, Purusha::Prathama, Vacana::Eka),
             ..Default::default()
         };
-        p.terms.push(t);
+        p.terms = with_slots(vec![t]);
         p
     }
 
@@ -500,7 +501,7 @@ mod tests {
         // ending's it; pin that return value directly, since `run_pipeline`
         // discards it and no golden form exercises it in isolation.
         let mut p = Prakriya {
-            terms: vec![Term::new("BU"), Term::new("tip")],
+            terms: with_slots(vec![Term::new("BU"), Term::new("tip")]),
             log: vec![],
             ..Default::default()
         };
@@ -515,7 +516,7 @@ mod tests {
     #[test]
     fn sarvadhatukam_apit_tags_atmanepada_endings_ngit() {
         let mut p = Prakriya {
-            terms: vec![Term::new("laB"), Term::new("ta")],
+            terms: with_slots(vec![Term::new("laB"), Term::new("ta")]),
             log: vec![],
             ctx: Context::new(
                 Lakara::Lat,
@@ -546,7 +547,7 @@ mod tests {
                 ctx: Context::new(Lakara::Lat, Pada::Parasmaipada, purusha, vacana),
                 ..Default::default()
             };
-            p.terms.push(Term::new("kliS"));
+            p.terms = with_slots(vec![Term::new("kliS")]);
             for id in ["3.4.78", "1.3.9", "1.2.4"] {
                 let rule = rules().find(|r| r.id == id).unwrap();
                 (rule.apply)(&mut p);
@@ -572,7 +573,7 @@ mod tests {
                 ctx: Context::new(Lakara::Lat, Pada::Parasmaipada, purusha, vacana),
                 ..Default::default()
             };
-            p.terms.push(Term::new("kliS"));
+            p.terms = with_slots(vec![Term::new("kliS")]);
             for id in ["3.4.78", "1.3.9", "1.2.4"] {
                 let rule = rules().find(|r| r.id == id).unwrap();
                 (rule.apply)(&mut p);
@@ -596,7 +597,7 @@ mod tests {
                 ctx: Context::new(Lakara::Lot, pada, Purusha::Uttama, Vacana::Dvi),
                 ..Default::default()
             };
-            p.terms.push(Term::new("BU"));
+            p.terms = with_slots(vec![Term::new("BU")]);
             for id in ["3.4.78", "1.3.9", "1.2.4"] {
                 let rule = rules().find(|r| r.id == id).unwrap();
                 (rule.apply)(&mut p);
