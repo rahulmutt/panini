@@ -546,7 +546,21 @@ fn paradigm_covers_every_enumerable_cell() {
     // lakāras -- were likewise gated for one commit in the Buj/1.3.66
     // slice, between its Dhatu row landing and its audited goldens
     // arriving.
-    const GATED: &[(&str, &str, Pada)] = &[];
+    //
+    // Slice 3a gates √hu's and √ki's eight (root, lakāra, pada) triples —
+    // 2 roots × 1 pada × 4 lakāras — for one commit, between their Dhatu
+    // rows landing and their cross-implementation-audited goldens
+    // arriving, the same window 7f and the Buj slice used.
+    const GATED: &[(&str, &str, Pada)] = &[
+        ("03.0001", "laT", Pada::Parasmaipada),
+        ("03.0001", "laN", Pada::Parasmaipada),
+        ("03.0001", "loT", Pada::Parasmaipada),
+        ("03.0001", "viDiliN", Pada::Parasmaipada),
+        ("03.0020", "laT", Pada::Parasmaipada),
+        ("03.0020", "laN", Pada::Parasmaipada),
+        ("03.0020", "loT", Pada::Parasmaipada),
+        ("03.0020", "viDiliN", Pada::Parasmaipada),
+    ];
 
     let pinned: Vec<(&str, &str, Pada)> =
         PARADIGM.iter().map(|(r, l, p, _)| (*r, *l, *p)).collect();

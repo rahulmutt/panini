@@ -440,6 +440,165 @@ fn her_dhih_gives_addhi_for_consonant_root() {
 }
 
 #[test]
+fn juhotyadi_hu_core_forms() {
+    // √hu, the ślu gaṇa's eponym. Every rule this slice adds is on one of
+    // these surfaces; the per-rule guards are pinned beside the rules and
+    // the ordered traces in crates/panini/tests/trace/juhotyadi.rs.
+    //
+    // laṭ: ślu, dvitva, kuhoś cuḥ and car ca on the abhyāsa; guṇa before
+    // pit ti, blocked before ṅit taH (1.1.5 via the first 1.2.4); 6.4.87's
+    // hu arm before 7.1.4's ati; 8.3.59 for juhozi.
+    assert_eq!(
+        form_g("03.0001", Lakara::Lat, Purusha::Prathama, Vacana::Eka),
+        "juhoti"
+    );
+    assert_eq!(
+        form_g("03.0001", Lakara::Lat, Purusha::Prathama, Vacana::Dvi),
+        "juhutaH"
+    );
+    assert_eq!(
+        form_g("03.0001", Lakara::Lat, Purusha::Prathama, Vacana::Bahu),
+        "juhvati"
+    );
+    assert_eq!(
+        form_g("03.0001", Lakara::Lat, Purusha::Madhyama, Vacana::Eka),
+        "juhozi"
+    );
+    assert_eq!(
+        form_g("03.0001", Lakara::Lat, Purusha::Uttama, Vacana::Bahu),
+        "juhumaH"
+    );
+    // laṅ: aṭ in AGAMA; 3.4.109's jus with 7.3.83's guṇa and 6.1.78's av;
+    // the pit am guṇates too.
+    assert_eq!(
+        form_g_forked("03.0001", Lakara::Lan, Purusha::Prathama, Vacana::Eka, 2),
+        "ajuhod"
+    );
+    assert_eq!(
+        form_g("03.0001", Lakara::Lan, Purusha::Prathama, Vacana::Bahu),
+        "ajuhavuH"
+    );
+    assert_eq!(
+        form_g("03.0001", Lakara::Lan, Purusha::Madhyama, Vacana::Eka),
+        "ajuhoH"
+    );
+    assert_eq!(
+        form_g("03.0001", Lakara::Lan, Purusha::Uttama, Vacana::Eka),
+        "ajuhavam"
+    );
+    // loṭ: 6.4.101's hu arm (a three-form cell with the tātaṅ pair); 7.1.4
+    // again; the pit āṭ-ending guṇates.
+    assert_eq!(
+        form_g_forked("03.0001", Lakara::Lot, Purusha::Madhyama, Vacana::Eka, 3),
+        "juhuDi"
+    );
+    assert_eq!(
+        form_g("03.0001", Lakara::Lot, Purusha::Prathama, Vacana::Bahu),
+        "juhvatu"
+    );
+    assert_eq!(
+        form_g("03.0001", Lakara::Lot, Purusha::Uttama, Vacana::Eka),
+        "juhavAni"
+    );
+    // vidhiliṅ: yāsuṭ keeps 7.3.83 off the jus.
+    assert_eq!(
+        form_g_forked(
+            "03.0001",
+            Lakara::VidhiLin,
+            Purusha::Prathama,
+            Vacana::Eka,
+            2
+        ),
+        "juhuyAd"
+    );
+    assert_eq!(
+        form_g("03.0001", Lakara::VidhiLin, Purusha::Prathama, Vacana::Bahu),
+        "juhuyuH"
+    );
+}
+
+#[test]
+fn juhotyadi_ki_core_forms() {
+    // √ki: the i-final root. 6.4.82 before ati/atu, and NOT before Ani
+    // (guṇa first: cikayAni) or yāsuṭ (cikiyAt); no 8.4.54 step on ci.
+    assert_eq!(
+        form_g("03.0020", Lakara::Lat, Purusha::Prathama, Vacana::Eka),
+        "ciketi"
+    );
+    assert_eq!(
+        form_g("03.0020", Lakara::Lat, Purusha::Prathama, Vacana::Dvi),
+        "cikitaH"
+    );
+    assert_eq!(
+        form_g("03.0020", Lakara::Lat, Purusha::Prathama, Vacana::Bahu),
+        "cikyati"
+    );
+    assert_eq!(
+        form_g("03.0020", Lakara::Lat, Purusha::Madhyama, Vacana::Eka),
+        "cikezi"
+    );
+    assert_eq!(
+        form_g("03.0020", Lakara::Lan, Purusha::Prathama, Vacana::Bahu),
+        "acikayuH"
+    );
+    assert_eq!(
+        form_g("03.0020", Lakara::Lan, Purusha::Uttama, Vacana::Eka),
+        "acikayam"
+    );
+    assert_eq!(
+        form_g_forked("03.0020", Lakara::Lot, Purusha::Madhyama, Vacana::Eka, 3),
+        "cikihi"
+    );
+    assert_eq!(
+        form_g("03.0020", Lakara::Lot, Purusha::Prathama, Vacana::Bahu),
+        "cikyatu"
+    );
+    assert_eq!(
+        form_g("03.0020", Lakara::Lot, Purusha::Uttama, Vacana::Eka),
+        "cikayAni"
+    );
+    assert_eq!(
+        form_g_forked(
+            "03.0020",
+            Lakara::VidhiLin,
+            Purusha::Prathama,
+            Vacana::Eka,
+            2
+        ),
+        "cikiyAd"
+    );
+    assert_eq!(
+        form_g("03.0020", Lakara::VidhiLin, Purusha::Prathama, Vacana::Bahu),
+        "cikiyuH"
+    );
+}
+
+#[test]
+fn ajuhavuh_lays_the_augment_abhyasa_and_root_in_their_own_slots() {
+    // The five-slot layout doing the job the prep built it for: augment,
+    // abhyāsa and root are three terms, and the tripādī found the
+    // abhyāsa's J by term, not by guessing an offset into the root.
+    let d = dhatus().iter().find(|d| d.dhatupatha == "03.0001").unwrap();
+    let p = sole(derive(
+        d,
+        Lakara::Lan,
+        Pada::Parasmaipada,
+        Purusha::Prathama,
+        Vacana::Bahu,
+    ));
+    assert_eq!(p.text(), "ajuhavuH");
+    assert_eq!(p.terms[AGAMA].text, "a");
+    assert_eq!(p.terms[ABHYASA].text, "ju");
+    assert_eq!(p.terms[ANGA].text, "hav");
+    assert_eq!(p.terms[SHAP].text, "");
+    assert_eq!(p.terms[ENDING].text, "uH");
+    assert!(p.terms[ABHYASA].has(Tag::Abhyasa));
+    assert!(p.terms[ABHYASA].has(Tag::Abhyasta));
+    assert!(p.terms[ANGA].has(Tag::Abhyasta));
+    assert!(p.terms[SHAP].has(Tag::Slu));
+}
+
+#[test]
 fn adadi_lan_singular_a_augment() {
     // √ad laṅ 3sg Adad, 2sg AdaH — the inserted `a` blocks the saṃyogānta
     // collapse (Adt/Ads → Ad) and cartva (d now before `a`, not a khar).
