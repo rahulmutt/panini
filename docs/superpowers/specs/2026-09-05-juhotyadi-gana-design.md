@@ -38,7 +38,8 @@ gaṇa, no new rule, 3492 cells and every trace byte-identical.
 
 In scope, **3a**: √hu (`03.0001`) and √ki (`03.0020`), parasmaipadī, four
 lakāras, **72 cells** (84 forms), suite 3492 → 3564, with 2.4.75, 6.1.10,
-7.4.62, 7.1.4, 3.4.109, 7.3.83, 6.4.82, 8.4.54 new and 6.4.87 widened.
+7.4.62, 7.1.4, 3.4.109, 7.3.83, 6.4.82, 8.4.54 new and 6.4.87 and 6.4.101
+widened.
 
 Recorded for later specs, **3b–3f**: the remaining 24 rows, tabled under
 "Later slices" below.
@@ -227,23 +228,64 @@ saṁjñā verdict lives as a tag.
   "hu"` with `Tag::Juhotyadi`). *juhvati*. The aṅga-text test is safe
   only because the prep moved aṭ out of the text — which is why the prep
   comes first.
+- **6.4.101's hu arm** — `adesha.rs`, existing rule. The sūtra is
+  *hujhalbhyo her dhiḥ* and the engine carries only the jhal arm, with a
+  comment deferring √hu to this gaṇa. The guard widens from "the sound
+  before the ending is a jhal" to that, or the aṅga is √hu under ślu — the
+  same `ANGA.text == "hu"` with `Tag::Juhotyadi` test as 6.4.87. *juhudhi*.
+  Without it the cell surfaces as *\*juhuhi*; vidyut credits 6.4.101 on
+  exactly this cell. √ki keeps its *hi* (*cikihi*): `i` is no jhal and the
+  root is not √hu.
 - **6.4.82 *er anekāco'saṁyogapūrvasya*** — `guna.rs`, before 6.4.77 as
   its apavāda. A final `i` of a polysyllabic aṅga, not preceded by a
   conjunct, becomes `y` before a vowel. *Anekāc* is counted over `ABHYASA`
-  plus `ANGA` together: the abhyasta whole is the aṅga. *cikyati*.
+  plus `ANGA` together: the abhyasta whole is the aṅga. *cikyati*. It
+  must also sit **after 7.3.84**: loṭ uttama's āṭ-endings are pit, so
+  *cikayāni* takes guṇa (*cike-*) and then 6.1.78 (*cikay-*); a 6.4.82
+  that saw the `i` first would give *\*cikyāni*. Its slot before 6.4.77
+  already satisfies this, and the *cikayāni* trace pin below is what
+  keeps it there.
 - **8.4.54 *abhyāse car ca*** — `tripadi.rs`. The abhyāsa's jhal becomes
   the corresponding car (jaś by 8.4.53's anuvṛtti). In 3a only *Ju* →
-  *ju*; 3b widens it to `B` → `b`.
+  *ju*; 3b widens it to `B` → `b`. It takes 8.4.53's no-op guard: √ki's
+  abhyāsa *ci* is already car, and the rule must record nothing there —
+  vidyut credits 8.4.54 on √hu's 42 forms and on none of √ki's.
 
 Everything else is existing machinery on its existing guards: 7.3.84 for
-*juhoti* and *ciketi*, 6.4.101 for *juhudhi*, 8.3.59 for *juhoṣi*, the
-tātaṅ and 8.4.56 forks, and the adādi athematic arms, which see an empty
-SHAP exactly as they do for √ad.
+*juhoti* and *ciketi*, 8.3.59 for *juhoṣi*, 6.1.96 for *cikiyuḥ*, the
+tātaṅ and 8.4.56 forks, and the adādi athematic arms — 6.1.78 for
+*ajuhavam* and *juhavāni*, the 3.4.92 āṭ — which see an empty SHAP
+exactly as they do for √ad.
+
+### The augment guards stay on `ANGA`
+
+6.4.71 and 6.4.72 decide consonant- against vowel-initial by reading
+`terms[ANGA]`'s first character, though the augment grammatically
+precedes the whole aṅga, abhyāsa included, and 6.1.90 already merges
+the āṭ into the first non-empty term after `AGAMA`. 3a keeps the `ANGA`
+read and writes the argument into both comments rather than moving the
+guards onto that helper:
+
+- The abhyāsa is a copy of the root's first ekāc, and no rule in
+  7.4.59–7.4.78 changes its initial's class: 7.4.60 keeps the first
+  consonant, 7.4.62 substitutes consonant for consonant, 7.4.66 and
+  7.4.77 vowel for vowel. Reading `ANGA` and reading the abhyāsa give the
+  same verdict for all 26 rows.
+- Both 3a roots are consonant-initial, so a helper-based guard would be
+  indistinguishable from the `ANGA` read under mutation until 3d — an
+  unkillable mutant of exactly the kind the prep deleted from 6.4.72.
+- 3d's √ṛ (*iyarti*, *aiyaḥ*) is the one vowel-initial row and the
+  review checkpoint: its spec re-reads this argument against the live
+  witness, and moving the two guards then is a one-commit change with a
+  pin to hold it.
 
 ### Counts
 
-72 cells, 84 forms, no new alternates beyond the standing loṭ and
-pada-final forks. Suite 3492 → 3564; roots 77 → 79.
+72 cells, 84 forms, no new fork kinds beyond the standing loṭ and
+pada-final ones: six `ALTERNATES` rows per root (8.4.56 on laṅ prathama
+eka, both loṭ tātaṅ cells and vidhiliṅ prathama eka; tātaṅ's second form
+on the two loṭ cells), 907 → 919 rows. Suite 3492 → 3564; roots 77 → 79;
+forms 4399 → 4483.
 
 ## Data
 
@@ -275,17 +317,19 @@ pada-final forks. Suite 3492 → 3564; roots 77 → 79.
 **3a.**
 
 - Per-rule guard tests in the slice-7 style for each of the eight new
-  rules and the widened 6.4.87.
+  rules and the widened 6.4.87 and 6.4.101.
 - The pinned rule order gains 3.4.109, 2.4.75, 6.1.10, 7.4.62, 7.1.4,
   7.3.83, 6.4.82, 8.4.54.
-- Byte-identical 3492 priors guard the 6.4.87 widening and the 7.1.4
-  apavāda.
+- Byte-identical 3492 priors guard the 6.4.87 and 6.4.101 widenings and
+  the 7.1.4 apavāda.
 - Trace pins: *juhoti* orders 2.4.75 < 6.1.10 < 7.4.62 < 7.3.84 < 8.4.54
   and carries no 1.2.4; *juhvati* credits 7.1.4 and 6.4.87 and must not
   credit 7.1.3 or 6.1.77; *ajuhavuḥ* credits 3.4.109 and 7.3.83 and shows
-  the augment in `AGAMA`; *cikyati* credits 6.4.82 and not 6.4.77.
+  the augment in `AGAMA`; *cikyati* credits 6.4.82 and not 6.4.77;
+  *juhudhi* credits 6.4.101 and *cikihi* does not; *cikayāni* credits
+  7.3.84 and 6.1.78 and not 6.4.82; *ciketi* carries no 8.4.54.
 - `derivation_set_shape_matches_the_audited_numbers` moves to 3564 cells /
-  79 roots, and the audit's asserted totals move with it.
+  79 roots / 4483 forms, and the audit's asserted totals move with it.
 - Mutation floor re-measured, not scaled; same gate and bookkeeping as the
   prep.
 
