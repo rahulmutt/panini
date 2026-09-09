@@ -993,6 +993,64 @@ pub(crate) static GUNA: &[Rule] = &[
             true
         },
     },
+    // 6.4.115 bhiyo'nyatarasyām: √bhī's ī optionally becomes hrasva.
+    // bibhītaḥ / bibhitaḥ, bibhīhi / bibhihi, bibhīyāt / bibhiyāt. The
+    // engine's ninth vikalpa.
+    //
+    // Operates on the AṄGA. 7.4.59 has already shortened the abhyāsa, and
+    // that is a different vowel: `Bi` + `BI` is the pair this rule turns
+    // into `Bi` + `Bi`.
+    //
+    // ROOT-KEYED, with no gaṇa clause — the sūtra itself names √bhī, and a
+    // gaṇa clause beside `ANGA.text == "BI"` could never be falsified (the
+    // 6.4.87 / 6.4.101 precedent). √hrī has the same shape and the same
+    // followers and must not fork.
+    //
+    // *hali* and *kṅiti* both come by anuvṛtti from 6.4.113, and BOTH are
+    // load-bearing on this slice's own cells, which is why both are written:
+    //   - drop the kṅit test and `si`/`mi` (hal-initial but PIT) give
+    //     *bibhiṣi / *bibhimi instead of bibheṣi / bibhemi;
+    //   - drop the hal test and `ati` (kṅit but ajādi) gives *bibhiyati
+    //     instead of bibhyati, which is 6.4.82's.
+    //
+    // Reads `following_sarvadhatuka`, unlike 6.4.112/6.4.113 beside it:
+    // those need what follows śnā, this needs what follows the AṄGA. Under
+    // ślu the śap is empty, so the helper returns the ending — and in
+    // vidhiliṅ that ending carries yāsuṭ prefixed onto its own text and
+    // Ngit set there by 3.4.103, so all nine of those cells fork.
+    //
+    // POSITION IS NOT FORCED BY ANY CELL: wherever guṇa fires the kṅit test
+    // declines, and where 6.4.82 fires first this rule sees the `By` it left
+    // and declines on the text test. It sits beside 6.4.113, the rule it
+    // takes its two anuvṛtti conditions from, and the bibhitaḥ trace pin is
+    // what holds it there.
+    Rule {
+        id: "6.4.115",
+        name: "Biyo'nyatarasyAm",
+        kind: RuleKind::Vidhi,
+        vikalpa: true,
+        apply: |p| {
+            if p.terms[ANGA].text != "BI" {
+                return false;
+            }
+            let Some(follower) = following_sarvadhatuka(p) else {
+                return false;
+            };
+            if !follower.has(Tag::Ngit) {
+                return false;
+            }
+            let Some(next) = follower.text.chars().next() else {
+                return false;
+            };
+            if is_vowel(next) {
+                return false;
+            }
+            let before = p.snapshot();
+            p.terms[ANGA].text = "Bi".into();
+            p.record("6.4.115", "Biyo'nyatarasyAm", before);
+            true
+        },
+    },
 ];
 
 #[cfg(test)]
@@ -1469,6 +1527,88 @@ mod tests {
         assert!(!(rule.apply)(&mut p));
         assert_eq!(p.terms[SHAP].text, "nA");
         assert_eq!(p.text(), "kliSnAti");
+    }
+
+    /// √bhī under ślu with a given follower: aṅga `BI`, empty śap, the
+    /// ending. `ngit` sets 1.2.4's tag on the ending.
+    fn bhi_slu_prakriya(ending: &str, ngit: bool) -> Prakriya {
+        let mut p = Prakriya {
+            terms: with_slots(vec![Term::new("BI"), Term::new(""), Term::new(ending)]),
+            ..Default::default()
+        };
+        p.terms[ABHYASA].text = "Bi".into();
+        if ngit {
+            p.terms[ENDING].add(Tag::Ngit);
+        }
+        p
+    }
+
+    #[test]
+    fn bhiyah_anyatarasyam_shortens_before_a_hal_initial_kngit() {
+        // 6.4.115. bibhītaḥ / bibhitaḥ. The abhyāsa is already `Bi` (7.4.59);
+        // this rule shortens the AṄGA.
+        let rule = rules().find(|r| r.id == "6.4.115").unwrap();
+        let mut p = bhi_slu_prakriya("tas", true);
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "Bi");
+        assert_eq!(p.terms[ABHYASA].text, "Bi", "the abhyāsa is untouched");
+        assert_eq!(p.log.last().unwrap().sutra, "6.4.115");
+    }
+
+    #[test]
+    fn bhiyah_anyatarasyam_declines_before_a_pit_ending() {
+        // The *kṅiti* clause, falsified. `si` and `mi` are hal-initial but
+        // PIT, so 1.2.4 never made them ṅit and guṇa applies instead:
+        // bibheṣi, bibhemi — never *bibhiṣi. Dropping the kṅit test would
+        // produce those.
+        let rule = rules().find(|r| r.id == "6.4.115").unwrap();
+        for ending in ["si", "mi"] {
+            let mut p = bhi_slu_prakriya(ending, false);
+            assert!(!(rule.apply)(&mut p), "{ending}");
+            assert_eq!(p.terms[ANGA].text, "BI", "{ending}");
+            assert!(p.log.is_empty(), "{ending}");
+        }
+    }
+
+    #[test]
+    fn bhiyah_anyatarasyam_declines_before_a_vowel_initial_kngit() {
+        // The *hali* clause, falsified. `ati` IS kṅit but ajādi, and
+        // bibhyati has no second form. Dropping the hal test would produce
+        // *bibhiyati.
+        let rule = rules().find(|r| r.id == "6.4.115").unwrap();
+        let mut p = bhi_slu_prakriya("ati", true);
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "BI");
+        assert!(p.log.is_empty());
+    }
+
+    #[test]
+    fn bhiyah_anyatarasyam_is_keyed_to_bhi_alone() {
+        // The sūtra names the root, so the guard does too — with no gaṇa
+        // clause beside it, which could never be falsified (the 6.4.87 /
+        // 6.4.101 precedent). √hrī has the same shape and the same follower
+        // and must NOT fork: jihrItaH has one form.
+        let rule = rules().find(|r| r.id == "6.4.115").unwrap();
+        let mut p = Prakriya {
+            terms: with_slots(vec![Term::new("hrI"), Term::new(""), Term::new("tas")]),
+            ..Default::default()
+        };
+        p.terms[ABHYASA].text = "Ji".into();
+        p.terms[ENDING].add(Tag::Ngit);
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "hrI");
+    }
+
+    #[test]
+    fn bhiyah_anyatarasyam_reads_the_yasut_prefixed_ending_in_vidhilin() {
+        // vidhiliṅ's follower is the ending with yāsuṭ prefixed onto its own
+        // text and Ngit set there (3.4.103), so `following_sarvadhatuka`
+        // returns `yAt` — hal-initial and ṅit. All nine vidhiliṅ cells fork:
+        // bibhīyāt / bibhiyāt.
+        let rule = rules().find(|r| r.id == "6.4.115").unwrap();
+        let mut p = bhi_slu_prakriya("yAt", true);
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "Bi");
     }
 
     // --- 7.3.84 second application: the vikaraṇa-aṅga guṇa ------------------
