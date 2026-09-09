@@ -39,8 +39,27 @@ to a final `i` or `I`.
 in `panini-data`'s `pada_from_upadesha` is deleted, and the branch-order
 claim that deletion makes vacuous is replaced by a disjointness invariant.
 
-**New sound-table entries (0).** `deaspirate_of` already carries `B -> b`;
-`is_natva_intervener` already carries `y` and every vowel.
+**New sound-table entries (1):** `hrasva_of` in `sound.rs`, 7.4.59's
+substitute — `A i I u U f F x X` shortened, i.e. `A->a I->i U->u F->f X->x`
+and `None` for everything else, so 7.4.59 can use the one lookup as its
+match test (the `deaspirate_of` / `kutva_of` idiom). Only the `I` arm has a
+cell in this slice; `A` arrives in 3c, `F` in 3d, and `U`/`X` in no slice yet
+planned. The repo's standing answer to an unwitnessed arm is the one it
+already applies to every other sound map — a direct table test,
+`hrasva_of_long_vowels_all_arms`, beside `deaspirate_of_aspirate_stops_all_arms`
+and its five siblings — so the arms are killed at the table rather than left
+to a cell that does not exist.
+
+**The ec arm of 1.1.48 is deliberately absent.** *ec igghrasvādeśe* would
+make a hrasva substitute for `e`/`o` come out as `i`/`u`, and vidyut needs it
+(it copies the guṇated stem, so its abhyāsa really is `Be` when 7.4.59
+fires). This engine copies the bare root before guṇa, so its abhyāsa never
+carries an ec at 7.4.59 — `hrasva_of` returns `None` there rather than
+guessing, and liṭ, which reduplicates after other operations have run, is the
+restore trigger named in the comment.
+
+`deaspirate_of` already carries `B -> b`; `is_natva_intervener` already
+carries `y` and every vowel.
 
 **New data:** two `Dhatu` rows; 8 `PARADIGM` blocks (2 roots × 1 pada × 4
 lakāras); 40 `ALTERNATES` rows; five trace pins.
