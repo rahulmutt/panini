@@ -1728,6 +1728,21 @@ mod tests {
         p.terms[ABHYASA].text = "a".into();
         assert!((rule.apply)(&mut p));
         assert_eq!(p.terms[ANGA].text, "y");
+        // The `< 2` bound of *anekāc*, pinned against the `> 2` mutant that
+        // survived this slice's mutation campaign: every curated case above
+        // has exactly two vowels over ABHYASA + ANGA, so `< 2` and `> 2`
+        // agree on all of them and the clause was never the deciding one.
+        // No curated root has a three-vowel aṅga yet, so exercise one
+        // synthetically: ci-kari has three vowels (i, a, i), and the r
+        // before the final i sits after a, so asaṁyogapūrva still holds —
+        // the count clause alone must decide this case.
+        let mut p = Prakriya {
+            terms: with_slots(vec![Term::new("kari"), Term::new(""), Term::new("ati")]),
+            ..Default::default()
+        };
+        p.terms[ABHYASA].text = "ci".into();
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "kary");
     }
 
     #[test]
