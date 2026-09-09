@@ -1522,12 +1522,15 @@
   cells across eleven roots (`key_count("6.4.107") == 72`, the same
   test), not 8 — the "8 cells" figure was never re-derived when the gaṇa
   landed. `guna.rs:1233`'s own claim ("1872 goldens move") stays stale
-  only in the ordinary corpus-size sense, not wrong in kind: 3492 goldens
+  only in the ordinary corpus-size sense, not wrong in kind: 3564 goldens
   would move today. Neither comment was touched by tanādi 8a or 8b, consistent
   with every slice since 7c. Rudhādi 7d touched neither comment — its one permitted
   engine-comment edit is the comment above
   `vrddhi_of_ac_vowels_all_arms` in `tinanta/sound.rs`. Rudhādi 7e, rudhādi
-  7f and the √bhuj/1.3.66 slice touched neither comment either. A third,
+  7f and the √bhuj/1.3.66 slice touched neither comment either. The corpus
+  stands at 3564 cells as of juhotyādi 3a (`guna.rs:1233`'s claim now
+  anchored at `guna.rs:1472`, `controller.rs:152`'s at `controller.rs:153`),
+  and this slice touched neither comment either. A third,
   `tinanta/tripadi.rs`'s comment on 8.2.30 (formerly the one calling √bhañj
   rudhādi's one cu-final curated root), was **not** left stale the same
   way: the 8.2.30/8.2.39 generalization slice rewrote it in place, since
