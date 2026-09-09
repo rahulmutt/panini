@@ -225,14 +225,16 @@ saṁjñā verdict lives as a tag.
   because yāsuṭ intervenes.
 - **6.4.87's hu arm** — `guna.rs`, existing rule. Guard widens from "SHAP
   is `nu`" to "SHAP is `nu`, or the aṅga is √hu under ślu" (`ANGA.text ==
-  "hu"` with `Tag::Juhotyadi`). *juhvati*. The aṅga-text test is safe
+  "hu"` alone — a gaṇa clause beside it could never be falsified, the
+  7.4.21 reasoning). *juhvati*. The aṅga-text test is safe
   only because the prep moved aṭ out of the text — which is why the prep
   comes first.
 - **6.4.101's hu arm** — `adesha.rs`, existing rule. The sūtra is
   *hujhalbhyo her dhiḥ* and the engine carries only the jhal arm, with a
   comment deferring √hu to this gaṇa. The guard widens from "the sound
   before the ending is a jhal" to that, or the aṅga is √hu under ślu — the
-  same `ANGA.text == "hu"` with `Tag::Juhotyadi` test as 6.4.87. *juhudhi*.
+  same root-keyed `ANGA.text == "hu"` test as 6.4.87, likewise with no
+  gaṇa clause. *juhudhi*.
   Without it the cell surfaces as *\*juhuhi*; vidyut credits 6.4.101 on
   exactly this cell. √ki keeps its *hi* (*cikihi*): `i` is no jhal and the
   root is not √hu.

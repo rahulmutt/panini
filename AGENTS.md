@@ -1058,12 +1058,13 @@
   target under `crates/panini-lipi/fuzz` legitimately omits it, since it uses
   `#![no_main]` plus the libfuzzer harness macro).
 - Grammar changes are gated by the golden paradigm test
-  (`crates/panini/tests/paradigm/`, 3492 cells, eight gaṇas — all complete,
+  (`crates/panini/tests/paradigm/`, 3564 cells, nine gaṇas — eight complete,
   tanādi closing at 10/10 in slice 8b (nine of its ten dhātupāṭha rows
-  curated in slice 8a; √kṛ, the tenth and last, in 8b) —
+  curated in slice 8a; √kṛ, the tenth and last, in 8b), and juhotyādi (3)
+  opened in slice 3a at 2 of its 26 rows —
   `PARADIGM`
     stays one-form-per-cell: a cell forked by an optional rule keeps its
-    other forms — a second (522 cells), a third (111 cells), a fourth
+    other forms — a second (526 cells), a third (115 cells), a fourth
     (seventeen
     cells, rudhādi's √piṣ and — new in slice 7d — √śiṣ loṭ madhyama eka, and
     — new in slice 8a — fifteen more spread across tanādi's four ik-upadhā
@@ -1075,7 +1076,7 @@
     prathama AND madhyama eka of tanādi's four ik-upadhā roots kziR, fR, tfR
     and GfR doubled it to sixteen — a fourth
     and fifth (prathama eka) or a fourth through sixth (madhyama eka) — in
-    `ALTERNATES` (907 rows in all, so 3492 + 907 = 4399 forms total); √bhuj
+    `ALTERNATES` (919 rows in all, so 3564 + 919 = 4483 forms total); √bhuj
     joins neither fork record — its forks stack only 7.1.35 and 8.4.56, the
     same two-deep profile as √yuj — but the √bhuj/1.3.66 slice adds two
     trace pins of its own, `bhunkte_trace_credits_1_3_66_not_1_3_72` and
@@ -1467,7 +1468,9 @@
   at the same vidyut commit `8da2f90bee3ce1c07505fa432fc3729e3f7e02ea`,
   over the corpus grown by √kṛ, the gaṇa's tenth and last root: **zero
   differences across 3492 cells / 4399 forms / 77 roots**, with the
-  `entry` negative control verified failing first — the current record.
+  `entry` negative control verified failing first — the record until
+  juhotyādi 3a's own audit (`tools/audit/README.md`'s 2026-09-07 entry,
+  3564 cells / 4483 forms / 79 roots).
   Three new `Rule`s are behind it, all root-keyed to √kṛ and all in
   `guna.rs` — 6.4.110 *ata ut sārvadhātuke*, 6.4.108 *nityaṁ karoteḥ* and
   6.4.109 *ye ca* — plus one engine change with no `Rule` of its own:
@@ -1537,7 +1540,7 @@
   time. This note is the record of that deferral, now down to two
   comments.
 - New grammar goes in `TINANTA_RULES` as a self-guarding `Rule`, not as a
-  branch inside `derive`. `TINANTA_RULES` is a list of seven stage arrays,
+  branch inside `derive`. `TINANTA_RULES` is a list of eight stage arrays,
   each living in its own file under `crates/panini-prakriya/src/tinanta/`; add
   the rule to the stage its pipeline position falls in, and add its id to
   `tinanta_rule_order_is_pinned` in the same position. Which stage a rule
