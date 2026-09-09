@@ -192,6 +192,12 @@ pub(crate) fn sound_before_ending(p: &Prakriya) -> Option<char> {
 /// guṇa branch's `rR` is a conjunct; that split is exactly vidyut's
 /// arRuhi-beside-fRu).
 ///
+/// 6.4.82 itself does not call this helper, deliberately: this helper is
+/// scoped to the vikaraṇa's own `u`, but 6.4.82's asaṁyogapūrva span is
+/// ABHYASA-plus-ANGA (the abhyasta pair, 1.4.13), so it open-codes the
+/// same walk over a different span rather than share this one. Do not
+/// "unify" the two in a later slice.
+///
 /// Returns false for every other SHAP text (śap/śa `a`, śyan `ya`, śnā's
 /// shapes, śnam-plus-tail, adādi's empty string, and the post-6.4.107
 /// remnants `n`/``), so callers still need no gaṇa test of their own.

@@ -541,6 +541,10 @@ pub(crate) static GUNA: &[Rule] = &[
         vikalpa: false,
         apply: |p| {
             if p.terms[ANGA].text == "hu" {
+                // The sūtra's condition is on the *follower*, not literally
+                // on ENDING — but 2.4.75 guarantees SHAP is empty on every
+                // √hu derivation, so here the ending IS the follower and
+                // reading p.terms[ENDING] directly is exact, not a shortcut.
                 let Some(next) = p.terms[ENDING].text.chars().next() else {
                     return false;
                 };
@@ -587,6 +591,13 @@ pub(crate) static GUNA: &[Rule] = &[
     // ci-ki) — or a vowel. The follower is the first non-empty term after
     // ANGA, which on the ślu path is the ending itself; a yāsuṭ (`yA…`) or
     // a consonant-initial ending declines it (cikiyAt, cikitaH).
+    //
+    // The vowel count deliberately excludes AGAMA (laṅ's aṭ): counting only
+    // ABHYASA ++ ANGA is conservative, since an included aṭ could only add
+    // a vowel and make *anekāc* fire where it currently declines — and it
+    // is unreachable in 3a regardless, because 7.3.83 pre-empts every laṅ
+    // cell that could otherwise reach this rule. Recorded so slice 3d does
+    // not have to rediscover the question.
     //
     // ORDER: after 7.3.84, or the loṭ uttama cells break — Ani is pit, so
     // cikayAni takes guṇa (ke) and then 6.1.78 (kay); a 6.4.82 that saw
@@ -881,9 +892,10 @@ pub(crate) static GUNA: &[Rule] = &[
     // sārvadhātuka beginning with a vowel. kliS + nA + anti → kliSnanti;
     // vf + nA + ate → vfRate; vf + nA + e → vfRe.
     //
-    // The *abhyasta* half of the sūtra is out of scope — there is no
-    // reduplication in this engine — so the guard is śnā's text alone. Widen
-    // it when juhotyādi lands.
+    // The *abhyasta* half of the sūtra needs an ā-final abhyasta aṅga:
+    // 6.1.10 now fills ABHYASA, but no curated root pairs it with an
+    // ā-final aṅga yet. √dā and √dhā arrive in slice 3c — that is the
+    // slice that widens this guard. Until then it is śnā's text alone.
     Rule {
         id: "6.4.112",
         name: "SnA'ByastayorAtaH",
@@ -912,9 +924,10 @@ pub(crate) static GUNA: &[Rule] = &[
     // beginning with a consonant. kliS + nA + taH → kliSnItaH; kliS + nA +
     // yAt → kliSnIyAt; vrI + nA + hi → vrIRIhi.
     //
-    // *aghoḥ* excludes the ghu roots (√dā, √dhā). They are juhotyādi, out of
-    // scope, and no root that can reach this rule is one — so the exclusion is
-    // recorded here rather than implemented. Implement it when gaṇa 3 lands.
+    // *aghoḥ* excludes the ghu roots (√dā, √dhā). Gaṇa 3 has landed, but
+    // no curated root is a ghu root yet: √dā and √dhā arrive in slice 3c,
+    // same as 6.4.112's *abhyasta* half above — so the exclusion is
+    // recorded here rather than implemented. Implement it in that slice.
     Rule {
         id: "6.4.113",
         name: "I halyaGoH",

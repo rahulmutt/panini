@@ -1292,6 +1292,19 @@ mod tests {
                 ("03.0020", "ki", PadaAssignment::Parasmaipada),
             ]
         );
+        // guna.rs's 6.4.87 and adesha.rs's 6.4.101 both identify √hu by
+        // `ANGA.text == "hu"` with no gaṇa clause, resting on "no other
+        // curated root reads `hu`" — a premise stated only in those rules'
+        // comments and checked nowhere else. `code` is NOT unique in
+        // general (vij, vid, man, aS already repeat), so this is a real
+        // tripwire, not a tautology.
+        assert_eq!(
+            dhatus().iter().filter(|d| d.code == "hu").count(),
+            1,
+            "6.4.87 and 6.4.101 key on ANGA.text == \"hu\" with no gaṇa \
+             clause; if a second curated root ever reads \"hu\" both rules \
+             need a gaṇa guard"
+        );
     }
 
     #[test]

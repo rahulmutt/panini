@@ -822,7 +822,8 @@ mod tests {
         }
         // "First non-empty term after AGAMA", not "ANGA": an abhyāsa in
         // front of the aṅga is what meets the āṭ (slice 3d's √ṛ, A+iy+ar →
-        // Eyar). Nothing fills ABHYASA before juhotyādi lands; this pins
+        // Eyar). No curated root reaches 6.1.90 with a filled ABHYASA until
+        // slice 3d's √ṛ, so this case stays synthetic until then; this pins
         // the arm's addressing so 3d inherits it rather than re-deriving it.
         let mut p = Prakriya {
             terms: with_slots(vec![Term::new("ar"), Term::new(""), Term::new("t")]),
