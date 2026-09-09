@@ -908,6 +908,143 @@
     its measured caught-mutant margin drops much below 1.70×, that is the
     trigger to raise the cap — recorded in `AGENTS.md` and `mise.toml`
     together, per the standing rule, not a silent widening.
+    **Slice 3a (juhotyādi, √hu and √ki, eight new sūtras, first cells in
+    `ABHYASA`) re-measured both at 3564 cells.** Uncontended floor: paradigm
+    1003.42s, roundtrip 1249.42s, trace 4.03s — a wall clock of **2258.069s**
+    (`time mise run test`'s own wall clock; the 2256.87s component sum
+    leaves ~1.2s of build overhead, within this series' standing range).
+    Cell count grew only **+2.06%** (3492 → 3564), but the floor grew
+    **+11.50%** (2025.227s → 2258.069s) — the largest single-slice floor
+    move recorded in this series, and, like the prep's own +3.41%, one the
+    series' standing warning already anticipated: the floor does not scale
+    by cell count. All three binaries moved together in the same direction
+    (paradigm 895.91s → 1003.42s, +12.00%; roundtrip 1124.11s → 1249.42s,
+    +11.15%; trace 3.74s → 4.03s, +7.75%, noisier at this small an absolute
+    magnitude). The plausible cause, offered as an observation rather than
+    an isolated finding: this slice adds the first `ABHYASA`-stage
+    reduplication, and every juhotyādi prakriya now carries two extra
+    non-empty terms (the abhyāsa copy plus its own tag bookkeeping) through
+    every downstream tripādī scan, not just the cells whose surface form the
+    reduplication changes — a per-cell cost, not a per-new-cell one, which
+    is consistent with the floor moving far faster than the cell count.
+    Cap sanity check before the campaign: 2258.069s × the standing
+    **1.02×–1.43×** `-j 4` contention range projects an uncaught mutant at
+    **2303.23–3229.04s**. Against the standing `--timeout 4800` cap, that is
+    a projected margin of **2.08×–1.49×** — tighter than the prep's
+    2.32×–1.66×, tracking the floor's own growth, but still comfortably
+    clear of the brief's stop condition (a projection exceeding 4800s).
+    **Ruling: keep 4800, proceed.**
+    Campaign: launched via the `cargo-mutants` binary directly (the same
+    mise-shim resolution issue every prior slice has hit), with the
+    standing arguments (`cargo mutants --package panini-prakriya
+    --test-workspace=true --timeout 4800 -j 4`), confirmed by `ps` showing
+    four genuinely concurrent build+test workers. Run at HEAD (`b624c3b`).
+    **678 mutants, 631 caught, 3 missed, 43 unviable, 1 timeout**
+    (631 + 43 + 1 = 675, plus the 3 missed = 678), a single continuous
+    detached run — wall clock **28h** (2026-09-07 21:09:24 – 2026-09-09
+    01:17:12 UTC). This is the longest campaign in the series, for two
+    compounding reasons rather than one: the mutant population is the
+    largest yet (678, against the prep's 618) and the floor that scales
+    every test-phase run is also the highest yet (2258.069s).
+    The mutant population grew 618 → 678, **+9.71%** — by far the largest
+    single-slice population move in this series (the prep's own +0.49% was
+    a three-site outlier by comparison), matching the scale of new code
+    this slice actually lands. A fresh `--list` catalog (isolated via `-o`,
+    no test execution) against the current source gives an exact,
+    reconciling site-by-site account of the +60:
+    - `abhyasa.rs`, the new stage's two rules — 6.1.10 (dvitva) and 7.4.62
+      (kuhoś cuḥ): **1** mutant, all on 6.1.10's `!Tag::Slu` guard. 7.4.62
+      itself contributes **0**: its body is entirely early-return `Option`
+      chains and a single format! substitution with no comparison or
+      literal genre this tool's mutation set reaches — a coverage gap of
+      the same shape already recorded in this series (7f's `saturating_sub`,
+      8a's `Atmanepada` arms, 8b's `kur` guard, the prep's `AGAMA` string
+      writes), not a missing test.
+    - `sound.rs`'s two new tables, `cutva_of` and `deaspirate_of`: **20**
+      mutants (**8**: 2 function-body substitutions + 6 match-arm deletions
+      for `cutva_of`'s six arms; **12**: 2 + 10 for `deaspirate_of`'s ten).
+    - 2.4.75: **8**. 3.4.109: **5**. 7.1.4: **3**. 7.3.83: **4**.
+      6.4.82: **15** (the campaign's dominant single site, and the
+      survivor's home — see below). 8.4.54: **1**.
+    - 6.4.87's new hu arm: **2** of the rule's 5 total mutants (the other 3
+      belong to its pre-existing śnu arm, not new this slice). 6.4.101's
+      new hu arm: **1** of the rule's 3 total mutants (the other 2 belong
+      to its pre-existing jhal-branch guard).
+    Sum: 1 + 20 + 8 + 5 + 3 + 4 + 15 + 1 + 2 + 1 = **60**, reconciling
+    exactly against 618 → 678.
+    **The genuine new survivor, and the series' first found and closed
+    within the slice that produced it:** 6.4.82's
+    `stem.iter().filter(is_vowel).count() < 2` mutated to `> 2`
+    (`guna.rs:609:62`). It survived because the only one-vowel case in
+    `er_anekaco_declines_on_each_of_its_conditions` (ABHYASA `""`, ANGA
+    `"ci"`) also fails the *asaṁyogapūrva* test on its own — a one-vowel
+    stem never has a vowel two sounds back — so the *anekāc* count clause
+    was never the deciding clause on any input the suite exercised, and no
+    test used a stem with three or more vowels for either bound to bite.
+    *Anekāc* is a real, falsifiable condition of the sūtra (a one-vowel
+    aṅga belongs to 6.4.77's iyaṅ, not here), so the fix is a test, not a
+    comment or a deleted clause: a new synthetic positive case (ABHYASA
+    `"ci"`, ANGA `"kari"`, ending `"ati"`) gives a three-vowel stem
+    (`cikari`: i, a, i) where *asaṁyogapūrva* still holds (the `r` before
+    the final `i` sits after `a`), forcing the count clause alone to decide
+    it; the rule must and does write ANGA `"kary"`. Landed alone, ahead of
+    this record, as `4a9fd57`. An isolated re-run selecting only this
+    mutant (cargo-mutants 27.1.0's `-F`/`--list` filtering always also
+    returns one filter-immune control mutant, `mod.rs:80:9: delete field
+    ctx from struct Prakriya expression in derive`, regardless of the
+    regex — confirmed with a nonsense pattern that matched nothing else; a
+    future isolated confirmation should expect 2 mutants tested, not 1, and
+    read the specific line's own verdict rather than the summary count)
+    confirms the kill: **2 mutants tested in 44m: 2 caught**, with
+    `guna.rs:609:62: replace < with >` itself reported CAUGHT.
+    **Both documented equivalents are the same pair carried since 7e —
+    relocated but otherwise unchanged, confirmed at their in-place comments
+    by diff shape, not line number:**
+    - `adesha.rs:519:30` (moved +2 from the prep's `:517:30`), 6.1.87's im
+      arm, `replace + with *` — the same equivalence as every prior slice:
+      whichever half of the adjacent `a i` pair survives the removal is
+      immediately clobbered by the following `'e'` assignment. Uncaught
+      test-phase duration: **2335s**.
+    - `tripadi.rs:1176:38` (unchanged from the prep's own `:1176:38` —
+      this equivalent's line number has moved every prior slice this
+      record shows; this is the first visible exception), 8.3.13's guard,
+      `replace - with /` — both `Q`s at the
+      matched position are identical, so eliding either produces the same
+      surface string. Uncaught test-phase duration: **2795s**.
+    The timeout is the same known-permanent `tripadi.rs`, 8.4.2
+    backward-ṇatva-scan, non-terminating-loop mutant (`j -= 1` -> `j /=
+    1`, now at `tripadi.rs:1442:23`, moved +26 lines from the prep's
+    `:1416:23` by this slice's own 8.4.54 and its comments); it ran the
+    full 4800.01s cap, the correct verdict at any cap.
+    **This slice has no caught-duration distribution.** After the campaign
+    finished, follow-up `cargo-mutants` invocations run to isolate the
+    survivor above were pointed at the default `mutants.out` path instead
+    of `-o`; the tool rotates `mutants.out` → `mutants.out.old` on every
+    invocation and discards whatever was previously in `.old`, so two such
+    invocations in a row consumed both copies and destroyed the campaign's
+    `outcomes.json` before Step 5 could read it. The next runner doing any
+    follow-up cargo-mutants invocation against an already-completed
+    campaign must pass `-o` to an isolated directory, every time.
+    **The direct uncaught margin, measured, not projected:** against the
+    worst of the two documented equivalents' own uncaught runs (2795s,
+    `tripadi.rs`): 4800 / 2795 ≈ **1.72×**. This measured figure sits
+    inside the pre-campaign projected range above (2.08×–1.49×), which is
+    the consistency check available in place of the missing caught-mutant
+    figure.
+    **Ruling: keep 4800.** This slice has no caught-mutant margin to compare
+    against the prep's 1.70× trigger reference — the distribution that
+    would supply it was lost, per above. The measured uncaught margin,
+    1.72×, is numerically close to that retired figure, but it is a
+    different metric: across this series the uncaught margin has always run
+    higher than the caught margin (the prep's own 2.15× against its 1.70×,
+    a similar gap in 8b), so this closeness is coincidental and must not be
+    read as reassurance that the true caught margin also sits near 1.70×.
+    The ruling to keep 4800 rests instead on the pre-campaign projection
+    (2303.23–3229.04s, comfortably under cap) and the measured 1.72×
+    uncaught margin — both clear 1× with real room — not on any caught-
+    mutant figure. The next slice should re-establish a genuine caught-
+    mutant margin, with every follow-up invocation passed `-o`, before
+    leaning on 1.70× as the trigger reference again.
   - `cargo-deny` + `cargo-audit` (supply-chain checks) — `mise run audit` runs
     `cargo audit && cargo deny check` and is expected to pass, including
     `cargo deny check advisories`.
