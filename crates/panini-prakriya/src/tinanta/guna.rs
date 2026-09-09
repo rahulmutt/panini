@@ -669,7 +669,7 @@ pub(crate) static GUNA: &[Rule] = &[
     // after its apavāda 6.4.82 — because every ī/ū-final curated root is
     // already past it by then: √bhū and √nī have guṇated (`Bo`, `ne`, śap
     // being pit so 1.1.5 does not block), √śī has guṇated by 7.4.21, and
-    // √vrī's follower is the hal-initial śnā. The 3564 byte-identical
+    // √vrī's follower is the hal-initial śnā. The 3636 byte-identical
     // priors are what turn that from an argument into a proof.
     //
     // THE UVAṄ HALF IS NOT WRITTEN. `U` → `uv` has no cell in the suite —

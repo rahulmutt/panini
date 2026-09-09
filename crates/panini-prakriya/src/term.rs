@@ -11,13 +11,12 @@ pub enum Tag {
     Ardhadhatuka,
     It,
     /// 6.1.4 pūrvo'bhyāsaḥ: the earlier of the two copies dvitva makes —
-    /// the reduplicant at `ABHYASA`. Set by 6.1.10. No rule reads it in
-    /// slice 3a: the rules whose locative *abhyāse* names it (7.4.62,
-    /// 8.4.54) read the slot's text instead, because the slot is non-empty
-    /// exactly when 6.1.10 has filled it and a tag test there could never
-    /// be falsified. The tag is the saṁjñā verdict itself, pinned by
-    /// 6.1.10's unit test, for the abhyāsa rules slice 3b brings (7.4.59,
-    /// 7.4.60).
+    /// the reduplicant at `ABHYASA`. Set by 6.1.10. No rule reads it: the
+    /// rules whose locative *abhyāse* names it (7.4.62, 8.4.54) read the
+    /// slot's text instead, and slice 3b's own abhyāsa rules (7.4.59,
+    /// 7.4.60) do too, because the slot is non-empty exactly when 6.1.10
+    /// has filled it and a tag test there could never be falsified. The
+    /// tag is the saṁjñā verdict itself, pinned by 6.1.10's unit test.
     Abhyasa,
     /// The dhatu takes atmanepada (the data-layer stand-in for the anudatta
     /// it-marker that 1.3.12 reads; see the spec's pada-sanction section).

@@ -70,8 +70,8 @@ pub(crate) static ABHYASA_RULES: &[Rule] = &[
     // the load a second root would otherwise share.
     //
     // The no-op guard is 8.4.53's: for a single-consonant abhyāsa the result
-    // equals the input, and the rule must record nothing there or every √hu
-    // and √ki trace grows a step and the 3564 priors break.
+    // equals the input, and the rule must record nothing there or every √hu,
+    // √ki and √bhī trace grows a step and the 3636 priors break.
     Rule {
         id: "7.4.60",
         name: "halAdiH SezaH",
@@ -277,7 +277,7 @@ mod tests {
     fn haladih_shesha_records_nothing_for_a_single_initial_consonant() {
         // The no-op guard. √hu, √ki and √bhī all have one initial consonant,
         // so 7.4.60 must return false and leave the log empty — otherwise
-        // every 3a trace grows a step and the 3564 priors break.
+        // every one of their traces grows a step and the 3636 priors break.
         let r_10 = rules().find(|r| r.id == "6.1.10").unwrap();
         let r_60 = rules().find(|r| r.id == "7.4.60").unwrap();
         for root in ["hu", "ki", "BI"] {
