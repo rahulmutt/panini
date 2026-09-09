@@ -141,7 +141,7 @@ const VIKALPA_RULES: &[&str] = &[
     "7.1.35", "3.4.111", "7.3.86", "6.4.107", "8.2.74", "8.2.75", "8.4.65", "8.4.56",
 ];
 
-/// `ALTERNATES` is otherwise 907 bare strings, and a string can be right for
+/// `ALTERNATES` is otherwise 919 bare strings, and a string can be right for
 /// the wrong reason — `BavatAt` is a real form whether or not 8.4.56 is what
 /// produced it. This ties each row to the grammar: find the branch that
 /// derives the row's form, intersect its log with the optional-rule set, and
@@ -284,8 +284,8 @@ fn derivation_set_is_exactly_pinned() {
 /// 7.1.35/8.4.65/8.4.56 exactly as kft/ruD/Bid/kzud/tfd's do (a five-form
 /// cell), and its loṭ parasmaipada madhyama eka ties the six-form record
 /// with the same k = 3 against the 2³ bound of eight:
-/// 3492 cells total (388 root×lakāra blocks × 9), of which 2818 hold exactly
-/// one form, 522 hold two, 111 hold three, seventeen hold four (piṣ's loṭ
+/// 3564 cells total (396 root×lakāra blocks × 9), of which 2882 hold exactly
+/// one form, 526 hold two, 115 hold three, seventeen hold four (piṣ's loṭ
 /// madhyama eka, the deepest fork added in 7b, Siz's loṭ parasmaipada
 /// madhyama eka (slice 7d), and — new in slice 8a — fifteen more spread
 /// across the four ik-upadhā tanādi roots kziR/fR/tfR/GfR; √kṛ, slice 8b,
@@ -312,7 +312,7 @@ fn derivation_set_is_exactly_pinned() {
 /// madhyama eka) hold three forms, 7.1.35 and 7.1.35+8.4.56 stacked against
 /// the plain -oti skeleton, with no third rule available to stack a fourth).
 /// `ALTERNATES`
-/// itself has 907 rows, keyed 130 `8.4.56`, 108 `7.1.35`, 108 `7.1.35+8.4.56`,
+/// itself has 919 rows, keyed 134 `8.4.56`, 112 `7.1.35`, 112 `7.1.35+8.4.56`,
 /// 2 `3.4.111`, 72 `6.4.107`, 145 `8.4.65`, 8 `8.2.75`, 1 `8.2.74`, 16
 /// `7.1.35+8.4.65`, 16 `7.1.35+8.4.65+8.4.56`, 270 `7.3.86` (tanādi 8a's
 /// ik-upadhā fork), 8 `7.1.35+7.3.86`, 8 `7.1.35+7.3.86+8.4.56`, 8
