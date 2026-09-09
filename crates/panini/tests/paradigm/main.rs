@@ -138,7 +138,7 @@ fn every_alternate_names_a_real_cell() {
 /// duplicated here rather than exported because this is an integration test
 /// and the rule table is crate-internal.
 const VIKALPA_RULES: &[&str] = &[
-    "7.1.35", "3.4.111", "7.3.86", "6.4.107", "8.2.74", "8.2.75", "8.4.65", "8.4.56",
+    "7.1.35", "3.4.111", "7.3.86", "6.4.107", "8.2.74", "8.2.75", "8.4.65", "8.4.56", "6.4.115",
 ];
 
 /// `ALTERNATES` is otherwise 919 bare strings, and a string can be right for
@@ -462,7 +462,7 @@ fn derivation_set_is_exactly_pinned() {
 #[test]
 fn derivation_set_shape_matches_the_audited_numbers() {
     let total_cells = PARADIGM.len() * 9;
-    assert_eq!(total_cells, 3564, "396 root×lakāra blocks × 9 cells each");
+    assert_eq!(total_cells, 3636, "404 root×lakāra blocks × 9 cells each");
 
     let mut ones = 0usize;
     let mut twos = 0usize;
@@ -489,40 +489,48 @@ fn derivation_set_shape_matches_the_audited_numbers() {
             }
         }
     }
-    assert_eq!(ones, 2882, "one-form cells");
-    assert_eq!(twos, 526, "two-form cells");
-    assert_eq!(threes, 115, "three-form cells");
+    assert_eq!(ones, 2925, "one-form cells");
+    assert_eq!(twos, 550, "two-form cells");
     assert_eq!(
-        fours, 17,
+        threes, 117,
+        "three-form cells — new in slice 3b — √hrī's loṭ prathama and madhyama eka, each by \
+         7.1.35/8.4.56"
+    );
+    assert_eq!(
+        fours, 18,
         "four-form cells — piṣ's loṭ madhyama eka, Siz's loṭ parasmaipada madhyama eka (slice \
          7d), and — new in slice 8a — fifteen more across the four ik-upadhā roots (kziR, fR, \
-         tfR, GfR), each forking on 7.3.86 alongside the pre-existing rules"
+         tfR, GfR), each forking on 7.3.86 alongside the pre-existing rules; and — new in \
+         slice 3b — √bhī's vidhiliṅ prathama eka, forking on 6.4.115 alongside 8.4.56"
     );
     assert_eq!(
-        fives, 8,
+        fives, 9,
         "five-form cells — kft loṭ prathama eka, ruD loṭ parasmaipada prathama eka, Bid, kzud \
          and tfd's loṭ parasmaipada prathama eka, und's (slice 7d), and — new in slice 7f — \
-         Cid's and Cfd's loṭ parasmaipada prathama eka"
+         Cid's and Cfd's loṭ parasmaipada prathama eka; and — new in slice 3b — √bhī's loṭ \
+         prathama eka, forking on 7.1.35/6.4.115/8.4.56"
     );
     assert_eq!(
-        sixes, 16,
+        sixes, 17,
         "six-form cells — kft loṭ madhyama eka, ruD loṭ parasmaipada madhyama eka, Bid, kzud \
          and tfd's loṭ parasmaipada madhyama eka, und's (slice 7d), Cid's and Cfd's loṭ \
          parasmaipada madhyama eka (slice 7f), and — new in slice 8a — kziR, fR, tfR and GfR's \
          loṭ parasmaipada prathama AND madhyama eka (the four ik-upadhā roots, each stacking \
-         7.3.86 alongside 7.1.35/8.4.56)"
+         7.3.86 alongside 7.1.35/8.4.56); and — new in slice 3b — √bhī's loṭ parasmaipada \
+         madhyama eka, a third distinct k=3 stack (7.1.35/6.4.115/8.4.56) beside rudhādi's \
+         7.1.35/8.4.65/8.4.56 and tanādi's 7.1.35/7.3.86/8.4.56"
     );
 
-    assert_eq!(ALTERNATES.len(), 919, "ALTERNATES row count");
+    assert_eq!(ALTERNATES.len(), 959, "ALTERNATES row count");
     let key_count = |key: &str| {
         ALTERNATES
             .iter()
             .filter(|(_, _, _, _, _, k)| *k == key)
             .count()
     };
-    assert_eq!(key_count("8.4.56"), 134, "8.4.56-only alternates");
-    assert_eq!(key_count("7.1.35"), 112, "7.1.35-only alternates");
-    assert_eq!(key_count("7.1.35+8.4.56"), 112, "7.1.35+8.4.56 alternates");
+    assert_eq!(key_count("8.4.56"), 138, "8.4.56-only alternates");
+    assert_eq!(key_count("7.1.35"), 116, "7.1.35-only alternates");
+    assert_eq!(key_count("7.1.35+8.4.56"), 116, "7.1.35+8.4.56 alternates");
     assert_eq!(key_count("3.4.111"), 2, "3.4.111 alternates");
     assert_eq!(key_count("6.4.107"), 72, "6.4.107 alternates");
     assert_eq!(key_count("8.4.65"), 145, "8.4.65-only alternates");
@@ -543,6 +551,14 @@ fn derivation_set_shape_matches_the_audited_numbers() {
     );
     assert_eq!(key_count("7.3.86+6.4.107"), 8, "7.3.86+6.4.107 alternates");
     assert_eq!(key_count("7.3.86+8.4.56"), 7, "7.3.86+8.4.56 alternates");
+    assert_eq!(key_count("6.4.115"), 23, "6.4.115-only alternates");
+    assert_eq!(key_count("7.1.35+6.4.115"), 2, "7.1.35+6.4.115 alternates");
+    assert_eq!(
+        key_count("7.1.35+6.4.115+8.4.56"),
+        2,
+        "7.1.35+6.4.115+8.4.56 alternates"
+    );
+    assert_eq!(key_count("6.4.115+8.4.56"), 1, "6.4.115+8.4.56 alternates");
 }
 
 /// `every_form_validates_and_matches` only walks `PARADIGM`, so a root or

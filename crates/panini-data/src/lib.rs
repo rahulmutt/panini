@@ -931,6 +931,29 @@ static DHATUS: &[Dhatu] = &[
         artha: "dAnAdAnayoH AdAne prIRane ca",
     },
     Dhatu {
+        // 03.0002 `YiBI\` Baye. The initial ñi is an it by 1.3.5 and
+        // decides no pada — see `pada_from_upadesha`. Parasmaipada by
+        // 1.3.78. Its ī is what 6.4.115 optionally shortens (bibhītaḥ /
+        // bibhitaḥ) and what 6.4.82 turns to y before a vowel (bibhyati):
+        // `BiBI` is asaṁyogapūrva where √hrī's `JihrI` is not.
+        dhatupatha: "03.0002",
+        code: "BI",
+        gana: Gana::Juhotyadi,
+        pada: PadaAssignment::Parasmaipada,
+        artha: "Baye",
+    },
+    Dhatu {
+        // 03.0003 `hrI\` lajjAyAm. The gaṇa's only cluster-initial root, so
+        // its abhyāsa is 7.4.60's only witness anywhere: hrI → hI → hi → Ji
+        // → ji. The conjunct is also why 6.4.82 declines and 6.4.77's iyaṅ
+        // arm takes the cell instead (jihriyati).
+        dhatupatha: "03.0003",
+        code: "hrI",
+        gana: Gana::Juhotyadi,
+        pada: PadaAssignment::Parasmaipada,
+        artha: "lajjAyAm",
+    },
+    Dhatu {
         // 03.0020 ki\ jYAne. ciketi / cikyati — the i-final witness for
         // 6.4.82 er anekāco'saṁyogapūrvasya (ci-ki is anekāc, k is no
         // conjunct) and the abhyāsa that 8.4.54 must leave alone (ci is
@@ -982,7 +1005,7 @@ mod tests {
 
     #[test]
     fn curated_roots_have_expected_ganas_and_padas() {
-        assert_eq!(dhatus().len(), 79);
+        assert_eq!(dhatus().len(), 81);
         let bu = dhatus().iter().find(|d| d.dhatupatha == "01.0001").unwrap();
         assert!(matches!(bu.pada, PadaAssignment::Parasmaipada));
         let labh = dhatus().iter().find(|d| d.dhatupatha == "01.1130").unwrap();
@@ -1273,13 +1296,15 @@ mod tests {
     }
 
     #[test]
-    fn juhotyadi_rows_are_the_two_curated_roots() {
-        // Slice 3a: the ślu gaṇa opens with its eponym √hu and √ki, the two
+    fn juhotyadi_rows_are_the_four_curated_roots() {
+        // Slice 3a opened the ślu gaṇa with its eponym √hu and √ki, the two
         // roots that exercise dvitva, 7.4.62, 7.1.4, 3.4.109/7.3.83, 6.4.82,
-        // 6.4.87's and 6.4.101's hu arms and 8.4.54 with nothing else. Both
-        // parasmaipadī by 1.3.78: the `\` in `hu\` / `ki\` sits on the root
-        // vowel (svara), not on an it. The gaṇa is PARTIAL at 2 of its 26
-        // dhātupāṭha rows; slices 3b–3f close it (spec, "Later slices").
+        // 6.4.87's and 6.4.101's hu arms and 8.4.54 with nothing else. Slice
+        // 3b adds √bhī and √hrī: both parasmaipadī, √bhī's by 1.3.78 (the
+        // `\` sits on the root vowel, not on an it) and √hrī's the same
+        // way, plus the vikaraṇa's 6.4.115, 7.4.60 and 6.4.77's iyaṅ arm.
+        // The gaṇa is PARTIAL at 4 of its 26 dhātupāṭha rows; slices 3c–3f
+        // close it (spec, "Later slices").
         let rows: Vec<_> = dhatus()
             .iter()
             .filter(|d| d.gana == Gana::Juhotyadi)
@@ -1289,6 +1314,8 @@ mod tests {
             rows,
             vec![
                 ("03.0001", "hu", PadaAssignment::Parasmaipada),
+                ("03.0002", "BI", PadaAssignment::Parasmaipada),
+                ("03.0003", "hrI", PadaAssignment::Parasmaipada),
                 ("03.0020", "ki", PadaAssignment::Parasmaipada),
             ]
         );
@@ -1297,13 +1324,21 @@ mod tests {
         // curated root reads `hu`" — a premise stated only in those rules'
         // comments and checked nowhere else. `code` is NOT unique in
         // general (vij, vid, man, aS already repeat), so this is a real
-        // tripwire, not a tautology.
+        // tripwire, not a tautology. 6.4.115 now identifies √bhī the same
+        // way, by `ANGA.text == "BI"` with no gaṇa clause, so `BI` must
+        // stay unique too.
         assert_eq!(
             dhatus().iter().filter(|d| d.code == "hu").count(),
             1,
             "6.4.87 and 6.4.101 key on ANGA.text == \"hu\" with no gaṇa \
              clause; if a second curated root ever reads \"hu\" both rules \
              need a gaṇa guard"
+        );
+        assert_eq!(
+            dhatus().iter().filter(|d| d.code == "BI").count(),
+            1,
+            "6.4.115 keys on ANGA.text == \"BI\" with no gaṇa clause; if a \
+             second curated root ever reads \"BI\" it needs a gaṇa guard"
         );
     }
 
