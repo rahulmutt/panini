@@ -22,7 +22,7 @@
 
 use crate::rule::{Rule, RuleKind};
 use crate::term::Tag;
-use crate::tinanta::sound::cutva_of;
+use crate::tinanta::sound::{cutva_of, hrasva_of, is_vowel};
 use crate::tinanta::terms::{ABHYASA, ANGA, SHAP};
 
 pub(crate) static ABHYASA_RULES: &[Rule] = &[
@@ -56,6 +56,76 @@ pub(crate) static ABHYASA_RULES: &[Rule] = &[
             p.terms[ABHYASA].add(Tag::Abhyasta);
             p.terms[ANGA].add(Tag::Abhyasta);
             p.record("6.1.10", "SlO", before);
+            true
+        },
+    },
+    // 7.4.60 halādiḥ śeṣaḥ: of the abhyāsa's initial consonant cluster only
+    // the first consonant remains. hrI → hI, which 7.4.59 then shortens to
+    // hi and 7.4.62 palatalizes to Ji (jihreti).
+    //
+    // √hrī is the ONLY cluster-initial row in the whole gaṇa — the other
+    // twenty-five all begin with a single consonant or a vowel — so this
+    // rule will never gain a second witness, and
+    // `haladih_shesha_keeps_only_the_first_consonant_of_the_abhyasa` carries
+    // the load a second root would otherwise share.
+    //
+    // The no-op guard is 8.4.53's: for a single-consonant abhyāsa the result
+    // equals the input, and the rule must record nothing there or every √hu
+    // and √ki trace grows a step and the 3564 priors break.
+    Rule {
+        id: "7.4.60",
+        name: "halAdiH SezaH",
+        kind: RuleKind::Vidhi,
+        vikalpa: false,
+        apply: |p| {
+            let s: Vec<char> = p.terms[ABHYASA].text.chars().collect();
+            let Some(&first) = s.first() else {
+                return false;
+            };
+            // *halādiḥ* names a consonant-initial abhyāsa. 3d's √ṛ is the
+            // vowel-initial row and must fall through untouched.
+            if is_vowel(first) {
+                return false;
+            }
+            let tail: String = s.iter().skip(1).skip_while(|c| !is_vowel(**c)).collect();
+            let t = format!("{first}{tail}");
+            if t == p.terms[ABHYASA].text {
+                return false;
+            }
+            let before = p.snapshot();
+            p.terms[ABHYASA].text = t;
+            p.record("7.4.60", "halAdiH SezaH", before);
+            true
+        },
+    },
+    // 7.4.59 hrasvaḥ: the abhyāsa's vowel becomes hrasva. BI → Bi
+    // (bibheti), and hI → hi on 7.4.60's output (jihreti). The AṄGA's own
+    // vowel is untouched — that is what leaves √bhī a long I for 6.4.82 to
+    // find (bibhyati) and what 6.4.115 optionally shortens later.
+    //
+    // Ordered AFTER 7.4.60 (vidyut's order; the forms agree either way, so
+    // the trace pins are what hold it) and BEFORE 7.4.62.
+    //
+    // Same no-op guard: √hu and √ki are already hrasva, and `hrasva_of`
+    // returning None for a short vowel is what makes the guard a one-lookup
+    // test. See that function for why the ec arm of 1.1.48 is absent.
+    Rule {
+        id: "7.4.59",
+        name: "hrasvaH",
+        kind: RuleKind::Vidhi,
+        vikalpa: false,
+        apply: |p| {
+            let t: String = p.terms[ABHYASA]
+                .text
+                .chars()
+                .map(|c| hrasva_of(c).unwrap_or(c))
+                .collect();
+            if t == p.terms[ABHYASA].text {
+                return false;
+            }
+            let before = p.snapshot();
+            p.terms[ABHYASA].text = t;
+            p.record("7.4.59", "hrasvaH", before);
             true
         },
     },
@@ -185,5 +255,97 @@ mod tests {
         assert!((r_10.apply)(&mut p));
         assert!(!(r_62.apply)(&mut p));
         assert_eq!(p.terms[ABHYASA].text, "dA");
+    }
+
+    #[test]
+    fn haladih_shesha_keeps_only_the_first_consonant_of_the_abhyasa() {
+        // 7.4.60. √hrī's abhyāsa `hrI` loses its r: jihreti. This is the
+        // ONLY cluster-initial row in the whole gaṇa, so this test is the
+        // rule's only witness and no later slice adds a second.
+        let mut p = slu_prakriya("hrI", "ti");
+        let r_10 = rules().find(|r| r.id == "6.1.10").unwrap();
+        assert!((r_10.apply)(&mut p));
+        assert_eq!(p.terms[ABHYASA].text, "hrI");
+        let r_60 = rules().find(|r| r.id == "7.4.60").unwrap();
+        assert!((r_60.apply)(&mut p));
+        assert_eq!(p.terms[ABHYASA].text, "hI");
+        assert_eq!(p.terms[ANGA].text, "hrI", "the aṅga is untouched");
+        assert_eq!(p.log.last().unwrap().sutra, "7.4.60");
+    }
+
+    #[test]
+    fn haladih_shesha_records_nothing_for_a_single_initial_consonant() {
+        // The no-op guard. √hu, √ki and √bhī all have one initial consonant,
+        // so 7.4.60 must return false and leave the log empty — otherwise
+        // every 3a trace grows a step and the 3564 priors break.
+        let r_10 = rules().find(|r| r.id == "6.1.10").unwrap();
+        let r_60 = rules().find(|r| r.id == "7.4.60").unwrap();
+        for root in ["hu", "ki", "BI"] {
+            let mut p = slu_prakriya(root, "ti");
+            assert!((r_10.apply)(&mut p));
+            p.log.clear();
+            assert!(!(r_60.apply)(&mut p), "{root}");
+            assert_eq!(p.terms[ABHYASA].text, root, "{root}");
+            assert!(p.log.is_empty(), "{root}");
+        }
+    }
+
+    #[test]
+    fn haladih_shesha_declines_for_a_vowel_initial_abhyasa() {
+        // 3d's √ṛ is the vowel-initial row. *halādiḥ* names a consonant, so
+        // the rule has nothing to keep and must not touch the term.
+        let mut p = slu_prakriya("f", "ti");
+        let r_10 = rules().find(|r| r.id == "6.1.10").unwrap();
+        assert!((r_10.apply)(&mut p));
+        p.log.clear();
+        let r_60 = rules().find(|r| r.id == "7.4.60").unwrap();
+        assert!(!(r_60.apply)(&mut p));
+        assert_eq!(p.terms[ABHYASA].text, "f");
+        assert!(p.log.is_empty());
+    }
+
+    #[test]
+    fn hrasvah_shortens_the_abhyasa_vowel_and_leaves_the_anga_long() {
+        // 7.4.59. √bhī: BI → Bi, with the aṅga's own I untouched — that is
+        // what lets 6.4.82 fire on a long I later (bibhyati).
+        let mut p = slu_prakriya("BI", "ti");
+        let r_10 = rules().find(|r| r.id == "6.1.10").unwrap();
+        assert!((r_10.apply)(&mut p));
+        let r_59 = rules().find(|r| r.id == "7.4.59").unwrap();
+        assert!((r_59.apply)(&mut p));
+        assert_eq!(p.terms[ABHYASA].text, "Bi");
+        assert_eq!(p.terms[ANGA].text, "BI", "the aṅga keeps its long vowel");
+        assert_eq!(p.log.last().unwrap().sutra, "7.4.59");
+    }
+
+    #[test]
+    fn hrasvah_records_nothing_for_an_already_short_abhyasa() {
+        // The no-op guard, on 3a's two roots.
+        let r_10 = rules().find(|r| r.id == "6.1.10").unwrap();
+        let r_59 = rules().find(|r| r.id == "7.4.59").unwrap();
+        for root in ["hu", "ki"] {
+            let mut p = slu_prakriya(root, "ti");
+            assert!((r_10.apply)(&mut p));
+            p.log.clear();
+            assert!(!(r_59.apply)(&mut p), "{root}");
+            assert_eq!(p.terms[ABHYASA].text, root, "{root}");
+            assert!(p.log.is_empty(), "{root}");
+        }
+    }
+
+    #[test]
+    fn haladih_shesha_runs_before_hrasvah_and_both_before_kuhoshcuh() {
+        // √hrī end to end through this stage: hrI → hI → hi → Ji, which
+        // 8.4.54 finishes as `ji` in the tripādī. The order is vidyut's; the
+        // forms agree under 7.4.60/7.4.59 either way, so this is the pin
+        // that makes the order a checked fact rather than an accident.
+        let mut p = slu_prakriya("hrI", "ti");
+        for id in ["6.1.10", "7.4.60", "7.4.59", "7.4.62"] {
+            let r = rules().find(|r| r.id == id).unwrap();
+            assert!((r.apply)(&mut p), "{id}");
+        }
+        assert_eq!(p.terms[ABHYASA].text, "Ji");
+        let ids: Vec<&str> = p.log.iter().map(|s| s.sutra.as_str()).collect();
+        assert_eq!(ids, vec!["6.1.10", "7.4.60", "7.4.59", "7.4.62"]);
     }
 }
