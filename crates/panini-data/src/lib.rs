@@ -10,6 +10,7 @@ pub enum Gana {
     Svadi,
     Rudhadi,
     Tanadi,
+    Juhotyadi,
 }
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Pada {
@@ -96,7 +97,7 @@ pub struct Dhatu {
     pub gana: Gana,
     /// Which pada(s) this engine derives for this root. Curated rather than
     /// read from the upadeśa's it-markers — but no longer a *deferral*:
-    /// `curated_pada_agrees_with_upadesha_markers` re-derives 76 of these 77
+    /// `curated_pada_agrees_with_upadesha_markers` re-derives 78 of these 79
     /// verdicts from the vendored upadeśa via 1.3.12 / 1.3.72 / 1.3.78 and
     /// requires them to match; `07.0017`'s (√bhuj's) is 1.3.66's root-keyed
     /// exception, asserted explicitly from both sides, the same way
@@ -109,7 +110,7 @@ pub struct Dhatu {
     /// the honest arrangement; see the deferral in
     /// `docs/superpowers/specs/2026-08-16-pada-audit-design.md`.
     ///
-    /// The test covers the 77 roots curated here, not the dhātupāṭha's 2259.
+    /// The test covers the 79 roots curated here, not the dhātupāṭha's 2259.
     /// It catches a mis-assigned pada on a root a future slice adds; it does
     /// not make the table self-maintaining.
     pub pada: PadaAssignment,
@@ -916,6 +917,30 @@ static DHATUS: &[Dhatu] = &[
         pada: PadaAssignment::Ubhayapada,
         artha: "karaRe",
     },
+    Dhatu {
+        // 03.0001 hu\ dAnAdAnayoH AdAne prIRane ca. The ślu gaṇa's eponym
+        // (juhoti): 2.4.75 ślu, 6.1.10 dvitva, 7.4.62 kuhoś cuḥ on the
+        // abhyāsa (hu → Ju, then 8.4.54 → ju), 6.4.87's hu arm (juhvati),
+        // 6.4.101's hu arm (juhuDi), 3.4.109 + 7.3.83 in laṅ (ajuhavuH).
+        // The `\` sits on the root vowel — svara, not an anubandha — so
+        // 1.3.78 → parasmaipadī. Slice 3a.
+        dhatupatha: "03.0001",
+        code: "hu",
+        gana: Gana::Juhotyadi,
+        pada: PadaAssignment::Parasmaipada,
+        artha: "dAnAdAnayoH AdAne prIRane ca",
+    },
+    Dhatu {
+        // 03.0020 ki\ jYAne. ciketi / cikyati — the i-final witness for
+        // 6.4.82 er anekāco'saṁyogapūrvasya (ci-ki is anekāc, k is no
+        // conjunct) and the abhyāsa that 8.4.54 must leave alone (ci is
+        // already car). Parasmaipadī by 1.3.78 as √hu. Slice 3a.
+        dhatupatha: "03.0020",
+        code: "ki",
+        gana: Gana::Juhotyadi,
+        pada: PadaAssignment::Parasmaipada,
+        artha: "jYAne",
+    },
 ];
 
 pub fn dhatus() -> &'static [Dhatu] {
@@ -957,7 +982,7 @@ mod tests {
 
     #[test]
     fn curated_roots_have_expected_ganas_and_padas() {
-        assert_eq!(dhatus().len(), 77);
+        assert_eq!(dhatus().len(), 79);
         let bu = dhatus().iter().find(|d| d.dhatupatha == "01.0001").unwrap();
         assert!(matches!(bu.pada, PadaAssignment::Parasmaipada));
         let labh = dhatus().iter().find(|d| d.dhatupatha == "01.1130").unwrap();
@@ -1244,6 +1269,41 @@ mod tests {
                 ("08.0009", "man", PadaAssignment::Atmanepada),
                 ("08.0010", "kf", PadaAssignment::Ubhayapada),
             ]
+        );
+    }
+
+    #[test]
+    fn juhotyadi_rows_are_the_two_curated_roots() {
+        // Slice 3a: the ślu gaṇa opens with its eponym √hu and √ki, the two
+        // roots that exercise dvitva, 7.4.62, 7.1.4, 3.4.109/7.3.83, 6.4.82,
+        // 6.4.87's and 6.4.101's hu arms and 8.4.54 with nothing else. Both
+        // parasmaipadī by 1.3.78: the `\` in `hu\` / `ki\` sits on the root
+        // vowel (svara), not on an it. The gaṇa is PARTIAL at 2 of its 26
+        // dhātupāṭha rows; slices 3b–3f close it (spec, "Later slices").
+        let rows: Vec<_> = dhatus()
+            .iter()
+            .filter(|d| d.gana == Gana::Juhotyadi)
+            .map(|d| (d.dhatupatha, d.code, d.pada))
+            .collect();
+        assert_eq!(
+            rows,
+            vec![
+                ("03.0001", "hu", PadaAssignment::Parasmaipada),
+                ("03.0020", "ki", PadaAssignment::Parasmaipada),
+            ]
+        );
+        // guna.rs's 6.4.87 and adesha.rs's 6.4.101 both identify √hu by
+        // `ANGA.text == "hu"` with no gaṇa clause, resting on "no other
+        // curated root reads `hu`" — a premise stated only in those rules'
+        // comments and checked nowhere else. `code` is NOT unique in
+        // general (vij, vid, man, aS already repeat), so this is a real
+        // tripwire, not a tautology.
+        assert_eq!(
+            dhatus().iter().filter(|d| d.code == "hu").count(),
+            1,
+            "6.4.87 and 6.4.101 key on ANGA.text == \"hu\" with no gaṇa \
+             clause; if a second curated root ever reads \"hu\" both rules \
+             need a gaṇa guard"
         );
     }
 
@@ -1627,12 +1687,13 @@ mod tests {
         // typed into the wrong gaṇa's block still names a real upstream row,
         // so nothing else would catch it.
         //
-        // Mapped variant → prefix, not the inverse: this engine covers eight
-        // of the ten gaṇas, so 03 and 10 have no `Gana` variant.
+        // Mapped variant → prefix, not the inverse: this engine covers nine
+        // of the ten gaṇas, so only 10 has no `Gana` variant.
         for d in dhatus() {
             let expected = match d.gana {
                 Gana::Bhvadi => "01",
                 Gana::Adadi => "02",
+                Gana::Juhotyadi => "03",
                 Gana::Divadi => "04",
                 Gana::Svadi => "05",
                 Gana::Tudadi => "06",

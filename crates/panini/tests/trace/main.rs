@@ -15,7 +15,7 @@
 //!
 //! For the authoritative rule order itself, do not rely on a diagram here:
 //! read `TINANTA_RULES` in `crates/panini-prakriya/src/tinanta/mod.rs` and
-//! then its six stage files in that order. That flattened static sequence —
+//! then its eight stage files in that order. That flattened static sequence —
 //! not this comment — is the source of truth for sequencing; a diagram in
 //! this header would drift out of sync with it as rules are added (as
 //! happened to the laṭ-only diagram this comment used to carry, before laṅ
@@ -36,6 +36,7 @@ mod helpers;
 mod adadi;
 mod bhvadi;
 mod divadi;
+mod juhotyadi;
 mod kryadi;
 mod rudhadi;
 mod svadi;

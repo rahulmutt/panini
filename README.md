@@ -13,7 +13,7 @@ cargo run -p panini-cli -- check 'bhavati' --trace
 
 ## Scope
 
-Finite verbs (*tiṅanta*), eight gaṇas covered, all of them fully —
+Finite verbs (*tiṅanta*), nine gaṇas covered, eight of them fully —
 *bhvādi* (1, vikaraṇa śap), *divādi* (4, śyan), *tudādi* (6, śa), *adādi*
 (2, śap luk'd), *kryādi* (9, śnā), *svādi* (5, śnu) and *rudhādi* (7,
 śnam) — plus *tanādi* (8, vikaraṇa the bare *u* of 3.1.79), **complete**
@@ -27,7 +27,13 @@ three new root-keyed specials — 6.4.110 *ata ut sārvadhātuke*, 6.4.108
 root, so `kurvaH`/`kurmaH` derive as single branches with no alternate)
 and 6.4.109 *ye ca* — and 8.2.77 *hali ca*'s own guard, 8.2.79 *na
 bhakurchurām*, which declines 8.2.77's lengthening on √kṛ's `kur` aṅga
-(`kurvanti`, not `*kUrvanti`). rudhādi is
+(`kurvanti`, not `*kUrvanti`) — and *juhotyādi* (3, the ślu gaṇa: 2.4.75
+elides śap by ślu and 6.1.10 reduplicates the root into the `ABHYASA`
+slot), **partial** at 2 of its 26 dhātupāṭha rows, √hu (`03.0001`,
+*juhoti*) and √ki (`03.0020`, *ciketi*), curated in slice 3a behind
+7.4.62 *kuhoś cuḥ*, 7.1.4 *ad abhyastāt*, 3.4.109 with 7.3.83 *jusi ca*,
+6.4.82 *er anekāco'saṁyogapūrvasya* and 8.4.54 *abhyāse car ca*, with
+6.4.87 and 6.4.101 grown their √hu arms. rudhādi is
 complete at all
 twenty-five of its own roots (√kṛt, √hiṃs, √khid, √bhañj, √piṣ, √indh, √rudh,
 and — curated in slice 7c — √bhid, √kṣud, √yuj and √tṛd, and — curated in
@@ -51,11 +57,11 @@ rather than falling through to 1.3.72. What 1.3.66 does not model is the
 1.3.72's own precedent,
 since neither engine models sense. *parasmaipada* and *ātmanepada*
 (which padas a root admits is a curated verdict on its table row), over a
-curated 77-root set, in four lakāras: *laṭ* (present), *laṅ* (imperfect), *loṭ*
+curated 79-root set, in four lakāras: *laṭ* (present), *laṅ* (imperfect), *loṭ*
 (imperative), and *vidhiliṅ* (optative). A cell may have more than one valid
 form where an optional (*vikalpa*) sūtra applies — `hinvaH` and `hinuvaH` are
-both correct — and in fact 674 of the 3492 cells hold more than one form: 522
-hold two, 111 hold three (`Bavatu`, `BavatAd`, `BavatAt`), seventeen hold four
+both correct — and in fact 682 of the 3564 cells hold more than one form: 526
+hold two, 115 hold three (`Bavatu`, `BavatAd`, `BavatAt`), seventeen hold four
 (rudhādi's √piṣ loṭ madhyama eka, and — new in slice 7d — √śiṣ's, and — new
 in slice 8a — fifteen more spread across tanādi's four ik-upadhā roots kziR,
 fR, tfR and GfR), eight hold

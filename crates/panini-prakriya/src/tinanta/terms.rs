@@ -15,11 +15,8 @@ use crate::tinanta::sound::is_vowel;
 pub(crate) const AGAMA: usize = 0;
 
 /// Index of the abhyāsa — the reduplicant 6.1.10 ślau copies in front of
-/// the aṅga for juhotyādi. Permanent slot, empty for every other gaṇa (and,
-/// until slice 3a lands, for every derivation). Stable across the pipeline.
-// Unused outside tests until slice 3a (6.1.10) lands. Remove this allow
-// once a rule body reads or writes `ABHYASA`.
-#[allow(dead_code)]
+/// the aṅga for juhotyādi. Permanent slot, empty for every other gaṇa
+/// (6.1.10 fills it). Stable across the pipeline.
 pub(crate) const ABHYASA: usize = 1;
 
 /// Index of the aṅga (the dhātu) in `terms`. Stable across the pipeline.
@@ -51,7 +48,7 @@ pub(crate) const ENDING: usize = 4;
 // NOTE: `ENDING_PRE_SHAP` and `SHAP` are deliberately the same value (3), not
 // a typo. Rule 3.1.68 (kartari śap) inserts śap between the aṅga and the
 // ending, which shifts the ending from index 3 to index 4. This bisects the
-// flattened `TINANTA_RULES` sequence (across its six stage files) into two
+// flattened `TINANTA_RULES` sequence (across its eight stage files) into two
 // halves along that sequence's position, not along any lakāra or
 // rule-family boundary:
 //   - Rules ordered BEFORE 3.1.68 must address the ending via
@@ -194,6 +191,12 @@ pub(crate) fn sound_before_ending(p: &Prakriya) -> Option<char> {
 /// final consonant follows a vowel: tanu and fRu yes, arRu no, since the
 /// guṇa branch's `rR` is a conjunct; that split is exactly vidyut's
 /// arRuhi-beside-fRu).
+///
+/// 6.4.82 itself does not call this helper, deliberately: this helper is
+/// scoped to the vikaraṇa's own `u`, but 6.4.82's asaṁyogapūrva span is
+/// ABHYASA-plus-ANGA (the abhyasta pair, 1.4.13), so it open-codes the
+/// same walk over a different span rather than share this one. Do not
+/// "unify" the two in a later slice.
 ///
 /// Returns false for every other SHAP text (śap/śa `a`, śyan `ya`, śnā's
 /// shapes, śnam-plus-tail, adādi's empty string, and the post-6.4.107

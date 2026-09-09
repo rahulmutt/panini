@@ -208,6 +208,57 @@ pub(crate) fn kutva_of(c: char) -> Option<char> {
     })
 }
 
+/// The *cu* (palatal) counterpart of a *ku* sound or of `h` — 7.4.62 kuhoś
+/// cuḥ's substitute, on the abhyāsa. The inverse of `kutva_of` for the four
+/// stops (1.1.50 sthAne'ntaratamaH keeps voicing and aspiration: `k` to
+/// `c`, `g` to `j`), plus the two arms `kutva_of` has no mirror for: `N`
+/// (ṅ) to `Y` (ñ) — `ku~` is udit, so 1.1.69 pulls the nasal in — and `h`
+/// to `J` (jh), the voiced aspirate `h` is nearest to; that is how
+/// vidyut-prakriya writes it, and 8.4.54 then deaspirates it to `j`
+/// (juhoti).
+///
+/// Only `k -> c` (√ki) and `h -> J` (√hu) have a curated witness; the other
+/// four arms are present because the table covers the whole varga, the
+/// same reason `kutva_of` carries `C`/`J`. `cutva_of_ku_and_h_all_arms`
+/// keeps them from rotting. The palatals themselves are absent rather than
+/// mapped to themselves, so `None` doubles as 7.4.62's match test.
+pub(crate) fn cutva_of(c: char) -> Option<char> {
+    Some(match c {
+        'k' => 'c',
+        'K' => 'C',
+        'g' => 'j',
+        'G' => 'J',
+        'N' => 'Y',
+        'h' => 'J',
+        _ => return None,
+    })
+}
+
+/// The unaspirated stop of the same place and voicing — 8.4.54 abhyāse car
+/// ca's substitute. The sūtra says the abhyāsa's jhal becomes car, and jaś
+/// by 8.4.53's anuvṛtti; for an unaspirated stop or a sibilant that
+/// substitute is the sound itself, so the change is observable exactly on
+/// the ten aspirates, and `None` for everything else lets 8.4.54 use this
+/// one lookup as its match test as well (the `kutva_of` / `jashtva_of`
+/// idiom). `h` is a jhal too but never reaches 8.4.54 in an abhyāsa: 7.4.62
+/// has already made it `J`, which is why `J -> j` is the one arm √hu
+/// exercises (juhoti); `B -> b` is slice 3b's (√bhī).
+pub(crate) fn deaspirate_of(c: char) -> Option<char> {
+    Some(match c {
+        'K' => 'k',
+        'G' => 'g',
+        'C' => 'c',
+        'J' => 'j',
+        'W' => 'w',
+        'Q' => 'q',
+        'T' => 't',
+        'D' => 'd',
+        'P' => 'p',
+        'B' => 'b',
+        _ => return None,
+    })
+}
+
 /// The *ścu* (palatal) counterpart of a *stu* sound — 8.4.40 stoH ScunA
 /// ScuH's substitute. *stu* is `s` plus the whole t-varga, and by 1.1.50
 /// sthAne'ntaratamaH the nearest substitute preserves voicing, aspiration
@@ -477,6 +528,56 @@ mod tests {
         // Off-domain sanity: a vowel and a dental.
         for c in ['a', 't'] {
             assert_eq!(kutva_of(c), None, "{c} should not kutva");
+        }
+    }
+
+    #[test]
+    fn cutva_of_ku_and_h_all_arms() {
+        // 7.4.62 kuhoś cuḥ: pin every arm directly. Only k -> c (√ki) and
+        // h -> J (√hu) are reachable from the golden forms, so a mutant on
+        // the other arms would be invisible without this. Mirrors
+        // kutva_of_cu_all_arms, of which the four stop arms are the inverse.
+        assert_eq!(cutva_of('k'), Some('c'));
+        assert_eq!(cutva_of('K'), Some('C'));
+        assert_eq!(cutva_of('g'), Some('j'));
+        assert_eq!(cutva_of('G'), Some('J'));
+        assert_eq!(cutva_of('N'), Some('Y'));
+        assert_eq!(cutva_of('h'), Some('J'));
+        for c in ['c', 'C', 'j', 'J', 'Y'] {
+            assert_eq!(cutva_of(c), None, "{c} is cu already");
+        }
+        for c in ['t', 'p', 's', 'S', 'y', 'a', 'u'] {
+            assert_eq!(cutva_of(c), None, "{c} is neither ku nor h");
+        }
+    }
+
+    #[test]
+    fn deaspirate_of_aspirate_stops_all_arms() {
+        // 8.4.54 abhyāse car ca: the abhyāsa's jhal becomes car (and jaś by
+        // 8.4.53's anuvṛtti) — observable exactly on the ten aspirates,
+        // since an unaspirated stop's car/jaś is itself. Only J -> j (√hu)
+        // is reachable from the golden forms in slice 3a, B -> b in 3b; the
+        // rest are pinned here so they cannot rot.
+        for (from, to) in [
+            ('K', 'k'),
+            ('G', 'g'),
+            ('C', 'c'),
+            ('J', 'j'),
+            ('W', 'w'),
+            ('Q', 'q'),
+            ('T', 't'),
+            ('D', 'd'),
+            ('P', 'p'),
+            ('B', 'b'),
+        ] {
+            assert_eq!(deaspirate_of(from), Some(to), "{from}");
+        }
+        // Already car/jaś, or not a stop at all: no substitute, so 8.4.54
+        // can use this as its match test too.
+        for c in [
+            'k', 'g', 'c', 'j', 't', 'd', 'p', 'b', 's', 'S', 'z', 'h', 'n', 'a', 'i', 'u',
+        ] {
+            assert_eq!(deaspirate_of(c), None, "{c}");
         }
     }
 

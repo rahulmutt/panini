@@ -1,7 +1,7 @@
-//! The tiṅanta pipeline, as seven ordered rule-stage modules plus two support
+//! The tiṅanta pipeline, as eight ordered rule-stage modules plus two support
 //! layers.
 //!
-//! The seven stages — `samjna`, `tin`, `vikarana`, `anga`, `guna`, `adesha`,
+//! The eight stages — `samjna`, `tin`, `vikarana`, `abhyasa`, `anga`, `guna`, `adesha`,
 //! `tripadi` — are declared below in *pipeline* order in `TINANTA_RULES`,
 //! which is the grammar's actual sequencing; the `mod` declarations above
 //! them are alphabetical and carry no ordering meaning of their own. `terms`
@@ -17,6 +17,7 @@ use crate::rule::Rule;
 use crate::term::{Tag, Term};
 use panini_data::{Dhatu, Gana, Lakara, Pada, PadaAssignment, Purusha, Vacana};
 
+mod abhyasa;
 mod adesha;
 mod anga;
 mod guna;
@@ -50,6 +51,7 @@ pub static TINANTA_RULES: &[&[Rule]] = &[
     samjna::SAMJNA,
     tin::TIN,
     vikarana::VIKARANA,
+    abhyasa::ABHYASA_RULES,
     anga::ANGA_RULES,
     guna::GUNA,
     adesha::ADESHA,
@@ -94,6 +96,7 @@ pub fn derive(
         Gana::Svadi => t.add(Tag::Svadi),
         Gana::Rudhadi => t.add(Tag::Rudhadi),
         Gana::Tanadi => t.add(Tag::Tanadi),
+        Gana::Juhotyadi => t.add(Tag::Juhotyadi),
         Gana::Bhvadi => {}
     }
     p.terms = terms::with_slots(vec![t]);

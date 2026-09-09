@@ -8,10 +8,10 @@ use crate::prakriya::Prakriya;
 use crate::rule::{Rule, RuleKind};
 use crate::term::Tag;
 use crate::tinanta::sound::{
-    cartva_of, is_jhal, is_jhash, is_khar, is_natva_intervener, is_natva_trigger, is_savarna,
-    is_shcu, is_shtu, is_vowel, jashtva_of, kutva_of, parasavarna_of, shcutva_of,
+    cartva_of, deaspirate_of, is_jhal, is_jhash, is_khar, is_natva_intervener, is_natva_trigger,
+    is_savarna, is_shcu, is_shtu, is_vowel, jashtva_of, kutva_of, parasavarna_of, shcutva_of,
 };
-use crate::tinanta::terms::{ANGA, ENDING, SHAP, remove_char, set_char, word_chars};
+use crate::tinanta::terms::{ABHYASA, ANGA, ENDING, SHAP, remove_char, set_char, word_chars};
 
 /// Whether the dhātu — held across `ANGA`/`SHAP` — still sits at the pada
 /// boundary, i.e. nothing with real text occupies `ENDING` or beyond.
@@ -1282,6 +1282,32 @@ pub(crate) static TRIPADI: &[Rule] = &[
             false
         },
     },
+    // 8.4.54 abhyāse car ca: a jhal in the abhyāsa becomes its car — and its
+    // jaś, by 8.4.53's anuvṛtti (jhalāṁ jaś) — i.e. the abhyāsa loses its
+    // aspiration: Ju → ju (juhoti; the `J` 7.4.62 wrote for h), and in slice
+    // 3b BI → bI (bibheti). Reads the ABHYASA slot directly and whole:
+    // *abhyāse* is the slot (non-empty exactly when 6.1.10 filled it — see
+    // 7.4.62 in abhyasa.rs), and every aspirate in it is deaspirated in one
+    // step. The no-op guard is 8.4.53's: √ki's abhyāsa `ci` is already car
+    // and the rule must record nothing there — vidyut-prakriya credits
+    // 8.4.54 on √hu's 42 forms and on none of √ki's.
+    Rule {
+        id: "8.4.54",
+        name: "aByAse car ca",
+        kind: RuleKind::Vidhi,
+        vikalpa: false,
+        apply: |p| {
+            let s: Vec<char> = p.terms[ABHYASA].text.chars().collect();
+            let t: Vec<char> = s.iter().map(|&c| deaspirate_of(c).unwrap_or(c)).collect();
+            if t == s {
+                return false;
+            }
+            let before = p.snapshot();
+            p.terms[ABHYASA].text = t.into_iter().collect();
+            p.record("8.4.54", "aByAse car ca", before);
+            true
+        },
+    },
     // 8.4.55 khari ca (cartva): a jhal immediately before the ending, meeting
     // a khar across that junction, becomes its car (voiceless unaspirated).
     // √ad's d before ti/tas/si/tha → t: atti, attaH, atsi, atTa. The engine's
@@ -2239,6 +2265,33 @@ mod tests {
         };
         assert!(!(rule.apply)(&mut p));
         assert_eq!(p.text(), "kfndDi");
+    }
+
+    #[test]
+    fn abhyase_car_ca_deaspirates_the_abhyasa_and_nothing_else() {
+        // Ju + ho + "" + ti → ju + ho + ti (juhoti): the abhyāsa's J goes to
+        // j; the root's own h is not an abhyāsa sound and stays.
+        let rule = rules().find(|r| r.id == "8.4.54").unwrap();
+        let mut p = Prakriya {
+            terms: with_slots(vec![Term::new("ho"), Term::new(""), Term::new("ti")]),
+            ..Default::default()
+        };
+        p.terms[ABHYASA].text = "Ju".into();
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.terms[ABHYASA].text, "ju");
+        assert_eq!(p.text(), "juhoti");
+        assert_eq!(p.log.last().unwrap().sutra, "8.4.54");
+        // Already car (√ki's ci) and no abhyāsa at all: no step recorded.
+        for abhyasa in ["ci", ""] {
+            let mut p = Prakriya {
+                terms: with_slots(vec![Term::new("ke"), Term::new(""), Term::new("ti")]),
+                ..Default::default()
+            };
+            p.terms[ABHYASA].text = abhyasa.into();
+            assert!(!(rule.apply)(&mut p), "{abhyasa:?}");
+            assert_eq!(p.terms[ABHYASA].text, abhyasa);
+            assert!(p.log.is_empty(), "{abhyasa:?}");
+        }
     }
 
     /// 8.4.56 devoices a pada-final jhal. After 8.2.39 the reachable jhal

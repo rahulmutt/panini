@@ -149,16 +149,17 @@ pub(super) fn lin_a_form(number: &str, pu: Purusha, va: Vacana) -> String {
 fn tinanta_rule_order_is_pinned() {
     let expected = [
         "1.3.12", "1.3.66", "1.3.72", "1.3.78", "3.4.78", "1.3.9", "1.2.4", "3.4.85", "3.4.108",
-        "3.4.105", "3.4.106", "3.4.101", "3.4.99", "3.4.87", "3.4.89", "3.4.86", "3.4.100",
-        "3.4.80", "3.4.79", "3.4.91", "3.4.93", "3.4.90", "3.4.92", "3.4.103", "3.4.102", "7.1.35",
-        "3.1.69", "3.1.73", "3.1.77", "3.1.78", "3.1.79", "3.1.81", "3.1.68", "2.4.72", "3.4.111",
-        "3.1.83", "1.2.4", "6.4.71", "6.4.72", "6.1.73", "7.3.100", "7.1.5", "7.1.6", "7.1.3",
-        "7.2.79", "7.2.80", "7.2.81", "6.4.23", "7.4.21", "7.3.84", "7.3.86", "7.3.86", "7.3.92",
-        "7.3.84", "6.4.110", "6.4.108", "6.4.109", "6.4.87", "6.4.77", "6.1.77", "6.1.78",
-        "7.3.101", "6.4.112", "6.4.113", "6.1.101", "6.1.96", "6.4.106", "6.4.107", "6.1.90",
-        "6.1.97", "6.1.87", "6.1.66", "6.4.105", "6.4.101", "6.4.111", "8.2.77", "8.2.23",
-        "8.2.25", "8.2.30", "8.2.31", "8.2.39", "8.2.40", "8.2.41", "8.2.74", "8.2.75", "8.2.73",
-        "8.3.15", "8.3.24", "8.3.59", "8.4.40", "8.4.41", "8.3.13", "8.4.53", "8.4.55", "8.4.1",
+        "3.4.109", "3.4.105", "3.4.106", "3.4.101", "3.4.99", "3.4.87", "3.4.89", "3.4.86",
+        "3.4.100", "3.4.80", "3.4.79", "3.4.91", "3.4.93", "3.4.90", "3.4.92", "3.4.103",
+        "3.4.102", "7.1.35", "3.1.69", "3.1.73", "3.1.77", "3.1.78", "3.1.79", "3.1.81", "3.1.68",
+        "2.4.72", "2.4.75", "3.4.111", "3.1.83", "1.2.4", "6.1.10", "7.4.62", "6.4.71", "6.4.72",
+        "6.1.73", "7.3.100", "7.1.5", "7.1.6", "7.1.4", "7.1.3", "7.2.79", "7.2.80", "7.2.81",
+        "6.4.23", "7.4.21", "7.3.83", "7.3.84", "7.3.86", "7.3.86", "7.3.92", "7.3.84", "6.4.110",
+        "6.4.108", "6.4.109", "6.4.87", "6.4.82", "6.4.77", "6.1.77", "6.1.78", "7.3.101",
+        "6.4.112", "6.4.113", "6.1.101", "6.1.96", "6.4.106", "6.4.107", "6.1.90", "6.1.97",
+        "6.1.87", "6.1.66", "6.4.105", "6.4.101", "6.4.111", "8.2.77", "8.2.23", "8.2.25",
+        "8.2.30", "8.2.31", "8.2.39", "8.2.40", "8.2.41", "8.2.74", "8.2.75", "8.2.73", "8.3.15",
+        "8.3.24", "8.3.59", "8.4.40", "8.4.41", "8.3.13", "8.4.53", "8.4.54", "8.4.55", "8.4.1",
         "8.4.2", "8.4.58", "8.4.65", "8.4.56",
     ];
     let actual: Vec<&str> = rules().map(|r| r.id).collect();
@@ -436,6 +437,165 @@ fn her_dhih_gives_addhi_for_consonant_root() {
         form_g_forked("01.0001", Lakara::Lot, Purusha::Madhyama, Vacana::Eka, 3),
         "Bava"
     );
+}
+
+#[test]
+fn juhotyadi_hu_core_forms() {
+    // √hu, the ślu gaṇa's eponym. Every rule this slice adds is on one of
+    // these surfaces; the per-rule guards are pinned beside the rules and
+    // the ordered traces in crates/panini/tests/trace/juhotyadi.rs.
+    //
+    // laṭ: ślu, dvitva, kuhoś cuḥ and car ca on the abhyāsa; guṇa before
+    // pit ti, blocked before ṅit taH (1.1.5 via the first 1.2.4); 6.4.87's
+    // hu arm before 7.1.4's ati; 8.3.59 for juhozi.
+    assert_eq!(
+        form_g("03.0001", Lakara::Lat, Purusha::Prathama, Vacana::Eka),
+        "juhoti"
+    );
+    assert_eq!(
+        form_g("03.0001", Lakara::Lat, Purusha::Prathama, Vacana::Dvi),
+        "juhutaH"
+    );
+    assert_eq!(
+        form_g("03.0001", Lakara::Lat, Purusha::Prathama, Vacana::Bahu),
+        "juhvati"
+    );
+    assert_eq!(
+        form_g("03.0001", Lakara::Lat, Purusha::Madhyama, Vacana::Eka),
+        "juhozi"
+    );
+    assert_eq!(
+        form_g("03.0001", Lakara::Lat, Purusha::Uttama, Vacana::Bahu),
+        "juhumaH"
+    );
+    // laṅ: aṭ in AGAMA; 3.4.109's jus with 7.3.83's guṇa and 6.1.78's av;
+    // the pit am guṇates too.
+    assert_eq!(
+        form_g_forked("03.0001", Lakara::Lan, Purusha::Prathama, Vacana::Eka, 2),
+        "ajuhod"
+    );
+    assert_eq!(
+        form_g("03.0001", Lakara::Lan, Purusha::Prathama, Vacana::Bahu),
+        "ajuhavuH"
+    );
+    assert_eq!(
+        form_g("03.0001", Lakara::Lan, Purusha::Madhyama, Vacana::Eka),
+        "ajuhoH"
+    );
+    assert_eq!(
+        form_g("03.0001", Lakara::Lan, Purusha::Uttama, Vacana::Eka),
+        "ajuhavam"
+    );
+    // loṭ: 6.4.101's hu arm (a three-form cell with the tātaṅ pair); 7.1.4
+    // again; the pit āṭ-ending guṇates.
+    assert_eq!(
+        form_g_forked("03.0001", Lakara::Lot, Purusha::Madhyama, Vacana::Eka, 3),
+        "juhuDi"
+    );
+    assert_eq!(
+        form_g("03.0001", Lakara::Lot, Purusha::Prathama, Vacana::Bahu),
+        "juhvatu"
+    );
+    assert_eq!(
+        form_g("03.0001", Lakara::Lot, Purusha::Uttama, Vacana::Eka),
+        "juhavAni"
+    );
+    // vidhiliṅ: yāsuṭ keeps 7.3.83 off the jus.
+    assert_eq!(
+        form_g_forked(
+            "03.0001",
+            Lakara::VidhiLin,
+            Purusha::Prathama,
+            Vacana::Eka,
+            2
+        ),
+        "juhuyAd"
+    );
+    assert_eq!(
+        form_g("03.0001", Lakara::VidhiLin, Purusha::Prathama, Vacana::Bahu),
+        "juhuyuH"
+    );
+}
+
+#[test]
+fn juhotyadi_ki_core_forms() {
+    // √ki: the i-final root. 6.4.82 before ati/atu, and NOT before Ani
+    // (guṇa first: cikayAni) or yāsuṭ (cikiyAt); no 8.4.54 step on ci.
+    assert_eq!(
+        form_g("03.0020", Lakara::Lat, Purusha::Prathama, Vacana::Eka),
+        "ciketi"
+    );
+    assert_eq!(
+        form_g("03.0020", Lakara::Lat, Purusha::Prathama, Vacana::Dvi),
+        "cikitaH"
+    );
+    assert_eq!(
+        form_g("03.0020", Lakara::Lat, Purusha::Prathama, Vacana::Bahu),
+        "cikyati"
+    );
+    assert_eq!(
+        form_g("03.0020", Lakara::Lat, Purusha::Madhyama, Vacana::Eka),
+        "cikezi"
+    );
+    assert_eq!(
+        form_g("03.0020", Lakara::Lan, Purusha::Prathama, Vacana::Bahu),
+        "acikayuH"
+    );
+    assert_eq!(
+        form_g("03.0020", Lakara::Lan, Purusha::Uttama, Vacana::Eka),
+        "acikayam"
+    );
+    assert_eq!(
+        form_g_forked("03.0020", Lakara::Lot, Purusha::Madhyama, Vacana::Eka, 3),
+        "cikihi"
+    );
+    assert_eq!(
+        form_g("03.0020", Lakara::Lot, Purusha::Prathama, Vacana::Bahu),
+        "cikyatu"
+    );
+    assert_eq!(
+        form_g("03.0020", Lakara::Lot, Purusha::Uttama, Vacana::Eka),
+        "cikayAni"
+    );
+    assert_eq!(
+        form_g_forked(
+            "03.0020",
+            Lakara::VidhiLin,
+            Purusha::Prathama,
+            Vacana::Eka,
+            2
+        ),
+        "cikiyAd"
+    );
+    assert_eq!(
+        form_g("03.0020", Lakara::VidhiLin, Purusha::Prathama, Vacana::Bahu),
+        "cikiyuH"
+    );
+}
+
+#[test]
+fn ajuhavuh_lays_the_augment_abhyasa_and_root_in_their_own_slots() {
+    // The five-slot layout doing the job the prep built it for: augment,
+    // abhyāsa and root are three terms, and the tripādī found the
+    // abhyāsa's J by term, not by guessing an offset into the root.
+    let d = dhatus().iter().find(|d| d.dhatupatha == "03.0001").unwrap();
+    let p = sole(derive(
+        d,
+        Lakara::Lan,
+        Pada::Parasmaipada,
+        Purusha::Prathama,
+        Vacana::Bahu,
+    ));
+    assert_eq!(p.text(), "ajuhavuH");
+    assert_eq!(p.terms[AGAMA].text, "a");
+    assert_eq!(p.terms[ABHYASA].text, "ju");
+    assert_eq!(p.terms[ANGA].text, "hav");
+    assert_eq!(p.terms[SHAP].text, "");
+    assert_eq!(p.terms[ENDING].text, "uH");
+    assert!(p.terms[ABHYASA].has(Tag::Abhyasa));
+    assert!(p.terms[ABHYASA].has(Tag::Abhyasta));
+    assert!(p.terms[ANGA].has(Tag::Abhyasta));
+    assert!(p.terms[SHAP].has(Tag::Slu));
 }
 
 #[test]
