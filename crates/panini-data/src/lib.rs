@@ -97,7 +97,7 @@ pub struct Dhatu {
     pub gana: Gana,
     /// Which pada(s) this engine derives for this root. Curated rather than
     /// read from the upadeśa's it-markers — but no longer a *deferral*:
-    /// `curated_pada_agrees_with_upadesha_markers` re-derives 78 of these 79
+    /// `curated_pada_agrees_with_upadesha_markers` re-derives 80 of these 81
     /// verdicts from the vendored upadeśa via 1.3.12 / 1.3.72 / 1.3.78 and
     /// requires them to match; `07.0017`'s (√bhuj's) is 1.3.66's root-keyed
     /// exception, asserted explicitly from both sides, the same way
@@ -110,7 +110,7 @@ pub struct Dhatu {
     /// the honest arrangement; see the deferral in
     /// `docs/superpowers/specs/2026-08-16-pada-audit-design.md`.
     ///
-    /// The test covers the 79 roots curated here, not the dhātupāṭha's 2259.
+    /// The test covers the 81 roots curated here, not the dhātupāṭha's 2259.
     /// It catches a mis-assigned pada on a root a future slice adds; it does
     /// not make the table self-maintaining.
     pub pada: PadaAssignment,
@@ -931,6 +931,29 @@ static DHATUS: &[Dhatu] = &[
         artha: "dAnAdAnayoH AdAne prIRane ca",
     },
     Dhatu {
+        // 03.0002 `YiBI\` Baye. The initial ñi is an it by 1.3.5 and
+        // decides no pada — see `pada_from_upadesha`. Parasmaipada by
+        // 1.3.78. Its ī is what 6.4.115 optionally shortens (bibhītaḥ /
+        // bibhitaḥ) and what 6.4.82 turns to y before a vowel (bibhyati):
+        // `BiBI` is asaṁyogapūrva where √hrī's `JihrI` is not.
+        dhatupatha: "03.0002",
+        code: "BI",
+        gana: Gana::Juhotyadi,
+        pada: PadaAssignment::Parasmaipada,
+        artha: "Baye",
+    },
+    Dhatu {
+        // 03.0003 `hrI\` lajjAyAm. The gaṇa's only cluster-initial root, so
+        // its abhyāsa is 7.4.60's only witness anywhere: hrI → hI → hi → Ji
+        // → ji. The conjunct is also why 6.4.82 declines and 6.4.77's iyaṅ
+        // arm takes the cell instead (jihriyati).
+        dhatupatha: "03.0003",
+        code: "hrI",
+        gana: Gana::Juhotyadi,
+        pada: PadaAssignment::Parasmaipada,
+        artha: "lajjAyAm",
+    },
+    Dhatu {
         // 03.0020 ki\ jYAne. ciketi / cikyati — the i-final witness for
         // 6.4.82 er anekāco'saṁyogapūrvasya (ci-ki is anekāc, k is no
         // conjunct) and the abhyāsa that 8.4.54 must leave alone (ci is
@@ -982,7 +1005,7 @@ mod tests {
 
     #[test]
     fn curated_roots_have_expected_ganas_and_padas() {
-        assert_eq!(dhatus().len(), 79);
+        assert_eq!(dhatus().len(), 81);
         let bu = dhatus().iter().find(|d| d.dhatupatha == "01.0001").unwrap();
         assert!(matches!(bu.pada, PadaAssignment::Parasmaipada));
         let labh = dhatus().iter().find(|d| d.dhatupatha == "01.1130").unwrap();
@@ -1273,13 +1296,15 @@ mod tests {
     }
 
     #[test]
-    fn juhotyadi_rows_are_the_two_curated_roots() {
-        // Slice 3a: the ślu gaṇa opens with its eponym √hu and √ki, the two
+    fn juhotyadi_rows_are_the_four_curated_roots() {
+        // Slice 3a opened the ślu gaṇa with its eponym √hu and √ki, the two
         // roots that exercise dvitva, 7.4.62, 7.1.4, 3.4.109/7.3.83, 6.4.82,
-        // 6.4.87's and 6.4.101's hu arms and 8.4.54 with nothing else. Both
-        // parasmaipadī by 1.3.78: the `\` in `hu\` / `ki\` sits on the root
-        // vowel (svara), not on an it. The gaṇa is PARTIAL at 2 of its 26
-        // dhātupāṭha rows; slices 3b–3f close it (spec, "Later slices").
+        // 6.4.87's and 6.4.101's hu arms and 8.4.54 with nothing else. Slice
+        // 3b adds √bhī and √hrī: both parasmaipadī, √bhī's by 1.3.78 (the
+        // `\` sits on the root vowel, not on an it) and √hrī's the same
+        // way, plus the vikaraṇa's 6.4.115, 7.4.60 and 6.4.77's iyaṅ arm.
+        // The gaṇa is PARTIAL at 4 of its 26 dhātupāṭha rows; slices 3c–3f
+        // close it (spec, "Later slices").
         let rows: Vec<_> = dhatus()
             .iter()
             .filter(|d| d.gana == Gana::Juhotyadi)
@@ -1289,6 +1314,8 @@ mod tests {
             rows,
             vec![
                 ("03.0001", "hu", PadaAssignment::Parasmaipada),
+                ("03.0002", "BI", PadaAssignment::Parasmaipada),
+                ("03.0003", "hrI", PadaAssignment::Parasmaipada),
                 ("03.0020", "ki", PadaAssignment::Parasmaipada),
             ]
         );
@@ -1297,13 +1324,21 @@ mod tests {
         // curated root reads `hu`" — a premise stated only in those rules'
         // comments and checked nowhere else. `code` is NOT unique in
         // general (vij, vid, man, aS already repeat), so this is a real
-        // tripwire, not a tautology.
+        // tripwire, not a tautology. 6.4.115 now identifies √bhī the same
+        // way, by `ANGA.text == "BI"` with no gaṇa clause, so `BI` must
+        // stay unique too.
         assert_eq!(
             dhatus().iter().filter(|d| d.code == "hu").count(),
             1,
             "6.4.87 and 6.4.101 key on ANGA.text == \"hu\" with no gaṇa \
              clause; if a second curated root ever reads \"hu\" both rules \
              need a gaṇa guard"
+        );
+        assert_eq!(
+            dhatus().iter().filter(|d| d.code == "BI").count(),
+            1,
+            "6.4.115 keys on ANGA.text == \"BI\" with no gaṇa clause; if a \
+             second curated root ever reads \"BI\" it needs a gaṇa guard"
         );
     }
 
@@ -1438,7 +1473,7 @@ mod tests {
     /// AFTER the `~` that marks an anunāsika it, so `~\` is an anudātta it and
     /// `~^` a svarita it — whereas a `\` sitting directly on a vowel elsewhere
     /// is the ROOT's own accent and says nothing about pada. Counted off the
-    /// vendored upadeśa: 44 of the 67 curated roots carry a `\` at all, and 31
+    /// vendored upadeśa: 51 of the 81 curated roots carry a `\` at all, and 30
     /// of those carry one on a root vowel — `01.0642 ji\`, `01.1082 smf\` and
     /// `02.0001 a\da~` among them — so conflating the two does not fail
     /// loudly; it silently calls most of the table ātmanepada.
@@ -1456,18 +1491,31 @@ mod tests {
             .collect();
         let final_it = bare.chars().last().filter(|c| is_hal(*c));
         let ngit = final_it == Some('N');
-        // 1.3.5 ādir ñiṭuḍavaḥ supplies a ñ it as an initial `Yi` too. Do NOT
-        // extend this to `wu`/`qu`: the sūtra makes ñi, ṭu AND ḍu its, but
-        // only ñi is a ñ-it, and 1.3.72 reads *svarita or ñit* specifically
-        // — adding a wu/qu arm here would wrongly make every ṭu/ḍu-initial
-        // root ubhayapadī. `01.1130 qula\Ba~\z` (√labh) is a curated
-        // ḍu-initial root; it already comes out Ātmanepada correctly via its
-        // own `~\`, not via this function.
-        let nyit = final_it == Some('Y') || bare.starts_with("Yi");
+        // ONLY a final `Y`. 1.3.5 ādir ñiṭuḍavaḥ does make an initial `Yi`
+        // an it — `strip_anubandhas` above strips it, which is why √bhī's
+        // curated code is `BI` — but the it it supplies is not an anubandha
+        // 1.3.72 svaritañitaḥ reads. vidyut-prakriya fires 1.3.72 on none of
+        // the dhātupāṭha's fourteen `Yi`-initial rows; every ātmanepada
+        // verdict among them comes from a `~\` and every parasmaipada one
+        // from 1.3.78. Pinned by
+        // `bhi_is_parasmaipada_despite_its_initial_nyi`.
+        //
+        // This read `final_it == Some('Y') || bare.starts_with("Yi")` until
+        // slice 3b. The disjunct decided nothing for the first 79 curated
+        // roots — √indh, the only `Yi`-initial one, is caught by the
+        // ātmanepada branch below — so it sat unfalsified until √bhī became
+        // the first root whose verdict it decided, and decided wrongly.
+        // The same argument forbids a `wu`/`qu` arm here, for the stronger
+        // reason that ṭu and ḍu are not ñ-its at all.
+        let nyit = final_it == Some('Y');
 
-        // ORDER IS LOAD-BEARING. 1.3.12 is tested first because `YiinDI~\`
-        // (√indh) satisfies both it and 1.3.72, and must come out ātmanepada.
-        // Pinned by `indh_is_atmanepada_despite_satisfying_1_3_72`.
+        // The two conditions are DISJOINT over every upstream row — no
+        // upadeśa carries both an anudātta/ṅ it and a svarita/ñ it — so this
+        // order decides nothing today, and `no_upadesha_satisfies_both_pada_branches`
+        // is what asserts that rather than leaving it assumed. The order is
+        // kept because 1.3.12 is the apavāda by tradition: if upstream ever
+        // grows a row satisfying both, that test fails first and this
+        // sequence is the answer already in place.
         if anudatta_it || ngit {
             // 1.3.12 anudāttaṅita ātmanepadam.
             return PadaAssignment::Atmanepada;
@@ -1636,18 +1684,76 @@ mod tests {
     }
 
     #[test]
-    fn indh_is_atmanepada_despite_satisfying_1_3_72() {
-        // `YiinDI~\` carries a ñi that 1.3.72 reads AND an anudātta it that
-        // 1.3.12 reads. 1.3.12 wins: vidyut-prakriya derives √indh in
-        // ātmanepada only, checked in the ubhayapada slice against √rudh as a
-        // `~^r` control. Reversing the two clauses in `pada_from_upadesha`
-        // grows √indh a parasmaipada column it must not have.
+    fn bhi_is_parasmaipada_despite_its_initial_nyi() {
+        // `YiBI\` carries a ñi that 1.3.5 ādir ñiṭuḍavaḥ makes an it — and
+        // that is ALL it makes it. The it so supplied is not an anubandha
+        // 1.3.72 svaritañitaḥ reads: vidyut-prakriya fires 1.3.72 on NONE
+        // of the dhātupāṭha's fourteen `Yi`-initial rows (01.0594, 01.0844,
+        // 01.0845, 01.0846, 01.0884, 01.1133, 02.0063, 03.0002, 04.0127,
+        // 04.0141, 04.0158, 04.0159, 05.0025, 07.0011). Every ātmanepada
+        // verdict among them comes from a `~\`, every parasmaipada one from
+        // 1.3.78.
         //
-        // This is the second, independent encoding of the precedence that
-        // `Tag::Ubhayapadin`'s doc comment in `panini-prakriya` states. It is
-        // asserted here so a reversal fails rather than quietly re-deriving
-        // that tag's own opinion.
+        // √bhī is the first curated root to reach the clause this pins the
+        // removal of; before slice 3b it decided nothing, which is how it
+        // stayed wrong. `\` here sits on the root vowel, not on an it.
+        assert_eq!(pada_from_upadesha("YiBI\\"), PadaAssignment::Parasmaipada);
+    }
+
+    #[test]
+    fn indh_is_atmanepada_by_its_anudatta_it() {
+        // `YiinDI~\`'s ātmanepada comes from the `~\` and nothing else. Its
+        // initial ñi is an it by 1.3.5 but decides no pada — see
+        // `bhi_is_parasmaipada_despite_its_initial_nyi`.
+        //
+        // This test used to be named `..._despite_satisfying_1_3_72` and
+        // pinned the PRECEDENCE of 1.3.12 over 1.3.72, on the premise that
+        // √indh satisfied both branches. It satisfied the second only via
+        // the deleted `Yi` clause. The precedence is now carried by
+        // `no_upadesha_satisfies_both_pada_branches` instead.
         assert_eq!(pada_from_upadesha("YiinDI~\\"), PadaAssignment::Atmanepada);
+    }
+
+    #[test]
+    fn no_upadesha_satisfies_both_pada_branches() {
+        // With the `Yi` clause gone, NO row in the dhātupāṭha satisfies both
+        // of `pada_from_upadesha`'s branch conditions, so their order decides
+        // nothing and swapping the two `if` blocks is an unkillable mutant.
+        //
+        // This test is what replaces that lost falsifiability: it asserts the
+        // disjointness as an invariant of the DATA. If upstream ever grows a
+        // row carrying both an anudātta/ṅ it and a svarita/ñ it, the
+        // precedence question returns loudly instead of silently, and
+        // 1.3.12-before-1.3.72 has to be re-argued rather than assumed.
+        //
+        // Same tripwire idiom as the `code`-uniqueness assertion in
+        // `juhotyadi_rows_are_the_four_curated_roots`.
+        //
+        // This re-implements `pada_from_upadesha`'s two branch conditions
+        // rather than calling the function, deliberately: an independent
+        // encoding is what makes this a check ON the function instead of a
+        // tautology restating it. The caveat that duplication buys: a future
+        // `wu`/`qu` arm added to the function would be invisible here until
+        // this test is updated to match.
+        let mut both: Vec<&str> = Vec::new();
+        for (_, upadesha, _) in upstream_rows() {
+            let anudatta_it = upadesha.contains("~\\");
+            let svarita_it = upadesha.contains("~^");
+            let bare: String = upadesha
+                .chars()
+                .filter(|c| *c != '\\' && *c != '^')
+                .collect();
+            let final_it = bare.chars().last().filter(|c| is_hal(*c));
+            let atmanepada_branch = anudatta_it || final_it == Some('N');
+            let ubhayapada_branch = svarita_it || final_it == Some('Y');
+            if atmanepada_branch && ubhayapada_branch {
+                both.push(upadesha);
+            }
+        }
+        assert!(
+            both.is_empty(),
+            "these upadeśas satisfy both branches, so their order is load-bearing again: {both:?}"
+        );
     }
 
     #[test]

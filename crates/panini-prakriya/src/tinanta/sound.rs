@@ -259,6 +259,29 @@ pub(crate) fn deaspirate_of(c: char) -> Option<char> {
     })
 }
 
+/// The hrasva counterpart of a long simple vowel — 7.4.59 hrasvaḥ's
+/// substitute for the abhyāsa. `None` for a vowel that is already hrasva,
+/// so 7.4.59 can use this one lookup as its match test as well (the
+/// `deaspirate_of` / `kutva_of` idiom) and record nothing for √hu and √ki.
+///
+/// The ec vowels are absent, and that is a claim about THIS engine's rule
+/// order rather than about the sūtra: 1.1.48 ec igghrasvādeśe makes the
+/// hrasva of `e`/`o` come out `i`/`u`, which vidyut-prakriya needs because
+/// it copies the guṇated stem (its abhyāsa is `Be` when 7.4.59 fires). This
+/// engine copies the bare root before guṇa — see `abhyasa.rs`'s header — so
+/// no abhyāsa here carries an ec at 7.4.59. liṭ reduplicates after other
+/// operations have run and is the slice that must add the arm.
+pub(crate) fn hrasva_of(c: char) -> Option<char> {
+    Some(match c {
+        'A' => 'a',
+        'I' => 'i',
+        'U' => 'u',
+        'F' => 'f',
+        'X' => 'x',
+        _ => return None,
+    })
+}
+
 /// The *ścu* (palatal) counterpart of a *stu* sound — 8.4.40 stoH ScunA
 /// ScuH's substitute. *stu* is `s` plus the whole t-varga, and by 1.1.50
 /// sthAne'ntaratamaH the nearest substitute preserves voicing, aspiration
@@ -578,6 +601,36 @@ mod tests {
             'k', 'g', 'c', 'j', 't', 'd', 'p', 'b', 's', 'S', 'z', 'h', 'n', 'a', 'i', 'u',
         ] {
             assert_eq!(deaspirate_of(c), None, "{c}");
+        }
+    }
+
+    #[test]
+    fn hrasva_of_long_vowels_all_arms() {
+        // 7.4.59 hrasvaḥ's substitute, arm by arm. Only the `I` arm has a
+        // cell in slice 3b (√bhī's `BI` and √hrī's `hI`); `A` arrives with
+        // √dā in 3c and `F` with √pṝ in 3d. The arms are killed here rather
+        // than left waiting for those slices — the same reason every other
+        // map in this file has an `_all_arms` test.
+        for (from, to) in [('A', 'a'), ('I', 'i'), ('U', 'u'), ('F', 'f'), ('X', 'x')] {
+            assert_eq!(hrasva_of(from), Some(to), "{from}");
+        }
+        // Already hrasva: None, so 7.4.59 can use this lookup as its own
+        // match test and record nothing for √hu and √ki.
+        for c in ['a', 'i', 'u', 'f', 'x'] {
+            assert_eq!(hrasva_of(c), None, "{c}");
+        }
+        // 1.1.48 ec igghrasvādeśe is DELIBERATELY ABSENT. It would make the
+        // hrasva of `e`/`o` come out `i`/`u`, and vidyut-prakriya needs it —
+        // it copies the guṇated stem, so its abhyāsa really is `Be` when
+        // 7.4.59 fires. This engine copies the bare root BEFORE guṇa, so its
+        // abhyāsa never carries an ec here. liṭ, which reduplicates after
+        // other operations have run, is the slice that must add the arm.
+        for c in ['e', 'E', 'o', 'O'] {
+            assert_eq!(hrasva_of(c), None, "{c}");
+        }
+        // Consonants are not this map's business.
+        for c in ['k', 'h', 'B', 'r'] {
+            assert_eq!(hrasva_of(c), None, "{c}");
         }
     }
 

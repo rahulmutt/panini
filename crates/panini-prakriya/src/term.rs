@@ -11,13 +11,12 @@ pub enum Tag {
     Ardhadhatuka,
     It,
     /// 6.1.4 pūrvo'bhyāsaḥ: the earlier of the two copies dvitva makes —
-    /// the reduplicant at `ABHYASA`. Set by 6.1.10. No rule reads it in
-    /// slice 3a: the rules whose locative *abhyāse* names it (7.4.62,
-    /// 8.4.54) read the slot's text instead, because the slot is non-empty
-    /// exactly when 6.1.10 has filled it and a tag test there could never
-    /// be falsified. The tag is the saṁjñā verdict itself, pinned by
-    /// 6.1.10's unit test, for the abhyāsa rules slice 3b brings (7.4.59,
-    /// 7.4.60).
+    /// the reduplicant at `ABHYASA`. Set by 6.1.10. No rule reads it: the
+    /// rules whose locative *abhyāse* names it (7.4.62, 8.4.54) read the
+    /// slot's text instead, and slice 3b's own abhyāsa rules (7.4.59,
+    /// 7.4.60) do too, because the slot is non-empty exactly when 6.1.10
+    /// has filled it and a tag test there could never be falsified. The
+    /// tag is the saṁjñā verdict itself, pinned by 6.1.10's unit test.
     Abhyasa,
     /// The dhatu takes atmanepada (the data-layer stand-in for the anudatta
     /// it-marker that 1.3.12 reads; see the spec's pada-sanction section).
@@ -33,12 +32,12 @@ pub enum Tag {
     /// PadaAssignment::Ubhayapada stores.
     ///
     /// The counterexample that forces the distinction is Vindh: its upadesha
-    /// `YiinDI~\` carries a Yi, and 1.3.72 reads Yit, so a marker-named tag
-    /// (Svaritanit or similar) would have to be TRUE on Vindh -- and Vindh
-    /// would grow a parasmaipada column it must not have. It must never
-    /// reach 1.3.72 at all, because the anudatta `~\` on top of the Yi
-    /// settles its pada by 1.3.12, and vidyut-prakriya derives it
-    /// atmanepada-only. This tag is false on Vindh, which is the point.
+    /// `YiinDI~\` carries an initial Yi -- an it by 1.3.5 adirYiwuqavaH, not
+    /// an anubandha 1.3.72 reads (see `pada_from_upadesha` in panini-data).
+    /// A tag named for 1.3.72's marker would misread that Yi as a Yit, and
+    /// Vindh would wrongly grow a parasmaipada column it must not have. It
+    /// must never reach 1.3.72 at all: the anudatta `~\` on top of the Yi
+    /// settles its pada by 1.3.12, and vidyut-prakriya derives it atmanepada-only.
     /// Pinned by `indh_is_atmanepada_only_despite_its_nit`.
     Ubhayapadin,
     /// The dhatu is the root 1.3.66 bhujo'navane names -- today exactly

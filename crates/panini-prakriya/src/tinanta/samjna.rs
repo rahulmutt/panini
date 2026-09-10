@@ -101,7 +101,7 @@ pub(crate) static SAMJNA: &[Rule] = &[
     // below is what sanctions it; blocking here would collapse the
     // ubhayapada arm this rule exists to open. See `Tag::Ubhayapadin`'s doc
     // comment for why the tag is named for 1.3.12's residue rather than for
-    // this sūtra's own marker (√indh is ñit and must never reach here).
+    // this sūtra's own marker (√indh's ñi is an it by 1.3.5, not an anubandha it reads).
     Rule {
         id: "1.3.72",
         name: "svaritaYitaH kartraBiprAye kriyAPale",

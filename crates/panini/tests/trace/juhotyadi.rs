@@ -175,3 +175,97 @@ fn ciketi_trace_carries_no_8_4_54_and_juhuyuh_no_7_3_83() {
     assert!(!t.contains(&"7.3.83".to_string()), "got {t:?}");
     assert!(!t.contains(&"3.4.109".to_string()), "got {t:?}");
 }
+
+#[test]
+fn jihreti_trace_orders_haladih_shesha_before_hrasvah_before_kuhoshcuh() {
+    // hrI laT P.E. The abhyāsa's whole shaping chain in pipeline order:
+    // hrI → hI (7.4.60) → hi (7.4.59) → Ji (7.4.62) → ji (8.4.54).
+    let (text, t) = cell_trace(
+        "03.0003",
+        Lakara::Lat,
+        Pada::Parasmaipada,
+        Purusha::Prathama,
+        Vacana::Eka,
+    );
+    assert_eq!(text, "jihreti", "got {t:?}");
+    assert!(at(&t, "6.1.10") < at(&t, "7.4.60"), "got {t:?}");
+    assert!(at(&t, "7.4.60") < at(&t, "7.4.59"), "got {t:?}");
+    assert!(at(&t, "7.4.59") < at(&t, "7.4.62"), "got {t:?}");
+    assert!(at(&t, "7.4.62") < at(&t, "8.4.54"), "got {t:?}");
+}
+
+#[test]
+fn jihriyati_trace_credits_6_4_77_and_not_6_4_82() {
+    // hrI laT P.B. The abhyasta span is `Ji` + `hrI`, so the two sounds
+    // before the final I are r then h — saṁyogapūrva. 6.4.82 declines and
+    // its utsarga 6.4.77 takes the cell.
+    let (text, t) = cell_trace(
+        "03.0003",
+        Lakara::Lat,
+        Pada::Parasmaipada,
+        Purusha::Prathama,
+        Vacana::Bahu,
+    );
+    assert_eq!(text, "jihriyati", "got {t:?}");
+    assert!(t.contains(&"6.4.77".to_string()), "got {t:?}");
+    assert!(!t.contains(&"6.4.82".to_string()), "got {t:?}");
+    assert!(at(&t, "7.1.4") < at(&t, "6.4.77"), "got {t:?}");
+}
+
+#[test]
+fn bibhyati_trace_credits_6_4_82_on_a_long_i_and_no_6_4_115() {
+    // BI laT P.B. 7.4.59 shortened the ABHYĀSA only, so 6.4.82 fires on a
+    // long I. 6.4.115 is absent because `ati` is ajādi — the *hali*
+    // clause's witness, and why this cell has exactly one form.
+    let (text, t) = cell_trace(
+        "03.0002",
+        Lakara::Lat,
+        Pada::Parasmaipada,
+        Purusha::Prathama,
+        Vacana::Bahu,
+    );
+    assert_eq!(text, "biByati", "got {t:?}");
+    assert!(at(&t, "7.4.59") < at(&t, "6.4.82"), "got {t:?}");
+    assert!(!t.contains(&"6.4.115".to_string()), "got {t:?}");
+    assert!(!t.contains(&"6.4.77".to_string()), "got {t:?}");
+    assert!(!t.contains(&"7.4.60".to_string()), "got {t:?}");
+}
+
+#[test]
+fn bibhitah_trace_shows_the_unforked_arm_with_the_abhyasa_shortened() {
+    // BI laT P.D, the unforked arm. 7.4.59 has shortened the abhyāsa to Bi,
+    // but 6.4.115 does not fire here, so the aṅga stays long: biBItaH. The
+    // forked arm, where 6.4.115 also shortens the aṅga, is pinned below.
+    let (text, t) = cell_trace(
+        "03.0002",
+        Lakara::Lat,
+        Pada::Parasmaipada,
+        Purusha::Prathama,
+        Vacana::Dvi,
+    );
+    assert_eq!(text, "biBItaH", "got {t:?}");
+    assert!(!t.contains(&"6.4.115".to_string()), "got {t:?}");
+    // The forked arm is the one 6.4.115 produces; `cell_trace` returns the
+    // unforked derivation, so the fork itself is pinned by the ALTERNATES
+    // row `("03.0002", "laT", Pada::Parasmaipada, 1, "biBitaH", "6.4.115")`
+    // that Task 5 added.
+    assert!(at(&t, "6.1.10") < at(&t, "7.4.59"), "got {t:?}");
+}
+
+#[test]
+fn jihrayani_trace_credits_8_4_2_across_the_intervening_sounds() {
+    // hrI loT U.E. The r of `hray`, then a, y, A, then ni → Ri. All three
+    // interveners are aṭ, which `is_natva_intervener` already carries; this
+    // is ṇatva's first abhyāsa-bearing word and it needed no edit.
+    let (text, t) = cell_trace(
+        "03.0003",
+        Lakara::Lot,
+        Pada::Parasmaipada,
+        Purusha::Uttama,
+        Vacana::Eka,
+    );
+    assert_eq!(text, "jihrayARi", "got {t:?}");
+    assert!(t.contains(&"8.4.2".to_string()), "got {t:?}");
+    assert!(!t.contains(&"8.4.1".to_string()), "got {t:?}");
+    assert!(at(&t, "6.1.78") < at(&t, "8.4.2"), "got {t:?}");
+}

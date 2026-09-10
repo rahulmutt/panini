@@ -1045,6 +1045,108 @@
     mutant figure. The next slice should re-establish a genuine caught-
     mutant margin, with every follow-up invocation passed `-o`, before
     leaning on 1.70× as the trigger reference again.
+    **Slice 3b (juhotyādi, √bhī and √hrī — 7.4.60 *halādiḥ śeṣaḥ*, 7.4.59
+    *hrasvaḥ* and 6.4.115 *bhiyo'nyatarasyām* new; 6.4.77's iyaṅ arm and
+    6.4.82's widening to a long `I`) re-measured both at 3636 cells.**
+    Uncontended floor: paradigm 1122.81s, roundtrip 1354.58s, trace 4.07s —
+    a wall clock of **2483s** (the 2481.46s component sum leaves ~1.54s of
+    build overhead, within this series' standing ~0.8–4s range). Cell
+    count grew only **+2.02%** (3564 → 3636), but the floor grew
+    **+9.96%** (2258.069s → 2483s) — the **third consecutive slice** where
+    the floor has outrun the cell count, and the series' standing warning
+    against scaling by cell count held again. All three binaries moved
+    together in the same direction: paradigm 1003.42s → 1122.81s,
+    **+11.90%**; roundtrip 1249.42s → 1354.58s, **+8.42%**; trace 4.03s →
+    4.07s, **+0.99%** (noisier at this small an absolute magnitude, as
+    ever).
+    Cap sanity check before the campaign: the plan's own `measured_floor ×
+    1.70` gives 2483s × 1.70 = **4221.10s**. Against the standing
+    `--timeout 4800` cap, that is a margin of only **1.137×** — the
+    tightest pre-campaign projection in this series to date. Still under
+    4800s, so the plan's own stop condition (projection exceeding the cap)
+    was **not** triggered. **Ruling: keep 4800, proceed.** (This
+    projection turns out to have been miscalibrated against what the
+    campaign actually measured — see the ruling below.)
+    Campaign at `-j 4 --timeout 4800`, `--package panini-prakriya
+    --test-workspace=true`, `-o mutants.out.3b --iterate`: launched
+    detached (`setsid`/`nohup`/disown) via the real `cargo-mutants` binary
+    at `/home/dev/.local/share/mise/installs/cargo-cargo-mutants/27.1.0/bin/cargo-mutants`
+    rather than the mise shim (which errors "no version set for shim" in
+    background shells, the same issue every prior slice in this series has
+    hit); `CARGO_MUTANTS_JOBS` confirmed unset, so the environment did not
+    override the task's `-j 4`. A single continuous detached run, not
+    chunked — wall clock **29h36m49s** (2026-09-09 11:48:47 – 2026-09-10
+    17:25:36 UTC). `cargo-mutants` exited **3**, the expected code when
+    timeouts are present, not a run failure.
+    **692 mutants: 646 caught, 43 unviable, 2 missed, 1 timeout**
+    (646 + 43 + 2 + 1 = 692). The mutant population grew from 3a's own
+    ending count of **678 to 692, +2.06%**, tracking this slice's new
+    engine code (the three new rules, the new arm and the widening) — far
+    more proportional to this slice's own +2.02% cell growth than 3a's own
+    disproportionate +9.71% population jump against a +2.06% cell growth.
+    `outcomes.json`'s caught-mutant test-phase durations: min **0.10s**,
+    median **202.16s**, p90 **2526.40s**, p99 **2871.90s**, max
+    **3589.95s**.
+    **Both missed mutants are the same documented equivalent pair this
+    series has carried since 7e, and both sit exactly unmoved from 3a's
+    own recorded positions — no new survivors:**
+    - `adesha.rs:519:30`, identical to 3a's own recorded `:519:30`
+      (confirmed: `git diff` between the 3a merge commit and this slice's
+      HEAD touches `adesha.rs` not at all), 6.1.87's im arm, `replace +
+      with *` (`s.remove(pos + 1)` → `s.remove(pos)`). Equivalent because
+      whichever half of the adjacent `a i` pair survives the removal is
+      immediately clobbered by the following `'e'` assignment. No test
+      added, per the guard's own in-place comment.
+    - `tripadi.rs:1176:38`, identical to 3a's own recorded `:1176:38`
+      (this site sits above this slice's only `tripadi.rs` hunk, a comment
+      expansion at line 1284; confirmed by reading the line itself:
+      `let (term, idx, _) = w[i - 1];`, unchanged), 8.3.13's guard,
+      `replace - with /` (`w[i - 1]` → `w[i / 1]`, i.e. `w[i]`).
+      Equivalent because both `Q`s at the matched position are identical,
+      so eliding either produces the same surface string. No test added.
+    The timeout is the same known-permanent entry, now at
+    `tripadi.rs:1448:23`, 8.4.2's backward ṇatva scan, `replace -= with
+    /=` (`j -= 1` → `j /= 1`, freezing `j` so the mutated run never
+    terminates and never reaches an assertion) — moved **+6 lines** from
+    3a's own `:1442:23`, entirely from this slice's own doc commit
+    (`dd1e6e6`) expanding two comments above 8.4.54 by a net six lines;
+    confirmed by diff — no engine code changed between the two locations.
+    Ran the full **4800.02s**, the correct verdict at any cap.
+    **Two margins, measured, not projected:**
+    - Against the two missed mutants' own full uncaught suite runs
+      (2487.86s and 2590.66s, both genuine full UNCAUGHT runs): 4800 /
+      2590.66 ≈ **1.85×** to 4800 / 2487.86 ≈ **1.93×** — comfortably
+      above 3a's own measured uncaught margin of **1.72×** (from a single
+      equivalent's 2795s run; the only figure 3a could establish, since a
+      follow-up `cargo-mutants` invocation omitting `-o` had already
+      destroyed that slice's own caught-mutant distribution). Observed
+      `-j 4` contention (2487.86–2590.66s against the 2483s floor) was
+      only **1.002×–1.043×** — the low end falls just **below** the
+      standing 1.02×–1.43× band's own 1.02× floor, extending it slightly
+      rather than sitting inside it.
+    - Against the worst **caught** mutant (3589.95s): 4800 / 3589.95 ≈
+      **1.34×** — this series' low, against the **~1.70×** trigger
+      reference that 3a's own record carried forward from the prep (3a
+      itself lost its caught-mutant distribution to the same `-o` mishap
+      above, so had no measurement of its own to update this figure
+      with).
+    **Ruling: keep 4800, do not raise it this slice.** The direct measure
+    governs: a survivor runs a full uncaught suite, and that is the
+    2487.86–2590.66s figure the cap clears by 1.85×+. A caught mutant by
+    definition did not need the headroom; the max-caught figure (3589.95s)
+    measures how much a mutant can *slow* the suite, and applying that
+    same slowdown to a survivor gives roughly 3744s, still about **1.28×**
+    inside the cap. Raising `mise.toml`'s cap is a repo-wide change and was
+    not made on a proxy metric while the direct metric is healthy.
+    **Record 1.34× prominently as an explicit alarm for the next slice**:
+    the standing rule is restated — if the caught-mutant margin falls
+    further, raise the cap in `AGENTS.md` and `mise.toml` together, never
+    silently. **Also record that the plan's own pre-campaign `× 1.70`
+    multiplier (Step 2) is miscalibrated**: it projected 4221.10s against
+    actual uncaught runs of 2487.86–2590.66s, manufacturing a false
+    tightness (a projected 1.137× margin against a measured 1.85×–1.93×).
+    The next slice should project from measured uncaught-run times
+    instead of this multiplier.
   - `cargo-deny` + `cargo-audit` (supply-chain checks) — `mise run audit` runs
     `cargo audit && cargo deny check` and is expected to pass, including
     `cargo deny check advisories`.
@@ -1058,25 +1160,28 @@
   target under `crates/panini-lipi/fuzz` legitimately omits it, since it uses
   `#![no_main]` plus the libfuzzer harness macro).
 - Grammar changes are gated by the golden paradigm test
-  (`crates/panini/tests/paradigm/`, 3564 cells, nine gaṇas — eight complete,
+  (`crates/panini/tests/paradigm/`, 3636 cells, nine gaṇas — eight complete,
   tanādi closing at 10/10 in slice 8b (nine of its ten dhātupāṭha rows
   curated in slice 8a; √kṛ, the tenth and last, in 8b), and juhotyādi (3)
-  opened in slice 3a at 2 of its 26 rows —
+  opened in slice 3a at 2 of its 26 rows, now at 4 of its 26 after slice
+  3b curated √bhī and √hrī —
   `PARADIGM`
     stays one-form-per-cell: a cell forked by an optional rule keeps its
-    other forms — a second (526 cells), a third (115 cells), a fourth
-    (seventeen
+    other forms — a second (550 cells), a third (117 cells), a fourth
+    (eighteen
     cells, rudhādi's √piṣ and — new in slice 7d — √śiṣ loṭ madhyama eka, and
     — new in slice 8a — fifteen more spread across tanādi's four ik-upadhā
-    roots kziR/fR/tfR/GfR) and
+    roots kziR/fR/tfR/GfR, and — new in slice 3b — √bhī's vidhiliṅ prathama
+    eka) and
     — the loṭ parasmaipada cells of
     rudhādi's √kṛt, √rudh, √bhid, √kṣud, √tṛd, √und and — new in slice 7f —
     √chid and √chṛd,
     eight ways tied as the record until slice 8a, when the loṭ parasmaipada
     prathama AND madhyama eka of tanādi's four ik-upadhā roots kziR, fR, tfR
-    and GfR doubled it to sixteen — a fourth
+    and GfR doubled it to sixteen, and slice 3b's √bhī loṭ parasmaipada
+    madhyama eka took it to seventeen — a fourth
     and fifth (prathama eka) or a fourth through sixth (madhyama eka) — in
-    `ALTERNATES` (919 rows in all, so 3564 + 919 = 4483 forms total); √bhuj
+    `ALTERNATES` (959 rows in all, so 3636 + 959 = 4595 forms total); √bhuj
     joins neither fork record — its forks stack only 7.1.35 and 8.4.56, the
     same two-deep profile as √yuj — but the √bhuj/1.3.66 slice adds two
     trace pins of its own, `bhunkte_trace_credits_1_3_66_not_1_3_72` and
@@ -1470,7 +1575,9 @@
   differences across 3492 cells / 4399 forms / 77 roots**, with the
   `entry` negative control verified failing first — the record until
   juhotyādi 3a's own audit (`tools/audit/README.md`'s 2026-09-07 entry,
-  3564 cells / 4483 forms / 79 roots).
+  3564 cells / 4483 forms / 79 roots), itself superseded by juhotyādi 3b's
+  own audit (`tools/audit/README.md`'s 2026-09-09 entry, 3636 cells / 4595
+  forms / 81 roots).
   Three new `Rule`s are behind it, all root-keyed to √kṛ and all in
   `guna.rs` — 6.4.110 *ata ut sārvadhātuke*, 6.4.108 *nityaṁ karoteḥ* and
   6.4.109 *ye ca* — plus one engine change with no `Rule` of its own:
@@ -1522,7 +1629,7 @@
   cells across eleven roots (`key_count("6.4.107") == 72`, the same
   test), not 8 — the "8 cells" figure was never re-derived when the gaṇa
   landed. `guna.rs:1233`'s own claim ("1872 goldens move") stays stale
-  only in the ordinary corpus-size sense, not wrong in kind: 3564 goldens
+  only in the ordinary corpus-size sense, not wrong in kind: 3636 goldens
   would move today. Neither comment was touched by tanādi 8a or 8b, consistent
   with every slice since 7c. Rudhādi 7d touched neither comment — its one permitted
   engine-comment edit is the comment above
@@ -1530,7 +1637,13 @@
   7f and the √bhuj/1.3.66 slice touched neither comment either. The corpus
   stands at 3564 cells as of juhotyādi 3a (`guna.rs:1233`'s claim now
   anchored at `guna.rs:1472`, `controller.rs:152`'s at `controller.rs:153`),
-  and this slice touched neither comment either. A third,
+  and this slice touched neither comment either. Juhotyādi 3b touched
+  neither comment either: `controller.rs:153`'s anchor is unchanged, and
+  `guna.rs:1472`'s has drifted further, to `guna.rs:1666` (3b's `guna.rs`
+  additions — 6.4.82's widening, 6.4.77's iyaṅ arm and 6.4.115 — all land
+  earlier in the file, above this test; 7.4.59 and 7.4.60 live in
+  `abhyasa.rs` and cannot move a `guna.rs` line). The corpus
+  stands at 3636 cells as of juhotyādi 3b. A third,
   `tinanta/tripadi.rs`'s comment on 8.2.30 (formerly the one calling √bhañj
   rudhādi's one cu-final curated root), was **not** left stale the same
   way: the 8.2.30/8.2.39 generalization slice rewrote it in place, since
@@ -1583,15 +1696,18 @@
   in its stage file, with its id in `tinanta_rule_order_is_pinned` in
   position — and also add it to
   `exactly_the_pinned_vikalpa_rules_are_optional`, which pins the whole
-  optional set by id. **Eight rules are optional today, in pipeline order:
-  7.1.35, 3.4.111, 7.3.86, 6.4.107, 8.2.74, 8.2.75, 8.4.65, 8.4.56.** (7.3.86
+  optional set by id. **Nine rules are optional today, in pipeline order:
+  7.1.35, 3.4.111, 7.3.86, 6.4.115, 6.4.107, 8.2.74, 8.2.75, 8.4.65, 8.4.56 —
+  6.4.115 landed in slice 3b, the engine's ninth vikalpa rule, root-keyed to
+  √bhī and forking across all four lakāras (a kṅit-sārvadhātuka fork; loṭ
+  is where it stacks with 7.1.35).** (7.3.86
   is the vikalpa entry only — its *nitya* entry, just above it in the
   pipeline, is not optional.) 7.1.35 and
   8.4.56 can both fire on one derivation, stacking into a three-branch
   cell — loṭ prathama eka forks twice, giving `Bavatu` / `BavatAd` /
   `BavatAt`. Eight rudhādi roots — √kṛt, √rudh, √bhid, √kṣud, √tṛd, √und,
   √chid and √chṛd — each
-  stack three of the eight (7.1.35,
+  stack three of the nine (7.1.35,
   8.4.65, 8.4.56) on their own loṭ parasmaipada cells, and tanādi's
   kziR/fR/tfR/GfR stack a different three (7.1.35, 7.3.86, 8.4.56) on
   theirs — five branches at

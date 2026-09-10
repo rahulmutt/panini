@@ -29,11 +29,19 @@ and 6.4.109 *ye ca* — and 8.2.77 *hali ca*'s own guard, 8.2.79 *na
 bhakurchurām*, which declines 8.2.77's lengthening on √kṛ's `kur` aṅga
 (`kurvanti`, not `*kUrvanti`) — and *juhotyādi* (3, the ślu gaṇa: 2.4.75
 elides śap by ślu and 6.1.10 reduplicates the root into the `ABHYASA`
-slot), **partial** at 2 of its 26 dhātupāṭha rows, √hu (`03.0001`,
+slot), **partial** at 4 of its 26 dhātupāṭha rows, √hu (`03.0001`,
 *juhoti*) and √ki (`03.0020`, *ciketi*), curated in slice 3a behind
 7.4.62 *kuhoś cuḥ*, 7.1.4 *ad abhyastāt*, 3.4.109 with 7.3.83 *jusi ca*,
 6.4.82 *er anekāco'saṁyogapūrvasya* and 8.4.54 *abhyāse car ca*, with
-6.4.87 and 6.4.101 grown their √hu arms. rudhādi is
+6.4.87 and 6.4.101 grown their √hu arms; and √bhī (`03.0002`, *bibheti*)
+and √hrī (`03.0003`, *jihreti*), both parasmaipadī, curated in slice 3b
+behind two new sūtras shaping the abhyāsa of a consonant-initial,
+long-vowel root — 7.4.60 *halādiḥ śeṣaḥ* and 7.4.59 *hrasvaḥ* — with
+6.4.82 widened from its 3a shape to cover a long `I` (first exercised by
+√bhī) and 6.4.77 gaining an iyaṅ arm for the roots 6.4.82 declines on as
+saṁyogapūrva (first exercised by √hrī), and 6.4.115 *bhiyo'nyatarasyām*
+landing as the engine's ninth vikalpa rule — root-keyed to √bhī, forking
+across all four lakāras, and stacking with 7.1.35 in loṭ. rudhādi is
 complete at all
 twenty-five of its own roots (√kṛt, √hiṃs, √khid, √bhañj, √piṣ, √indh, √rudh,
 and — curated in slice 7c — √bhid, √kṣud, √yuj and √tṛd, and — curated in
@@ -57,15 +65,19 @@ rather than falling through to 1.3.72. What 1.3.66 does not model is the
 1.3.72's own precedent,
 since neither engine models sense. *parasmaipada* and *ātmanepada*
 (which padas a root admits is a curated verdict on its table row), over a
-curated 79-root set, in four lakāras: *laṭ* (present), *laṅ* (imperfect), *loṭ*
+curated 81-root set, in four lakāras: *laṭ* (present), *laṅ* (imperfect), *loṭ*
 (imperative), and *vidhiliṅ* (optative). A cell may have more than one valid
 form where an optional (*vikalpa*) sūtra applies — `hinvaH` and `hinuvaH` are
-both correct — and in fact 682 of the 3564 cells hold more than one form: 526
-hold two, 115 hold three (`Bavatu`, `BavatAd`, `BavatAt`), seventeen hold four
+both correct — and in fact 711 of the 3636 cells hold more than one form: 550
+hold two, 117 hold three (`Bavatu`, `BavatAd`, `BavatAt`, and — new in
+slice 3b — √hrī's loṭ prathama and madhyama eka, each by 7.1.35/8.4.56),
+eighteen hold four
 (rudhādi's √piṣ loṭ madhyama eka, and — new in slice 7d — √śiṣ's, and — new
 in slice 8a — fifteen more spread across tanādi's four ik-upadhā roots kziR,
-fR, tfR and GfR), eight hold
-five, and sixteen hold six — the loṭ
+fR, tfR and GfR, and — new in slice 3b — √bhī's vidhiliṅ prathama eka,
+forking on 6.4.115 alongside 8.4.56), nine hold
+five (and, new in slice 3b, √bhī's loṭ prathama eka, forking on
+7.1.35/6.4.115/8.4.56), and seventeen hold six — the loṭ
 parasmaipada madhyama eka of rudhādi's √kṛt, √rudh, √bhid, √kṣud, √tṛd, √und
 and — new in slice 7f — √chid and √chṛd (eight cells), tied for the record
 until this slice, each holding
@@ -81,7 +93,12 @@ more cells, taking the record to sixteen): where the earlier eight fork on
 7.1.35/8.4.65/8.4.56, these fork on 7.1.35/7.3.86/8.4.56 instead, since
 tanādi's u-final stems give 8.4.65 nothing to elide and 7.3.86's guṇa/aguṇa
 alternation stands in its place — fR's own prathama eka holds `fRotu` /
-`arRotu` / `fRutAd` / `fRutAt` / `arRutAd` / `arRutAt`. Nothing in the suite
+`arRotu` / `fRutAd` / `fRutAt` / `arRutAd` / `arRutAt`; and, new in slice
+3b, √bhī's loṭ parasmaipada madhyama eka (one more cell, taking the record
+to seventeen): `biBIhi` / `biBihi` / `biBItAd` / `biBitAd` / `biBItAt` /
+`biBitAt`, reaching six by 7.1.35/6.4.115/8.4.56 — a third distinct k = 3
+stack against the same 2³ bound of eight, beside rudhādi's 8.4.65 route and
+tanādi's 7.3.86 route. Nothing in the suite
 forks deeper than six. fR's own laṅ cells — all eighteen of them, both
 padas — show a different mechanism: each is 7.3.86-eligible, but the guṇa
 and aguṇa branches always converge on the same surface once 6.1.90's

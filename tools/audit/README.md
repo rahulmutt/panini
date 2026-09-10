@@ -27,7 +27,7 @@ is ruleless.
 comment states that a blocked prakriyā's `text()` is a partial string — often the
 bare root code — not a surface form.
 
-**It asserts the corpus totals** (79 roots, 3564 cells, 4483 forms) rather than
+**It asserts the corpus totals** (81 roots, 3636 cells, 4595 forms) rather than
 reporting whatever it enumerated. Those totals are corroborated by
 `derivation_set_shape_matches_the_audited_numbers` in
 `crates/panini/tests/paradigm/main.rs`, which each slice raises to the same totals
@@ -108,6 +108,29 @@ PANINI_AUDIT_DUMP=/tmp/audit-table.tsv mise exec rust@1.98.0 -- cargo run --rele
 ```
 
 ## Last recorded result
+
+2026-09-09, juhotyādi 3b slice, vidyut
+`8da2f90bee3ce1c07505fa432fc3729e3f7e02ea`: **zero differences across 3636
+cells / 4595 forms / 81 roots**, with the `entry` negative control verified
+failing (36 √bhū cells, `Bavati` vs `paWati` and so on — identical DIFF
+signature to every prior slice, since the control targets `01.0001`/
+`01.0381`, both outside this slice's scope).
+
+The verdict now covers the whole juhotyādi 3b slice: the two new rules
+(7.4.60 *halādiḥ śeṣaḥ*, 7.4.59 *hrasvaḥ*), the widened 6.4.82 (now
+covering a long `I`) and 6.4.77 (its new iyaṅ arm), and 6.4.115 *bhiyo
+'nyatarasyām*, the engine's ninth vikalpa rule — added for the gaṇa's next
+two curated roots, √bhī (`03.0002`) and √hrī (`03.0003`). A zero-difference
+result across every laṭ/laṅ/loṭ/vidhiliṅ cell of both roots' derivations is
+the audit's confirmation that both new rules, both widened rules, and
+6.4.115's fork reproduce vidyut-prakriya's forms exactly, not merely this
+engine's own goldens.
+
+Totals: 81 = 79 + 2 (√bhī, √hrī); 3636 = 3564 + 72 (2 roots × 1 pada ×
+4 lakāras × 9 cells — both roots are parasmaipada-only); 4595 = 4483 + 72
++ 40 new `ALTERNATES` rows (919 → 959), the 72 being the new cells'
+baseline forms and the 40 measured via the harness's own corpus block, not
+assumed.
 
 2026-09-07, juhotyādi 3a slice, vidyut
 `8da2f90bee3ce1c07505fa432fc3729e3f7e02ea`: **zero differences across 3564

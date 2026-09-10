@@ -1,4 +1,4 @@
-//! Vowel gradation and vikaraṇa reshaping: 7.4.21 … 6.4.113.
+//! Vowel gradation and vikaraṇa reshaping: 7.4.21 … 6.4.115.
 //!
 //! Split out of `anga.rs` (which had reached 1110 lines) ahead of svādi.
 //! The cut falls after 7.2.81: `anga.rs` keeps the augments and the rules
@@ -609,7 +609,13 @@ pub(crate) static GUNA: &[Rule] = &[
         vikalpa: false,
         apply: |p| {
             let mut anga: Vec<char> = p.terms[ANGA].text.chars().collect();
-            if anga.last() != Some(&'i') {
+            // *eḥ* denotes both lengths, by 1.1.69/1.1.70 aṇudit
+            // savarṇasya — this is the sūtra's stated scope, not an
+            // extension of it. √ki's `ciki` witnesses the short arm (slice
+            // 3a, cikyati) and √bhī's `BiBI` the long one (slice 3b,
+            // bibhyati); 7.4.59 shortened only the ABHYĀSA, so the aṅga's
+            // own vowel is still long when this rule looks.
+            if !matches!(anga.last(), Some('i') | Some('I')) {
                 return false;
             }
             let stem: Vec<char> = p.terms[ABHYASA]
@@ -654,33 +660,68 @@ pub(crate) static GUNA: &[Rule] = &[
     // becomes uvaṅ. Ap + nu + anti → Apnuvanti; aS + nu + ate → aSnuvate;
     // aS + nu + Iyta → aSnuvIta (6.1.66 drops the y later, in `adesha`).
     //
-    // Only the śnu arm is implemented. The *dhātu* arm (ī/ū-final roots) and
-    // the *bhrū* arm have no root in scope: 6.4.82 above is the dhātu arm's
-    // apavāda for the asaṁyogapūrva i-final case (√ki); the iyaṅ case
-    // itself arrives with √hrī in slice 3b — recorded rather than written,
-    // as 6.4.112's *abhyasta* half and 6.4.113's *aghoḥ* are. Widen when a
-    // root reaches either.
+    // Two arms now. The *śnu* arm rewrites SHAP; the *dhātu* arm rewrites
+    // ANGA — hrI + ati → hriy + ati (jihriyati, slice 3b). The *bhrū* arm
+    // has no root in scope.
     //
-    // Reads terms[ENDING] directly, NOT `following_sarvadhatuka`: that
-    // helper answers "what follows the aṅga", which here is śnu itself —
-    // this rule needs what follows śnu. Same reasoning as 6.4.112/6.4.113.
+    // The dhātu arm is general over roots rather than keyed to √hrī: the
+    // sūtra names no root. It is safe where it sits — after 7.3.84 and
+    // after its apavāda 6.4.82 — because every ī/ū-final curated root is
+    // already past it by then: √bhū and √nī have guṇated (`Bo`, `ne`, śap
+    // being pit so 1.1.5 does not block), √śī has guṇated by 7.4.21, and
+    // √vrī's follower is the hal-initial śnā. The 3636 byte-identical
+    // priors are what turn that from an argument into a proof.
+    //
+    // THE UVAṄ HALF IS NOT WRITTEN. `U` → `uv` has no cell in the suite —
+    // no juhotyādi row is ū-final — and an arm with no witness is a
+    // guaranteed mutation survivor. Widen by arm, with a witness, exactly
+    // as 6.1.78's three arms are. The restore trigger is the first ū-final
+    // root that reaches this rule with guṇa blocked.
+    //
+    // The śnu arm reads terms[ENDING] directly, NOT `following_sarvadhatuka`:
+    // that helper answers "what follows the aṅga", which there is śnu itself
+    // — it needs what follows śnu. The dhātu arm's follower IS what follows
+    // the aṅga, so it uses the helper. Same reasoning as 6.4.112/6.4.113.
     Rule {
         id: "6.4.77",
         name: "aci SnuDAtuBruvAM yvoriyaNuvaNO",
         kind: RuleKind::Vidhi,
         vikalpa: false,
         apply: |p| {
-            if p.terms[SHAP].text != "nu" {
+            // The śnu arm: the vikaraṇa's `u` becomes uvaṅ.
+            if p.terms[SHAP].text == "nu" {
+                let Some(next) = p.terms[ENDING].text.chars().next() else {
+                    return false;
+                };
+                if !is_vowel(next) {
+                    return false;
+                }
+                let before = p.snapshot();
+                p.terms[SHAP].text = "nuv".into();
+                p.record("6.4.77", "aci SnuDAtuBruvAM yvoriyaNuvaNO", before);
+                return true;
+            }
+            // The dhātu arm: an ī-final aṅga becomes iyaṅ before a vowel.
+            if !p.terms[ANGA].text.ends_with('I') {
                 return false;
             }
-            let Some(next) = p.terms[ENDING].text.chars().next() else {
+            let Some(next) = following_sarvadhatuka(p).and_then(|t| t.text.chars().next()) else {
                 return false;
             };
             if !is_vowel(next) {
                 return false;
             }
             let before = p.snapshot();
-            p.terms[SHAP].text = "nuv".into();
+            let stem: String = p.terms[ANGA]
+                .text
+                .chars()
+                .rev()
+                .skip(1)
+                .collect::<Vec<_>>()
+                .into_iter()
+                .rev()
+                .collect();
+            p.terms[ANGA].text = format!("{stem}iy");
             p.record("6.4.77", "aci SnuDAtuBruvAM yvoriyaNuvaNO", before);
             true
         },
@@ -949,6 +990,64 @@ pub(crate) static GUNA: &[Rule] = &[
             let before = p.snapshot();
             p.terms[SHAP].text = "nI".into();
             p.record("6.4.113", "I halyaGoH", before);
+            true
+        },
+    },
+    // 6.4.115 bhiyo'nyatarasyām: √bhī's ī optionally becomes hrasva.
+    // bibhītaḥ / bibhitaḥ, bibhīhi / bibhihi, bibhīyāt / bibhiyāt. The
+    // engine's ninth vikalpa.
+    //
+    // Operates on the AṄGA. 7.4.59 has already shortened the abhyāsa, and
+    // that is a different vowel: `Bi` + `BI` is the pair this rule turns
+    // into `Bi` + `Bi`.
+    //
+    // ROOT-KEYED, with no gaṇa clause — the sūtra itself names √bhī, and a
+    // gaṇa clause beside `ANGA.text == "BI"` could never be falsified (the
+    // 6.4.87 / 6.4.101 precedent). √hrī has the same shape and the same
+    // followers and must not fork.
+    //
+    // *hali* and *kṅiti* both come by anuvṛtti from 6.4.113, and BOTH are
+    // load-bearing on this slice's own cells, which is why both are written:
+    //   - drop the kṅit test and `si`/`mi` (hal-initial but PIT) give
+    //     *bibhiṣi / *bibhimi instead of bibheṣi / bibhemi;
+    //   - drop the hal test and `ati` (kṅit but ajādi) gives *bibhiyati
+    //     instead of bibhyati, which is 6.4.82's.
+    //
+    // Reads `following_sarvadhatuka`, unlike 6.4.112/6.4.113 beside it:
+    // those need what follows śnā, this needs what follows the AṄGA. Under
+    // ślu the śap is empty, so the helper returns the ending — and in
+    // vidhiliṅ that ending carries yāsuṭ prefixed onto its own text and
+    // Ngit set there by 3.4.103, so all nine of those cells fork.
+    //
+    // POSITION IS NOT FORCED BY ANY CELL: wherever guṇa fires the kṅit test
+    // declines, and where 6.4.82 fires first this rule sees the `By` it left
+    // and declines on the text test. It sits beside 6.4.113, the rule it
+    // takes its two anuvṛtti conditions from, and the bibhitaḥ trace pin is
+    // what holds it there.
+    Rule {
+        id: "6.4.115",
+        name: "Biyo'nyatarasyAm",
+        kind: RuleKind::Vidhi,
+        vikalpa: true,
+        apply: |p| {
+            if p.terms[ANGA].text != "BI" {
+                return false;
+            }
+            let Some(follower) = following_sarvadhatuka(p) else {
+                return false;
+            };
+            if !follower.has(Tag::Ngit) {
+                return false;
+            }
+            let Some(next) = follower.text.chars().next() else {
+                return false;
+            };
+            if is_vowel(next) {
+                return false;
+            }
+            let before = p.snapshot();
+            p.terms[ANGA].text = "Bi".into();
+            p.record("6.4.115", "Biyo'nyatarasyAm", before);
             true
         },
     },
@@ -1430,6 +1529,88 @@ mod tests {
         assert_eq!(p.text(), "kliSnAti");
     }
 
+    /// √bhī under ślu with a given follower: aṅga `BI`, empty śap, the
+    /// ending. `ngit` sets 1.2.4's tag on the ending.
+    fn bhi_slu_prakriya(ending: &str, ngit: bool) -> Prakriya {
+        let mut p = Prakriya {
+            terms: with_slots(vec![Term::new("BI"), Term::new(""), Term::new(ending)]),
+            ..Default::default()
+        };
+        p.terms[ABHYASA].text = "Bi".into();
+        if ngit {
+            p.terms[ENDING].add(Tag::Ngit);
+        }
+        p
+    }
+
+    #[test]
+    fn bhiyah_anyatarasyam_shortens_before_a_hal_initial_kngit() {
+        // 6.4.115. bibhītaḥ / bibhitaḥ. The abhyāsa is already `Bi` (7.4.59);
+        // this rule shortens the AṄGA.
+        let rule = rules().find(|r| r.id == "6.4.115").unwrap();
+        let mut p = bhi_slu_prakriya("tas", true);
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "Bi");
+        assert_eq!(p.terms[ABHYASA].text, "Bi", "the abhyāsa is untouched");
+        assert_eq!(p.log.last().unwrap().sutra, "6.4.115");
+    }
+
+    #[test]
+    fn bhiyah_anyatarasyam_declines_before_a_pit_ending() {
+        // The *kṅiti* clause, falsified. `si` and `mi` are hal-initial but
+        // PIT, so 1.2.4 never made them ṅit and guṇa applies instead:
+        // bibheṣi, bibhemi — never *bibhiṣi. Dropping the kṅit test would
+        // produce those.
+        let rule = rules().find(|r| r.id == "6.4.115").unwrap();
+        for ending in ["si", "mi"] {
+            let mut p = bhi_slu_prakriya(ending, false);
+            assert!(!(rule.apply)(&mut p), "{ending}");
+            assert_eq!(p.terms[ANGA].text, "BI", "{ending}");
+            assert!(p.log.is_empty(), "{ending}");
+        }
+    }
+
+    #[test]
+    fn bhiyah_anyatarasyam_declines_before_a_vowel_initial_kngit() {
+        // The *hali* clause, falsified. `ati` IS kṅit but ajādi, and
+        // bibhyati has no second form. Dropping the hal test would produce
+        // *bibhiyati.
+        let rule = rules().find(|r| r.id == "6.4.115").unwrap();
+        let mut p = bhi_slu_prakriya("ati", true);
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "BI");
+        assert!(p.log.is_empty());
+    }
+
+    #[test]
+    fn bhiyah_anyatarasyam_is_keyed_to_bhi_alone() {
+        // The sūtra names the root, so the guard does too — with no gaṇa
+        // clause beside it, which could never be falsified (the 6.4.87 /
+        // 6.4.101 precedent). √hrī has the same shape and the same follower
+        // and must NOT fork: jihrItaH has one form.
+        let rule = rules().find(|r| r.id == "6.4.115").unwrap();
+        let mut p = Prakriya {
+            terms: with_slots(vec![Term::new("hrI"), Term::new(""), Term::new("tas")]),
+            ..Default::default()
+        };
+        p.terms[ABHYASA].text = "Ji".into();
+        p.terms[ENDING].add(Tag::Ngit);
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "hrI");
+    }
+
+    #[test]
+    fn bhiyah_anyatarasyam_reads_the_yasut_prefixed_ending_in_vidhilin() {
+        // vidhiliṅ's follower is the ending with yāsuṭ prefixed onto its own
+        // text and Ngit set there (3.4.103), so `following_sarvadhatuka`
+        // returns `yAt` — hal-initial and ṅit. All nine vidhiliṅ cells fork:
+        // bibhīyāt / bibhiyāt.
+        let rule = rules().find(|r| r.id == "6.4.115").unwrap();
+        let mut p = bhi_slu_prakriya("yAt", true);
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "Bi");
+    }
+
     // --- 7.3.84 second application: the vikaraṇa-aṅga guṇa ------------------
 
     fn second_7_3_84() -> &'static Rule {
@@ -1788,6 +1969,93 @@ mod tests {
                 assert!(!(rule.apply)(&mut p), "{id} fired on SHAP {shap:?}");
             }
         }
+    }
+
+    #[test]
+    fn er_anekacah_fires_on_a_long_i_as_well_as_a_short_one() {
+        // 6.4.82. The sūtra's *eḥ* denotes both lengths by 1.1.69/1.1.70
+        // aṇudit savarṇasya. √ki's `ciki` (short, slice 3a) and √bhī's
+        // `BiBI` (long, this slice) are the two witnesses, so neither
+        // branch of the length test is a free mutant.
+        let rule = rules().find(|r| r.id == "6.4.82").unwrap();
+        for (abhyasa, anga, want) in [("ci", "ki", "ky"), ("Bi", "BI", "By")] {
+            let mut p = Prakriya {
+                terms: with_slots(vec![Term::new(anga), Term::new(""), Term::new("ati")]),
+                ..Default::default()
+            };
+            p.terms[ABHYASA].text = abhyasa.into();
+            assert!((rule.apply)(&mut p), "{anga}");
+            assert_eq!(p.terms[ANGA].text, want, "{anga}");
+        }
+    }
+
+    #[test]
+    fn er_anekacah_declines_when_a_conjunct_precedes_the_long_i() {
+        // √hrī: the abhyasta span is `Ji` + `hrI`, so the two sounds before
+        // the final I are `r` then `h` — saṁyogapūrva. 6.4.82 must decline
+        // and leave the cell to 6.4.77, which is the whole reason the two
+        // roots of this slice take different rules for the same shape.
+        let rule = rules().find(|r| r.id == "6.4.82").unwrap();
+        let mut p = Prakriya {
+            terms: with_slots(vec![Term::new("hrI"), Term::new(""), Term::new("ati")]),
+            ..Default::default()
+        };
+        p.terms[ABHYASA].text = "Ji".into();
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "hrI");
+        assert!(p.log.is_empty());
+    }
+
+    #[test]
+    fn aci_dhatoh_gives_iyan_for_an_i_final_anga_before_a_vowel() {
+        // 6.4.77's dhātu arm: hrI + ati → hriy + ati (jihriyati). General
+        // over roots, not keyed to √hrī — the sūtra names no root.
+        let rule = rules().find(|r| r.id == "6.4.77").unwrap();
+        let mut p = Prakriya {
+            terms: with_slots(vec![Term::new("hrI"), Term::new(""), Term::new("ati")]),
+            ..Default::default()
+        };
+        p.terms[ABHYASA].text = "Ji".into();
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "hriy");
+        assert_eq!(p.log.last().unwrap().sutra, "6.4.77");
+    }
+
+    #[test]
+    fn aci_dhatoh_declines_before_a_consonant_and_for_a_short_i() {
+        // Both clauses of the new arm, separately falsified. `tas` is
+        // hal-initial (jihrItaH keeps its I); `ciki` is i-final, not
+        // I-final, and belongs to 6.4.82.
+        let rule = rules().find(|r| r.id == "6.4.77").unwrap();
+        let mut p = Prakriya {
+            terms: with_slots(vec![Term::new("hrI"), Term::new(""), Term::new("tas")]),
+            ..Default::default()
+        };
+        p.terms[ABHYASA].text = "Ji".into();
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "hrI");
+
+        let mut p = Prakriya {
+            terms: with_slots(vec![Term::new("ki"), Term::new(""), Term::new("ati")]),
+            ..Default::default()
+        };
+        p.terms[ABHYASA].text = "ci".into();
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "ki");
+    }
+
+    #[test]
+    fn aci_shnu_arm_still_fires_after_the_dhatu_arm_is_added() {
+        // Ap + nu + anti → Apnuvanti. The śnu arm is the one 6.4.77 has
+        // always carried; adding the dhātu arm must not disturb it.
+        let rule = rules().find(|r| r.id == "6.4.77").unwrap();
+        let mut p = Prakriya {
+            terms: with_slots(vec![Term::new("Ap"), Term::new("nu"), Term::new("anti")]),
+            ..Default::default()
+        };
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.terms[SHAP].text, "nuv");
+        assert_eq!(p.terms[ANGA].text, "Ap", "the dhātu arm must not fire here");
     }
 
     // --- 6.4.108/109/110: the √kṛ specials -------------------------------

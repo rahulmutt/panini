@@ -1284,13 +1284,19 @@ pub(crate) static TRIPADI: &[Rule] = &[
     },
     // 8.4.54 abhyāse car ca: a jhal in the abhyāsa becomes its car — and its
     // jaś, by 8.4.53's anuvṛtti (jhalāṁ jaś) — i.e. the abhyāsa loses its
-    // aspiration: Ju → ju (juhoti; the `J` 7.4.62 wrote for h), and in slice
-    // 3b BI → bI (bibheti). Reads the ABHYASA slot directly and whole:
+    // aspiration: Ju → ju (juhoti; the `J` 7.4.62 wrote for h), and in
+    // slice 3b Bi → bi (bibheti) and Ji → ji (jihreti; the `J` 7.4.62 wrote
+    // for h here too). Both start from a SHORT vowel by the time this rule
+    // sees them — 7.4.59 shortened the abhyāsa long before the tripādī —
+    // so this rule never sees `BI` or `hI`; see the 7.4.60/7.4.59/7.4.62/
+    // 8.4.54 chain on hrI pinned in tests/trace/juhotyadi.rs. Reads the
+    // ABHYASA slot directly and whole:
     // *abhyāse* is the slot (non-empty exactly when 6.1.10 filled it — see
     // 7.4.62 in abhyasa.rs), and every aspirate in it is deaspirated in one
     // step. The no-op guard is 8.4.53's: √ki's abhyāsa `ci` is already car
     // and the rule must record nothing there — vidyut-prakriya credits
-    // 8.4.54 on √hu's 42 forms and on none of √ki's.
+    // 8.4.54 on √hu's 42 forms, on √bhī's and √hrī's own forms too, and on
+    // none of √ki's.
     Rule {
         id: "8.4.54",
         name: "aByAse car ca",

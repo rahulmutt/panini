@@ -152,15 +152,15 @@ fn tinanta_rule_order_is_pinned() {
         "3.4.109", "3.4.105", "3.4.106", "3.4.101", "3.4.99", "3.4.87", "3.4.89", "3.4.86",
         "3.4.100", "3.4.80", "3.4.79", "3.4.91", "3.4.93", "3.4.90", "3.4.92", "3.4.103",
         "3.4.102", "7.1.35", "3.1.69", "3.1.73", "3.1.77", "3.1.78", "3.1.79", "3.1.81", "3.1.68",
-        "2.4.72", "2.4.75", "3.4.111", "3.1.83", "1.2.4", "6.1.10", "7.4.62", "6.4.71", "6.4.72",
-        "6.1.73", "7.3.100", "7.1.5", "7.1.6", "7.1.4", "7.1.3", "7.2.79", "7.2.80", "7.2.81",
-        "6.4.23", "7.4.21", "7.3.83", "7.3.84", "7.3.86", "7.3.86", "7.3.92", "7.3.84", "6.4.110",
-        "6.4.108", "6.4.109", "6.4.87", "6.4.82", "6.4.77", "6.1.77", "6.1.78", "7.3.101",
-        "6.4.112", "6.4.113", "6.1.101", "6.1.96", "6.4.106", "6.4.107", "6.1.90", "6.1.97",
-        "6.1.87", "6.1.66", "6.4.105", "6.4.101", "6.4.111", "8.2.77", "8.2.23", "8.2.25",
-        "8.2.30", "8.2.31", "8.2.39", "8.2.40", "8.2.41", "8.2.74", "8.2.75", "8.2.73", "8.3.15",
-        "8.3.24", "8.3.59", "8.4.40", "8.4.41", "8.3.13", "8.4.53", "8.4.54", "8.4.55", "8.4.1",
-        "8.4.2", "8.4.58", "8.4.65", "8.4.56",
+        "2.4.72", "2.4.75", "3.4.111", "3.1.83", "1.2.4", "6.1.10", "7.4.60", "7.4.59", "7.4.62",
+        "6.4.71", "6.4.72", "6.1.73", "7.3.100", "7.1.5", "7.1.6", "7.1.4", "7.1.3", "7.2.79",
+        "7.2.80", "7.2.81", "6.4.23", "7.4.21", "7.3.83", "7.3.84", "7.3.86", "7.3.86", "7.3.92",
+        "7.3.84", "6.4.110", "6.4.108", "6.4.109", "6.4.87", "6.4.82", "6.4.77", "6.1.77",
+        "6.1.78", "7.3.101", "6.4.112", "6.4.113", "6.4.115", "6.1.101", "6.1.96", "6.4.106",
+        "6.4.107", "6.1.90", "6.1.97", "6.1.87", "6.1.66", "6.4.105", "6.4.101", "6.4.111",
+        "8.2.77", "8.2.23", "8.2.25", "8.2.30", "8.2.31", "8.2.39", "8.2.40", "8.2.41", "8.2.74",
+        "8.2.75", "8.2.73", "8.3.15", "8.3.24", "8.3.59", "8.4.40", "8.4.41", "8.3.13", "8.4.53",
+        "8.4.54", "8.4.55", "8.4.1", "8.4.2", "8.4.58", "8.4.65", "8.4.56",
     ];
     let actual: Vec<&str> = rules().map(|r| r.id).collect();
     assert_eq!(actual, expected);
@@ -175,7 +175,7 @@ fn tinanta_rule_order_is_pinned() {
 fn exactly_the_pinned_vikalpa_rules_are_optional() {
     let actual: Vec<&str> = rules().filter(|r| r.vikalpa).map(|r| r.id).collect();
     let expected = [
-        "7.1.35", "3.4.111", "7.3.86", "6.4.107", "8.2.74", "8.2.75", "8.4.65", "8.4.56",
+        "7.1.35", "3.4.111", "7.3.86", "6.4.115", "6.4.107", "8.2.74", "8.2.75", "8.4.65", "8.4.56",
     ];
     assert_eq!(actual, expected);
 }
@@ -940,10 +940,10 @@ fn bhuj_derives_in_both_padas() {
 #[test]
 fn indh_is_atmanepada_only_despite_its_nit() {
     // This test is what protects the whole data-model choice, so it is worth
-    // stating why. √indh's upadeśa is `YiinDI~\`: it carries a ñi, and 1.3.72
-    // svaritaYitaH reads ñit — so a tag named for 1.3.72's *marker* would
-    // have to be true on √indh, and √indh would silently grow a parasmaipada
-    // column. It must not: the anudātta `~\` on top of the ñi settles pada by
+    // stating why. √indh's upadeśa is `YiinDI~\`: its initial ñi is an it by
+    // 1.3.5 ādir ñiṭuḍavaḥ, not an anubandha 1.3.72 svaritañitaḥ reads — so a
+    // tag named for 1.3.72's *marker* would misread it as a ñit, and √indh
+    // would wrongly grow a parasmaipada column. The anudātta `~\` settles pada by
     // 1.3.12, and vidyut-prakriya derives √indh ātmanepada-only.
     //
     // Tag::Ubhayapadin is therefore named for the RESIDUE — 1.3.72's
@@ -960,7 +960,7 @@ fn indh_is_atmanepada_only_despite_its_nit() {
     ));
     assert!(
         p.blocked,
-        "√indh is ñit but not ubhayapadī: 1.3.12 settles it"
+        "√indh's ñi is an it, not ubhayapadī: 1.3.12 settles it"
     );
     assert!(p.log.is_empty(), "a blocked derivation records nothing");
 
