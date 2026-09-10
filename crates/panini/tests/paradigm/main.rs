@@ -290,7 +290,7 @@ fn derivation_set_is_exactly_pinned() {
 /// one form, 550 hold two, 117 hold three (√hrī's loṭ prathama and madhyama
 /// eka, new in slice 3b, each by 7.1.35/8.4.56), eighteen hold four (piṣ's loṭ
 /// madhyama eka, the deepest fork added in 7b, Siz's loṭ parasmaipada
-/// madhyama eka (slice 7d), — new in slice 8a — fifteen more spread
+/// madhyama eka (slice 7d), and — new in slice 8a — fifteen more spread
 /// across the four ik-upadhā tanādi roots kziR/fR/tfR/GfR; √kṛ, slice 8b,
 /// adds none to this bucket; and — new in slice 3b — √bhī's vidhiliṅ
 /// prathama eka, forking on 6.4.115 alongside 8.4.56), and — the

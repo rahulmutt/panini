@@ -1473,7 +1473,7 @@ mod tests {
     /// AFTER the `~` that marks an anunāsika it, so `~\` is an anudātta it and
     /// `~^` a svarita it — whereas a `\` sitting directly on a vowel elsewhere
     /// is the ROOT's own accent and says nothing about pada. Counted off the
-    /// vendored upadeśa: 44 of the 67 curated roots carry a `\` at all, and 31
+    /// vendored upadeśa: 51 of the 81 curated roots carry a `\` at all, and 30
     /// of those carry one on a root vowel — `01.0642 ji\`, `01.1082 smf\` and
     /// `02.0001 a\da~` among them — so conflating the two does not fail
     /// loudly; it silently calls most of the table ātmanepada.
@@ -1728,6 +1728,13 @@ mod tests {
         //
         // Same tripwire idiom as the `code`-uniqueness assertion in
         // `juhotyadi_rows_are_the_four_curated_roots`.
+        //
+        // This re-implements `pada_from_upadesha`'s two branch conditions
+        // rather than calling the function, deliberately: an independent
+        // encoding is what makes this a check ON the function instead of a
+        // tautology restating it. The caveat that duplication buys: a future
+        // `wu`/`qu` arm added to the function would be invisible here until
+        // this test is updated to match.
         let mut both: Vec<&str> = Vec::new();
         for (_, upadesha, _) in upstream_rows() {
             let anudatta_it = upadesha.contains("~\\");

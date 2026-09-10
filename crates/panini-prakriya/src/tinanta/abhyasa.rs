@@ -1,5 +1,5 @@
-//! Reduplication: 6.1.10, 7.4.62 — dvitva and the rules that reshape the
-//! abhyāsa.
+//! Reduplication: 6.1.10, 7.4.60, 7.4.59, 7.4.62 — dvitva and the rules that
+//! reshape the abhyāsa.
 //!
 //! Ordered AFTER 3.1.68 (ending at `ENDING`, śap at `SHAP` — empty on
 //! exactly the path this stage cares about) and BEFORE `anga`, so 6.4.71
@@ -109,6 +109,10 @@ pub(crate) static ABHYASA_RULES: &[Rule] = &[
     // Same no-op guard: √hu and √ki are already hrasva, and `hrasva_of`
     // returning None for a short vowel is what makes the guard a one-lookup
     // test. See that function for why the ec arm of 1.1.48 is absent.
+    //
+    // NARROW, same deferral as 6.1.10's own note above: the map runs over
+    // EVERY character of the abhyāsa, not just its vowel, which is harmless
+    // only because every abhyāsa is still a single ekāc.
     Rule {
         id: "7.4.59",
         name: "hrasvaH",
@@ -293,15 +297,23 @@ mod tests {
     #[test]
     fn haladih_shesha_declines_for_a_vowel_initial_abhyasa() {
         // 3d's √ṛ is the vowel-initial row. *halādiḥ* names a consonant, so
-        // the rule has nothing to keep and must not touch the term.
-        let mut p = slu_prakriya("f", "ti");
+        // the rule has nothing to keep and must not touch the term. `f`
+        // alone cannot kill the guard, though: a single-character abhyāsa
+        // already declines via the no-op check below, guard or no guard.
+        // `ap` is the guard's real witness — no curated root has this
+        // shape, but without the guard a vowel-initial abhyāsa followed by
+        // a consonant would fall through to the tail computation and be
+        // wrongly truncated to `a`.
         let r_10 = rules().find(|r| r.id == "6.1.10").unwrap();
-        assert!((r_10.apply)(&mut p));
-        p.log.clear();
         let r_60 = rules().find(|r| r.id == "7.4.60").unwrap();
-        assert!(!(r_60.apply)(&mut p));
-        assert_eq!(p.terms[ABHYASA].text, "f");
-        assert!(p.log.is_empty());
+        for root in ["f", "ap"] {
+            let mut p = slu_prakriya(root, "ti");
+            assert!((r_10.apply)(&mut p));
+            p.log.clear();
+            assert!(!(r_60.apply)(&mut p), "{root}");
+            assert_eq!(p.terms[ABHYASA].text, root, "{root}");
+            assert!(p.log.is_empty(), "{root}");
+        }
     }
 
     #[test]

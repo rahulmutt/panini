@@ -233,9 +233,9 @@ fn bibhyati_trace_credits_6_4_82_on_a_long_i_and_no_6_4_115() {
 
 #[test]
 fn bibhitah_trace_shows_the_unforked_arm_with_the_abhyasa_shortened() {
-    // BI laT P.D, the shortened arm. 7.4.59 shortens the abhyāsa (Bi) and
-    // 6.4.115 then shortens the aṅga (Bi) — two different vowels, two
-    // different rules, in that order.
+    // BI laT P.D, the unforked arm. 7.4.59 has shortened the abhyāsa to Bi,
+    // but 6.4.115 does not fire here, so the aṅga stays long: biBItaH. The
+    // forked arm, where 6.4.115 also shortens the aṅga, is pinned below.
     let (text, t) = cell_trace(
         "03.0002",
         Lakara::Lat,

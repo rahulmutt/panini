@@ -940,10 +940,10 @@ fn bhuj_derives_in_both_padas() {
 #[test]
 fn indh_is_atmanepada_only_despite_its_nit() {
     // This test is what protects the whole data-model choice, so it is worth
-    // stating why. √indh's upadeśa is `YiinDI~\`: it carries a ñi, and 1.3.72
-    // svaritaYitaH reads ñit — so a tag named for 1.3.72's *marker* would
-    // have to be true on √indh, and √indh would silently grow a parasmaipada
-    // column. It must not: the anudātta `~\` on top of the ñi settles pada by
+    // stating why. √indh's upadeśa is `YiinDI~\`: its initial ñi is an it by
+    // 1.3.5 ādir ñiṭuḍavaḥ, not an anubandha 1.3.72 svaritañitaḥ reads — so a
+    // tag named for 1.3.72's *marker* would misread it as a ñit, and √indh
+    // would wrongly grow a parasmaipada column. The anudātta `~\` settles pada by
     // 1.3.12, and vidyut-prakriya derives √indh ātmanepada-only.
     //
     // Tag::Ubhayapadin is therefore named for the RESIDUE — 1.3.72's
@@ -960,7 +960,7 @@ fn indh_is_atmanepada_only_despite_its_nit() {
     ));
     assert!(
         p.blocked,
-        "√indh is ñit but not ubhayapadī: 1.3.12 settles it"
+        "√indh's ñi is an it, not ubhayapadī: 1.3.12 settles it"
     );
     assert!(p.log.is_empty(), "a blocked derivation records nothing");
 

@@ -1169,8 +1169,8 @@
     stays one-form-per-cell: a cell forked by an optional rule keeps its
     other forms — a second (550 cells), a third (117 cells), a fourth
     (eighteen
-    cells, rudhādi's √piṣ and — new in slice 7d — √śiṣ loṭ madhyama eka, new
-    in slice 8a — fifteen more spread across tanādi's four ik-upadhā
+    cells, rudhādi's √piṣ and — new in slice 7d — √śiṣ loṭ madhyama eka, and
+    — new in slice 8a — fifteen more spread across tanādi's four ik-upadhā
     roots kziR/fR/tfR/GfR, and — new in slice 3b — √bhī's vidhiliṅ prathama
     eka) and
     — the loṭ parasmaipada cells of
@@ -1575,7 +1575,9 @@
   differences across 3492 cells / 4399 forms / 77 roots**, with the
   `entry` negative control verified failing first — the record until
   juhotyādi 3a's own audit (`tools/audit/README.md`'s 2026-09-07 entry,
-  3564 cells / 4483 forms / 79 roots).
+  3564 cells / 4483 forms / 79 roots), itself superseded by juhotyādi 3b's
+  own audit (`tools/audit/README.md`'s 2026-09-09 entry, 3636 cells / 4595
+  forms / 81 roots).
   Three new `Rule`s are behind it, all root-keyed to √kṛ and all in
   `guna.rs` — 6.4.110 *ata ut sārvadhātuke*, 6.4.108 *nityaṁ karoteḥ* and
   6.4.109 *ye ca* — plus one engine change with no `Rule` of its own:
@@ -1637,9 +1639,10 @@
   anchored at `guna.rs:1472`, `controller.rs:152`'s at `controller.rs:153`),
   and this slice touched neither comment either. Juhotyādi 3b touched
   neither comment either: `controller.rs:153`'s anchor is unchanged, and
-  `guna.rs:1472`'s has drifted further, to `guna.rs:1666` (3b's new and
-  widened rules — 7.4.59, 7.4.60, 6.4.82's widening, 6.4.77's iyaṅ arm and
-  6.4.115 — all land earlier in the file, above this test). The corpus
+  `guna.rs:1472`'s has drifted further, to `guna.rs:1666` (3b's `guna.rs`
+  additions — 6.4.82's widening, 6.4.77's iyaṅ arm and 6.4.115 — all land
+  earlier in the file, above this test; 7.4.59 and 7.4.60 live in
+  `abhyasa.rs` and cannot move a `guna.rs` line). The corpus
   stands at 3636 cells as of juhotyādi 3b. A third,
   `tinanta/tripadi.rs`'s comment on 8.2.30 (formerly the one calling √bhañj
   rudhādi's one cu-final curated root), was **not** left stale the same

@@ -1,4 +1,4 @@
-//! Vowel gradation and vikaraṇa reshaping: 7.4.21 … 6.4.113.
+//! Vowel gradation and vikaraṇa reshaping: 7.4.21 … 6.4.115.
 //!
 //! Split out of `anga.rs` (which had reached 1110 lines) ahead of svādi.
 //! The cut falls after 7.2.81: `anga.rs` keeps the augments and the rules
