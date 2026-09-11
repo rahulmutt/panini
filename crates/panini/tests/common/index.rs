@@ -8,10 +8,13 @@
 //!
 //! The build below mirrors `Panini::check()`'s predicate exactly — same
 //! candidate set, same `!blocked` filter, same exact-match on `text()`. That
-//! duplication is deliberate but load-bearing: `roundtrip_sampled` in
-//! `roundtrip.rs` reconciles this index against the real `check()` on every
-//! root, and is what makes trusting it safe. If you change `check()`, that
-//! test is what will tell you this file needs the same change.
+//! duplication is deliberate but load-bearing, so `roundtrip.rs` reconciles
+//! this index against the real `check()`. In the blocking tier,
+//! `roundtrip_sampled` catches drift on one cell per root only: a change that
+//! affects just the unsampled forms passes it while the paradigm loops pass
+//! against a stale index. `roundtrip_exhaustive` (`mise run test-full`)
+//! reconciles every derived form. Run it after changing `Panini::check()`,
+//! `panini_analyze::candidates()`, or this file.
 
 use std::collections::HashMap;
 use std::sync::LazyLock;

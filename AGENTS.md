@@ -6,9 +6,9 @@
 - Tasks: `mise run build | test | test-full | lint | fmt | fmt-check | mutants |
   audit`.
 - Run `mise run test-full` once per slice, before the mutation gate. The
-  blocking tier (`mise run test`) samples one roundtrip cell for each of the
-  corpus's 81 roots; this runs the exhaustive roundtrip over the whole
-  cross-product (~25 minutes). Also run it after touching `Panini::check()`,
+  blocking tier (`mise run test`) samples one roundtrip cell per root; this
+  runs the exhaustive roundtrip over the whole cross-product (~25 minutes).
+  Also run it after touching `Panini::check()`,
   `panini_analyze::candidates()`, or `crates/panini/tests/common/index.rs`.
   CI runs it on the weekly cron.
 - Optional dev/audit tooling is pinned in `mise.dev.toml`. Install it on demand:
@@ -41,8 +41,12 @@
     paradigm's 27.60s, 27.18s is `known_nonforms_are_invalid`, which checks
     89 non-forms through the real `Panini::check()` at ~0.30s a call. That
     is deliberate — it is the only test of `check()`'s negative path — and
-    it, not the corpus, is the dominant term of the blocking floor. At
-    `-j 4`, two documented equivalent mutants ran the suite to completion
+    it is the dominant term of the paradigm binary. The larger term of the
+    blocking floor is `roundtrip_sampled`, which sends every form derived
+    from one cell per root through the real `check()`. Those calls grow
+    linearly with the corpus and each one re-derives it, so that term is
+    still Θ(N²), at ~1/45 of the old exhaustive constant, and re-grows first.
+    At `-j 4`, two documented equivalent mutants ran the suite to completion
     uncaught, with test phases of 74.76s and 72.65s: a contention factor of
     1.12–1.15× over that floor. 600s is 6 × 74.76s = 448.56s rounded up, or
     **8.03×** the longest measured uncaught run. Take the floor by
@@ -808,7 +812,7 @@
     happened), while the worst *caught* mutant came in at
     2471.08 / 1958.411 = **1.26×**, mid-range. The 1.027× was not to be
     read as "contention is low on this machine" — that is the exact
-    inference the 7c entry above records as luck, from a two-mutant sample.
+    inference the 7e entry above records as luck, from a two-mutant sample.
     This entry took the caught figure as the binding one, the one the cap
     had to clear.
     **Ruling: keep 4800.** Both margins clear 1× comfortably. The caught-
@@ -1190,24 +1194,35 @@
     The next slice was to project from measured uncaught-run times
     instead of this multiplier.
     **2026-09-11 — the floor series has a hinge here; do not read across it.**
-    The `test-suite-n-squared` slice removed the suite's Θ(N²):
+    The `test-suite-n-squared` slice removed most of the suite's Θ(N²):
     `candidates()` discards its argument and returns the full cross-product,
     so every `check()` re-derived the entire corpus, and the three hot loops
     called it once per form. The corpus is now derived once per test binary
-    into `crates/panini/tests/common/index.rs`, and the loops read that
-    index. Measured uncontended at the same 3636 cells, before and after:
+    into `crates/panini/tests/common/index.rs`, and the two paradigm loops
+    read that index, so they are O(N). The exhaustive roundtrip, the third
+    loop, left the blocking tier; `roundtrip_sampled`, which replaced it,
+    keeps a residual Θ(N²) term at ~1/45 the old constant (see below).
+    Measured uncontended at the same 3636 cells, before and after:
     paradigm 1122.81s → 27.60s, roundtrip 1354.58s → 31.30s, trace 4.07s →
     4.72s; wall clock 2483s → 65.01s (~38×). Every floor figure in this
     series before this entry was taken under the N² suite and is not
     comparable to anything after it.
-    The 65.01s is not the corpus. `known_nonforms_are_invalid` checks 89
-    non-forms through the real `Panini::check()` at ~0.30s a call: 27.18s of
-    paradigm's 27.60s, where every other paradigm test takes ≤0.62s. It
-    stays on the real `check()` deliberately, as the only test of its
-    negative path, and it is the dominant term of the blocking floor.
-    The blocking roundtrip, `roundtrip_sampled`, checks one cell for each of
-    the corpus's 81 roots. The exhaustive roundtrip survives behind
-    `#[ignore]` as `roundtrip_exhaustive` and runs via `mise run test-full`
+    Part of the 65.01s still scales with the corpus.
+    `known_nonforms_are_invalid` checks 89 non-forms through the real
+    `Panini::check()` at ~0.30s a call: 27.18s of paradigm's 27.60s, where
+    every other paradigm test takes ≤0.62s. It stays on the real `check()`
+    deliberately, as the only test of its negative path, and it is the
+    dominant term of the paradigm binary. Its list is fixed, so it grows
+    only as each call gets dearer. The blocking roundtrip,
+    `roundtrip_sampled`, checks one cell for each of the corpus's 81 roots,
+    sending ~100 derived forms through the real `check()`. That call count
+    grows linearly with the corpus and every call re-derives the corpus, so
+    `roundtrip_sampled` is still Θ(N²), at ~1/45 of the exhaustive
+    roundtrip's 4595 calls; at 31.30s it is the largest term of the
+    blocking floor. Doubling the roots would roughly quadruple it (~125s)
+    but only double `known_nonforms_are_invalid` (~54s), so it is the first
+    term to re-grow. The exhaustive roundtrip survives behind `#[ignore]`
+    as `roundtrip_exhaustive` and runs via `mise run test-full`
     — once per slice before the mutation gate, and always after touching
     `Panini::check()`, `panini_analyze::candidates()`, or
     `tests/common/index.rs`. Measured when it was introduced, the full run

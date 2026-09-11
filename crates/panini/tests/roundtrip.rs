@@ -24,8 +24,9 @@ type Cell = (&'static Dhatu, Lakara, Pada, Purusha, Vacana);
 /// independently. `lcm(4, 9) == 36` and there are more than 72 roots, so every
 /// lakāra × cell pair appears at least twice while every root appears exactly
 /// once. No RNG, so no seed to record — and a new root adds itself, which is
-/// what keeps this sample growing linearly with the corpus rather than
-/// quadratically.
+/// what keeps the number of `check()` calls here growing linearly with the
+/// corpus. Each of those calls still re-derives the whole corpus, so this
+/// test's cost stays quadratic, at roughly 1/45 of the exhaustive constant.
 fn sample() -> impl Iterator<Item = Cell> {
     dhatus().iter().enumerate().map(|(i, d)| {
         let padas = d.pada.padas();
