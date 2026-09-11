@@ -120,8 +120,9 @@ pub(crate) static ADESHA: &[Rule] = &[
             // āṭaś ca (AE → E), and the root's ā meets the result by 6.1.88
             // vṛddhir eci: dadE, the Kaumudī's *dadai* and vidyut's trace
             // (juhotyādi 3c). Form-neutral — this arm then 6.1.88 would spell
-            // dadE too — so only the dadE trace pin holds it. No prior reaches
-            // it: √yā and √vā have no ātmanepada.
+            // dadE too — so this arm's guard test and 3c's dadE trace pin are
+            // what hold it. No prior reaches it: √yā and √vā have no
+            // ātmanepada.
             if p.terms.len() > ENDING
                 && p.terms[SHAP].text.is_empty()
                 && p.terms[ANGA].text.ends_with('A')
@@ -1372,17 +1373,39 @@ mod tests {
 
     #[test]
     fn vrddhir_eci_merges_an_a_final_anga_into_the_endings_ec() {
-        // da + dA + E → da + d + E: dadE, after 6.1.90 made AE into E.
+        // "E" is the real corpus case: da + dA + E → da + d + E (dadE),
+        // after 6.1.90's athematic arm made AE into E. `vrddhi_of('E')` is
+        // "E" (identity), so this row alone cannot tell the vṛddhi
+        // substitution from a no-op copy.
+        //
+        // "eti" and "o" are hand-built guard witnesses, not attested corpus
+        // endings -- the same corpus-real/unit-test-only split `vrddhi_of`
+        // documents for its own arms (sound.rs:18-22). "eti": `vrddhi_of('e')`
+        // is "E", not 'e', so this pins the substitution itself against an
+        // identity mutant, and its multi-char tail "ti" pins `{rest}` -- a
+        // mutant dropping `{rest}` from the format string would yield "E"
+        // instead of "Eti". "o": `vrddhi_of('o')` is "O", the other pair
+        // `matches!` admits besides e/E, so this pins that arm against a
+        // mutant narrowing the guard to just 'e'/'E'.
         let rule = rules().find(|r| r.id == "6.1.88").unwrap();
+        for (ending, want_ending) in [("E", "E"), ("eti", "Eti"), ("o", "O")] {
+            let mut p = Prakriya {
+                terms: with_slots(vec![Term::new("dA"), Term::new(""), Term::new(ending)]),
+                ..Default::default()
+            };
+            assert!((rule.apply)(&mut p), "{ending}");
+            assert_eq!(p.terms[ANGA].text, "d", "{ending}");
+            assert_eq!(p.terms[ENDING].text, want_ending, "{ending}");
+            assert_eq!(p.log.last().unwrap().sutra, "6.1.88", "{ending}");
+        }
+        // dadE specifically, with the abhyāsa filled in, pins p.text().
         let mut p = Prakriya {
             terms: with_slots(vec![Term::new("dA"), Term::new(""), Term::new("E")]),
             ..Default::default()
         };
         p.terms[ABHYASA].text = "da".into();
         assert!((rule.apply)(&mut p));
-        assert_eq!(p.terms[ANGA].text, "d");
         assert_eq!(p.text(), "dadE");
-        assert_eq!(p.log.last().unwrap().sutra, "6.1.88");
     }
 
     #[test]
