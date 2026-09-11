@@ -429,12 +429,19 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // The ONLY NEW source of a D-initial ending in this suite besides the
     // pre-existing 6.4.101 her dhiḥ (which already supplies one: √hiṃs's
     // hinDi) — see 8.4.53's comment below for why that bounds its
-    // widening: no root in the suite besides √indh ever presents a jhaṣ
-    // immediately before its ending, because every OTHER gaṇa represented
-    // here inserts a real vikaraṇa syllable between the two — bhvādi's
-    // laBate, divādi's yuDyate, svādi's stiG, kryādi's guDnAti — so this
-    // rule, and hence a fresh D-initial ending, is reachable only through
-    // √indh.
+    // widening. Two roots present a jhaṣ immediately before their ending:
+    // √indh, and — once 6.4.112 has elided its ā, slice 3c — √dhā
+    // (da + D + tas). Every other root represented here either inserts a
+    // real vikaraṇa syllable between the two — bhvādi's laBate, divādi's
+    // yuDyate, svādi's stiG, kryādi's guDnAti — or ends in no jhaṣ. The
+    // sūtra's own *adhaḥ* excludes √dhā (DattaH, not *DadDaH), so this
+    // rule, and hence a fresh D-initial ending, is still reachable only
+    // through √indh.
+    //
+    // *adhaḥ* is KEYED BY ROW NUMBER, `03.0011 quDA\Y`. √dhā's only jhaṣ
+    // before a `t`/`T` in any of its cells is its own final `D`, so a
+    // narrower "the jhaṣ belongs to the aṅga" clause could never be
+    // falsified and is not written.
     //
     // DECLINES wherever the ending does not begin with a `t`/`T`: intse
     // (`s`), inDvahe (`v`) and inDmahe (`m`) all fail that match. Only
@@ -454,6 +461,9 @@ pub(crate) static TRIPADI: &[Rule] = &[
         kind: RuleKind::Vidhi,
         vikalpa: false,
         apply: |p| {
+            if p.ctx.dhatupatha == "03.0011" {
+                return false;
+            }
             let w = word_chars(p);
             for i in 1..w.len() {
                 if !matches!(w[i].2, 't' | 'T') {
@@ -1224,12 +1234,9 @@ pub(crate) static TRIPADI: &[Rule] = &[
     //
     // 8.2.40 (7b Task 7) is the only NEW source of a D-initial ending —
     // besides the pre-existing 6.4.101 her dhiḥ — and it requires a jhaṣ
-    // already abutting the ending, which no root in the suite besides
-    // √indh ever presents: every OTHER gaṇa represented here inserts a
-    // real vikaraṇa syllable between the root and the ending — bhvādi's
-    // laBate, divādi's yuDyate, svādi's stiG, kryādi's guDnAti — so this
-    // rule — and hence a fresh D-initial ending — is reachable only
-    // through √indh.
+    // already abutting the ending. Only √indh and √dhā present one (see
+    // 8.2.40's comment), and 8.2.40's *adhaḥ* excludes √dhā, so a fresh
+    // D-initial ending is still reachable only through √indh.
     //
     // `Dve`/`Dvam` (and the iṭ-augmented `IDvam`) are a SEPARATE case: no
     // rule creates their `D`. `Dvam` is the raw ātmanepada
@@ -1239,12 +1246,13 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // for laṭ/loṭ. What keeps THIS rule from over-firing there is a fact
     // about the STEMS that reach them, not the endings: every Dve/Dvam
     // cell pinned in this suite puts either a vowel (laBaDve, ADve,
-    // vaDve, AsIDvam, laBaDvam) or an already-jaś `d` (KindDve)
-    // immediately before the `D` — never an untreated jhal — so this rule
-    // either has nothing to see or the no-op guard declines it. √indh's
-    // own indDve/indDvam (7b Task 7) are the one cell where a stem-final
-    // jhaṣ genuinely meets this native `D`, and that is exactly where
-    // this rule is supposed to fire.
+    // vaDve, AsIDvam, laBaDvam) or an already-jaś `d` (KindDve, √dā's
+    // dadDve) immediately before the `D` — never an untreated jhal — so
+    // this rule either has nothing to see or the no-op guard declines it.
+    // √indh's own indDve/indDvam (7b Task 7) and √dhā's DadDve, aDadDvam
+    // and DadDvam (slice 3c, the root's `D` bared by 6.4.112) are the
+    // cells where a stem-final jhaṣ genuinely meets this native `D`, and
+    // that is exactly where this rule is supposed to fire.
     //
     // One real scope limit remains, inherited from the engine rather than
     // written into this guard: `apply` runs at most once per branch per
@@ -1295,8 +1303,10 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // 7.4.62 in abhyasa.rs), and every aspirate in it is deaspirated in one
     // step. The no-op guard is 8.4.53's: √ki's abhyāsa `ci` is already car
     // and the rule must record nothing there — vidyut-prakriya credits
-    // 8.4.54 on √hu's 42 forms, on √bhī's and √hrī's own forms too, and on
-    // none of √ki's.
+    // 8.4.54 on √hu's 42 forms, on √bhī's and √hrī's own forms too, on
+    // √hā's and √dhā's (slice 3c: Ja → ja, Da → da — a `da` that 8.2.38,
+    // just below, re-aspirates before t/th/s/dhv), and on none of √ki's,
+    // √dā's or √mā's.
     Rule {
         id: "8.4.54",
         name: "aByAse car ca",
@@ -1311,6 +1321,54 @@ pub(crate) static TRIPADI: &[Rule] = &[
             let before = p.snapshot();
             p.terms[ABHYASA].text = t.into_iter().collect();
             p.record("8.4.54", "aByAse car ca", before);
+            true
+        },
+    },
+    // 8.2.38 dadhas tathoś ca: the reduplicated √dhā — *dadh*, its ā gone —
+    // takes bhaṣ for the abhyāsa's baś before `t`, `th`, `s` or `dhv`: the
+    // abhyāsa's `d` becomes `D`. da + D + tas → Da + D + tas (DattaH, once
+    // 8.4.55 devoices the root's `D`); Datse; DadDve.
+    //
+    // OUT OF SŪTRA ORDER, after 8.4.54 and before 8.4.55. The sūtra names
+    // *dadh* — the stem after 8.4.54 has already deaspirated the abhyāsa to
+    // `da` — so it must see that output. In sūtra position it would find
+    // `Da`, decline, and 8.4.54 would then produce *dattaH / *dadDve.
+    // vidyut-prakriya orders it the same way (8.4.54 < 8.2.38 < 8.4.55), and
+    // the DattaH and DadDve trace pins hold it here.
+    //
+    // Only the abhyāsa changes. The root's own `D` is left to 8.4.53 (before
+    // `Dv`: DadDve) and 8.4.55 (before `t`/`s`: DattaH, Datse), so the
+    // credited rules match vidyut's step for step.
+    //
+    // KEYED BY ROW NUMBER, `03.0011 quDA\Y`: √dā (`03.0010`) has the
+    // identical shape — da + d + tas — and takes no 8.2.38 (dattaH). The
+    // single-consonant aṅga test is *dadh*'s lost ā: daDAti keeps its ā
+    // before the pit `ti` and must not become *DaDAti.
+    Rule {
+        id: "8.2.38",
+        name: "daDastaToSca",
+        kind: RuleKind::Vidhi,
+        vikalpa: false,
+        apply: |p| {
+            if p.ctx.dhatupatha != "03.0011" {
+                return false;
+            }
+            let Some(e) = p.terms.get(ENDING).map(|t| t.text.as_str()) else {
+                return false;
+            };
+            if !(e.starts_with(['t', 'T', 's']) || e.starts_with("Dv")) {
+                return false;
+            }
+            if p.terms[ANGA].text.chars().count() != 1 {
+                return false;
+            }
+            let Some(rest) = p.terms[ABHYASA].text.strip_prefix('d') else {
+                return false;
+            };
+            let t = format!("D{rest}");
+            let before = p.snapshot();
+            p.terms[ABHYASA].text = t;
+            p.record("8.2.38", "daDastaToSca", before);
             true
         },
     },
@@ -2168,6 +2226,37 @@ mod tests {
         assert_eq!(p.text(), "inDse");
     }
 
+    #[test]
+    fn jhashas_tathor_dhodhah_declines_after_dha_by_adhah() {
+        // *adhaḥ*. √dhā's D meets the t of tas once 6.4.112 has elided its ā:
+        // DattaH, not *DadDaH. The identical shape on any other row fires.
+        let rule = rules().find(|r| r.id == "8.2.40").unwrap();
+        let mut p = Prakriya {
+            terms: with_slots(vec![Term::new("D"), Term::new(""), Term::new("taH")]),
+            ..Default::default()
+        };
+        p.terms[ABHYASA].text = "da".into();
+        p.ctx.dhatupatha = "03.0011";
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.text(), "daDtaH");
+        assert!(p.log.is_empty());
+        p.ctx.dhatupatha = "";
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.text(), "daDDaH");
+    }
+
+    /// √dhā after 6.4.112 and 8.4.54: abhyāsa `da`, the aṅga reduced to one
+    /// consonant, an empty śap, `ending`, and row 03.0011.
+    fn dadh_prakriya(anga: &str, ending: &str) -> Prakriya {
+        let mut p = Prakriya {
+            terms: with_slots(vec![Term::new(anga), Term::new(""), Term::new(ending)]),
+            ..Default::default()
+        };
+        p.terms[ABHYASA].text = "da".into();
+        p.ctx.dhatupatha = "03.0011";
+        p
+    }
+
     /// 8.2.41 takes `z` to `k` immediately before an `s`, and declines
     /// otherwise. Only the `z` arm is reachable this slice (no curated root
     /// ends in `Q`), so this pins that guard rather than the wider zaQoH set.
@@ -2298,6 +2387,68 @@ mod tests {
             assert_eq!(p.terms[ABHYASA].text, abhyasa);
             assert!(p.log.is_empty(), "{abhyasa:?}");
         }
+    }
+
+    #[test]
+    fn dadhas_tathos_ca_aspirates_the_abhyasa_before_t_th_s_and_dhv() {
+        // DattaH, DatTaH, Datse, and DadDve (whose root D 8.4.53 has already
+        // made d). Only the abhyāsa changes; the root's sound is 8.4.53's or
+        // 8.4.55's business.
+        let rule = rules().find(|r| r.id == "8.2.38").unwrap();
+        for (anga, ending) in [("D", "taH"), ("D", "TaH"), ("D", "se"), ("d", "Dve")] {
+            let mut p = dadh_prakriya(anga, ending);
+            assert!((rule.apply)(&mut p), "{anga}+{ending}");
+            assert_eq!(p.terms[ABHYASA].text, "Da", "{anga}+{ending}");
+            assert_eq!(p.terms[ANGA].text, anga, "{anga}+{ending}");
+            assert_eq!(p.log.last().unwrap().sutra, "8.2.38");
+        }
+    }
+
+    #[test]
+    fn dadhas_tathos_ca_declines_with_the_a_present_before_other_sounds_and_off_dha() {
+        let rule = rules().find(|r| r.id == "8.2.38").unwrap();
+        // The ā survives before a pit ending: daDAti, not *DaDAti.
+        let mut p = dadh_prakriya("DA", "ti");
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[ABHYASA].text, "da");
+        // A vowel or another consonant follows: daDati, daDIDvam, daDvaH.
+        for ending in ["ati", "IDvam", "vaH"] {
+            let mut p = dadh_prakriya("D", ending);
+            assert!(!(rule.apply)(&mut p), "{ending}");
+            assert_eq!(p.terms[ABHYASA].text, "da", "{ending}");
+        }
+        // √dā has the identical shape and takes no 8.2.38: dattaH, not *DattaH.
+        for number in ["03.0010", ""] {
+            let mut p = dadh_prakriya("d", "taH");
+            p.ctx.dhatupatha = number;
+            assert!(!(rule.apply)(&mut p), "{number:?}");
+            assert_eq!(p.terms[ABHYASA].text, "da", "{number:?}");
+            assert!(p.log.is_empty(), "{number:?}");
+        }
+        // No ending term: must not panic.
+        let mut p = Prakriya {
+            terms: with_slots(vec![Term::new("D"), Term::new("")]),
+            ..Default::default()
+        };
+        p.ctx.dhatupatha = "03.0011";
+        assert!(!(rule.apply)(&mut p));
+
+        // Zero-length aṅga: hand-built only, since no real derivation ever
+        // reaches row 03.0011 with an empty ANGA. Pinned anyway, because
+        // `!= 1` and `> 1` behave identically at every aṅga length the
+        // cases above exercise (1 and 2) and diverge only at 0.
+        let mut p = dadh_prakriya("", "taH");
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[ABHYASA].text, "da");
+
+        // An abhyāsa not starting with `d`: hand-built only, since every
+        // real derivation reaching this rule has already run 8.4.54's
+        // Da -> da. The only witness for `strip_prefix('d')`'s decline arm.
+        let mut p = dadh_prakriya("D", "taH");
+        p.terms[ABHYASA].text = "ja".into();
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[ABHYASA].text, "ja");
+        assert!(p.log.is_empty());
     }
 
     /// 8.4.56 devoices a pada-final jhal. After 8.2.39 the reachable jhal
