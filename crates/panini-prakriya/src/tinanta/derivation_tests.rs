@@ -10,7 +10,7 @@ use super::*;
 // `mod.rs` re-exports nothing from `sound`.
 use crate::tinanta::sound::cartva_of;
 use crate::tinanta::terms::{ABHYASA, AGAMA, ANGA, ENDING, SHAP};
-use panini_data::{Lakara, Pada, Purusha, Vacana, dhatus};
+use panini_data::{Dhatu, Gana, Lakara, Pada, PadaAssignment, Purusha, Vacana, dhatus};
 
 /// Unwrap a derivation that must not have forked.
 ///
@@ -2270,4 +2270,39 @@ fn trh_lat_reaches_its_three_shapes() {
     assert_eq!(lat(Purusha::Prathama, Vacana::Dvi), "tfRQaH");
     // And the one where nothing retroflexes at all: `h` before a vowel.
     assert_eq!(lat(Purusha::Prathama, Vacana::Bahu), "tfMhanti");
+}
+
+#[test]
+fn derive_stamps_the_row_number_and_decides_ghu_by_it() {
+    // Two hand-built rows whose aṅga text is identical: 03.0010 qudA\Y (ghu)
+    // and 02.0054 dA\p (adāp, not ghu). Only the number separates them —
+    // the reason Context carries it.
+    let ghu = Dhatu {
+        dhatupatha: "03.0010",
+        code: "dA",
+        gana: Gana::Juhotyadi,
+        pada: PadaAssignment::Ubhayapada,
+        artha: "dAne",
+    };
+    let dap = Dhatu {
+        dhatupatha: "02.0054",
+        code: "dA",
+        gana: Gana::Adadi,
+        pada: PadaAssignment::Parasmaipada,
+        artha: "lavane",
+    };
+    for (d, is_ghu) in [(ghu, true), (dap, false)] {
+        let p = derive(
+            &d,
+            Lakara::Lat,
+            Pada::Parasmaipada,
+            Purusha::Prathama,
+            Vacana::Eka,
+        )
+        .into_iter()
+        .next()
+        .unwrap();
+        assert_eq!(p.ctx.dhatupatha, d.dhatupatha);
+        assert_eq!(p.terms[ANGA].has(Tag::Ghu), is_ghu, "{}", d.dhatupatha);
+    }
 }
