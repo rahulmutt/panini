@@ -4,7 +4,7 @@ Slice 3b left the gaṇa at four of its twenty-six rows. 3a's spec pre-recorded
 this slice's bundle:
 
 > | 3c | √dā, √dhā, √mā, √hā ×2, √gā | 288 | 1.1.20 *dādhā ghv adāp* (saṁjñā),
-> 6.4.119 *ghvasor eddhāv abhyāsalopaś ca*, 8.2.38 *dadhas taṭhoś ca*, 6.4.116 /
+> 6.4.119 *ghvasor eddhāv abhyāsalopaś ca*, 8.2.38 *dadhas tathoś ca*, 6.4.116 /
 > 6.4.117 (vikalpa) / 6.4.118 for √hā, 7.4.76 *bhṛñām it*, 7.4.78, 6.1.88
 > *vṛddhir eci*; 6.4.112 / 6.4.113's abhyasta arms |
 
@@ -47,7 +47,7 @@ cells, 4595 → **4823** forms, `ALTERNATES` 959 → **971** rows, roots 81 →
 
 **New rules (4):** 7.4.76 *bhṛñām it* (`abhyasa.rs`); 6.4.119 *ghvasor
 eddhāv abhyāsalopaś ca* (`guna.rs`); 6.1.88 *vṛddhir eci* (`adesha.rs`); 8.2.38
-*dadhas taṭhoś ca* (`tripadi.rs`). 1.1.20 is a saṁjñā and lands as the tag, with
+*dadhas tathoś ca* (`tripadi.rs`). 1.1.20 is a saṁjñā and lands as the tag, with
 no recorded step — the 6.1.4 / 6.1.5 precedent.
 
 **Restructured or widened (4):** 6.4.113 moves above 6.4.112 and gains the
@@ -194,7 +194,7 @@ both.
   not written; the comment says so. The comment's claim that "no root in the
   suite besides √indh ever presents a jhaṣ immediately before its ending" is
   false once 6.4.112 elides √dhā's ā, and is corrected in the same commit.
-- **8.2.38 *dadhas taṭhoś ca*** — new, **between 8.4.54 and 8.4.55**. When
+- **8.2.38 *dadhas tathoś ca*** — new, **between 8.4.54 and 8.4.55**. When
   `ctx.dhatupatha == "03.0011"`, the aṅga is a single consonant (6.4.112 has
   elided the ā; 8.4.53 may already have made it `d`), and the following sound is
   `t`, `T` or `s`, or the following two are `Dv`: the abhyāsa's initial `d`
@@ -381,7 +381,7 @@ Re-probe before writing its spec; this record was taken a slice ahead.
 | 7.4.76 *bhṛñām it* | — | — | ✓ | ✓ | **new** |
 | 6.4.119 *ghvasor eddhāv abhyāsalopaś ca* | ✓ | ✓ | — | — | **new** |
 | 6.1.88 *vṛddhir eci* | ✓ | ✓ | ✓ | ✓ | **new** |
-| 8.2.38 *dadhas taṭhoś ca* | — | ✓ | — | — | **new**, after 8.4.54 |
+| 8.2.38 *dadhas tathoś ca* | — | ✓ | — | — | **new**, after 8.4.54 |
 | 6.4.112 *śnābhyastayor ātaḥ* | ✓ | ✓ | ✓ | ✓ | **abhyasta arm**; vowel test dropped |
 | 6.4.113 *ī halyaghoḥ* | — | — | ✓ | ✓ | **abhyasta arm** + *aghoḥ*; moved above 6.4.112 |
 | 8.2.40 *jhaṣas tathor dho'dhaḥ* | — | — | — | — | not credited; **gains *adhaḥ*** so it stays uncredited on √dhā |
