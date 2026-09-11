@@ -1,4 +1,4 @@
-//! Vowel gradation and vikaraṇa reshaping: 7.4.21 … 6.4.113, 6.4.112, 6.4.115.
+//! Vowel gradation and vikaraṇa reshaping: 7.4.21 … 6.4.119, 6.4.113, 6.4.112, 6.4.115.
 //!
 //! Split out of `anga.rs` (which had reached 1110 lines) ahead of svādi.
 //! The cut falls after 7.2.81: `anga.rs` keeps the augments and the rules
@@ -913,6 +913,45 @@ pub(crate) static GUNA: &[Rule] = &[
             true
         },
     },
+    // 6.4.119 ghvasor eddhāv abhyāsalopaś ca: before `hi`, a ghu root's ā
+    // becomes `e` and the abhyāsa is elided. da + dA + hi → de + hi (dehi);
+    // Da + DA + hi → Dehi.
+    //
+    // MUST PRECEDE 6.4.112, which would elide the same ā first and leave
+    // dad + hi for 6.4.101 hujhalbhyo her dhiḥ to make *daddhi. The loṭ
+    // madhyama eka tātaṅ branch (7.1.35, forked in the tiṅ stage) presents
+    // `tAt`, not `hi`, so this rule declines there and 6.4.112 gives dattAt.
+    // 6.4.101 later sees `e`, not a jhal, before `hi` and declines unedited.
+    //
+    // *ghu* reads `Tag::Ghu`; its witness is adādi's √yā, an ā-final aṅga
+    // before the same `hi` (yAhi, not *yehi). The √as arm (*asoḥ*: edhi) has
+    // no curated root and is not written.
+    //
+    // The elision empties `ABHYASA`'s text in place — the permanent-slot
+    // idiom 2.4.72 set — so later readers of the slot (8.4.54) find nothing.
+    Rule {
+        id: "6.4.119",
+        name: "GvasoredDAvaByAsalopaSca",
+        kind: RuleKind::Vidhi,
+        vikalpa: false,
+        apply: |p| {
+            if p.terms.len() <= ENDING || p.terms[ENDING].text != "hi" {
+                return false;
+            }
+            if !p.terms[ANGA].has(Tag::Ghu) {
+                return false;
+            }
+            let Some(stem) = p.terms[ANGA].text.strip_suffix('A') else {
+                return false;
+            };
+            let stem = format!("{stem}e");
+            let before = p.snapshot();
+            p.terms[ANGA].text = stem;
+            p.terms[ABHYASA].text.clear();
+            p.record("6.4.119", "GvasoredDAvaByAsalopaSca", before);
+            true
+        },
+    },
     // --- 6.4.113 / 6.4.112: the final ā of śnā and of an abhyasta aṅga ----
     //
     // Placed at the END of this stage, not in sūtra order. Three constraints
@@ -1588,6 +1627,53 @@ mod tests {
             p.terms[ENDING].add(Tag::Ngit);
         }
         p
+    }
+
+    #[test]
+    fn ghvasor_eddhav_gives_e_and_elides_the_abhyasa_before_hi() {
+        // da + dA + hi → de + hi (dehi); Da + DA + hi → Dehi.
+        let rule = rules().find(|r| r.id == "6.4.119").unwrap();
+        for (abhyasa, anga, want) in [("da", "dA", "dehi"), ("Da", "DA", "Dehi")] {
+            let mut p = abhyasta_prakriya(abhyasa, anga, true, "hi", true);
+            assert!((rule.apply)(&mut p), "{anga}");
+            assert_eq!(p.terms[ABHYASA].text, "", "{anga}");
+            assert_eq!(p.text(), want);
+            assert_eq!(p.log.last().unwrap().sutra, "6.4.119");
+        }
+    }
+
+    #[test]
+    fn ghvasor_eddhav_declines_off_hi_off_ghu_and_on_a_short_prakriya() {
+        let rule = rules().find(|r| r.id == "6.4.119").unwrap();
+        // The tātaṅ branch: dattAt is 6.4.112's, not this rule's.
+        let mut p = abhyasta_prakriya("da", "dA", true, "tAt", true);
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.text(), "dadAtAt");
+        // An ā-final aṅga that is not ghu: adādi's yAhi, not *yehi.
+        let mut p = Prakriya {
+            terms: with_slots(vec![Term::new("yA"), Term::new(""), Term::new("hi")]),
+            ..Default::default()
+        };
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.text(), "yAhi");
+        // Ghu-tagged but not ā-final: the strip_suffix('A') guard is not
+        // implied by Ghu alone from this function's own control flow (only
+        // by the GHU table's contents, elsewhere), so it must still decline
+        // rather than panic or misfire on a non-ā-final Ghu aṅga.
+        let mut p = Prakriya {
+            terms: with_slots(vec![Term::new("hu"), Term::new(""), Term::new("hi")]),
+            ..Default::default()
+        };
+        p.terms[ANGA].add(Tag::Ghu);
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.text(), "huhi");
+        // No ending term: must not panic indexing ENDING.
+        let mut p = Prakriya {
+            terms: with_slots(vec![Term::new("dA")]),
+            ..Default::default()
+        };
+        assert!(!(rule.apply)(&mut p));
+        assert!(p.log.is_empty());
     }
 
     #[test]
