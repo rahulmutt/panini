@@ -982,9 +982,8 @@ pub(crate) static GUNA: &[Rule] = &[
                 return false;
             };
             let stem = format!("{stem}I");
-            let Some(follower) = following_sarvadhatuka(p) else {
-                return false;
-            };
+            let follower = following_sarvadhatuka(p)
+                .expect("the len() <= ENDING guard above implies a follower");
             if !follower.has(Tag::Ngit) {
                 return false;
             }
@@ -1039,9 +1038,8 @@ pub(crate) static GUNA: &[Rule] = &[
                 return false;
             };
             let stem = stem.to_string();
-            let Some(follower) = following_sarvadhatuka(p) else {
-                return false;
-            };
+            let follower = following_sarvadhatuka(p)
+                .expect("the len() <= ENDING guard above implies a follower");
             if !follower.has(Tag::Ngit) {
                 return false;
             }
@@ -1619,6 +1617,10 @@ mod tests {
         assert_eq!(p.terms[ANGA].text, "mA");
         // Pit: the ā survives.
         let mut p = abhyasta_prakriya("mi", "mA", false, "ti", false);
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "mA");
+        // Empty follower: an ā-final abhyasta aṅga with nothing after it.
+        let mut p = abhyasta_prakriya("mi", "mA", false, "", true);
         assert!(!(rule.apply)(&mut p));
         assert_eq!(p.terms[ANGA].text, "mA");
         // Not ā-final: √hu's juhutaH.
