@@ -7,6 +7,17 @@ run = "cargo build --workspace"
 [tasks.test]
 run = "cargo test --workspace"
 
+[tasks.test-full]
+# The blocking tier runs `roundtrip_sampled` -- one cell per root. This runs
+# the exhaustive twin as well, which re-derives the whole cross-product and
+# calls the real check() on every form: ~23 minutes against the blocking
+# tier's ~1 minute.
+#
+# Run it once per slice before the mutation gate, and always after touching
+# `Panini::check()`, `panini_analyze::candidates()`, or
+# `crates/panini/tests/common/index.rs`.
+run = "cargo test --workspace -- --include-ignored"
+
 [tasks.lint]
 run = "cargo clippy --workspace --all-targets -- -D warnings"
 
