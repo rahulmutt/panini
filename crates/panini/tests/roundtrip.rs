@@ -29,3 +29,33 @@ fn generate_then_check_recovers_inputs() {
         }
     }
 }
+
+#[test]
+fn index_agrees_with_check_on_known_forms() {
+    let engine = Panini::new();
+    let index = common::index::corpus_index();
+    for form in ["Bavati", "paWati", "aBavat", "juhoti", "alaBata"] {
+        let mut from_check: Vec<String> = engine
+            .check(form)
+            .analyses
+            .iter()
+            .map(|a| {
+                format!(
+                    "{:?}",
+                    (a.dhatu.as_str(), a.lakara, a.pada, a.purusha, a.vacana)
+                )
+            })
+            .collect();
+        let mut from_index: Vec<String> = index
+            .analyses(form)
+            .iter()
+            .map(|a| format!("{:?}", (a.dhatu, a.lakara, a.pada, a.purusha, a.vacana)))
+            .collect();
+        from_check.sort();
+        from_index.sort();
+        assert_eq!(
+            from_index, from_check,
+            "index disagrees with check() for {form}"
+        );
+    }
+}
