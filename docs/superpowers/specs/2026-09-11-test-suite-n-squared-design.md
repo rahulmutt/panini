@@ -24,15 +24,26 @@ So every `Panini::check()` re-derives the entire corpus — 82 dhātus × 4 lak�
 292 ms for `Bavati`, `paWati`, `aBavat`, `karoti`, `juhoti`).
 
 The golden suite calls `check()` once per form, so it is **Θ(N²) in corpus
-size**. That accounts for the recorded 2483 s floor almost exactly:
+size**. Slice 3b recorded the floor as three components — which are the three
+*test binaries*, not individual test functions:
 
-| call site | calls | × 0.30 s | recorded |
+| binary | `check()` calls | recorded | implied per call |
 | --- | --- | --- | --- |
-| `tests/roundtrip.rs:16` | 3636 | ~1090 s | 1354.58 s (incl. the derive loop) |
-| `tests/paradigm/main.rs:73` `every_form_validates_and_matches` | 3636 | ~1090 s | 1122.81 s |
-| `tests/paradigm/main.rs:99` `every_alternate_validates_and_matches` | 959 | ~288 s | — |
-| nonforms, trace, √aś, pada-ambiguous | ~25 | ~8 s | ~2 s (trace) |
-| **total** | | **~2476 s** | **2483 s** |
+| `paradigm` | 3636 goldens + 959 alternates + ~25 point tests ≈ 4620 | 1122.81 s | 0.243 s |
+| `roundtrip` | 4595 forms (one per derived branch) | 1354.58 s | 0.295 s |
+| `trace` | ~15 | 4.07 s | — |
+| **total** | **~9230** | **2481.46 s** | |
+
+The two implied per-call figures bracket the 0.30 s measured through the CLI
+(which carries process startup the in-process calls do not). They differ from
+each other by 21%, which this spec does not attempt to explain — the mechanism
+is certain and the magnitude is settled, but **the exact per-binary split is
+not reconciled**, and §8 projects a range rather than a point because of it.
+
+The load is spread across **three** hot loops, not the two the earlier note
+named: `roundtrip.rs:16`, `every_form_validates_and_matches`
+(`paradigm/main.rs:73`), and `every_alternate_validates_and_matches`
+(`paradigm/main.rs:99`, 959 rows — roughly a quarter of the paradigm binary).
 
 This also explains why the floor outran cell-count scaling every slice: 2628 →
 3636 cells is 1.38×, but 943.70 s → 2483 s is 2.63× — superlinear, because the
@@ -66,10 +77,13 @@ rather than left to read as an oversight.
 
 ## 3. The corpus index
 
-New `crates/panini/tests/common/index.rs`, shared by both integration binaries
-through the existing `#[path = "../common/mod.rs"]` idiom.
+New `crates/panini/tests/common/index.rs`, reached by both integration binaries
+through the existing `common` module — directly from `roundtrip.rs`, and via
+`#[path = "../common/mod.rs"]` from `paradigm/main.rs`.
 
 ```rust
+pub struct FormIndex { /* HashMap<String, Vec<IndexedAnalysis>> */ }
+
 pub struct IndexedAnalysis {
     pub dhatu: String,     // Dhatu::code, as `Analysis::dhatu` reports it
     pub lakara: Lakara,
@@ -79,7 +93,13 @@ pub struct IndexedAnalysis {
 }
 
 /// One full cross-product derivation, built once per test binary.
-pub fn corpus_index() -> &'static HashMap<String, Vec<IndexedAnalysis>>;
+pub fn corpus_index() -> &'static FormIndex;
+
+impl FormIndex {
+    /// Normalizes `form` the way `check()` does before looking it up, so a
+    /// caller cannot accidentally bypass scheme detection.
+    pub fn analyses(&self, form: &str) -> &[IndexedAnalysis];
+}
 ```
 
 Built behind a `LazyLock` by mirroring `check()`'s predicate exactly:
@@ -92,13 +112,13 @@ branch's rule log would balloon the index for a comparison the `tests/trace/`
 binary already owns. The drift gate in §5 therefore reconciles every field
 *except* traces.
 
-Lookups normalize the query the way `check()` does (`normalize(q).0`) before
-indexing, so callers cannot accidentally bypass scheme detection.
+The map is private; `analyses()` is the only way in, which is what keeps the
+normalization guarantee above enforceable rather than conventional.
 
 ## 4. Converting the loops
 
 `every_form_validates_and_matches` and `every_alternate_validates_and_matches`
-keep their assertions **verbatim**, reading `corpus_index().get(form)` where
+keep their assertions **verbatim**, reading `corpus_index().analyses(form)` where
 they read `engine.check(form).analyses`. The `Verdict::Valid` assertion becomes
 non-empty membership.
 
@@ -139,7 +159,7 @@ Each sampled cell does two jobs, which is why the sample earns its wall clock:
 
 1. **The original assertion**, unchanged in semantics: derive, then real
    `engine.check(form)` recovers `d.code`, `form`, and `lakara`.
-2. **The drift gate**: assert `corpus_index()[form]` equals
+2. **The drift gate**: assert `corpus_index().analyses(form)` equals
    `check(form).analyses` as a set, on the five non-trace fields.
 
 Job 2 is what makes §3 safe. `index.rs` duplicates ~8 lines of `check()`, and
@@ -171,9 +191,9 @@ permanent verdict is a timeout) is detected *by* the cap — at 4800 s that one
 mutant costs 80 minutes of every campaign.
 
 `AGENTS.md`'s standing rule is that the cap must clear a full **uncaught** run
-at the parallelism actually used. Uncontended that becomes ~41 s; the repo's own
+at the parallelism actually used. Uncontended that becomes ~33–39 s; the repo's own
 measured `-j 4` contention factor of 2.1–2.5× puts a contended uncaught run near
-85–105 s, pointing at **~600 s**. But this repo's discipline is "scale the floor
+70–98 s, pointing at **~600 s**. But this repo's discipline is "scale the floor
 by measurement, not by arithmetic," so **600 s is the expected landing spot, not
 the decision**: the branch takes a fresh `-j 4` measurement at 3636 cells and
 sets `mise.toml`'s default against it.
@@ -193,10 +213,13 @@ assertion pressure, and the question is whether that pressure was load-bearing.
 3. `mise run test-full` green — the exhaustive roundtrip must still pass.
 4. `mise run lint`, `mise run fmt-check` green.
 
-Projected blocking floor: paradigm ~8 s + roundtrip ~31 s + trace ~2 s ≈
-**41 s**, against 2483 s. The figure is above the ~25 s the 82-root sample alone
-implies because `known_nonforms_are_invalid` (~6 s) and the ~1.26
-branches-per-cell fan-out (4595 forms / 3636 cells) both ride along.
+Projected blocking floor, at the 0.243–0.295 s per-call band from §1: the
+82-root sample yields ~103 forms (the ~1.26 branches-per-cell fan-out of 4595
+forms / 3636 cells), so roundtrip lands at 25–30 s; `known_nonforms_are_invalid`
+adds 5–6 s; two index builds and the trace binary add ~3 s. **Total 33–39 s**,
+against 2481 s — a 60–75× reduction. The range is the honest form of this
+estimate given §1's unreconciled split; the measured figure replaces it in
+`AGENTS.md`.
 
 ## 9. The floor series discontinuity
 
