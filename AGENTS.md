@@ -1222,6 +1222,37 @@
     600: **8.03×** the longest measured uncaught run. At 4800 the permanent
     `tripadi.rs` timeout alone cost 80 minutes of every campaign; at 600 it
     costs 10.
+    Campaign at `-j 4 --timeout 600`, `--package panini-prakriya
+    --test-workspace=true`, `-o` to an isolated scratch directory: launched
+    detached (`setsid`/`nohup`) via the real `cargo-mutants` 27.1.0 binary
+    rather than the mise shim, with `CARGO_MUTANTS_JOBS` unset, as a single
+    continuous run on the slice's final Rust tree (identical to `63fbce9`;
+    later commits touch only `mise.toml` and `AGENTS.md`). Wall clock
+    **1h22m02s** (2026-09-11 09:51:16 – 11:13:18 UTC), against 3b's
+    **29h36m49s** for the same population; `cargo-mutants` exited **3**, the
+    expected code when timeouts are present. **692 mutants: 646 caught, 43
+    unviable, 2 missed, 1 timeout** (646 + 43 + 2 + 1 = 692) — identical to
+    3b's recorded counts. `missed.txt` held exactly the two documented
+    equivalents at 3b's positions, `adesha.rs:519:30` (`replace + with *`,
+    test phase 79.61s) and `tripadi.rs:1176:38` (`replace - with /`,
+    80.52s); `timeout.txt` held exactly the known-permanent
+    `tripadi.rs:1448:23` (`replace -= with /=`), which ran the full 600.05s.
+    **Diffed against slice 3b's recorded outcomes, zero mutants that 3b
+    caught went uncaught**: `crates/` is unchanged since 3b, so the
+    population is the same 692, and with the counts matching and the
+    non-caught set identical, the caught set is identical too.
+    Caught-mutant test-phase durations: min **0.10s**, median **29.50s**,
+    p90 **71.73s**, p99 **96.11s**, max **109.40s**.
+    **Two margins, measured, not projected:**
+    - Against the longest full uncaught run (80.52s, at full `-j 4`
+      contention — 1.24× the 65.01s floor): 600 / 80.52 ≈ **7.45×**.
+    - Against the slowest caught mutant (109.40s): 600 / 109.40 ≈
+      **5.48×**.
+    The probe's 8.03× held to within ~8% under a full campaign's
+    contention. After the campaign, at `cff9c6f`, `mise run fmt-check` and
+    `mise run lint` passed and `mise run test` passed in **63.18s** wall
+    clock (paradigm 26.90s, roundtrip 30.49s), consistent with the 65.01s
+    floor above.
     Known and deliberate: `Panini::check()` still costs ~0.30s per call for
     CLI users, because this slice was scoped to the test harness. Narrowing
     `candidates()` by surface is the product fix, and `roundtrip_exhaustive`
