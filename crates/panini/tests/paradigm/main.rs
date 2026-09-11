@@ -53,7 +53,7 @@ fn vowel_initial_roots_take_at_not_a() {
 
 #[test]
 fn every_form_validates_and_matches() {
-    let engine = Panini::new();
+    let index = common::index::corpus_index();
     for (root, lakara, row_pada, forms) in PARADIGM.iter() {
         // `PARADIGM`'s first column is a `Dhatu::dhatupatha`, but
         // `Analysis::dhatu` reports the surface `code` (deliberately not
@@ -70,14 +70,13 @@ fn every_form_validates_and_matches() {
         // longer stand in for "the pada this block is for".
         let d = dhatus().iter().find(|d| d.dhatupatha == *root).unwrap();
         for expected in forms {
-            let r = engine.check(expected);
+            let analyses = index.analyses(expected);
             assert!(
-                matches!(r.verdict, Verdict::Valid),
+                !analyses.is_empty(),
                 "expected VALID for {expected} ({root} {lakara})"
             );
             assert!(
-                r.analyses.iter().any(|a| a.form_slp1 == *expected
-                    && a.dhatu == d.code
+                analyses.iter().any(|a| a.dhatu == d.code
                     && a.pada == *row_pada
                     && panini::lakara_name(a.lakara) == *lakara),
                 "no {lakara} analysis of {root} produced {expected}"
@@ -93,17 +92,16 @@ fn every_form_validates_and_matches() {
 /// the same reason `every_form_validates_and_matches` is.
 #[test]
 fn every_alternate_validates_and_matches() {
-    let engine = Panini::new();
+    let index = common::index::corpus_index();
     for (root, lakara, row_pada, _cell, form, _key) in ALTERNATES.iter() {
         let d = dhatus().iter().find(|d| d.dhatupatha == *root).unwrap();
-        let r = engine.check(form);
+        let analyses = index.analyses(form);
         assert!(
-            matches!(r.verdict, Verdict::Valid),
+            !analyses.is_empty(),
             "expected VALID for alternate {form} ({root} {lakara})"
         );
         assert!(
-            r.analyses.iter().any(|a| a.form_slp1 == *form
-                && a.dhatu == d.code
+            analyses.iter().any(|a| a.dhatu == d.code
                 && a.pada == *row_pada
                 && panini::lakara_name(a.lakara) == *lakara),
             "no {lakara} analysis of {root} produced alternate {form}"

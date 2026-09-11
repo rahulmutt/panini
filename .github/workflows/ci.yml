@@ -5,7 +5,7 @@ on:
   push:
     branches: [main]
   schedule:
-    - cron: "0 6 * * 1"   # weekly, Monday 06:00 UTC — audit job
+    - cron: "0 6 * * 1"   # weekly, Monday 06:00 UTC — audit and test-full jobs
 
 jobs:
   build-test-lint:
@@ -34,3 +34,13 @@ jobs:
       - uses: jdx/mise-action@v2
       - name: Audit (cargo audit + cargo deny)
         run: mise run audit
+
+  test-full:
+    name: exhaustive suite (weekly)
+    if: github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: jdx/mise-action@v2
+      - name: Test (including #[ignore]d exhaustive tests)
+        run: mise run test-full

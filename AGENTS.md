@@ -3,61 +3,104 @@
 ## Environment
 - Toolchain is pinned via `mise` (`mise install`) to rust 1.98.0. Do not install
   Rust globally.
-- Tasks: `mise run build | test | lint | fmt | fmt-check | mutants | audit`.
+- Tasks: `mise run build | test | test-full | lint | fmt | fmt-check | mutants |
+  audit`.
+- Run `mise run test-full` once per slice, before the mutation gate. The
+  blocking tier (`mise run test`) samples one roundtrip cell per root; this
+  runs the exhaustive roundtrip over the whole cross-product (~25 minutes).
+  Also run it after touching `Panini::check()`,
+  `panini_analyze::candidates()`, or `crates/panini/tests/common/index.rs`.
+  CI runs it on the weekly cron.
 - Optional dev/audit tooling is pinned in `mise.dev.toml`. Install it on demand:
   `MISE_ENV=dev mise install`. This provides:
   - `cargo-mutants` (mutation testing) — `mise run mutants` runs
     `cargo mutants --package panini-prakriya --test-workspace=true --timeout
-    4800 -j 4` (the `--test-workspace` flag is required so each **mutant** run
+    600 -j 4`. Run the gate through the task rather than reconstructing the
+    flags. The `--test-workspace` flag is required so each **mutant** run
     exercises the `panini` crate's golden paradigm/trace/roundtrip tests, not
     just `panini-prakriya`'s own unit tests — but it does NOT apply to
     cargo-mutants' own **baseline** run, which always exercises only the
-    mutated package's tests regardless of the flag). The explicit, generous
-    `--timeout` is required for the same asymmetry: cargo-mutants calibrates
-    its per-mutant timeout from the baseline's runtime, but the baseline here
-    (`panini-prakriya`'s unit tests, ~2s) is far faster than an actual mutant
-    run (the full `panini` golden suite, ~183s at 1728 cells when the mutant
-    is caught in the paradigm binary and the run aborts there — but ~380s
-    when it is NOT caught and the suite runs to completion; both re-measured
-    in slice 7b, and ~140s / ~300s at 1620 cells before it. At the **1800**
-    cells of the ubhayapada 1.3.72 slice, a standalone `mise run test` — one
-    suite, no mutation campaign alongside it — measured paradigm ~207s and
-    roundtrip ~240s (trace ~2s), i.e. an **uncontended** uncaught floor of
-    ~450s, *more* than the ~395s a 4%-growth scaling predicts. Scale the
-    floor by measurement, not by cell count). Under a cap
-    that doesn't clear that uncaught-run floor — or auto-derived timing,
-    which falls back to a 20s floor — a mutant that survives is recorded
-    as a **timeout rather than a survivor**, so a reported zero-survivor
-    run (checking only `missed.txt`) can be vacuous instead of clean:
-    slice 7a's own mutation run hit this exactly, with `--timeout 300`
-    producing 9 timeouts once the suite grew to 1620 cells — a cap that no
-    longer had headroom over a full uncaught run, not merely over a
-    caught-and-aborted one. Always pass an explicit `--timeout` with
-    headroom over a full uncaught run of the workspace suite, and always
-    check `timeout.txt` alongside `missed.txt`. **The cap must clear a full
-    uncaught run at the parallelism you actually use, not just at `-j 1`.**
-    1200s clears the ~380s uncontended floor measured at 1728 cells only
-    while contention stays low: slice 7b ran the gate at `-j 16` on 24 cores
-    and got **43 timeouts** where one was expected — the same vacuity,
-    reached through parallelism instead of suite growth. Re-running exactly
-    those at `-j 4 --timeout 2400` caught 43 of 44 in 389–449s — 2.1–2.5×
-    the ~183s caught-and-aborted figure measured standalone, which is the
-    only direct evidence here of what `-j 4` costs. **Nothing in this repo
-    has yet measured a `-j 4` run against the 1800-cell suite.** Extrapolate
-    the same 2.1–2.5× onto its ~450s uncontended floor and an uncaught
-    mutant at `-j 4` lands somewhere near 950–1100s: still under the 1200s
-    cap, but with a margin of tens of percent, not the 3× the 1728-cell
-    figures suggest. Treat 1200s at `-j 4` as adequate-but-unverified, not
-    comfortable; if a timeout appears that is not the known permanent one,
-    re-run it alone before concluding anything. `cargo mutants` also
-    reads `-j` from `CARGO_MUTANTS_JOBS`, so an unqualified cap can be
-    defeated by the environment alone. Keep `-j` at or below 4 with the
-    1200s cap, or raise the cap in step, and re-measure both the floor and
-    the margin the next time the golden suite grows.
+    mutated package's tests regardless of the flag. The explicit `--timeout`
+    is required for the same asymmetry: cargo-mutants calibrates its
+    per-mutant timeout from the baseline's runtime (`panini-prakriya`'s unit
+    tests, ~2s, with a 20s floor), which is far shorter than a mutant's run
+    of the full `panini` suite.
+    **The cap must clear a full UNCAUGHT run of the workspace suite at the
+    parallelism you actually use.** Under a cap that doesn't, a mutant that
+    survives is recorded as a **timeout rather than a survivor**, so a
+    reported zero-survivor run that checks only `missed.txt` is vacuous
+    instead of clean. Always check `timeout.txt` alongside `missed.txt`.
+    This repo has hit it twice: slice 7a through suite growth (`--timeout
+    300`, 9 timeouts) and slice 7b through parallelism (`-j 16`, 43
+    timeouts). `cargo mutants` also reads `-j` from `CARGO_MUTANTS_JOBS`, so
+    an unqualified cap can be defeated by the environment alone; keep `-j`
+    at or below 4, or re-measure and raise the cap in step.
+    **The floor behind the 600s cap, measured at 3636 cells.** An
+    uncontended `mise run test` takes 65.01s wall clock: paradigm 27.60s,
+    roundtrip 31.30s, trace 4.72s, every other binary under 0.5s. Of
+    paradigm's 27.60s, 27.18s is `known_nonforms_are_invalid`, which checks
+    89 non-forms through the real `Panini::check()` at ~0.30s a call. That
+    is deliberate — it is the only test of `check()`'s negative path — and
+    it is the dominant term of the paradigm binary. The larger term of the
+    blocking floor is `roundtrip_sampled`, which sends every form derived
+    from one cell per root through the real `check()`. Those calls grow
+    linearly with the corpus and each one re-derives it, so that term is
+    still Θ(N²), at ~1/45 of the old exhaustive constant, and re-grows first.
+    At `-j 4`, two documented equivalent mutants ran the suite to completion
+    uncaught, with test phases of 74.76s and 72.65s: a contention factor of
+    1.12–1.15× over that floor. 600s is 6 × 74.76s = 448.56s rounded up, or
+    **8.03×** the longest measured uncaught run. Take the floor by
+    measurement, never by scaling it by cell count or by a projected
+    contention multiplier; both have failed repeatedly in the record below.
+    Re-measure the floor and an uncaught `-j 4` run whenever the golden
+    suite grows, and change `mise.toml` and this paragraph together.
+    **One timeout is correct and permanent.** `tripadi.rs`'s 8.4.2 ṇatva
+    backward scan decrements a loop index with `j -= 1`; the `j /= 1` mutant
+    makes `j` constant, and the loop never terminates. No assertion can ever
+    catch it — the mutated run never reaches one — so the cap itself *is*
+    the detection mechanism. This is a different phenomenon from the
+    reclassification problem above (a real survivor misreported because the
+    cap is too short): this mutant hangs at any cap. Identify it by that
+    shape rather than by its line number, which drifts, and do not chase it
+    with a bigger `--timeout` or a code change; the loop is correct, working
+    code. Any other timeout is a suspect survivor: re-run it alone before
+    concluding anything.
+    **Two tool hazards.** Every `cargo-mutants` invocation rotates
+    `mutants.out` → `mutants.out.old` and discards the previous `.old`, so
+    pass `-o` to an isolated directory for any follow-up run against a
+    finished campaign. The mise shim fails in background shells ("no version
+    is set for shim: cargo-mutants"); run the installed `cargo-mutants`
+    binary directly, with the task's arguments.
+    **The record below is the per-slice history of the floor, the cap and
+    each campaign.** It ends in a dated hinge entry: every floor, cap and
+    duration before that entry was measured against the N² suite and is not
+    comparable to anything after it.
+    **Before the pada audit (1620–1800 cells).** At 1620 cells a mutant
+    caught in the paradigm binary, aborting the run there, took ~140s and an
+    uncaught one ~300s; slice 7b re-measured them at 1728 cells as ~183s and
+    ~380s. At the 1800 cells of the ubhayapada 1.3.72 slice, a standalone
+    `mise run test` — one suite, no mutation campaign alongside it —
+    measured paradigm ~207s and roundtrip ~240s (trace ~2s), an
+    **uncontended** uncaught floor of ~450s, *more* than the ~395s a
+    4%-growth scaling predicted. Slice 7a's own mutation run used `--timeout
+    300` and produced 9 timeouts once the suite grew to 1620 cells: a cap
+    that no longer had headroom over a full uncaught run, not merely over a
+    caught-and-aborted one. A 1200s cap cleared the ~380s floor measured at
+    1728 cells only while contention stayed low: slice 7b ran the gate at
+    `-j 16` on 24 cores and got **43 timeouts** where one was expected — the
+    same vacuity, reached through parallelism instead of suite growth.
+    Re-running exactly those at `-j 4 --timeout 2400` caught 43 of 44 in
+    389–449s — 2.1–2.5× the ~183s caught-and-aborted figure measured
+    standalone, which was then the only direct evidence of what `-j 4`
+    cost. Nothing had yet measured a `-j 4` run against the 1800-cell suite;
+    extrapolating the same 2.1–2.5× onto its ~450s floor put an uncaught
+    mutant near 950–1100s, under the 1200s cap by tens of percent rather
+    than the 3× the 1728-cell figures suggested, so 1200s at `-j 4` was
+    treated as adequate-but-unverified, not comfortable.
     The 2026-08-28 test-split slice restructured both golden files into
     directory form (`tests/paradigm/`, `tests/trace/`) with the
     timing-relevant shape — the same two integration binaries — unchanged,
-    so no timing figure above was invalidated by it.
+    so no timing figure recorded before it was invalidated by it.
     Re-running those 9 at `--timeout 1200` resolved them into two different
     outcomes, both worth knowing about: **3 were genuine survivors** — all
     three mutants of `Context::is_tip`, whose only caller was 8.2.73's
@@ -71,8 +114,9 @@
     survivor**: `tripadi.rs`'s ṇatva backward scan (`is_natva_target`'s
     caller) decrements a loop index with `j -= 1`; mutating that to `j /=
     1` makes `j` constant and the loop never terminates. No assertion can
-    ever catch this — the mutated run never reaches one — so the 1200s cap
-    itself *is* the detection mechanism, not a symptom of too short a cap.
+    ever catch this — the mutated run never reaches one — so the cap (1200s
+    at the time) itself *is* the detection mechanism, not a symptom of too
+    short a cap.
     This is a different phenomenon from the reclassification problem above
     (a real survivor misreported as a timeout because the cap is too
     short): here the mutant genuinely does hang, at any cap, and a
@@ -86,17 +130,17 @@
     times an unverified `-j 4` contention factor left no margin worth
     reading a `timeout.txt` entry against. `mise.toml`'s default was
     deliberately left at 1200 at the time, with `--timeout 2400` passed by
-    hand; **that is no longer so — `mise run mutants` now runs
-    `-j 4 --timeout 2400` itself**, so run the gate through the task rather
-    than reconstructing the flags, and change the default only against a
-    fresh measurement of the floor and the margin.
+    hand; **that later changed — `mise run mutants` came to run
+    `-j 4 --timeout 2400` itself**, so the gate was run through the task
+    rather than by reconstructing the flags, and the default was to change
+    only against a fresh measurement of the floor and the margin.
     **The pada audit measured both at 1872 cells.** Uncontended floor:
     paradigm ~205s, roundtrip ~236s, trace ~2s (uncaught total ~443s) — flat
     against the 1800-cell ~450s figure, in fact slightly below it. Campaign
     at `-j 4 --timeout 2400`: 522 mutants, 482 caught, 0 missed, 39 unviable,
     and the one known-permanent `tripadi.rs` timeout. This is the `-j 4`
-    timing measurement the paragraph above calls for, taken at the suite's
-    size at that point rather than the 1800 cells named there, which will
+    timing measurement the paragraph above called for, taken at the suite's
+    size at that point rather than the 1800 cells named there, which would
     not recur: `outcomes.json`'s per-mutant test-phase durations for the 482
     caught mutants put the median at 30.1s, p90 at 346.6s, p99 at 547.2s, and
     the max at 754.6s, with only 4 mutants over 600s and none over 1200s. The
@@ -124,8 +168,8 @@
     slowest caught mutant already paid the full golden-suite cost before
     `--lib` caught it, the uncaught worst case is no longer purely inferred
     from contention factors, only from the small remainder that one mutant
-    leaves unmeasured. Keep `--timeout 2400` rather than dropping to 1200
-    until a genuinely uncaught mutant is actually observed.
+    leaves unmeasured. `--timeout 2400` was kept rather than dropped to 1200
+    until a genuinely uncaught mutant was actually observed.
     **Slice 7c re-measured both at 2160 cells.** Uncontended floor:
     paradigm 276.99s, roundtrip 331.81s, trace 1.93s — an uncaught total of
     **610.73s**, where scaling the 1872-cell ~443s figure by cell count
@@ -152,7 +196,7 @@
     quote the projection as if it were measured. 1200 would have passed
     this campaign too, nothing having exceeded it, but 1.16× of projected
     headroom is exactly the shape that turns a "0 missed" into a vacuous
-    one on a busier machine. Keep 2400.
+    one on a busier machine. The cap stayed at 2400.
     **This slice (ric/vic, 8.2.30) re-measured both at 2304 cells.**
     Uncontended floor: paradigm 321.34s, roundtrip 371.81s, trace 2.00s —
     an uncaught total of **~695.15s** (wall clock 11m36.179s), where scaling
@@ -186,7 +230,8 @@
     function-replacement, four arm-deletion); actual came in at 527, close
     but not identical, because this slice also widened 8.2.39 via
     `jashtva_of`, which the brief did not anticipate — the composition
-    differs from the prediction even though the total is close. Keep 2400.
+    differs from the prediction even though the total is close. The cap
+    stayed at 2400.
     **Slice 7d (eight rudhādi roots, no new sūtra) re-measured both at 2592
     cells.** Uncontended floor: paradigm 397.27s, roundtrip 472.38s, trace
     2.23s — an uncaught total of **871.88s** (wall clock 14m35.882s).
@@ -233,7 +278,7 @@
     worst **uncaught** run, the projected ~1482.2s above, *projected and
     not measured*: 2400 / 1482.2 = **1.62×**. Both margins shrank from the
     last slice's 2.46×/2.03×, consistent with the floor's outsized jump,
-    but neither crossed 1×. Keep 2400.
+    but neither crossed 1×. The cap stayed at 2400.
     **This slice (rudhādi gaṇa 7e, three new sūtras) re-measured both at
     2628 cells.** Uncontended floor: paradigm 432.94s, roundtrip 508.54s,
     trace 2.22s — an uncaught total of **943.70s** (`mise run test`'s wall
@@ -253,14 +298,14 @@
     2.1–2.5× `-j 4` contention factor range projects an uncaught mutant at
     **1982–2360s**. Against the outgoing `--timeout 2400` cap, that is a
     margin of only **1.7%–21%** — below the "tens of percent... not
-    comfortable" bar this very paragraph sets, and exactly the vacuity
+    comfortable" bar this very paragraph set, and exactly the vacuity
     shape flagged above: under too tight a cap a genuine survivor is
     recorded as a TIMEOUT rather than a MISSED, and a reported "0 missed"
-    becomes meaningless rather than clean. **2400 is retired.** `mise.toml`'s
-    cap is raised to **`--timeout 4800`**, with `-j 4` left unchanged — the
+    becomes meaningless rather than clean. **2400 was retired.** `mise.toml`'s
+    cap was raised to **`--timeout 4800`**, with `-j 4` left unchanged — the
     2.1–2.5× contention factor was measured at `-j 4`, so changing
-    parallelism would invalidate the projection built on it. At 4800, the
-    margin against the projected uncaught range becomes **2.03×–2.42×**,
+    parallelism would have invalidated the projection built on it. At 4800, the
+    margin against the projected uncaught range became **2.03×–2.42×**,
     back in the "roughly 2×" territory the pada audit and 7c campaigns ran
     at, rather than the sub-1.2×-to-1.02× range the outgoing cap was left
     running under.
@@ -318,18 +363,18 @@
     to run during lighter scheduling overlap, not at the ceiling. The
     honest figure comes from all 508 test phases, where the longest
     non-timeout run, 1345s, is **~1.43×** the floor — still below the
-    2.1–2.5× this paragraph has projected from since the `-j 16` re-runs in
-    slice 7b, so that figure remains overstated for this machine and should
-    still be treated as machine-dependent, not settled — but the gap is
+    2.1–2.5× this paragraph had projected from since the `-j 16` re-runs in
+    slice 7b, so that figure was overstated for this machine and was still
+    to be treated as machine-dependent, not settled — but the gap was
     narrower than the single-sample 1.02×–1.04× suggested, and this
-    paragraph must not be read as claiming ~1.03× is the ceiling. Quote the
+    entry must not be read as claiming ~1.03× was the ceiling. It quoted the
     full range (1.02×–1.43×) and its basis (two direct uncaught-run
     measurements plus the 508-sample distribution), not one flattering
     number.
     Margin arithmetic against the worst **observed non-timeout** run,
     1345s, *directly measured, not projected*: against the retired 2400s
     cap, 2400 / 1345 ≈ **1.78×**; against the new 4800s cap,
-    4800 / 1345 ≈ **3.57×**. **Ruling: keep 4800.** This is now better
+    4800 / 1345 ≈ **3.57×**. **Ruling: keep 4800.** This was by then better
     supported than when the cap was first raised, for a reason the
     percentile data makes explicit: a **caught** mutant ran longer (1345s)
     than either of the two **uncaught** ones (980s, 967s), because
@@ -344,8 +389,8 @@
     a "0 missed" into a vacuous result (the failure this repo has hit
     twice, in 7a and 7b), while too high a cap costs only the ~40 minutes
     the one permanent timeout above already shows — so over-provisioning
-    stays correct even now that the real contention range is measured and
-    narrower than 2.1–2.5×. The next slice should reason from the 943.70s
+    stayed correct even once the real contention range was measured and
+    narrower than 2.1–2.5×. The next slice was to reason from the 943.70s
     floor and this **1.02×–1.43×** range — or a fresh direct measurement of
     its own — rather than re-deriving 2.1–2.5× as settled, and rather than
     quoting only the lowest sample as if it were the ceiling.
@@ -644,12 +689,12 @@
     caught-mutant margin (1.85×) is the **lowest yet in this series** —
     below 7d's previous low of 1.96×/2.46× — driven entirely by this
     slice's outsized floor growth (+65.4% against a cap that has not
-    moved since 7e). The next slice should re-measure both figures rather
-    than assume this margin holds: if a future slice's pre-campaign
-    projection (Step 2) exceeds 4800s, or its measured caught-mutant
-    margin drops much below this slice's 1.85×, that is the trigger to
+    moved since 7e). The next slice was to re-measure both figures rather
+    than assume this margin held: if a later slice's pre-campaign
+    projection (Step 2) exceeded 4800s, or its measured caught-mutant
+    margin dropped much below this slice's 1.85×, that was the trigger to
     raise the cap — recorded in `AGENTS.md` and `mise.toml` together, per
-    the standing rule, not a silent widening.
+    the rule then standing, not a silent widening.
     **Slice 8b (√kṛ, the gaṇa's tenth and last root) re-measured both
     again at 3492 cells.** Uncontended floor: paradigm 866.37s, roundtrip
     1087.37s, trace 3.61s — a wall clock of **1958.411s** (`time mise run
@@ -765,18 +810,19 @@
     2011.34 / 1958.411 = **1.027×**, the very bottom of 1.02×–1.43× (the
     projected lower bound, 1997.58s, landed within 0.7% of what actually
     happened), while the worst *caught* mutant came in at
-    2471.08 / 1958.411 = **1.26×**, mid-range. Do not read the 1.027× as
-    "contention is low on this machine" — that is the exact inference the
-    7c entry above records as luck, from a two-mutant sample. The caught
-    figure is the binding one, and it is the one the cap must clear.
+    2471.08 / 1958.411 = **1.26×**, mid-range. The 1.027× was not to be
+    read as "contention is low on this machine" — that is the exact
+    inference the 7e entry above records as luck, from a two-mutant sample.
+    This entry took the caught figure as the binding one, the one the cap
+    had to clear.
     **Ruling: keep 4800.** Both margins clear 1× comfortably. The caught-
     mutant margin recovered from 8a's series low of 1.85× to **1.94×**,
     and the uncaught-run margin is flat (2.40× → 2.39×) despite the
     floor's +4.6% growth — this campaign's worst caught mutant was 121s
     faster than 8a's, which absorbed the floor's growth. 8a's 1.85×
-    therefore still stands as the series low, and the trigger it recorded
-    is unchanged: raise the cap only if a pre-campaign projection exceeds
-    4800s or a measured caught-mutant margin drops much below 1.85×, and
+    therefore still stood as the series low, and the trigger it recorded
+    was unchanged: raise the cap only if a pre-campaign projection exceeded
+    4800s or a measured caught-mutant margin dropped much below 1.85×, and
     record the change in `AGENTS.md` and `mise.toml` together.
     **The juhotyādi prep (five-slot layout, no new cell) re-measured both at
     3492 cells.** Uncontended floor: paradigm 895.91s, roundtrip 1124.11s,
@@ -879,8 +925,8 @@
     **Two margins, measured, not projected:**
     - Against the worst **caught** mutant (2821.64s, measured): 4800 /
       2821.64 ≈ **1.70×** — the tightest caught-mutant margin yet in this
-      series, below 8b's 1.94× and 8a's own low of 1.85×. This is now the
-      series' new low; the next slice should treat 1.70×, not 1.85×, as
+      series, below 8b's 1.94× and 8a's own low of 1.85×. This became the
+      series' new low; the next slice was to treat 1.70×, not 1.85×, as
       the trigger reference.
     - Against the worst **uncaught** run (2229.34s, measured — both missed
       mutants ran the golden suite to completion without being caught, the
@@ -903,11 +949,11 @@
     caught-mutant margin (1.70×) is now the lowest of this entire series —
     tighter than 8a's 1.85× and 8b's 1.94× — while the floor grew only
     +3.41% (no new cell) rather than a double-digit jump. The next slice
-    should re-measure both figures rather than assume this margin holds:
-    if a future slice's pre-campaign projection (Step 2) exceeds 4800s, or
-    its measured caught-mutant margin drops much below 1.70×, that is the
+    was to re-measure both figures rather than assume this margin held:
+    if a later slice's pre-campaign projection (Step 2) exceeded 4800s, or
+    its measured caught-mutant margin dropped much below 1.70×, that was the
     trigger to raise the cap — recorded in `AGENTS.md` and `mise.toml`
-    together, per the standing rule, not a silent widening.
+    together, per the rule then standing, not a silent widening.
     **Slice 3a (juhotyādi, √hu and √ki, eight new sūtras, first cells in
     `ABHYASA`) re-measured both at 3564 cells.** Uncontended floor: paradigm
     1003.42s, roundtrip 1249.42s, trace 4.03s — a wall clock of **2258.069s**
@@ -1022,9 +1068,9 @@
     of `-o`; the tool rotates `mutants.out` → `mutants.out.old` on every
     invocation and discards whatever was previously in `.old`, so two such
     invocations in a row consumed both copies and destroyed the campaign's
-    `outcomes.json` before Step 5 could read it. The next runner doing any
+    `outcomes.json` before Step 5 could read it. From then on, any
     follow-up cargo-mutants invocation against an already-completed
-    campaign must pass `-o` to an isolated directory, every time.
+    campaign was to pass `-o` to an isolated directory, every time.
     **The direct uncaught margin, measured, not projected:** against the
     worst of the two documented equivalents' own uncaught runs (2795s,
     `tripadi.rs`): 4800 / 2795 ≈ **1.72×**. This measured figure sits
@@ -1042,7 +1088,7 @@
     The ruling to keep 4800 rests instead on the pre-campaign projection
     (2303.23–3229.04s, comfortably under cap) and the measured 1.72×
     uncaught margin — both clear 1× with real room — not on any caught-
-    mutant figure. The next slice should re-establish a genuine caught-
+    mutant figure. The next slice was to re-establish a genuine caught-
     mutant margin, with every follow-up invocation passed `-o`, before
     leaning on 1.70× as the trigger reference again.
     **Slice 3b (juhotyādi, √bhī and √hrī — 7.4.60 *halādiḥ śeṣaḥ*, 7.4.59
@@ -1137,16 +1183,96 @@
     measures how much a mutant can *slow* the suite, and applying that
     same slowdown to a survivor gives roughly 3744s, still about **1.28×**
     inside the cap. Raising `mise.toml`'s cap is a repo-wide change and was
-    not made on a proxy metric while the direct metric is healthy.
-    **Record 1.34× prominently as an explicit alarm for the next slice**:
-    the standing rule is restated — if the caught-mutant margin falls
-    further, raise the cap in `AGENTS.md` and `mise.toml` together, never
-    silently. **Also record that the plan's own pre-campaign `× 1.70`
-    multiplier (Step 2) is miscalibrated**: it projected 4221.10s against
+    not made on a proxy metric while the direct metric was healthy.
+    **1.34× was recorded prominently as an explicit alarm for the next
+    slice**, restating the rule then standing — if the caught-mutant margin
+    fell further, raise the cap in `AGENTS.md` and `mise.toml` together,
+    never silently. **The plan's own pre-campaign `× 1.70` multiplier (Step
+    2) was also recorded as miscalibrated**: it projected 4221.10s against
     actual uncaught runs of 2487.86–2590.66s, manufacturing a false
     tightness (a projected 1.137× margin against a measured 1.85×–1.93×).
-    The next slice should project from measured uncaught-run times
+    The next slice was to project from measured uncaught-run times
     instead of this multiplier.
+    **2026-09-11 — the floor series has a hinge here; do not read across it.**
+    The `test-suite-n-squared` slice removed most of the suite's Θ(N²):
+    `candidates()` discards its argument and returns the full cross-product,
+    so every `check()` re-derived the entire corpus, and the three hot loops
+    called it once per form. The corpus is now derived once per test binary
+    into `crates/panini/tests/common/index.rs`, and the two paradigm loops
+    read that index, so they are O(N). The exhaustive roundtrip, the third
+    loop, left the blocking tier; `roundtrip_sampled`, which replaced it,
+    keeps a residual Θ(N²) term at ~1/45 the old constant (see below).
+    Measured uncontended at the same 3636 cells, before and after:
+    paradigm 1122.81s → 27.60s, roundtrip 1354.58s → 31.30s, trace 4.07s →
+    4.72s; wall clock 2483s → 65.01s (~38×). Every floor figure in this
+    series before this entry was taken under the N² suite and is not
+    comparable to anything after it.
+    Part of the 65.01s still scales with the corpus.
+    `known_nonforms_are_invalid` checks 89 non-forms through the real
+    `Panini::check()` at ~0.30s a call: 27.18s of paradigm's 27.60s, where
+    every other paradigm test takes ≤0.62s. It stays on the real `check()`
+    deliberately, as the only test of its negative path, and it is the
+    dominant term of the paradigm binary. Its list is fixed, so it grows
+    only as each call gets dearer. The blocking roundtrip,
+    `roundtrip_sampled`, checks one cell for each of the corpus's 81 roots,
+    sending ~100 derived forms through the real `check()`. That call count
+    grows linearly with the corpus and every call re-derives the corpus, so
+    `roundtrip_sampled` is still Θ(N²), at ~1/45 of the exhaustive
+    roundtrip's 4595 calls; at 31.30s it is the largest term of the
+    blocking floor. Doubling the roots would roughly quadruple it (~125s)
+    but only double `known_nonforms_are_invalid` (~54s), so it is the first
+    term to re-grow. The exhaustive roundtrip survives behind `#[ignore]`
+    as `roundtrip_exhaustive` and runs via `mise run test-full`
+    — once per slice before the mutation gate, and always after touching
+    `Panini::check()`, `panini_analyze::candidates()`, or
+    `tests/common/index.rs`. Measured when it was introduced, the full run
+    passed in 24m38s wall clock: the roundtrip binary (sampled plus
+    exhaustive) 1441.87s, paradigm 27.73s, trace 5.30s.
+    **`--timeout` came down 4800 → 600 on a direct measurement, not a
+    projection**, as 3b's record asked. At `-j 4`, with `-o` to a scratch
+    directory, the two documented equivalents ran full UNCAUGHT test phases
+    of 74.76s (`tripadi.rs:1176:38`, `replace - with /`) and 72.65s
+    (`adesha.rs:519:30`, `replace + with *`): 1.12–1.15× the 65.01s floor,
+    with build phases of 4.79–28.73s. 6 × 74.76s = 448.56s, rounded up to
+    600: **8.03×** the longest measured uncaught run. At 4800 the permanent
+    `tripadi.rs` timeout alone cost 80 minutes of every campaign; at 600 it
+    costs 10.
+    Campaign at `-j 4 --timeout 600`, `--package panini-prakriya
+    --test-workspace=true`, `-o` to an isolated scratch directory: launched
+    detached (`setsid`/`nohup`) via the real `cargo-mutants` 27.1.0 binary
+    rather than the mise shim, with `CARGO_MUTANTS_JOBS` unset, as a single
+    continuous run on the slice's final Rust tree (identical to `63fbce9`;
+    later commits touch only `mise.toml` and `AGENTS.md`). Wall clock
+    **1h22m02s** (2026-09-11 09:51:16 – 11:13:18 UTC), against 3b's
+    **29h36m49s** for the same population; `cargo-mutants` exited **3**, the
+    expected code when timeouts are present. **692 mutants: 646 caught, 43
+    unviable, 2 missed, 1 timeout** (646 + 43 + 2 + 1 = 692) — identical to
+    3b's recorded counts. `missed.txt` held exactly the two documented
+    equivalents at 3b's positions, `adesha.rs:519:30` (`replace + with *`,
+    test phase 79.61s) and `tripadi.rs:1176:38` (`replace - with /`,
+    80.52s); `timeout.txt` held exactly the known-permanent
+    `tripadi.rs:1448:23` (`replace -= with /=`), which ran the full 600.05s.
+    **Diffed against slice 3b's recorded outcomes, zero mutants that 3b
+    caught went uncaught**: `crates/` is unchanged since 3b, so the
+    population is the same 692, and with the counts matching and the
+    non-caught set identical, the caught set is identical too.
+    Caught-mutant test-phase durations: min **0.10s**, median **29.50s**,
+    p90 **71.73s**, p99 **96.11s**, max **109.40s**.
+    **Two margins, measured, not projected:**
+    - Against the longest full uncaught run (80.52s, at full `-j 4`
+      contention — 1.24× the 65.01s floor): 600 / 80.52 ≈ **7.45×**.
+    - Against the slowest caught mutant (109.40s): 600 / 109.40 ≈
+      **5.48×**.
+    The probe's 8.03× held to within ~8% under a full campaign's
+    contention. After the campaign, at `cff9c6f`, `mise run fmt-check` and
+    `mise run lint` passed and `mise run test` passed in **63.18s** wall
+    clock (paradigm 26.90s, roundtrip 30.49s), consistent with the 65.01s
+    floor above.
+    Known and deliberate: `Panini::check()` still costs ~0.30s per call for
+    CLI users, because this slice was scoped to the test harness. Narrowing
+    `candidates()` by surface is the product fix, and `roundtrip_exhaustive`
+    is the gate a narrowing slice would need — an over-narrowed candidate
+    set shows up there as a roundtrip failure.
   - `cargo-deny` + `cargo-audit` (supply-chain checks) — `mise run audit` runs
     `cargo audit && cargo deny check` and is expected to pass, including
     `cargo deny check advisories`.
