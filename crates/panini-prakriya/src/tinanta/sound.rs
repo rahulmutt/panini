@@ -578,9 +578,9 @@ mod tests {
     fn deaspirate_of_aspirate_stops_all_arms() {
         // 8.4.54 abhyāse car ca: the abhyāsa's jhal becomes car (and jaś by
         // 8.4.53's anuvṛtti) — observable exactly on the ten aspirates,
-        // since an unaspirated stop's car/jaś is itself. Only J -> j (√hu)
-        // is reachable from the golden forms in slice 3a, B -> b in 3b; the
-        // rest are pinned here so they cannot rot.
+        // since an unaspirated stop's car/jaś is itself. J -> j (√hu) is
+        // reachable from the golden forms in slice 3a, B -> b in 3b and
+        // D -> d in 3c (√dhā); the rest are pinned here so they cannot rot.
         for (from, to) in [
             ('K', 'k'),
             ('G', 'g'),
@@ -606,11 +606,12 @@ mod tests {
 
     #[test]
     fn hrasva_of_long_vowels_all_arms() {
-        // 7.4.59 hrasvaḥ's substitute, arm by arm. Only the `I` arm has a
-        // cell in slice 3b (√bhī's `BI` and √hrī's `hI`); `A` arrives with
-        // √dā in 3c and `F` with √pṝ in 3d. The arms are killed here rather
-        // than left waiting for those slices — the same reason every other
-        // map in this file has an `_all_arms` test.
+        // 7.4.59 hrasvaḥ's substitute, arm by arm. The `I` arm has cells
+        // from slice 3b (√bhī's `BI`, √hrī's `hI`) and the `A` arm from
+        // slice 3c (√dā, √dhā, √mā, √hā); `F` arrives with √pṝ in 3d. The
+        // arms are killed here rather than left waiting for those slices —
+        // the same reason every other map in this file has an `_all_arms`
+        // test.
         for (from, to) in [('A', 'a'), ('I', 'i'), ('U', 'u'), ('F', 'f'), ('X', 'x')] {
             assert_eq!(hrasva_of(from), Some(to), "{from}");
         }

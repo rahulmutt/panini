@@ -27,7 +27,7 @@ is ruleless.
 comment states that a blocked prakriyā's `text()` is a partial string — often the
 bare root code — not a surface form.
 
-**It asserts the corpus totals** (81 roots, 3636 cells, 4595 forms) rather than
+**It asserts the corpus totals** (85 roots, 3852 cells, 4823 forms) rather than
 reporting whatever it enumerated. Those totals are corroborated by
 `derivation_set_shape_matches_the_audited_numbers` in
 `crates/panini/tests/paradigm/main.rs`, which each slice raises to the same totals
@@ -108,6 +108,24 @@ PANINI_AUDIT_DUMP=/tmp/audit-table.tsv mise exec rust@1.98.0 -- cargo run --rele
 ```
 
 ## Last recorded result
+
+2026-09-12, juhotyādi 3c slice, vidyut
+`8da2f90bee3ce1c07505fa432fc3729e3f7e02ea`: **zero differences across 3852
+cells / 4823 forms / 85 roots**, with the `entry` negative control verified
+failing (36 √bhū cells).
+
+The verdict covers the whole juhotyādi 3c slice: the dhātupāṭha number
+reaching the pipeline (`Context.dhatupatha`, with 1.1.20 as `Tag::Ghu`), four
+new rules (7.4.76 *bhṛñām it*, 6.4.119 *ghvasor eddhāv abhyāsalopaś ca*,
+6.1.88 *vṛddhir eci*, 8.2.38 *dadhas tathoś ca*), 6.4.113 moved above 6.4.112
+with both given abhyasta arms, 6.1.101's āṭ + ec decline and 8.2.40's *adhaḥ* —
+added for √dā (`03.0010`), √dhā (`03.0011`), √mā (`03.0007`) and √hā
+(`03.0008`).
+
+Totals: 85 = 81 + 4; 3852 = 3636 + 216 (24 root×pada×lakāra blocks × 9 —
+√dā and √dhā two padas × four lakāras each, √mā and √hā one × four); 4823 =
+4595 + 216 + 12 new `ALTERNATES` rows (959 → 971), measured via the
+harness's corpus block, not assumed.
 
 2026-09-09, juhotyādi 3b slice, vidyut
 `8da2f90bee3ce1c07505fa432fc3729e3f7e02ea`: **zero differences across 3636

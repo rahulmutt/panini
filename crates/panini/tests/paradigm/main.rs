@@ -141,7 +141,7 @@ const VIKALPA_RULES: &[&str] = &[
     "7.1.35", "3.4.111", "7.3.86", "6.4.107", "8.2.74", "8.2.75", "8.4.65", "8.4.56", "6.4.115",
 ];
 
-/// `ALTERNATES` is otherwise 959 bare strings, and a string can be right for
+/// `ALTERNATES` is otherwise 971 bare strings, and a string can be right for
 /// the wrong reason — `BavatAt` is a real form whether or not 8.4.56 is what
 /// produced it. This ties each row to the grammar: find the branch that
 /// derives the row's form, intersect its log with the optional-rule set, and
@@ -388,6 +388,10 @@ fn derivation_set_is_exactly_pinned() {
 /// vidyut-prakriya at the same commit
 /// `8da2f90bee3ce1c07505fa432fc3729e3f7e02ea` over all 3636 cells / 4595
 /// forms / 81 roots with zero differences, its `entry` negative control
+/// verified failing (36 √bhū cells), and juhotyādi 3c's cross-implementation
+/// audit re-ran the same probe against vidyut-prakriya at the same commit
+/// `8da2f90bee3ce1c07505fa432fc3729e3f7e02ea` over all 3852 cells / 4823
+/// forms / 85 roots with zero differences, its `entry` negative control
 /// verified failing (36 √bhū cells). √tṛh
 /// joins none of the fork records: its deepest cells hold three forms,
 /// because 8.3.13 Qo Qe lopaH
