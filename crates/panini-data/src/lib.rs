@@ -97,7 +97,7 @@ pub struct Dhatu {
     pub gana: Gana,
     /// Which pada(s) this engine derives for this root. Curated rather than
     /// read from the upadeśa's it-markers — but no longer a *deferral*:
-    /// `curated_pada_agrees_with_upadesha_markers` re-derives 80 of these 81
+    /// `curated_pada_agrees_with_upadesha_markers` re-derives 84 of these 85
     /// verdicts from the vendored upadeśa via 1.3.12 / 1.3.72 / 1.3.78 and
     /// requires them to match; `07.0017`'s (√bhuj's) is 1.3.66's root-keyed
     /// exception, asserted explicitly from both sides, the same way
@@ -110,7 +110,7 @@ pub struct Dhatu {
     /// the honest arrangement; see the deferral in
     /// `docs/superpowers/specs/2026-08-16-pada-audit-design.md`.
     ///
-    /// The test covers the 81 roots curated here, not the dhātupāṭha's 2259.
+    /// The test covers the 85 roots curated here, not the dhātupāṭha's 2259.
     /// It catches a mis-assigned pada on a root a future slice adds; it does
     /// not make the table self-maintaining.
     pub pada: PadaAssignment,
@@ -954,6 +954,52 @@ static DHATUS: &[Dhatu] = &[
         artha: "lajjAyAm",
     },
     Dhatu {
+        // 03.0007 `mA\N` mAne Sabde ca (√māṅ). Ātmanepadī by 1.3.12 (final ṅ).
+        // 7.4.76 bhṛñām it names it, so its abhyāsa is `mi` (mimIte) — keyed
+        // by this number, not by `mA`. Not ghu: 6.4.113 gives its ī before a
+        // consonant (mimIte), 6.4.112 elides its ā before a vowel (mimate).
+        // Slice 3c.
+        dhatupatha: "03.0007",
+        code: "mA",
+        gana: Gana::Juhotyadi,
+        pada: PadaAssignment::Atmanepada,
+        artha: "mAne Sabde ca",
+    },
+    Dhatu {
+        // 03.0008 `o~hA\N` gatO (√āṅhāṅ). The `o~` is an it by 1.3.2;
+        // ātmanepadī by 1.3.12. Enters the derivation as `hA`, exactly like
+        // 03.0009 `o~hA\k` (jahāti; slice 3c2) — which is why 7.4.76, naming
+        // this row and not that one, keys on the NUMBER: jihIte. Slice 3c.
+        dhatupatha: "03.0008",
+        code: "hA",
+        gana: Gana::Juhotyadi,
+        pada: PadaAssignment::Atmanepada,
+        artha: "gatO",
+    },
+    Dhatu {
+        // 03.0010 `qudA\Y` dAne (√ḍudāñ). The ḍu is 1.3.5's; ubhayapadī by
+        // 1.3.72 (final ñ). Ghu by 1.1.20 — decided by this number in
+        // `derive`, because `02.0054 dA\p` is `dA` too and is not ghu — so
+        // 6.4.113 skips it, 6.4.112 elides its ā before consonants as well
+        // (dattaH, dadyAt), and 6.4.119 gives dehi. Slice 3c.
+        dhatupatha: "03.0010",
+        code: "dA",
+        gana: Gana::Juhotyadi,
+        pada: PadaAssignment::Ubhayapada,
+        artha: "dAne",
+    },
+    Dhatu {
+        // 03.0011 `quDA\Y` DAraRapozaRayoH (√ḍudhāñ). Ghu like √dā. Its bared
+        // `D` is what 8.2.40's *adhaḥ* excludes (DattaH, not *DadDaH) and what
+        // 8.2.38 dadhas tathoś ca reads, re-aspirating the abhyāsa after
+        // 8.4.54 (DattaH, Datse, DadDve). Both keyed by this number. Slice 3c.
+        dhatupatha: "03.0011",
+        code: "DA",
+        gana: Gana::Juhotyadi,
+        pada: PadaAssignment::Ubhayapada,
+        artha: "DAraRapozaRayoH",
+    },
+    Dhatu {
         // 03.0020 ki\ jYAne. ciketi / cikyati — the i-final witness for
         // 6.4.82 er anekāco'saṁyogapūrvasya (ci-ki is anekāc, k is no
         // conjunct) and the abhyāsa that 8.4.54 must leave alone (ci is
@@ -1005,7 +1051,7 @@ mod tests {
 
     #[test]
     fn curated_roots_have_expected_ganas_and_padas() {
-        assert_eq!(dhatus().len(), 81);
+        assert_eq!(dhatus().len(), 85);
         let bu = dhatus().iter().find(|d| d.dhatupatha == "01.0001").unwrap();
         assert!(matches!(bu.pada, PadaAssignment::Parasmaipada));
         let labh = dhatus().iter().find(|d| d.dhatupatha == "01.1130").unwrap();
@@ -1296,15 +1342,16 @@ mod tests {
     }
 
     #[test]
-    fn juhotyadi_rows_are_the_four_curated_roots() {
+    fn juhotyadi_rows_are_the_eight_curated_roots() {
         // Slice 3a opened the ślu gaṇa with its eponym √hu and √ki, the two
         // roots that exercise dvitva, 7.4.62, 7.1.4, 3.4.109/7.3.83, 6.4.82,
         // 6.4.87's and 6.4.101's hu arms and 8.4.54 with nothing else. Slice
         // 3b adds √bhī and √hrī: both parasmaipadī, √bhī's by 1.3.78 (the
         // `\` sits on the root vowel, not on an it) and √hrī's the same
         // way, plus the vikaraṇa's 6.4.115, 7.4.60 and 6.4.77's iyaṅ arm.
-        // The gaṇa is PARTIAL at 4 of its 26 dhātupāṭha rows; slices 3c–3f
-        // close it (spec, "Later slices").
+        // Slice 3c adds √dā and √dhā (ubhayapadī by 1.3.72, ghu by 1.1.20)
+        // and √mā and √hā (ātmanepadī by 1.3.12). The gaṇa is PARTIAL at 8 of
+        // its 26 dhātupāṭha rows; slices 3c2 and 3d–3f close it.
         let rows: Vec<_> = dhatus()
             .iter()
             .filter(|d| d.gana == Gana::Juhotyadi)
@@ -1316,6 +1363,10 @@ mod tests {
                 ("03.0001", "hu", PadaAssignment::Parasmaipada),
                 ("03.0002", "BI", PadaAssignment::Parasmaipada),
                 ("03.0003", "hrI", PadaAssignment::Parasmaipada),
+                ("03.0007", "mA", PadaAssignment::Atmanepada),
+                ("03.0008", "hA", PadaAssignment::Atmanepada),
+                ("03.0010", "dA", PadaAssignment::Ubhayapada),
+                ("03.0011", "DA", PadaAssignment::Ubhayapada),
                 ("03.0020", "ki", PadaAssignment::Parasmaipada),
             ]
         );
@@ -1340,6 +1391,10 @@ mod tests {
             "6.4.115 keys on ANGA.text == \"BI\" with no gaṇa clause; if a \
              second curated root ever reads \"BI\" it needs a gaṇa guard"
         );
+        // Slice 3c's root-specific rules (7.4.76, 8.2.38, 8.2.40's adhaḥ) and
+        // 1.1.20's Tag::Ghu key on the dhātupāṭha NUMBER, so `hA`, `dA` and
+        // `DA` need no uniqueness tripwire — and `hA` must not get one: slice
+        // 3c2's 03.0009 `o~hA\k` enters the derivation as `hA` too.
     }
 
     #[test]
@@ -1474,7 +1529,7 @@ mod tests {
     /// AFTER the `~` that marks an anunāsika it, so `~\` is an anudātta it and
     /// `~^` a svarita it — whereas a `\` sitting directly on a vowel elsewhere
     /// is the ROOT's own accent and says nothing about pada. Counted off the
-    /// vendored upadeśa: 51 of the 81 curated roots carry a `\` at all, and 30
+    /// vendored upadeśa: 55 of the 85 curated roots carry a `\` at all, and 34
     /// of those carry one on a root vowel — `01.0642 ji\`, `01.1082 smf\` and
     /// `02.0001 a\da~` among them — so conflating the two does not fail
     /// loudly; it silently calls most of the table ātmanepada.
@@ -1728,7 +1783,7 @@ mod tests {
         // 1.3.12-before-1.3.72 has to be re-argued rather than assumed.
         //
         // Same tripwire idiom as the `code`-uniqueness assertion in
-        // `juhotyadi_rows_are_the_four_curated_roots`.
+        // `juhotyadi_rows_are_the_eight_curated_roots`.
         //
         // This re-implements `pada_from_upadesha`'s two branch conditions
         // rather than calling the function, deliberately: an independent
