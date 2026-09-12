@@ -269,3 +269,165 @@ fn jihrayani_trace_credits_8_4_2_across_the_intervening_sounds() {
     assert!(!t.contains(&"8.4.1".to_string()), "got {t:?}");
     assert!(at(&t, "6.1.78") < at(&t, "8.4.2"), "got {t:?}");
 }
+
+#[test]
+fn mimite_trace_orders_hrasvah_bhrnam_it_then_i_halyaghoh() {
+    // mA Ā laT P.E. 7.4.59 shortens the abhyāsa (ma), 7.4.76 makes it mi,
+    // and 6.4.113's abhyasta arm turns the aṅga's ā to ī before the kṅit
+    // hal-initial te. No 6.4.112 (a consonant follows and √mā is not ghu)
+    // and no 7.4.62 (m is no velar).
+    let (text, t) = cell_trace(
+        "03.0007",
+        Lakara::Lat,
+        Pada::Atmanepada,
+        Purusha::Prathama,
+        Vacana::Eka,
+    );
+    assert_eq!(text, "mimIte", "got {t:?}");
+    assert!(at(&t, "7.4.59") < at(&t, "7.4.76"), "got {t:?}");
+    assert!(at(&t, "7.4.76") < at(&t, "6.4.113"), "got {t:?}");
+    assert!(!t.contains(&"6.4.112".to_string()), "got {t:?}");
+    assert!(!t.contains(&"7.4.62".to_string()), "got {t:?}");
+}
+
+#[test]
+fn dehi_trace_credits_6_4_119_and_neither_6_4_112_nor_6_4_101() {
+    // dA P loT M.E, branch 0 (no tātaṅ). 6.4.119 gives de and elides the
+    // abhyāsa; 6.4.112 never sees an ā, and 6.4.101 sees `e`, not a jhal,
+    // before hi.
+    let (text, t) = cell_trace(
+        "03.0010",
+        Lakara::Lot,
+        Pada::Parasmaipada,
+        Purusha::Madhyama,
+        Vacana::Eka,
+    );
+    assert_eq!(text, "dehi", "got {t:?}");
+    assert!(at(&t, "6.1.10") < at(&t, "6.4.119"), "got {t:?}");
+    for absent in ["6.4.112", "6.4.113", "6.4.101", "7.1.35"] {
+        assert!(!t.contains(&absent.to_string()), "{absent} in {t:?}");
+    }
+}
+
+#[test]
+fn dattah_trace_credits_6_4_112_and_not_6_4_113_by_aghoh() {
+    // dA P laT P.D. √dā is ghu, so 6.4.113 declines before the hal-initial
+    // tas and 6.4.112 elides the ā; 8.4.55 then devoices d before t. No
+    // 8.2.38: the identical shape is √dhā's alone.
+    let (text, t) = cell_trace(
+        "03.0010",
+        Lakara::Lat,
+        Pada::Parasmaipada,
+        Purusha::Prathama,
+        Vacana::Dvi,
+    );
+    assert_eq!(text, "dattaH", "got {t:?}");
+    assert!(at(&t, "6.4.112") < at(&t, "8.4.55"), "got {t:?}");
+    assert!(!t.contains(&"6.4.113".to_string()), "got {t:?}");
+    assert!(!t.contains(&"8.2.38".to_string()), "got {t:?}");
+}
+
+#[test]
+fn dhattah_trace_orders_car_ca_then_dadhas_tathos_ca_then_khari_ca() {
+    // DA P laT P.D. 8.4.54 deaspirates the abhyāsa, 8.2.38 — out of sūtra
+    // order — re-aspirates it, 8.4.55 devoices the root's D. 8.2.40's adhaḥ
+    // keeps the t a t.
+    let (text, t) = cell_trace(
+        "03.0011",
+        Lakara::Lat,
+        Pada::Parasmaipada,
+        Purusha::Prathama,
+        Vacana::Dvi,
+    );
+    assert_eq!(text, "DattaH", "got {t:?}");
+    assert!(at(&t, "6.4.112") < at(&t, "8.4.54"), "got {t:?}");
+    assert!(at(&t, "8.4.54") < at(&t, "8.2.38"), "got {t:?}");
+    assert!(at(&t, "8.2.38") < at(&t, "8.4.55"), "got {t:?}");
+    assert!(!t.contains(&"8.2.40".to_string()), "got {t:?}");
+}
+
+#[test]
+fn dhaddhve_trace_orders_jas_jhasi_then_car_ca_then_dadhas_tathos_ca() {
+    // DA Ā laT M.B. 8.4.53 voices the root's D before Dve, 8.4.54
+    // deaspirates the abhyāsa, 8.2.38 re-aspirates it before dhv.
+    let (text, t) = cell_trace(
+        "03.0011",
+        Lakara::Lat,
+        Pada::Atmanepada,
+        Purusha::Madhyama,
+        Vacana::Bahu,
+    );
+    assert_eq!(text, "DadDve", "got {t:?}");
+    assert!(at(&t, "8.4.53") < at(&t, "8.4.54"), "got {t:?}");
+    assert!(at(&t, "8.4.54") < at(&t, "8.2.38"), "got {t:?}");
+}
+
+#[test]
+fn dadhati_trace_carries_no_dadhas_tathos_ca() {
+    // DA P laT P.E. The ti is pit, so the ā survives and there is no dadh:
+    // 8.2.38's single-consonant test declines. 8.4.54 still deaspirates.
+    let (text, t) = cell_trace(
+        "03.0011",
+        Lakara::Lat,
+        Pada::Parasmaipada,
+        Purusha::Prathama,
+        Vacana::Eka,
+    );
+    assert_eq!(text, "daDAti", "got {t:?}");
+    assert!(t.contains(&"8.4.54".to_string()), "got {t:?}");
+    assert!(!t.contains(&"8.2.38".to_string()), "got {t:?}");
+    assert!(!t.contains(&"6.4.112".to_string()), "got {t:?}");
+}
+
+#[test]
+fn dadai_trace_is_atas_ca_then_vrddhir_eci_not_akah_savarne() {
+    // dA Ā loT U.E. The Kaumudī's path: the āṭ merges with its own ending
+    // (6.1.90), then the root's ā with that (6.1.88). 6.1.101 must NOT
+    // appear: its adādi arm declines on āṭ + ec. The form is the same either
+    // way, so this pin is what holds the decline.
+    let (text, t) = cell_trace(
+        "03.0010",
+        Lakara::Lot,
+        Pada::Atmanepada,
+        Purusha::Uttama,
+        Vacana::Eka,
+    );
+    assert_eq!(text, "dadE", "got {t:?}");
+    assert!(at(&t, "6.1.90") < at(&t, "6.1.88"), "got {t:?}");
+    assert!(!t.contains(&"6.1.101".to_string()), "got {t:?}");
+    assert!(!t.contains(&"6.4.112".to_string()), "got {t:?}");
+}
+
+#[test]
+fn adaduh_trace_credits_6_4_112_not_usy_apadantat() {
+    // dA P laN P.B. 3.4.109 makes jhi into us, which keeps 1.2.4's ṅit, so
+    // 6.4.112 elides the ā before it. 6.1.96's junction arm spells the same
+    // form and must not fire.
+    let (text, t) = cell_trace(
+        "03.0010",
+        Lakara::Lan,
+        Pada::Parasmaipada,
+        Purusha::Prathama,
+        Vacana::Bahu,
+    );
+    assert_eq!(text, "adaduH", "got {t:?}");
+    assert!(at(&t, "3.4.109") < at(&t, "6.4.112"), "got {t:?}");
+    assert!(!t.contains(&"6.1.96".to_string()), "got {t:?}");
+    assert!(!t.contains(&"7.3.83".to_string()), "got {t:?}");
+}
+
+#[test]
+fn dadate_trace_credits_6_4_112_not_akah_savarne() {
+    // dA Ā laT P.D. The ā goes by 6.4.112 before the kṅit Ate; 6.1.101
+    // would spell the same dadAte, which is why this is pinned.
+    let (text, t) = cell_trace(
+        "03.0010",
+        Lakara::Lat,
+        Pada::Atmanepada,
+        Purusha::Prathama,
+        Vacana::Dvi,
+    );
+    assert_eq!(text, "dadAte", "got {t:?}");
+    assert!(t.contains(&"6.4.112".to_string()), "got {t:?}");
+    assert!(!t.contains(&"6.1.101".to_string()), "got {t:?}");
+}
