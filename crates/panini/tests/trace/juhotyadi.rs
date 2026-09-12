@@ -402,7 +402,9 @@ fn dadai_trace_is_atas_ca_then_vrddhir_eci_not_akah_savarne() {
 fn adaduh_trace_credits_6_4_112_not_usy_apadantat() {
     // dA P laN P.B. 3.4.109 makes jhi into us, which keeps 1.2.4's ṅit, so
     // 6.4.112 elides the ā before it. 6.1.96's junction arm spells the same
-    // form and must not fire.
+    // form and must not fire. 7.3.83 jusi ca is genuinely LIVE on this
+    // ending too — 3.4.109's us is exactly what it conditions on — but it
+    // declines on the aṅga: √dā's `A`/`d` offers no ik for guṇa.
     let (text, t) = cell_trace(
         "03.0010",
         Lakara::Lan,
