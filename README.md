@@ -122,11 +122,10 @@ replaces its palatal `j` with the velar `g` (which 8.4.55 *khari ca* later
 devoices to `k` before a `t`), and a velar is never savarṇa with the dental
 `t`/`D` that follows, so it never reaches the 8.4.65 branch the dental-final
 roots take. A root may also admit **both**
-padas — twenty roots that admit both padas in the curated set (nineteen
-ubhayapadī by 1.3.72: √nī, √tud, √rudh, √bhid, √kṣud, √yuj, √tṛd, √ric,
-√vic, √chid, √chṛd, √tan, √san, √kṣaṇ, √kṣiṇ, √ṛ, √tṛ, √ghṛ and √kṛ; and
-√bhuj by 1.3.66) derive a full
-parasmaipada and a full
+padas — twenty-two roots that admit both padas in the curated set
+(twenty-one ubhayapadī by 1.3.72: √nī, √tud, √rudh, √bhid, √kṣud, √yuj,
+√tṛd, √ric, √vic, √chid, √chṛd, √tan, √san, √kṣaṇ, √kṣiṇ, √ṛ, √tṛ, √ghṛ,
+√kṛ, √dā and √dhā; and √bhuj by 1.3.66) derive a full parasmaipada and a full
 ātmanepada paradigm, so a single surface can be genuinely pada-ambiguous.
 √van, by contrast, never enters this bucket: it is ātmanepadī by its own
 anudātta marker (1.3.12), and while vidyut-prakriya additionally derives a

@@ -767,16 +767,20 @@ pub(crate) static GUNA: &[Rule] = &[
     },
     // 6.1.78 eco'yavāyāvaḥ: e/o before a vowel → ay/av. The sūtra also covers
     // E/O → Ay/Av, but those two arms are dropped here: within the current
-    // 49-root × 4-lakāra grammar, ANGA can never end in a vṛddhi vowel (E/O)
+    // 85-root × 4-lakāra grammar, ANGA can never end in a vṛddhi vowel (E/O)
     // at the point this rule runs. `vrddhi_of` (the only source of E/O in
-    // this engine) is called from three places, all in 6.1.90 — the aṅga arm
-    // writes the vṛddhi vowel at *position 0* of the aṅga (replacing the āṭ
-    // augment + the root's first vowel), never at the aṅga's last character;
-    // the other two arms write into SHAP/ENDING, not ANGA. No curated root is
-    // a single SLP1 character, so the aṅga arm's tail slice is never empty
-    // either. And the order is decisive on its own: 6.1.90 is the only caller
-    // of `vrddhi_of`, and it runs *after* 6.1.78 in the single-pass rule
-    // array, so any E/O it produces can never be seen by 6.1.78 at all.
+    // this engine) is called from four places in two rules: three in 6.1.90
+    // — the aṅga arm writes the vṛddhi vowel at *position 0* of the aṅga
+    // (replacing the āṭ augment + the root's first vowel), never at the
+    // aṅga's last character, and the other two arms write into SHAP/ENDING,
+    // not ANGA — and one in 6.1.88 *vṛddhir eci* (juhotyādi 3c), which
+    // writes its vṛddhi vowel into ENDING alone (da + dA + E → da + d + E),
+    // never into ANGA. No curated root is a single SLP1 character, so the
+    // aṅga arm's tail slice is never empty either. And the order is decisive
+    // on its own regardless of where either caller writes: both 6.1.90 and
+    // 6.1.88 live in `adesha.rs`, which runs *after* the whole of `guna.rs`
+    // — so no E/O either one produces can ever be seen by 6.1.78, which has
+    // already run by then.
     // Unexecutable arms cannot be kept under the mutation gate — the same
     // discipline that removed 8.4.53 in `super::tripadi` as unreachable in
     // `9fa8e5f` (it was later RESTORED, once rudhādi supplied a witness —

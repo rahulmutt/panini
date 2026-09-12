@@ -17,8 +17,9 @@ pub(crate) fn guna_of(v: char) -> Option<&'static str> {
 
 /// Vṛddhi substitute of a vowel (1.1.1 vṛddhir ādaic; golden-reachable via
 /// 6.1.90 for e/I (eD/Ikz), E (loṭ's 3.4.93), u (rudhādi 7d's √und,
-/// `Onad`), and f (tanādi 8a's √ṛ laṅ, `ArRot`) — the remaining arms
-/// (a/A/U/o/O) are unit-test-only; see `vrddhi_of_ac_vowels_all_arms`
+/// `Onad`), and f (tanādi 8a's √ṛ laṅ, `ArRot`), and via 6.1.88 *vṛddhir
+/// eci* for E as well (juhotyādi 3c's dadE/mimE/jihE/daDE) — the remaining
+/// arms (a/A/U/o/O) are unit-test-only; see `vrddhi_of_ac_vowels_all_arms`
 /// below for the full inventory).
 pub(crate) fn vrddhi_of(v: char) -> Option<&'static str> {
     match v {

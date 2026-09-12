@@ -1294,7 +1294,7 @@
   and √hā (ātmanepada) —
   `PARADIGM`
     stays one-form-per-cell: a cell forked by an optional rule keeps its
-    other forms — a second (550 cells), a third (117 cells), a fourth
+    other forms — a second (554 cells), a third (121 cells), a fourth
     (eighteen
     cells, rudhādi's √piṣ and — new in slice 7d — √śiṣ loṭ madhyama eka, and
     — new in slice 8a — fifteen more spread across tanādi's four ik-upadhā
