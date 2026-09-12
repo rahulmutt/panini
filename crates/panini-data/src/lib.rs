@@ -966,7 +966,7 @@ static DHATUS: &[Dhatu] = &[
         artha: "mAne Sabde ca",
     },
     Dhatu {
-        // 03.0008 `o~hA\N` gatO (√āṅhāṅ). The `o~` is an it by 1.3.2;
+        // 03.0008 `o~hA\N` gatO (√ohāṅ). The `o~` is an it by 1.3.2;
         // ātmanepadī by 1.3.12. Enters the derivation as `hA`, exactly like
         // 03.0009 `o~hA\k` (jahāti; slice 3c2) — which is why 7.4.76, naming
         // this row and not that one, keys on the NUMBER: jihIte. Slice 3c.

@@ -90,7 +90,7 @@ repo-wide conventions.
 `gana`. Two of this slice's conditions name dhātupāṭha rows that root text
 cannot separate:
 
-- **7.4.76 *bhṛñām it*** names √bhṛñ, √māṅ and √āṅhāṅ: `03.0006`, `03.0007`,
+- **7.4.76 *bhṛñām it*** names √bhṛñ, √māṅ and √ohāṅ: `03.0006`, `03.0007`,
   `03.0008`. `03.0009 o~hA\k` is also `hA` and must not match (*jahAti*).
 - **1.1.20 *dādhā ghv adāp*** names the dā- and dhā-shaped roots except dāp and
   daip: `01.1079 dA\R`, `01.1117 de\N`, `01.1050 De\w`, `04.0043 do\`,

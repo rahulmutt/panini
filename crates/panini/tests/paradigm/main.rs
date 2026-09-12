@@ -287,8 +287,8 @@ fn derivation_set_is_exactly_pinned() {
 /// 3852 cells total (428 root×lakāra blocks × 9), of which 3133 hold exactly
 /// one form, 554 hold two, 121 hold three (√hrī's loṭ prathama and madhyama
 /// eka, new in slice 3b, and √dā's and √dhā's, new in slice 3c, each by
-/// 7.1.35/8.4.56), eighteen hold four (piṣ's loṭ
-/// madhyama eka, the deepest fork added in 7b, Siz's loṭ parasmaipada
+/// 7.1.35/8.4.56), eighteen hold four (piṣ's loṭ madhyama eka, the deepest
+/// fork added in 7b, Siz's loṭ parasmaipada
 /// madhyama eka (slice 7d), and — new in slice 8a — fifteen more spread
 /// across the four ik-upadhā tanādi roots kziR/fR/tfR/GfR; √kṛ, slice 8b,
 /// adds none to this bucket; and — new in slice 3b — √bhī's vidhiliṅ

@@ -162,7 +162,7 @@ pub(crate) static ABHYASA_RULES: &[Rule] = &[
             true
         },
     },
-    // 7.4.76 bhṛñām it: the abhyāsa of √bhṛñ, √māṅ and √āṅhāṅ takes `i`.
+    // 7.4.76 bhṛñām it: the abhyāsa of √bhṛñ, √māṅ and √ohāṅ takes `i`.
     // ma → mi (mimIte), and — after 7.4.59 and 7.4.62 — Ja → Ji (jihIte).
     // vidyut's order is 7.4.59 → 7.4.62 → 7.4.76, which this stage's
     // sequence already is.
@@ -171,7 +171,7 @@ pub(crate) static ABHYASA_RULES: &[Rule] = &[
     // names three roots, and `03.0009 o~hA\k` enters the derivation as `hA`
     // exactly like `03.0008 o~hA\N` while taking no 7.4.76 (jahAti).
     //   03.0007 mA\N   √māṅ
-    //   03.0008 o~hA\N √āṅhāṅ
+    //   03.0008 o~hA\N √ohāṅ
     // `03.0006 quBf\Y` (√bhṛñ) is the third, and slice 3d adds it with its
     // witness; an unwitnessed number here would be a mutation survivor.
     //
@@ -398,7 +398,7 @@ mod tests {
 
     #[test]
     fn bhrnam_it_makes_the_abhyasa_vowel_i_for_the_two_rows_it_names() {
-        // 7.4.76. √māṅ (03.0007) and √āṅhāṅ (03.0008), after 7.4.59 and
+        // 7.4.76. √māṅ (03.0007) and √ohāṅ (03.0008), after 7.4.59 and
         // 7.4.62: ma → mi (mimIte), Ja → Ji (jihIte).
         let rule = rules().find(|r| r.id == "7.4.76").unwrap();
         for (root, number, abhyasa, want) in
