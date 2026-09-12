@@ -98,6 +98,13 @@ pub enum Tag {
     /// tiṅ affix (1.4.13) is the pair, and its root half is the term the
     /// ending follows. `Abhyasa` marks the copy alone; this marks both.
     Abhyasta,
+    /// 1.1.20 dādhā ghv adāp: the aṅga is a *ghu* root — one of the six
+    /// dā- and dhā-shaped dhātupāṭha rows, excluding dāp and daip. Set by
+    /// `tinanta::derive` from the row NUMBER (`tinanta::samjna::GHU`),
+    /// never from root text: `02.0054 dA\p` also enters the derivation as
+    /// `dA` and is not ghu. A saṁjñā verdict, like `Abhyasta`, so no step is
+    /// recorded. Read by 6.4.113's *aghoḥ* and by 6.4.119.
+    Ghu,
     /// The term at `SHAP` IS one of the four a-final vikaraṇas — śap
     /// (3.1.68), śyan (3.1.69), śa (3.1.77) or śānac (3.1.83) — each
     /// a-final once its own it-lopa runs ("a"/"ya"/"a"/"Ana"). This is an

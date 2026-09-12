@@ -375,6 +375,10 @@ Each gets its own spec, starting from this table and the appendix.
 | 3e | √nij, √vij, √viṣ | 216 | 7.4.75 *nijāṁ trayāṇāṁ guṇaḥ ślau*, 7.3.87 *nābhyastasyāci piti sārvadhātuke*, 6.1.65 *ṇo naḥ* (or the stored-form convention) |
 | 3f | √bhas, √kit, √tur, √dhiṣ, √dhan, √jan | 216 | 6.4.98 *gamahanajanakhanaghasāṁ lopaḥ*, 6.4.42 / 6.4.43 *ye vibhāṣā* (vikalpa), 6.4.100 *ghasibhasor hali ca*, 8.2.26 *jhalo jhali*; 8.3.24 before `h` for √dhan |
 
+> Slice 3c's spec (`2026-09-11-juhotyadi-gana-3c-design.md`) split this
+> table's 3c row: 3c took √dā, √dhā, √mā and √hā (ātmanepada), 216 cells;
+> √hā (parasmaipada) and √gā became slice 3c2.
+
 ## Appendix: vidyut's inventory at `8da2f90b`
 
 Per root, over four lakāras and both padas where derivable:

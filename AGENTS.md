@@ -35,25 +35,30 @@
     timeouts). `cargo mutants` also reads `-j` from `CARGO_MUTANTS_JOBS`, so
     an unqualified cap can be defeated by the environment alone; keep `-j`
     at or below 4, or re-measure and raise the cap in step.
-    **The floor behind the 600s cap, measured at 3636 cells.** An
-    uncontended `mise run test` takes 65.01s wall clock: paradigm 27.60s,
-    roundtrip 31.30s, trace 4.72s, every other binary under 0.5s. Of
-    paradigm's 27.60s, 27.18s is `known_nonforms_are_invalid`, which checks
+    **The floor behind the 600s cap, measured at 3852 cells.** An
+    uncontended `mise run test` takes 69.998s wall clock: paradigm 29.26s,
+    roundtrip 34.38s, trace 5.00s, every other binary under 0.5s. Of
+    paradigm's 29.26s, most is `known_nonforms_are_invalid`, which checks
     89 non-forms through the real `Panini::check()` at ~0.30s a call. That
     is deliberate — it is the only test of `check()`'s negative path — and
     it is the dominant term of the paradigm binary. The larger term of the
     blocking floor is `roundtrip_sampled`, which sends every form derived
     from one cell per root through the real `check()`. Those calls grow
     linearly with the corpus and each one re-derives it, so that term is
-    still Θ(N²), at ~1/45 of the old exhaustive constant, and re-grows first.
-    At `-j 4`, two documented equivalent mutants ran the suite to completion
-    uncaught, with test phases of 74.76s and 72.65s: a contention factor of
-    1.12–1.15× over that floor. 600s is 6 × 74.76s = 448.56s rounded up, or
-    **8.03×** the longest measured uncaught run. Take the floor by
-    measurement, never by scaling it by cell count or by a projected
-    contention multiplier; both have failed repeatedly in the record below.
-    Re-measure the floor and an uncaught `-j 4` run whenever the golden
-    suite grows, and change `mise.toml` and this paragraph together.
+    still Θ(N²), at ~1/45 of the old exhaustive constant, and re-grows first:
+    against 3636 → 3852 cells (+5.94%), the floor moved 65.01s → 69.998s
+    (+7.67%) and `roundtrip_sampled` alone moved 31.30s → 34.38s (+9.84%),
+    both outpacing the cell count, exactly as predicted. At `-j 4`, two
+    documented equivalent mutants ran the suite to completion uncaught,
+    with test phases of 78.70s (`adesha.rs`) and 78.55s (`tripadi.rs`): a
+    contention factor of 1.12× over that floor. 600s is 6 × 78.70s =
+    472.2s rounded up, or **7.62×** the longest measured uncaught run —
+    down from the prior measurement's 8.03×, consistent with the floor
+    itself growing faster than the cap. Take the floor by measurement,
+    never by scaling it by cell count or by a projected contention
+    multiplier; both have failed repeatedly in the record below. Re-measure
+    the floor and an uncaught `-j 4` run whenever the golden suite grows,
+    and change `mise.toml` and this paragraph together.
     **One timeout is correct and permanent.** `tripadi.rs`'s 8.4.2 ṇatva
     backward scan decrements a loop index with `j -= 1`; the `j /= 1` mutant
     makes `j` constant, and the loop never terminates. No assertion can ever
@@ -1273,6 +1278,60 @@
     `candidates()` by surface is the product fix, and `roundtrip_exhaustive`
     is the gate a narrowing slice would need — an over-narrowed candidate
     set shows up there as a roundtrip failure.
+    **2026-09-12 — slice 3c re-measured both at 3852 cells.** The suite grew
+    3636 → 3852 cells (**+5.94%**, four new juhotyādi roots: √dā and √dhā
+    (ubhayapadī), √mā and √hā (ātmanepadī)). Uncontended floor: paradigm
+    29.26s, roundtrip 34.38s, trace 5.00s — wall clock **69.998s**, up from
+    65.01s (**+7.67%**), with `roundtrip_sampled` alone moving 31.30s →
+    34.38s (**+9.84%**), again outpacing the cell count as the series
+    predicts — take the floor by
+    measurement, never by cell count. At `-j 4`, the same two documented
+    equivalents ran full UNCAUGHT test phases of 78.70s
+    (`adesha.rs:574:30`, `replace + with *`) and 78.55s
+    (`tripadi.rs:1186:38`, `replace - with /`) — drifted from the
+    2026-09-11 campaign's 519/1176 positions, located by source text, not
+    by number: 1.12× the 69.998s floor. 600 / 78.70 ≈ **7.62×**, down from
+    the prior probe's 8.03×, because the floor grew faster than the cap.
+    Campaign at `-j 4 --timeout 600`, `--package panini-prakriya
+    --test-workspace=true`, `-o /home/dev/mutants-records/juhotyadi-3c`:
+    launched detached (`setsid`/`nohup`) via the real `cargo-mutants`
+    27.1.0 binary rather than the mise shim, with `CARGO_MUTANTS_JOBS`
+    unset, on the slice's final Rust tree. Wall clock **1h31m59s**
+    (2026-09-12 02:01:56 – 03:33:55 UTC); `cargo-mutants` exited **3**, the
+    expected code when timeouts are present. **712 mutants: 666 caught, 43
+    unviable, 2 missed, 1 timeout** (666 + 43 + 2 + 1 = 712). `missed.txt`
+    held exactly:
+    ```
+    crates/panini-prakriya/src/tinanta/adesha.rs:574:30: replace + with *
+    crates/panini-prakriya/src/tinanta/tripadi.rs:1186:38: replace - with /
+    ```
+    (test phases 84.50s and 77.80s under this campaign's `-j 4`
+    contention, vs. 78.70s/78.55s in the isolated Step 3 probe above — the
+    same two documented equivalents, at 3852-cell positions). `timeout.txt`
+    held exactly:
+    ```
+    crates/panini-prakriya/src/tinanta/tripadi.rs:1506:23: replace -= with /=
+    ```
+    the known-permanent ṇatva backward-scan mutant (drifted 1448 → 1506),
+    which ran the full 600.01s. **Diffed against the 2026-09-11 campaign's
+    recorded outcomes, the non-caught set is identical in shape and
+    different only in position**: 692 → 712 mutants (+20, all landing in
+    the caught bucket: 646 → 666), unviable flat at 43, missed still
+    exactly the same two equivalents (adesha.rs's `+`/`*` im arm,
+    tripadi.rs's `-`/`/` ḍho ḍhe lopaḥ arm), timeout still exactly the same
+    permanent tripadi.rs ṇatva scan — this is the clean result. `outcomes.json`
+    is kept at
+    `/home/dev/mutants-records/juhotyadi-3c/mutants.out/outcomes.json`.
+    Caught-mutant test-phase durations: min **0.10s**, median **31.55s**,
+    p90 **76.80s**, p99 **105.05s**, max **121.55s**.
+    **Two margins, measured, not projected:**
+    - Against the longest full uncaught run (84.50s, at full `-j 4`
+      contention — 1.21× the 69.998s floor): 600 / 84.50 ≈ **7.10×**.
+    - Against the slowest caught mutant (121.55s): 600 / 121.55 ≈
+      **4.94×**.
+    **Ruling: keep 600.** Both margins comfortably clear 1×; the isolated
+    probe's 7.62× held to within ~7% under a full campaign's contention,
+    matching the 2026-09-11 entry's own ~8% probe-to-campaign drift.
   - `cargo-deny` + `cargo-audit` (supply-chain checks) — `mise run audit` runs
     `cargo audit && cargo deny check` and is expected to pass, including
     `cargo deny check advisories`.
@@ -1286,14 +1345,15 @@
   target under `crates/panini-lipi/fuzz` legitimately omits it, since it uses
   `#![no_main]` plus the libfuzzer harness macro).
 - Grammar changes are gated by the golden paradigm test
-  (`crates/panini/tests/paradigm/`, 3636 cells, nine gaṇas — eight complete,
+  (`crates/panini/tests/paradigm/`, 3852 cells, nine gaṇas — eight complete,
   tanādi closing at 10/10 in slice 8b (nine of its ten dhātupāṭha rows
   curated in slice 8a; √kṛ, the tenth and last, in 8b), and juhotyādi (3)
-  opened in slice 3a at 2 of its 26 rows, now at 4 of its 26 after slice
-  3b curated √bhī and √hrī —
+  opened in slice 3a at 2 of its 26 rows, at 4 after slice 3b curated √bhī
+  and √hrī, and now at 8 of its 26 after slice 3c curated √dā, √dhā, √mā
+  and √hā (ātmanepada) —
   `PARADIGM`
     stays one-form-per-cell: a cell forked by an optional rule keeps its
-    other forms — a second (550 cells), a third (117 cells), a fourth
+    other forms — a second (554 cells), a third (121 cells), a fourth
     (eighteen
     cells, rudhādi's √piṣ and — new in slice 7d — √śiṣ loṭ madhyama eka, and
     — new in slice 8a — fifteen more spread across tanādi's four ik-upadhā
@@ -1307,7 +1367,7 @@
     and GfR doubled it to sixteen, and slice 3b's √bhī loṭ parasmaipada
     madhyama eka took it to seventeen — a fourth
     and fifth (prathama eka) or a fourth through sixth (madhyama eka) — in
-    `ALTERNATES` (959 rows in all, so 3636 + 959 = 4595 forms total); √bhuj
+    `ALTERNATES` (971 rows in all, so 3852 + 971 = 4823 forms total); √bhuj
     joins neither fork record — its forks stack only 7.1.35 and 8.4.56, the
     same two-deep profile as √yuj — but the √bhuj/1.3.66 slice adds two
     trace pins of its own, `bhunkte_trace_credits_1_3_66_not_1_3_72` and
@@ -1703,7 +1763,8 @@
   juhotyādi 3a's own audit (`tools/audit/README.md`'s 2026-09-07 entry,
   3564 cells / 4483 forms / 79 roots), itself superseded by juhotyādi 3b's
   own audit (`tools/audit/README.md`'s 2026-09-09 entry, 3636 cells / 4595
-  forms / 81 roots).
+  forms / 81 roots), and that by juhotyādi 3c's (`tools/audit/README.md`'s
+  2026-09-12 entry, 3852 cells / 4823 forms / 85 roots).
   Three new `Rule`s are behind it, all root-keyed to √kṛ and all in
   `guna.rs` — 6.4.110 *ata ut sārvadhātuke*, 6.4.108 *nityaṁ karoteḥ* and
   6.4.109 *ye ca* — plus one engine change with no `Rule` of its own:
@@ -1755,7 +1816,7 @@
   cells across eleven roots (`key_count("6.4.107") == 72`, the same
   test), not 8 — the "8 cells" figure was never re-derived when the gaṇa
   landed. `guna.rs:1233`'s own claim ("1872 goldens move") stays stale
-  only in the ordinary corpus-size sense, not wrong in kind: 3636 goldens
+  only in the ordinary corpus-size sense, not wrong in kind: 3852 goldens
   would move today. Neither comment was touched by tanādi 8a or 8b, consistent
   with every slice since 7c. Rudhādi 7d touched neither comment — its one permitted
   engine-comment edit is the comment above
@@ -1769,7 +1830,13 @@
   additions — 6.4.82's widening, 6.4.77's iyaṅ arm and 6.4.115 — all land
   earlier in the file, above this test; 7.4.59 and 7.4.60 live in
   `abhyasa.rs` and cannot move a `guna.rs` line). The corpus
-  stands at 3636 cells as of juhotyādi 3b. A third,
+  stands at 3636 cells as of juhotyādi 3b. Juhotyādi 3c touched neither
+  comment either; the corpus stands at 3852 cells as of 3c
+  (`controller.rs:153`'s anchor unchanged — re-confirmed empty
+  `git diff main -- crates/panini-prakriya/src/controller.rs` — and
+  `guna.rs:1666`'s drifted further, to `guna.rs:1939`: Task 9's own fix
+  round added four lines to `guna.rs`'s 6.1.78 justification, which sits
+  above it, after the line was first measured at `guna.rs:1935`). A third,
   `tinanta/tripadi.rs`'s comment on 8.2.30 (formerly the one calling √bhañj
   rudhādi's one cu-final curated root), was **not** left stale the same
   way: the 8.2.30/8.2.39 generalization slice rewrote it in place, since
@@ -1916,6 +1983,16 @@
   `anga.rs` today — each is a deliberate, commented narrowing, and each is
   a standing instance of this same hazard for the next slice that widens
   what feeds it.
+- **A guard that names particular roots keys on the dhātupāṭha number
+  wherever the root text is ambiguous.** `ctx.dhatupatha` carries the row
+  `derive` was called with, or `""` on a hand-built prakriyā, which every
+  such guard declines. 6.4.87, 6.4.101 and 6.4.115 still key on `ANGA.text`
+  (`hu`, `BI`), safe only because `juhotyadi_rows_are_the_eight_curated_roots`
+  asserts those codes stay unique; 7.4.76, 8.2.38 and 8.2.40's *adhaḥ* key on
+  numbers, because `03.0008` and `03.0009` share `hA`. A sūtra naming a
+  class of roots becomes a saṁjñā tag decided from the number in `derive` —
+  `Tag::Ghu` from `tinanta/samjna.rs`'s `GHU` — pinned to the vendored TSV
+  rather than to a derivation, so its uncurated members are held too.
 
 ## Where things live
 See `docs/ARCHITECTURE.md`.

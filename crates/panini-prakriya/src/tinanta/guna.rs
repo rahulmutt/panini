@@ -1,4 +1,4 @@
-//! Vowel gradation and vikaraṇa reshaping: 7.4.21 … 6.4.115.
+//! Vowel gradation and vikaraṇa reshaping: 7.4.21 … 6.4.119, 6.4.113, 6.4.112, 6.4.115.
 //!
 //! Split out of `anga.rs` (which had reached 1110 lines) ahead of svādi.
 //! The cut falls after 7.2.81: `anga.rs` keeps the augments and the rules
@@ -669,7 +669,7 @@ pub(crate) static GUNA: &[Rule] = &[
     // after its apavāda 6.4.82 — because every ī/ū-final curated root is
     // already past it by then: √bhū and √nī have guṇated (`Bo`, `ne`, śap
     // being pit so 1.1.5 does not block), √śī has guṇated by 7.4.21, and
-    // √vrī's follower is the hal-initial śnā. The 3636 byte-identical
+    // √vrī's follower is the hal-initial śnā. The 3852 byte-identical
     // priors are what turn that from an argument into a proof.
     //
     // THE UVAṄ HALF IS NOT WRITTEN. `U` → `uv` has no cell in the suite —
@@ -767,16 +767,20 @@ pub(crate) static GUNA: &[Rule] = &[
     },
     // 6.1.78 eco'yavāyāvaḥ: e/o before a vowel → ay/av. The sūtra also covers
     // E/O → Ay/Av, but those two arms are dropped here: within the current
-    // 49-root × 4-lakāra grammar, ANGA can never end in a vṛddhi vowel (E/O)
+    // 85-root × 4-lakāra grammar, ANGA can never end in a vṛddhi vowel (E/O)
     // at the point this rule runs. `vrddhi_of` (the only source of E/O in
-    // this engine) is called from three places, all in 6.1.90 — the aṅga arm
-    // writes the vṛddhi vowel at *position 0* of the aṅga (replacing the āṭ
-    // augment + the root's first vowel), never at the aṅga's last character;
-    // the other two arms write into SHAP/ENDING, not ANGA. No curated root is
-    // a single SLP1 character, so the aṅga arm's tail slice is never empty
-    // either. And the order is decisive on its own: 6.1.90 is the only caller
-    // of `vrddhi_of`, and it runs *after* 6.1.78 in the single-pass rule
-    // array, so any E/O it produces can never be seen by 6.1.78 at all.
+    // this engine) is called from four places in two rules: three in 6.1.90
+    // — the aṅga arm writes the vṛddhi vowel at *position 0* of the aṅga
+    // (replacing the āṭ augment + the root's first vowel), never at the
+    // aṅga's last character, and the other two arms write into SHAP/ENDING,
+    // not ANGA — and one in 6.1.88 *vṛddhir eci* (juhotyādi 3c), which
+    // writes its vṛddhi vowel into ENDING alone (da + dA + E → da + d + E),
+    // never into ANGA. No curated root is a single SLP1 character, so the
+    // aṅga arm's tail slice is never empty either. And the order is decisive
+    // on its own regardless of where either caller writes: both 6.1.90 and
+    // 6.1.88 live in `adesha.rs`, which runs *after* the whole of `guna.rs`
+    // — so no E/O either one produces can ever be seen by 6.1.78, which has
+    // already run by then.
     // Unexecutable arms cannot be kept under the mutation gate — the same
     // discipline that removed 8.4.53 in `super::tripadi` as unreachable in
     // `9fa8e5f` (it was later RESTORED, once rudhādi supplied a witness —
@@ -913,83 +917,186 @@ pub(crate) static GUNA: &[Rule] = &[
             true
         },
     },
-    // --- śnā's alternation (6.4.112, 6.4.113) -----------------------------
+    // 6.4.119 ghvasor eddhāv abhyāsalopaś ca: before `hi`, a ghu root's ā
+    // becomes `e` and the abhyāsa is elided. da + dA + hi → de + hi (dehi);
+    // Da + DA + hi → Dehi.
+    //
+    // MUST PRECEDE 6.4.112, which would elide the same ā first and leave
+    // dad + hi for 6.4.101 hujhalbhyo her dhiḥ to make *daddhi. The loṭ
+    // madhyama eka tātaṅ branch (7.1.35, forked in the tiṅ stage) presents
+    // `tAt`, not `hi`, so this rule declines there and 6.4.112 gives dattAt.
+    // 6.4.101 later sees `e`, not a jhal, before `hi` and declines unedited.
+    //
+    // *ghu* reads `Tag::Ghu`; its witness is adādi's √yā, an ā-final aṅga
+    // before the same `hi` (yAhi, not *yehi). The √as arm (*asoḥ*: edhi) has
+    // no curated root and is not written.
+    //
+    // The elision empties `ABHYASA`'s text in place — the permanent-slot
+    // idiom 2.4.72 set — so later readers of the slot (8.4.54) find nothing.
+    Rule {
+        id: "6.4.119",
+        name: "GvasoredDAvaByAsalopaSca",
+        kind: RuleKind::Vidhi,
+        vikalpa: false,
+        apply: |p| {
+            if p.terms.len() <= ENDING || p.terms[ENDING].text != "hi" {
+                return false;
+            }
+            if !p.terms[ANGA].has(Tag::Ghu) {
+                return false;
+            }
+            let Some(stem) = p.terms[ANGA].text.strip_suffix('A') else {
+                return false;
+            };
+            let stem = format!("{stem}e");
+            let before = p.snapshot();
+            p.terms[ANGA].text = stem;
+            p.terms[ABHYASA].text.clear();
+            p.record("6.4.119", "GvasoredDAvaByAsalopaSca", before);
+            true
+        },
+    },
+    // --- 6.4.113 / 6.4.112: the final ā of śnā and of an abhyasta aṅga ----
     //
     // Placed at the END of this stage, not in sūtra order. Three constraints
     // fix the position and each fails visibly if broken:
-    //   - AFTER 7.1.3 jho'ntaḥ, which makes `Ji` into `anti`/`ant`. Before it,
-    //     the 3pl endings are not vowel-initial and 6.4.112 cannot see them.
+    //   - AFTER 7.1.3 jho'ntaḥ and 7.1.4 / 7.1.5, which make `Ji`/`Ja` into
+    //     `anti`/`ati`/`ate`. Before them the plural endings are not
+    //     vowel-initial and 6.4.113 would read them as hal-initial.
     //   - AFTER 7.2.79 liṅaḥ salopo'nantyasya. The ātmanepada vidhiliṅ ending
     //     is `sIyta` until its s is elided; run earlier and 6.4.113 matches
     //     the s, giving *vfRIsIyta.
     //   - BEFORE adesha.rs, whose 6.1.87 ād guṇaḥ would coalesce nA + Iyta
-    //     into ne and give *vfReta. This stage runs entirely before that one.
+    //     into ne and give *vfReta, and whose 6.1.101 / 6.1.96 would take
+    //     dA + Ate and dA + us (dadAte, adaduH) away from 6.4.112.
     //
-    // Both read p.terms[ENDING] directly, NOT following_sarvadhatuka: the
-    // helper answers "what follows the aṅga", which here is śnā itself — these
-    // rules need what follows śnā.
+    // 6.4.113 RUNS FIRST, as the apavāda it is. 6.4.112 carries no *aci*:
+    // it elides the ā before ANY kṅit sārvadhātuka, and 6.4.113 takes the
+    // consonant-initial ones — except for ghu roots (*aghoḥ*), where 6.4.112
+    // then elides before consonants too (dattaH, dadyAt). Slice 3c swapped
+    // the pair and deleted 6.4.112's vowel-initial test, which had only ever
+    // stood in for "6.4.113 takes the rest".
+    //
+    // Two arms each. The śnā arm reads p.terms[SHAP] and p.terms[ENDING]
+    // directly, NOT following_sarvadhatuka: the helper answers "what follows
+    // the aṅga", which there is śnā itself. The abhyasta arm reads the aṅga's
+    // own final ā, so its follower IS what follows the aṅga — under ślu the
+    // empty śap makes that the ending, which in vidhiliṅ carries yāsuṭ on its
+    // text and Ngit from 3.4.103 (6.4.115's reasoning, below).
+    //
+    // Each arm below `return`s as soon as its own SHAP == "nA" branch is
+    // settled, rather than falling through to test the abhyasta branch too.
+    // That is safe only because the two conditions are mutually exclusive in
+    // every reachable prakriyā: kryādi's śnā never reduplicates, so nothing
+    // carries `Tag::Abhyasta` while SHAP is "nA", and ślu leaves SHAP empty
+    // for every abhyasta gaṇa. A future gaṇa that combined the two would
+    // silently fall into the śnā arm and never reach the abhyasta one.
 
-    // 6.4.112 śnābhyastayor ātaḥ: śnā's `ā` is elided before a kṅit
-    // sārvadhātuka beginning with a vowel. kliS + nA + anti → kliSnanti;
-    // vf + nA + ate → vfRate; vf + nA + e → vfRe.
+    // 6.4.113 ī halyaghoḥ: the ā of śnā or of an abhyasta aṅga becomes `ī`
+    // before a kṅit sārvadhātuka beginning with a consonant, except for the
+    // ghu roots. kliS + nA + taH → kliSnItaH; mi + mA + te → mimIte.
     //
-    // The *abhyasta* half of the sūtra needs an ā-final abhyasta aṅga:
-    // 6.1.10 now fills ABHYASA, but no curated root pairs it with an
-    // ā-final aṅga yet. √dā and √dhā arrive in slice 3c — that is the
-    // slice that widens this guard. Until then it is śnā's text alone.
-    Rule {
-        id: "6.4.112",
-        name: "SnA'ByastayorAtaH",
-        kind: RuleKind::Vidhi,
-        vikalpa: false,
-        apply: |p| {
-            if p.terms.len() <= ENDING || p.terms[SHAP].text != "nA" {
-                return false;
-            }
-            if !p.terms[ENDING].has(Tag::Ngit) {
-                return false;
-            }
-            let Some(next) = p.terms[ENDING].text.chars().next() else {
-                return false;
-            };
-            if !is_vowel(next) {
-                return false;
-            }
-            let before = p.snapshot();
-            p.terms[SHAP].text = "n".into();
-            p.record("6.4.112", "SnA'ByastayorAtaH", before);
-            true
-        },
-    },
-    // 6.4.113 ī halyaghoḥ: śnā's `ā` becomes `ī` before a kṅit sārvadhātuka
-    // beginning with a consonant. kliS + nA + taH → kliSnItaH; kliS + nA +
-    // yAt → kliSnIyAt; vrI + nA + hi → vrIRIhi.
-    //
-    // *aghoḥ* excludes the ghu roots (√dā, √dhā). Gaṇa 3 has landed, but
-    // no curated root is a ghu root yet: √dā and √dhā arrive in slice 3c,
-    // same as 6.4.112's *abhyasta* half above — so the exclusion is
-    // recorded here rather than implemented. Implement it in that slice.
+    // *aghoḥ* reads `Tag::Ghu` (1.1.20, decided by row number in derive); its
+    // witness is √dā's dattaH, which would otherwise be *dadItaH. The
+    // abhyasta test's witness is adādi's √yā — an ā-final aṅga with an empty
+    // śap before a kṅit consonant-initial ending — whose yAtaH must keep its ā.
     Rule {
         id: "6.4.113",
         name: "I halyaGoH",
         kind: RuleKind::Vidhi,
         vikalpa: false,
         apply: |p| {
-            if p.terms.len() <= ENDING || p.terms[SHAP].text != "nA" {
+            if p.terms.len() <= ENDING {
                 return false;
             }
-            if !p.terms[ENDING].has(Tag::Ngit) {
+            // śnā arm.
+            if p.terms[SHAP].text == "nA" {
+                if !p.terms[ENDING].has(Tag::Ngit) {
+                    return false;
+                }
+                let Some(next) = p.terms[ENDING].text.chars().next() else {
+                    return false;
+                };
+                if is_vowel(next) {
+                    return false;
+                }
+                let before = p.snapshot();
+                p.terms[SHAP].text = "nI".into();
+                p.record("6.4.113", "I halyaGoH", before);
+                return true;
+            }
+            // abhyasta arm.
+            if !p.terms[ANGA].has(Tag::Abhyasta) || p.terms[ANGA].has(Tag::Ghu) {
                 return false;
             }
-            let Some(next) = p.terms[ENDING].text.chars().next() else {
+            let Some(stem) = p.terms[ANGA].text.strip_suffix('A') else {
+                return false;
+            };
+            let stem = format!("{stem}I");
+            let follower = following_sarvadhatuka(p)
+                .expect("the len() <= ENDING guard above implies a follower");
+            if !follower.has(Tag::Ngit) {
+                return false;
+            }
+            let Some(next) = follower.text.chars().next() else {
                 return false;
             };
             if is_vowel(next) {
                 return false;
             }
             let before = p.snapshot();
-            p.terms[SHAP].text = "nI".into();
+            p.terms[ANGA].text = stem;
             p.record("6.4.113", "I halyaGoH", before);
+            true
+        },
+    },
+    // 6.4.112 śnābhyastayor ātaḥ: the ā of śnā or of an abhyasta aṅga is
+    // elided before a kṅit sārvadhātuka. kliS + nA + anti → kliSnanti;
+    // vf + nA + e → vfRe; da + dA + tas → da + d + tas (dattaH);
+    // a + da + dA + us → adaduH; mi + mA + ate → mimate.
+    //
+    // No vowel-initial test: 6.4.113 above has already taken every follower
+    // it can, so what reaches here is vowel-initial, or consonant-initial on
+    // a ghu root. kryādi's kliSnItaH is the prior that fails loudly if the
+    // order is ever reversed — 6.4.112 would make it *kliSntaH.
+    //
+    // The abhyasta test's witness is adādi's √yā again: yAnti keeps its ā
+    // for 6.1.101.
+    Rule {
+        id: "6.4.112",
+        name: "SnA'ByastayorAtaH",
+        kind: RuleKind::Vidhi,
+        vikalpa: false,
+        apply: |p| {
+            if p.terms.len() <= ENDING {
+                return false;
+            }
+            // śnā arm.
+            if p.terms[SHAP].text == "nA" {
+                if !p.terms[ENDING].has(Tag::Ngit) {
+                    return false;
+                }
+                let before = p.snapshot();
+                p.terms[SHAP].text = "n".into();
+                p.record("6.4.112", "SnA'ByastayorAtaH", before);
+                return true;
+            }
+            // abhyasta arm.
+            if !p.terms[ANGA].has(Tag::Abhyasta) {
+                return false;
+            }
+            let Some(stem) = p.terms[ANGA].text.strip_suffix('A') else {
+                return false;
+            };
+            let stem = stem.to_string();
+            let follower = following_sarvadhatuka(p)
+                .expect("the len() <= ENDING guard above implies a follower");
+            if !follower.has(Tag::Ngit) {
+                return false;
+            }
+            let before = p.snapshot();
+            p.terms[ANGA].text = stem;
+            p.record("6.4.112", "SnA'ByastayorAtaH", before);
             true
         },
     },
@@ -1492,17 +1599,191 @@ mod tests {
     }
 
     #[test]
-    fn shnabhyastayor_atah_declines_on_halali_and_on_non_ngit() {
-        // Consonant-initial: 6.4.113's case, not this rule's.
+    fn shnabhyastayor_atah_declines_after_6_4_113_and_on_non_ngit() {
+        // Consonant-initial: 6.4.113's case — by ORDER now, not by a test in
+        // this rule. 6.4.113 runs first and leaves `nI`, which this rule's
+        // `nA` test declines.
+        let r_113 = rules().find(|r| r.id == "6.4.113").unwrap();
+        let r_112 = rules().find(|r| r.id == "6.4.112").unwrap();
         let mut p = shna_prakriya("kliS", "taH", true);
-        let rule = rules().find(|r| r.id == "6.4.112").unwrap();
-        assert!(!(rule.apply)(&mut p));
-        assert_eq!(p.terms[SHAP].text, "nA");
-        // Vowel-initial but PIT (lot 3pl would be the only ajadi pit ending
-        // if 1.2.4 misfired): the A must survive.
+        assert!((r_113.apply)(&mut p));
+        assert!(!(r_112.apply)(&mut p));
+        assert_eq!(p.text(), "kliSnItaH");
+        // Vowel-initial but PIT: the A must survive.
         let mut p = shna_prakriya("kliS", "anti", false);
-        assert!(!(rule.apply)(&mut p));
+        assert!(!(r_112.apply)(&mut p));
         assert_eq!(p.terms[SHAP].text, "nA");
+    }
+
+    /// An ā-final abhyasta aṅga under ślu: `abhyasa` in `ABHYASA`, `anga`
+    /// tagged Abhyasta (and Ghu when `ghu`), an empty śap, and `ending`
+    /// (tagged Ngit when `ngit`).
+    fn abhyasta_prakriya(
+        abhyasa: &str,
+        anga: &str,
+        ghu: bool,
+        ending: &str,
+        ngit: bool,
+    ) -> Prakriya {
+        let mut p = Prakriya {
+            terms: with_slots(vec![Term::new(anga), Term::new(""), Term::new(ending)]),
+            ..Default::default()
+        };
+        p.terms[ABHYASA].text = abhyasa.into();
+        p.terms[ABHYASA].add(Tag::Abhyasta);
+        p.terms[ANGA].add(Tag::Abhyasta);
+        if ghu {
+            p.terms[ANGA].add(Tag::Ghu);
+        }
+        if ngit {
+            p.terms[ENDING].add(Tag::Ngit);
+        }
+        p
+    }
+
+    #[test]
+    fn ghvasor_eddhav_gives_e_and_elides_the_abhyasa_before_hi() {
+        // da + dA + hi → de + hi (dehi); Da + DA + hi → Dehi.
+        let rule = rules().find(|r| r.id == "6.4.119").unwrap();
+        for (abhyasa, anga, want) in [("da", "dA", "dehi"), ("Da", "DA", "Dehi")] {
+            let mut p = abhyasta_prakriya(abhyasa, anga, true, "hi", true);
+            assert!((rule.apply)(&mut p), "{anga}");
+            assert_eq!(p.terms[ABHYASA].text, "", "{anga}");
+            assert_eq!(p.text(), want);
+            assert_eq!(p.log.last().unwrap().sutra, "6.4.119");
+        }
+    }
+
+    #[test]
+    fn ghvasor_eddhav_declines_off_hi_off_ghu_and_on_a_short_prakriya() {
+        let rule = rules().find(|r| r.id == "6.4.119").unwrap();
+        // The tātaṅ branch: dattAt is 6.4.112's, not this rule's.
+        let mut p = abhyasta_prakriya("da", "dA", true, "tAt", true);
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.text(), "dadAtAt");
+        // An ā-final aṅga that is not ghu: adādi's yAhi, not *yehi.
+        let mut p = Prakriya {
+            terms: with_slots(vec![Term::new("yA"), Term::new(""), Term::new("hi")]),
+            ..Default::default()
+        };
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.text(), "yAhi");
+        // Ghu-tagged but not ā-final: the strip_suffix('A') guard is not
+        // implied by Ghu alone from this function's own control flow (only
+        // by the GHU table's contents, elsewhere), so it must still decline
+        // rather than panic or misfire on a non-ā-final Ghu aṅga.
+        let mut p = Prakriya {
+            terms: with_slots(vec![Term::new("hu"), Term::new(""), Term::new("hi")]),
+            ..Default::default()
+        };
+        p.terms[ANGA].add(Tag::Ghu);
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.text(), "huhi");
+        // No ending term: must not panic indexing ENDING.
+        let mut p = Prakriya {
+            terms: with_slots(vec![Term::new("dA")]),
+            ..Default::default()
+        };
+        assert!(!(rule.apply)(&mut p));
+        assert!(p.log.is_empty());
+    }
+
+    #[test]
+    fn i_halyaghoh_abhyasta_arm_gives_i_before_a_hal_initial_kngit() {
+        // mi + mA + te → mi + mI + te (mimIte).
+        let rule = rules().find(|r| r.id == "6.4.113").unwrap();
+        let mut p = abhyasta_prakriya("mi", "mA", false, "te", true);
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "mI");
+        assert_eq!(p.log.last().unwrap().sutra, "6.4.113");
+        // vidhiliṅ: yāsuṭ sits on the ending's own text, Ngit by 3.4.103.
+        let mut p = abhyasta_prakriya("mi", "mA", false, "yAt", true);
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "mI");
+    }
+
+    #[test]
+    fn i_halyaghoh_abhyasta_arm_declines_for_ghu_ajadi_pit_and_non_abhyasta() {
+        let rule = rules().find(|r| r.id == "6.4.113").unwrap();
+        // *aghoḥ*: √dā's dattaH, not *dadItaH.
+        let mut p = abhyasta_prakriya("da", "dA", true, "tas", true);
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "dA");
+        // Vowel-initial: 6.4.112's cell (mimate).
+        let mut p = abhyasta_prakriya("mi", "mA", false, "ate", true);
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "mA");
+        // Pit: the ā survives.
+        let mut p = abhyasta_prakriya("mi", "mA", false, "ti", false);
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "mA");
+        // Empty follower: an ā-final abhyasta aṅga with nothing after it.
+        let mut p = abhyasta_prakriya("mi", "mA", false, "", true);
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "mA");
+        // Not ā-final: √hu's juhutaH.
+        let mut p = abhyasta_prakriya("Ju", "hu", false, "tas", true);
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "hu");
+        // Not abhyasta: adādi's √yā, whose yAtaH must keep its ā.
+        let mut p = Prakriya {
+            terms: with_slots(vec![Term::new("yA"), Term::new(""), Term::new("tas")]),
+            ..Default::default()
+        };
+        p.terms[ENDING].add(Tag::Ngit);
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "yA");
+        assert!(p.log.is_empty());
+    }
+
+    #[test]
+    fn shnabhyastayor_atah_abhyasta_arm_elides_before_any_kngit() {
+        let rule = rules().find(|r| r.id == "6.4.112").unwrap();
+        // Vowel-initial: mi + mA + ate → mimate.
+        let mut p = abhyasta_prakriya("mi", "mA", false, "ate", true);
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.text(), "mimate");
+        // Consonant-initial on a ghu root, which 6.4.113 left alone: dattaH's
+        // `d` before 8.4.55 makes it `t`.
+        let mut p = abhyasta_prakriya("da", "dA", true, "tas", true);
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "d");
+        assert_eq!(p.log.last().unwrap().sutra, "6.4.112");
+    }
+
+    #[test]
+    fn shnabhyastayor_atah_abhyasta_arm_declines_on_pit_and_non_abhyasta() {
+        let rule = rules().find(|r| r.id == "6.4.112").unwrap();
+        // Pit: dadAti.
+        let mut p = abhyasta_prakriya("da", "dA", true, "ti", false);
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "dA");
+        // Not abhyasta: √yā's yAnti keeps its ā for 6.1.101.
+        let mut p = Prakriya {
+            terms: with_slots(vec![Term::new("yA"), Term::new(""), Term::new("anti")]),
+            ..Default::default()
+        };
+        p.terms[ENDING].add(Tag::Ngit);
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "yA");
+        assert!(p.log.is_empty());
+    }
+
+    #[test]
+    fn i_halyaghoh_then_shnabhyastayor_atah_split_a_hal_initial_kngit_by_ghu() {
+        // The swap at unit level: in pipeline order, a non-ghu abhyasta aṅga
+        // takes 6.4.113 and 6.4.112 declines on the `I` it left; a ghu one
+        // is declined by 6.4.113 and elided by 6.4.112.
+        let r_113 = rules().find(|r| r.id == "6.4.113").unwrap();
+        let r_112 = rules().find(|r| r.id == "6.4.112").unwrap();
+        let mut p = abhyasta_prakriya("mi", "mA", false, "te", true);
+        assert!((r_113.apply)(&mut p));
+        assert!(!(r_112.apply)(&mut p));
+        assert_eq!(p.text(), "mimIte");
+        let mut p = abhyasta_prakriya("da", "dA", true, "tas", true);
+        assert!(!(r_113.apply)(&mut p));
+        assert!((r_112.apply)(&mut p));
+        assert_eq!(p.text(), "dadtas");
     }
 
     #[test]

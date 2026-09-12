@@ -112,11 +112,26 @@ pub(crate) static ADESHA: &[Rule] = &[
             // adādi (śap luk'd by 2.4.72): the aṅga's own final ā meets an
             // a/ā-initial ending directly (no vikaraṇa buffer). ā + a/ā are
             // savarṇa → a single long ā. Keep the aṅga's ā, drop the ending's
-            // initial vowel: yA + anti → yAnti, yA + Ani (āṭ) → yAni.
+            // initial vowel: yA + anti → yAnti, yA + Ani (āṭ) → yAni, and — an
+            // empty ślu'd śap looks the same — da + dA + Ani → dadAni.
+            //
+            // DECLINES on the āṭ followed by an ec (loṭ uttama eka ātmanepada,
+            // `AE`). There the āṭ merges with its own ending first, 6.1.90
+            // āṭaś ca (AE → E), and the root's ā meets the result by 6.1.88
+            // vṛddhir eci: dadE, the Kaumudī's *dadai* and vidyut's trace
+            // (juhotyādi 3c). Form-neutral — this arm then 6.1.88 would spell
+            // dadE too — so this arm's guard test and 3c's dadE trace pin are
+            // what hold it. No prior reaches it: √yā and √vā have no
+            // ātmanepada.
             if p.terms.len() > ENDING
                 && p.terms[SHAP].text.is_empty()
                 && p.terms[ANGA].text.ends_with('A')
                 && matches!(p.terms[ENDING].text.chars().next(), Some('a') | Some('A'))
+                && !(p.terms[ENDING].text.starts_with('A')
+                    && matches!(
+                        p.terms[ENDING].text.chars().nth(1),
+                        Some('e' | 'E' | 'o' | 'O')
+                    ))
             {
                 let before = p.snapshot();
                 p.terms[ENDING].text = p.terms[ENDING].text.chars().skip(1).collect();
@@ -163,8 +178,11 @@ pub(crate) static ADESHA: &[Rule] = &[
     //   3.4.111, which is its sole witness today: 3.4.108 jher jus is
     //   vidhiliṅ-only, and by the time this rule runs in vidhiliṅ the yāsuṭ
     //   of 3.4.103 has already made the ending `yAus` (or `yus`, if the
-    //   ending arm fired). Every other cell reaches here with an ending that
-    //   is not `us` at all.
+    //   ending arm fired). 3.4.109's `us` (laṅ prathama bahu) also reaches
+    //   here bare, but with a consonant immediately before it — ajuhavuH's
+    //   `v` (6.1.78's glide) and adaduH's elided `d` (6.4.112 has already
+    //   removed the ā) — so the junction arm declines on its a/ā test
+    //   rather than on the ending.
     Rule {
         id: "6.1.96",
         name: "usyapadAntAt",
@@ -423,6 +441,49 @@ pub(crate) static ADESHA: &[Rule] = &[
                 }
             }
             false
+        },
+    },
+    // 6.1.88 vṛddhir eci: an a-varṇa followed by an ec coalesces into the
+    // ec's vṛddhi. da + dA + E → da + d + E (dadE; mimE, jihE, daDE), after
+    // 6.1.90's athematic arm has merged the loṭ uttama āṭ into its ending.
+    // Implemented scope is the ā-final aṅga only (`strip_suffix('A')`): no
+    // root in the curated set ever presents a short-a-final aṅga with an
+    // otherwise-empty ślu'd śap, so a short `a` arm has never been reachable.
+    //
+    // The ā is the aṅga's own and the ec begins the ending, with the empty
+    // ślu'd śap as the adjacency. A non-empty SHAP puts a vikaraṇa between
+    // them: the thematic and kryādi `A` + ec junctions are 6.1.90's, whose
+    // `A` is the 6.1.101 ekādeśa that contains the āṭ, and they keep that
+    // attribution. `vrddhir_eci_declines_with_a_vikarana_between_no_ec_or_no_ending`
+    // is the SHAP test's witness.
+    //
+    // Reaches no prior: √yā and √vā are the only other ā-final aṅgas with an
+    // empty śap, and no parasmaipada ending begins with an ec.
+    Rule {
+        id: "6.1.88",
+        name: "vfdDireci",
+        kind: RuleKind::Vidhi,
+        vikalpa: false,
+        apply: |p| {
+            if p.terms.len() <= ENDING || !p.terms[SHAP].text.is_empty() {
+                return false;
+            }
+            let Some(first) = p.terms[ENDING].text.chars().next() else {
+                return false;
+            };
+            if !matches!(first, 'e' | 'E' | 'o' | 'O') {
+                return false;
+            }
+            let Some(stem) = p.terms[ANGA].text.strip_suffix('A') else {
+                return false;
+            };
+            let stem = stem.to_string();
+            let before = p.snapshot();
+            p.terms[ANGA].text = stem;
+            let rest: String = p.terms[ENDING].text.chars().skip(1).collect();
+            p.terms[ENDING].text = format!("{}{rest}", vrddhi_of(first).unwrap());
+            p.record("6.1.88", "vfdDireci", before);
+            true
         },
     },
     // 6.1.97 ato guṇe: a short `a` (the śap) followed by a guṇa vowel yields
@@ -1279,6 +1340,161 @@ mod tests {
         };
         assert!(!(rule.apply)(&mut r));
         assert_eq!(r.terms[ENDING].text, "ti");
+    }
+
+    #[test]
+    fn akah_savarne_dirghah_adadi_arm_leaves_an_at_before_an_ec_to_6_1_90() {
+        // da + dA + AE: the āṭ merges with its own ending first (6.1.90,
+        // AE → E) and only then does the root's ā meet it (6.1.88) — dadE, the
+        // Kaumudī's path and vidyut's. FORM-NEUTRAL: 6.1.101 then 6.1.88 would
+        // spell dadE too, so this decline is held only by this test and the
+        // dadE trace pin.
+        let rule = rules().find(|r| r.id == "6.1.101").unwrap();
+        let mut p = Prakriya {
+            terms: with_slots(vec![Term::new("dA"), Term::new(""), Term::new("AE")]),
+            ..Default::default()
+        };
+        p.terms[ABHYASA].text = "da".into();
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[ENDING].text, "AE");
+        assert!(p.log.is_empty());
+    }
+
+    #[test]
+    fn akah_savarne_dirghah_adadi_arm_declines_for_the_ecs_matches_set_admits_besides_e() {
+        // "AE" above is the corpus-real case; `matches!` after the `A` also
+        // admits 'e', 'o' and 'O', none of which any golden reaches. "Ao" is
+        // a guard-only witness: narrowing the set to just 'E' would make this
+        // arm wrongly fire and coalesce "Ao" -> "o".
+        let rule = rules().find(|r| r.id == "6.1.101").unwrap();
+        let mut p = Prakriya {
+            terms: with_slots(vec![Term::new("dA"), Term::new(""), Term::new("Ao")]),
+            ..Default::default()
+        };
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[ENDING].text, "Ao");
+    }
+
+    #[test]
+    fn akah_savarne_dirghah_adadi_arm_still_fires_where_no_at_ec_follows() {
+        // dadAni / dadAvahE: the āṭ is followed by a consonant, so 6.1.90 has
+        // no ekādeśa to make and 6.1.101 takes dA + A as before. `aE` is the
+        // `starts_with('A')` clause's only witness: an `a` before an ec is not
+        // the āṭ, is still savarṇa with the ā, and must still coalesce.
+        let rule = rules().find(|r| r.id == "6.1.101").unwrap();
+        for (ending, want) in [("Ani", "ni"), ("AvahE", "vahE"), ("aE", "E")] {
+            let mut p = Prakriya {
+                terms: with_slots(vec![Term::new("dA"), Term::new(""), Term::new(ending)]),
+                ..Default::default()
+            };
+            assert!((rule.apply)(&mut p), "{ending}");
+            assert_eq!(p.terms[ENDING].text, want, "{ending}");
+        }
+    }
+
+    #[test]
+    fn vrddhir_eci_merges_an_a_final_anga_into_the_endings_ec() {
+        // "E" is the real corpus case: da + dA + E → da + d + E (dadE),
+        // after 6.1.90's athematic arm made AE into E. `vrddhi_of('E')` is
+        // "E" (identity), so this row alone cannot tell the vṛddhi
+        // substitution from a no-op copy.
+        //
+        // "eti", "o" and "Oti" are hand-built guard witnesses, not attested
+        // corpus endings -- the same corpus-real/unit-test-only split
+        // `vrddhi_of` documents for its own arms (sound.rs:18-22). "eti":
+        // `vrddhi_of('e')` is "E", not 'e', so this pins the substitution
+        // itself against an identity mutant, and its multi-char tail "ti"
+        // pins `{rest}` -- a mutant dropping `{rest}` from the format string
+        // would yield "E" instead of "Eti". "o": `vrddhi_of('o')` is "O",
+        // one of the other two `matches!` admits besides e/E. "Oti":
+        // `vrddhi_of('O')` is "O" (identity, like "E" above), so its
+        // multi-char tail is what pins it against a mutant narrowing the
+        // guard to exclude 'O' -- without this row that alternative has no
+        // witness at all.
+        let rule = rules().find(|r| r.id == "6.1.88").unwrap();
+        for (ending, want_ending) in [("E", "E"), ("eti", "Eti"), ("o", "O"), ("Oti", "Oti")] {
+            let mut p = Prakriya {
+                terms: with_slots(vec![Term::new("dA"), Term::new(""), Term::new(ending)]),
+                ..Default::default()
+            };
+            assert!((rule.apply)(&mut p), "{ending}");
+            assert_eq!(p.terms[ANGA].text, "d", "{ending}");
+            assert_eq!(p.terms[ENDING].text, want_ending, "{ending}");
+            assert_eq!(p.log.last().unwrap().sutra, "6.1.88", "{ending}");
+        }
+        // dadE specifically, with the abhyāsa filled in, pins p.text().
+        let mut p = Prakriya {
+            terms: with_slots(vec![Term::new("dA"), Term::new(""), Term::new("E")]),
+            ..Default::default()
+        };
+        p.terms[ABHYASA].text = "da".into();
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.text(), "dadE");
+    }
+
+    #[test]
+    fn vrddhir_eci_declines_with_a_vikarana_between_no_ec_or_no_ending() {
+        let rule = rules().find(|r| r.id == "6.1.88").unwrap();
+        // A non-empty SHAP separates the ā from the ec: the SHAP test's witness.
+        let mut p = Prakriya {
+            terms: with_slots(vec![Term::new("dA"), Term::new("a"), Term::new("E")]),
+            ..Default::default()
+        };
+        assert!(!(rule.apply)(&mut p));
+        // Not an ec: dadAni's `n`, after 6.1.101.
+        let mut p = Prakriya {
+            terms: with_slots(vec![Term::new("dA"), Term::new(""), Term::new("ni")]),
+            ..Default::default()
+        };
+        assert!(!(rule.apply)(&mut p));
+        // Not ā-final: √ās's AsE is 6.1.90's alone.
+        let mut p = Prakriya {
+            terms: with_slots(vec![Term::new("As"), Term::new(""), Term::new("E")]),
+            ..Default::default()
+        };
+        assert!(!(rule.apply)(&mut p));
+        // No ending term: must not panic indexing ENDING.
+        let mut p = Prakriya {
+            terms: with_slots(vec![Term::new("dA"), Term::new("")]),
+            ..Default::default()
+        };
+        assert!(!(rule.apply)(&mut p));
+        assert!(p.log.is_empty());
+    }
+
+    #[test]
+    fn vrddhir_eci_declines_for_an_ending_term_present_but_empty() {
+        // `len() > ENDING` guarantees an ENDING term exists, not that its
+        // text is non-empty: a hand-built ENDING term of "" clears that
+        // guard and would panic the unguarded `chars().next()` extraction
+        // without the `let-else`. No real derivation reaches this state
+        // with SHAP empty -- 6.4.105 and 6.4.106, the only rules that ever
+        // empty ENDING's text, both require a non-empty SHAP (thematic or
+        // u-final) to fire -- so this is a hand-built witness, not a golden
+        // one.
+        let rule = rules().find(|r| r.id == "6.1.88").unwrap();
+        let mut p = Prakriya {
+            terms: with_slots(vec![Term::new("dA"), Term::new(""), Term::new("")]),
+            ..Default::default()
+        };
+        assert!(!(rule.apply)(&mut p));
+        assert!(p.log.is_empty());
+    }
+
+    #[test]
+    fn atas_ca_then_vrddhir_eci_is_the_dade_path() {
+        // The three rules in pipeline order on da + dA + AE: 6.1.101 declines,
+        // 6.1.90's athematic arm makes AE into E, 6.1.88 merges dA + E.
+        let mut p = Prakriya {
+            terms: with_slots(vec![Term::new("dA"), Term::new(""), Term::new("AE")]),
+            ..Default::default()
+        };
+        p.terms[ABHYASA].text = "da".into();
+        for (id, fires) in [("6.1.101", false), ("6.1.90", true), ("6.1.88", true)] {
+            let r = rules().find(|r| r.id == id).unwrap();
+            assert_eq!((r.apply)(&mut p), fires, "{id}");
+        }
+        assert_eq!(p.text(), "dadE");
     }
 
     // --- 6.1.101 kryAdi arm: `len() > ENDING` boundary pin -----------------

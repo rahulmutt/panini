@@ -1,4 +1,4 @@
-//! Reduplication: 6.1.10, 7.4.60, 7.4.59, 7.4.62 — dvitva and the rules that
+//! Reduplication: 6.1.10, 7.4.60, 7.4.59, 7.4.62, 7.4.76 — dvitva and the rules that
 //! reshape the abhyāsa.
 //!
 //! Ordered AFTER 3.1.68 (ending at `ENDING`, śap at `SHAP` — empty on
@@ -71,7 +71,7 @@ pub(crate) static ABHYASA_RULES: &[Rule] = &[
     //
     // The no-op guard is 8.4.53's: for a single-consonant abhyāsa the result
     // equals the input, and the rule must record nothing there or every √hu,
-    // √ki and √bhī trace grows a step and the 3636 priors break.
+    // √ki and √bhī trace grows a step and the 3852 priors break.
     Rule {
         id: "7.4.60",
         name: "halAdiH SezaH",
@@ -159,6 +159,41 @@ pub(crate) static ABHYASA_RULES: &[Rule] = &[
             let rest: String = p.terms[ABHYASA].text.chars().skip(1).collect();
             p.terms[ABHYASA].text = format!("{cu}{rest}");
             p.record("7.4.62", "kuhoScuH", before);
+            true
+        },
+    },
+    // 7.4.76 bhṛñām it: the abhyāsa of √bhṛñ, √māṅ and √ohāṅ takes `i`.
+    // ma → mi (mimIte), and — after 7.4.59 and 7.4.62 — Ja → Ji (jihIte).
+    // vidyut's order is 7.4.59 → 7.4.62 → 7.4.76, which this stage's
+    // sequence already is.
+    //
+    // KEYED BY ROW NUMBER (`ctx.dhatupatha`), not by `ANGA.text`: the sūtra
+    // names three roots, and `03.0009 o~hA\k` enters the derivation as `hA`
+    // exactly like `03.0008 o~hA\N` while taking no 7.4.76 (jahAti).
+    //   03.0007 mA\N   √māṅ
+    //   03.0008 o~hA\N √ohāṅ
+    // `03.0006 quBf\Y` (√bhṛñ) is the third, and slice 3d adds it with its
+    // witness; an unwitnessed number here would be a mutation survivor.
+    //
+    // Every abhyāsa this reaches is a single ekāc (6.1.10's NARROW note), so
+    // mapping each vowel to `i` is mapping THE vowel to `i`.
+    Rule {
+        id: "7.4.76",
+        name: "BfYAm it",
+        kind: RuleKind::Vidhi,
+        vikalpa: false,
+        apply: |p| {
+            if !matches!(p.ctx.dhatupatha, "03.0007" | "03.0008") {
+                return false;
+            }
+            let t: String = p.terms[ABHYASA]
+                .text
+                .chars()
+                .map(|c| if is_vowel(c) { 'i' } else { c })
+                .collect();
+            let before = p.snapshot();
+            p.terms[ABHYASA].text = t;
+            p.record("7.4.76", "BfYAm it", before);
             true
         },
     },
@@ -281,7 +316,7 @@ mod tests {
     fn haladih_shesha_records_nothing_for_a_single_initial_consonant() {
         // The no-op guard. √hu, √ki and √bhī all have one initial consonant,
         // so 7.4.60 must return false and leave the log empty — otherwise
-        // every one of their traces grows a step and the 3636 priors break.
+        // every one of their traces grows a step and the 3852 priors break.
         let r_10 = rules().find(|r| r.id == "6.1.10").unwrap();
         let r_60 = rules().find(|r| r.id == "7.4.60").unwrap();
         for root in ["hu", "ki", "BI"] {
@@ -359,5 +394,38 @@ mod tests {
         assert_eq!(p.terms[ABHYASA].text, "Ji");
         let ids: Vec<&str> = p.log.iter().map(|s| s.sutra.as_str()).collect();
         assert_eq!(ids, vec!["6.1.10", "7.4.60", "7.4.59", "7.4.62"]);
+    }
+
+    #[test]
+    fn bhrnam_it_makes_the_abhyasa_vowel_i_for_the_two_rows_it_names() {
+        // 7.4.76. √māṅ (03.0007) and √ohāṅ (03.0008), after 7.4.59 and
+        // 7.4.62: ma → mi (mimIte), Ja → Ji (jihIte).
+        let rule = rules().find(|r| r.id == "7.4.76").unwrap();
+        for (root, number, abhyasa, want) in
+            [("mA", "03.0007", "ma", "mi"), ("hA", "03.0008", "Ja", "Ji")]
+        {
+            let mut p = slu_prakriya(root, "te");
+            p.ctx.dhatupatha = number;
+            p.terms[ABHYASA].text = abhyasa.into();
+            assert!((rule.apply)(&mut p), "{number}");
+            assert_eq!(p.terms[ABHYASA].text, want, "{number}");
+            assert_eq!(p.log.last().unwrap().sutra, "7.4.76");
+        }
+    }
+
+    #[test]
+    fn bhrnam_it_declines_for_the_other_ha_row_despite_identical_text() {
+        // 03.0009 o~hA\k enters the derivation as `hA`, exactly like
+        // 03.0008, and takes no 7.4.76: jahAti, not *jihAti. This is the test
+        // that the number, not the text, decides.
+        let rule = rules().find(|r| r.id == "7.4.76").unwrap();
+        for number in ["03.0009", ""] {
+            let mut p = slu_prakriya("hA", "ti");
+            p.ctx.dhatupatha = number;
+            p.terms[ABHYASA].text = "Ja".into();
+            assert!(!(rule.apply)(&mut p), "{number:?}");
+            assert_eq!(p.terms[ABHYASA].text, "Ja", "{number:?}");
+            assert!(p.log.is_empty(), "{number:?}");
+        }
     }
 }

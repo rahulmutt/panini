@@ -1,5 +1,5 @@
-//! Saṃjñā, pada sanction and ending insertion: 1.3.12, 1.3.66, 1.3.72,
-//! 1.3.78, 3.4.78, 1.3.9, 1.2.4.
+//! Saṃjñā, pada sanction and ending insertion: 1.1.20 (as the `GHU` set),
+//! 1.3.12, 1.3.66, 1.3.72, 1.3.78, 3.4.78, 1.3.9, 1.2.4.
 //!
 //! Ordered **BEFORE** 3.1.68 — the ending lives at `ENDING_PRE_SHAP`
 //! (index 3) and śap does not exist yet. See `super::terms`.
@@ -15,6 +15,21 @@ use crate::term::{Tag, Term};
 use crate::tinanta::sound::is_vibhakti_protected_final;
 use crate::tinanta::terms::{ANGA, ENDING_PRE_SHAP};
 use panini_data::{Lakara, Pada, Purusha, tin_ending};
+
+/// 1.1.20 dādhā ghv adāp: the dhātupāṭha rows that are *ghu* — the roots
+/// of the form dā or dhā, except dāp (`02.0054 dA\p`, lavane) and daip
+/// (`01.1073 dE\p`, śodhane). By number, because root text cannot express
+/// the exclusion: dāp enters the derivation as `dA`, exactly as ḍudāñ does.
+///
+/// `01.1050 De\w` dheṭ, `01.1079 dA\R` dāṇ, `01.1117 de\N` deṅ,
+/// `03.0010 qudA\Y` ḍudāñ, `03.0011 quDA\Y` ḍudhāñ, `04.0043 do\` do.
+///
+/// Only `03.0010` and `03.0011` are curated; all six are pinned to upstream
+/// by `ghu_is_exactly_the_six_rows_1_1_20_names`. `super::derive` reads
+/// this to add `Tag::Ghu` — a saṁjñā verdict, recorded as no step.
+pub(crate) const GHU: [&str; 6] = [
+    "01.1050", "01.1079", "01.1117", "03.0010", "03.0011", "04.0043",
+];
 
 pub(crate) static SAMJNA: &[Rule] = &[
     // 1.3.12 anudāttaṅita ātmanepadam: a root carrying the anudātta/ṅit
@@ -606,6 +621,49 @@ mod tests {
                 !p.terms[ENDING_PRE_SHAP].has(Tag::Ngit),
                 "{pada:?} lot uttama must not be Nit"
             );
+        }
+    }
+
+    /// Upstream's dhātupāṭha, vendored, test-only — the `panini-data`
+    /// precedent for holding a verdict to upstream rather than to itself.
+    const UPSTREAM: &str = include_str!("../../../../data/dhatupatha.tsv");
+
+    fn upstream_upadesha(number: &str) -> Option<&'static str> {
+        UPSTREAM
+            .lines()
+            .filter(|l| !l.starts_with('#'))
+            .find_map(|l| {
+                let mut f = l.split('\t');
+                if f.next() == Some(number) {
+                    f.next()
+                } else {
+                    None
+                }
+            })
+    }
+
+    #[test]
+    fn ghu_is_exactly_the_six_rows_1_1_20_names() {
+        // 1.1.20 dādhā ghv adāp. Four of the six are not curated, so this
+        // test — not a derivation — is what holds them.
+        let named = [
+            ("01.1050", "De\\w"),
+            ("01.1079", "dA\\R"),
+            ("01.1117", "de\\N"),
+            ("03.0010", "qudA\\Y"),
+            ("03.0011", "quDA\\Y"),
+            ("04.0043", "do\\"),
+        ];
+        assert_eq!(GHU, named.map(|(n, _)| n));
+        for (number, upadesha) in named {
+            assert_eq!(upstream_upadesha(number), Some(upadesha), "{number}");
+        }
+        // *adāp*: dāp and daip are dā-shaped and NOT ghu. dāp is why the set
+        // is keyed by number: it enters the derivation as `dA`, exactly as
+        // ḍudāñ does.
+        for (number, upadesha) in [("02.0054", "dA\\p"), ("01.1073", "dE\\p")] {
+            assert_eq!(upstream_upadesha(number), Some(upadesha), "{number}");
+            assert!(!GHU.contains(&number), "{number} is adāp");
         }
     }
 }

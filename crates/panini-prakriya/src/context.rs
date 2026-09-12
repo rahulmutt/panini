@@ -19,6 +19,17 @@ pub struct Context {
     /// the rule list where it appears in the trace, rather than hiding it in
     /// a match arm here.
     pub is_ngit_like: bool,
+    /// The dhātupāṭha entry number of the root being derived — the repo's
+    /// unique key, `panini_data::Dhatu::dhatupatha` — or `""` for a
+    /// hand-built prakriyā.
+    ///
+    /// Root TEXT cannot identify every root a sūtra names: `03.0008 o~hA\N`
+    /// and `03.0009 o~hA\k` both enter the derivation as `hA`, and 7.4.76
+    /// bhṛñām it names only the first. A sūtra that names particular roots
+    /// matches this; a sūtra that names a class reads a saṁjñā tag instead
+    /// (`Tag::Ghu`). Set by `tinanta::derive`; `Context::new` leaves it
+    /// empty, so every number-keyed guard declines unless a test sets it.
+    pub dhatupatha: &'static str,
 }
 
 impl Context {
@@ -31,6 +42,7 @@ impl Context {
             // laṅ and liṅ are ṅit inherently (the ṅ anubandha in their own
             // names); loṭ acquires it via rule 3.4.85.
             is_ngit_like: matches!(lakara, Lakara::Lan | Lakara::VidhiLin),
+            dhatupatha: "",
         }
     }
 
@@ -85,5 +97,20 @@ mod tests {
             Vacana::Eka,
         );
         assert!(!c.is_ngit_like);
+    }
+
+    #[test]
+    fn a_fresh_context_names_no_dhatupatha_row() {
+        // Number-keyed guards (7.4.76, 8.2.38, 8.2.40) decline on "", so a
+        // hand-built prakriyā can never trip one by accident. `derive` is
+        // the only writer of a real number.
+        let c = Context::new(
+            Lakara::Lat,
+            Pada::Parasmaipada,
+            Purusha::Prathama,
+            Vacana::Eka,
+        );
+        assert_eq!(c.dhatupatha, "");
+        assert_eq!(Context::default().dhatupatha, "");
     }
 }

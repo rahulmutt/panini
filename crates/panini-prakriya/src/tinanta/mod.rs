@@ -77,11 +77,20 @@ pub fn derive(
     vacana: Vacana,
 ) -> Vec<Prakriya> {
     let mut p = Prakriya {
-        ctx: Context::new(lakara, pada, purusha, vacana),
+        ctx: Context {
+            dhatupatha: dhatu.dhatupatha,
+            ..Context::new(lakara, pada, purusha, vacana)
+        },
         ..Default::default()
     };
     let mut t = Term::new(dhatu.code);
     t.add(Tag::Dhatu);
+    // 1.1.20 dādhā ghv adāp, decided by row number — see `samjna::GHU` for
+    // why root text cannot decide it. A saṁjñā, like the gaṇa tags below:
+    // it feeds guarded rules and substitutes for none.
+    if samjna::GHU.contains(&dhatu.dhatupatha) {
+        t.add(Tag::Ghu);
+    }
     match dhatu.pada {
         PadaAssignment::Parasmaipada => {}
         PadaAssignment::Atmanepada => t.add(Tag::Atmanepadin),

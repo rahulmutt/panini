@@ -10,7 +10,7 @@ use super::*;
 // `mod.rs` re-exports nothing from `sound`.
 use crate::tinanta::sound::cartva_of;
 use crate::tinanta::terms::{ABHYASA, AGAMA, ANGA, ENDING, SHAP};
-use panini_data::{Lakara, Pada, Purusha, Vacana, dhatus};
+use panini_data::{Dhatu, Gana, Lakara, Pada, PadaAssignment, Purusha, Vacana, dhatus};
 
 /// Unwrap a derivation that must not have forked.
 ///
@@ -153,14 +153,15 @@ fn tinanta_rule_order_is_pinned() {
         "3.4.100", "3.4.80", "3.4.79", "3.4.91", "3.4.93", "3.4.90", "3.4.92", "3.4.103",
         "3.4.102", "7.1.35", "3.1.69", "3.1.73", "3.1.77", "3.1.78", "3.1.79", "3.1.81", "3.1.68",
         "2.4.72", "2.4.75", "3.4.111", "3.1.83", "1.2.4", "6.1.10", "7.4.60", "7.4.59", "7.4.62",
-        "6.4.71", "6.4.72", "6.1.73", "7.3.100", "7.1.5", "7.1.6", "7.1.4", "7.1.3", "7.2.79",
-        "7.2.80", "7.2.81", "6.4.23", "7.4.21", "7.3.83", "7.3.84", "7.3.86", "7.3.86", "7.3.92",
-        "7.3.84", "6.4.110", "6.4.108", "6.4.109", "6.4.87", "6.4.82", "6.4.77", "6.1.77",
-        "6.1.78", "7.3.101", "6.4.112", "6.4.113", "6.4.115", "6.1.101", "6.1.96", "6.4.106",
-        "6.4.107", "6.1.90", "6.1.97", "6.1.87", "6.1.66", "6.4.105", "6.4.101", "6.4.111",
-        "8.2.77", "8.2.23", "8.2.25", "8.2.30", "8.2.31", "8.2.39", "8.2.40", "8.2.41", "8.2.74",
-        "8.2.75", "8.2.73", "8.3.15", "8.3.24", "8.3.59", "8.4.40", "8.4.41", "8.3.13", "8.4.53",
-        "8.4.54", "8.4.55", "8.4.1", "8.4.2", "8.4.58", "8.4.65", "8.4.56",
+        "7.4.76", "6.4.71", "6.4.72", "6.1.73", "7.3.100", "7.1.5", "7.1.6", "7.1.4", "7.1.3",
+        "7.2.79", "7.2.80", "7.2.81", "6.4.23", "7.4.21", "7.3.83", "7.3.84", "7.3.86", "7.3.86",
+        "7.3.92", "7.3.84", "6.4.110", "6.4.108", "6.4.109", "6.4.87", "6.4.82", "6.4.77",
+        "6.1.77", "6.1.78", "7.3.101", "6.4.119", "6.4.113", "6.4.112", "6.4.115", "6.1.101",
+        "6.1.96", "6.4.106", "6.4.107", "6.1.90", "6.1.88", "6.1.97", "6.1.87", "6.1.66",
+        "6.4.105", "6.4.101", "6.4.111", "8.2.77", "8.2.23", "8.2.25", "8.2.30", "8.2.31",
+        "8.2.39", "8.2.40", "8.2.41", "8.2.74", "8.2.75", "8.2.73", "8.3.15", "8.3.24", "8.3.59",
+        "8.4.40", "8.4.41", "8.3.13", "8.4.53", "8.4.54", "8.2.38", "8.4.55", "8.4.1", "8.4.2",
+        "8.4.58", "8.4.65", "8.4.56",
     ];
     let actual: Vec<&str> = rules().map(|r| r.id).collect();
     assert_eq!(actual, expected);
@@ -2270,4 +2271,39 @@ fn trh_lat_reaches_its_three_shapes() {
     assert_eq!(lat(Purusha::Prathama, Vacana::Dvi), "tfRQaH");
     // And the one where nothing retroflexes at all: `h` before a vowel.
     assert_eq!(lat(Purusha::Prathama, Vacana::Bahu), "tfMhanti");
+}
+
+#[test]
+fn derive_stamps_the_row_number_and_decides_ghu_by_it() {
+    // Two hand-built rows whose aṅga text is identical: 03.0010 qudA\Y (ghu)
+    // and 02.0054 dA\p (adāp, not ghu). Only the number separates them —
+    // the reason Context carries it.
+    let ghu = Dhatu {
+        dhatupatha: "03.0010",
+        code: "dA",
+        gana: Gana::Juhotyadi,
+        pada: PadaAssignment::Ubhayapada,
+        artha: "dAne",
+    };
+    let dap = Dhatu {
+        dhatupatha: "02.0054",
+        code: "dA",
+        gana: Gana::Adadi,
+        pada: PadaAssignment::Parasmaipada,
+        artha: "lavane",
+    };
+    for (d, is_ghu) in [(ghu, true), (dap, false)] {
+        let p = derive(
+            &d,
+            Lakara::Lat,
+            Pada::Parasmaipada,
+            Purusha::Prathama,
+            Vacana::Eka,
+        )
+        .into_iter()
+        .next()
+        .unwrap();
+        assert_eq!(p.ctx.dhatupatha, d.dhatupatha);
+        assert_eq!(p.terms[ANGA].has(Tag::Ghu), is_ghu, "{}", d.dhatupatha);
+    }
 }
