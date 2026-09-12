@@ -35,25 +35,30 @@
     timeouts). `cargo mutants` also reads `-j` from `CARGO_MUTANTS_JOBS`, so
     an unqualified cap can be defeated by the environment alone; keep `-j`
     at or below 4, or re-measure and raise the cap in step.
-    **The floor behind the 600s cap, measured at 3636 cells.** An
-    uncontended `mise run test` takes 65.01s wall clock: paradigm 27.60s,
-    roundtrip 31.30s, trace 4.72s, every other binary under 0.5s. Of
-    paradigm's 27.60s, 27.18s is `known_nonforms_are_invalid`, which checks
+    **The floor behind the 600s cap, measured at 3852 cells.** An
+    uncontended `mise run test` takes 69.998s wall clock: paradigm 29.26s,
+    roundtrip 34.38s, trace 5.00s, every other binary under 0.5s. Of
+    paradigm's 29.26s, most is `known_nonforms_are_invalid`, which checks
     89 non-forms through the real `Panini::check()` at ~0.30s a call. That
     is deliberate — it is the only test of `check()`'s negative path — and
     it is the dominant term of the paradigm binary. The larger term of the
     blocking floor is `roundtrip_sampled`, which sends every form derived
     from one cell per root through the real `check()`. Those calls grow
     linearly with the corpus and each one re-derives it, so that term is
-    still Θ(N²), at ~1/45 of the old exhaustive constant, and re-grows first.
-    At `-j 4`, two documented equivalent mutants ran the suite to completion
-    uncaught, with test phases of 74.76s and 72.65s: a contention factor of
-    1.12–1.15× over that floor. 600s is 6 × 74.76s = 448.56s rounded up, or
-    **8.03×** the longest measured uncaught run. Take the floor by
-    measurement, never by scaling it by cell count or by a projected
-    contention multiplier; both have failed repeatedly in the record below.
-    Re-measure the floor and an uncaught `-j 4` run whenever the golden
-    suite grows, and change `mise.toml` and this paragraph together.
+    still Θ(N²), at ~1/45 of the old exhaustive constant, and re-grows first:
+    against 3636 → 3852 cells (+5.94%), the floor moved 65.01s → 69.998s
+    (+7.67%) and `roundtrip_sampled` alone moved 31.30s → 34.38s (+9.84%),
+    both outpacing the cell count, exactly as predicted. At `-j 4`, two
+    documented equivalent mutants ran the suite to completion uncaught,
+    with test phases of 78.70s (`adesha.rs`) and 78.55s (`tripadi.rs`): a
+    contention factor of 1.12× over that floor. 600s is 6 × 78.70s =
+    472.2s rounded up, or **7.62×** the longest measured uncaught run —
+    down from the prior measurement's 8.03×, consistent with the floor
+    itself growing faster than the cap. Take the floor by measurement,
+    never by scaling it by cell count or by a projected contention
+    multiplier; both have failed repeatedly in the record below. Re-measure
+    the floor and an uncaught `-j 4` run whenever the golden suite grows,
+    and change `mise.toml` and this paragraph together.
     **One timeout is correct and permanent.** `tripadi.rs`'s 8.4.2 ṇatva
     backward scan decrements a loop index with `j -= 1`; the `j /= 1` mutant
     makes `j` constant, and the loop never terminates. No assertion can ever
@@ -1273,6 +1278,59 @@
     `candidates()` by surface is the product fix, and `roundtrip_exhaustive`
     is the gate a narrowing slice would need — an over-narrowed candidate
     set shows up there as a roundtrip failure.
+    **2026-09-12 — slice 3c re-measured both at 3852 cells.** The suite grew
+    3636 → 3852 cells (**+5.94%**, four new juhotyādi ātmanepada roots: √dā,
+    √dhā, √mā, √hā). Uncontended floor: paradigm 29.26s, roundtrip 34.38s,
+    trace 5.00s — wall clock **69.998s**, up from 65.01s (**+7.67%**), with
+    `roundtrip_sampled` alone moving 31.30s → 34.38s (**+9.84%**), again
+    outpacing the cell count as the series predicts — take the floor by
+    measurement, never by cell count. At `-j 4`, the same two documented
+    equivalents ran full UNCAUGHT test phases of 78.70s
+    (`adesha.rs:574:30`, `replace + with *`) and 78.55s
+    (`tripadi.rs:1186:38`, `replace - with /`) — drifted from the
+    2026-09-11 campaign's 519/1176 positions, located by source text, not
+    by number: 1.12× the 69.998s floor. 600 / 78.70 ≈ **7.62×**, down from
+    the prior probe's 8.03×, because the floor grew faster than the cap.
+    Campaign at `-j 4 --timeout 600`, `--package panini-prakriya
+    --test-workspace=true`, `-o /home/dev/mutants-records/juhotyadi-3c`:
+    launched detached (`setsid`/`nohup`) via the real `cargo-mutants`
+    27.1.0 binary rather than the mise shim, with `CARGO_MUTANTS_JOBS`
+    unset, on the slice's final Rust tree. Wall clock **1h31m59s**
+    (2026-09-12 02:01:56 – 03:33:55 UTC); `cargo-mutants` exited **3**, the
+    expected code when timeouts are present. **712 mutants: 666 caught, 43
+    unviable, 2 missed, 1 timeout** (666 + 43 + 2 + 1 = 712). `missed.txt`
+    held exactly:
+    ```
+    crates/panini-prakriya/src/tinanta/adesha.rs:574:30: replace + with *
+    crates/panini-prakriya/src/tinanta/tripadi.rs:1186:38: replace - with /
+    ```
+    (test phases 84.50s and 77.80s under this campaign's `-j 4`
+    contention, vs. 78.70s/78.55s in the isolated Step 3 probe above — the
+    same two documented equivalents, at 3852-cell positions). `timeout.txt`
+    held exactly:
+    ```
+    crates/panini-prakriya/src/tinanta/tripadi.rs:1506:23: replace -= with /=
+    ```
+    the known-permanent ṇatva backward-scan mutant (drifted 1448 → 1506),
+    which ran the full 600.01s. **Diffed against the 2026-09-11 campaign's
+    recorded outcomes, the non-caught set is identical in shape and
+    different only in position**: 692 → 712 mutants (+20, all landing in
+    the caught bucket: 646 → 666), unviable flat at 43, missed still
+    exactly the same two equivalents (adesha.rs's `+`/`*` im arm,
+    tripadi.rs's `-`/`/` ḍho ḍhe lopaḥ arm), timeout still exactly the same
+    permanent tripadi.rs ṇatva scan — this is the clean result. `outcomes.json`
+    is kept at
+    `/home/dev/mutants-records/juhotyadi-3c/mutants.out/outcomes.json`.
+    Caught-mutant test-phase durations: min **0.10s**, median **31.55s**,
+    p90 **76.80s**, p99 **105.05s**, max **121.55s**.
+    **Two margins, measured, not projected:**
+    - Against the longest full uncaught run (84.50s, at full `-j 4`
+      contention — 1.21× the 69.998s floor): 600 / 84.50 ≈ **7.10×**.
+    - Against the slowest caught mutant (121.55s): 600 / 121.55 ≈
+      **4.94×**.
+    **Ruling: keep 600.** Both margins comfortably clear 1×; the isolated
+    probe's 7.62× held to within ~7% under a full campaign's contention,
+    matching the 2026-09-11 entry's own ~8% probe-to-campaign drift.
   - `cargo-deny` + `cargo-audit` (supply-chain checks) — `mise run audit` runs
     `cargo audit && cargo deny check` and is expected to pass, including
     `cargo deny check advisories`.
@@ -1773,8 +1831,11 @@
   `abhyasa.rs` and cannot move a `guna.rs` line). The corpus
   stands at 3636 cells as of juhotyādi 3b. Juhotyādi 3c touched neither
   comment either; the corpus stands at 3852 cells as of 3c
-  (`controller.rs:153`'s anchor unchanged, `guna.rs:1666`'s drifted
-  further, to `guna.rs:1935`). A third,
+  (`controller.rs:153`'s anchor unchanged — re-confirmed empty
+  `git diff main -- crates/panini-prakriya/src/controller.rs` — and
+  `guna.rs:1666`'s drifted further, to `guna.rs:1939`: Task 9's own fix
+  round added four lines to `guna.rs`'s 6.1.78 justification, which sits
+  above it, after the line was first measured at `guna.rs:1935`). A third,
   `tinanta/tripadi.rs`'s comment on 8.2.30 (formerly the one calling √bhañj
   rudhādi's one cu-final curated root), was **not** left stale the same
   way: the 8.2.30/8.2.39 generalization slice rewrote it in place, since
