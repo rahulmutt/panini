@@ -1,5 +1,5 @@
-//! Saṃjñā, pada sanction and ending insertion: 1.1.20 (as the `GHU` set), 1.3.12, 1.3.66, 1.3.72,
-//! 1.3.78, 3.4.78, 1.3.9, 1.2.4.
+//! Saṃjñā, pada sanction and ending insertion: 1.1.20 (as the `GHU` set),
+//! 1.3.12, 1.3.66, 1.3.72, 1.3.78, 3.4.78, 1.3.9, 1.2.4.
 //!
 //! Ordered **BEFORE** 3.1.68 — the ending lives at `ENDING_PRE_SHAP`
 //! (index 3) and śap does not exist yet. See `super::terms`.

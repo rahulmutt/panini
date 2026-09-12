@@ -419,9 +419,11 @@ fn adaduh_trace_credits_6_4_112_not_usy_apadantat() {
 }
 
 #[test]
-fn dadate_trace_credits_6_4_112_not_akah_savarne() {
+fn dadaate_trace_credits_6_4_112_not_akah_savarne() {
     // dA Ā laT P.D. The ā goes by 6.4.112 before the kṅit Ate; 6.1.101
-    // would spell the same dadAte, which is why this is pinned.
+    // would spell the same dadAte, which is why this is pinned. (Named
+    // dadaate, not dadate, to distinguish this dadAte/prathama-dvi pin
+    // from the distinct dadate/prathama-bahu golden in the same block.)
     let (text, t) = cell_trace(
         "03.0010",
         Lakara::Lat,

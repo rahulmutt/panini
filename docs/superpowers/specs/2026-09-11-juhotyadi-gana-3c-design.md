@@ -177,8 +177,8 @@ both.
   takes `dA` + `AE` first instead. With the decline, 6.1.90's existing athematic
   arm sees `AE` and makes `E`. No prior is affected: √yā and √vā are
   parasmaipada only and never meet an āṭ + ec ending. **This decline is
-  form-neutral** — without it, 6.1.101 then 6.1.88 still spell *dadE* — so only
-  the *dadE* trace pin holds it.
+  form-neutral** — without it, 6.1.101 then 6.1.88 still spell *dadE* — so
+  this arm's guard test and the *dadE* trace pin together are what hold it.
 - **6.1.88 *vṛddhir eci*** — new, immediately after 6.1.90. When the aṅga ends
   in `A`, `SHAP` is empty and the ending begins with an ec: the aṅga loses its
   `A` and the ending's initial becomes its vṛddhi. *dadE*, *daDE*, *mimE*,

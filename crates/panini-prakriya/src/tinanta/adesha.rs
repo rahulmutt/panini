@@ -178,8 +178,11 @@ pub(crate) static ADESHA: &[Rule] = &[
     //   3.4.111, which is its sole witness today: 3.4.108 jher jus is
     //   vidhiliṅ-only, and by the time this rule runs in vidhiliṅ the yāsuṭ
     //   of 3.4.103 has already made the ending `yAus` (or `yus`, if the
-    //   ending arm fired). Every other cell reaches here with an ending that
-    //   is not `us` at all.
+    //   ending arm fired). 3.4.109's `us` (laṅ prathama bahu) also reaches
+    //   here bare, but with a consonant immediately before it — ajuhavuH's
+    //   `v` (6.1.78's glide) and adaduH's elided `d` (6.4.112 has already
+    //   removed the ā) — so the junction arm declines on its a/ā test
+    //   rather than on the ending.
     Rule {
         id: "6.1.96",
         name: "usyapadAntAt",
@@ -443,6 +446,9 @@ pub(crate) static ADESHA: &[Rule] = &[
     // 6.1.88 vṛddhir eci: an a-varṇa followed by an ec coalesces into the
     // ec's vṛddhi. da + dA + E → da + d + E (dadE; mimE, jihE, daDE), after
     // 6.1.90's athematic arm has merged the loṭ uttama āṭ into its ending.
+    // Implemented scope is the ā-final aṅga only (`strip_suffix('A')`): no
+    // root in the curated set ever presents a short-a-final aṅga with an
+    // otherwise-empty ślu'd śap, so a short `a` arm has never been reachable.
     //
     // The ā is the aṅga's own and the ec begins the ending, with the empty
     // ślu'd śap as the adjacency. A non-empty SHAP puts a vikaraṇa between
@@ -1355,6 +1361,21 @@ mod tests {
     }
 
     #[test]
+    fn akah_savarne_dirghah_adadi_arm_declines_for_the_ecs_matches_set_admits_besides_e() {
+        // "AE" above is the corpus-real case; `matches!` after the `A` also
+        // admits 'e', 'o' and 'O', none of which any golden reaches. "Ao" is
+        // a guard-only witness: narrowing the set to just 'E' would make this
+        // arm wrongly fire and coalesce "Ao" -> "o".
+        let rule = rules().find(|r| r.id == "6.1.101").unwrap();
+        let mut p = Prakriya {
+            terms: with_slots(vec![Term::new("dA"), Term::new(""), Term::new("Ao")]),
+            ..Default::default()
+        };
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[ENDING].text, "Ao");
+    }
+
+    #[test]
     fn akah_savarne_dirghah_adadi_arm_still_fires_where_no_at_ec_follows() {
         // dadAni / dadAvahE: the āṭ is followed by a consonant, so 6.1.90 has
         // no ekādeśa to make and 6.1.101 takes dA + A as before. `aE` is the
@@ -1378,17 +1399,20 @@ mod tests {
         // "E" (identity), so this row alone cannot tell the vṛddhi
         // substitution from a no-op copy.
         //
-        // "eti" and "o" are hand-built guard witnesses, not attested corpus
-        // endings -- the same corpus-real/unit-test-only split `vrddhi_of`
-        // documents for its own arms (sound.rs:18-22). "eti": `vrddhi_of('e')`
-        // is "E", not 'e', so this pins the substitution itself against an
-        // identity mutant, and its multi-char tail "ti" pins `{rest}` -- a
-        // mutant dropping `{rest}` from the format string would yield "E"
-        // instead of "Eti". "o": `vrddhi_of('o')` is "O", the other pair
-        // `matches!` admits besides e/E, so this pins that arm against a
-        // mutant narrowing the guard to just 'e'/'E'.
+        // "eti", "o" and "Oti" are hand-built guard witnesses, not attested
+        // corpus endings -- the same corpus-real/unit-test-only split
+        // `vrddhi_of` documents for its own arms (sound.rs:18-22). "eti":
+        // `vrddhi_of('e')` is "E", not 'e', so this pins the substitution
+        // itself against an identity mutant, and its multi-char tail "ti"
+        // pins `{rest}` -- a mutant dropping `{rest}` from the format string
+        // would yield "E" instead of "Eti". "o": `vrddhi_of('o')` is "O",
+        // one of the other two `matches!` admits besides e/E. "Oti":
+        // `vrddhi_of('O')` is "O" (identity, like "E" above), so its
+        // multi-char tail is what pins it against a mutant narrowing the
+        // guard to exclude 'O' -- without this row that alternative has no
+        // witness at all.
         let rule = rules().find(|r| r.id == "6.1.88").unwrap();
-        for (ending, want_ending) in [("E", "E"), ("eti", "Eti"), ("o", "O")] {
+        for (ending, want_ending) in [("E", "E"), ("eti", "Eti"), ("o", "O"), ("Oti", "Oti")] {
             let mut p = Prakriya {
                 terms: with_slots(vec![Term::new("dA"), Term::new(""), Term::new(ending)]),
                 ..Default::default()

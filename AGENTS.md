@@ -1279,11 +1279,12 @@
     is the gate a narrowing slice would need — an over-narrowed candidate
     set shows up there as a roundtrip failure.
     **2026-09-12 — slice 3c re-measured both at 3852 cells.** The suite grew
-    3636 → 3852 cells (**+5.94%**, four new juhotyādi ātmanepada roots: √dā,
-    √dhā, √mā, √hā). Uncontended floor: paradigm 29.26s, roundtrip 34.38s,
-    trace 5.00s — wall clock **69.998s**, up from 65.01s (**+7.67%**), with
-    `roundtrip_sampled` alone moving 31.30s → 34.38s (**+9.84%**), again
-    outpacing the cell count as the series predicts — take the floor by
+    3636 → 3852 cells (**+5.94%**, four new juhotyādi roots: √dā and √dhā
+    (ubhayapadī), √mā and √hā (ātmanepadī)). Uncontended floor: paradigm
+    29.26s, roundtrip 34.38s, trace 5.00s — wall clock **69.998s**, up from
+    65.01s (**+7.67%**), with `roundtrip_sampled` alone moving 31.30s →
+    34.38s (**+9.84%**), again outpacing the cell count as the series
+    predicts — take the floor by
     measurement, never by cell count. At `-j 4`, the same two documented
     equivalents ran full UNCAUGHT test phases of 78.70s
     (`adesha.rs:574:30`, `replace + with *`) and 78.55s

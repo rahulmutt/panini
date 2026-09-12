@@ -983,6 +983,14 @@ pub(crate) static GUNA: &[Rule] = &[
     // own final ā, so its follower IS what follows the aṅga — under ślu the
     // empty śap makes that the ending, which in vidhiliṅ carries yāsuṭ on its
     // text and Ngit from 3.4.103 (6.4.115's reasoning, below).
+    //
+    // Each arm below `return`s as soon as its own SHAP == "nA" branch is
+    // settled, rather than falling through to test the abhyasta branch too.
+    // That is safe only because the two conditions are mutually exclusive in
+    // every reachable prakriyā: kryādi's śnā never reduplicates, so nothing
+    // carries `Tag::Abhyasta` while SHAP is "nA", and ślu leaves SHAP empty
+    // for every abhyasta gaṇa. A future gaṇa that combined the two would
+    // silently fall into the śnā arm and never reach the abhyasta one.
 
     // 6.4.113 ī halyaghoḥ: the ā of śnā or of an abhyasta aṅga becomes `ī`
     // before a kṅit sārvadhātuka beginning with a consonant, except for the

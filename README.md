@@ -132,24 +132,22 @@ anudātta marker (1.3.12), and while vidyut-prakriya additionally derives a
 parasmaipada `vanoti` via the gaṇasūtra Kaumudī 2547.2, that is recorded
 here, not modelled, on 1.3.72's own sense-restriction precedent, so this
 engine's √van has no parasmaipada branch to collide against.
-Forty-four surfaces are pada-ambiguous, each of them a pinned cell in both
-padas at once:
-`ArRuta`, `BinttAm`, `BuNktAm`, `CfnttAm`, `CinttAm`, `GfRutAm`, `aBintta`,
-`aBuNkta`, `aGfRuta`, `acCfntta`, `acCintta`, `akuruta`, `akzaRuta`,
-`akziRuta`, `akzuntta`, `anayata`, `ariNkta`, `arundDa`, `asanuta`,
-`atanuta`, `atfRuta`, `atfntta`, `atudata`, `aviNkta`, `ayuNkta`, `fRutAm`,
-`kurutAm`, `kzaRutAm`, `kziRutAm`, `kzunttAm`, `nayatAm`, `nayetAm`,
-`nayeta`, `riNktAm`, `rundDAm`, `sanutAm`, `tanutAm`, `tfRutAm`, `tfnttAm`,
-`tudatAm`, `tudetAm`, `tudeta`, `viNktAm` and
-`yuNktAm` — `rundDAm`, for
-instance, is √rudh's loṭ parasmaipada prathama dvi *and* its loṭ ātmanepada
-prathama eka, and tanādi's seven ubhayapadī roots contribute a new shape:
-`atanuta` is both √tan's laṅ ātmanepada prathama eka and its laṅ
-parasmaipada madhyama bahu, and `tanutAm` is both its loṭ ātmanepada
-prathama eka and its loṭ parasmaipada prathama dvi. √kṛ (slice 8b)
-contributes the same shape: `akuruta` (laṅ ātmanepada prathama eka /
-parasmaipada madhyama bahu) and `kurutAm` (loṭ ātmanepada prathama eka /
-parasmaipada prathama dvi). That enumeration is no longer maintained by hand:
+Forty-eight surfaces are pada-ambiguous, each of them a pinned cell in both
+padas at once: `ArRuta`, `BinttAm`, `BuNktAm`, `CfnttAm`, `CinttAm`, `DattAm`,
+`GfRutAm`, `aBintta`, `aBuNkta`, `aDatta`, `aGfRuta`, `acCfntta`, `acCintta`,
+`adatta`, `akuruta`, `akzaRuta`, `akziRuta`, `akzuntta`, `anayata`, `ariNkta`,
+`arundDa`, `asanuta`, `atanuta`, `atfRuta`, `atfntta`, `atudata`, `aviNkta`,
+`ayuNkta`, `dattAm`, `fRutAm`, `kurutAm`, `kzaRutAm`, `kziRutAm`, `kzunttAm`,
+`nayatAm`, `nayetAm`, `nayeta`, `riNktAm`, `rundDAm`, `sanutAm`, `tanutAm`,
+`tfRutAm`, `tfnttAm`, `tudatAm`, `tudetAm`, `tudeta`, `viNktAm` and `yuNktAm` —
+`rundDAm`, for instance, is √rudh's loṭ parasmaipada prathama dvi *and* its loṭ
+ātmanepada prathama eka, and tanādi's seven ubhayapadī roots contribute a new
+shape: `atanuta` is both √tan's laṅ ātmanepada prathama eka and its laṅ
+parasmaipada madhyama bahu, and `tanutAm` is both its loṭ ātmanepada prathama
+eka and its loṭ parasmaipada prathama dvi. √kṛ (slice 8b) contributes the same
+shape: `akuruta` (laṅ ātmanepada prathama eka / parasmaipada madhyama bahu) and
+`kurutAm` (loṭ ātmanepada prathama eka / parasmaipada prathama dvi). That
+enumeration is no longer maintained by hand:
 `pada_ambiguous_surfaces_are_exactly_these` in
 `crates/panini/tests/paradigm/main.rs` walks `PARADIGM` and asserts exactly this
 set. It is therefore a list of ambiguous **pinned cells**. An *alternate* form
