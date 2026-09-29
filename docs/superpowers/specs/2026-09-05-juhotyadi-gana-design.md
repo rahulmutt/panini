@@ -379,6 +379,9 @@ Each gets its own spec, starting from this table and the appendix.
 > table's 3c row: 3c took √dā, √dhā, √mā and √hā (ātmanepada), 216 cells;
 > √hā (parasmaipada) and √gā became slice 3c2.
 
+> Slice 3c2 (`2026-09-29-juhotyadi-gana-3c2-design.md`) took √hā
+> (parasmaipada) and √gā, 72 cells, and added `Rule.bars` for 6.4.117.
+
 ## Appendix: vidyut's inventory at `8da2f90b`
 
 Per root, over four lakāras and both padas where derivable:

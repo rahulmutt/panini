@@ -681,7 +681,7 @@ pub(crate) static GUNA: &[Rule] = &[
     // after its apavāda 6.4.82 — because every ī/ū-final curated root is
     // already past it by then: √bhū and √nī have guṇated (`Bo`, `ne`, śap
     // being pit so 1.1.5 does not block), √śī has guṇated by 7.4.21, and
-    // √vrī's follower is the hal-initial śnā. The 3852 byte-identical
+    // √vrī's follower is the hal-initial śnā. The 3924 byte-identical
     // priors are what turn that from an argument into a proof.
     //
     // THE UVAṄ HALF IS NOT WRITTEN. `U` → `uv` has no cell in the suite —
@@ -781,7 +781,7 @@ pub(crate) static GUNA: &[Rule] = &[
     },
     // 6.1.78 eco'yavāyāvaḥ: e/o before a vowel → ay/av. The sūtra also covers
     // E/O → Ay/Av, but those two arms are dropped here: within the current
-    // 85-root × 4-lakāra grammar, ANGA can never end in a vṛddhi vowel (E/O)
+    // 87-root × 4-lakāra grammar, ANGA can never end in a vṛddhi vowel (E/O)
     // at the point this rule runs. `vrddhi_of` (the only source of E/O in
     // this engine) is called from four places in two rules: three in 6.1.90
     // — the aṅga arm writes the vṛddhi vowel at *position 0* of the aṅga

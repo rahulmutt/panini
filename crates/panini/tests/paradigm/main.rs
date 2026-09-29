@@ -397,7 +397,10 @@ fn derivation_set_is_exactly_pinned() {
 /// audit re-ran the same probe against vidyut-prakriya at the same commit
 /// `8da2f90bee3ce1c07505fa432fc3729e3f7e02ea` over all 3852 cells / 4823
 /// forms / 85 roots with zero differences, its `entry` negative control
-/// verified failing (36 √bhū cells). √tṛh
+/// verified failing (36 √bhū cells), and juhotyādi 3c2's re-ran the same probe
+/// at the same commit over all 3924 cells / 4926 forms / 87 roots with zero
+/// differences, its `entry` negative control verified failing (36 √bhū
+/// cells). √tṛh
 /// joins none of the fork records: its deepest cells hold three forms,
 /// because 8.3.13 Qo Qe lopaH
 /// obligatorily elides the ḍh that 8.4.65 forks on for every other

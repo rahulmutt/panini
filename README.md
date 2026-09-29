@@ -29,7 +29,7 @@ and 6.4.109 *ye ca* — and 8.2.77 *hali ca*'s own guard, 8.2.79 *na
 bhakurchurām*, which declines 8.2.77's lengthening on √kṛ's `kur` aṅga
 (`kurvanti`, not `*kUrvanti`) — and *juhotyādi* (3, the ślu gaṇa: 2.4.75
 elides śap by ślu and 6.1.10 reduplicates the root into the `ABHYASA`
-slot), **partial** at 8 of its 26 dhātupāṭha rows, √hu (`03.0001`,
+slot), **partial** at 10 of its 26 dhātupāṭha rows, √hu (`03.0001`,
 *juhoti*) and √ki (`03.0020`, *ciketi*), curated in slice 3a behind
 7.4.62 *kuhoś cuḥ*, 7.1.4 *ad abhyastāt*, 3.4.109 with 7.3.83 *jusi ca*,
 6.4.82 *er anekāco'saṁyogapūrvasya* and 8.4.54 *abhyāse car ca*, with
@@ -49,7 +49,12 @@ curated in slice 3c behind the dhātupāṭha number reaching the pipeline —
 too — and 7.4.76 *bhṛñām it*, 6.4.119 *ghvasor eddhāv abhyāsalopaś ca*,
 6.1.88 *vṛddhir eci* and 8.2.38 *dadhas tathoś ca* (run after 8.4.54, out of
 sūtra order), with 6.4.113 moved above 6.4.112 and both given abhyasta
-arms, and 8.2.40 given its *adhaḥ*. rudhādi is
+arms, and 8.2.40 given its *adhaḥ*. Slice 3c2 added √hā parasmaipada
+(`03.0009`, *jahāti*) and √gā (`03.0026`, *jigāti*, by the chāndasa 7.4.78 on
+the Kaumudī's authority), with 6.4.118 *lopo yi* and two more vikalpas, 6.4.116
+*jahāteś ca* and 6.4.117 *ā ca hau*. The latter changes no text and instead bars
+the rules that would, the first rule to declare an apavāda relation
+(`Rule.bars`). rudhādi is
 complete at all
 twenty-five of its own roots (√kṛt, √hiṃs, √khid, √bhañj, √piṣ, √indh, √rudh,
 and — curated in slice 7c — √bhid, √kṣud, √yuj and √tṛd, and — curated in
@@ -73,19 +78,20 @@ rather than falling through to 1.3.72. What 1.3.66 does not model is the
 1.3.72's own precedent,
 since neither engine models sense. *parasmaipada* and *ātmanepada*
 (which padas a root admits is a curated verdict on its table row), over a
-curated 85-root set, in four lakāras: *laṭ* (present), *laṅ* (imperfect), *loṭ*
+curated 87-root set, in four lakāras: *laṭ* (present), *laṅ* (imperfect), *loṭ*
 (imperative), and *vidhiliṅ* (optative). A cell may have more than one valid
 form where an optional (*vikalpa*) sūtra applies — `hinvaH` and `hinuvaH` are
-both correct — and in fact 719 of the 3852 cells hold more than one form: 554
-hold two, 121 hold three (`Bavatu`, `BavatAd`, `BavatAt`, and — new in
+both correct — and in fact 740 of the 3924 cells hold more than one form: 571
+hold two, 123 hold three (`Bavatu`, `BavatAd`, `BavatAt`, and — new in
 slice 3b — √hrī's loṭ prathama and madhyama eka, and — new in slice 3c —
-√dā's and √dhā's, each by 7.1.35/8.4.56), eighteen hold four
+√dā's and √dhā's, and — new in slice 3c2 — √gā's, each by 7.1.35/8.4.56), eighteen hold four
 (rudhādi's √piṣ loṭ madhyama eka, and — new in slice 7d — √śiṣ's, and — new
 in slice 8a — fifteen more spread across tanādi's four ik-upadhā roots kziR,
 fR, tfR and GfR, and — new in slice 3b — √bhī's vidhiliṅ prathama eka,
-forking on 6.4.115 alongside 8.4.56), nine hold
+forking on 6.4.115 alongside 8.4.56), ten hold
 five (and, new in slice 3b, √bhī's loṭ prathama eka, forking on
-7.1.35/6.4.115/8.4.56), and seventeen hold six — the loṭ
+7.1.35/6.4.115/8.4.56, and — new in slice 3c2 — √hā's, forking on
+7.1.35/6.4.116/8.4.56), and seventeen hold six — the loṭ
 parasmaipada madhyama eka of rudhādi's √kṛt, √rudh, √bhid, √kṣud, √tṛd, √und
 and — new in slice 7f — √chid and √chṛd (eight cells), tied for the record
 until this slice, each holding
@@ -106,8 +112,10 @@ alternation stands in its place — fR's own prathama eka holds `fRotu` /
 to seventeen): `biBIhi` / `biBihi` / `biBItAd` / `biBitAd` / `biBItAt` /
 `biBitAt`, reaching six by 7.1.35/6.4.115/8.4.56 — a third distinct k = 3
 stack against the same 2³ bound of eight, beside rudhādi's 8.4.65 route and
-tanādi's 7.3.86 route. Nothing in the suite
-forks deeper than six. fR's own laṅ cells — all eighteen of them, both
+tanādi's 7.3.86 route. One cell — new in slice 3c2 — holds seven: √hā's (`03.0009`) loṭ
+parasmaipada madhyama eka, `jahIhi` / `jahihi` / `jahAhi` / `jahItAd` /
+`jahItAt` / `jahitAd` / `jahitAt`, where 6.4.117 *ā ca hau* keeps the `A` by
+barring the rules that would change it. Nothing forks deeper than seven. fR's own laṅ cells — all eighteen of them, both
 padas — show a different mechanism: each is 7.3.86-eligible, but the guṇa
 and aguṇa branches always converge on the same surface once 6.1.90's
 āṭ-vṛddhi ekādeśa merges the augment into `f`, so none of the eighteen

@@ -1,5 +1,5 @@
-//! Reduplication: 6.1.10, 7.4.60, 7.4.59, 7.4.62, 7.4.76 — dvitva and the rules that
-//! reshape the abhyāsa.
+//! Reduplication: 6.1.10, 7.4.60, 7.4.59, 7.4.62, 7.4.76, 7.4.78 — dvitva and the
+//! rules that reshape the abhyāsa.
 //!
 //! Ordered AFTER 3.1.68 (ending at `ENDING`, śap at `SHAP` — empty on
 //! exactly the path this stage cares about) and BEFORE `anga`, so 6.4.71
@@ -72,7 +72,7 @@ pub(crate) static ABHYASA_RULES: &[Rule] = &[
     //
     // The no-op guard is 8.4.53's: for a single-consonant abhyāsa the result
     // equals the input, and the rule must record nothing there or every √hu,
-    // √ki and √bhī trace grows a step and the 3852 priors break.
+    // √ki and √bhī trace grows a step and the 3924 priors break.
     Rule {
         id: "7.4.60",
         name: "halAdiH SezaH",
@@ -356,7 +356,7 @@ mod tests {
     fn haladih_shesha_records_nothing_for_a_single_initial_consonant() {
         // The no-op guard. √hu, √ki and √bhī all have one initial consonant,
         // so 7.4.60 must return false and leave the log empty — otherwise
-        // every one of their traces grows a step and the 3852 priors break.
+        // every one of their traces grows a step and the 3924 priors break.
         let r_10 = rules().find(|r| r.id == "6.1.10").unwrap();
         let r_60 = rules().find(|r| r.id == "7.4.60").unwrap();
         for root in ["hu", "ki", "BI"] {
