@@ -1384,7 +1384,7 @@
     phase) still holds, but the margin fell from 7.10× to 5.16× in one
     small slice and the campaign's phases ran 1.45× the floor against
     the 1.12× probe. The next suite growth will likely need the cap raised
-    (6 × 116.26s, rounded up, is 800s).
+    (6 × 116.26s = 697.56s, rounded up to the next 100s, is 700s).
   - `cargo-deny` + `cargo-audit` (supply-chain checks) — `mise run audit` runs
     `cargo audit && cargo deny check` and is expected to pass, including
     `cargo deny check advisories`.
