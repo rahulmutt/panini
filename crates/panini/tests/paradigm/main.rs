@@ -288,8 +288,9 @@ fn derivation_set_is_exactly_pinned() {
 /// 4176 cells total (464 root×lakāra blocks × 9), of which 3418 hold exactly
 /// one form, 577 hold two, 135 hold three (√hrī's loṭ prathama and madhyama
 /// eka, new in slice 3b, √dā's and √dhā's, new in slice 3c, and √gā's, new in
-/// slice 3c2, and the six ṛ-roots', new in slice 3d, each by 7.1.35/8.4.56), eighteen hold four (piṣ's loṭ madhyama eka, the deepest fork
-/// added in 7b, Siz's loṭ parasmaipada madhyama eka (slice 7d), and — new in
+/// slice 3c2, and the six ṛ-roots', new in slice 3d, each by
+/// 7.1.35/8.4.56), eighteen hold four (piṣ's loṭ madhyama eka, the deepest
+/// fork added in 7b, Siz's loṭ parasmaipada madhyama eka (slice 7d), and — new in
 /// slice 8a — fifteen more spread across the four ik-upadhā tanādi roots
 /// kziR/fR/tfR/GfR; √kṛ, slice 8b, adds none to this bucket; and — new in slice
 /// 3b — √bhī's vidhiliṅ prathama eka, forking on 6.4.115 alongside 8.4.56), and
@@ -400,9 +401,10 @@ fn derivation_set_is_exactly_pinned() {
 /// verified failing (36 √bhū cells), and juhotyādi 3c2's re-ran the same probe
 /// at the same commit over all 3924 cells / 4926 forms / 87 roots with zero
 /// differences, its `entry` negative control verified failing (36 √bhū
-/// cells). √tṛh
-/// joins none of the fork records: its deepest cells hold three forms,
-/// because 8.3.13 Qo Qe lopaH
+/// cells), and juhotyādi 3d's re-ran it at the same commit over all 4176
+/// cells / 5208 forms / 93 roots with zero differences, its `entry` negative
+/// control verified failing (36 √bhū cells). √tṛh joins none of the fork
+/// records: its deepest cells hold three forms, because 8.3.13 Qo Qe lopaH
 /// obligatorily elides the ḍh that 8.4.65 forks on for every other
 /// stop-final rudhādi root.
 ///
@@ -556,8 +558,8 @@ fn derivation_set_is_exactly_pinned() {
 /// √pṛ (`03.0005`), √bhṛ (`03.0006`, ubhayapadī by 1.3.72), √ghṛ (`03.0015`),
 /// √hṛ (`03.0016`) and √sṛ (`03.0018`) — bringing the gaṇa to sixteen of its
 /// twenty-six rows. Its machinery (7.4.66, the widened 7.4.60, 7.4.76's √bhṛñ
-/// row, 7.4.77, 7.1.102, 6.1.77's aṅga arm, 8.2.77 on the ślu path) adds no
-/// vikalpa and no fork kind. Each parasmaipada column forks exactly where every
+/// row, 7.4.77, 7.1.102, 6.1.77's aṅga arm, 8.2.77 on the ślu path, 8.3.59's
+/// `r` arm) adds no vikalpa and no fork kind. Each parasmaipada column forks exactly where every
 /// -oti parasmaipada root does: vidhiliṅ prathama eka on 8.4.56
 /// (`biBfyAd`/`biBfyAt`) and the two loṭ tātaṅ cells three ways
 /// (`biBartu`/`biBftAd`/`biBftAt`, `biBfhi`/`biBftAd`/`biBftAt`). Laṅ prathama
@@ -602,7 +604,9 @@ fn derivation_set_shape_matches_the_audited_numbers() {
     assert_eq!(
         threes, 135,
         "three-form cells — new in slice 3b — √hrī's loṭ prathama and madhyama eka, each by \
-         7.1.35/8.4.56; and — new in slice 3c — √dā's and √dhā's, the same way; and — new in slice 3c2 — √gā's, the same way; and — new in slice 3d — the six ṛ-roots', the same way"
+         7.1.35/8.4.56; and — new in slice 3c — √dā's and √dhā's, the same way; and — new in \
+         slice 3c2 — √gā's, the same way; and — new in slice 3d — the six ṛ-roots', the same \
+         way"
     );
     assert_eq!(
         fours, 18,

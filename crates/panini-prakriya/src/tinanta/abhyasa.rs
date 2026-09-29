@@ -1,5 +1,5 @@
-//! Reduplication: 6.1.10, 7.4.66, 7.4.60, 7.4.59, 7.4.62, 7.4.76, 7.4.77, 7.4.78 — dvitva and the
-//! rules that reshape the abhyāsa.
+//! Reduplication: 6.1.10, 7.4.66, 7.4.60, 7.4.59, 7.4.62, 7.4.76, 7.4.77,
+//! 7.4.78 — dvitva and the rules that reshape the abhyāsa.
 //!
 //! Ordered AFTER 3.1.68 (ending at `ENDING`, śap at `SHAP` — empty on
 //! exactly the path this stage cares about) and BEFORE `anga`, so 6.4.71
@@ -10,13 +10,14 @@
 //! stem and shortens the copy back by 7.4.59 (*ho ho* → *hu ho*); this
 //! engine follows the Kaumudī's order — ślu, dvitva, abhyāsa-kārya, then
 //! guṇa — and copies the bare root, so 7.4.59 *hrasvaḥ* (slice 3b) fires
-//! only on the long-vowel roots it names. The same choice makes 7.4.66 *ur
-//! at* (slice 3d) fire on every cell of a ṛ-root, where vidyut's fires only on
-//! the kṅit ones. The two orders give the same
-//! forms for all 26 juhotyādi roots (the spec's appendix probe); the audit
-//! compares form sets, not traces, so the divergence is visible only in
-//! this engine's own trace pins, which pin THIS order (juhoti: 6.1.10 <
-//! 7.4.62 < 7.3.84).
+//! only on the long-vowel roots it names. The same choice makes 7.4.66
+//! *ur at* (slice 3d) fire on every cell of a ṛ-root, where vidyut's fires
+//! only on the kṅit ones, and puts 7.1.102 *ud oṣṭhyapūrvasya* (in `guna`)
+//! after dvitva, on the aṅga alone. The two orders give the same forms for
+//! all 26 juhotyādi roots (the spec's appendix probe); the audit compares
+//! form sets, not traces, so the divergence is visible only in this
+//! engine's own trace pins, which pin THIS order (juhoti: 6.1.10 < 7.4.62
+//! < 7.3.84).
 //!
 //! 6.1.4 *pūrvo'bhyāsaḥ* and 6.1.5 *ubhe abhyastam* are saṁjñā verdicts
 //! and live as tags set here (`Tag::Abhyasa`, `Tag::Abhyasta`), not as
@@ -411,9 +412,10 @@ mod tests {
 
     #[test]
     fn haladih_shesha_keeps_only_the_first_consonant_of_the_abhyasa() {
-        // 7.4.60. √hrī's abhyāsa `hrI` loses its r: jihreti. This is the only cluster-initial row in the whole gaṇa;
-        // slice 3d's ṛ-roots witness the rule's other arm, a non-initial
-        // consonant after the vowel.
+        // 7.4.60. √hrī's abhyāsa `hrI` loses its r: jihreti. This is the
+        // only cluster-initial row in the whole gaṇa; slice 3d's ṛ-roots
+        // witness the rule's other arm, a non-initial consonant after the
+        // vowel.
         let mut p = slu_prakriya("hrI", "ti");
         let r_10 = rules().find(|r| r.id == "6.1.10").unwrap();
         assert!((r_10.apply)(&mut p));
@@ -429,7 +431,7 @@ mod tests {
     fn haladih_shesha_records_nothing_for_a_single_initial_consonant() {
         // The no-op guard. √hu, √ki and √bhī all have one initial consonant,
         // so 7.4.60 must return false and leave the log empty — otherwise
-        // every one of their traces grows a step and the 3924 priors break.
+        // every one of their traces grows a step and the priors break.
         let r_10 = rules().find(|r| r.id == "6.1.10").unwrap();
         let r_60 = rules().find(|r| r.id == "7.4.60").unwrap();
         for root in ["hu", "ki", "BI"] {
@@ -444,14 +446,14 @@ mod tests {
 
     #[test]
     fn haladih_shesha_declines_for_a_vowel_initial_abhyasa() {
-        // √ṛ (slice 3d2) is the vowel-initial row, and vidyut does trim
-        // its abhyāsa (ar → a); 3d2 revisits this guard. *halādiḥ* names a consonant, so
-        // the rule has nothing to keep and must not touch the term. `f`
-        // alone cannot kill the guard, though: a single-character abhyāsa
-        // already declines via the no-op check below, guard or no guard.
-        // `ap` is the guard's real witness — no curated root has this
-        // shape, but without the guard a vowel-initial abhyāsa followed by
-        // a consonant would fall through to the tail computation and be
+        // √ṛ (slice 3d2) is the vowel-initial row, and vidyut does trim its
+        // abhyāsa (ar → a); 3d2 revisits this guard. *halādiḥ* names a
+        // consonant, so the rule has nothing to keep and must not touch the
+        // term. `f` alone cannot kill the guard, though: a single-character
+        // abhyāsa already declines via the no-op check below, guard or no
+        // guard. `ap` is the guard's real witness — no curated root has this
+        // shape, but without the guard a vowel-initial abhyāsa followed by a
+        // consonant would fall through to the tail computation and be
         // wrongly truncated to `a`.
         let r_10 = rules().find(|r| r.id == "6.1.10").unwrap();
         let r_60 = rules().find(|r| r.id == "7.4.60").unwrap();

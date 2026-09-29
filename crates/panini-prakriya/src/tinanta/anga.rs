@@ -27,7 +27,7 @@ pub(crate) static ANGA_RULES: &[Rule] = &[
     // first consonant, 7.4.62 substitutes consonant for consonant, 7.4.66
     // and 7.4.77 vowel for vowel. Reading the abhyāsa instead would add a
     // clause no 3a root can falsify (both are consonant-initial), so the
-    // ANGA read stays; slice 3d's √ṛ (iyarti, aiyaḥ) is the vowel-initial
+    // ANGA read stays; slice 3d2's √ṛ (iyarti, aiyaḥ) is the vowel-initial
     // row that re-checks this argument against a live witness.
     Rule {
         id: "6.4.71",

@@ -85,11 +85,12 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // 8.2.77 hali ca: a root ending in `r`/`v` with a short ik upadhā
     // lengthens that upadhā before a hal (8.2.76 rvorupadhāyā dīrghaḥ is the
     // anuvṛtti source). div, after guṇa is blocked, reaches this shape:
-    // div + śyan (y-initial) → dīv → dīvyati. Self-guards on shape; no other
-    // curated root fires it (sev has an e-upadhā, vart ends in t) — except
-    // √kṛ's own `kur` (6.4.110, `tinanta/guna.rs`), which this rule's shape
-    // guard matches just as readily (short `u` upadhā, `r` final) and which
-    // 8.2.79 na BakurCurAm below carves back out.
+    // div + śyan (y-initial) → dīv → dīvyati. Self-guards on shape; one
+    // other curated root fires it (sev has an e-upadhā, vart ends in t):
+    // √pṝ's `pur` (7.1.102, juhotyādi 3d), which meets a hal-initial ending
+    // across ślu's empty SHAP (pipUrtaH). √kṛ's own `kur` (6.4.110,
+    // `tinanta/guna.rs`) matches the shape guard just as readily (short `u`
+    // upadhā, `r` final), and 8.2.79 na BakurCurAm below carves it back out.
     Rule {
         id: "8.2.77",
         name: "hali ca",
@@ -117,12 +118,13 @@ pub(crate) static TRIPADI: &[Rule] = &[
             }
             // The segment the aṅga meets: śap when it has text, else the
             // ending. Juhotyādi's ślu (2.4.75) empties SHAP, so √pṝ's `pur`
-            // meets the ending directly (pipUrtaH) — generalized in slice 3d on
-            // 6.1.78's athematic arm, which falls back to `p.terms[ENDING]` the
-            // same way. Adādi's luk (2.4.72) takes the same path, but no curated
-            // adādi aṅga ends in r/v after i/u. Open-coded rather than calling
-            // `following_sarvadhatuka`, as the follower lookups in this crate
-            // are, so each keeps its own mutation pin.
+            // meets the ending directly (pipUrtaH) — generalized in slice 3d
+            // on 6.1.78's athematic arm, which falls back to
+            // `p.terms[ENDING]` the same way. Adādi's luk (2.4.72) takes the
+            // same path, but no curated adādi aṅga ends in r/v after i/u.
+            // Open-coded rather than calling `following_sarvadhatuka`, as the
+            // follower lookups in this crate are, so each keeps its own
+            // mutation pin.
             let follower = match p.terms.get(SHAP) {
                 Some(t) if !t.text.is_empty() => Some(t),
                 Some(_) => p.terms.get(ENDING),

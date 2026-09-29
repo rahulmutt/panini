@@ -649,8 +649,9 @@ pub(crate) static GUNA: &[Rule] = &[
     // ABHYASA ++ ANGA is conservative, since an included aṭ could only add
     // a vowel and make *anekāc* fire where it currently declines — and it
     // is unreachable in 3a regardless, because 7.3.83 pre-empts every laṅ
-    // cell that could otherwise reach this rule. Recorded so slice 3d does
-    // not have to rediscover the question.
+    // cell that could otherwise reach this rule. Recorded so a later slice
+    // does not have to rediscover the question (3d's ṛ-roots, not i-final,
+    // never reach this rule).
     //
     // ORDER: after 7.3.84, or the loṭ uttama cells break — Ani is pit, so
     // cikayAni takes guṇa (ke) and then 6.1.78 (kay); a 6.4.82 that saw
@@ -723,7 +724,7 @@ pub(crate) static GUNA: &[Rule] = &[
     // after its apavāda 6.4.82 — because every ī/ū-final curated root is
     // already past it by then: √bhū and √nī have guṇated (`Bo`, `ne`, śap
     // being pit so 1.1.5 does not block), √śī has guṇated by 7.4.21, and
-    // √vrī's follower is the hal-initial śnā. The 3924 byte-identical
+    // √vrī's follower is the hal-initial śnā. The 4176 byte-identical
     // priors are what turn that from an argument into a proof.
     //
     // THE UVAṄ HALF IS NOT WRITTEN. `U` → `uv` has no cell in the suite —
@@ -788,16 +789,17 @@ pub(crate) static GUNA: &[Rule] = &[
     // śnu — 6.4.87 (yaṇ, now self-guarded to `nu`) and 6.4.77 (uvaṅ) —
     // ordered above it as apavādas are elsewhere; neither can contend here,
     // since both test śnu's text and this rule tests the bare `u`.
-    // vidyut-prakriya credits exactly this
-    // sūtra for these cells.
+    // vidyut-prakriya credits exactly this sūtra for these cells.
     //
     // Two arms. The VIKARAṆA arm (tanādi 8a) is the one described above. The
     // AṄGA arm (juhotyādi 3d) takes an aṅga-final `f` to `r` when ślu has
     // left SHAP empty and the ending is vowel-initial: Bf + ati → Br + ati
     // (bibhrati, bibhrAte, bibhrIta; piprati, jaghrati, jahrati, sasrati).
     // The SHAP-empty clause is what keeps it off every thematic ṛ-root. The
-    // only other empty-SHAP paths are adādi's luk (`yA vA ad As vas SI`, none
-    // `f`-final) and nothing else. Pit vowel-initial endings (loṭ uttama,
+    // other empty-SHAP paths cannot reach the arm either: adādi's luk (`yA vA
+    // ad As vas SI`, none `f`-final), and 6.4.108 / 6.4.109 above, which
+    // empty √kṛ's `u` (kur + u → kur) — that aṅga ends in `r`, not `f`, and
+    // those endings are m/v/y-initial, not vowel-initial. Pit vowel-initial endings (loṭ uttama,
     // ātmanepada *ai*) and laṅ's *jus* are guṇated first by 7.3.84 / 7.3.83,
     // so the aṅga ends in `r` there and the `f` test declines (bibharARi,
     // abibharuH). The long `F` is excluded: 7.1.102 above has already taken
@@ -843,7 +845,7 @@ pub(crate) static GUNA: &[Rule] = &[
     },
     // 6.1.78 eco'yavāyāvaḥ: e/o before a vowel → ay/av. The sūtra also covers
     // E/O → Ay/Av, but those two arms are dropped here: within the current
-    // 87-root × 4-lakāra grammar, ANGA can never end in a vṛddhi vowel (E/O)
+    // 93-root × 4-lakāra grammar, ANGA can never end in a vṛddhi vowel (E/O)
     // at the point this rule runs. `vrddhi_of` (the only source of E/O in
     // this engine) is called from four places in two rules: three in 6.1.90
     // — the aṅga arm writes the vṛddhi vowel at *position 0* of the aṅga

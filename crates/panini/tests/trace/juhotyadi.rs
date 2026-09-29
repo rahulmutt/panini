@@ -5,8 +5,12 @@
 //! The order these pins hold is THIS engine's: dvitva (6.1.10) and the
 //! abhyāsa rules run before guṇa (7.3.84), the Kaumudī sequence, where
 //! vidyut-prakriya guṇates first, copies, and shortens the copy back by
-//! 7.4.59. Forms agree; the traces do not, and these pins are what make
-//! the engine's own order a checked fact rather than an accident.
+//! 7.4.59. The same choice makes 7.4.66 *ur at* fire on every cell of a
+//! slice-3d ṛ-root (vidyut's fires only on the kṅit ones), and puts 7.1.102
+//! *ud oṣṭhyapūrvasya* after dvitva, on the aṅga alone (*pipūrtaḥ*'s
+//! abhyāsa is copied from `pF`). Forms agree; the traces do not, and these
+//! pins are what make the engine's own order a checked fact rather than an
+//! accident.
 
 use crate::helpers::{at, cell_trace};
 use panini_data::{Lakara, Pada, Purusha, Vacana, dhatus};

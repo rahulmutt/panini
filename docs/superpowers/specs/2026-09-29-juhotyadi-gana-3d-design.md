@@ -34,6 +34,14 @@ parasmaipada). **252 cells, 282 forms.**
 initial cluster); 7.4.76 *bhṛñām it* (adds `03.0006`); 6.1.77 *iko yaṇ aci* (an
 aṅga arm); 8.2.77 *hali ca* (the root+ending junction when SHAP is empty).
 
+> **Correction (implementation, Task 5):** five rules were widened, not four.
+> 8.3.59 *ādeśapratyayayoḥ* also gained an `r` arm (commit `d350c35`,
+> `tripadi.rs`), because *biBarzi*, *piparzi*, *jaGarzi*, *jaharzi* and
+> *sasarzi* need `si`'s `s` retroflexed after the aṅga's `r` (r ∈ iṇ). h/y/v/l
+> stay out. The "Unchanged" list below omits it too, so it is not a complete
+> account of the rules 3d left alone. The pinned-id count is unaffected:
+> 8.3.59 already existed.
+
 **Not transcribed (2):** 8.3.110 and 8.4.37. See "What vidyut credits that
 this slice does not write".
 
