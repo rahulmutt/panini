@@ -503,7 +503,7 @@ vikalpa unique to √bhī, forking all four lakāras but stacking with 7.1.35
 here in loṭ — in the role rudhādi's 8.4.65 and
 tanādi's 7.3.86 each play. One more cell joins the record, taking it to
 **seventeen cells holding six forms** across three distinct mechanisms;
-nothing exceeded six until slice 3c2's seven-form cell (below). √bhī's loṭ **parasmaipada prathama**
+nothing exceeded six until slice 3c2's seven-form cell (see `Rule.bars`, above). √bhī's loṭ **parasmaipada prathama**
 eka is the matching five-form cell
 (`biBetu`/`biBItAd`/`biBitAd`/`biBitAt`/`biBItAt`), joining the eight-cell
 five-form record above and taking it to nine (slice 3c2's √hā loṭ prathama eka takes it to ten); and √bhī's vidhiliṅ prathama eka

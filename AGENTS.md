@@ -1836,17 +1836,17 @@
   earlier in the file, above this test; 7.4.59 and 7.4.60 live in
   `abhyasa.rs` and cannot move a `guna.rs` line). The corpus
   stands at 3636 cells as of juhotyādi 3b. Juhotyādi 3c touched neither
-  comment either; the corpus stands at 3852 cells as of 3c. Juhotyādi 3c2 touched neither
-  comment either; the corpus stands at 3924 cells as of 3c2 (`guna.rs:1939`'s claim now
-  anchored at `guna.rs:2150`, `controller.rs:153`'s at `controller.rs:218`:
-  3c2's `Rule.bars` field and its plumbing moved the latter, and 3c2's four
-  rules in `guna.rs` moved the former; both lines measured by grep at this
-  commit)
+  comment either; the corpus stands at 3852 cells as of 3c.
   (`controller.rs:153`'s anchor unchanged — re-confirmed empty
   `git diff main -- crates/panini-prakriya/src/controller.rs` — and
   `guna.rs:1666`'s drifted further, to `guna.rs:1939`: Task 9's own fix
   round added four lines to `guna.rs`'s 6.1.78 justification, which sits
-  above it, after the line was first measured at `guna.rs:1935`). A third,
+  above it, after the line was first measured at `guna.rs:1935`). Juhotyādi 3c2 touched neither
+  comment either; the corpus stands at 3924 cells as of 3c2 (`guna.rs:1939`'s claim now
+  anchored at `guna.rs:2150`, `controller.rs:153`'s at `controller.rs:206`:
+  3c2's `Rule.bars` field and its plumbing moved the latter, and 3c2's four
+  rules in `guna.rs` moved the former; both lines measured by grep at this
+  commit). A third,
   `tinanta/tripadi.rs`'s comment on 8.2.30 (formerly the one calling √bhañj
   rudhādi's one cu-final curated root), was **not** left stale the same
   way: the 8.2.30/8.2.39 generalization slice rewrote it in place, since
@@ -1911,7 +1911,7 @@
   cell — loṭ prathama eka forks twice, giving `Bavatu` / `BavatAd` /
   `BavatAt`. Eight rudhādi roots — √kṛt, √rudh, √bhid, √kṣud, √tṛd, √und,
   √chid and √chṛd — each
-  stack three of the nine (7.1.35,
+  stack three of the eleven (7.1.35,
   8.4.65, 8.4.56) on their own loṭ parasmaipada cells, and tanādi's
   kziR/fR/tfR/GfR stack a different three (7.1.35, 7.3.86, 8.4.56) on
   theirs — five branches at
