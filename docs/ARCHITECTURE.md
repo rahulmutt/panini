@@ -91,7 +91,8 @@ carried as a tag on the aṅga term (`Tag::Divadi` / `Tag::Tudadi` / `Tag::Adadi
 3.1.73, 3.1.77, 3.1.78, 3.1.79, 3.1.81, 2.4.72 and 2.4.75. Root identity
 beyond text reaches the pipeline as `Context.dhatupatha`, the row number
 `derive` stamps (slice 3c). A sūtra naming particular roots matches it
-(7.4.76, 8.2.38, 8.2.40's *adhaḥ*); a sūtra naming a class becomes a
+(7.4.76, 8.2.38, 8.2.40's *adhaḥ*, 6.4.116–6.4.118); 7.4.78 names no root
+and is keyed on the row its Kaumudī application names, 03.0026; a sūtra naming a class becomes a
 saṁjñā tag decided from it — `Tag::Ghu`, 1.1.20's six rows in
 `tinanta/samjna.rs`'s `GHU` — because text cannot separate `03.0008 o~hA\N`
 from `03.0009 o~hA\k` (both `hA`) or ghu `03.0010` from `02.0054 dA\p`

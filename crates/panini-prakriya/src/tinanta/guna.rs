@@ -1065,9 +1065,14 @@ pub(crate) static GUNA: &[Rule] = &[
     // both: `ti` (pit) must give jahAti, and `ati` (ajādi) must give jahati.
     //
     // ORDERING CAVEAT (`Rule.vikalpa`): this rule invalidates "the aṅga ends
-    // in `A`" on its branch. The only consumers below it are 6.4.113 and
-    // 6.4.112, and on this branch both are MEANT to decline, which they do on
-    // the `i`. The invalidation is the intended bleeding, not a hazard.
+    // in `A`" on its branch. Below it, 6.4.113 and 6.4.112 are the readers
+    // that matter, and on this branch both are MEANT to decline, which they
+    // do on the `i`. The rest below that read the aṅga's final (6.1.101,
+    // 6.1.87, 6.1.88, 6.4.105, 6.4.101) are disjoint from this branch: they
+    // want a vowel-initial follower, an a/ā final, or a jhal final (6.4.101,
+    // whose `i` is none), and the follower here is consonant-initial and the
+    // final is `i`. 6.1.101's vidhiliṅ arm reads the ending alone. The
+    // invalidation is the intended bleeding, not a hazard.
     Rule {
         id: "6.4.116",
         name: "jahAteSca",
@@ -1120,6 +1125,10 @@ pub(crate) static GUNA: &[Rule] = &[
     // then elides before consonants too (dattaH, dadyAt). Slice 3c swapped
     // the pair and deleted 6.4.112's vowel-initial test, which had only ever
     // stood in for "6.4.113 takes the rest".
+    //
+    // Three rules above override the pair: 6.4.118, 6.4.117 and 6.4.116
+    // (√hā, jahAti). 6.4.117 bars both 6.4.113 and 6.4.112 on its branch
+    // (`Rule.bars`), and 6.4.116 leaves an `i` for the pair to decline on.
     //
     // Two arms each. The śnā arm reads p.terms[SHAP] and p.terms[ENDING]
     // directly, NOT following_sarvadhatuka: the helper answers "what follows
@@ -1202,7 +1211,10 @@ pub(crate) static GUNA: &[Rule] = &[
     //
     // No vowel-initial test: 6.4.113 above has already taken every follower
     // it can, so what reaches here is vowel-initial, or consonant-initial on
-    // a ghu root. kryādi's kliSnItaH is the prior that fails loudly if the
+    // a ghu root — except on 6.4.117's branch, where both 6.4.113 and this
+    // rule are barred (`Rule.bars`). The bar on this rule is what keeps
+    // *jahhi out: jahA + hi is consonant-initial, not ghu, and ends in `A`.
+    // kryādi's kliSnItaH is the prior that fails loudly if the
     // order is ever reversed — 6.4.112 would make it *kliSntaH.
     //
     // The abhyasta test's witness is adādi's √yā again: yAnti keeps its ā

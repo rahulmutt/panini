@@ -454,7 +454,7 @@ fn branch<'a>(bs: &'a [(String, Vec<String>)], form: &str) -> &'a Vec<String> {
 }
 
 #[test]
-fn jahati_trace_takes_no_bhrnam_it() {
+fn jahaati_trace_takes_no_bhrnam_it() {
     // hA P laT P.E. 03.0009 is `hA` exactly like 03.0008 (jihIte), and
     // 7.4.76 names only the latter: the derivation witness 3c's guard test
     // promised.

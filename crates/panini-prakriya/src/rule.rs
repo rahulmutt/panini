@@ -44,6 +44,8 @@ pub struct Rule {
     /// runs every barred rule. 6.4.117 *ā ca hau* is the first user: it keeps
     /// √hā's `A` before *hi* by changing no text, and bars 6.4.116, 6.4.113 and
     /// 6.4.112, the three rules that would otherwise change that `A`.
+    /// Barring is by id, so barring an id that occurs twice in the pipeline
+    /// (7.3.84, 7.3.86, 1.2.4) skips every occurrence on that branch.
     ///
     /// Scope is the BRANCH, not a site. A tinanta prakriyā has one aṅga, so the
     /// two coincide today; a pipeline with several sites must revisit this.

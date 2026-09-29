@@ -1375,6 +1375,13 @@
     Caught-mutant test-phase durations: min **0.10s**, median **42.52s**,
     p90 **91.95s**, p99 **129.97s**, max **167.86s** (`vikarana.rs:363:17:
     replace && with ||`).
+    The new controller lines are caught, not merely reached: all five
+    `controller.rs` mutants (`run_pipeline` → `vec![]`, → `vec![Default::
+    default()]`, `:39:35` `||`→`&&`, `:62:35` `+`→`-` and `+`→`*`) are in
+    `caught.txt`, and cargo-mutants generates none for the two
+    `extend_from_slice` calls. The new 6.4.116, 6.4.117, 6.4.118 and 7.4.78
+    blocks have no missed, timeout or unviable mutants. (Every position in
+    this entry is as of the campaign's tree, 3b60cca.)
     **Two margins, measured, not projected:**
     - Against the longest full uncaught run (116.26s, at full `-j 4`
       contention — 1.45× the 80.128s floor): 600 / 116.26 ≈ **5.16×**.
@@ -1896,7 +1903,7 @@
   round added four lines to `guna.rs`'s 6.1.78 justification, which sits
   above it, after the line was first measured at `guna.rs:1935`). Juhotyādi 3c2 touched neither
   comment either; the corpus stands at 3924 cells as of 3c2 (`guna.rs:1939`'s claim now
-  anchored at `guna.rs:2150`, `controller.rs:153`'s at `controller.rs:206`:
+  anchored at `guna.rs:2162`, `controller.rs:153`'s at `controller.rs:206`:
   3c2's `Rule.bars` field and its plumbing moved the latter, and 3c2's four
   rules in `guna.rs` moved the former; both lines measured by grep at this
   commit). A third,
@@ -2052,8 +2059,11 @@
   `derive` was called with, or `""` on a hand-built prakriyā, which every
   such guard declines. 6.4.87, 6.4.101 and 6.4.115 still key on `ANGA.text`
   (`hu`, `BI`), safe only because `juhotyadi_rows_are_the_ten_curated_roots`
-  asserts those codes stay unique; 7.4.76, 7.4.78, 6.4.116, 6.4.117, 6.4.118, 8.2.38 and 8.2.40's *adhaḥ* key
-  on numbers, because `03.0008` and `03.0009` share `hA`. A sūtra naming a
+  asserts those codes stay unique; 7.4.76, 6.4.116, 6.4.117, 6.4.118, 8.2.38
+  and 8.2.40's *adhaḥ* key on numbers, because `03.0008` and `03.0009` share
+  `hA`. 7.4.78 keys on a number for a different reason: the sūtra names no
+  root, the Kaumudī applies it to one row (03.0026), and `gA` is also
+  `01.1101 gA\N`. A sūtra naming a
   class of roots becomes a saṁjñā tag decided from the number in `derive` —
   `Tag::Ghu` from `tinanta/samjna.rs`'s `GHU` — pinned to the vendored TSV
   rather than to a derivation, so its uncurated members are held too.
