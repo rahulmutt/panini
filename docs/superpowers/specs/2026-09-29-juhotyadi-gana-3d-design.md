@@ -343,6 +343,10 @@ as 3c's did.
   also takes the prep spec's review checkpoint: re-read whether 6.4.71 / 6.4.72
   should guard on the abhyāsa rather than `ANGA`, now against a live
   vowel-initial witness.
+  It must also revisit **7.4.60's vowel-initial fall-through**, which this
+  slice keeps. vidyut's trace on `03.0017` runs 7.4.66 → 1.1.51 → **7.4.60**
+  (`ar` → `a`) → 7.4.77 → 6.4.78, so it does elide √ṛ's `r`. The guard 3b
+  added "for √ṛ" would leave `ar` in place.
 - **3e** (√nij, √vij, √viṣ) and **3f** (the six ordinary-vowel rows) remain as
   3a's table has them.
 
