@@ -115,14 +115,20 @@ pub(crate) static TRIPADI: &[Rule] = &[
             if p.terms[ANGA].text.ends_with("kur") {
                 return false;
             }
-            // Reads śap as "the segment following the aṅga"; when śap is luk'd
-            // (adādi, 2.4.72) that is empty and the rule silently declines.
-            // Currently unreachable (no r/v-final adādi root in scope); when a
-            // consonant-final r/v-upadhā adādi root lands, this must generalize
-            // to the root+ending junction — 6.1.78's athematic arm (added in
-            // slice 5f for √śī, which falls back to `p.terms[ENDING]` when
-            // SHAP is empty) is the worked example to follow.
-            let Some(next) = p.terms.get(SHAP).and_then(|t| t.text.chars().next()) else {
+            // The segment the aṅga meets: śap when it has text, else the
+            // ending. Juhotyādi's ślu (2.4.75) empties SHAP, so √pṝ's `pur`
+            // meets the ending directly (pipUrtaH) — generalized in slice 3d on
+            // 6.1.78's athematic arm, which falls back to `p.terms[ENDING]` the
+            // same way. Adādi's luk (2.4.72) takes the same path, but no curated
+            // adādi aṅga ends in r/v after i/u. Open-coded rather than calling
+            // `following_sarvadhatuka`, as the follower lookups in this crate
+            // are, so each keeps its own mutation pin.
+            let follower = match p.terms.get(SHAP) {
+                Some(t) if !t.text.is_empty() => Some(t),
+                Some(_) => p.terms.get(ENDING),
+                None => None,
+            };
+            let Some(next) = follower.and_then(|t| t.text.chars().next()) else {
                 return false;
             };
             if is_vowel(next) {
@@ -1821,6 +1827,45 @@ mod tests {
         let rule = rules().find(|r| r.id == "8.2.77").unwrap();
         assert!((rule.apply)(&mut p));
         assert_eq!(p.terms[ANGA].text, "dIv");
+    }
+
+    #[test]
+    fn hali_ca_reads_the_ending_when_slu_leaves_shap_empty() {
+        // √pṝ (03.0004) after 7.1.102: pur + "" + tas. With śap ślu'd the
+        // ending is what meets the aṅga, so its `t` is the hal: pUr
+        // (pipUrtaH). Before a vowel-initial ending the rule declines
+        // (pipurati).
+        let rule = rules().find(|r| r.id == "8.2.77").unwrap();
+        let mut p = Prakriya {
+            terms: with_slots(vec![Term::new("pur"), Term::new(""), Term::new("tas")]),
+            log: vec![],
+            ..Default::default()
+        };
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "pUr");
+        let mut p = Prakriya {
+            terms: with_slots(vec![Term::new("pur"), Term::new(""), Term::new("ati")]),
+            log: vec![],
+            ..Default::default()
+        };
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "pur");
+    }
+
+    #[test]
+    fn hali_ca_reads_a_live_vikarana_not_the_ending() {
+        // A non-empty, vowel-initial SHAP in front of a consonant-initial
+        // ending: the aṅga meets the vikaraṇa's vowel and must not lengthen.
+        // Hand-built — no curated r/v-final aṅga carries śap — and it is what
+        // kills a mutant that reads the ending whenever SHAP is present.
+        let rule = rules().find(|r| r.id == "8.2.77").unwrap();
+        let mut p = Prakriya {
+            terms: with_slots(vec![Term::new("div"), Term::new("a"), Term::new("ti")]),
+            log: vec![],
+            ..Default::default()
+        };
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "div");
     }
 
     #[test]
