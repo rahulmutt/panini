@@ -35,10 +35,10 @@
     timeouts). `cargo mutants` also reads `-j` from `CARGO_MUTANTS_JOBS`, so
     an unqualified cap can be defeated by the environment alone; keep `-j`
     at or below 4, or re-measure and raise the cap in step.
-    **The floor behind the 600s cap, measured at 3852 cells.** An
-    uncontended `mise run test` takes 69.998s wall clock: paradigm 29.26s,
-    roundtrip 34.38s, trace 5.00s, every other binary under 0.5s. Of
-    paradigm's 29.26s, most is `known_nonforms_are_invalid`, which checks
+    **The floor behind the 600s cap, measured at 3924 cells.** An
+    uncontended `mise run test` takes 80.128s wall clock: paradigm 33.14s,
+    roundtrip 39.98s, trace 5.53s, every other binary under 0.5s. Of
+    paradigm's 33.14s, most is `known_nonforms_are_invalid`, which checks
     89 non-forms through the real `Panini::check()` at ~0.30s a call. That
     is deliberate — it is the only test of `check()`'s negative path — and
     it is the dominant term of the paradigm binary. The larger term of the
@@ -46,15 +46,18 @@
     from one cell per root through the real `check()`. Those calls grow
     linearly with the corpus and each one re-derives it, so that term is
     still Θ(N²), at ~1/45 of the old exhaustive constant, and re-grows first:
-    against 3636 → 3852 cells (+5.94%), the floor moved 65.01s → 69.998s
-    (+7.67%) and `roundtrip_sampled` alone moved 31.30s → 34.38s (+9.84%),
-    both outpacing the cell count, exactly as predicted. At `-j 4`, two
-    documented equivalent mutants ran the suite to completion uncaught,
-    with test phases of 78.70s (`adesha.rs`) and 78.55s (`tripadi.rs`): a
-    contention factor of 1.12× over that floor. 600s is 6 × 78.70s =
-    472.2s rounded up, or **7.62×** the longest measured uncaught run —
-    down from the prior measurement's 8.03×, consistent with the floor
-    itself growing faster than the cap. Take the floor by measurement,
+    against 3852 → 3924 cells (+1.87%), the floor moved 69.998s → 80.128s
+    (+14.47%) and `roundtrip_sampled` alone moved 34.38s → 39.98s (+16.29%),
+    far outpacing the cell count (part of that step may be machine state
+    rather than the engine; it was one measurement). At `-j 4`, two
+    documented equivalent mutants ran the suite to completion uncaught
+    in an isolated probe, with test phases of 89.20s (`adesha.rs`) and
+    87.50s (`tripadi.rs`): a contention factor of 1.11× over that floor.
+    Inside the full campaign the same two ran 95.95s and 116.26s (1.45× the
+    floor at full `-j 4` contention). 600s is 5.16× the longest measured
+    uncaught run (116.26s) — down from the prior measurement's 7.10×, and
+    only just above the 5× rule: the next slice that grows the suite
+    should expect to raise the cap. Take the floor by measurement,
     never by scaling it by cell count or by a projected contention
     multiplier; both have failed repeatedly in the record below. Re-measure
     the floor and an uncaught `-j 4` run whenever the golden suite grows,
@@ -1332,6 +1335,56 @@
     **Ruling: keep 600.** Both margins comfortably clear 1×; the isolated
     probe's 7.62× held to within ~7% under a full campaign's contention,
     matching the 2026-09-11 entry's own ~8% probe-to-campaign drift.
+    **2026-09-29 — slice 3c2 re-measured both at 3924 cells.** The suite
+    grew 3852 → 3924 cells (**+1.87%**). Uncontended floor: paradigm 33.14s,
+    roundtrip 39.98s, trace 5.53s — wall clock **80.128s**, up from 69.998s
+    (**+14.47%**), with `roundtrip_sampled` moving 34.38s → 39.98s
+    (**+16.29%**): a much larger move than the cell count, so it may include
+    machine state; it was a single measurement. Task 1 inserted a `bars`
+    line into every Rule literal, so all positions drifted; the
+    equivalents were located by source text and `--list`. At `-j 4` the
+    isolated probe's full UNCAUGHT test phases were 89.20s
+    (`adesha.rs:588:30`, `replace + with *`) and 87.50s
+    (`tripadi.rs:1203:38`, `replace - with /`): 1.11× the floor.
+    Campaign at `-j 4 --timeout 600`, `--package panini-prakriya
+    --test-workspace=true`, `-o /home/dev/mutants-records/juhotyadi-3c2`,
+    launched detached (`setsid`/`nohup`) via the real `cargo-mutants`
+    27.1.0 binary by path (in this worktree `mise which cargo-mutants`
+    failed with "not currently active", as the shim does), with
+    `CARGO_MUTANTS_JOBS` unset. Window **2026-09-29 12:05:07 – 14:06:12
+    UTC** (**2h01m05s**); the process's exit code was not captured.
+    **730 mutants: 684 caught, 43 unviable, 2 missed, 1 timeout** (684 + 43
+    + 2 + 1 = 730). `missed.txt` held exactly:
+    ```
+    crates/panini-prakriya/src/tinanta/adesha.rs:588:30: replace + with *
+    crates/panini-prakriya/src/tinanta/tripadi.rs:1203:38: replace - with /
+    ```
+    (was 574:30 and 1186:38; test phases 95.95s and 116.26s under
+    campaign contention vs. 89.20s/87.50s in the probe). `timeout.txt`
+    held exactly:
+    ```
+    crates/panini-prakriya/src/tinanta/tripadi.rs:1529:23: replace -= with /=
+    ```
+    the known-permanent ṇatva backward-scan mutant (was 1506:23), which ran
+    the full 600.02s. **Diffed against 3c's non-caught set, it is
+    identical in shape and different only in position**: 712 → 730
+    mutants (+18, all in the caught bucket: 666 → 684), unviable flat at
+    43, the same two missed equivalents, the same permanent timeout — this
+    is the clean result. `outcomes.json` is kept at
+    `/home/dev/mutants-records/juhotyadi-3c2/mutants.out/outcomes.json`.
+    Caught-mutant test-phase durations: min **0.10s**, median **42.52s**,
+    p90 **91.95s**, p99 **129.97s**, max **167.86s** (`vikarana.rs:363:17:
+    replace && with ||`).
+    **Two margins, measured, not projected:**
+    - Against the longest full uncaught run (116.26s, at full `-j 4`
+      contention — 1.45× the 80.128s floor): 600 / 116.26 ≈ **5.16×**.
+    - Against the slowest caught mutant (167.86s): 600 / 167.86 ≈
+      **3.57×**.
+    **Ruling: keep 600.** The cap rule (at least 5× the longest uncaught
+    phase) still holds, but the margin fell from 7.10× to 5.16× in one
+    small slice and the campaign's phases ran 1.45× the floor against
+    the 1.12× probe. The next suite growth will likely need the cap raised
+    (6 × 116.26s, rounded up, is 800s).
   - `cargo-deny` + `cargo-audit` (supply-chain checks) — `mise run audit` runs
     `cargo audit && cargo deny check` and is expected to pass, including
     `cargo deny check advisories`.
