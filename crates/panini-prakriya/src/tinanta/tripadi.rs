@@ -832,16 +832,17 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // NARROW GUARD, by design. The sūtra's trigger is the whole iṇ
     // pratyāhāra (every vowel but a/ā, plus h y v r l) and `k`; this
     // implements only the reachable slice of it — an aṅga-final vowel other
-    // than a/ā, plus (as of this slice) `g` and `k` — so every arm is
+    // than a/ā, plus `g`, `k` and `r` — so every arm is
     // executed by a test and the mutation gate stays clean. Same discipline
     // that removed 6.1.78's E/O arms in slice 5e (and 8.4.53 itself, in
     // `9fa8e5f` — since restored below, rudhādi having supplied it a witness
     // the discipline still required), and the same shape as 8.2.25's narrow
     // guard. Widen further the moment a root lands whose aṅga ends in
-    // h/y/v/r/l or another ku sound (K/G/N) before an s-initial affix.
+    // h/y/v/l or another ku sound (K/G/N) before an s-initial affix.
     //
-    // Two ku triggers have now landed, each widening this rule once, and
-    // both are inside 8.3.57 iṇ-koḥ's own scope:
+    // Three consonant triggers have now landed, each widening this rule
+    // once, and all are inside 8.3.57 iṇ-koḥ's own scope; the first two are
+    // ku sounds, the third an iṇ sound:
     //
     // The `g` arm is √bhañj's: coH kuH (8.2.30, above in this file's
     // pipeline order) has already turned the dhātu's final `j` into `g`
@@ -857,6 +858,11 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // śnam split (3.1.78) puts √piṣ's tail in SHAP, one term short of ANGA.
     // pinakzi (`super::derivation_tests::pish_lat_madhyama_eka_is_pinakshi`)
     // is the witness.
+    //
+    // The `r` arm is juhotyādi 3d's ṛ-roots': guṇa gives `-ar` before the
+    // pit `si` with SHAP empty (ślu), so the sound before `si` is the aṅga's
+    // own `r`, which is inside iṇ. biBar + si → biBarzi, and likewise
+    // piparzi, jaGarzi, jaharzi, sasarzi.
     //
     // No conflict with 8.3.15 above: that rule is word-final
     // (kharavasānayoḥ), this one is apadāntasya. It also declines for every
@@ -898,7 +904,7 @@ pub(crate) static TRIPADI: &[Rule] = &[
                 return false;
             };
             let is_in_trigger = is_vowel(prev) && !matches!(prev, 'a' | 'A');
-            if !is_in_trigger && !matches!(prev, 'g' | 'k') {
+            if !is_in_trigger && !matches!(prev, 'g' | 'k' | 'r') {
                 return false;
             }
             let before = p.snapshot();
@@ -1926,6 +1932,22 @@ mod tests {
         };
         assert!(!(rule.apply)(&mut p));
         assert_eq!(p.terms[ENDING].text, "si");
+    }
+
+    #[test]
+    fn shatva_fires_after_the_r_of_a_guned_ri_root() {
+        // The `r` arm is the 3d ṛ-roots': guṇa gives Bar, and the pit `si`
+        // follows an empty SHAP (ślu), so the sound before it is the aṅga's
+        // own `r`, which is in iṇ. biBar + si -> biBarzi.
+        let mut p = Prakriya {
+            terms: with_slots(vec![Term::new("Bar"), Term::new(""), Term::new("si")]),
+            log: vec![],
+            ..Default::default()
+        };
+        let rule = rules().find(|r| r.id == "8.3.59").unwrap();
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.terms[ENDING].text, "zi");
+        assert_eq!(p.log.last().unwrap().sutra, "8.3.59");
     }
 
     #[test]
