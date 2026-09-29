@@ -95,6 +95,7 @@ pub(crate) static TRIPADI: &[Rule] = &[
         name: "hali ca",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             let chars: Vec<char> = p.terms[ANGA].text.chars().collect();
             let n = chars.len();
@@ -144,6 +145,7 @@ pub(crate) static TRIPADI: &[Rule] = &[
         name: "saMyogAntasya lopaH",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             let word = p.text();
             let mut tail = word.chars().rev();
@@ -213,6 +215,7 @@ pub(crate) static TRIPADI: &[Rule] = &[
         name: "Di ca",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             let Some(ending) = p.terms.get(ENDING) else {
                 return false;
@@ -292,6 +295,7 @@ pub(crate) static TRIPADI: &[Rule] = &[
         name: "coH kuH",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             let w = word_chars(p);
             let Some(pos) = w.iter().enumerate().position(|(i, (_, _, c))| {
@@ -330,6 +334,7 @@ pub(crate) static TRIPADI: &[Rule] = &[
         name: "ho QaH",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             let w = word_chars(p);
             let Some(pos) = w.iter().enumerate().position(|(i, (_, _, c))| {
@@ -397,6 +402,7 @@ pub(crate) static TRIPADI: &[Rule] = &[
         name: "JalAM jaSo'nte",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             let last = p.text().chars().last();
             let Some(jash) = last.and_then(jashtva_of) else {
@@ -460,6 +466,7 @@ pub(crate) static TRIPADI: &[Rule] = &[
         name: "JazastaTorDo'DaH",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             if p.ctx.dhatupatha == "03.0011" {
                 return false;
@@ -527,6 +534,7 @@ pub(crate) static TRIPADI: &[Rule] = &[
         name: "zaQoH kaH si",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             let w = word_chars(p);
             for i in 1..w.len() {
@@ -558,6 +566,7 @@ pub(crate) static TRIPADI: &[Rule] = &[
         name: "sipi DAto rurvA",
         kind: RuleKind::Vidhi,
         vikalpa: true,
+        bars: &[],
         apply: |p| {
             if !p.terms[ANGA].has(Tag::Rudhadi) || !p.ctx.is_sip() {
                 return false;
@@ -609,6 +618,7 @@ pub(crate) static TRIPADI: &[Rule] = &[
         name: "daSca",
         kind: RuleKind::Vidhi,
         vikalpa: true,
+        bars: &[],
         apply: |p| {
             if !p.terms[ANGA].has(Tag::Rudhadi) || !p.ctx.is_sip() {
                 return false;
@@ -692,6 +702,7 @@ pub(crate) static TRIPADI: &[Rule] = &[
         name: "tipyanasteH",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             if !p.terms[ANGA].has(Tag::Rudhadi) {
                 return false;
@@ -738,6 +749,7 @@ pub(crate) static TRIPADI: &[Rule] = &[
         name: "KaravasAnayor visarjanIyaH",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             if !matches!(p.text().chars().last(), Some('s') | Some('r')) {
                 return false;
@@ -786,6 +798,7 @@ pub(crate) static TRIPADI: &[Rule] = &[
         name: "naScApadAntasya Jali",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             if !p.terms[ANGA].has(Tag::Rudhadi) {
                 return false;
@@ -850,6 +863,7 @@ pub(crate) static TRIPADI: &[Rule] = &[
         name: "AdeSapratyayayoH",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             // The affix whose s retroflexes: the first s-initial term after
             // the aṅga. Searching for the s-initial term — rather than taking
@@ -977,6 +991,7 @@ pub(crate) static TRIPADI: &[Rule] = &[
         name: "stoH ScunA ScuH",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             let w = word_chars(p);
             for i in 0..w.len().saturating_sub(1) {
@@ -1072,6 +1087,7 @@ pub(crate) static TRIPADI: &[Rule] = &[
         name: "zwunA zwuH",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             let w = word_chars(p);
             for i in 1..w.len() {
@@ -1128,6 +1144,7 @@ pub(crate) static TRIPADI: &[Rule] = &[
         name: "Qo Qe lopaH",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             let w = word_chars(p);
             let Some(i) = (1..w.len()).find(|&i| w[i - 1].2 == 'Q' && w[i].2 == 'Q') else {
@@ -1266,6 +1283,7 @@ pub(crate) static TRIPADI: &[Rule] = &[
         name: "JalAM jaS JaSi",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             let w = word_chars(p);
             for i in 1..w.len() {
@@ -1312,6 +1330,7 @@ pub(crate) static TRIPADI: &[Rule] = &[
         name: "aByAse car ca",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             let s: Vec<char> = p.terms[ABHYASA].text.chars().collect();
             let t: Vec<char> = s.iter().map(|&c| deaspirate_of(c).unwrap_or(c)).collect();
@@ -1349,6 +1368,7 @@ pub(crate) static TRIPADI: &[Rule] = &[
         name: "daDastaToSca",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             if p.ctx.dhatupatha != "03.0011" {
                 return false;
@@ -1404,6 +1424,7 @@ pub(crate) static TRIPADI: &[Rule] = &[
         name: "Kari ca",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             let next = p.terms.get(ENDING).and_then(|t| t.text.chars().next());
             let Some(next) = next else { return false };
@@ -1452,6 +1473,7 @@ pub(crate) static TRIPADI: &[Rule] = &[
         name: "razAByAM no RaH samAnapade",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             let w = word_chars(p);
             for i in 0..w.len() {
@@ -1485,6 +1507,7 @@ pub(crate) static TRIPADI: &[Rule] = &[
         name: "awkupvANnumvyavAye'pi",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             let w = word_chars(p);
             for i in 0..w.len() {
@@ -1553,6 +1576,7 @@ pub(crate) static TRIPADI: &[Rule] = &[
         name: "anusvArasya yayi parasavarRaH",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             let w = word_chars(p);
             let found = w.iter().enumerate().find_map(|(i, (_, _, c))| {
@@ -1621,6 +1645,7 @@ pub(crate) static TRIPADI: &[Rule] = &[
         name: "Jaro Jari savarRe",
         kind: RuleKind::Vidhi,
         vikalpa: true,
+        bars: &[],
         apply: |p| {
             let w = word_chars(p);
             let Some(pos) = (1..w.len().saturating_sub(1))
@@ -1677,6 +1702,7 @@ pub(crate) static TRIPADI: &[Rule] = &[
         name: "vA'vasAne",
         kind: RuleKind::Vidhi,
         vikalpa: true,
+        bars: &[],
         apply: |p| {
             let Some(last) = p.text().chars().last() else {
                 return false;

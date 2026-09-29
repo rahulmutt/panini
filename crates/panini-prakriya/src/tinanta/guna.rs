@@ -1,4 +1,4 @@
-//! Vowel gradation and vikaraṇa reshaping: 7.4.21 … 6.4.119, 6.4.113, 6.4.112, 6.4.115.
+//! Vowel gradation and vikaraṇa reshaping: 7.4.21 … 6.4.119, 6.4.118 … 6.4.116, 6.4.113, 6.4.112, 6.4.115.
 //!
 //! Split out of `anga.rs` (which had reached 1110 lines) ahead of svādi.
 //! The cut falls after 7.2.81: `anga.rs` keeps the augments and the rules
@@ -57,6 +57,7 @@ pub(crate) static GUNA: &[Rule] = &[
         name: "SINaH sArvaDAtuke guRaH",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             if !p.terms[ANGA].text.ends_with("SI") {
                 return false;
@@ -93,6 +94,7 @@ pub(crate) static GUNA: &[Rule] = &[
         name: "jusi ca",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             if !following_sarvadhatuka(p).is_some_and(|t| t.text == "us") {
                 return false;
@@ -115,6 +117,7 @@ pub(crate) static GUNA: &[Rule] = &[
         name: "sArvaDAtukArDaDAtukayoH",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             // 1.1.5 kṅiti ca: a following ṅit sārvadhātuka blocks guṇa. On
             // the thematic path that follower is the vikaraṇa, ṅit (1.2.4)
@@ -148,6 +151,7 @@ pub(crate) static GUNA: &[Rule] = &[
         name: "pugantalaGUpaDasya ca",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             // 1.1.5 kṅiti ca, exactly as at 7.3.84 above — same follower
             // lookup, same ṅit-only narrowness.
@@ -205,6 +209,7 @@ pub(crate) static GUNA: &[Rule] = &[
         name: "pugantalaGUpaDasya ca",
         kind: RuleKind::Vidhi,
         vikalpa: true,
+        bars: &[],
         apply: |p| {
             if !p.terms[ANGA].has(Tag::Tanadi) {
                 return false;
@@ -314,6 +319,7 @@ pub(crate) static GUNA: &[Rule] = &[
         name: "tfRaha im",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             let stem = format!("{}{}", p.terms[ANGA].text, p.terms[SHAP].text);
             if !stem.ends_with("tfnah") {
@@ -384,6 +390,7 @@ pub(crate) static GUNA: &[Rule] = &[
         name: "sArvaDAtukArDaDAtukayoH",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             // 1.1.5 kṅiti ca, as in the first application. Same ṅit-only
             // narrowness: no kit tag exists in this engine yet.
@@ -443,6 +450,7 @@ pub(crate) static GUNA: &[Rule] = &[
         name: "ata ut sArvaDAtuke",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             if !p.terms[ANGA].text.ends_with("kar") {
                 return false;
@@ -472,6 +480,7 @@ pub(crate) static GUNA: &[Rule] = &[
         name: "nityaM karoteH",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             if !p.terms[ANGA].text.ends_with("kur") {
                 return false;
@@ -496,6 +505,7 @@ pub(crate) static GUNA: &[Rule] = &[
         name: "ye ca",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             if !p.terms[ANGA].text.ends_with("kur") {
                 return false;
@@ -539,6 +549,7 @@ pub(crate) static GUNA: &[Rule] = &[
         name: "huSnuvoH sArvaDAtuke",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             if p.terms[ANGA].text == "hu" {
                 // The sūtra's condition is on the *follower*, not literally
@@ -607,6 +618,7 @@ pub(crate) static GUNA: &[Rule] = &[
         name: "er anekAco'saMyogapUrvasya",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             let mut anga: Vec<char> = p.terms[ANGA].text.chars().collect();
             // *eḥ* denotes both lengths, by 1.1.69/1.1.70 aṇudit
@@ -669,7 +681,7 @@ pub(crate) static GUNA: &[Rule] = &[
     // after its apavāda 6.4.82 — because every ī/ū-final curated root is
     // already past it by then: √bhū and √nī have guṇated (`Bo`, `ne`, śap
     // being pit so 1.1.5 does not block), √śī has guṇated by 7.4.21, and
-    // √vrī's follower is the hal-initial śnā. The 3852 byte-identical
+    // √vrī's follower is the hal-initial śnā. The 3924 byte-identical
     // priors are what turn that from an argument into a proof.
     //
     // THE UVAṄ HALF IS NOT WRITTEN. `U` → `uv` has no cell in the suite —
@@ -687,6 +699,7 @@ pub(crate) static GUNA: &[Rule] = &[
         name: "aci SnuDAtuBruvAM yvoriyaNuvaNO",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             // The śnu arm: the vikaraṇa's `u` becomes uvaṅ.
             if p.terms[SHAP].text == "nu" {
@@ -749,6 +762,7 @@ pub(crate) static GUNA: &[Rule] = &[
         name: "iko yaR aci",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             if p.terms[SHAP].text != "u" || !p.terms[SHAP].has(Tag::Vikarana) {
                 return false;
@@ -767,7 +781,7 @@ pub(crate) static GUNA: &[Rule] = &[
     },
     // 6.1.78 eco'yavāyāvaḥ: e/o before a vowel → ay/av. The sūtra also covers
     // E/O → Ay/Av, but those two arms are dropped here: within the current
-    // 85-root × 4-lakāra grammar, ANGA can never end in a vṛddhi vowel (E/O)
+    // 87-root × 4-lakāra grammar, ANGA can never end in a vṛddhi vowel (E/O)
     // at the point this rule runs. `vrddhi_of` (the only source of E/O in
     // this engine) is called from four places in two rules: three in 6.1.90
     // — the aṅga arm writes the vṛddhi vowel at *position 0* of the aṅga
@@ -799,6 +813,7 @@ pub(crate) static GUNA: &[Rule] = &[
         name: "eco'yavAyAvaH",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             fn sub_for(c: char) -> Option<&'static str> {
                 match c {
@@ -897,6 +912,7 @@ pub(crate) static GUNA: &[Rule] = &[
         name: "ato dIrGo yaYi",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             // loṭ uttama gets its dīrgha from 3.4.92 āḍ + 6.1.101 instead.
             if matches!(p.ctx.lakara, Lakara::Lot) {
@@ -938,6 +954,7 @@ pub(crate) static GUNA: &[Rule] = &[
         name: "GvasoredDAvaByAsalopaSca",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             if p.terms.len() <= ENDING || p.terms[ENDING].text != "hi" {
                 return false;
@@ -953,6 +970,138 @@ pub(crate) static GUNA: &[Rule] = &[
             p.terms[ANGA].text = stem;
             p.terms[ABHYASA].text.clear();
             p.record("6.4.119", "GvasoredDAvaByAsalopaSca", before);
+            true
+        },
+    },
+    // --- 6.4.118 / 6.4.117 / 6.4.116: √hā's (jahāti's) ā ------------------
+    //
+    // *jahāteḥ* is the juhotyādi √ohāk, `03.0009 o~hA\k`. `03.0008 o~hA\N`
+    // enters the derivation as the same `hA` and takes none of the three, so
+    // all three key on the NUMBER (3c's argument for `Context.dhatupatha`).
+    //
+    // All three sit ABOVE 6.4.113, which each of them overrides, and read the
+    // follower through `following_sarvadhatuka` exactly as 6.4.113's abhyasta
+    // arm does: under ślu the śap is empty, so the follower is the ending,
+    // which in vidhiliṅ carries yāsuṭ on its text and Ngit from 3.4.103.
+
+    // 6.4.118 lopo yi: √hā's ā is elided before a y-initial kṅit
+    // sārvadhātuka. Ja + hA + yAt → jahyAt, not *jahIyAt (6.4.113).
+    //
+    // FIRST of the three, as vidyut orders it (`if y-initial { 6.4.118 } else
+    // { 6.4.117 / 6.4.116 }`). The elided ā is what 6.4.116, 6.4.113 and
+    // 6.4.112 all require, so every one of them declines after it with no
+    // guard of its own. *kṅiti* comes by anuvṛtti from 6.4.113. No corpus cell
+    // offers a y-initial follower that is not ṅit (yāsuṭ always is), so the
+    // clause is held by a guard test, not a cell.
+    Rule {
+        id: "6.4.118",
+        name: "lopo yi",
+        kind: RuleKind::Vidhi,
+        vikalpa: false,
+        bars: &[],
+        apply: |p| {
+            // 03.0009 o~hA\k (√hā, jahāti)
+            if p.ctx.dhatupatha != "03.0009" || p.terms.len() <= ENDING {
+                return false;
+            }
+            let Some(stem) = p.terms[ANGA].text.strip_suffix('A') else {
+                return false;
+            };
+            let stem = stem.to_string();
+            let follower = following_sarvadhatuka(p)
+                .expect("the len() <= ENDING guard above implies a follower");
+            if !follower.has(Tag::Ngit) || !follower.text.starts_with('y') {
+                return false;
+            }
+            let before = p.snapshot();
+            p.terms[ANGA].text = stem;
+            p.record("6.4.118", "lopo yi", before);
+            true
+        },
+    },
+    // 6.4.117 ā ca hau (vikalpa): before *hi*, √hā's ā optionally stays ā.
+    // jahAhi, beside 6.4.116's jahihi and 6.4.113's jahIhi.
+    //
+    // A substitution of `A` for `A`: it CHANGES NO TEXT. vidyut writes it as
+    // `optional_run_at("6.4.117", i, op::antya("A"))`, whose only effect is
+    // that neither 6.4.116 nor 6.4.113/6.4.112 runs on its branch. Here that
+    // is `bars`, enforced by `run_pipeline` (`Rule.bars`), so none of those
+    // three guards mentions this rule. 6.4.112 is the easy one to miss: *hi*
+    // is kṅit (1.2.4) and the `A` is still there, so without the bar
+    // 6.4.112's abhyasta arm would elide it and give *jahhi.
+    //
+    // The fork survives the convergent-fork collapse because the barred
+    // rules make the declined branch differ (jahIhi); see
+    // `a_text_neutral_barring_fork_survives_once_a_barred_rule_diverges_it`.
+    //
+    // Reads ENDING directly, as 6.4.119 does: *hau* names the ending itself.
+    // No cell offers a non-ā-final √hā aṅga before *hi* (6.4.118 needs a y),
+    // so the `A` clause is held by a guard test.
+    Rule {
+        id: "6.4.117",
+        name: "A ca hO",
+        kind: RuleKind::Vidhi,
+        vikalpa: true,
+        bars: &["6.4.116", "6.4.113", "6.4.112"],
+        apply: |p| {
+            // 03.0009 o~hA\k (√hā, jahāti)
+            if p.ctx.dhatupatha != "03.0009" || p.terms.len() <= ENDING {
+                return false;
+            }
+            if p.terms[ENDING].text != "hi" || !p.terms[ANGA].text.ends_with('A') {
+                return false;
+            }
+            let before = p.snapshot();
+            p.record("6.4.117", "A ca hO", before);
+            true
+        },
+    },
+    // 6.4.116 jahāteś ca (vikalpa): before a consonant-initial kṅit
+    // sārvadhātuka, √hā's ā optionally becomes `i`, continuing 6.4.114's
+    // *it* against 6.4.113's `ī`. jahitaH beside jahItaH; jahihi beside
+    // jahIhi.
+    //
+    // *hali* and *kṅiti* come by anuvṛtti from 6.4.113, and cells witness
+    // both: `ti` (pit) must give jahAti, and `ati` (ajādi) must give jahati.
+    //
+    // ORDERING CAVEAT (`Rule.vikalpa`): this rule invalidates "the aṅga ends
+    // in `A`" on its branch. Below it, 6.4.113 and 6.4.112 are the readers
+    // that matter, and on this branch both are MEANT to decline, which they
+    // do on the `i`. The rest below that read the aṅga's final (6.1.101,
+    // 6.1.87, 6.1.88, 6.4.105, 6.4.101) are disjoint from this branch: they
+    // want a vowel-initial follower, an a/ā final, or a jhal final (6.4.101,
+    // whose `i` is none), and the follower here is consonant-initial and the
+    // final is `i`. 6.1.101's vidhiliṅ arm reads the ending alone. The
+    // invalidation is the intended bleeding, not a hazard.
+    Rule {
+        id: "6.4.116",
+        name: "jahAteSca",
+        kind: RuleKind::Vidhi,
+        vikalpa: true,
+        bars: &[],
+        apply: |p| {
+            // 03.0009 o~hA\k (√hā, jahāti)
+            if p.ctx.dhatupatha != "03.0009" || p.terms.len() <= ENDING {
+                return false;
+            }
+            let Some(stem) = p.terms[ANGA].text.strip_suffix('A') else {
+                return false;
+            };
+            let stem = format!("{stem}i");
+            let follower = following_sarvadhatuka(p)
+                .expect("the len() <= ENDING guard above implies a follower");
+            if !follower.has(Tag::Ngit) {
+                return false;
+            }
+            let Some(next) = follower.text.chars().next() else {
+                return false;
+            };
+            if is_vowel(next) {
+                return false;
+            }
+            let before = p.snapshot();
+            p.terms[ANGA].text = stem;
+            p.record("6.4.116", "jahAteSca", before);
             true
         },
     },
@@ -976,6 +1125,10 @@ pub(crate) static GUNA: &[Rule] = &[
     // then elides before consonants too (dattaH, dadyAt). Slice 3c swapped
     // the pair and deleted 6.4.112's vowel-initial test, which had only ever
     // stood in for "6.4.113 takes the rest".
+    //
+    // Three rules above override the pair: 6.4.118, 6.4.117 and 6.4.116
+    // (√hā, jahAti). 6.4.117 bars both 6.4.113 and 6.4.112 on its branch
+    // (`Rule.bars`), and 6.4.116 leaves an `i` for the pair to decline on.
     //
     // Two arms each. The śnā arm reads p.terms[SHAP] and p.terms[ENDING]
     // directly, NOT following_sarvadhatuka: the helper answers "what follows
@@ -1005,6 +1158,7 @@ pub(crate) static GUNA: &[Rule] = &[
         name: "I halyaGoH",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             if p.terms.len() <= ENDING {
                 return false;
@@ -1057,7 +1211,10 @@ pub(crate) static GUNA: &[Rule] = &[
     //
     // No vowel-initial test: 6.4.113 above has already taken every follower
     // it can, so what reaches here is vowel-initial, or consonant-initial on
-    // a ghu root. kryādi's kliSnItaH is the prior that fails loudly if the
+    // a ghu root — except on 6.4.117's branch, where both 6.4.113 and this
+    // rule are barred (`Rule.bars`). The bar on this rule is what keeps
+    // *jahhi out: jahA + hi is consonant-initial, not ghu, and ends in `A`.
+    // kryādi's kliSnItaH is the prior that fails loudly if the
     // order is ever reversed — 6.4.112 would make it *kliSntaH.
     //
     // The abhyasta test's witness is adādi's √yā again: yAnti keeps its ā
@@ -1067,6 +1224,7 @@ pub(crate) static GUNA: &[Rule] = &[
         name: "SnA'ByastayorAtaH",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             if p.terms.len() <= ENDING {
                 return false;
@@ -1102,7 +1260,8 @@ pub(crate) static GUNA: &[Rule] = &[
     },
     // 6.4.115 bhiyo'nyatarasyām: √bhī's ī optionally becomes hrasva.
     // bibhītaḥ / bibhitaḥ, bibhīhi / bibhihi, bibhīyāt / bibhiyāt. The
-    // engine's ninth vikalpa.
+    // engine's ninth vikalpa (6.4.117 and 6.4.116, slice 3c2, are the tenth
+    // and eleventh).
     //
     // Operates on the AṄGA. 7.4.59 has already shortened the abhyāsa, and
     // that is a different vowel: `Bi` + `BI` is the pair this rule turns
@@ -1136,6 +1295,7 @@ pub(crate) static GUNA: &[Rule] = &[
         name: "Biyo'nyatarasyAm",
         kind: RuleKind::Vidhi,
         vikalpa: true,
+        bars: &[],
         apply: |p| {
             if p.terms[ANGA].text != "BI" {
                 return false;
@@ -1641,6 +1801,14 @@ mod tests {
         p
     }
 
+    /// √hā (`03.0009 o~hA\k`) at the guṇa stage: abhyāsa `Ja` (7.4.62 has run;
+    /// 8.4.54's `j` comes later), aṅga `hA`, empty śap, `ending`.
+    fn jaha_prakriya(ending: &str, ngit: bool) -> Prakriya {
+        let mut p = abhyasta_prakriya("Ja", "hA", false, ending, ngit);
+        p.ctx.dhatupatha = "03.0009";
+        p
+    }
+
     #[test]
     fn ghvasor_eddhav_gives_e_and_elides_the_abhyasa_before_hi() {
         // da + dA + hi → de + hi (dehi); Da + DA + hi → Dehi.
@@ -1684,6 +1852,53 @@ mod tests {
             terms: with_slots(vec![Term::new("dA")]),
             ..Default::default()
         };
+        assert!(!(rule.apply)(&mut p));
+        assert!(p.log.is_empty());
+    }
+
+    #[test]
+    fn lopo_yi_elides_the_a_of_ha_before_y() {
+        // vidhiliṅ: yāsuṭ sits on the ending's text, Ngit by 3.4.103.
+        // Ja + hA + yAt → Ja + h + yAt (jahyAt).
+        let rule = rules().find(|r| r.id == "6.4.118").unwrap();
+        for ending in ["yAt", "yAtAm", "yus"] {
+            let mut p = jaha_prakriya(ending, true);
+            assert!((rule.apply)(&mut p), "{ending}");
+            assert_eq!(p.terms[ANGA].text, "h", "{ending}");
+            assert_eq!(p.log.last().unwrap().sutra, "6.4.118");
+        }
+    }
+
+    #[test]
+    fn lopo_yi_declines_off_its_row_off_y_on_pit_off_a_and_when_short() {
+        let rule = rules().find(|r| r.id == "6.4.118").unwrap();
+        // 03.0008 is `hA` too and takes 6.4.113 (jihIyAt is not in its
+        // ātmanepada paradigm, but the guard must not rest on that).
+        for number in ["03.0008", ""] {
+            let mut p = jaha_prakriya("yAt", true);
+            p.ctx.dhatupatha = number;
+            assert!(!(rule.apply)(&mut p), "{number:?}");
+            assert_eq!(p.terms[ANGA].text, "hA");
+        }
+        // A consonant other than y: 6.4.116 / 6.4.113's cell (jahItaH).
+        let mut p = jaha_prakriya("tas", true);
+        assert!(!(rule.apply)(&mut p));
+        // A y-initial follower that is not kṅit: unreachable in the corpus,
+        // where yāsuṭ is always ṅit, so this test is what holds the clause.
+        let mut p = jaha_prakriya("yAt", false);
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "hA");
+        // Not ā-final.
+        let mut p = jaha_prakriya("yAt", true);
+        p.terms[ANGA].text = "hi".into();
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "hi");
+        // No ending term: must not panic indexing ENDING.
+        let mut p = Prakriya {
+            terms: with_slots(vec![Term::new("hA")]),
+            ..Default::default()
+        };
+        p.ctx.dhatupatha = "03.0009";
         assert!(!(rule.apply)(&mut p));
         assert!(p.log.is_empty());
     }
@@ -2444,5 +2659,120 @@ mod tests {
         p.terms[ANGA].text = "akur".into();
         assert!((r.apply)(&mut p));
         assert_eq!(p.terms[SHAP].text, "");
+    }
+
+    #[test]
+    fn a_ca_hau_records_a_step_that_changes_no_text() {
+        let rule = rules().find(|r| r.id == "6.4.117").unwrap();
+        let mut p = jaha_prakriya("hi", true);
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "hA");
+        let step = p.log.last().unwrap();
+        assert_eq!(step.sutra, "6.4.117");
+        assert_eq!(step.before, step.after);
+        assert_eq!(rule.bars, &["6.4.116", "6.4.113", "6.4.112"]);
+        assert!(rule.vikalpa);
+    }
+
+    #[test]
+    fn a_ca_hau_declines_off_hi_off_its_row_off_a_and_when_short() {
+        let rule = rules().find(|r| r.id == "6.4.117").unwrap();
+        // The tātaṅ branch: jahItAt / jahitAt are 6.4.113's and 6.4.116's.
+        let mut p = jaha_prakriya("tAt", true);
+        assert!(!(rule.apply)(&mut p));
+        for number in ["03.0008", ""] {
+            let mut p = jaha_prakriya("hi", true);
+            p.ctx.dhatupatha = number;
+            assert!(!(rule.apply)(&mut p), "{number:?}");
+        }
+        // Not ā-final: no cell reaches this (6.4.118 needs a y), so the test
+        // is what holds the clause.
+        let mut p = jaha_prakriya("hi", true);
+        p.terms[ANGA].text = "hi".into();
+        assert!(!(rule.apply)(&mut p));
+        let mut p = Prakriya {
+            terms: with_slots(vec![Term::new("hA")]),
+            ..Default::default()
+        };
+        p.ctx.dhatupatha = "03.0009";
+        assert!(!(rule.apply)(&mut p));
+        assert!(p.log.is_empty());
+    }
+
+    #[test]
+    fn jahates_ca_gives_i_before_a_hal_initial_kngit() {
+        let rule = rules().find(|r| r.id == "6.4.116").unwrap();
+        for ending in ["tas", "hi", "tAt", "va"] {
+            let mut p = jaha_prakriya(ending, true);
+            assert!((rule.apply)(&mut p), "{ending}");
+            assert_eq!(p.terms[ANGA].text, "hi", "{ending}");
+            assert_eq!(p.log.last().unwrap().sutra, "6.4.116");
+        }
+        assert!(rule.vikalpa);
+    }
+
+    #[test]
+    fn jahates_ca_declines_on_pit_ajadi_off_its_row_off_a_and_when_short() {
+        let rule = rules().find(|r| r.id == "6.4.116").unwrap();
+        // Pit: jahAti.
+        let mut p = jaha_prakriya("ti", false);
+        assert!(!(rule.apply)(&mut p));
+        // Vowel-initial: jahati is 6.4.112's.
+        let mut p = jaha_prakriya("ati", true);
+        assert!(!(rule.apply)(&mut p));
+        // √ohāṅ (03.0008) takes 6.4.113 only: jihIte, never *jihite.
+        for number in ["03.0008", ""] {
+            let mut p = jaha_prakriya("te", true);
+            p.ctx.dhatupatha = number;
+            assert!(!(rule.apply)(&mut p), "{number:?}");
+        }
+        // Empty follower.
+        let mut p = jaha_prakriya("", true);
+        assert!(!(rule.apply)(&mut p));
+        // Not ā-final: after 6.4.118 (jahyAt).
+        let mut p = jaha_prakriya("yAt", true);
+        p.terms[ANGA].text = "h".into();
+        assert!(!(rule.apply)(&mut p));
+        let mut p = Prakriya {
+            terms: with_slots(vec![Term::new("hA")]),
+            ..Default::default()
+        };
+        p.ctx.dhatupatha = "03.0009";
+        assert!(!(rule.apply)(&mut p));
+        assert!(p.log.is_empty());
+    }
+
+    /// The five rules in pipeline order, run as one stage through the real
+    /// controller, so the bars are enforced exactly as in `derive`.
+    fn run_ha_rules(p: Prakriya) -> Vec<Prakriya> {
+        let stage: Vec<Rule> = ["6.4.118", "6.4.117", "6.4.116", "6.4.113", "6.4.112"]
+            .iter()
+            .map(|id| *rules().find(|r| r.id == *id).unwrap())
+            .collect();
+        crate::controller::run_pipeline(p, &[&stage[..]])
+    }
+
+    #[test]
+    fn before_hi_the_three_readings_are_i_long_i_short_and_a_kept() {
+        // Declined (6.4.113: jahIhi), 6.4.116 (jahihi), 6.4.117 (jahAhi).
+        // 6.4.117's branch is barred from all three rules that would change
+        // its `A` — 6.4.112 included, or it would give *jahhi.
+        let out = run_ha_rules(jaha_prakriya("hi", true));
+        let texts: Vec<String> = out.iter().map(|p| p.text()).collect();
+        assert_eq!(texts, vec!["JahIhi", "Jahihi", "JahAhi"]);
+        let ids: Vec<&str> = out[2].log.iter().map(|s| s.sutra.as_str()).collect();
+        assert_eq!(ids, vec!["6.4.117"]);
+    }
+
+    #[test]
+    fn before_a_consonant_two_readings_and_before_y_or_a_vowel_one() {
+        let texts = |p: Prakriya| run_ha_rules(p).iter().map(|b| b.text()).collect::<Vec<_>>();
+        assert_eq!(
+            texts(jaha_prakriya("tas", true)),
+            vec!["JahItas", "Jahitas"]
+        );
+        assert_eq!(texts(jaha_prakriya("yAt", true)), vec!["JahyAt"]);
+        assert_eq!(texts(jaha_prakriya("ati", true)), vec!["Jahati"]);
+        assert_eq!(texts(jaha_prakriya("ti", false)), vec!["JahAti"]);
     }
 }

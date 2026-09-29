@@ -19,6 +19,11 @@ pub use crate::rule::{Rule as _Rule, RuleKind};
 /// A blocked branch is skipped by every later rule but is still returned:
 /// callers already test `blocked` and must keep doing so, since a blocked
 /// branch's partial text is not a surface form.
+///
+/// A rule whose id is in a branch's `barred` list is skipped on that branch.
+/// A rule that fires adds its own `bars` to that list (for a vikalpa rule, on
+/// the applied clone only). This is how an apavāda that changes no text, such
+/// as 6.4.117, keeps its branch from the rules it overrides.
 pub fn run_pipeline(p: Prakriya, stages: &[&[Rule]]) -> Vec<Prakriya> {
     let mut branches = vec![p];
     for stage in stages {
@@ -28,7 +33,10 @@ pub fn run_pipeline(p: Prakriya, stages: &[&[Rule]]) -> Vec<Prakriya> {
             // the same branch list.
             let mut forks: Vec<(usize, Prakriya)> = Vec::new();
             for (i, branch) in branches.iter_mut().enumerate() {
-                if branch.blocked {
+                // A barred rule is skipped exactly as a blocked branch is:
+                // an apavāda that fired earlier on this branch has already
+                // decided what this rule would change (`Rule.bars`).
+                if branch.blocked || branch.barred.contains(&rule.id) {
                     continue;
                 }
                 if rule.vikalpa {
@@ -41,10 +49,11 @@ pub fn run_pipeline(p: Prakriya, stages: &[&[Rule]]) -> Vec<Prakriya> {
                     // vikalpa rule that declines its own guard offers no
                     // choice at all, so there is nothing to fork.
                     if (rule.apply)(&mut applied) {
+                        applied.barred.extend_from_slice(rule.bars);
                         forks.push((i, applied));
                     }
-                } else {
-                    (rule.apply)(branch);
+                } else if (rule.apply)(branch) {
+                    branch.barred.extend_from_slice(rule.bars);
                 }
             }
             // Back to front, so each insertion leaves the earlier recorded
@@ -99,6 +108,7 @@ mod tests {
         name: "test",
         kind: RuleKind::Vidhi,
         vikalpa: true,
+        bars: &[],
         apply: |p| {
             let b = p.snapshot();
             p.terms[0].text.push('x');
@@ -112,6 +122,7 @@ mod tests {
         name: "test",
         kind: RuleKind::Vidhi,
         vikalpa: true,
+        bars: &[],
         apply: |p| {
             let b = p.snapshot();
             p.terms[0].text.push('y');
@@ -126,6 +137,7 @@ mod tests {
         name: "test",
         kind: RuleKind::Vidhi,
         vikalpa: true,
+        bars: &[],
         apply: |_p| false,
     };
 
@@ -135,12 +147,53 @@ mod tests {
         name: "test",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             let b = p.snapshot();
             p.terms[0].text.push('m');
             p.record("m", "test", b);
             true
         },
+    };
+
+    /// A mandatory rule that pushes `b` and bars `x`.
+    const BARS_X: Rule = Rule {
+        id: "bx",
+        name: "test",
+        kind: RuleKind::Vidhi,
+        vikalpa: false,
+        bars: &["x"],
+        apply: |p| {
+            let b = p.snapshot();
+            p.terms[0].text.push('b');
+            p.record("bx", "test", b);
+            true
+        },
+    };
+
+    /// The same, optional.
+    const BARS_X_OPTIONALLY: Rule = Rule {
+        id: "bxv",
+        name: "test",
+        kind: RuleKind::Vidhi,
+        vikalpa: true,
+        bars: &["x"],
+        apply: |p| {
+            let b = p.snapshot();
+            p.terms[0].text.push('b');
+            p.record("bxv", "test", b);
+            true
+        },
+    };
+
+    /// A barring rule that always declines its own guard.
+    const BARS_X_BUT_DECLINES: Rule = Rule {
+        id: "bxd",
+        name: "test",
+        kind: RuleKind::Vidhi,
+        vikalpa: false,
+        bars: &["x"],
+        apply: |_p| false,
     };
 
     fn texts(branches: &[Prakriya]) -> Vec<String> {
@@ -196,6 +249,7 @@ mod tests {
             name: "test",
             kind: RuleKind::Vidhi,
             vikalpa: false,
+            bars: &[],
             apply: |p| {
                 p.blocked = true;
                 true
@@ -224,6 +278,7 @@ mod tests {
             name: "eco'yavAyAvaH",
             kind: RuleKind::Vidhi,
             vikalpa: false,
+            bars: &[],
             apply: |p| {
                 if p.terms[0].text == "Bo" {
                     let b = p.snapshot();
@@ -257,6 +312,7 @@ mod tests {
             name: "noop",
             kind: RuleKind::Vidhi,
             vikalpa: true,
+            bars: &[],
             apply: |p| {
                 let before = p.snapshot();
                 p.record("test.noop", "noop", before);
@@ -266,5 +322,67 @@ mod tests {
         let out = run_pipeline(p1("x"), &[&[noop_fork]]);
         assert_eq!(out.len(), 1, "the converged fork must be pruned");
         assert!(out[0].log.iter().all(|s| s.sutra != "test.noop"));
+    }
+
+    #[test]
+    fn a_barred_rule_is_skipped_on_the_barring_branch() {
+        // Without the bar, PUSH_X would fork: ["ab", "abx"].
+        let out = run_pipeline(p1("a"), &[&[BARS_X, PUSH_X][..]]);
+        assert_eq!(texts(&out), vec!["ab"]);
+        assert_eq!(out[0].barred, vec!["x"]);
+    }
+
+    #[test]
+    fn an_optional_barrer_bars_its_applied_branch_only() {
+        // Declined branch "a" still forks on PUSH_X; applied branch "ab" is barred.
+        let out = run_pipeline(p1("a"), &[&[BARS_X_OPTIONALLY, PUSH_X][..]]);
+        assert_eq!(texts(&out), vec!["a", "ax", "ab"]);
+        assert!(out[0].barred.is_empty());
+        assert_eq!(out[2].barred, vec!["x"]);
+    }
+
+    #[test]
+    fn a_barring_rule_that_declines_bars_nothing() {
+        let out = run_pipeline(p1("a"), &[&[BARS_X_BUT_DECLINES, PUSH_X][..]]);
+        assert_eq!(texts(&out), vec!["a", "ax"]);
+        assert!(out.iter().all(|b| b.barred.is_empty()));
+    }
+
+    #[test]
+    fn a_bar_skips_only_the_rule_it_names() {
+        let out = run_pipeline(p1("a"), &[&[BARS_X, PUSH_Y, PUSH_M][..]]);
+        assert_eq!(texts(&out), vec!["abm", "abym"]);
+    }
+
+    #[test]
+    fn forks_of_a_barred_branch_inherit_the_bar() {
+        // bxv: [a, ab]. PUSH_Y forks both: [a, ay, ab, aby]. PUSH_X forks
+        // only the unbarred two.
+        let out = run_pipeline(p1("a"), &[&[BARS_X_OPTIONALLY, PUSH_Y, PUSH_X][..]]);
+        assert_eq!(texts(&out), vec!["a", "ax", "ay", "ayx", "ab", "aby"]);
+    }
+
+    #[test]
+    fn a_text_neutral_barring_fork_survives_once_a_barred_rule_diverges_it() {
+        // 6.4.117's shape: an optional rule that changes no text and bars the
+        // rule that would. Unlike `convergent_forks_collapse_to_the_declined_branch`,
+        // the barred rule makes the two branches differ, so both survive,
+        // declined first.
+        const KEEP: Rule = Rule {
+            id: "keep",
+            name: "test",
+            kind: RuleKind::Vidhi,
+            vikalpa: true,
+            bars: &["m"],
+            apply: |p| {
+                let b = p.snapshot();
+                p.record("keep", "test", b);
+                true
+            },
+        };
+        let out = run_pipeline(p1("a"), &[&[KEEP, PUSH_M][..]]);
+        assert_eq!(texts(&out), vec!["am", "a"]);
+        let ids: Vec<&str> = out[1].log.iter().map(|s| s.sutra.as_str()).collect();
+        assert_eq!(ids, vec!["keep"]);
     }
 }

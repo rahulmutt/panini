@@ -22,6 +22,7 @@ pub(crate) static TIN: &[Rule] = &[
         name: "loTo laNvat",
         kind: RuleKind::Atidesha,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             if !matches!(p.ctx.lakara, Lakara::Lot) || p.ctx.is_ngit_like {
                 return false;
@@ -47,6 +48,7 @@ pub(crate) static TIN: &[Rule] = &[
         name: "Jer jus",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             if !matches!(p.ctx.lakara, Lakara::VidhiLin) || p.terms[ENDING_PRE_SHAP].text != "Ji" {
                 return false;
@@ -82,6 +84,7 @@ pub(crate) static TIN: &[Rule] = &[
         name: "sijaByastavidiByaSca",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             if !matches!(p.ctx.lakara, Lakara::Lan)
                 || !p.terms[ANGA].has(Tag::Juhotyadi)
@@ -106,6 +109,7 @@ pub(crate) static TIN: &[Rule] = &[
         name: "Jasya ran",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             if !matches!(p.ctx.lakara, Lakara::VidhiLin) || p.terms[ENDING_PRE_SHAP].text != "Ja" {
                 return false;
@@ -123,6 +127,7 @@ pub(crate) static TIN: &[Rule] = &[
         name: "iwo't",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             if !matches!(p.ctx.lakara, Lakara::VidhiLin)
                 || !matches!(p.ctx.pada, Pada::Atmanepada)
@@ -156,6 +161,7 @@ pub(crate) static TIN: &[Rule] = &[
         name: "tasTasTamipAM tAMtaMtAmaH",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             if !p.ctx.is_ngit_like || matches!(p.ctx.pada, Pada::Atmanepada) {
                 return false;
@@ -182,6 +188,7 @@ pub(crate) static TIN: &[Rule] = &[
         name: "nityaM NitaH",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             if !p.ctx.is_ngit_like
                 || !matches!(p.terms[ENDING_PRE_SHAP].text.as_str(), "vas" | "mas")
@@ -203,6 +210,7 @@ pub(crate) static TIN: &[Rule] = &[
         name: "ser hyapic ca",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             if !matches!(p.ctx.lakara, Lakara::Lot) || p.terms[ENDING_PRE_SHAP].text != "si" {
                 return false;
@@ -226,6 +234,7 @@ pub(crate) static TIN: &[Rule] = &[
         name: "mer niH",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             if !matches!(p.ctx.lakara, Lakara::Lot) || p.terms[ENDING_PRE_SHAP].text != "mi" {
                 return false;
@@ -247,6 +256,7 @@ pub(crate) static TIN: &[Rule] = &[
         name: "er uH",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             if !matches!(p.ctx.lakara, Lakara::Lot) {
                 return false;
@@ -273,6 +283,7 @@ pub(crate) static TIN: &[Rule] = &[
         name: "itaS ca",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             // ṅit lakāras generally — but NOT loṭ, whose i-finals belong to
             // the apavāda set 3.4.86/87/89 (and 3.4.87's output `hi` is
@@ -300,6 +311,7 @@ pub(crate) static TIN: &[Rule] = &[
         name: "TAsas se",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             // Guarded to the ṭit lakāras (laṭ, loṭ): in the ṅit lakāras the
             // 3.4.79 context that 3.4.80 carves out does not apply and TAs
@@ -324,6 +336,7 @@ pub(crate) static TIN: &[Rule] = &[
         name: "wita AtmanepadAnAM wer e",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             if !matches!(p.ctx.lakara, Lakara::Lat | Lakara::Lot)
                 || !matches!(p.ctx.pada, Pada::Atmanepada)
@@ -357,6 +370,7 @@ pub(crate) static TIN: &[Rule] = &[
         name: "savAByAM vAmO",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             if !matches!(p.ctx.lakara, Lakara::Lot) {
                 return false;
@@ -380,6 +394,7 @@ pub(crate) static TIN: &[Rule] = &[
         name: "eta E",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             if !matches!(p.ctx.lakara, Lakara::Lot)
                 || !matches!(p.ctx.purusha, Purusha::Uttama)
@@ -406,6 +421,7 @@ pub(crate) static TIN: &[Rule] = &[
         name: "Am etaH",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             if !matches!(p.ctx.lakara, Lakara::Lot)
                 || !matches!(p.ctx.pada, Pada::Atmanepada)
@@ -437,6 +453,7 @@ pub(crate) static TIN: &[Rule] = &[
         name: "Aq uttamasya pic ca",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             if !matches!(p.ctx.lakara, Lakara::Lot)
                 || !matches!(p.ctx.purusha, Purusha::Uttama)
@@ -468,6 +485,7 @@ pub(crate) static TIN: &[Rule] = &[
         name: "yAsuw parasmEpadezUdAtto Nic ca",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             if !matches!(p.ctx.lakara, Lakara::VidhiLin) || matches!(p.ctx.pada, Pada::Atmanepada) {
                 return false;
@@ -493,6 +511,7 @@ pub(crate) static TIN: &[Rule] = &[
         name: "liNas sIyuw",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             if !matches!(p.ctx.lakara, Lakara::VidhiLin) || !matches!(p.ctx.pada, Pada::Atmanepada)
             {
@@ -536,6 +555,7 @@ pub(crate) static TIN: &[Rule] = &[
         name: "tuhyostAtaNNASizyanyatarasyAm",
         kind: RuleKind::Vidhi,
         vikalpa: true,
+        bars: &[],
         apply: |p| {
             let e = p.terms[ENDING_PRE_SHAP].text.as_str();
             if e != "tu" && e != "hi" {
@@ -585,6 +605,7 @@ mod tests {
                 Vacana::Bahu,
             ),
             blocked: false,
+            barred: Vec::new(),
         };
         let rule = rules().find(|r| r.id == "3.4.108").unwrap();
         assert!((rule.apply)(&mut p));
@@ -604,6 +625,7 @@ mod tests {
                 log: vec![],
                 ctx: Context::new(lakara, Pada::Parasmaipada, Purusha::Prathama, Vacana::Bahu),
                 blocked: false,
+                barred: Vec::new(),
             };
             let rule = rules().find(|r| r.id == "3.4.108").unwrap();
             assert!(!(rule.apply)(&mut p), "{lakara:?}");
@@ -628,6 +650,7 @@ mod tests {
                 Vacana::Bahu,
             ),
             blocked: false,
+            barred: Vec::new(),
         };
         p.terms[ANGA].add(Tag::Juhotyadi);
         assert!((rule.apply)(&mut p));
@@ -641,6 +664,7 @@ mod tests {
                 log: vec![],
                 ctx: Context::new(lakara, Pada::Parasmaipada, Purusha::Prathama, Vacana::Bahu),
                 blocked: false,
+                barred: Vec::new(),
             };
             p.terms[ANGA].add(Tag::Juhotyadi);
             assert!(!(rule.apply)(&mut p), "{lakara:?}");
@@ -656,6 +680,7 @@ mod tests {
                 Vacana::Bahu,
             ),
             blocked: false,
+            barred: Vec::new(),
         };
         assert!(!(rule.apply)(&mut p));
         assert_eq!(p.terms[ENDING_PRE_SHAP].text, "Ji");
@@ -670,6 +695,7 @@ mod tests {
                 Vacana::Eka,
             ),
             blocked: false,
+            barred: Vec::new(),
         };
         p.terms[ANGA].add(Tag::Juhotyadi);
         assert!(!(rule.apply)(&mut p));
@@ -688,6 +714,7 @@ mod tests {
                 Vacana::Eka,
             ),
             blocked: false,
+            barred: Vec::new(),
         };
         let rule = rules().find(|r| r.id == "3.4.100").unwrap();
         assert!((rule.apply)(&mut p));
@@ -709,6 +736,7 @@ mod tests {
                 Vacana::Eka,
             ),
             blocked: false,
+            barred: Vec::new(),
         };
         p.ctx.is_ngit_like = true; // as 3.4.85 would have set it
         let rule = rules().find(|r| r.id == "3.4.100").unwrap();
@@ -728,6 +756,7 @@ mod tests {
                 Vacana::Eka,
             ),
             blocked: false,
+            barred: Vec::new(),
         };
         let rule = rules().find(|r| r.id == "3.4.101").unwrap();
         assert!((rule.apply)(&mut p));
@@ -752,6 +781,7 @@ mod tests {
                 Vacana::Bahu,
             ),
             blocked: false,
+            barred: Vec::new(),
         };
         let rule = rules().find(|r| r.id == "3.4.92").unwrap();
         assert!(!(rule.apply)(&mut p));
@@ -770,6 +800,7 @@ mod tests {
                 Vacana::Eka,
             ),
             blocked: false,
+            barred: Vec::new(),
         };
         let rule = rules().find(|r| r.id == "3.4.103").unwrap();
         assert!((rule.apply)(&mut p));
@@ -788,6 +819,7 @@ mod tests {
                 Vacana::Eka,
             ),
             blocked: false,
+            barred: Vec::new(),
         };
         let rule = rules().find(|r| r.id == "3.4.103").unwrap();
         assert!(!(rule.apply)(&mut p));
@@ -809,6 +841,7 @@ mod tests {
                 log: vec![],
                 ctx: Context::new(lakara, Pada::Atmanepada, Purusha::Uttama, Vacana::Dvi),
                 blocked: false,
+                barred: Vec::new(),
             };
             let rule = rules().find(|r| r.id == id).unwrap();
             assert!(!(rule.apply)(&mut p), "{id} must not fire for atmanepada");
@@ -831,6 +864,7 @@ mod tests {
                 Vacana::Eka,
             ),
             blocked: false,
+            barred: Vec::new(),
         };
         let rule = rules().find(|r| r.id == "3.4.79").unwrap();
         assert!(
@@ -859,6 +893,7 @@ mod tests {
             log: vec![],
             ctx: Context::new(Lakara::Lot, Pada::Atmanepada, Purusha::Uttama, Vacana::Eka),
             blocked: false,
+            barred: Vec::new(),
         };
         let rule = rules().find(|r| r.id == "3.4.93").unwrap();
         assert!(!(rule.apply)(&mut p));

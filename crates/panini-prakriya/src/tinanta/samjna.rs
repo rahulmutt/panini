@@ -41,6 +41,7 @@ pub(crate) static SAMJNA: &[Rule] = &[
         name: "anudAttaNita Atmanepadam",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             if !p.terms[ANGA].has(Tag::Atmanepadin) {
                 return false; // parasmaipada roots are 1.3.78's business
@@ -82,6 +83,7 @@ pub(crate) static SAMJNA: &[Rule] = &[
         name: "Bujo'navane",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             // svarita/ñit ubhayapadī roots are 1.3.72's business;
             // parasmaipada-only roots 1.3.78's; ātmanepada-only ones
@@ -122,6 +124,7 @@ pub(crate) static SAMJNA: &[Rule] = &[
         name: "svaritaYitaH kartraBiprAye kriyAPale",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             // parasmaipada-only roots are 1.3.78's business; ātmanepada-only
             // ones are 1.3.12's.
@@ -144,6 +147,7 @@ pub(crate) static SAMJNA: &[Rule] = &[
         name: "SezAt kartari parasmEpadam",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             if p.terms[ANGA].has(Tag::Atmanepadin) {
                 return false;
@@ -176,6 +180,7 @@ pub(crate) static SAMJNA: &[Rule] = &[
         name: "tiptasJisipTasTamibvasmas",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             let before = p.snapshot();
             let ending = tin_ending(p.ctx.pada, p.ctx.purusha, p.ctx.vacana);
@@ -207,6 +212,7 @@ pub(crate) static SAMJNA: &[Rule] = &[
         name: "tasya lopaH",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             let last = p.terms[ENDING_PRE_SHAP].text.chars().last();
             if last.map(is_vibhakti_protected_final).unwrap_or(false) {
@@ -238,6 +244,7 @@ pub(crate) static SAMJNA: &[Rule] = &[
         name: "sArvaDAtukam apit",
         kind: RuleKind::Atidesha,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             if p.terms[ENDING_PRE_SHAP].has(Tag::Pit)
                 || (matches!(p.ctx.lakara, Lakara::Lot) && matches!(p.ctx.purusha, Purusha::Uttama))
@@ -540,6 +547,7 @@ mod tests {
                 Vacana::Eka,
             ),
             blocked: false,
+            barred: Vec::new(),
         };
         let rule = rules().find(|r| r.id == "1.2.4").unwrap();
         assert!((rule.apply)(&mut p));

@@ -21,6 +21,11 @@ pub struct Prakriya {
     /// a genuine input string, so callers (e.g. `Panini::check`) must
     /// check `!blocked` before matching it, not rely on the text alone.
     pub blocked: bool,
+    /// Rule ids barred on this branch by a rule that already fired on it
+    /// (`Rule.bars`). Cloned with the branch, so a vikalpa's applied and
+    /// declined readings diverge here, and every later fork of a barred branch
+    /// inherits the bar.
+    pub barred: Vec<&'static str>,
 }
 
 impl Prakriya {

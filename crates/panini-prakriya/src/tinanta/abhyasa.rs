@@ -1,5 +1,5 @@
-//! Reduplication: 6.1.10, 7.4.60, 7.4.59, 7.4.62, 7.4.76 — dvitva and the rules that
-//! reshape the abhyāsa.
+//! Reduplication: 6.1.10, 7.4.60, 7.4.59, 7.4.62, 7.4.76, 7.4.78 — dvitva and the
+//! rules that reshape the abhyāsa.
 //!
 //! Ordered AFTER 3.1.68 (ending at `ENDING`, śap at `SHAP` — empty on
 //! exactly the path this stage cares about) and BEFORE `anga`, so 6.4.71
@@ -46,6 +46,7 @@ pub(crate) static ABHYASA_RULES: &[Rule] = &[
         name: "SlO",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             if !p.terms[SHAP].has(Tag::Slu) {
                 return false;
@@ -71,12 +72,13 @@ pub(crate) static ABHYASA_RULES: &[Rule] = &[
     //
     // The no-op guard is 8.4.53's: for a single-consonant abhyāsa the result
     // equals the input, and the rule must record nothing there or every √hu,
-    // √ki and √bhī trace grows a step and the 3852 priors break.
+    // √ki and √bhī trace grows a step and the 3924 priors break.
     Rule {
         id: "7.4.60",
         name: "halAdiH SezaH",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             let s: Vec<char> = p.terms[ABHYASA].text.chars().collect();
             let Some(&first) = s.first() else {
@@ -118,6 +120,7 @@ pub(crate) static ABHYASA_RULES: &[Rule] = &[
         name: "hrasvaH",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             let t: String = p.terms[ABHYASA]
                 .text
@@ -148,6 +151,7 @@ pub(crate) static ABHYASA_RULES: &[Rule] = &[
         name: "kuhoScuH",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             let Some(first) = p.terms[ABHYASA].text.chars().next() else {
                 return false;
@@ -182,6 +186,7 @@ pub(crate) static ABHYASA_RULES: &[Rule] = &[
         name: "BfYAm it",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             if !matches!(p.ctx.dhatupatha, "03.0007" | "03.0008") {
                 return false;
@@ -194,6 +199,41 @@ pub(crate) static ABHYASA_RULES: &[Rule] = &[
             let before = p.snapshot();
             p.terms[ABHYASA].text = t;
             p.record("7.4.76", "BfYAm it", before);
+            true
+        },
+    },
+    // 7.4.78 bahulaṁ chandasi: in the Veda, the abhyāsa takes `i` variously.
+    // A CHĀNDASA sūtra, applied here to √gā (`03.0026 gA\`) on the authority
+    // of the Siddhānta-kaumudī, which derives jigAti by it. vidyut-prakriya
+    // does the same and says so ("This is a chAndasa rule, but the SK applies
+    // it to derive jigAti from gA, which is a Vedic root."). The Pāṇinian id
+    // is kept and the source is recorded here: the 7.3.86 vikalpa-arm
+    // precedent for a non-Aṣṭādhyāyī authority.
+    //
+    // *bahulam* is not modelled as a vikalpa: vidyut gives jig- only, and so
+    // does the Kaumudī's form.
+    //
+    // KEYED BY ROW NUMBER, like 7.4.76 above it: the sūtra itself names no
+    // root, and the application is to this one row. After 7.4.62: ja → ji.
+    Rule {
+        id: "7.4.78",
+        name: "bahulaM Candasi",
+        kind: RuleKind::Vidhi,
+        vikalpa: false,
+        bars: &[],
+        apply: |p| {
+            // 03.0026 gA\ (√gā)
+            if p.ctx.dhatupatha != "03.0026" {
+                return false;
+            }
+            let t: String = p.terms[ABHYASA]
+                .text
+                .chars()
+                .map(|c| if is_vowel(c) { 'i' } else { c })
+                .collect();
+            let before = p.snapshot();
+            p.terms[ABHYASA].text = t;
+            p.record("7.4.78", "bahulaM Candasi", before);
             true
         },
     },
@@ -316,7 +356,7 @@ mod tests {
     fn haladih_shesha_records_nothing_for_a_single_initial_consonant() {
         // The no-op guard. √hu, √ki and √bhī all have one initial consonant,
         // so 7.4.60 must return false and leave the log empty — otherwise
-        // every one of their traces grows a step and the 3852 priors break.
+        // every one of their traces grows a step and the 3924 priors break.
         let r_10 = rules().find(|r| r.id == "6.1.10").unwrap();
         let r_60 = rules().find(|r| r.id == "7.4.60").unwrap();
         for root in ["hu", "ki", "BI"] {
@@ -425,6 +465,34 @@ mod tests {
             p.terms[ABHYASA].text = "Ja".into();
             assert!(!(rule.apply)(&mut p), "{number:?}");
             assert_eq!(p.terms[ABHYASA].text, "Ja", "{number:?}");
+            assert!(p.log.is_empty(), "{number:?}");
+        }
+    }
+
+    #[test]
+    fn bahulam_chandasi_makes_the_abhyasa_vowel_i_for_ga() {
+        // 7.4.78, applied to √gā (03.0026) on the Kaumudī's authority. After
+        // 7.4.62: ja → ji (jigAti).
+        let rule = rules().find(|r| r.id == "7.4.78").unwrap();
+        let mut p = slu_prakriya("gA", "ti");
+        p.ctx.dhatupatha = "03.0026";
+        p.terms[ABHYASA].text = "ja".into();
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.terms[ABHYASA].text, "ji");
+        assert_eq!(p.log.last().unwrap().sutra, "7.4.78");
+    }
+
+    #[test]
+    fn bahulam_chandasi_declines_off_its_row() {
+        // Keyed by number: `03.0009` (jahAti) and the hand-built default must
+        // keep their abhyāsa `a`.
+        let rule = rules().find(|r| r.id == "7.4.78").unwrap();
+        for (root, number, abhyasa) in [("gA", "", "ja"), ("hA", "03.0009", "Ja")] {
+            let mut p = slu_prakriya(root, "ti");
+            p.ctx.dhatupatha = number;
+            p.terms[ABHYASA].text = abhyasa.into();
+            assert!(!(rule.apply)(&mut p), "{number:?}");
+            assert_eq!(p.terms[ABHYASA].text, abhyasa, "{number:?}");
             assert!(p.log.is_empty(), "{number:?}");
         }
     }

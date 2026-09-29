@@ -75,6 +75,7 @@ pub(crate) static ADESHA: &[Rule] = &[
         name: "akaH savarRe dIrGaH",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             // vidhiliṅ 1sg: after 7.2.79 the ending is `yAam` (yāsuṭ ā + the
             // uttama-eka `am`). 7.2.80 (`super::anga`) would have rewritten
@@ -188,6 +189,7 @@ pub(crate) static ADESHA: &[Rule] = &[
         name: "usyapadAntAt",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             let e = &p.terms[ENDING].text;
             if !e.ends_with("us") {
@@ -253,6 +255,7 @@ pub(crate) static ADESHA: &[Rule] = &[
         name: "utaSca pratyayAdasaMyogapUrvAt",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             if p.terms[ENDING].text != "hi" {
                 return false;
@@ -334,6 +337,7 @@ pub(crate) static ADESHA: &[Rule] = &[
         name: "lopaScAsyAnyatarasyAM mvoH",
         kind: RuleKind::Vidhi,
         vikalpa: true,
+        bars: &[],
         apply: |p| {
             if !p.terms[ENDING].text.starts_with(['m', 'v']) {
                 return false;
@@ -364,6 +368,7 @@ pub(crate) static ADESHA: &[Rule] = &[
         name: "AwaS ca",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             // Aṅga arm: āṭ in AGAMA + the first non-empty term after it.
             if p.terms[AGAMA].text == "A"
@@ -464,6 +469,7 @@ pub(crate) static ADESHA: &[Rule] = &[
         name: "vfdDireci",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             if p.terms.len() <= ENDING || !p.terms[SHAP].text.is_empty() {
                 return false;
@@ -502,6 +508,7 @@ pub(crate) static ADESHA: &[Rule] = &[
         name: "ato guRe",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             let Some(first) = p.terms[ENDING].text.chars().next() else {
                 return false;
@@ -543,6 +550,7 @@ pub(crate) static ADESHA: &[Rule] = &[
         name: "Ad guRaH",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             // ARM 2, the 7.3.92 im (rudhādi 7e). The āgama put an `i`
             // inside SHAP immediately after śnam's `a` — tfnah → tfnaih —
@@ -612,6 +620,7 @@ pub(crate) static ADESHA: &[Rule] = &[
         name: "lopo vyor vali",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             let mut chars = p.terms[ENDING].text.chars();
             let first = chars.next();
@@ -687,6 +696,7 @@ pub(crate) static ADESHA: &[Rule] = &[
         name: "ato heH",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             if !p.terms[SHAP].has(Tag::Thematic) || p.terms[ENDING].text != "hi" {
                 return false;
@@ -711,6 +721,7 @@ pub(crate) static ADESHA: &[Rule] = &[
         name: "her DiH",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             if p.terms[ENDING].text != "hi" {
                 return false;
@@ -760,6 +771,7 @@ pub(crate) static ADESHA: &[Rule] = &[
         name: "SnasorallopaH",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             if !p.terms[ANGA].has(Tag::Rudhadi) {
                 return false;
@@ -814,6 +826,7 @@ mod tests {
                     Vacana::Dvi,
                 ),
                 blocked: false,
+                barred: Vec::new(),
             };
             let rule = rules().find(|r| r.id == "6.1.66").unwrap();
             assert_eq!((rule.apply)(&mut p), fires, "{ending}");
@@ -1083,6 +1096,7 @@ mod tests {
                 Vacana::Bahu,
             ),
             blocked: false,
+            barred: Vec::new(),
         };
         let rule = rules().find(|r| r.id == "6.1.96").unwrap();
         assert!((rule.apply)(&mut p));
@@ -1100,6 +1114,7 @@ mod tests {
                 Vacana::Bahu,
             ),
             blocked: false,
+            barred: Vec::new(),
         };
         assert!(!(rule.apply)(&mut q));
         assert_eq!(q.terms[ENDING].text, "iyus");
@@ -1128,6 +1143,7 @@ mod tests {
                 Vacana::Bahu,
             ),
             blocked: false,
+            barred: Vec::new(),
         };
         let rule = rules().find(|r| r.id == "6.1.96").unwrap();
         assert!((rule.apply)(&mut p));
@@ -1225,6 +1241,7 @@ mod tests {
                 Vacana::Eka,
             ),
             blocked: false,
+            barred: Vec::new(),
         };
         assert!((rule.apply)(&mut p));
         assert_eq!(p.terms[ENDING].text, "yAm");
@@ -1241,6 +1258,7 @@ mod tests {
                 Vacana::Eka,
             ),
             blocked: false,
+            barred: Vec::new(),
         };
         assert!(!(rule.apply)(&mut q));
         assert_eq!(q.terms[ENDING].text, "yAt");
@@ -1260,6 +1278,7 @@ mod tests {
                 Vacana::Eka,
             ),
             blocked: false,
+            barred: Vec::new(),
         };
         assert!(!(rule.apply)(&mut r));
         assert_eq!(r.terms[ENDING].text, "iyam");
@@ -1297,6 +1316,7 @@ mod tests {
                 Vacana::Eka,
             ),
             blocked: false,
+            barred: Vec::new(),
         };
         let rule = rules().find(|r| r.id == "6.1.101").unwrap();
         assert!(!(rule.apply)(&mut p));
