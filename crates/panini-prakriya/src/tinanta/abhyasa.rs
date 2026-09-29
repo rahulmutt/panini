@@ -1,4 +1,4 @@
-//! Reduplication: 6.1.10, 7.4.66, 7.4.60, 7.4.59, 7.4.62, 7.4.76, 7.4.78 — dvitva and the
+//! Reduplication: 6.1.10, 7.4.66, 7.4.60, 7.4.59, 7.4.62, 7.4.76, 7.4.77, 7.4.78 — dvitva and the
 //! rules that reshape the abhyāsa.
 //!
 //! Ordered AFTER 3.1.68 (ending at `ENDING`, śap at `SHAP` — empty on
@@ -204,17 +204,17 @@ pub(crate) static ABHYASA_RULES: &[Rule] = &[
         },
     },
     // 7.4.76 bhṛñām it: the abhyāsa of √bhṛñ, √māṅ and √ohāṅ takes `i`.
-    // ma → mi (mimIte), and — after 7.4.59 and 7.4.62 — Ja → Ji (jihIte).
+    // Ba → Bi (bibharti, after 7.4.66 and 7.4.60), ma → mi (mimIte), and —
+    // after 7.4.59 and 7.4.62 — Ja → Ji (jihIte).
     // vidyut's order is 7.4.59 → 7.4.62 → 7.4.76, which this stage's
     // sequence already is.
     //
     // KEYED BY ROW NUMBER (`ctx.dhatupatha`), not by `ANGA.text`: the sūtra
     // names three roots, and `03.0009 o~hA\k` enters the derivation as `hA`
     // exactly like `03.0008 o~hA\N` while taking no 7.4.76 (jahAti).
+    //   03.0006 quBf\Y √bhṛñ (slice 3d: Ba → Bi, bibharti)
     //   03.0007 mA\N   √māṅ
     //   03.0008 o~hA\N √ohāṅ
-    // `03.0006 quBf\Y` (√bhṛñ) is the third, and slice 3d adds it with its
-    // witness; an unwitnessed number here would be a mutation survivor.
     //
     // Every abhyāsa this reaches is a single ekāc (6.1.10's NARROW note), so
     // mapping each vowel to `i` is mapping THE vowel to `i`.
@@ -225,7 +225,7 @@ pub(crate) static ABHYASA_RULES: &[Rule] = &[
         vikalpa: false,
         bars: &[],
         apply: |p| {
-            if !matches!(p.ctx.dhatupatha, "03.0007" | "03.0008") {
+            if !matches!(p.ctx.dhatupatha, "03.0006" | "03.0007" | "03.0008") {
                 return false;
             }
             let t: String = p.terms[ABHYASA]
@@ -236,6 +236,42 @@ pub(crate) static ABHYASA_RULES: &[Rule] = &[
             let before = p.snapshot();
             p.terms[ABHYASA].text = t;
             p.record("7.4.76", "BfYAm it", before);
+            true
+        },
+    },
+    // 7.4.77 arti-pipartyoś ca: the abhyāsa of √ṛ (*arti*) and √pṛ
+    // (*piparti*) takes `i` too. vidyut applies *piparti* to both pf\ and pF,
+    // the two rows that spell it: after 7.4.66 and 7.4.60, pa → pi.
+    //
+    // KEYED BY ROW NUMBER, like 7.4.76 above it: by this stage `ANGA.text`
+    // still reads `pf`/`pF`, but the sūtra names roots, and the precedent is
+    // the number.
+    //   03.0004 pF  √pṝ
+    //   03.0005 pf\ √pṛ
+    // `03.0017 f\` (√ṛ, *arti*) is the sūtra's first root and joins with its
+    // witness in slice 3d2; an unwitnessed number here would be a mutation
+    // survivor.
+    //
+    // After 7.4.76: the two name disjoint roots, so only the trace pins decide
+    // the order, and they follow vidyut's.
+    Rule {
+        id: "7.4.77",
+        name: "artipipartyoSca",
+        kind: RuleKind::Vidhi,
+        vikalpa: false,
+        bars: &[],
+        apply: |p| {
+            if !matches!(p.ctx.dhatupatha, "03.0004" | "03.0005") {
+                return false;
+            }
+            let t: String = p.terms[ABHYASA]
+                .text
+                .chars()
+                .map(|c| if is_vowel(c) { 'i' } else { c })
+                .collect();
+            let before = p.snapshot();
+            p.terms[ABHYASA].text = t;
+            p.record("7.4.77", "artipipartyoSca", before);
             true
         },
     },
@@ -475,13 +511,16 @@ mod tests {
     }
 
     #[test]
-    fn bhrnam_it_makes_the_abhyasa_vowel_i_for_the_two_rows_it_names() {
-        // 7.4.76. √māṅ (03.0007) and √ohāṅ (03.0008), after 7.4.59 and
-        // 7.4.62: ma → mi (mimIte), Ja → Ji (jihIte).
+    fn bhrnam_it_makes_the_abhyasa_vowel_i_for_the_three_rows_it_names() {
+        // 7.4.76. √bhṛñ (03.0006), √māṅ (03.0007) and √ohāṅ (03.0008), after
+        // 7.4.60, 7.4.59 and 7.4.62: Ba → Bi (bibharti), ma → mi (mimIte), Ja →
+        // Ji (jihIte).
         let rule = rules().find(|r| r.id == "7.4.76").unwrap();
-        for (root, number, abhyasa, want) in
-            [("mA", "03.0007", "ma", "mi"), ("hA", "03.0008", "Ja", "Ji")]
-        {
+        for (root, number, abhyasa, want) in [
+            ("Bf", "03.0006", "Ba", "Bi"),
+            ("mA", "03.0007", "ma", "mi"),
+            ("hA", "03.0008", "Ja", "Ji"),
+        ] {
             let mut p = slu_prakriya(root, "te");
             p.ctx.dhatupatha = number;
             p.terms[ABHYASA].text = abhyasa.into();
@@ -614,5 +653,96 @@ mod tests {
         assert_eq!(p.terms[ABHYASA].text, "Ba");
         let ids: Vec<&str> = p.log.iter().map(|s| s.sutra.as_str()).collect();
         assert_eq!(ids, vec!["6.1.10", "7.4.66", "7.4.60"]);
+    }
+
+    #[test]
+    fn arti_pipartyos_ca_makes_the_abhyasa_vowel_i_for_pr_and_prr() {
+        // 7.4.77, *piparti*: vidyut applies it to both pf\ (03.0005) and pF
+        // (03.0004). After 7.4.66 and 7.4.60: pa → pi.
+        let rule = rules().find(|r| r.id == "7.4.77").unwrap();
+        for (root, number) in [("pf", "03.0005"), ("pF", "03.0004")] {
+            let mut p = slu_prakriya(root, "ti");
+            p.ctx.dhatupatha = number;
+            p.terms[ABHYASA].text = "pa".into();
+            assert!((rule.apply)(&mut p), "{number}");
+            assert_eq!(p.terms[ABHYASA].text, "pi", "{number}");
+            assert_eq!(p.log.last().unwrap().sutra, "7.4.77");
+        }
+    }
+
+    #[test]
+    fn arti_pipartyos_ca_declines_off_its_rows() {
+        // Keyed by number. √bhṛ's `i` is 7.4.76's, √sṛ keeps its `a`
+        // (sasarti), and the hand-built default names no row. √ṛ (03.0017)
+        // is the sūtra's other root and arrives with its witness in 3d2.
+        let rule = rules().find(|r| r.id == "7.4.77").unwrap();
+        for (root, number, abhyasa) in [
+            ("Bf", "03.0006", "Ba"),
+            ("sf", "03.0018", "sa"),
+            ("pf", "", "pa"),
+        ] {
+            let mut p = slu_prakriya(root, "ti");
+            p.ctx.dhatupatha = number;
+            p.terms[ABHYASA].text = abhyasa.into();
+            assert!(!(rule.apply)(&mut p), "{number:?}");
+            assert_eq!(p.terms[ABHYASA].text, abhyasa, "{number:?}");
+            assert!(p.log.is_empty(), "{number:?}");
+        }
+    }
+
+    /// The whole abhyāsa stage, in pipeline order, on one ślu'd root.
+    fn run_abhyasa_stage(root: &str, number: &'static str) -> Prakriya {
+        let mut p = slu_prakriya(root, "ti");
+        p.ctx.dhatupatha = number;
+        for r in ABHYASA_RULES {
+            (r.apply)(&mut p);
+        }
+        p
+    }
+
+    #[test]
+    fn the_r_roots_reach_their_abhyasa_through_ur_at_then_haladih_shesha() {
+        // Each of 3d's six rows through the whole stage: exactly the rules
+        // named, in this order, and the abhyāsa 8.4.54 later finishes
+        // (Bi → bi, Ja → ja).
+        for (root, number, want, ids) in [
+            (
+                "Bf",
+                "03.0006",
+                "Bi",
+                vec!["6.1.10", "7.4.66", "7.4.60", "7.4.76"],
+            ),
+            (
+                "pf",
+                "03.0005",
+                "pi",
+                vec!["6.1.10", "7.4.66", "7.4.60", "7.4.77"],
+            ),
+            (
+                "pF",
+                "03.0004",
+                "pi",
+                vec!["6.1.10", "7.4.66", "7.4.60", "7.4.77"],
+            ),
+            (
+                "Gf",
+                "03.0015",
+                "Ja",
+                vec!["6.1.10", "7.4.66", "7.4.60", "7.4.62"],
+            ),
+            (
+                "hf",
+                "03.0016",
+                "Ja",
+                vec!["6.1.10", "7.4.66", "7.4.60", "7.4.62"],
+            ),
+            ("sf", "03.0018", "sa", vec!["6.1.10", "7.4.66", "7.4.60"]),
+        ] {
+            let p = run_abhyasa_stage(root, number);
+            assert_eq!(p.terms[ABHYASA].text, want, "{number}");
+            assert_eq!(p.terms[ANGA].text, root, "{number}");
+            let got: Vec<&str> = p.log.iter().map(|s| s.sutra.as_str()).collect();
+            assert_eq!(got, ids, "{number}");
+        }
     }
 }
