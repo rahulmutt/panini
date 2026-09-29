@@ -534,3 +534,125 @@ fn jigati_trace_is_kuhos_cuh_then_bahulam_chandasi() {
     assert!(at(&t, "7.4.62") < at(&t, "7.4.78"), "got {t:?}");
     assert!(!t.contains(&"7.4.76".to_string()), "got {t:?}");
 }
+
+#[test]
+fn bibharti_trace_is_ur_at_then_haladih_shesha_then_bhrnam_it() {
+    // Bf P laT P.E. 7.4.66 fires even here, on a pit cell, because this
+    // engine copies the bare root before guṇa. vidyut copies `Bar` and skips
+    // it. This is the √bhṛñ witness 7.4.76's comment promised.
+    let (text, t) = cell_trace(
+        "03.0006",
+        Lakara::Lat,
+        Pada::Parasmaipada,
+        Purusha::Prathama,
+        Vacana::Eka,
+    );
+    assert_eq!(text, "biBarti", "got {t:?}");
+    assert!(at(&t, "6.1.10") < at(&t, "7.4.66"), "got {t:?}");
+    assert!(at(&t, "7.4.66") < at(&t, "7.4.60"), "got {t:?}");
+    assert!(at(&t, "7.4.60") < at(&t, "7.4.76"), "got {t:?}");
+    assert!(at(&t, "7.4.76") < at(&t, "7.3.84"), "got {t:?}");
+    assert!(at(&t, "7.3.84") < at(&t, "8.4.54"), "got {t:?}");
+    assert!(!t.contains(&"6.1.77".to_string()), "got {t:?}");
+}
+
+#[test]
+fn bibhrati_trace_takes_the_anga_arm_of_iko_yan_aci() {
+    // Bf P laT P.B. 7.1.4 gives `ati`; the ṛ meets it directly under ślu.
+    let (text, t) = cell_trace(
+        "03.0006",
+        Lakara::Lat,
+        Pada::Parasmaipada,
+        Purusha::Prathama,
+        Vacana::Bahu,
+    );
+    assert_eq!(text, "biBrati", "got {t:?}");
+    assert!(at(&t, "7.4.76") < at(&t, "7.1.4"), "got {t:?}");
+    assert!(at(&t, "7.1.4") < at(&t, "6.1.77"), "got {t:?}");
+    assert!(!t.contains(&"7.3.84".to_string()), "got {t:?}");
+}
+
+#[test]
+fn piparti_trace_is_arti_pipartyos_ca_not_bhrnam_it() {
+    // pf P laT P.E.
+    let (text, t) = cell_trace(
+        "03.0005",
+        Lakara::Lat,
+        Pada::Parasmaipada,
+        Purusha::Prathama,
+        Vacana::Eka,
+    );
+    assert_eq!(text, "piparti", "got {t:?}");
+    assert!(at(&t, "7.4.66") < at(&t, "7.4.60"), "got {t:?}");
+    assert!(at(&t, "7.4.60") < at(&t, "7.4.77"), "got {t:?}");
+    assert!(!t.contains(&"7.4.76".to_string()), "got {t:?}");
+    assert!(!t.contains(&"7.1.102".to_string()), "got {t:?}");
+}
+
+#[test]
+fn pipurtah_trace_is_ud_oshthyapurvasya_then_hali_ca() {
+    // pF P laT P.D: kṅit `tas`, so guṇa declines, 7.1.102 makes `pur`, and
+    // 8.2.77 lengthens it before the ending's `t` with SHAP empty.
+    let (text, t) = cell_trace(
+        "03.0004",
+        Lakara::Lat,
+        Pada::Parasmaipada,
+        Purusha::Prathama,
+        Vacana::Dvi,
+    );
+    assert_eq!(text, "pipUrtaH", "got {t:?}");
+    assert!(at(&t, "7.4.77") < at(&t, "7.1.102"), "got {t:?}");
+    assert!(at(&t, "7.1.102") < at(&t, "8.2.77"), "got {t:?}");
+    assert!(!t.contains(&"7.3.84".to_string()), "got {t:?}");
+}
+
+#[test]
+fn pipurati_trace_has_ud_oshthyapurvasya_but_no_lengthening() {
+    // pF P laT P.B: `ati` is vowel-initial, so 8.2.77 declines, and 6.1.77
+    // never sees a ṛ-final aṅga.
+    let (text, t) = cell_trace(
+        "03.0004",
+        Lakara::Lat,
+        Pada::Parasmaipada,
+        Purusha::Prathama,
+        Vacana::Bahu,
+    );
+    assert_eq!(text, "pipurati", "got {t:?}");
+    assert!(t.contains(&"7.1.102".to_string()), "got {t:?}");
+    assert!(!t.contains(&"8.2.77".to_string()), "got {t:?}");
+    assert!(!t.contains(&"6.1.77".to_string()), "got {t:?}");
+}
+
+#[test]
+fn jagharti_trace_is_ur_at_haladih_shesha_kuhos_cuh_then_car_ca() {
+    // Gf P laT P.E. gh → jh (7.4.62) → j (8.4.54).
+    let (text, t) = cell_trace(
+        "03.0015",
+        Lakara::Lat,
+        Pada::Parasmaipada,
+        Purusha::Prathama,
+        Vacana::Eka,
+    );
+    assert_eq!(text, "jaGarti", "got {t:?}");
+    assert!(at(&t, "7.4.66") < at(&t, "7.4.60"), "got {t:?}");
+    assert!(at(&t, "7.4.60") < at(&t, "7.4.62"), "got {t:?}");
+    assert!(at(&t, "7.4.62") < at(&t, "8.4.54"), "got {t:?}");
+}
+
+#[test]
+fn sasrati_trace_has_no_shatva_and_no_8_3_110() {
+    // sf P laT P.B. vidyut credits 8.3.110 here, a bar on a ṣatva that this
+    // engine's 8.3.59 cannot reach (the abhyāsa vowel is `a`, not iṇ). Both
+    // absences are the pin that 8.3.110 was deliberately not transcribed.
+    let (text, t) = cell_trace(
+        "03.0018",
+        Lakara::Lat,
+        Pada::Parasmaipada,
+        Purusha::Prathama,
+        Vacana::Bahu,
+    );
+    assert_eq!(text, "sasrati", "got {t:?}");
+    assert!(t.contains(&"6.1.77".to_string()), "got {t:?}");
+    assert!(!t.contains(&"8.3.59".to_string()), "got {t:?}");
+    assert!(!t.contains(&"8.3.110".to_string()), "got {t:?}");
+}
