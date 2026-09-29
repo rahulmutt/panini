@@ -1909,9 +1909,11 @@
   3c2's `Rule.bars` field and its plumbing moved the latter, and 3c2's four
   rules in `guna.rs` moved the former; both lines measured by grep at this
   commit). Juhotyādi 3d touched neither comment either; the corpus stands at
-  4176 cells as of 3d (`guna.rs:2162`'s claim now anchored at `guna.rs:2224`,
+  4176 cells as of 3d (`guna.rs:2162`'s claim now anchored at `guna.rs:2226`,
   `controller.rs:206`'s at `controller.rs:206`: 3d added 7.1.102 and 6.1.77's
-  aṅga arm above it in `guna.rs` and did not touch `controller.rs`). A third,
+  aṅga arm above it in `guna.rs`, and 3d's comment sweep reflowed the 6.4.82
+  and 6.1.77 comments above it too, while nothing in 3d touched
+  `controller.rs`; both lines measured by grep at this commit). A third,
   `tinanta/tripadi.rs`'s comment on 8.2.30 (formerly the one calling √bhañj
   rudhādi's one cu-final curated root), was **not** left stale the same
   way: the 8.2.30/8.2.39 generalization slice rewrote it in place, since

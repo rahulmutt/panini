@@ -792,19 +792,19 @@ pub(crate) static GUNA: &[Rule] = &[
     // vidyut-prakriya credits exactly this sūtra for these cells.
     //
     // Two arms. The VIKARAṆA arm (tanādi 8a) is the one described above. The
-    // AṄGA arm (juhotyādi 3d) takes an aṅga-final `f` to `r` when ślu has
-    // left SHAP empty and the ending is vowel-initial: Bf + ati → Br + ati
-    // (bibhrati, bibhrAte, bibhrIta; piprati, jaghrati, jahrati, sasrati).
-    // The SHAP-empty clause is what keeps it off every thematic ṛ-root. The
-    // other empty-SHAP paths cannot reach the arm either: adādi's luk (`yA vA
-    // ad As vas SI`, none `f`-final), and 6.4.108 / 6.4.109 above, which
-    // empty √kṛ's `u` (kur + u → kur) — that aṅga ends in `r`, not `f`, and
-    // those endings are m/v/y-initial, not vowel-initial. Pit vowel-initial endings (loṭ uttama,
-    // ātmanepada *ai*) and laṅ's *jus* are guṇated first by 7.3.84 / 7.3.83,
-    // so the aṅga ends in `r` there and the `f` test declines (bibharARi,
-    // abibharuH). The long `F` is excluded: 7.1.102 above has already taken
-    // √pṝ to `pur` wherever guṇa declined (pipurati). Other ik-vowel hiatuses
-    // still have no arm here; widen by arm, with a witness.
+    // AṄGA arm (juhotyādi 3d) takes an aṅga-final `f` to `r` when ślu has left
+    // SHAP empty and the ending is vowel-initial: Bf + ati → Br + ati
+    // (bibhrati, bibhrAte, bibhrIta; piprati, jaghrati, jahrati, sasrati). The
+    // SHAP-empty clause is what keeps it off every thematic ṛ-root. The other
+    // empty-SHAP paths cannot reach the arm either: adādi's luk (`yA vA ad As
+    // vas SI`, none `f`-final), and 6.4.108 / 6.4.109 above, which empty √kṛ's
+    // `u` (kur + u → kur) — that aṅga ends in `r`, not `f`, and those endings
+    // are m/v/y-initial, not vowel-initial. Pit vowel-initial endings (loṭ
+    // uttama, ātmanepada *ai*) and laṅ's *jus* are guṇated first by 7.3.84 /
+    // 7.3.83, so the aṅga ends in `r` there and the `f` test declines
+    // (bibharARi, abibharuH). The long `F` is excluded: 7.1.102 above has
+    // already taken √pṝ to `pur` wherever guṇa declined (pipurati). Other
+    // ik-vowel hiatuses still have no arm here; widen by arm, with a witness.
     //
     // Ordered AFTER 7.3.84's second application: the loṭ uttama endings
     // are vowel-initial and pit, so guṇa takes `u` → `o` first and 6.1.78
