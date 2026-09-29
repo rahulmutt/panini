@@ -1987,7 +1987,7 @@
   wherever the root text is ambiguous.** `ctx.dhatupatha` carries the row
   `derive` was called with, or `""` on a hand-built prakriyā, which every
   such guard declines. 6.4.87, 6.4.101 and 6.4.115 still key on `ANGA.text`
-  (`hu`, `BI`), safe only because `juhotyadi_rows_are_the_eight_curated_roots`
+  (`hu`, `BI`), safe only because `juhotyadi_rows_are_the_ten_curated_roots`
   asserts those codes stay unique; 7.4.76, 8.2.38 and 8.2.40's *adhaḥ* key on
   numbers, because `03.0008` and `03.0009` share `hA`. A sūtra naming a
   class of roots becomes a saṁjñā tag decided from the number in `derive` —
