@@ -106,7 +106,7 @@ pub struct Prakriya {
   For a vikalpa, that is the applied clone only; the declined branch in place is
   untouched.
 
-All 124 `Rule` literals gain `bars: &[]`. The change is mechanical, and it keeps
+All 121 `Rule` literals gain `bars: &[]`. The change is mechanical, and it keeps
 the relation next to `vikalpa`, where a reader of the rule sees it. A side table
 (`APAVADA: &[(&str, &[&str])]`) was considered and rejected because it separates
 the relation from its rule.
