@@ -202,6 +202,41 @@ pub(crate) static ABHYASA_RULES: &[Rule] = &[
             true
         },
     },
+    // 7.4.78 bahulaṁ chandasi: in the Veda, the abhyāsa takes `i` variously.
+    // A CHĀNDASA sūtra, applied here to √gā (`03.0026 gA\`) on the authority
+    // of the Siddhānta-kaumudī, which derives jigAti by it. vidyut-prakriya
+    // does the same and says so ("This is a chAndasa rule, but the SK applies
+    // it to derive jigAti from gA, which is a Vedic root."). The Pāṇinian id
+    // is kept and the source is recorded here: the 7.3.86 vikalpa-arm
+    // precedent for a non-Aṣṭādhyāyī authority.
+    //
+    // *bahulam* is not modelled as a vikalpa: vidyut gives jig- only, and so
+    // does the Kaumudī's form.
+    //
+    // KEYED BY ROW NUMBER, like 7.4.76 above it: the sūtra itself names no
+    // root, and the application is to this one row. After 7.4.62: ja → ji.
+    Rule {
+        id: "7.4.78",
+        name: "bahulaM Candasi",
+        kind: RuleKind::Vidhi,
+        vikalpa: false,
+        bars: &[],
+        apply: |p| {
+            // 03.0026 gA\ (√gā)
+            if p.ctx.dhatupatha != "03.0026" {
+                return false;
+            }
+            let t: String = p.terms[ABHYASA]
+                .text
+                .chars()
+                .map(|c| if is_vowel(c) { 'i' } else { c })
+                .collect();
+            let before = p.snapshot();
+            p.terms[ABHYASA].text = t;
+            p.record("7.4.78", "bahulaM Candasi", before);
+            true
+        },
+    },
 ];
 
 #[cfg(test)]
@@ -430,6 +465,34 @@ mod tests {
             p.terms[ABHYASA].text = "Ja".into();
             assert!(!(rule.apply)(&mut p), "{number:?}");
             assert_eq!(p.terms[ABHYASA].text, "Ja", "{number:?}");
+            assert!(p.log.is_empty(), "{number:?}");
+        }
+    }
+
+    #[test]
+    fn bahulam_chandasi_makes_the_abhyasa_vowel_i_for_ga() {
+        // 7.4.78, applied to √gā (03.0026) on the Kaumudī's authority. After
+        // 7.4.62: ja → ji (jigAti).
+        let rule = rules().find(|r| r.id == "7.4.78").unwrap();
+        let mut p = slu_prakriya("gA", "ti");
+        p.ctx.dhatupatha = "03.0026";
+        p.terms[ABHYASA].text = "ja".into();
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.terms[ABHYASA].text, "ji");
+        assert_eq!(p.log.last().unwrap().sutra, "7.4.78");
+    }
+
+    #[test]
+    fn bahulam_chandasi_declines_off_its_row() {
+        // Keyed by number: `03.0009` (jahAti) and the hand-built default must
+        // keep their abhyāsa `a`.
+        let rule = rules().find(|r| r.id == "7.4.78").unwrap();
+        for (root, number, abhyasa) in [("gA", "", "ja"), ("hA", "03.0009", "Ja")] {
+            let mut p = slu_prakriya(root, "ti");
+            p.ctx.dhatupatha = number;
+            p.terms[ABHYASA].text = abhyasa.into();
+            assert!(!(rule.apply)(&mut p), "{number:?}");
+            assert_eq!(p.terms[ABHYASA].text, abhyasa, "{number:?}");
             assert!(p.log.is_empty(), "{number:?}");
         }
     }
