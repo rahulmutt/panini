@@ -30,6 +30,7 @@ pub(crate) static VIKARANA: &[Rule] = &[
         name: "divAdiByaH Syan",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             if !p.terms[ANGA].has(Tag::Divadi) {
                 return false;
@@ -64,6 +65,7 @@ pub(crate) static VIKARANA: &[Rule] = &[
         name: "svAdiByaH SnuH",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             if !p.terms[ANGA].has(Tag::Svadi) {
                 return false;
@@ -88,6 +90,7 @@ pub(crate) static VIKARANA: &[Rule] = &[
         name: "tudAdiByaH SaH",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             if !p.terms[ANGA].has(Tag::Tudadi) {
                 return false;
@@ -156,6 +159,7 @@ pub(crate) static VIKARANA: &[Rule] = &[
         name: "ruDAdiByaH Snam",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             if !p.terms[ANGA].has(Tag::Rudhadi) {
                 return false;
@@ -211,6 +215,7 @@ pub(crate) static VIKARANA: &[Rule] = &[
         name: "tanAdikfYBya uH",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             if !p.terms[ANGA].has(Tag::Tanadi) {
                 return false;
@@ -276,6 +281,7 @@ pub(crate) static VIKARANA: &[Rule] = &[
         name: "kryAdiByaH SnA",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             if !p.terms[ANGA].has(Tag::Kryadi) {
                 return false;
@@ -300,6 +306,7 @@ pub(crate) static VIKARANA: &[Rule] = &[
         name: "kartari Sap",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             // Utsarga: fires only when no apavāda vikaraṇa (śyan 3.1.69 / śa
             // 3.1.77) is already present. Guarding on the vikaraṇa's presence
@@ -347,6 +354,7 @@ pub(crate) static VIKARANA: &[Rule] = &[
         name: "adipraBftiByaH SapaH",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             if !p.terms[ANGA].has(Tag::Adadi) {
                 return false;
@@ -382,6 +390,7 @@ pub(crate) static VIKARANA: &[Rule] = &[
         name: "juhotyAdiByaH SluH",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             if !p.terms[ANGA].has(Tag::Juhotyadi) {
                 return false;
@@ -448,6 +457,7 @@ pub(crate) static VIKARANA: &[Rule] = &[
         name: "laNaH SAkawAyanasyEva",
         kind: RuleKind::Vidhi,
         vikalpa: true,
+        bars: &[],
         apply: |p| {
             if !matches!(p.ctx.lakara, Lakara::Lan) || p.terms[ENDING].text != "J" {
                 return false;
@@ -493,6 +503,7 @@ pub(crate) static VIKARANA: &[Rule] = &[
         name: "halaH SnaH SAnajJO",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             if p.terms.len() <= ENDING || p.terms[SHAP].text != "nA" {
                 return false;
@@ -536,6 +547,7 @@ pub(crate) static VIKARANA: &[Rule] = &[
         name: "sArvaDAtukam apit",
         kind: RuleKind::Atidesha,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             if !(p.terms.len() > SHAP
                 && p.terms[SHAP].has(Tag::Vikarana)

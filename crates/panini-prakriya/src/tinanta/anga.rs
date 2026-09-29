@@ -34,6 +34,7 @@ pub(crate) static ANGA_RULES: &[Rule] = &[
         name: "luNlaNlfNkzvaqudAttaH",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             let first = p.terms[ANGA].text.chars().next().unwrap();
             if !matches!(p.ctx.lakara, Lakara::Lan) || is_vowel(first) {
@@ -64,6 +65,7 @@ pub(crate) static ANGA_RULES: &[Rule] = &[
         name: "Aq ajAdInAm",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             let first = p.terms[ANGA].text.chars().next().unwrap();
             if !matches!(p.ctx.lakara, Lakara::Lan) || !is_vowel(first) {
@@ -113,6 +115,7 @@ pub(crate) static ANGA_RULES: &[Rule] = &[
         name: "Ce ca",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             let w = word_chars(p);
             let Some(pos) = (1..w.len()).find(|i| w[*i].2 == 'C' && is_hrasva(w[i - 1].2)) else {
@@ -147,6 +150,7 @@ pub(crate) static ANGA_RULES: &[Rule] = &[
         name: "adaH sarvezAm",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             if !matches!(p.ctx.lakara, Lakara::Lan) || !p.terms[ANGA].has(Tag::Adadi) {
                 return false;
@@ -185,6 +189,7 @@ pub(crate) static ANGA_RULES: &[Rule] = &[
         name: "AtmanepadezvanataH",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             if !matches!(p.ctx.pada, Pada::Atmanepada) {
                 return false;
@@ -232,6 +237,7 @@ pub(crate) static ANGA_RULES: &[Rule] = &[
         name: "SINo ruw",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             if !p.terms[ANGA].text.ends_with("SI") || !p.log.iter().any(|s| s.sutra == "7.1.5") {
                 return false;
@@ -253,6 +259,7 @@ pub(crate) static ANGA_RULES: &[Rule] = &[
         name: "ad aByastAt",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             if !p.terms[ANGA].has(Tag::Abhyasta) || !p.terms[ENDING].text.starts_with('J') {
                 return false;
@@ -270,6 +277,7 @@ pub(crate) static ANGA_RULES: &[Rule] = &[
         name: "Jo'ntaH",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             if !p.terms[ENDING].text.starts_with('J') {
                 return false;
@@ -292,6 +300,7 @@ pub(crate) static ANGA_RULES: &[Rule] = &[
         name: "liNaH salopo'nantyasya",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             if !matches!(p.ctx.lakara, Lakara::VidhiLin) {
                 return false;
@@ -320,6 +329,7 @@ pub(crate) static ANGA_RULES: &[Rule] = &[
         name: "ato yeyaH",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             if !matches!(p.ctx.lakara, Lakara::VidhiLin)
                 || !p.terms[SHAP].text.ends_with('a')
@@ -347,6 +357,7 @@ pub(crate) static ANGA_RULES: &[Rule] = &[
         name: "Ato NitaH",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             if !p.terms[SHAP].text.ends_with('a')
                 || !p.terms[ENDING].has(Tag::Ngit)
@@ -397,6 +408,7 @@ pub(crate) static ANGA_RULES: &[Rule] = &[
         name: "SnAnnalopaH",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             if !p.terms[ANGA].has(Tag::Rudhadi) {
                 return false;
@@ -594,6 +606,7 @@ mod tests {
                     Vacana::Eka,
                 ),
                 blocked: false,
+                barred: Vec::new(),
             };
             let rule = rules().find(|r| r.id == "7.2.79").unwrap();
             assert!((rule.apply)(&mut p), "{ending}");
@@ -613,6 +626,7 @@ mod tests {
                 Vacana::Eka,
             ),
             blocked: false,
+            barred: Vec::new(),
         };
         let rule = rules().find(|r| r.id == "7.2.80").unwrap();
         assert!((rule.apply)(&mut p));
@@ -636,6 +650,7 @@ mod tests {
                 Vacana::Eka,
             ),
             blocked: false,
+            barred: Vec::new(),
         };
         let rule = rules().find(|r| r.id == "7.2.80").unwrap();
         assert!(!(rule.apply)(&mut p));
@@ -659,6 +674,7 @@ mod tests {
                 Vacana::Eka,
             ),
             blocked: false,
+            barred: Vec::new(),
         };
         let rule = rules().find(|r| r.id == "7.2.80").unwrap();
         assert!(!(rule.apply)(&mut p));
@@ -681,6 +697,7 @@ mod tests {
                 Vacana::Eka,
             ),
             blocked: false,
+            barred: Vec::new(),
         };
         let rule = rules().find(|r| r.id == "7.2.81").unwrap();
         assert!(!(rule.apply)(&mut p));

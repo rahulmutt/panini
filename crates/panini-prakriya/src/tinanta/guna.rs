@@ -57,6 +57,7 @@ pub(crate) static GUNA: &[Rule] = &[
         name: "SINaH sArvaDAtuke guRaH",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             if !p.terms[ANGA].text.ends_with("SI") {
                 return false;
@@ -93,6 +94,7 @@ pub(crate) static GUNA: &[Rule] = &[
         name: "jusi ca",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             if !following_sarvadhatuka(p).is_some_and(|t| t.text == "us") {
                 return false;
@@ -115,6 +117,7 @@ pub(crate) static GUNA: &[Rule] = &[
         name: "sArvaDAtukArDaDAtukayoH",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             // 1.1.5 kṅiti ca: a following ṅit sārvadhātuka blocks guṇa. On
             // the thematic path that follower is the vikaraṇa, ṅit (1.2.4)
@@ -148,6 +151,7 @@ pub(crate) static GUNA: &[Rule] = &[
         name: "pugantalaGUpaDasya ca",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             // 1.1.5 kṅiti ca, exactly as at 7.3.84 above — same follower
             // lookup, same ṅit-only narrowness.
@@ -205,6 +209,7 @@ pub(crate) static GUNA: &[Rule] = &[
         name: "pugantalaGUpaDasya ca",
         kind: RuleKind::Vidhi,
         vikalpa: true,
+        bars: &[],
         apply: |p| {
             if !p.terms[ANGA].has(Tag::Tanadi) {
                 return false;
@@ -314,6 +319,7 @@ pub(crate) static GUNA: &[Rule] = &[
         name: "tfRaha im",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             let stem = format!("{}{}", p.terms[ANGA].text, p.terms[SHAP].text);
             if !stem.ends_with("tfnah") {
@@ -384,6 +390,7 @@ pub(crate) static GUNA: &[Rule] = &[
         name: "sArvaDAtukArDaDAtukayoH",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             // 1.1.5 kṅiti ca, as in the first application. Same ṅit-only
             // narrowness: no kit tag exists in this engine yet.
@@ -443,6 +450,7 @@ pub(crate) static GUNA: &[Rule] = &[
         name: "ata ut sArvaDAtuke",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             if !p.terms[ANGA].text.ends_with("kar") {
                 return false;
@@ -472,6 +480,7 @@ pub(crate) static GUNA: &[Rule] = &[
         name: "nityaM karoteH",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             if !p.terms[ANGA].text.ends_with("kur") {
                 return false;
@@ -496,6 +505,7 @@ pub(crate) static GUNA: &[Rule] = &[
         name: "ye ca",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             if !p.terms[ANGA].text.ends_with("kur") {
                 return false;
@@ -539,6 +549,7 @@ pub(crate) static GUNA: &[Rule] = &[
         name: "huSnuvoH sArvaDAtuke",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             if p.terms[ANGA].text == "hu" {
                 // The sūtra's condition is on the *follower*, not literally
@@ -607,6 +618,7 @@ pub(crate) static GUNA: &[Rule] = &[
         name: "er anekAco'saMyogapUrvasya",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             let mut anga: Vec<char> = p.terms[ANGA].text.chars().collect();
             // *eḥ* denotes both lengths, by 1.1.69/1.1.70 aṇudit
@@ -687,6 +699,7 @@ pub(crate) static GUNA: &[Rule] = &[
         name: "aci SnuDAtuBruvAM yvoriyaNuvaNO",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             // The śnu arm: the vikaraṇa's `u` becomes uvaṅ.
             if p.terms[SHAP].text == "nu" {
@@ -749,6 +762,7 @@ pub(crate) static GUNA: &[Rule] = &[
         name: "iko yaR aci",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             if p.terms[SHAP].text != "u" || !p.terms[SHAP].has(Tag::Vikarana) {
                 return false;
@@ -799,6 +813,7 @@ pub(crate) static GUNA: &[Rule] = &[
         name: "eco'yavAyAvaH",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             fn sub_for(c: char) -> Option<&'static str> {
                 match c {
@@ -897,6 +912,7 @@ pub(crate) static GUNA: &[Rule] = &[
         name: "ato dIrGo yaYi",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             // loṭ uttama gets its dīrgha from 3.4.92 āḍ + 6.1.101 instead.
             if matches!(p.ctx.lakara, Lakara::Lot) {
@@ -938,6 +954,7 @@ pub(crate) static GUNA: &[Rule] = &[
         name: "GvasoredDAvaByAsalopaSca",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             if p.terms.len() <= ENDING || p.terms[ENDING].text != "hi" {
                 return false;
@@ -1005,6 +1022,7 @@ pub(crate) static GUNA: &[Rule] = &[
         name: "I halyaGoH",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             if p.terms.len() <= ENDING {
                 return false;
@@ -1067,6 +1085,7 @@ pub(crate) static GUNA: &[Rule] = &[
         name: "SnA'ByastayorAtaH",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             if p.terms.len() <= ENDING {
                 return false;
@@ -1136,6 +1155,7 @@ pub(crate) static GUNA: &[Rule] = &[
         name: "Biyo'nyatarasyAm",
         kind: RuleKind::Vidhi,
         vikalpa: true,
+        bars: &[],
         apply: |p| {
             if p.terms[ANGA].text != "BI" {
                 return false;

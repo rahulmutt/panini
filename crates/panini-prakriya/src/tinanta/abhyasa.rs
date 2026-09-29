@@ -46,6 +46,7 @@ pub(crate) static ABHYASA_RULES: &[Rule] = &[
         name: "SlO",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             if !p.terms[SHAP].has(Tag::Slu) {
                 return false;
@@ -77,6 +78,7 @@ pub(crate) static ABHYASA_RULES: &[Rule] = &[
         name: "halAdiH SezaH",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             let s: Vec<char> = p.terms[ABHYASA].text.chars().collect();
             let Some(&first) = s.first() else {
@@ -118,6 +120,7 @@ pub(crate) static ABHYASA_RULES: &[Rule] = &[
         name: "hrasvaH",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             let t: String = p.terms[ABHYASA]
                 .text
@@ -148,6 +151,7 @@ pub(crate) static ABHYASA_RULES: &[Rule] = &[
         name: "kuhoScuH",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             let Some(first) = p.terms[ABHYASA].text.chars().next() else {
                 return false;
@@ -182,6 +186,7 @@ pub(crate) static ABHYASA_RULES: &[Rule] = &[
         name: "BfYAm it",
         kind: RuleKind::Vidhi,
         vikalpa: false,
+        bars: &[],
         apply: |p| {
             if !matches!(p.ctx.dhatupatha, "03.0007" | "03.0008") {
                 return false;

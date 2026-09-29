@@ -181,6 +181,33 @@ fn exactly_the_pinned_vikalpa_rules_are_optional() {
     assert_eq!(actual, expected);
 }
 
+/// `Rule.bars` names rules by string id, and a string can silently stop
+/// matching: a typo, a renumbered rule, or a reorder that moves the barred
+/// rule ABOVE its barrer, where barring it does nothing. Pin the whole
+/// relation, and require every barred id to run after its barrer.
+///
+/// Ids are not unique in the pipeline (7.3.84, 7.3.86 and 1.2.4 each appear
+/// twice), so "runs after" means some later occurrence.
+#[test]
+fn exactly_the_pinned_bars() {
+    let ids: Vec<&str> = rules().map(|r| r.id).collect();
+    for (i, r) in rules().enumerate() {
+        for barred in r.bars {
+            assert!(
+                ids[i + 1..].contains(barred),
+                "{} bars {barred}, which does not run after it",
+                r.id
+            );
+        }
+    }
+    let actual: Vec<(&str, &[&str])> = rules()
+        .filter(|r| !r.bars.is_empty())
+        .map(|r| (r.id, r.bars))
+        .collect();
+    let expected: Vec<(&str, &[&str])> = vec![];
+    assert_eq!(actual, expected);
+}
+
 #[test]
 fn divadi_tudadi_present_third_singular() {
     // Guṇa blocked by 1.1.5 (śyan/śa are ṅit): kup→kupyati NOT kopyati,

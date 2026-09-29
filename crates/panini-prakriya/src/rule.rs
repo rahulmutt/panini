@@ -37,6 +37,21 @@ pub struct Rule {
     /// ending, so the two never contend. See 6.4.107's own comment in
     /// `tinanta/adesha.rs` for the worked argument.
     pub vikalpa: bool,
+    /// The apavāda relation, declared: rule ids this rule BARS on every branch
+    /// where it fires. `run_pipeline` skips a barred rule on that branch, so the
+    /// barred rules' own guards never have to know about their apavāda. For a
+    /// vikalpa rule that is the applied clone only; the declined branch still
+    /// runs every barred rule. 6.4.117 *ā ca hau* is the first user: it keeps
+    /// √hā's `A` before *hi* by changing no text, and bars 6.4.116, 6.4.113 and
+    /// 6.4.112, the three rules that would otherwise change that `A`.
+    ///
+    /// Scope is the BRANCH, not a site. A tinanta prakriyā has one aṅga, so the
+    /// two coincide today; a pipeline with several sites must revisit this.
+    ///
+    /// Ids are strings, checked by `exactly_the_pinned_bars` in
+    /// `tinanta/derivation_tests.rs`: every barred id must name a rule that
+    /// runs AFTER its barrer, because barring an earlier rule does nothing.
+    pub bars: &'static [&'static str],
     /// Returns true if it mutated the prakriya (and recorded a RuleStep).
     pub apply: fn(&mut Prakriya) -> bool,
 }
