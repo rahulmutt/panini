@@ -435,3 +435,102 @@ fn dadaate_trace_credits_6_4_112_not_akah_savarne() {
     assert!(t.contains(&"6.4.112".to_string()), "got {t:?}");
     assert!(!t.contains(&"6.1.101".to_string()), "got {t:?}");
 }
+
+/// Every live branch of one √hā cell, as (text, trace).
+fn ha_branches(lakara: Lakara, purusha: Purusha, vacana: Vacana) -> Vec<(String, Vec<String>)> {
+    let d = dhatus().iter().find(|d| d.dhatupatha == "03.0009").unwrap();
+    derive(d, lakara, Pada::Parasmaipada, purusha, vacana)
+        .into_iter()
+        .filter(|p| !p.blocked)
+        .map(|p| (p.text(), p.log.iter().map(|s| s.sutra.clone()).collect()))
+        .collect()
+}
+
+fn branch<'a>(bs: &'a [(String, Vec<String>)], form: &str) -> &'a Vec<String> {
+    &bs.iter()
+        .find(|(t, _)| t == form)
+        .unwrap_or_else(|| panic!("no branch {form}"))
+        .1
+}
+
+#[test]
+fn jahati_trace_takes_no_bhrnam_it() {
+    // hA P laT P.E. 03.0009 is `hA` exactly like 03.0008 (jihIte), and
+    // 7.4.76 names only the latter: the derivation witness 3c's guard test
+    // promised.
+    let (text, t) = cell_trace(
+        "03.0009",
+        Lakara::Lat,
+        Pada::Parasmaipada,
+        Purusha::Prathama,
+        Vacana::Eka,
+    );
+    assert_eq!(text, "jahAti", "got {t:?}");
+    assert!(!t.contains(&"7.4.76".to_string()), "got {t:?}");
+    assert!(!t.contains(&"6.4.116".to_string()), "got {t:?}");
+}
+
+#[test]
+fn jahahi_trace_is_a_ca_hau_and_nothing_it_bars() {
+    // hA P loT M.E, the seven-form cell. 6.4.117 changes no text; its branch
+    // must carry none of the three rules it bars — 6.4.112 included, whose
+    // absence is what keeps *jahhi out.
+    let bs = ha_branches(Lakara::Lot, Purusha::Madhyama, Vacana::Eka);
+    assert_eq!(bs.len(), 7, "got {bs:?}");
+    assert_eq!(bs[0].0, "jahIhi", "declined first");
+    let t = branch(&bs, "jahAhi");
+    assert!(t.contains(&"6.4.117".to_string()), "got {t:?}");
+    for barred in ["6.4.116", "6.4.113", "6.4.112"] {
+        assert!(!t.contains(&barred.to_string()), "{barred} in {t:?}");
+    }
+    let t = branch(&bs, "jahihi");
+    assert!(t.contains(&"6.4.116".to_string()), "got {t:?}");
+    assert!(!t.contains(&"6.4.113".to_string()), "got {t:?}");
+    let t = &bs[0].1;
+    assert!(t.contains(&"6.4.113".to_string()), "got {t:?}");
+    assert!(!t.contains(&"6.4.117".to_string()), "got {t:?}");
+}
+
+#[test]
+fn jahitah_trace_credits_jahates_ca_not_i_halyaghoh() {
+    // hA P laT P.D. The alternate reading: 6.4.116's i bleeds 6.4.113.
+    let bs = ha_branches(Lakara::Lat, Purusha::Prathama, Vacana::Dvi);
+    let t = branch(&bs, "jahitaH");
+    assert!(at(t, "6.1.10") < at(t, "6.4.116"), "got {t:?}");
+    assert!(!t.contains(&"6.4.113".to_string()), "got {t:?}");
+    let t = branch(&bs, "jahItaH");
+    assert!(t.contains(&"6.4.113".to_string()), "got {t:?}");
+}
+
+#[test]
+fn jahyat_trace_is_lopo_yi_before_any_i_substitute() {
+    // hA P viDiliN P.E. 6.4.118 elides the ā before yāsuṭ's y, so neither
+    // 6.4.116 nor 6.4.113 can fire (not *jahIyAt, the pre-slice form).
+    let (text, t) = cell_trace(
+        "03.0009",
+        Lakara::VidhiLin,
+        Pada::Parasmaipada,
+        Purusha::Prathama,
+        Vacana::Eka,
+    );
+    assert_eq!(text, "jahyAd", "got {t:?}");
+    assert!(at(&t, "7.2.79") < at(&t, "6.4.118"), "got {t:?}");
+    for absent in ["6.4.116", "6.4.113", "6.4.112"] {
+        assert!(!t.contains(&absent.to_string()), "{absent} in {t:?}");
+    }
+}
+
+#[test]
+fn jigati_trace_is_kuhos_cuh_then_bahulam_chandasi() {
+    // gA P laT P.E. 7.4.62 palatalises ga → ja, then 7.4.78 gives ji.
+    let (text, t) = cell_trace(
+        "03.0026",
+        Lakara::Lat,
+        Pada::Parasmaipada,
+        Purusha::Prathama,
+        Vacana::Eka,
+    );
+    assert_eq!(text, "jigAti", "got {t:?}");
+    assert!(at(&t, "7.4.62") < at(&t, "7.4.78"), "got {t:?}");
+    assert!(!t.contains(&"7.4.76".to_string()), "got {t:?}");
+}
