@@ -411,6 +411,48 @@ pub(crate) static GUNA: &[Rule] = &[
             true
         },
     },
+    // 7.1.102 ud oṣṭhyapūrvasya: a dhātu-final ṝ after a labial becomes `u`
+    // — `ur` by 1.1.51, uncredited as guṇa's `ar` is. √pṝ: pF → pur before a
+    // kṅit ending, which 8.2.77 then lengthens before a consonant
+    // (pipUrtaH, pipUryAt) and leaves short before a vowel (pipurati).
+    //
+    // Runs where guṇa declined, and only there, by ORDER, not by guard:
+    // it sits after both 7.3.84 applications, so on a pit cell the aṅga is
+    // already `par` (piparti) and the `F` test declines. vidyut runs it at the
+    // same point ("only when a pratyaya has tried and failed to apply guna").
+    // BEFORE 6.1.77 below, whose aṅga arm must never see a ṛ-final aṅga that
+    // this rule was about to change.
+    //
+    // vidyut runs it before 6.1.10 on the kṅit cells, so its abhyāsa is copied
+    // from `pur`. This engine copies `pF` and reaches the same `pi-` by 7.4.66,
+    // 7.4.60 and 7.4.77. The forms agree; the trace pins hold this order.
+    //
+    // *oṣṭhya* is the pu-varga plus `v` (vidyut's `OSHTHYA`). Only `p` is
+    // witnessed in the corpus; the guard test holds every labial.
+    Rule {
+        id: "7.1.102",
+        name: "udozWyapUrvasya",
+        kind: RuleKind::Vidhi,
+        vikalpa: false,
+        bars: &[],
+        apply: |p| {
+            let Some(stem) = p.terms[ANGA].text.strip_suffix('F') else {
+                return false;
+            };
+            if !stem
+                .chars()
+                .last()
+                .is_some_and(|c| matches!(c, 'p' | 'P' | 'b' | 'B' | 'm' | 'v'))
+            {
+                return false;
+            }
+            let t = format!("{stem}ur");
+            let before = p.snapshot();
+            p.terms[ANGA].text = t;
+            p.record("7.1.102", "udozWyapUrvasya", before);
+            true
+        },
+    },
     // ------------------------------------------------------------------
     // The √kṛ specials, 6.4.108–110. They live HERE, not with their
     // 6.4.10x siblings in adesha.rs, because 6.4.110 must precede 6.1.77
@@ -607,8 +649,9 @@ pub(crate) static GUNA: &[Rule] = &[
     // ABHYASA ++ ANGA is conservative, since an included aṭ could only add
     // a vowel and make *anekāc* fire where it currently declines — and it
     // is unreachable in 3a regardless, because 7.3.83 pre-empts every laṅ
-    // cell that could otherwise reach this rule. Recorded so slice 3d does
-    // not have to rediscover the question.
+    // cell that could otherwise reach this rule. Recorded so a later slice
+    // does not have to rediscover the question (3d's ṛ-roots, not i-final,
+    // never reach this rule).
     //
     // ORDER: after 7.3.84, or the loṭ uttama cells break — Ani is pit, so
     // cikayAni takes guṇa (ke) and then 6.1.78 (kay); a 6.4.82 that saw
@@ -681,7 +724,7 @@ pub(crate) static GUNA: &[Rule] = &[
     // after its apavāda 6.4.82 — because every ī/ū-final curated root is
     // already past it by then: √bhū and √nī have guṇated (`Bo`, `ne`, śap
     // being pit so 1.1.5 does not block), √śī has guṇated by 7.4.21, and
-    // √vrī's follower is the hal-initial śnā. The 3924 byte-identical
+    // √vrī's follower is the hal-initial śnā. The 4176 byte-identical
     // priors are what turn that from an argument into a proof.
     //
     // THE UVAṄ HALF IS NOT WRITTEN. `U` → `uv` has no cell in the suite —
@@ -739,19 +782,29 @@ pub(crate) static GUNA: &[Rule] = &[
             true
         },
     },
-    // 6.1.77 iko yaṇ aci: the tanādi vikaraṇa's `u` becomes `v` before a
-    // vowel-initial ending. tan + u + anti → tanvanti; tan + u + ate →
-    // tanvate; tan + u + Ita → tanvIta. This is the utsarga whose apavādas
-    // the pipeline already carries for śnu — 6.4.87 (yaṇ, now self-guarded
-    // to `nu`) and 6.4.77 (uvaṅ) — ordered above it as apavādas are
-    // elsewhere; neither can contend here, since both test śnu's text and
-    // this rule tests the bare `u`. vidyut-prakriya credits exactly this
-    // sūtra for these cells.
+    // 6.1.77 iko yaṇ aci: an ik before a vowel becomes its yaṇ. The tanādi
+    // vikaraṇa's `u` becomes `v` before a vowel-initial ending. tan + u +
+    // anti → tanvanti; tan + u + ate → tanvate; tan + u + Ita → tanvIta.
+    // This is the utsarga whose apavādas the pipeline already carries for
+    // śnu — 6.4.87 (yaṇ, now self-guarded to `nu`) and 6.4.77 (uvaṅ) —
+    // ordered above it as apavādas are elsewhere; neither can contend here,
+    // since both test śnu's text and this rule tests the bare `u`.
+    // vidyut-prakriya credits exactly this sūtra for these cells.
     //
-    // Only the vikaraṇa arm is written: no other ik-vowel hiatus survives
-    // to this point in the pipeline, the same narrowness 6.1.78's three
-    // arms and 6.4.77's śnu-only arm document. Widen by arm, with a
-    // witness, when a root needs one.
+    // Two arms. The VIKARAṆA arm (tanādi 8a) is the one described above. The
+    // AṄGA arm (juhotyādi 3d) takes an aṅga-final `f` to `r` when ślu has left
+    // SHAP empty and the ending is vowel-initial: Bf + ati → Br + ati
+    // (bibhrati, bibhrAte, bibhrIta; piprati, jaghrati, jahrati, sasrati). The
+    // SHAP-empty clause is what keeps it off every thematic ṛ-root. The other
+    // empty-SHAP paths cannot reach the arm either: adādi's luk (`yA vA ad As
+    // vas SI`, none `f`-final), and 6.4.108 / 6.4.109 above, which empty √kṛ's
+    // `u` (kur + u → kur) — that aṅga ends in `r`, not `f`, and those endings
+    // are m/v/y-initial, not vowel-initial. Pit vowel-initial endings (loṭ
+    // uttama, ātmanepada *ai*) and laṅ's *jus* are guṇated first by 7.3.84 /
+    // 7.3.83, so the aṅga ends in `r` there and the `f` test declines
+    // (bibharARi, abibharuH). The long `F` is excluded: 7.1.102 above has
+    // already taken √pṝ to `pur` wherever guṇa declined (pipurati). Other
+    // ik-vowel hiatuses still have no arm here; widen by arm, with a witness.
     //
     // Ordered AFTER 7.3.84's second application: the loṭ uttama endings
     // are vowel-initial and pit, so guṇa takes `u` → `o` first and 6.1.78
@@ -764,24 +817,35 @@ pub(crate) static GUNA: &[Rule] = &[
         vikalpa: false,
         bars: &[],
         apply: |p| {
-            if p.terms[SHAP].text != "u" || !p.terms[SHAP].has(Tag::Vikarana) {
-                return false;
-            }
             let Some(next) = p.terms.get(ENDING).and_then(|t| t.text.chars().next()) else {
                 return false;
             };
             if !is_vowel(next) {
                 return false;
             }
-            let before = p.snapshot();
-            p.terms[SHAP].text = "v".into();
-            p.record("6.1.77", "iko yaR aci", before);
-            true
+            // Vikaraṇa arm: tanādi's bare `u` (3.1.79).
+            if p.terms[SHAP].text == "u" && p.terms[SHAP].has(Tag::Vikarana) {
+                let before = p.snapshot();
+                p.terms[SHAP].text = "v".into();
+                p.record("6.1.77", "iko yaR aci", before);
+                return true;
+            }
+            // Aṅga arm: a ṛ-final aṅga with the ending directly after it (ślu).
+            if p.terms[SHAP].text.is_empty()
+                && let Some(stem) = p.terms[ANGA].text.strip_suffix('f')
+            {
+                let t = format!("{stem}r");
+                let before = p.snapshot();
+                p.terms[ANGA].text = t;
+                p.record("6.1.77", "iko yaR aci", before);
+                return true;
+            }
+            false
         },
     },
     // 6.1.78 eco'yavāyāvaḥ: e/o before a vowel → ay/av. The sūtra also covers
     // E/O → Ay/Av, but those two arms are dropped here: within the current
-    // 87-root × 4-lakāra grammar, ANGA can never end in a vṛddhi vowel (E/O)
+    // 93-root × 4-lakāra grammar, ANGA can never end in a vṛddhi vowel (E/O)
     // at the point this rule runs. `vrddhi_of` (the only source of E/O in
     // this engine) is called from four places in two rules: three in 6.1.90
     // — the aṅga arm writes the vṛddhi vowel at *position 0* of the aṅga
@@ -2774,5 +2838,122 @@ mod tests {
         assert_eq!(texts(jaha_prakriya("yAt", true)), vec!["JahyAt"]);
         assert_eq!(texts(jaha_prakriya("ati", true)), vec!["Jahati"]);
         assert_eq!(texts(jaha_prakriya("ti", false)), vec!["JahAti"]);
+    }
+
+    // --- 7.1.102 ud oṣṭhyapūrvasya ------------------------------------------
+
+    #[test]
+    fn ud_oshthyapurvasya_makes_a_labial_final_rr_ur() {
+        // √pṝ before a kṅit ending, where guṇa declined: pF → pur
+        // (pipUrtaH once 8.2.77 lengthens it). Every labial alternative is
+        // held: p P b B m and `v`, which *oṣṭhya* includes (vidyut: pu-varga
+        // + v); only `p` is witnessed by a curated root.
+        let rule = rules().find(|r| r.id == "7.1.102").unwrap();
+        for (anga, want) in [
+            ("pF", "pur"),
+            ("PF", "Pur"),
+            ("bF", "bur"),
+            ("BF", "Bur"),
+            ("mF", "mur"),
+            ("vF", "vur"),
+        ] {
+            let mut p = abhyasta_prakriya("pi", anga, false, "tas", true);
+            assert!((rule.apply)(&mut p), "{anga}");
+            assert_eq!(p.terms[ANGA].text, want, "{anga}");
+            assert_eq!(p.log.last().unwrap().sutra, "7.1.102");
+        }
+    }
+
+    #[test]
+    fn ud_oshthyapurvasya_declines_on_short_r_a_non_labial_and_after_guna() {
+        // `pf` is √pṛ's short ṛ (pipftaH keeps it); `tF` has a non-labial
+        // before the ṝ (7.1.100's shape, not this rule's); `par` is what 7.3.84
+        // leaves on a pit cell (piparti); a bare `F` has no preceding sound.
+        let rule = rules().find(|r| r.id == "7.1.102").unwrap();
+        for anga in ["pf", "tF", "par", "F"] {
+            let mut p = abhyasta_prakriya("pi", anga, false, "tas", true);
+            assert!(!(rule.apply)(&mut p), "{anga}");
+            assert_eq!(p.terms[ANGA].text, anga, "{anga}");
+            assert!(p.log.is_empty(), "{anga}");
+        }
+    }
+
+    // --- 6.1.77 iko yaṇ aci: the aṅga arm ------------------------------------
+
+    #[test]
+    fn iko_yan_aci_anga_arm_turns_a_final_r_to_r_before_a_vowel() {
+        // √bhṛ under ślu: Bf + ati → Br + ati (bibhrati), and every
+        // vowel-initial ending the corpus gives it (bibhrAte, bibhrate,
+        // bibhrIta, abibhri, bibhre).
+        let rule = rules().find(|r| r.id == "6.1.77").unwrap();
+        for ending in ["ati", "Ate", "ate", "Ita", "i", "e"] {
+            let mut p = abhyasta_prakriya("Bi", "Bf", false, ending, true);
+            assert!((rule.apply)(&mut p), "{ending}");
+            assert_eq!(p.terms[ANGA].text, "Br", "{ending}");
+            assert_eq!(p.terms[SHAP].text, "", "{ending}");
+            assert_eq!(p.log.last().unwrap().sutra, "6.1.77");
+        }
+    }
+
+    #[test]
+    fn iko_yan_aci_anga_arm_declines_where_the_ending_or_the_anga_is_wrong() {
+        let rule = rules().find(|r| r.id == "6.1.77").unwrap();
+        // A consonant-initial ending: bibhftaH.
+        let mut p = abhyasta_prakriya("Bi", "Bf", false, "tas", true);
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "Bf");
+        // A guṇated aṅga before a pit vowel: bibharARi.
+        let mut p = abhyasta_prakriya("Bi", "Bar", false, "Ani", false);
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "Bar");
+        // A long ṝ: 7.1.102 has already taken √pṝ to `pur` (pipurati); the
+        // arm is the short ṛ's only.
+        let mut p = abhyasta_prakriya("pi", "pF", false, "ati", true);
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "pF");
+        assert!(p.log.is_empty());
+    }
+
+    #[test]
+    fn iko_yan_aci_anga_arm_declines_across_a_live_vikarana() {
+        // SHAP non-empty: the ending does not meet the aṅga. Hand-built (no
+        // curated ṛ-final aṅga keeps its ṛ in front of a vikaraṇa); this is
+        // the test that holds the arm's SHAP-empty clause.
+        let rule = rules().find(|r| r.id == "6.1.77").unwrap();
+        let mut p = Prakriya {
+            terms: with_slots(vec![Term::new("Bf"), Term::new("nA"), Term::new("anti")]),
+            ..Default::default()
+        };
+        p.terms[SHAP].add(Tag::Vikarana);
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "Bf");
+        assert_eq!(p.terms[SHAP].text, "nA");
+        assert!(p.log.is_empty());
+    }
+
+    #[test]
+    fn iko_yan_aci_vikarana_arm_is_unchanged_by_the_restructure() {
+        // tanādi: tan + u + anti → tan + v + anti (tanvanti). An untagged `u`
+        // and a consonant-initial ending both decline.
+        let rule = rules().find(|r| r.id == "6.1.77").unwrap();
+        let tan = |ending: &str, tagged: bool| {
+            let mut p = Prakriya {
+                terms: with_slots(vec![Term::new("tan"), Term::new("u"), Term::new(ending)]),
+                ..Default::default()
+            };
+            if tagged {
+                p.terms[SHAP].add(Tag::Vikarana);
+            }
+            p
+        };
+        let mut p = tan("anti", true);
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.terms[SHAP].text, "v");
+        assert_eq!(p.terms[ANGA].text, "tan");
+        for (ending, tagged) in [("anti", false), ("tas", true)] {
+            let mut p = tan(ending, tagged);
+            assert!(!(rule.apply)(&mut p), "{ending} {tagged}");
+            assert_eq!(p.terms[SHAP].text, "u");
+        }
     }
 }

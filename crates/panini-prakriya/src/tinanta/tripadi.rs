@@ -85,11 +85,12 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // 8.2.77 hali ca: a root ending in `r`/`v` with a short ik upadhā
     // lengthens that upadhā before a hal (8.2.76 rvorupadhāyā dīrghaḥ is the
     // anuvṛtti source). div, after guṇa is blocked, reaches this shape:
-    // div + śyan (y-initial) → dīv → dīvyati. Self-guards on shape; no other
-    // curated root fires it (sev has an e-upadhā, vart ends in t) — except
-    // √kṛ's own `kur` (6.4.110, `tinanta/guna.rs`), which this rule's shape
-    // guard matches just as readily (short `u` upadhā, `r` final) and which
-    // 8.2.79 na BakurCurAm below carves back out.
+    // div + śyan (y-initial) → dīv → dīvyati. Self-guards on shape; one
+    // other curated root fires it (sev has an e-upadhā, vart ends in t):
+    // √pṝ's `pur` (7.1.102, juhotyādi 3d), which meets a hal-initial ending
+    // across ślu's empty SHAP (pipUrtaH). √kṛ's own `kur` (6.4.110,
+    // `tinanta/guna.rs`) matches the shape guard just as readily (short `u`
+    // upadhā, `r` final), and 8.2.79 na BakurCurAm below carves it back out.
     Rule {
         id: "8.2.77",
         name: "hali ca",
@@ -115,14 +116,21 @@ pub(crate) static TRIPADI: &[Rule] = &[
             if p.terms[ANGA].text.ends_with("kur") {
                 return false;
             }
-            // Reads śap as "the segment following the aṅga"; when śap is luk'd
-            // (adādi, 2.4.72) that is empty and the rule silently declines.
-            // Currently unreachable (no r/v-final adādi root in scope); when a
-            // consonant-final r/v-upadhā adādi root lands, this must generalize
-            // to the root+ending junction — 6.1.78's athematic arm (added in
-            // slice 5f for √śī, which falls back to `p.terms[ENDING]` when
-            // SHAP is empty) is the worked example to follow.
-            let Some(next) = p.terms.get(SHAP).and_then(|t| t.text.chars().next()) else {
+            // The segment the aṅga meets: śap when it has text, else the
+            // ending. Juhotyādi's ślu (2.4.75) empties SHAP, so √pṝ's `pur`
+            // meets the ending directly (pipUrtaH) — generalized in slice 3d
+            // on 6.1.78's athematic arm, which falls back to
+            // `p.terms[ENDING]` the same way. Adādi's luk (2.4.72) takes the
+            // same path, but no curated adādi aṅga ends in r/v after i/u.
+            // Open-coded rather than calling `following_sarvadhatuka`, as the
+            // follower lookups in this crate are, so each keeps its own
+            // mutation pin.
+            let follower = match p.terms.get(SHAP) {
+                Some(t) if !t.text.is_empty() => Some(t),
+                Some(_) => p.terms.get(ENDING),
+                None => None,
+            };
+            let Some(next) = follower.and_then(|t| t.text.chars().next()) else {
                 return false;
             };
             if is_vowel(next) {
@@ -826,16 +834,17 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // NARROW GUARD, by design. The sūtra's trigger is the whole iṇ
     // pratyāhāra (every vowel but a/ā, plus h y v r l) and `k`; this
     // implements only the reachable slice of it — an aṅga-final vowel other
-    // than a/ā, plus (as of this slice) `g` and `k` — so every arm is
+    // than a/ā, plus `g`, `k` and `r` — so every arm is
     // executed by a test and the mutation gate stays clean. Same discipline
     // that removed 6.1.78's E/O arms in slice 5e (and 8.4.53 itself, in
     // `9fa8e5f` — since restored below, rudhādi having supplied it a witness
     // the discipline still required), and the same shape as 8.2.25's narrow
     // guard. Widen further the moment a root lands whose aṅga ends in
-    // h/y/v/r/l or another ku sound (K/G/N) before an s-initial affix.
+    // h/y/v/l or another ku sound (K/G/N) before an s-initial affix.
     //
-    // Two ku triggers have now landed, each widening this rule once, and
-    // both are inside 8.3.57 iṇ-koḥ's own scope:
+    // Three consonant triggers have now landed, each widening this rule
+    // once, and all are inside 8.3.57 iṇ-koḥ's own scope; the first two are
+    // ku sounds, the third an iṇ sound:
     //
     // The `g` arm is √bhañj's: coH kuH (8.2.30, above in this file's
     // pipeline order) has already turned the dhātu's final `j` into `g`
@@ -851,6 +860,11 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // śnam split (3.1.78) puts √piṣ's tail in SHAP, one term short of ANGA.
     // pinakzi (`super::derivation_tests::pish_lat_madhyama_eka_is_pinakshi`)
     // is the witness.
+    //
+    // The `r` arm is juhotyādi 3d's ṛ-roots': guṇa gives `-ar` before the
+    // pit `si` with SHAP empty (ślu), so the sound before `si` is the aṅga's
+    // own `r`, which is inside iṇ. biBar + si → biBarzi, and likewise
+    // piparzi, jaGarzi, jaharzi, sasarzi.
     //
     // No conflict with 8.3.15 above: that rule is word-final
     // (kharavasānayoḥ), this one is apadāntasya. It also declines for every
@@ -892,7 +906,7 @@ pub(crate) static TRIPADI: &[Rule] = &[
                 return false;
             };
             let is_in_trigger = is_vowel(prev) && !matches!(prev, 'a' | 'A');
-            if !is_in_trigger && !matches!(prev, 'g' | 'k') {
+            if !is_in_trigger && !matches!(prev, 'g' | 'k' | 'r') {
                 return false;
             }
             let before = p.snapshot();
@@ -1824,6 +1838,45 @@ mod tests {
     }
 
     #[test]
+    fn hali_ca_reads_the_ending_when_slu_leaves_shap_empty() {
+        // √pṝ (03.0004) after 7.1.102: pur + "" + tas. With śap ślu'd the
+        // ending is what meets the aṅga, so its `t` is the hal: pUr
+        // (pipUrtaH). Before a vowel-initial ending the rule declines
+        // (pipurati).
+        let rule = rules().find(|r| r.id == "8.2.77").unwrap();
+        let mut p = Prakriya {
+            terms: with_slots(vec![Term::new("pur"), Term::new(""), Term::new("tas")]),
+            log: vec![],
+            ..Default::default()
+        };
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "pUr");
+        let mut p = Prakriya {
+            terms: with_slots(vec![Term::new("pur"), Term::new(""), Term::new("ati")]),
+            log: vec![],
+            ..Default::default()
+        };
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "pur");
+    }
+
+    #[test]
+    fn hali_ca_reads_a_live_vikarana_not_the_ending() {
+        // A non-empty, vowel-initial SHAP in front of a consonant-initial
+        // ending: the aṅga meets the vikaraṇa's vowel and must not lengthen.
+        // Hand-built — no curated r/v-final aṅga carries śap — and it is what
+        // kills a mutant that reads the ending whenever SHAP is present.
+        let rule = rules().find(|r| r.id == "8.2.77").unwrap();
+        let mut p = Prakriya {
+            terms: with_slots(vec![Term::new("div"), Term::new("a"), Term::new("ti")]),
+            log: vec![],
+            ..Default::default()
+        };
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "div");
+    }
+
+    #[test]
     fn shatva_declines_for_every_pre_existing_junction() {
         // Each of these pins one boundary of 8.3.59's guard, and each is a
         // form the suite already ships — so a mutant that widens the guard
@@ -1881,6 +1934,22 @@ mod tests {
         };
         assert!(!(rule.apply)(&mut p));
         assert_eq!(p.terms[ENDING].text, "si");
+    }
+
+    #[test]
+    fn shatva_fires_after_the_r_of_a_guned_ri_root() {
+        // The `r` arm is the 3d ṛ-roots': guṇa gives Bar, and the pit `si`
+        // follows an empty SHAP (ślu), so the sound before it is the aṅga's
+        // own `r`, which is in iṇ. biBar + si -> biBarzi.
+        let mut p = Prakriya {
+            terms: with_slots(vec![Term::new("Bar"), Term::new(""), Term::new("si")]),
+            log: vec![],
+            ..Default::default()
+        };
+        let rule = rules().find(|r| r.id == "8.3.59").unwrap();
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.terms[ENDING].text, "zi");
+        assert_eq!(p.log.last().unwrap().sutra, "8.3.59");
     }
 
     #[test]

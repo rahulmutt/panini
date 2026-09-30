@@ -382,6 +382,13 @@ Each gets its own spec, starting from this table and the appendix.
 > Slice 3c2 (`2026-09-29-juhotyadi-gana-3c2-design.md`) took √hā
 > (parasmaipada) and √gā, 72 cells, and added `Rule.bars` for 6.4.117.
 
+> Slice 3d (`2026-09-29-juhotyadi-gana-3d-design.md`) split this table's 3d
+> row: 3d took the six consonant-initial ṛ-roots, 252 cells, and widened
+> 7.4.60, 7.4.76, 6.1.77, 8.2.77 and 8.3.59 beside the table's new sūtras. √ṛ,
+> with 6.4.78 and 6.4.72 / 6.1.90 on the abhyāsa, became slice 3d2. The
+> table's 8.3.110 is not transcribed (no form depends on it), and vidyut's
+> 8.4.37 is this engine's existing 8.4.2 guard.
+
 ## Appendix: vidyut's inventory at `8da2f90b`
 
 Per root, over four lakāras and both padas where derivable:

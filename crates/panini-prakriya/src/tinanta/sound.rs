@@ -609,10 +609,10 @@ mod tests {
     fn hrasva_of_long_vowels_all_arms() {
         // 7.4.59 hrasvaḥ's substitute, arm by arm. The `I` arm has cells
         // from slice 3b (√bhī's `BI`, √hrī's `hI`) and the `A` arm from
-        // slice 3c (√dā, √dhā, √mā, √hā); `F` arrives with √pṝ in 3d. The
-        // arms are killed here rather than left waiting for those slices —
-        // the same reason every other map in this file has an `_all_arms`
-        // test.
+        // slice 3c (√dā, √dhā, √mā, √hā). `F` has none even after 3d: √pṝ's
+        // abhyāsa `pF` is `par` by 7.4.66 before 7.4.59 runs. The arms are
+        // killed here rather than left waiting for a witness — the same
+        // reason every other map in this file has an `_all_arms` test.
         for (from, to) in [('A', 'a'), ('I', 'i'), ('U', 'u'), ('F', 'f'), ('X', 'x')] {
             assert_eq!(hrasva_of(from), Some(to), "{from}");
         }
