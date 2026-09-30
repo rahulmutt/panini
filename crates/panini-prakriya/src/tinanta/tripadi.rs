@@ -861,10 +861,10 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // pinakzi (`super::derivation_tests::pish_lat_madhyama_eka_is_pinakshi`)
     // is the witness.
     //
-    // The `r` arm is juhotyādi 3d's ṛ-roots': guṇa gives `-ar` before the
-    // pit `si` with SHAP empty (ślu), so the sound before `si` is the aṅga's
-    // own `r`, which is inside iṇ. biBar + si → biBarzi, and likewise
-    // piparzi, jaGarzi, jaharzi, sasarzi.
+    // The `r` arm is juhotyādi's ṛ-roots' (3d's six, and 3d2's √ṛ): guṇa
+    // gives `-ar` before the pit `si` with SHAP empty (ślu), so the sound
+    // before `si` is the aṅga's own `r`, which is inside iṇ. biBar + si →
+    // biBarzi, and likewise piparzi, jaGarzi, jaharzi, sasarzi, iyarzi.
     //
     // No conflict with 8.3.15 above: that rule is word-final
     // (kharavasānayoḥ), this one is apadāntasya. It also declines for every

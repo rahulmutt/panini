@@ -389,6 +389,11 @@ Each gets its own spec, starting from this table and the appendix.
 > table's 8.3.110 is not transcribed (no form depends on it), and vidyut's
 > 8.4.37 is this engine's existing 8.4.2 guard.
 
+> Slice 3d2 (`2026-09-30-juhotyadi-gana-3d2-design.md`) took √ṛ, 36 cells:
+> 6.4.78, 7.4.60 on a vowel-initial abhyāsa and 7.4.77's √ṛ row. It closed
+> this spec's augment-guard checkpoint by argument plus witness — 6.4.71 /
+> 6.4.72 keep reading `ANGA`.
+
 ## Appendix: vidyut's inventory at `8da2f90b`
 
 Per root, over four lakāras and both padas where derivable:

@@ -26,11 +26,11 @@ pub(crate) static ANGA_RULES: &[Rule] = &[
     // rule of the abhyāsa stage changes its initial's class — 7.4.60 keeps
     // the first consonant (or, vowel-initial, the vowel), 7.4.62 substitutes
     // consonant for consonant, 7.4.66 and 7.4.77 vowel for vowel, and 6.4.78
-    // only appends a glide. √ṛ (03.0017, slice 3d2) is the vowel-initial
-    // witness: ANGA reads `f`, the abhyāsa `iy`, and both reads give āṭ
-    // (EyaH). Reading the abhyāsa instead would add a clause no row can
-    // falsify (3e's and 3f's roots are consonant-initial), so the ANGA read
-    // stays.
+    // turns a final i/u into iy/uv. √ṛ (03.0017, slice 3d2) is the
+    // vowel-initial witness: ANGA reads `f`, the abhyāsa `iy`, and both reads
+    // give āṭ (EyaH). Reading the abhyāsa instead would add a clause no row
+    // can falsify (3e's and 3f's roots are consonant-initial), so the ANGA
+    // read stays.
     Rule {
         id: "6.4.71",
         name: "luNlaNlfNkzvaqudAttaH",

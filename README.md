@@ -29,7 +29,7 @@ and 6.4.109 *ye ca* — and 8.2.77 *hali ca*'s own guard, 8.2.79 *na
 bhakurchurām*, which declines 8.2.77's lengthening on √kṛ's `kur` aṅga
 (`kurvanti`, not `*kUrvanti`) — and *juhotyādi* (3, the ślu gaṇa: 2.4.75
 elides śap by ślu and 6.1.10 reduplicates the root into the `ABHYASA`
-slot), **partial** at 16 of its 26 dhātupāṭha rows, √hu (`03.0001`,
+slot), **partial** at 17 of its 26 dhātupāṭha rows, √hu (`03.0001`,
 *juhoti*) and √ki (`03.0020`, *ciketi*), curated in slice 3a behind
 7.4.62 *kuhoś cuḥ*, 7.1.4 *ad abhyastāt*, 3.4.109 with 7.3.83 *jusi ca*,
 6.4.82 *er anekāco'saṁyogapūrvasya* and 8.4.54 *abhyāse car ca*, with
@@ -61,7 +61,11 @@ ubhayapadī), √ghṛ (`03.0015`, *jagharti*), √hṛ (`03.0016`, *jaharti*) a
 and 7.1.102 *ud oṣṭhyapūrvasya*, with 7.4.60 widened to every non-initial
 consonant, 7.4.76 given its √bhṛñ row, 6.1.77 given an aṅga arm, 8.2.77
 reading the ending when ślu empties the śap, and 8.3.59 *ādeśapratyayayoḥ*
-given an `r` arm (*bibharṣi*). rudhādi is complete at all twenty-five of its
+given an `r` arm (*bibharṣi*). Slice 3d2 added √ṛ (`03.0017`, *iyarti*), the
+gaṇa's one vowel-initial ṛ-root, behind 6.4.78 *abhyāsasyāsavarṇe*, with
+7.4.60 trimming a vowel-initial abhyāsa (`ar` → `a`) and 7.4.77 given its √ṛ
+row; in laṅ the āṭ merges into the abhyāsa (*aiyaḥ*, `EyaH`). rudhādi is
+complete at all twenty-five of its
 own roots (√kṛt, √hiṃs, √khid, √bhañj, √piṣ, √indh, √rudh,
 and — curated in slice 7c — √bhid, √kṣud, √yuj and √tṛd, and — curated in
 the 8.2.30/8.2.39 generalization slice — √ric and √vic, and — curated in
@@ -84,14 +88,15 @@ rather than falling through to 1.3.72. What 1.3.66 does not model is the
 1.3.72's own precedent,
 since neither engine models sense. *parasmaipada* and *ātmanepada*
 (which padas a root admits is a curated verdict on its table row), over a
-curated 93-root set, in four lakāras: *laṭ* (present), *laṅ* (imperfect), *loṭ*
+curated 94-root set, in four lakāras: *laṭ* (present), *laṅ* (imperfect), *loṭ*
 (imperative), and *vidhiliṅ* (optative). A cell may have more than one valid
 form where an optional (*vikalpa*) sūtra applies — `hinvaH` and `hinuvaH` are
-both correct — and in fact 758 of the 4176 cells hold more than one form: 577
-hold two, 135 hold three (`Bavatu`, `BavatAd`, `BavatAt`, and — new in
+both correct — and in fact 761 of the 4212 cells hold more than one form: 578
+hold two, 137 hold three (`Bavatu`, `BavatAd`, `BavatAt`, and — new in
 slice 3b — √hrī's loṭ prathama and madhyama eka, and — new in slice 3c —
 √dā's and √dhā's, and — new in slice 3c2 — √gā's, and — new in slice 3d —
-the six ṛ-roots', each by 7.1.35/8.4.56), eighteen hold four
+the six ṛ-roots', and — new in slice 3d2 — √ṛ's, each by 7.1.35/8.4.56),
+eighteen hold four
 (rudhādi's √piṣ loṭ madhyama eka, and — new in slice 7d — √śiṣ's, and — new
 in slice 8a — fifteen more spread across tanādi's four ik-upadhā roots kziR,
 fR, tfR and GfR, and — new in slice 3b — √bhī's vidhiliṅ prathama eka,
