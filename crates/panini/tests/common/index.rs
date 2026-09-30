@@ -19,7 +19,7 @@
 use std::collections::HashMap;
 use std::sync::LazyLock;
 
-use panini_analyze::candidates;
+use panini_analyze::all_candidates;
 use panini_data::{Lakara, Pada, Purusha, Vacana};
 use panini_lipi::normalize;
 use panini_prakriya::derive as derive_prakriya;
@@ -54,7 +54,7 @@ impl FormIndex {
 
 static INDEX: LazyLock<FormIndex> = LazyLock::new(|| {
     let mut map: HashMap<String, Vec<IndexedAnalysis>> = HashMap::new();
-    for c in candidates("") {
+    for c in all_candidates() {
         for p in derive_prakriya(c.dhatu, c.lakara, c.pada, c.purusha, c.vacana) {
             // Same guard as `check()`: a blocked prakriyā's text is a partial
             // string that can still collide with a genuine input.
