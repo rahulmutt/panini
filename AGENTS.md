@@ -3,14 +3,12 @@
 ## Environment
 - Toolchain is pinned via `mise` (`mise install`) to rust 1.98.0. Do not install
   Rust globally.
-- Tasks: `mise run build | test | test-full | lint | fmt | fmt-check | mutants |
-  audit`.
-- Run `mise run test-full` once per slice, before the mutation gate. The
-  blocking tier (`mise run test`) samples one roundtrip cell per root; this
-  runs the exhaustive roundtrip over the whole cross-product (~25 minutes).
-  Also run it after touching `Panini::check()`,
-  `panini_analyze::candidates()`, or `crates/panini/tests/common/index.rs`.
-  CI runs it on the weekly cron.
+- Tasks: `mise run build | test | lint | fmt | fmt-check | mutants | audit`.
+- `mise run test` is the whole suite, including the exhaustive roundtrip:
+  every derived form goes through the real `Panini::check()` and is compared
+  against a brute-force oracle (`crates/panini/tests/roundtrip.rs`). It
+  takes a few seconds, because `panini_analyze::candidates()` answers from a
+  corpus index built once per process.
 - Optional dev/audit tooling is pinned in `mise.dev.toml`. Install it on demand:
   `MISE_ENV=dev mise install`. This provides:
   - `cargo-mutants` (mutation testing) — `mise run mutants` runs
