@@ -82,7 +82,11 @@
     `vec![Default::default()]` and
     `HashMap::from_iter([..., vec![Default::default()]])` replacements do not
     compile, as `Candidate` has no `Default`).
-    Caught-mutant test phases: max 10.0s. `outcomes.json` is kept at
+    Caught-mutant test phases: max 10.0s. Under campaign load the two
+    uncaught equivalents took 8s (`adesha.rs:588:30`) and 7s
+    (`tripadi.rs:1217:38`), so the 40s cap is 5.0x and 5.7x their uncaught
+    run: 5.0x is exactly the rule's floor, so any growth in suite time means
+    re-measuring and raising the cap. `outcomes.json` is kept at
     `/home/dev/mutants-records/check-form-index/mutants.out/outcomes.json`.
     **The per-slice history** of the floor, the cap and every campaign from
     the pada audit through slice 3d, all measured against the Θ(N²) suite,
