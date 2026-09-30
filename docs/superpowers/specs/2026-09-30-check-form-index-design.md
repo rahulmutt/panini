@@ -77,23 +77,39 @@ pub fn candidates(surface_slp1: &str) -> Vec<Candidate>;
 ```
 
 `candidates()` reads a private
-`static INDEX: LazyLock<HashMap<String, Vec<Candidate>>>`, built on first use:
+`static INDEX: LazyLock<HashMap<String, Vec<Candidate>>>`, built on first use
+by a pure helper:
 
-- For each candidate `c` in `all_candidates()`, and each branch `p` of
-  `panini_prakriya::derive(c…)`:
-  - skip `p` if it is `blocked`;
-  - otherwise push `c` under `p.text()`, unless `c` is already the last entry
-    under that key. Two vikalpa branches of one candidate that produce the
-    same form list the candidate once.
+```rust
+/// Groups candidates by the surface forms their branches produce.
+fn index_from(
+    derived: impl IntoIterator<Item = (Candidate, Vec<(bool /* blocked */, String /* text */)>)>,
+) -> HashMap<String, Vec<Candidate>>;
+```
+
+- `INDEX` feeds it `all_candidates()`, each paired with its
+  `panini_prakriya::derive(..)` branches as `(p.blocked, p.text())`.
+- For each candidate, `index_from` collects the distinct texts of its
+  unblocked branches, then pushes the candidate once under each of them.
+  - Blocked branches are skipped: their text is a partial string (1.3.12 /
+    1.3.78).
+  - Two vikalpa branches of one candidate that produce the same form list
+    the candidate once. There is no candidate-equality comparison, so the
+    non-unique `Dhatu::code` never comes into it.
+- Entries under a key stay in input order.
 - `candidates(s)` returns `INDEX.get(s)` copied into a `Vec`, or an empty
   `Vec`.
 
-Two equality details matter:
-- Candidate equality in the dedupe compares the dhātu by pointer identity
-  (`std::ptr::eq`) plus the four enums. `Dhatu::code` is not unique (√aś), so
-  it cannot be the comparison.
-- Entries under a key stay in `all_candidates()` order because the build walks
-  that order.
+**Why a pure helper.** Measured on 2026-09-30 at 4176 candidates:
+- the corpus has **no blocked branches** (`all_candidates()` admits only the
+  padas a root takes);
+- it has **no candidate whose branches repeat a form**;
+- 315 of its 4881 distinct forms have more than one candidate.
+
+So the corpus alone never exercises the blocked-branch filter or the
+duplicate skip, and their mutants would survive as unkillable. Synthetic
+`(blocked, text)` inputs to `index_from` pin both. The §4.3 oracle pins
+order and completeness on the real corpus.
 
 **`Panini::check()` is not modified.** It still re-derives each proposed
 candidate and keeps branches where `!p.blocked && p.text() == slp1`. Because
@@ -110,6 +126,11 @@ whole corpus; now the index build does, so the cost is unchanged.
   √BU laṭ form). Rename it to say what it now checks: that a derived form's
   candidates are non-empty.
 - New: a non-form (`gacCati`) proposes nothing.
+- New, on `index_from` with synthetic branches:
+  - a blocked branch is not indexed;
+  - same-form branches list the candidate once;
+  - a candidate with two different forms is indexed under both;
+  - candidates keep input order under a shared form.
 - New: `all_candidates().len()` equals
   `Σ_d LAKARAS.len() × 9 × d.pada.padas().len()`.
 
@@ -194,9 +215,9 @@ now fast. The `trace/` binary and `tests/cli.rs` are unchanged.
 
 **Scope.** `mise run mutants` becomes
 `cargo mutants --package panini-prakriya --package panini-analyze
---test-workspace=true --timeout <cap> -j 4`. The index build (the blocked
-filter and the dedupe) is now load-bearing, and the §4.3 oracle is what should
-catch mutants in it.
+--test-workspace=true --timeout <cap> -j 4`. The index build is now load-bearing. The
+`index_from` unit tests (§3) and the §4.3 oracle are what should catch
+mutants in it.
 
 **Re-basing the cap.** Use the existing rule: the cap must clear a full
 UNCAUGHT workspace run at the parallelism used, by at least 5×.
