@@ -724,7 +724,7 @@ pub(crate) static GUNA: &[Rule] = &[
     // after its apavāda 6.4.82 — because every ī/ū-final curated root is
     // already past it by then: √bhū and √nī have guṇated (`Bo`, `ne`, śap
     // being pit so 1.1.5 does not block), √śī has guṇated by 7.4.21, and
-    // √vrī's follower is the hal-initial śnā. The 4176 byte-identical
+    // √vrī's follower is the hal-initial śnā. The 4212 byte-identical
     // priors are what turn that from an argument into a proof.
     //
     // THE UVAṄ HALF IS NOT WRITTEN. `U` → `uv` has no cell in the suite —
@@ -845,16 +845,18 @@ pub(crate) static GUNA: &[Rule] = &[
     },
     // 6.1.78 eco'yavāyāvaḥ: e/o before a vowel → ay/av. The sūtra also covers
     // E/O → Ay/Av, but those two arms are dropped here: within the current
-    // 93-root × 4-lakāra grammar, ANGA can never end in a vṛddhi vowel (E/O)
+    // 94-root × 4-lakāra grammar, ANGA can never end in a vṛddhi vowel (E/O)
     // at the point this rule runs. `vrddhi_of` (the only source of E/O in
     // this engine) is called from four places in two rules: three in 6.1.90
-    // — the aṅga arm writes the vṛddhi vowel at *position 0* of the aṅga
-    // (replacing the āṭ augment + the root's first vowel), never at the
-    // aṅga's last character, and the other two arms write into SHAP/ENDING,
-    // not ANGA — and one in 6.1.88 *vṛddhir eci* (juhotyādi 3c), which
+    // — the aṅga arm writes the vṛddhi vowel at *position 0* of the first
+    // non-empty term after `AGAMA` (replacing the āṭ augment + that term's
+    // first vowel): the aṅga, or for √ṛ the abhyāsa `iy` (`iy` → `Ey`), never
+    // at the aṅga's last character, and the other two arms write into
+    // SHAP/ENDING, not ANGA — and one in 6.1.88 *vṛddhir eci* (juhotyādi 3c), which
     // writes its vṛddhi vowel into ENDING alone (da + dA + E → da + d + E),
-    // never into ANGA. No curated root is a single SLP1 character, so the
-    // aṅga arm's tail slice is never empty either. And the order is decisive
+    // never into ANGA. The one single-character aṅga, √ṛ's `f`, is never the
+    // term the aṅga arm writes into (the abhyāsa precedes it), so there is
+    // no one-character tail to worry about either. And the order is decisive
     // on its own regardless of where either caller writes: both 6.1.90 and
     // 6.1.88 live in `adesha.rs`, which runs *after* the whole of `guna.rs`
     // — so no E/O either one produces can ever be seen by 6.1.78, which has

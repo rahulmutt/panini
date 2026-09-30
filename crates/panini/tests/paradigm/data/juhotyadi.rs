@@ -852,6 +852,40 @@ pub const PARADIGM: &[ParadigmRow] = &[
             "sasfyAma",
         ],
     ),
+    (
+        "03.0017",
+        "laT",
+        Pada::Parasmaipada,
+        [
+            "iyarti", "iyftaH", "iyrati", "iyarzi", "iyfTaH", "iyfTa", "iyarmi", "iyfvaH", "iyfmaH",
+        ],
+    ),
+    (
+        "03.0017",
+        "laN",
+        Pada::Parasmaipada,
+        [
+            "EyaH", "EyftAm", "EyaruH", "EyaH", "Eyftam", "Eyfta", "Eyaram", "Eyfva", "Eyfma",
+        ],
+    ),
+    (
+        "03.0017",
+        "loT",
+        Pada::Parasmaipada,
+        [
+            "iyartu", "iyftAm", "iyratu", "iyfhi", "iyftam", "iyfta", "iyarARi", "iyarAva",
+            "iyarAma",
+        ],
+    ),
+    (
+        "03.0017",
+        "viDiliN",
+        Pada::Parasmaipada,
+        [
+            "iyfyAd", "iyfyAtAm", "iyfyuH", "iyfyAH", "iyfyAtam", "iyfyAta", "iyfyAm", "iyfyAva",
+            "iyfyAma",
+        ],
+    ),
 ];
 
 pub const ALTERNATES: &[AlternateRow] = &[
@@ -1580,6 +1614,32 @@ pub const ALTERNATES: &[AlternateRow] = &[
         Pada::Parasmaipada,
         0,
         "sasfyAt",
+        "8.4.56",
+    ),
+    ("03.0017", "loT", Pada::Parasmaipada, 0, "iyftAd", "7.1.35"),
+    (
+        "03.0017",
+        "loT",
+        Pada::Parasmaipada,
+        0,
+        "iyftAt",
+        "7.1.35+8.4.56",
+    ),
+    ("03.0017", "loT", Pada::Parasmaipada, 3, "iyftAd", "7.1.35"),
+    (
+        "03.0017",
+        "loT",
+        Pada::Parasmaipada,
+        3,
+        "iyftAt",
+        "7.1.35+8.4.56",
+    ),
+    (
+        "03.0017",
+        "viDiliN",
+        Pada::Parasmaipada,
+        0,
+        "iyfyAt",
         "8.4.56",
     ),
 ];

@@ -8,8 +8,10 @@
 //! 7.4.59. The same choice makes 7.4.66 *ur at* fire on every cell of a
 //! slice-3d ṛ-root (vidyut's fires only on the kṅit ones), and puts 7.1.102
 //! *ud oṣṭhyapūrvasya* after dvitva, on the aṅga alone (*pipūrtaḥ*'s
-//! abhyāsa is copied from `pF`). Forms agree; the traces do not, and these
-//! pins are what make the engine's own order a checked fact rather than an
+//! abhyāsa is copied from `pF`). The same order runs 6.4.78 (slice 3d2's √ṛ)
+//! inside the abhyāsa stage, before laṅ's 6.4.72 and before guṇa, where vidyut
+//! guṇates first (on pit cells only) and reaches 6.4.78 later. Forms agree; the traces do not, and
+//! these pins are what make the engine's own order a checked fact rather than an
 //! accident.
 
 use crate::helpers::{at, cell_trace};
@@ -660,4 +662,72 @@ fn sasrati_trace_has_no_shatva_and_no_8_3_110() {
     assert!(t.contains(&"6.1.77".to_string()), "got {t:?}");
     assert!(!t.contains(&"8.3.59".to_string()), "got {t:?}");
     assert!(!t.contains(&"8.3.110".to_string()), "got {t:?}");
+}
+
+#[test]
+fn iyarti_trace_is_ur_at_haladih_shesha_arti_then_abhyasasyasavarne() {
+    // f P laT P.E. A pit cell: 7.4.66 fires on the bare copy here (vidyut
+    // copies the guṇated `ar` and skips it), and 6.4.78 precedes guṇa.
+    let (text, t) = cell_trace(
+        "03.0017",
+        Lakara::Lat,
+        Pada::Parasmaipada,
+        Purusha::Prathama,
+        Vacana::Eka,
+    );
+    assert_eq!(text, "iyarti", "got {t:?}");
+    assert!(at(&t, "6.1.10") < at(&t, "7.4.66"), "got {t:?}");
+    assert!(at(&t, "7.4.66") < at(&t, "7.4.60"), "got {t:?}");
+    assert!(at(&t, "7.4.60") < at(&t, "7.4.77"), "got {t:?}");
+    assert!(at(&t, "7.4.77") < at(&t, "6.4.78"), "got {t:?}");
+    assert!(at(&t, "6.4.78") < at(&t, "7.3.84"), "got {t:?}");
+}
+
+#[test]
+fn iyftah_trace_has_abhyasasyasavarne_and_no_guna() {
+    // f P laT P.D. kṅit: the aṅga keeps its `f`, which is what 6.4.78 reads.
+    let (text, t) = cell_trace(
+        "03.0017",
+        Lakara::Lat,
+        Pada::Parasmaipada,
+        Purusha::Prathama,
+        Vacana::Dvi,
+    );
+    assert_eq!(text, "iyftaH", "got {t:?}");
+    assert!(at(&t, "7.4.77") < at(&t, "6.4.78"), "got {t:?}");
+    assert!(!t.contains(&"7.3.84".to_string()), "got {t:?}");
+}
+
+#[test]
+fn iyrati_trace_is_abhyasasyasavarne_before_iko_yan_aci() {
+    // f P laT P.B. 6.4.78 must see the root's vowel before 6.1.77 turns it
+    // into `r`, or the abhyāsa would stay `i` (*irati).
+    let (text, t) = cell_trace(
+        "03.0017",
+        Lakara::Lat,
+        Pada::Parasmaipada,
+        Purusha::Prathama,
+        Vacana::Bahu,
+    );
+    assert_eq!(text, "iyrati", "got {t:?}");
+    assert!(at(&t, "6.4.78") < at(&t, "7.1.4"), "got {t:?}");
+    assert!(at(&t, "7.1.4") < at(&t, "6.1.77"), "got {t:?}");
+}
+
+#[test]
+fn eyaruh_trace_is_abhyasasyasavarne_then_at_then_awas_ca_on_the_abhyasa() {
+    // f P laN P.B. 6.4.72 (āṭ, not 6.4.71's aṭ) reads ANGA's vowel initial;
+    // 7.3.83 guṇates before jus; 6.1.90 merges A+iy → Ey into the abhyāsa.
+    let (text, t) = cell_trace(
+        "03.0017",
+        Lakara::Lan,
+        Pada::Parasmaipada,
+        Purusha::Prathama,
+        Vacana::Bahu,
+    );
+    assert_eq!(text, "EyaruH", "got {t:?}");
+    assert!(at(&t, "6.4.78") < at(&t, "6.4.72"), "got {t:?}");
+    assert!(at(&t, "6.4.72") < at(&t, "7.3.83"), "got {t:?}");
+    assert!(at(&t, "7.3.83") < at(&t, "6.1.90"), "got {t:?}");
+    assert!(!t.contains(&"6.4.71".to_string()), "got {t:?}");
 }

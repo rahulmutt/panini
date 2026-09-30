@@ -1,5 +1,5 @@
 //! Reduplication: 6.1.10, 7.4.66, 7.4.60, 7.4.59, 7.4.62, 7.4.76, 7.4.77,
-//! 7.4.78 — dvitva and the rules that reshape the abhyāsa.
+//! 7.4.78, 6.4.78 — dvitva and the rules that reshape the abhyāsa.
 //!
 //! Ordered AFTER 3.1.68 (ending at `ENDING`, śap at `SHAP` — empty on
 //! exactly the path this stage cares about) and BEFORE `anga`, so 6.4.71
@@ -96,18 +96,23 @@ pub(crate) static ABHYASA_RULES: &[Rule] = &[
         },
     },
     // 7.4.60 halādiḥ śeṣaḥ: of the abhyāsa's consonants only the first
-    // remains. Two witnesses: √hrī's initial cluster (hrI → hI, which 7.4.59
-    // then shortens to hi and 7.4.62 palatalizes to Ji: jihreti), and — new
-    // in slice 3d — the `r` 7.4.66 leaves on every ṛ-root's abhyāsa (Bar →
-    // Ba: bibharti, pa: piparti, Ga: jagharti).
+    // remains. Three witnesses: √hrī's initial cluster (hrI → hI, which 7.4.59
+    // then shortens to hi and 7.4.62 palatalizes to Ji: jihreti), the `r`
+    // 7.4.66 leaves on every consonant-initial ṛ-root's abhyāsa (Bar → Ba:
+    // bibharti, pa: piparti, Ga: jagharti; slice 3d), and √ṛ's vowel-initial
+    // `ar` (slice 3d2), which has no ādi hal to keep and so loses its `r` too
+    // (ar → a, then 7.4.77's `i`: iyarti).
     //
-    // WIDENED in slice 3d from an initial-cluster trim to the sūtra: keep the
-    // first consonant and every vowel, drop every other consonant. For a
-    // single-ekāc abhyāsa (6.1.10's NARROW note) that is the whole rule.
+    // The sūtra as written: keep the first character if it is a consonant,
+    // keep every vowel, drop every other consonant. For a single-ekāc abhyāsa
+    // (6.1.10's NARROW note) that is the whole rule. A vowel first character
+    // is kept by the same `once(first)` — it is a vowel — so the vowel-initial
+    // case needs no arm of its own.
     //
-    // The no-op guard is 8.4.53's: for a single-consonant open abhyāsa the
-    // result equals the input, and the rule must record nothing there or
-    // every √hu, √ki and √bhī trace grows a step and the priors break.
+    // The no-op guard is 8.4.53's: for a single-consonant open abhyāsa (and
+    // for √ṛ's bare `f`) the result equals the input, and the rule must record
+    // nothing there or every √hu, √ki and √bhī trace grows a step and the
+    // priors break.
     Rule {
         id: "7.4.60",
         name: "halAdiH SezaH",
@@ -119,13 +124,6 @@ pub(crate) static ABHYASA_RULES: &[Rule] = &[
             let Some(&first) = s.first() else {
                 return false;
             };
-            // *halādiḥ* names a consonant-initial abhyāsa. vidyut elides √ṛ's
-            // `r` too (ar → a on 03.0017, its 7.4.60), so whether this
-            // fall-through survives is slice 3d2's to decide with that
-            // witness; no curated row reaches it today.
-            if is_vowel(first) {
-                return false;
-            }
             let t: String = std::iter::once(first)
                 .chain(s[1..].iter().copied().filter(|c| is_vowel(*c)))
                 .collect();
@@ -242,16 +240,15 @@ pub(crate) static ABHYASA_RULES: &[Rule] = &[
     },
     // 7.4.77 arti-pipartyoś ca: the abhyāsa of √ṛ (*arti*) and √pṛ
     // (*piparti*) takes `i` too. vidyut applies *piparti* to both pf\ and pF,
-    // the two rows that spell it: after 7.4.66 and 7.4.60, pa → pi.
+    // the two rows that spell it. After 7.4.66 and 7.4.60: pa → pi, and √ṛ's
+    // a → i (then 6.4.78: iy, iyarti).
     //
     // KEYED BY ROW NUMBER, like 7.4.76 above it: by this stage `ANGA.text`
-    // still reads `pf`/`pF`, but the sūtra names roots, and the precedent is
-    // the number.
+    // still reads `pf`/`pF`/`f`, but the sūtra names roots, and the precedent
+    // is the number.
     //   03.0004 pF  √pṝ
     //   03.0005 pf\ √pṛ
-    // `03.0017 f\` (√ṛ, *arti*) is the sūtra's first root and joins with its
-    // witness in slice 3d2; an unwitnessed number here would be a mutation
-    // survivor.
+    //   03.0017 f\  √ṛ
     //
     // After 7.4.76: the two name disjoint roots, so only the trace pins decide
     // the order, and they follow vidyut's.
@@ -262,7 +259,7 @@ pub(crate) static ABHYASA_RULES: &[Rule] = &[
         vikalpa: false,
         bars: &[],
         apply: |p| {
-            if !matches!(p.ctx.dhatupatha, "03.0004" | "03.0005") {
+            if !matches!(p.ctx.dhatupatha, "03.0004" | "03.0005" | "03.0017") {
                 return false;
             }
             let t: String = p.terms[ABHYASA]
@@ -308,6 +305,53 @@ pub(crate) static ABHYASA_RULES: &[Rule] = &[
             let before = p.snapshot();
             p.terms[ABHYASA].text = t;
             p.record("7.4.78", "bahulaM Candasi", before);
+            true
+        },
+    },
+    // 6.4.78 abhyāsasyāsavarṇe: an abhyāsa-final i/u (short or long) becomes
+    // iyaṅ/uvaṅ before a vowel that is not savarṇa with it — *aci* and *yvor
+    // iyaṅuvaṅau* continue from 6.4.77. √ṛ's abhyāsa, `i` after 7.4.77, meets
+    // the root's `f`: iyarti; in laṅ 6.1.90 then merges the āṭ into it,
+    // A+iy → Ey (EyaH).
+    //
+    // HERE, not beside 6.4.77 in `guna`: every edit to the abhyāsa's text
+    // lives in this stage, vidyut applies it straight after 7.4.77 on every
+    // √ṛ prakriyā, and running before `anga` puts it ahead of 6.4.72/6.1.90
+    // (laṅ) and 6.1.77 (iy·f·ati → iyrati, not *irati) by construction.
+    //
+    // The follower is ANGA's first character. At this stage that is the bare
+    // root's (`f`); guṇa later makes it `a` on pit cells, asavarṇa with `i`
+    // either way. The savarṇa test is local because `sound::is_savarna` knows
+    // stop series only.
+    //
+    // Guarded on the sound, not the row, like 7.4.66: the sūtra names sounds.
+    // √ṛ is the only row that reaches it — every other abhyāsa meets a
+    // consonant-initial root, and every other gaṇa's slot is empty — so the
+    // `u` arm and the savarṇa clause are held by synthetic guard tests.
+    Rule {
+        id: "6.4.78",
+        name: "aByAsasyAsavarRe",
+        kind: RuleKind::Vidhi,
+        vikalpa: false,
+        bars: &[],
+        apply: |p| {
+            let (glide, savarna) = match p.terms[ABHYASA].text.chars().last() {
+                Some('i' | 'I') => ("iy", ['i', 'I']),
+                Some('u' | 'U') => ("uv", ['u', 'U']),
+                _ => return false,
+            };
+            let Some(next) = p.terms[ANGA].text.chars().next() else {
+                return false;
+            };
+            if !is_vowel(next) || savarna.contains(&next) {
+                return false;
+            }
+            let before = p.snapshot();
+            let mut t = p.terms[ABHYASA].text.clone();
+            t.pop();
+            t.push_str(glide);
+            p.terms[ABHYASA].text = t;
+            p.record("6.4.78", "aByAsasyAsavarRe", before);
             true
         },
     },
@@ -445,26 +489,28 @@ mod tests {
     }
 
     #[test]
-    fn haladih_shesha_declines_for_a_vowel_initial_abhyasa() {
-        // √ṛ (slice 3d2) is the vowel-initial row, and vidyut does trim its
-        // abhyāsa (ar → a); 3d2 revisits this guard. *halādiḥ* names a
-        // consonant, so the rule has nothing to keep and must not touch the
-        // term. `f` alone cannot kill the guard, though: a single-character
-        // abhyāsa already declines via the no-op check below, guard or no
-        // guard. `ap` is the guard's real witness — no curated root has this
-        // shape, but without the guard a vowel-initial abhyāsa followed by a
-        // consonant would fall through to the tail computation and be
-        // wrongly truncated to `a`.
-        let r_10 = rules().find(|r| r.id == "6.1.10").unwrap();
+    fn haladih_shesha_trims_a_vowel_initial_abhyasa() {
+        // 7.4.60 on √ṛ (slice 3d2): the abhyāsa `ar` (7.4.66's) has no ādi
+        // hal to keep, so every consonant goes — ar → a, then 7.4.77 makes it
+        // `i` (iyarti). vidyut's trace on 03.0017 credits exactly this. `ap`
+        // is the same shape with a consonant 7.4.66 did not put there. `f`
+        // alone is the no-op case: nothing to drop, nothing recorded.
         let r_60 = rules().find(|r| r.id == "7.4.60").unwrap();
-        for root in ["f", "ap"] {
-            let mut p = slu_prakriya(root, "ti");
-            assert!((r_10.apply)(&mut p));
-            p.log.clear();
-            assert!(!(r_60.apply)(&mut p), "{root}");
-            assert_eq!(p.terms[ABHYASA].text, root, "{root}");
-            assert!(p.log.is_empty(), "{root}");
+        for (abhyasa, want) in [("ar", "a"), ("ap", "a")] {
+            let mut p = slu_prakriya("f", "ti");
+            p.terms[ABHYASA].text = abhyasa.into();
+            assert!((r_60.apply)(&mut p), "{abhyasa}");
+            assert_eq!(p.terms[ABHYASA].text, want, "{abhyasa}");
+            assert_eq!(p.terms[ANGA].text, "f", "{abhyasa}: the aṅga is untouched");
+            assert_eq!(p.log.last().unwrap().sutra, "7.4.60");
         }
+        let r_10 = rules().find(|r| r.id == "6.1.10").unwrap();
+        let mut p = slu_prakriya("f", "ti");
+        assert!((r_10.apply)(&mut p));
+        p.log.clear();
+        assert!(!(r_60.apply)(&mut p));
+        assert_eq!(p.terms[ABHYASA].text, "f");
+        assert!(p.log.is_empty());
     }
 
     #[test]
@@ -658,16 +704,20 @@ mod tests {
     }
 
     #[test]
-    fn arti_pipartyos_ca_makes_the_abhyasa_vowel_i_for_pr_and_prr() {
-        // 7.4.77, *piparti*: vidyut applies it to both pf\ (03.0005) and pF
-        // (03.0004). After 7.4.66 and 7.4.60: pa → pi.
+    fn arti_pipartyos_ca_makes_the_abhyasa_vowel_i_for_its_three_rows() {
+        // 7.4.77: *arti* is √ṛ (03.0017) and *piparti* both pf\ (03.0005) and
+        // pF (03.0004). After 7.4.66 and 7.4.60: pa → pi.
         let rule = rules().find(|r| r.id == "7.4.77").unwrap();
-        for (root, number) in [("pf", "03.0005"), ("pF", "03.0004")] {
+        for (root, number, abhyasa) in [
+            ("pf", "03.0005", "pa"),
+            ("pF", "03.0004", "pa"),
+            ("f", "03.0017", "a"),
+        ] {
             let mut p = slu_prakriya(root, "ti");
             p.ctx.dhatupatha = number;
-            p.terms[ABHYASA].text = "pa".into();
+            p.terms[ABHYASA].text = abhyasa.into();
             assert!((rule.apply)(&mut p), "{number}");
-            assert_eq!(p.terms[ABHYASA].text, "pi", "{number}");
+            assert_eq!(p.terms[ABHYASA].text, abhyasa.replace('a', "i"), "{number}");
             assert_eq!(p.log.last().unwrap().sutra, "7.4.77");
         }
     }
@@ -675,8 +725,7 @@ mod tests {
     #[test]
     fn arti_pipartyos_ca_declines_off_its_rows() {
         // Keyed by number. √bhṛ's `i` is 7.4.76's, √sṛ keeps its `a`
-        // (sasarti), and the hand-built default names no row. √ṛ (03.0017)
-        // is the sūtra's other root and arrives with its witness in 3d2.
+        // (sasarti), and the hand-built default names no row.
         let rule = rules().find(|r| r.id == "7.4.77").unwrap();
         for (root, number, abhyasa) in [
             ("Bf", "03.0006", "Ba"),
@@ -692,6 +741,54 @@ mod tests {
         }
     }
 
+    #[test]
+    fn abhyasasyasavarne_gives_iyan_and_uvan_before_a_dissimilar_vowel() {
+        // 6.4.78, with *aci* and *yvor iyaṅuvaṅau* continued from 6.4.77.
+        // √ṛ's abhyāsa `i` before the root's `f` is the corpus witness
+        // (iyarti). The `u` arm and the long vowels are the sūtra's too, and
+        // no juhotyādi row reaches them. `ki` + `a` checks that only the
+        // final vowel is replaced.
+        let rule = rules().find(|r| r.id == "6.4.78").unwrap();
+        for (abhyasa, root, want) in [
+            ("i", "f", "iy"),
+            ("I", "a", "iy"),
+            ("u", "f", "uv"),
+            ("U", "i", "uv"),
+            ("ki", "a", "kiy"),
+        ] {
+            let mut p = slu_prakriya(root, "ti");
+            p.terms[ABHYASA].text = abhyasa.into();
+            assert!((rule.apply)(&mut p), "{abhyasa}+{root}");
+            assert_eq!(p.terms[ABHYASA].text, want, "{abhyasa}+{root}");
+            assert_eq!(p.terms[ANGA].text, root, "{abhyasa}+{root}");
+            assert_eq!(p.log.last().unwrap().sutra, "6.4.78");
+        }
+    }
+
+    #[test]
+    fn abhyasasyasavarne_declines_before_a_savarna_vowel_a_consonant_or_no_abhyasa() {
+        // *asavarṇe*: i before i/I, u before U. *aci*: every 3a–3d abhyāsa
+        // meets a consonant-initial root (ci·ki, Ju·hu). *yvoḥ*: an
+        // `a`-final abhyāsa. And the empty slot of every other gaṇa, here
+        // adādi's vowel-initial √ad, which must never reach iyaṅ.
+        let rule = rules().find(|r| r.id == "6.4.78").unwrap();
+        for (abhyasa, root) in [
+            ("i", "i"),
+            ("i", "I"),
+            ("u", "U"),
+            ("ci", "ki"),
+            ("Ju", "hu"),
+            ("a", "f"),
+            ("", "ad"),
+        ] {
+            let mut p = slu_prakriya(root, "ti");
+            p.terms[ABHYASA].text = abhyasa.into();
+            assert!(!(rule.apply)(&mut p), "{abhyasa:?}+{root}");
+            assert_eq!(p.terms[ABHYASA].text, abhyasa, "{abhyasa:?}+{root}");
+            assert!(p.log.is_empty(), "{abhyasa:?}+{root}");
+        }
+    }
+
     /// The whole abhyāsa stage, in pipeline order, on one ślu'd root.
     fn run_abhyasa_stage(root: &str, number: &'static str) -> Prakriya {
         let mut p = slu_prakriya(root, "ti");
@@ -704,7 +801,7 @@ mod tests {
 
     #[test]
     fn the_r_roots_reach_their_abhyasa_through_ur_at_then_haladih_shesha() {
-        // Each of 3d's six rows through the whole stage: exactly the rules
+        // Each of 3d's six rows and 3d2's √ṛ through the whole stage: exactly the rules
         // named, in this order, and the abhyāsa 8.4.54 later finishes
         // (Bi → bi, Ja → ja).
         for (root, number, want, ids) in [
@@ -739,6 +836,12 @@ mod tests {
                 vec!["6.1.10", "7.4.66", "7.4.60", "7.4.62"],
             ),
             ("sf", "03.0018", "sa", vec!["6.1.10", "7.4.66", "7.4.60"]),
+            (
+                "f",
+                "03.0017",
+                "iy",
+                vec!["6.1.10", "7.4.66", "7.4.60", "7.4.77", "6.4.78"],
+            ),
         ] {
             let p = run_abhyasa_stage(root, number);
             assert_eq!(p.terms[ABHYASA].text, want, "{number}");

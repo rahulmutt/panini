@@ -314,7 +314,8 @@ pub(crate) static ADESHA: &[Rule] = &[
     // reads only the aṅga's OWN final character, never the two-character
     // window this vṛddhi expansion perturbs, and no other curated root's
     // aṅga is short enough (and ik-vowel-initial) for 6.1.90's aṅga arm to
-    // reach that window at all.
+    // reach that window at all (√ṛ's vṛddhi lands in its abhyāsa, `iy` →
+    // `Ey`, which is no expansion).
     //
     // It cannot contend with 6.4.101 (further below), whose guard requires
     // the ending to be `hi` — neither m- nor v-initial.
@@ -356,8 +357,8 @@ pub(crate) static ADESHA: &[Rule] = &[
     // shapes, one sūtra:
     // - Aṅga arm (laṅ, the ātmanepada slice's Task 8): 6.4.72's āṭ in
     //   `AGAMA` + the initial vowel of the first non-empty term after it —
-    //   the aṅga today, the abhyāsa once juhotyādi reduplicates a
-    //   vowel-initial root. The vṛddhi is written into that term and the
+    //   the aṅga, or the abhyāsa where juhotyādi reduplicates a
+    //   vowel-initial root (√ṛ, slice 3d2). The vṛddhi is written into that term and the
     //   augment slot is emptied. A+eD → ED, A+Ikz → Ekz.
     // - Ending arm (loṭ uttama eka, ātmanepada): after 6.1.101 has coalesced
     //   śap a + āṭ A into śap A, that A + the ending's E merge to E
@@ -895,10 +896,10 @@ mod tests {
             assert_eq!(p.text(), format!("{expected}t"), "{root}");
         }
         // "First non-empty term after AGAMA", not "ANGA": an abhyāsa in
-        // front of the aṅga is what meets the āṭ (slice 3d2's √ṛ, A+iy+ar →
-        // Eyar). No curated root reaches 6.1.90 with a filled ABHYASA until
-        // slice 3d2's √ṛ, so this case stays synthetic until then; this pins
-        // the arm's addressing so 3d2 inherits it rather than re-deriving it.
+        // front of the aṅga is what meets the āṭ (√ṛ, 03.0017, A+iy+ar →
+        // Eyar, EyaH). This is the arm's addressing in isolation; the live
+        // row is pinned in anga.rs's
+        // `the_vowel_initial_abhyasta_takes_at_and_merges_it_into_the_abhyasa`.
         let mut p = Prakriya {
             terms: with_slots(vec![Term::new("ar"), Term::new(""), Term::new("t")]),
             ..Default::default()

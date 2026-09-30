@@ -23,12 +23,14 @@ pub(crate) static ANGA_RULES: &[Rule] = &[
     // already merges the āṭ into the first non-empty term after the slot.
     // The consonant/vowel verdict is the same either way for every
     // juhotyādi row: the abhyāsa is a copy of the root's first ekāc, and no
-    // rule in 7.4.59–7.4.78 changes its initial's class — 7.4.60 keeps the
-    // first consonant, 7.4.62 substitutes consonant for consonant, 7.4.66
-    // and 7.4.77 vowel for vowel. Reading the abhyāsa instead would add a
-    // clause no 3a root can falsify (both are consonant-initial), so the
-    // ANGA read stays; slice 3d2's √ṛ (iyarti, aiyaḥ) is the vowel-initial
-    // row that re-checks this argument against a live witness.
+    // rule of the abhyāsa stage changes its initial's class — 7.4.60 keeps
+    // the first consonant (or, vowel-initial, the vowel), 7.4.62 substitutes
+    // consonant for consonant, 7.4.66 and 7.4.77 vowel for vowel, and 6.4.78
+    // turns a final i/u into iy/uv. √ṛ (03.0017, slice 3d2) is the
+    // vowel-initial witness: ANGA reads `f`, the abhyāsa `iy`, and both reads
+    // give āṭ (EyaH). Reading the abhyāsa instead would add a clause no row
+    // can falsify (3e's and 3f's roots are consonant-initial), so the ANGA
+    // read stays.
     Rule {
         id: "6.4.71",
         name: "luNlaNlfNkzvaqudAttaH",
@@ -442,8 +444,8 @@ mod tests {
     use crate::tinanta::derive;
     use crate::tinanta::form_g;
     use crate::tinanta::rules;
-    use crate::tinanta::terms::{AGAMA, with_slots};
-    use panini_data::{Purusha, Vacana, dhatus};
+    use crate::tinanta::terms::{ABHYASA, AGAMA, with_slots};
+    use panini_data::{Lakara, Pada, Purusha, Vacana, dhatus};
 
     #[test]
     fn at_augment_lands_in_the_agama_slot_not_the_anga_text() {
@@ -497,6 +499,28 @@ mod tests {
         };
         assert!(!(rule.apply)(&mut p));
         assert_eq!(p.terms[AGAMA].text, "");
+    }
+
+    #[test]
+    fn the_vowel_initial_abhyasta_takes_at_and_merges_it_into_the_abhyasa() {
+        // √ṛ (03.0017) laṅ prathama eka, EyaH: the witness 6.4.71's comment
+        // names. 6.4.72 reads ANGA's `f`, the abhyāsa reads `iy` — both
+        // vowel-initial — so āṭ, not aṭ; then 6.1.90 writes the vṛddhi into
+        // the abhyāsa, the first non-empty term after the augment.
+        let d = dhatus().iter().find(|d| d.dhatupatha == "03.0017").unwrap();
+        let p = sole(derive(
+            d,
+            Lakara::Lan,
+            Pada::Parasmaipada,
+            Purusha::Prathama,
+            Vacana::Eka,
+        ));
+        assert_eq!(p.text(), "EyaH");
+        let ids: Vec<&str> = p.log.iter().map(|s| s.sutra.as_str()).collect();
+        assert!(ids.contains(&"6.4.72"), "{ids:?}");
+        assert!(!ids.contains(&"6.4.71"), "{ids:?}");
+        assert_eq!(p.terms[AGAMA].text, "");
+        assert_eq!(p.terms[ABHYASA].text, "Ey");
     }
 
     #[test]
