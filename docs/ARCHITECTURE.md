@@ -370,9 +370,10 @@ the first consonant, or the vowel of a vowel-initial copy; 7.4.62, 7.4.66,
 7.4.77 substitute within class; 6.4.78 turns a final i/u into iy/uv). Slice
 3d2's √ṛ is the vowel-initial witness that closed the question: `ANGA` reads
 `f`, the abhyāsa `iy`, both give āṭ, and 6.1.90 writes the vṛddhi into the
-abhyāsa (*aiyaḥ*, `EyaH`). 6.4.78 *abhyāsasyāsavarṇe* runs in the abhyāsa
-stage, straight after 7.4.77 as in vidyut, so it precedes 6.4.72/6.1.90 and
-6.1.77 (*iyrati*, not \**irati*) by construction.
+abhyāsa (*aiyaḥ*, `EyaH`). 6.4.78 *abhyāsasyāsavarṇe* runs last in the
+abhyāsa stage, after 7.4.78 (vidyut applies it straight after 7.4.77; 7.4.78
+is keyed on √gā, `03.0026`, and never co-fires with it), so it precedes
+6.4.72/6.1.90 and 6.1.77 (*iyrati*, not \**irati*) by construction.
 
 8.4.1 / 8.4.2 are the engine's first ṇatva. They are guarded to skip an `n`
 that is word-final or immediately followed by a jhal — the effect of 8.4.37
