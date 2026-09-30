@@ -428,7 +428,7 @@ pub(crate) static GUNA: &[Rule] = &[
     // 7.4.60 and 7.4.77. The forms agree; the trace pins hold this order.
     //
     // *oṣṭhya* is the pu-varga plus `v` (vidyut's `OSHTHYA`). Only `p` is
-    // witnessed in the corpus; the guard test holds `v` and a non-labial.
+    // witnessed in the corpus; the guard test holds every labial.
     Rule {
         id: "7.1.102",
         name: "udozWyapUrvasya",
@@ -2845,11 +2845,18 @@ mod tests {
     #[test]
     fn ud_oshthyapurvasya_makes_a_labial_final_rr_ur() {
         // √pṝ before a kṅit ending, where guṇa declined: pF → pur
-        // (pipUrtaH once 8.2.77 lengthens it). `vF` holds the sūtra's `v`,
-        // which *oṣṭhya* includes (vidyut: pu-varga + v) and no curated root
-        // witnesses.
+        // (pipUrtaH once 8.2.77 lengthens it). Every labial alternative is
+        // held: p P b B m and `v`, which *oṣṭhya* includes (vidyut: pu-varga
+        // + v); only `p` is witnessed by a curated root.
         let rule = rules().find(|r| r.id == "7.1.102").unwrap();
-        for (anga, want) in [("pF", "pur"), ("vF", "vur")] {
+        for (anga, want) in [
+            ("pF", "pur"),
+            ("PF", "Pur"),
+            ("bF", "bur"),
+            ("BF", "Bur"),
+            ("mF", "mur"),
+            ("vF", "vur"),
+        ] {
             let mut p = abhyasta_prakriya("pi", anga, false, "tas", true);
             assert!((rule.apply)(&mut p), "{anga}");
             assert_eq!(p.terms[ANGA].text, want, "{anga}");

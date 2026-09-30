@@ -195,6 +195,9 @@ luk).
   8.3.110 on *sasrati*). This is the same stance the 8.2.79 guard takes: the
   forms agree whether or not the log names the rule. If a later slice gives an
   iṇ-preceded `sr`, 8.3.110 lands then with its witness.
+  *Correction (final review):* the reason above is wrong. The engine's 8.3.59
+  searches only terms after `ANGA`, so the root-initial `s` is never in its
+  reach whatever precedes it; the pin's asserts stand, the reason is structural.
 - **8.4.37 *padāntasya*** — credited once, on *bibhrīran*. It already exists as
   the silent guard inside 8.4.2 (`tripadi.rs`, "8.4.37 padAntasya"). This is not
   new work. The prep table omitted it; its correction is noted here.

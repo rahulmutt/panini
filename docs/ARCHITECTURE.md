@@ -583,10 +583,10 @@ prathama and madhyama eka across the 68 roots with a parasmaipada column —
 `tu`/`hi` are parasmaipada endings, so the curated set's 25 ātmanepada-only
 roots never reach this guard, and the twenty-three roots that admit both
 padas (twenty-two ubhayapadī by 1.3.72 — √rudh, √nī, √tud, √bhid, √kṣud,
-√yuj, √tṛd, √ric, √vic, √chid, √chṛd, √tan, √san, √kṣaṇ, √kṣiṇ, √ṛ, √tṛ, √ghṛ,
+√yuj, √tṛd, √ric, √vic, √chid, √chṛd, √tan, √san, √kṣaṇ, √kṣiṇ, √ṛṇ, √tṛ, √ghṛṇ,
 √kṛ, √dā, √dhā and √bhṛ — and √bhuj by 1.3.66) reach it in their
 parasmaipada cells only, joined by juhotyādi's √hu, √ki, √bhī, √hrī, √hā
-(`03.0009`), √gā, √pṝ, √pṛ, √ghṛ, √hṛ and √sṛ (all parasmaipada-only), and
+(`03.0009`), √gā, √pṝ, √pṛ, √ghṛ (`Gf`), √hṛ and √sṛ (all parasmaipada-only), and
 √bhṛ's parasmaipada column; 68 + 25 = the 93 curated roots) — `Bavatu ~
 BavatAd`, `Bava ~ BavatAd`. 8.4.56 optionally devoices a pada-final jaś
 (produced by the now-obligatory 8.2.39) back to its car at the end of an

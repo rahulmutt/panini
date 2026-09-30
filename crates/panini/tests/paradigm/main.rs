@@ -559,8 +559,8 @@ fn derivation_set_is_exactly_pinned() {
 /// √hṛ (`03.0016`) and √sṛ (`03.0018`) — bringing the gaṇa to sixteen of its
 /// twenty-six rows. Its machinery (7.4.66, the widened 7.4.60, 7.4.76's √bhṛñ
 /// row, 7.4.77, 7.1.102, 6.1.77's aṅga arm, 8.2.77 on the ślu path, 8.3.59's
-/// `r` arm) adds no vikalpa and no fork kind. Each parasmaipada column forks exactly where every
-/// -oti parasmaipada root does: vidhiliṅ prathama eka on 8.4.56
+/// `r` arm) adds no vikalpa and no fork kind. Each parasmaipada column forks
+/// exactly where every -oti parasmaipada root does: vidhiliṅ prathama eka on 8.4.56
 /// (`biBfyAd`/`biBfyAt`) and the two loṭ tātaṅ cells three ways
 /// (`biBartu`/`biBftAd`/`biBftAt`, `biBfhi`/`biBftAd`/`biBftAt`). Laṅ prathama
 /// eka does not fork: its `r` goes to visarga (`abiBaH`). √bhṛ's ātmanepada

@@ -156,8 +156,8 @@ once: `ArRuta`, `BinttAm`, `BuNktAm`, `CfnttAm`, `CinttAm`, `DattAm`, `GfRutAm`,
 `kzunttAm`, `nayatAm`, `nayetAm`, `nayeta`, `riNktAm`, `rundDAm`, `sanutAm`,
 `tanutAm`, `tfRutAm`, `tfnttAm`, `tudatAm`, `tudetAm`, `tudeta`, `viNktAm` and
 `yuNktAm` — `rundDAm`, for instance, is √rudh's loṭ parasmaipada prathama dvi
-*and* its loṭ ātmanepada prathama eka, and tanādi's seven ubhayapadī roots contribute a new
-shape: `atanuta` is both √tan's laṅ ātmanepada prathama eka and its laṅ
+*and* its loṭ ātmanepada prathama eka, and tanādi's seven ubhayapadī roots
+contribute a new shape: `atanuta` is both √tan's laṅ ātmanepada prathama eka and its laṅ
 parasmaipada madhyama bahu, and `tanutAm` is both its loṭ ātmanepada prathama
 eka and its loṭ parasmaipada prathama dvi. √kṛ (slice 8b) contributes the same
 shape: `akuruta` (laṅ ātmanepada prathama eka / parasmaipada madhyama bahu) and

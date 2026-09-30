@@ -35,7 +35,7 @@
     timeouts). `cargo mutants` also reads `-j` from `CARGO_MUTANTS_JOBS`, so
     an unqualified cap can be defeated by the environment alone; keep `-j`
     at or below 4, or re-measure and raise the cap in step.
-    **The floor behind the 900s cap, measured at 4176 cells.** An
+    **The floor behind the 900s cap, measured at 4176 cells.** A
     `mise run test` took 114.5s wall clock (host load ~22 on 24 cores, so
     likely contended by other tenants; the 3924-cell figure was 80.128s
     uncontended): paradigm 43.16s, roundtrip 59.85s, trace 9.35s, every
@@ -1437,7 +1437,9 @@
     one new unviable is `guna.rs:835:17: replace && with ||` in 6.1.77's
     new ṛ-final aṅga arm (`text.is_empty() && let Some(..) = ..`): a
     `let` chain cannot take `||`, so the mutant does not compile. It is
-    structurally unviable, not an unguarded survivor.
+    structurally unviable, not an unguarded survivor; the SHAP-empty clause
+    it would have weakened is held by
+    `iko_yan_aci_anga_arm_declines_across_a_live_vikarana` (`guna.rs` tests).
     `outcomes.json` is kept at
     `/home/dev/mutants-records/juhotyadi-3d/mutants.out/outcomes.json`.
     Caught-mutant test-phase durations: min **0.10s**, median **43.96s**,
@@ -2134,10 +2136,10 @@
   (`hu`, `BI`), safe only because `juhotyadi_rows_are_the_sixteen_curated_roots`
   asserts those codes stay unique; 7.4.76, 6.4.116, 6.4.117, 6.4.118, 8.2.38
   and 8.2.40's *adhaḥ* key on numbers, because `03.0008` and `03.0009` share
-  `hA`, and 7.4.77 (`03.0004`, `03.0005`) follows that precedent. 7.4.78 keys on a number for a different reason: the sūtra names no
-  root, the Kaumudī applies it to one row (03.0026), and `gA` is also
-  `01.1101 gA\N`. A sūtra naming a
-  class of roots becomes a saṁjñā tag decided from the number in `derive` —
+  `hA`, and 7.4.77 (`03.0004`, `03.0005`) follows that precedent. 7.4.78 keys
+  on a number for a different reason: the sūtra names no root, the Kaumudī
+  applies it to one row (03.0026), and `gA` is also `01.1101 gA\N`. A sūtra
+  naming a class of roots becomes a saṁjñā tag decided from the number in `derive` —
   `Tag::Ghu` from `tinanta/samjna.rs`'s `GHU` — pinned to the vendored TSV
   rather than to a derivation, so its uncurated members are held too.
 - **An apavāda that must stop other rules on its branch declares it in

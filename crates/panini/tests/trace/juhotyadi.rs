@@ -646,7 +646,8 @@ fn jagharti_trace_is_ur_at_haladih_shesha_kuhos_cuh_then_car_ca() {
 #[test]
 fn sasrati_trace_has_no_shatva_and_no_8_3_110() {
     // sf P laT P.B. vidyut credits 8.3.110 here, a bar on a ṣatva that this
-    // engine's 8.3.59 cannot reach (the abhyāsa vowel is `a`, not iṇ). Both
+    // engine's 8.3.59 cannot reach: it retroflexes only an affix or ādeśa `s`
+    // after the aṅga, so the root-initial `s` is out of its reach. Both
     // absences are the pin that 8.3.110 was deliberately not transcribed.
     let (text, t) = cell_trace(
         "03.0018",

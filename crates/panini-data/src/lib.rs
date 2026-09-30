@@ -1066,8 +1066,9 @@ static DHATUS: &[Dhatu] = &[
     Dhatu {
         // 03.0018 `sf\` gatO (√sṛ). Parasmaipadī by 1.3.78. 7.4.66 and 7.4.60
         // alone: sasarti. vidyut also credits 8.3.110 on sasrati, a bar on a
-        // ṣatva that 8.3.59 cannot reach here, so it is not transcribed (see
-        // the 3d spec). Slice 3d.
+        // ṣatva that 8.3.59 cannot reach here (it retroflexes only an affix or
+        // ādeśa `s` after the aṅga, never the root's own), so it is not
+        // transcribed (see the 3d spec). Slice 3d.
         dhatupatha: "03.0018",
         code: "sf",
         gana: Gana::Juhotyadi,
