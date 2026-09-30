@@ -53,7 +53,7 @@ fn vowel_initial_roots_take_at_not_a() {
 
 #[test]
 fn every_form_validates_and_matches() {
-    let index = common::index::corpus_index();
+    let engine = Panini::new();
     for (root, lakara, row_pada, forms) in PARADIGM.iter() {
         // `PARADIGM`'s first column is a `Dhatu::dhatupatha`, but
         // `Analysis::dhatu` reports the surface `code` (deliberately not
@@ -70,7 +70,8 @@ fn every_form_validates_and_matches() {
         // longer stand in for "the pada this block is for".
         let d = dhatus().iter().find(|d| d.dhatupatha == *root).unwrap();
         for expected in forms {
-            let analyses = index.analyses(expected);
+            let r = engine.check(expected);
+            let analyses = &r.analyses;
             assert!(
                 !analyses.is_empty(),
                 "expected VALID for {expected} ({root} {lakara})"
@@ -92,10 +93,11 @@ fn every_form_validates_and_matches() {
 /// the same reason `every_form_validates_and_matches` is.
 #[test]
 fn every_alternate_validates_and_matches() {
-    let index = common::index::corpus_index();
+    let engine = Panini::new();
     for (root, lakara, row_pada, _cell, form, _key) in ALTERNATES.iter() {
         let d = dhatus().iter().find(|d| d.dhatupatha == *root).unwrap();
-        let analyses = index.analyses(form);
+        let r = engine.check(form);
+        let analyses = &r.analyses;
         assert!(
             !analyses.is_empty(),
             "expected VALID for alternate {form} ({root} {lakara})"

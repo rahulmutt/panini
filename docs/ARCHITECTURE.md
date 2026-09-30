@@ -1,8 +1,9 @@
 # Architecture
 
 Data flow for `check`:
-`input → panini-lipi (→SLP1) → panini-analyze (candidates) → panini-prakriya
-(derive each) → panini (keep exact matches) → render`.
+`input → panini-lipi (→SLP1) → panini-analyze (candidates, from a corpus index
+derived through panini-prakriya) → panini-prakriya (derive each) → panini
+(keep exact matches) → render`.
 
 ## Crates
 - `panini-lipi` — SLP1 ⇄ IAST/HK/Devanāgarī + scheme detection. No grammar.
@@ -12,9 +13,10 @@ Data flow for `check`:
 - `panini-prakriya` — the engine: `Term`/`Prakriya`/`Context` model, it-samjna,
   and `TINANTA_RULES`, the ordered rule list that `tinanta::derive` runs via
   `run_pipeline`. Pure SLP1, no I/O.
-- `panini-analyze` — proposes candidate `(root, lakāra, pada, puruṣa, vacana)`
-  inputs, one per pada the root admits (`PadaAssignment::padas()`), so an
-  ubhayapadī root proposes both.
+- `panini-analyze` — proposes exactly the candidate (root, lakāra, pada,
+  puruṣa, vacana) inputs whose derivation yields the surface form, from a
+  corpus index derived once per process on first use; the engine re-derives
+  them to confirm and attach traces.
 - `panini` — facade: `Panini::check` / `Panini::derive`, `Verdict`, `Analysis`.
 - `panini-cli` — the `panini` binary (`check` subcommand; `--trace`, `--json`,
   `--out`, validity exit codes).

@@ -5,8 +5,6 @@
 //! the tests to use everything.
 #![allow(dead_code)]
 
-pub mod index;
-
 use panini_data::{Lakara, Purusha, Vacana};
 
 pub const CELLS: [(Purusha, Vacana); 9] = [
