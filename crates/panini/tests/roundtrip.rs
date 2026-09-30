@@ -27,27 +27,52 @@ fn fingerprint(
 /// is the specification `panini_analyze::candidates()` must meet, not a
 /// shortcut for other tests, so it lives here and nowhere else.
 ///
-/// Neither side is deduplicated. A candidate whose vikalpa branches produce
-/// one form twice contributes two fingerprints here, and two analyses to
-/// `check()`.
-fn oracle() -> HashMap<String, Vec<String>> {
-    let mut by_form: HashMap<String, Vec<String>> = HashMap::new();
+/// Per surface form it holds two things. The fingerprints are not
+/// deduplicated: a candidate whose vikalpa branches produce one form twice
+/// contributes two fingerprints here, and two analyses to `check()`. The
+/// count is of distinct candidates (one per candidate with at least one
+/// unblocked branch of that form, however many branches), which is what
+/// `panini_analyze::candidates()` must return. It is counted per candidate
+/// rather than by distinct fingerprint because fingerprints use the root
+/// `code`, which two dhātupāṭha rows can share (both √aś rows are "aS").
+struct Oracle {
+    fingerprints: Vec<String>,
+    candidates: usize,
+}
+
+fn oracle() -> HashMap<String, Oracle> {
+    let mut by_form: HashMap<String, Oracle> = HashMap::new();
     for c in all_candidates() {
+        let mut forms: Vec<String> = Vec::new();
         for p in derive(c.dhatu, c.lakara, c.pada, c.purusha, c.vacana) {
             if p.blocked {
                 continue;
             }
-            by_form.entry(p.text()).or_default().push(fingerprint(
-                c.dhatu.code,
-                c.lakara,
-                c.pada,
-                c.purusha,
-                c.vacana,
-            ));
+            let form = p.text();
+            by_form
+                .entry(form.clone())
+                .or_insert_with(|| Oracle {
+                    fingerprints: Vec::new(),
+                    candidates: 0,
+                })
+                .fingerprints
+                .push(fingerprint(
+                    c.dhatu.code,
+                    c.lakara,
+                    c.pada,
+                    c.purusha,
+                    c.vacana,
+                ));
+            if !forms.contains(&form) {
+                forms.push(form);
+            }
+        }
+        for form in forms {
+            by_form.get_mut(&form).expect("inserted above").candidates += 1;
         }
     }
     for v in by_form.values_mut() {
-        v.sort();
+        v.fingerprints.sort();
     }
     by_form
 }
@@ -90,8 +115,15 @@ fn roundtrip() {
                 .collect();
             from_check.sort();
             assert_eq!(
-                from_check, oracle[&form],
+                from_check, oracle[&form].fingerprints,
                 "check() and the brute-force oracle disagree on {form}"
+            );
+            // check() filters by re-deriving, so an over-proposing index
+            // passes everything above and only costs time. Pin precision.
+            assert_eq!(
+                panini_analyze::candidates(&form).len(),
+                oracle[&form].candidates,
+                "candidates() is not precise for {form}: it must return exactly the candidates that derive it"
             );
         }
     }

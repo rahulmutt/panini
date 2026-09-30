@@ -1515,8 +1515,8 @@ mod tests {
     #[test]
     fn ubhayapada_padas_are_parasmaipada_first() {
         // Pinned, not incidental: the paradigm and roundtrip harnesses loop
-        // over the whole `padas()` slice or index it by position, so reversing
-        // it only changes which pada gets sampled, and
+        // over the whole `padas()` slice, so its order is not load-bearing
+        // for them, and
         // every `d.pada.padas()[0]` call site (the in-crate unit-test
         // helpers across the workspace) only ever sees single-pada roots
         // today. A mutant that reversed this slice would survive with no
