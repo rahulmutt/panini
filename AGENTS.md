@@ -34,21 +34,22 @@
     timeouts). `cargo mutants` also reads `-j` from `CARGO_MUTANTS_JOBS`, so
     an unqualified cap can be defeated by the environment alone; keep `-j`
     at or below 4, or re-measure and raise the cap in step.
-    **The floor behind the 60s cap, measured at 4176 cells on
-    2026-09-30.** Two `mise run test` runs took 5.299s and
-    5.332s wall clock (host load averages 8.35-8.65 / 10.50-10.53 / 9.65-9.66
-    over 1 / 5 / 15 minutes). An isolated `-j 4` probe of the
+    **The floor behind the 60s cap, measured at 4212 cells on
+    2026-09-30.** Two `mise run test` runs took 5.598s and
+    5.588s wall clock (host load averages 11.59 / 11.05 / 12.54 over 1 / 5 /
+    15 minutes; the host is shared, 24 cores). An isolated `-j 4` probe of the
     two documented equivalent mutants ran the full suite uncaught in
-    5.694s (`adesha.rs:588:30`) and 5.815s
-    (`tripadi.rs:1217:38`), at a probe load of 8.39 10.41 9.63. The probe's
-    5.815s gave a cap of 40 (6 × the longest, rounded up to the next 10s),
-    which proved too tight under campaign load, so the cap derives from the
-    campaign-load uncaught phase instead (8.533s, below). It was 900s against the Θ(N²) suite, before
-    `candidates()` answered from a corpus index. Take the floor by
-    measurement, never by scaling it by cell count or by a projected
-    contention multiplier. Re-measure the floor and an uncaught `-j 4` run
-    whenever the golden suite grows, and change `mise.toml` and this
-    paragraph together.
+    5.359s (`adesha.rs:589:30`) and 5.660s
+    (`tripadi.rs:1217:38`), at a probe load of 10.99 at its start and 16.71 at
+    its end. Those probe phases alone would give a cap of 40 (6 × the longest,
+    rounded up to the next 10s), which proved too tight under campaign load
+    in the check-form-index slice, so the cap derives from the campaign-load
+    uncaught phase instead (8.504s, below), which keeps it at 60. It was 900s
+    against the Θ(N²) suite, before `candidates()` answered from a corpus
+    index. Take the floor by measurement, never by scaling it by cell count or
+    by a projected contention multiplier. Re-measure the floor and an uncaught
+    `-j 4` run whenever the golden suite grows, and change `mise.toml` and
+    this paragraph together.
     **One timeout is correct and permanent.** `tripadi.rs`'s 8.4.2 ṇatva
     backward scan decrements a loop index with `j -= 1`; the `j /= 1` mutant
     makes `j` constant, and the loop never terminates. No assertion can ever
@@ -66,15 +67,21 @@
     finished campaign. The mise shim fails in background shells ("no version
     is set for shim: cargo-mutants"); run the installed `cargo-mutants`
     binary directly, with the task's arguments.
-    **Current record (check-form-index, 2026-09-30).** Campaign at
-    `-j 4 --timeout 40`, `--package panini-prakriya --package
+    **Current record (juhotyādi 3d2, 2026-09-30).** Campaign at
+    `-j 4 --timeout 60`, `--package panini-prakriya --package
     panini-analyze --test-workspace=true`, `-o
-    /home/dev/mutants-records/check-form-index`, launched detached, window
-    17:43:58 - 17:55:57 UTC. **panini-prakriya: 735 mutants, 688 caught,
-    44 unviable, 2 missed, 1 timeout**, identical in its non-caught set to
-    slice 3d's (735 / 688 / 44 / 2 / 1). `missed.txt` held exactly:
+    /home/dev/mutants-records/juhotyadi-3d2`, launched detached, window
+    21:32:45 - 21:45:23 UTC (load average 16.25 12.47 12.94 at the start), on
+    the tree at `ee617d1` (the later `96518fd` changed only `guna.rs`
+    comments). **751 mutants tested: 700 caught, 48 unviable, 2 missed, 1
+    timeout.** **panini-prakriya: 739 mutants, 692 caught, 44 unviable, 2
+    missed, 1 timeout.** Its non-caught set (44 / 2 / 1) is identical to
+    check-form-index's, modulo one position move: the adesha equivalent sat at
+    `adesha.rs:588:30` and now sits at `adesha.rs:589:30`, because this slice
+    added one comment line above it. It is the same mutant and the same
+    operator; the tripadi entries did not move. `missed.txt` held exactly:
     ```
-    crates/panini-prakriya/src/tinanta/adesha.rs:588:30: replace + with *
+    crates/panini-prakriya/src/tinanta/adesha.rs:589:30: replace + with *
     crates/panini-prakriya/src/tinanta/tripadi.rs:1217:38: replace - with /
     ```
     `timeout.txt` held exactly the permanent ṇatva mutant:
@@ -85,17 +92,23 @@
     missed, 0 timeout.** None non-caught beyond the 4 unviable (the
     `vec![Default::default()]` and
     `HashMap::from_iter([..., vec![Default::default()]])` replacements do not
-    compile, as `Candidate` has no `Default`).
-    Under campaign load the two uncaught equivalents' test phases were 8.533s
-    (`adesha.rs:588:30`) and 7.910s (`tripadi.rs:1217:38`) and the slowest
-    caught phase was 10.000s (`sound.rs:229:9`), all under the 40s cap the
-    campaign ran at: 4.69x, 5.06x and 4.0x, short of the 5x rule. The cap is
-    therefore 60 (6 × 8.533s = 51.2, rounded up to the next 10s): 7.0x and
-    6.0x on the uncaught and slowest caught phases. A higher cap can only turn
-    timeouts into outcomes, and the only timeout is the permanent `j /= 1`
-    hang, so the campaign's outcomes stand at 60 without a re-run.
-    `outcomes.json` is kept at
-    `/home/dev/mutants-records/check-form-index/mutants.out/outcomes.json`.
+    compile, as `Candidate` has no `Default`). The two packages sum to the
+    751 / 700 / 48 / 2 / 1 total. No 6.4.78, 7.4.60 or 7.4.77 mutant (all in
+    `abhyasa.rs`: 11 caught, none missed, none timed out) is unviable; there
+    are no `abhyasa.rs` unviable mutants at all, so nothing needs an
+    unviable-without-reason exemption.
+    Under campaign load the two uncaught equivalents' test phases were 8.504s
+    (`adesha.rs:589:30`) and 7.953s (`tripadi.rs:1217:38`). Caught test phases
+    (700) ran min 0.102s, median 1.651s, p90 6.857s, max 9.392s (`mod.rs:63:5`,
+    `rules -> empty()`). Against the 60s cap these are 7.06x and 7.54x on the
+    uncaught equivalents and 6.39x on the slowest caught phase, all at or
+    above the 5x rule, so the cap stays 60 and `mise.toml` is untouched. A
+    higher cap could only turn timeouts into outcomes, and the only timeout is
+    the permanent `j /= 1` hang. `outcomes.json` is kept at
+    `/home/dev/mutants-records/juhotyadi-3d2/mutants.out/outcomes.json`, with a
+    durable copy at
+    `/home/dev/mutants-records/juhotyadi-3d2/outcomes.durable.json`.
+    The check-form-index record it replaces: `git show 96518fd:AGENTS.md`.
     **The per-slice history** of the floor, the cap and every campaign from
     the pada audit through slice 3d, all measured against the Θ(N²) suite,
     was removed in the commit that introduced this paragraph. Read it with
