@@ -18,7 +18,7 @@ run = "cargo fmt --all --check"
 
 [tasks.mutants]
 # --test-workspace=true is required: cargo-mutants otherwise defaults to
-# running only the mutated package's own tests, which misses the
+# running only the mutated packages' own tests, which misses the
 # `panini` crate's golden paradigm/trace/roundtrip tests that are the
 # actual gate on the guarded rules in panini-prakriya.
 #
@@ -38,7 +38,7 @@ run = "cargo fmt --all --check"
 # The floor and margin behind this number are recorded in AGENTS.md's
 # cargo-mutants paragraph, the single source for this reasoning. Re-check it
 # whenever the golden suite grows.
-run = "cargo mutants --package panini-prakriya --test-workspace=true --timeout 900 -j 4"
+run = "cargo mutants --package panini-prakriya --package panini-analyze --test-workspace=true --timeout 40 -j 4"
 
 [tasks.audit]
 run = "cargo audit && cargo deny check"
