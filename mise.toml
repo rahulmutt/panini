@@ -38,7 +38,7 @@ run = "cargo fmt --all --check"
 # The floor and margin behind this number are recorded in AGENTS.md's
 # cargo-mutants paragraph, the single source for this reasoning. Re-check it
 # whenever the golden suite grows.
-run = "cargo mutants --package panini-prakriya --package panini-analyze --test-workspace=true --timeout 40 -j 4"
+run = "cargo mutants --package panini-prakriya --package panini-analyze --test-workspace=true --timeout 60 -j 4"
 
 [tasks.audit]
 run = "cargo audit && cargo deny check"

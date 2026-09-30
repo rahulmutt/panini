@@ -1,7 +1,7 @@
 # Contributor & agent guide
 
 ## Environment
-- Toolchain is pinned via `mise` (`mise install`) to rust 1.98.0. Do not install
+- Toolchain is pinned via `mise` (`mise install`) to rust 1.98.1. Do not install
   Rust globally.
 - Tasks: `mise run build | test | lint | fmt | fmt-check | mutants | audit`.
 - `mise run test` is the whole suite, including the exhaustive roundtrip:
@@ -13,16 +13,17 @@
   `MISE_ENV=dev mise install`. This provides:
   - `cargo-mutants` (mutation testing) — `mise run mutants` runs
     `cargo mutants --package panini-prakriya --package panini-analyze
-    --test-workspace=true --timeout 40 -j 4`. Run the gate through the task
-    rather than reconstructing the flags. The `--test-workspace` flag is required so each **mutant** run
-    exercises the `panini` crate's golden paradigm/trace/roundtrip tests, not
-    just the mutated packages' own unit tests — but it does NOT apply to
+    --test-workspace=true --timeout 60 -j 4`. Run the gate through the task
+    rather than reconstructing the flags. The `--test-workspace` flag is
+    required so each **mutant** run exercises the `panini` crate's golden
+    paradigm/trace/roundtrip tests, not just the mutated packages' own unit
+    tests — but it does NOT apply to
     cargo-mutants' own **baseline** run, which always exercises only the
     mutated packages' tests regardless of the flag. The explicit `--timeout`
-    is required for the same asymmetry: cargo-mutants calibrates its
-    per-mutant timeout from the baseline's runtime (`panini-prakriya`'s unit
-    tests, ~2s, with a 20s floor), which is far shorter than a mutant's run
-    of the full `panini` suite.
+    is still required: cargo-mutants calibrates its per-mutant timeout from
+    the baseline's runtime (`panini-prakriya`'s unit tests, ~2s, with a 20s
+    floor), and that auto-calibrated value does not guarantee the 5x margin
+    over a full uncaught `panini` suite run (6-9s) under `-j 4` load.
     **The cap must clear a full UNCAUGHT run of the workspace suite at the
     parallelism you actually use.** Under a cap that doesn't, a mutant that
     survives is recorded as a **timeout rather than a survivor**, so a
@@ -33,13 +34,16 @@
     timeouts). `cargo mutants` also reads `-j` from `CARGO_MUTANTS_JOBS`, so
     an unqualified cap can be defeated by the environment alone; keep `-j`
     at or below 4, or re-measure and raise the cap in step.
-    **The floor behind the 40s cap, measured at 4176 cells on
-    2026-09-30.** Two quiet `mise run test` runs took 5.299s and
-    5.332s wall clock (host load 8.4-8.7). An isolated `-j 4` probe of the
+    **The floor behind the 60s cap, measured at 4176 cells on
+    2026-09-30.** Two `mise run test` runs took 5.299s and
+    5.332s wall clock (host load averages 8.35-8.65 / 10.50-10.53 / 9.65-9.66
+    over 1 / 5 / 15 minutes). An isolated `-j 4` probe of the
     two documented equivalent mutants ran the full suite uncaught in
     5.694s (`adesha.rs:588:30`) and 5.815s
-    (`tripadi.rs:1217:38`). The cap is 6 × the longest of those, rounded up
-    to the next 10s. It was 900s against the Θ(N²) suite, before
+    (`tripadi.rs:1217:38`), at a probe load of 8.39 10.41 9.63. The probe's
+    5.815s gave a cap of 40 (6 × the longest, rounded up to the next 10s),
+    which proved too tight under campaign load, so the cap derives from the
+    campaign-load uncaught phase instead (8.533s, below). It was 900s against the Θ(N²) suite, before
     `candidates()` answered from a corpus index. Take the floor by
     measurement, never by scaling it by cell count or by a projected
     contention multiplier. Re-measure the floor and an uncaught `-j 4` run
@@ -82,16 +86,20 @@
     `vec![Default::default()]` and
     `HashMap::from_iter([..., vec![Default::default()]])` replacements do not
     compile, as `Candidate` has no `Default`).
-    Caught-mutant test phases: max 10.0s. Under campaign load the two
-    uncaught equivalents took 8s (`adesha.rs:588:30`) and 7s
-    (`tripadi.rs:1217:38`), so the 40s cap is 5.0x and 5.7x their uncaught
-    run: 5.0x is exactly the rule's floor, so any growth in suite time means
-    re-measuring and raising the cap. `outcomes.json` is kept at
+    Under campaign load the two uncaught equivalents' test phases were 8.533s
+    (`adesha.rs:588:30`) and 7.910s (`tripadi.rs:1217:38`) and the slowest
+    caught phase was 10.000s (`sound.rs:229:9`), all under the 40s cap the
+    campaign ran at: 4.69x, 5.06x and 4.0x, short of the 5x rule. The cap is
+    therefore 60 (6 × 8.533s = 51.2, rounded up to the next 10s): 7.0x and
+    6.0x on the uncaught and slowest caught phases. A higher cap can only turn
+    timeouts into outcomes, and the only timeout is the permanent `j /= 1`
+    hang, so the campaign's outcomes stand at 60 without a re-run.
+    `outcomes.json` is kept at
     `/home/dev/mutants-records/check-form-index/mutants.out/outcomes.json`.
     **The per-slice history** of the floor, the cap and every campaign from
     the pada audit through slice 3d, all measured against the Θ(N²) suite,
     was removed in the commit that introduced this paragraph. Read it with
-    `git show $(git log -1 --format=%h -S"Current record (check-form-index" -- AGENTS.md)^:AGENTS.md`.
+    `git show 440c8c3^:AGENTS.md`.
   - `cargo-deny` + `cargo-audit` (supply-chain checks) — `mise run audit` runs
     `cargo audit && cargo deny check` and is expected to pass, including
     `cargo deny check advisories`.
