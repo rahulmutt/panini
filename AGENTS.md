@@ -446,7 +446,7 @@
     catches a reversal).
     tanādi (gaṇa 8, vikaraṇa the bare `u` of 3.1.79) is now **complete** —
     slice 8a curated nine of its ten dhātupāṭha rows (√tan, √san, √kṣaṇ,
-    √kṣiṇ, √ṛ, √tṛ and √ghṛ, all seven ubhayapadī by 1.3.72, plus √van and
+    √kṣiṇ, √ṛṇ, √tṛ and √ghṛ, all seven ubhayapadī by 1.3.72, plus √van and
     √man, both ātmanepadī by 1.3.12), taking the curated set from 67 to
     76 roots; slice 8b then curated √kṛ (`08.0010`), the tenth and last
     row, the one root 3.1.79 itself names, behind three new root-keyed
@@ -523,7 +523,7 @@
   (exit 1, 36 √bhū cells, `Bavati` vs `paWati`) — the record until tanādi
   8b (below). It
   did not come back clean on the first pass: an initial run found four
-  differing cells, all `08.0005` (√ṛ, `fR`) laṅ uttama-puruṣa dvi/bahu in
+  differing cells, all `08.0005` (√ṛṇ, `fR`) laṅ uttama-puruṣa dvi/bahu in
   both padas, diagnosed and fixed in commit `88cae65` before the clean
   re-run above. Two new `Rule`s are behind it — 3.1.79 (the bare `u`
   vikaraṇa) and 7.3.86's new vikalpa arm (the gaṇa's own guṇa/aguṇa
@@ -638,11 +638,11 @@
   and 6.1.77 comments above it too, while nothing in 3d touched
   `controller.rs`; both lines measured by grep at this commit). Juhotyādi 3d2 touched neither
   comment either; the corpus stands at 4212 cells as of 3d2 (`guna.rs:2226`'s
-  claim still at `guna.rs:2226`, `controller.rs`'s at `controller.rs:218`: 3d2
-  did not touch `guna.rs` or `controller.rs`, and the 3d entry's
-  `controller.rs:206` was a mis-measure, since the file is unchanged from
-  before 3d and the line reads 218; both lines measured by grep at this
-  commit). A third,
+  claim now anchored at `guna.rs:2228`, `controller.rs:206`'s unchanged at
+  `controller.rs:206`: 3d2's 6.4.78 work grew the 6.1.78 comment in `guna.rs`
+  by two lines above the test, while `controller.rs` is unchanged from 3d,
+  so the 3d entry's `controller.rs:206` was correct; both lines measured by
+  grep at this commit). A third,
   `tinanta/tripadi.rs`'s comment on 8.2.30 (formerly the one calling √bhañj
   rudhādi's one cu-final curated root), was **not** left stale the same
   way: the 8.2.30/8.2.39 generalization slice rewrote it in place, since
@@ -797,7 +797,7 @@
   (`hu`, `BI`), safe only because `juhotyadi_rows_are_the_seventeen_curated_roots`
   asserts those codes stay unique; 7.4.76, 6.4.116, 6.4.117, 6.4.118, 8.2.38
   and 8.2.40's *adhaḥ* key on numbers, because `03.0008` and `03.0009` share
-  `hA`, and 7.4.77 (`03.0004`, `03.0005`) follows that precedent. 7.4.78 keys
+  `hA`, and 7.4.77 (`03.0004`, `03.0005`, `03.0017`) follows that precedent. 7.4.78 keys
   on a number for a different reason: the sūtra names no root, the Kaumudī
   applies it to one row (03.0026), and `gA` is also `01.1101 gA\N`. A sūtra
   naming a class of roots becomes a saṁjñā tag decided from the number in `derive` —

@@ -10,7 +10,7 @@
 //! *ud oṣṭhyapūrvasya* after dvitva, on the aṅga alone (*pipūrtaḥ*'s
 //! abhyāsa is copied from `pF`). The same order runs 6.4.78 (slice 3d2's √ṛ)
 //! inside the abhyāsa stage, before laṅ's 6.4.72 and before guṇa, where vidyut
-//! guṇates first and reaches 6.4.78 later. Forms agree; the traces do not, and
+//! guṇates first (on pit cells only) and reaches 6.4.78 later. Forms agree; the traces do not, and
 //! these pins are what make the engine's own order a checked fact rather than an
 //! accident.
 

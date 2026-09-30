@@ -305,14 +305,14 @@ tanādi (gaṇa 8) is **complete**, curated at all ten of its dhātupāṭha row
 √tan, √san and √kṣaṇ, the three a-upadhā roots (slice 8a), fork exactly
 on the shape bhvādi's -oti roots already established (6.4.107, 7.1.35 and
 8.4.56, nothing deeper than two branches); the four ik-upadhā roots —
-√kṣiṇ, √ṛ, √tṛ and √ghṛ — ride the same skeleton with the gaṇa's own
+√kṣiṇ, √ṛṇ, √tṛ and √ghṛ — ride the same skeleton with the gaṇa's own
 7.3.86 vikalpa arm layered on nearly every cell, reaching the corpus's
 first four-deep stack and its sharpest cells, the loṭ parasmaipada
 prathama and madhyama eka six-form cells described above; and √van and
 √man, ātmanepada-only by 1.3.12, fork only on 6.4.107 in laṭ/laṅ uttama
 dvi/bahu, taking no loṭ fork at all, since 7.1.35 *tātaṅ* names only the
 parasmaipada loṭ ending and neither root ever derives a parasmaipada
-branch for it to apply to. √ṛ (`fR`), vowel-initial as well as ik-upadhā,
+branch for it to apply to. √ṛṇ (`fR`), vowel-initial as well as ik-upadhā,
 is the one root where laṅ's 6.1.90 āṭaś-ca vṛddhi ekādeśa (`f` → `Ar`) can
 manufacture a surface conjunct textually identical to a genuinely guṇa'd,
 genuinely conjunct-preceded stem — which is why 6.4.106/6.4.107 are

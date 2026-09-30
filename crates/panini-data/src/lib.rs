@@ -1510,7 +1510,9 @@ mod tests {
         // Tag::Ghu key on the dhātupāṭha NUMBER, so `hA`, `dA`, `DA`, `gA`,
         // `pf`, `pF`, `Bf` and `f` need no uniqueness tripwire. `hA` is held by two
         // rows, 03.0008 and 03.0009, which is exactly why. Slice 3d's 7.4.66
-        // and 7.1.102 name sounds (a ṛ-vowel; a labial before ṝ), not roots. Slice 3d2's 6.4.78 names sounds too (an abhyāsa-final i/u before a dissimilar vowel).
+        // and 7.1.102 name sounds (a ṛ-vowel; a labial before ṝ), not roots. Slice
+        // 3d2's 6.4.78 names sounds too (an abhyāsa-final i/u before a dissimilar
+        // vowel).
     }
 
     #[test]

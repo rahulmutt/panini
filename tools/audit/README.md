@@ -116,7 +116,7 @@ failing (36 √bhū cells).
 
 The verdict covers the whole juhotyādi 3d2 slice: 6.4.78
 *abhyāsasyāsavarṇe*, 7.4.60 on a vowel-initial abhyāsa, and 7.4.77's √ṛ row,
-added for √ṛ (`03.0017`), with 6.4.72 and 6.1.90 reaching the abhyāsa
+added for √ṛ (`03.0017`), with 6.4.72 reading `ANGA` and 6.1.90 writing into the abhyāsa, both
 unchanged.
 
 Totals: 94 = 93 + 1; 4212 = 4176 + 36 (4 root×pada×lakāra blocks × 9); 5249

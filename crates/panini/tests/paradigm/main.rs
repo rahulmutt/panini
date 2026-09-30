@@ -430,7 +430,7 @@ fn derivation_set_is_exactly_pinned() {
 /// seven ALTERNATES rows with √yuj's exact key profile.
 ///
 /// Slice 8a leaves rudhādi behind and curates the tanādi gaṇa's first nine
-/// roots — √tan (tan), √san (san), √kṣaṇ (kzaR), √kṣiṇ (kziR), √ṛ (fR),
+/// roots — √tan (tan), √san (san), √kṣaṇ (kzaR), √kṣiṇ (kziR), √ṛṇ (fR),
 /// √tṛ (tfR) and √ghṛ (GfR), all seven ubhayapadī by 1.3.72, plus
 /// √van (van) and √man (man), both ātmanepada-only by 1.3.12 — on the
 /// gaṇa's own vikaraṇa, 3.1.79 tanādikṛñbhya uḥ, and one optional rule new

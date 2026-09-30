@@ -18,7 +18,7 @@ Finite verbs (*tiṅanta*), nine gaṇas covered, eight of them fully —
 (2, śap luk'd), *kryādi* (9, śnā), *svādi* (5, śnu) and *rudhādi* (7,
 śnam) — plus *tanādi* (8, vikaraṇa the bare *u* of 3.1.79), **complete**
 at all ten of its dhātupāṭha rows: √tan, √san,
-√kṣaṇ, √kṣiṇ, √ṛ, √tṛ and √ghṛ (all seven ubhayapadī by 1.3.72) plus √van
+√kṣaṇ, √kṣiṇ, √ṛṇ, √tṛ and √ghṛ (all seven ubhayapadī by 1.3.72) plus √van
 and √man (both ātmanepadī by 1.3.12), curated in slice 8a; and √kṛ
 (`08.0010`), the tenth and last row, the one root 3.1.79 itself names
 (*tanādikṛñbhya uḥ*), ubhayapadī by 1.3.72 and curated in slice 8b behind
@@ -144,7 +144,7 @@ devoices to `k` before a `t`), and a velar is never savarṇa with the dental
 roots take. A root may also admit **both**
 padas — twenty-three roots that admit both padas in the curated set
 (twenty-two ubhayapadī by 1.3.72: √nī, √tud, √rudh, √bhid, √kṣud, √yuj,
-√tṛd, √ric, √vic, √chid, √chṛd, √tan, √san, √kṣaṇ, √kṣiṇ, √ṛ, √tṛ, √ghṛ,
+√tṛd, √ric, √vic, √chid, √chṛd, √tan, √san, √kṣaṇ, √kṣiṇ, √ṛṇ, √tṛ, √ghṛ,
 √kṛ, √dā, √dhā and √bhṛ; and √bhuj by 1.3.66) derive a full parasmaipada and
 a full ātmanepada paradigm, so a single surface can be genuinely pada-ambiguous.
 √van, by contrast, never enters this bucket: it is ātmanepadī by its own
