@@ -399,6 +399,13 @@ Each gets its own spec, starting from this table and the appendix.
 > 6.1.65 is not written: `Ri\ji~^r` is stored as `nij` under the stored-form
 > convention, as √nī's `RI\Y` is.
 
+> Slice 3f (`2026-10-01-juhotyadi-gana-3f-design.md`) split this table's 3f
+> row: 3f took √kit, √tur, √dhiṣ and √dhan, 144 cells, with no new rule —
+> 8.2.75 dropped its rudhādi gaṇa test and 8.3.24 admitted juhotyādi (the `h`
+> flag above is answered: 8.3.24 reaches *daDaMhi*). √bhas and √jan, with
+> 6.4.98, 6.4.100, 6.4.42, 6.4.43 and 8.2.26 and the 8.2.73 / 8.2.74 / 8.4.55
+> / 8.4.40 widenings, became slice 3f2.
+
 ## Appendix: vidyut's inventory at `8da2f90b`
 
 Per root, over four lakāras and both padas where derivable:

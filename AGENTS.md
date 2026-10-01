@@ -135,18 +135,19 @@
   target under `crates/panini-lipi/fuzz` legitimately omits it, since it uses
   `#![no_main]` plus the libfuzzer harness macro).
 - Grammar changes are gated by the golden paradigm test
-  (`crates/panini/tests/paradigm/`, 4428 cells, nine gaṇas — eight complete,
+  (`crates/panini/tests/paradigm/`, 4572 cells, nine gaṇas — eight complete,
   tanādi closing at 10/10 in slice 8b (nine of its ten dhātupāṭha rows
   curated in slice 8a; √kṛ, the tenth and last, in 8b), and juhotyādi (3)
   opened in slice 3a at 2 of its 26 rows, at 4 after slice 3b curated √bhī
   and √hrī, at 8 after slice 3c curated √dā, √dhā, √mā
   and √hā (ātmanepada), at 10 after slice 3c2 curated √hā (parasmaipada) and
   √gā, at 16 after slice 3d curated √pṝ, √pṛ, √bhṛ, √ghṛ, √hṛ
-  and √sṛ, at 17 after slice 3d2 curated √ṛ, and now at 20 of its 26 after slice 3e
-  curated √ṇij, √vij and √viṣ —
+  and √sṛ, at 17 after slice 3d2 curated √ṛ, at 20 after slice 3e curated √ṇij, √vij
+  and √viṣ, and now at 24 of its 26 after slice 3f curated √kit, √tur, √dhiṣ
+  and √dhan —
   `PARADIGM`
     stays one-form-per-cell: a cell forked by an optional rule keeps its
-    other forms — a second (587 cells), a third (143 cells), a fourth
+    other forms — a second (594 cells), a third (152 cells), a fourth
     (eighteen
     cells, rudhādi's √piṣ and — new in slice 7d — √śiṣ loṭ madhyama eka, and
     — new in slice 8a — fifteen more spread across tanādi's four ik-upadhā
@@ -162,7 +163,7 @@
     and fifth (prathama eka) or a fourth through sixth (madhyama eka), or
     seventh for slice 3c2's √hā (`03.0009`) loṭ madhyama eka, the one
     seven-form cell — in
-    `ALTERNATES` (1058 rows in all, so 4428 + 1058 = 5486 forms total); √bhuj
+    `ALTERNATES` (1083 rows in all, so 4572 + 1083 = 5655 forms total); √bhuj
     joins neither fork record — its forks stack only 7.1.35 and 8.4.56, the
     same two-deep profile as √yuj — but the √bhuj/1.3.66 slice adds two
     trace pins of its own, `bhunkte_trace_credits_1_3_66_not_1_3_72` and
@@ -432,7 +433,8 @@
     pinned by `shnams_ru_fires_on_the_dhatus_own_final` plus
     `tinanta_rule_order_is_pinned` (7b moved 8.2.75 above 8.2.73 for the
     same structural reason, which made its `p.log` read unreachable and let
-    it be deleted). **8.2.41 below
+    it be deleted). Since juhotyādi 3f, 8.2.75 carries no gaṇa test (√kit's
+    *acikeH*); 8.2.73 and 8.2.74 are still rudhādi-only. **8.2.41 below
     8.2.23** is a *derivation* constraint too, and the sharpest one this
     slice adds: at laṅ madhyama eka the ending is a bare `s`, and 8.2.23
     *saṁyogāntasya lopaḥ* elides it before 8.2.41 can see it, so the cell
@@ -565,7 +567,9 @@
   entry, 4176 cells / 5208 forms / 93 roots), and that by juhotyādi 3d2's
   (`tools/audit/README.md`'s 2026-09-30 entry, 4212 cells / 5249 forms / 94
   roots), and that by juhotyādi 3e's (`tools/audit/README.md`'s 2026-10-01
-  entry, 4428 cells / 5486 forms / 97 roots).
+  entry, 4428 cells / 5486 forms / 97 roots), and that by juhotyādi 3f's
+  (`tools/audit/README.md`'s 2026-10-01 entry, 4572 cells / 5655 forms / 101
+  roots).
   Three new `Rule`s are behind it, all root-keyed to √kṛ and all in
   `guna.rs` — 6.4.110 *ata ut sārvadhātuke*, 6.4.108 *nityaṁ karoteḥ* and
   6.4.109 *ye ca* — plus one engine change with no `Rule` of its own:
@@ -617,7 +621,7 @@
   cells across eleven roots (`key_count("6.4.107") == 72`, the same
   test), not 8 — the "8 cells" figure was never re-derived when the gaṇa
   landed. `guna.rs:1233`'s own claim ("1872 goldens move") stays stale
-  only in the ordinary corpus-size sense, not wrong in kind: 4428 goldens
+  only in the ordinary corpus-size sense, not wrong in kind: 4572 goldens
   would move today. Neither comment was touched by tanādi 8a or 8b, consistent
   with every slice since 7c. Rudhādi 7d touched neither comment — its one permitted
   engine-comment edit is the comment above
@@ -657,7 +661,7 @@
   stands at 4428 cells as of 3e (`guna.rs:2228`'s claim now anchored at
   `guna.rs:2384` (moved from 2376 by the final-review comment on 7.3.87's order), `controller.rs:206`'s at `controller.rs:206`: 3e's 7.3.87 rule
   and its tests landed in `guna.rs` above the test, while `controller.rs` is
-  unchanged; both lines measured by grep at this commit). A third,
+  unchanged; both lines measured by grep at this commit). Juhotyādi 3f touched neither comment either; the corpus stands at 4572 cells as of 3f (`guna.rs:2384`'s claim anchored at `guna.rs:2386`, `controller.rs:206`'s at `controller.rs:206`; both lines measured by grep at this commit). A third,
   `tinanta/tripadi.rs`'s comment on 8.2.30 (formerly the one calling √bhañj
   rudhādi's one cu-final curated root), was **not** left stale the same
   way: the 8.2.30/8.2.39 generalization slice rewrote it in place, since

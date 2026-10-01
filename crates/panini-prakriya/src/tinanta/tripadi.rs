@@ -974,9 +974,10 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // absent, that cell's `n`-`j` pair would reach this rule's turn intact
     // and this rule WOULD fire on it. It is 8.3.24 alone that is guaranteed
     // to have already run, in every cell, because its trigger needs nothing
-    // from what follows `j`/`c`. 8.3.24's guard is `Tag::Rudhadi`, a gaṇa
-    // tag rather than a grammatical predicate, so this coverage is
-    // contingent on that tag rather than derived from the sūtra itself — a
+    // from what follows `j`/`c`. 8.3.24's guard is `Tag::Rudhadi` or
+    // `Tag::Juhotyadi`, gaṇa tags rather than a grammatical predicate, so
+    // this coverage is contingent on those tags rather than derived from the
+    // sūtra itself — a
     // documentation gap, not a latent wrongness: were 8.3.24 ever to decline
     // on one of these roots, `shcutva_of('n')` is `Some('Y')`, the same `Y`
     // that 8.3.24's `M` reaches anyway once 8.4.58 anusvArasya yayi
@@ -1568,7 +1569,7 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // as a guard ("a non-padānta n before a jhal has ALREADY become an
     // anusvāra by the time the 8.4 rules run"), a simplification taken when
     // the engine had no anusvāra machinery. It does now, but only for
-    // rudhādi: 8.3.24 above is gaṇa-guarded, so BAzante's `n` is still an
+    // rudhādi and juhotyādi: 8.3.24 above is gaṇa-guarded, so BAzante's `n` is still an
     // `n` when ṇatva runs and the fold is still load-bearing for every
     // other root. The fold therefore stays.
     //
@@ -1580,7 +1581,7 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // a vowel, so 8.3.24 never fired — still takes ṇatva.
     //
     // Retire the fold, and this constraint with it, when a slice widens
-    // 8.3.24 past rudhādi.
+    // 8.3.24 past rudhādi and juhotyādi.
     //
     // The `yayi` / parasavarṇa test lives INSIDE the search, not after it:
     // the rule finds the first anusvāra that actually HAS a parasavarṇa
