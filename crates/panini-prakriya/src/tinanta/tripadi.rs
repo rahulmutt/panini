@@ -975,8 +975,10 @@ pub(crate) static TRIPADI: &[Rule] = &[
         },
     },
     // 8.4.40 stoH ScunA ScuH: a stu (`s` and the t-varga) in contact with a
-    // ścu (`S` and the c-varga) takes its own ścu counterpart.
-    // atCinad → acCinad; atCfRad → acCfRad.
+    // ścu (`S` and the c-varga) takes its own ścu counterpart, on either side
+    // of it. Stu before ścu: atCinad → acCinad; atCfRad → acCfRad. Ścu before
+    // stu: ja + jn + ati → jajYati, ajajYuH, jajYatu (√jan, once 6.4.98 has
+    // elided its upadhā; slice 3f3).
     //
     // SŪTRA ORDER, immediately above 8.4.41. The two rules' TRIGGER classes
     // are disjoint — 8.4.41's is the ṣṭu class and `C` is not in it; this
@@ -989,24 +991,29 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // reachable input — but that is placement doing the work, not the
     // trigger-class argument above; do not conflate the two.
     //
-    // 8.4.41 next door scans the mirror image of this rule's search —
-    // trigger-then-target rather than this rule's target-then-trigger — for
-    // the same "a stu takes its neighbour's class" pattern, against the
-    // ṭu-varga instead of the c-varga.
+    // 8.4.41 next door scans for the same "a stu takes its neighbour's
+    // class" pattern against the ṭu-varga instead of the c-varga, in the
+    // trigger-then-target direction only — this rule's converse arm's
+    // direction.
     //
-    // ONE DIRECTION ONLY — stu before ścu, never ścu before stu — and that
-    // is a deliberate non-implementation of the converse arm rather than an
-    // oversight. 8.4.44 SAt exempts a stu that FOLLOWS a `S`, and across the
-    // whole curated corpus that exemption is the only thing the converse arm
-    // would ever meet: vidyut-prakriya invokes 8.4.40 ZERO times over these
-    // cells and 8.4.44 one hundred and eighteen, every one of them an `S`
-    // before an `n` — aSnoti (`05.0020`, 36; `09.0059`, 41) and kliSnAti
-    // (`09.0058`, 41). So the converse arm has exactly two fates and no
-    // third: shipped without SAt it turns kliSnAti into *kliSYAti, and
-    // shipped with SAt it is code that cannot fire, which the mutation gate
-    // reports as a survivor because deleting it changes nothing. Add the two
-    // together the moment a curated root puts a stu after a ścu that SAt
-    // does not cover.
+    // BOTH DIRECTIONS since slice 3f3, and the converse arm carries 8.4.44
+    // SAt as a guard: a stu that FOLLOWS a `S` is exempt. Until 3f3 the arm
+    // was deliberately left out, because SAt was the only thing it would
+    // ever meet — vidyut-prakriya credits 8.4.44 one hundred and eighteen
+    // times over this corpus, every one an `S` before an `n`: aSnoti
+    // (`05.0020`, 36; `09.0059`, 41) and kliSnAti (`09.0058`, 41). Shipped
+    // without SAt it turns kliSnAti into *kliSYAti; shipped with SAt and no
+    // witness it was code no cell could make fire. √jan's `jn` is the first
+    // ścu-before-stu site SAt does not cover, so the two shipped together.
+    // SAt is a guard here, not a rule of its own: a crediting 8.4.44 would
+    // move those 118 prior traces for no change of form. Over the whole
+    // corpus the converse arm fires on √jan alone
+    // (`shcutva_off_jan_is_credited_exactly_as_before_3f3` in `panini`'s
+    // trace suite).
+    //
+    // The forward arm is tried first at each position. The two cannot both
+    // match one pair: the forward arm needs a ścu on the right, the converse
+    // a stu there, and no sound is both.
     //
     // THIS CORPUS DOES present stu-immediately-before-ścu sites — three of
     // them, in √bhañj's, √añj's and √tañc's own root text (`Banj`, `anj`,
@@ -1047,7 +1054,9 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // declines (`sub == w[i - 1].2`). 8.4.53 wants a jhaś after the jhal, and
     // `C` is voiceless. 8.4.1 works on Cfnad's
     // adjacent `f` and `n`, which the tuk sits in front of rather than
-    // between — so it is not an 8.4.2 intervener question either.
+    // between — so it is not an 8.4.2 intervener question either. The
+    // converse arm's only output, √jan's `Y`, is a nasal: no jhal for 8.4.53,
+    // 8.4.55 or 8.4.65, and not the dental `n` 8.4.1 retroflexes.
     //
     // 8.4.65 Jaro Jari savarRe does NOT fork the cell this rule creates,
     // and the reason is worth stating because the surface looks like it
@@ -1069,13 +1078,18 @@ pub(crate) static TRIPADI: &[Rule] = &[
         apply: |p| {
             let w = word_chars(p);
             for i in 0..w.len().saturating_sub(1) {
-                if !is_shcu(w[i + 1].2) {
-                    continue;
-                }
-                let Some(sub) = shcutva_of(w[i].2) else {
+                let (left, right) = (w[i].2, w[i + 1].2);
+                let target = if is_shcu(right) {
+                    i
+                } else if is_shcu(left) && left != 'S' {
+                    i + 1
+                } else {
                     continue;
                 };
-                let (term, idx, _) = w[i];
+                let Some(sub) = shcutva_of(w[target].2) else {
+                    continue;
+                };
+                let (term, idx, _) = w[target];
                 let before = p.snapshot();
                 set_char(p, term, idx, sub);
                 p.record("8.4.40", "stoH ScunA ScuH", before);
@@ -2657,7 +2671,7 @@ mod tests {
     }
 
     #[test]
-    fn shcutva_fires_on_stu_before_shcu_and_declines_after_sha() {
+    fn shcutva_fires_on_either_side_of_a_shcu_and_declines_after_sha() {
         let rule = rules().find(|r| r.id == "8.4.40").unwrap();
 
         // √chid laṅ prathama eka, after 6.1.73 has inserted the tuk: the
@@ -2669,10 +2683,20 @@ mod tests {
         assert!((rule.apply)(&mut p));
         assert_eq!(p.text(), "acCinad");
 
-        // 8.4.44 SAt: a stu FOLLOWING a `S` is exempt, and this engine
-        // implements that exemption by not implementing the direction at
-        // all. Fire here and √kliś surfaces *kliSYAti -- 41 invocations of
-        // 8.4.44 on that one root in vidyut-prakriya over this corpus.
+        // √jan laṭ prathama bahu after 6.4.98: the stu `n` FOLLOWS the ścu
+        // `j` -- the converse arm (slice 3f3).
+        let mut p = Prakriya {
+            terms: with_slots(vec![Term::new("jn"), Term::new(""), Term::new("ati")]),
+            ..Default::default()
+        };
+        p.terms[ABHYASA].text = "ja".into();
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.text(), "jajYati");
+
+        // 8.4.44 SAt: a stu FOLLOWING a `S` is exempt, and the converse arm
+        // carries that exemption as its guard. Without it √kliś surfaces
+        // *kliSYAti -- 41 invocations of 8.4.44 on that one root in
+        // vidyut-prakriya over this corpus.
         let mut p = Prakriya {
             terms: with_slots(vec![Term::new("kliS"), Term::new("nA"), Term::new("ti")]),
             ..Default::default()
