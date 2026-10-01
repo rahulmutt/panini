@@ -29,7 +29,8 @@ the new rules fires in any of them.
 
 ## Scope
 
-**Row (1):** `03.0025 janI~` (√jan), parasmaipadī by 1.3.78. **36 cells, 51
+**Row (1):** `03.0025 jana~ janane` (√jan), parasmaipadī by 1.3.78. (Not
+`janI~`: that is divādi's `04.0044 janI~\` *prādurbhāve*.) **36 cells, 51
 forms.** Suite 4608 → 4644 cells (512 → 516 blocks × 9), 5699 → 5750 forms;
 roots 102 → 103; juhotyādi 25 → **26 of its 26 rows. The gaṇa is closed.**
 
@@ -117,10 +118,10 @@ scope: no desideratives). `jan` → `jA`:
 - **KEYED BY ROW NUMBER, `{03.0025, 08.0002}`**: √jan and tanādi's √san. Both
   curated roots the sūtra names are in the key. **√san's exclusion is
   grammatical, not a missing key.** On √san, `following_sarvadhatuka` returns
-  the vikaraṇa `u`, which is a vowel. Where 6.4.107 elides that `u`, the
-  follower is `v` or `m`, not a jhal. So the jhal test declines on every √san
-  cell, and √san's existing 72 goldens (*sanutaH*, *sanvaH*, …) pin the
-  decline. The comment says this, and that √khan would extend the key.
+  the vikaraṇa `u`, which is neither ṅit (1.2.4's second arm excludes it) nor
+  a jhal. 6.4.107's u-lopa runs later, in `adesha.rs`, so this stage always
+  sees the `u`. Both tests decline on every √san cell, and √san's existing
+  72 goldens (*sanutaH*, *sanvaH*, …) pin the decline. The comment says this, and that √khan would extend the key.
 - **Writes `jA` directly** and credits only 6.4.42. vidyut writes `jaA` and
   credits 6.1.101. This engine's 6.1.101 is arm-based with no in-term arm, and
   widening it would change no form. The omission is listed below.
@@ -194,7 +195,7 @@ HEAD reads only stu-before-ścu.
 
 | row | entry | root | pada | sanction |
 |---|---|---|---|---|
-| 03.0025 | `janI~` | jan | parasmai | 1.3.78 |
+| 03.0025 | `jana~` | jan | parasmai | 1.3.78 |
 
 Its comment names its path: 6.4.98, 6.4.42, 6.4.43, 8.4.40. The juhotyādi
 row-list assertion gains it, and the test is renamed from
@@ -246,8 +247,10 @@ comment records the gaṇa as closed.
   6.4.43 at their positions. `exactly_the_pinned_vikalpa_rules_are_optional`
   gains 6.4.43.
 - **Corpus-wide fires-only-on-rows test**, extending 3f2's: over every curated
-  cell, 6.4.98, 6.4.42 and 6.4.43 are credited only on `03.0025`, and 8.4.40
-  is credited with a ścu on the left only on `03.0025`.
+  cell, 6.4.98, 6.4.42 and 6.4.43 are credited only on `03.0025`. A trace
+  step carries no direction, so 8.4.40 is pinned by its credits off √jan:
+  only √chid's and √chṛd's rows (`07.0003`, `07.0008`), 54 branches, the count
+  on `main`.
 - **Prior traces:** diff every prior cell's trace between `main` and the slice
   HEAD. The 4608 prior cells stay byte-identical, traces included.
 - **Spot check** in `paradigm/main.rs` beside 3f2's: *jajYati*, *jajAtaH*,
