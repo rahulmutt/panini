@@ -1193,18 +1193,16 @@ pub(crate) static TRIPADI: &[Rule] = &[
             // was elided.
             //
             // This engine has a dual representation — per-term text plus
-            // the flattened `word_chars`/`p.text()` view — and two later
-            // tripādī rules DO read term structure directly rather than
-            // going through the flattened view: 8.4.55 (`Kari ca`) reads
-            // `ENDING`'s own first char and walks `p.terms[..ENDING]` for
-            // the last non-empty term before it; 8.4.56 (`vA'vasAne`, the
+            // the flattened `word_chars`/`p.text()` view — and one later
+            // tripādī rule DOES read term structure directly rather than
+            // going through the flattened view: 8.4.56 (`vA'vasAne`, the
             // pipeline's last rule) does `p.terms.rposition(|t|
             // !t.text.is_empty())` and pops/pushes on that specific term.
-            // Both were checked individually rather than assumed safe:
-            // 8.4.55 is unaffected because `is_khar('Q')` is always false
-            // (ḍh is a voiced aspirate, khar is voiceless) — the rule
-            // declines to fire before it ever looks at which term holds
-            // the surviving `Q`, whichever term that is. 8.4.56 is
+            // (8.4.55 `Kari ca` did too, reading `ENDING`'s first char and
+            // the last non-empty term before it, until slice 3f2 moved it to
+            // the flattened view. It was unaffected either way: `is_khar('Q')`
+            // is always false, since ḍh is a voiced aspirate and khar is
+            // voiceless.) 8.4.56 was checked rather than assumed safe: it is
             // unaffected because its `rposition` search for the last
             // non-empty term is self-correcting: it always lands on
             // whichever term physically holds the word's trailing
@@ -1227,7 +1225,7 @@ pub(crate) static TRIPADI: &[Rule] = &[
             // kill this mutant; do not treat a surviving mutant here as a
             // missing test without first checking whether it is this
             // exact index-choice mutation, and without re-running the
-            // 8.4.55/8.4.56 argument above rather than assuming it still
+            // 8.4.56 argument above rather than assuming it still
             // applies. (An earlier task-9 planning note in this slice
             // predicted this survivor but reasoned "eliding the second
             // gives tfReQ" — that arithmetic was wrong: eliding the second
@@ -1425,33 +1423,31 @@ pub(crate) static TRIPADI: &[Rule] = &[
             true
         },
     },
-    // 8.4.55 khari ca (cartva): a jhal immediately before the ending, meeting
-    // a khar across that junction, becomes its car (voiceless unaspirated).
-    // √ad's d before ti/tas/si/tha → t: atti, attaH, atsi, atTa. The engine's
-    // first internal junction sandhi; general, reused by every later
-    // gaṇa/subanta slice. No longer the pipeline's last rule — 8.4.65 and
-    // 8.4.56 both follow it now — but still ordered after every other 8.3/8.4
-    // rule that precedes it.
+    // 8.4.55 khari ca (cartva): a jhal immediately before a khar becomes its
+    // car (voiceless unaspirated), anywhere the two sit adjacent in the word.
+    // √ad's d before ti/tas/si/tha → t: atti, attaH, atsi, atTa; √bhas's
+    // aṅga-internal `Bs` → `ps` before a vowel or `y`: bapsati, bapsyAt
+    // (slice 3f2). General, reused by every later gaṇa/subanta slice. No
+    // longer the pipeline's last rule — 8.4.65 and 8.4.56 both follow it now
+    // — but still ordered after every other 8.3/8.4 rule that precedes it.
     //
-    // FIXED for rudhādi's ANGA/SHAP split (7a Task 7, √khid's Kintte the
-    // witness). This rule predates gaṇa 7 and originally read
-    // `p.terms[ANGA]` directly for both "the aṅga's final sound" and, via
-    // "the first non-empty term after ANGA", for "the ending's first
-    // sound" — sound reasoning only while ANGA held the whole root and
-    // SHAP was either empty (adādi's luk) or a genuine vikaraṇa. rudhādi's
-    // śnam-split root (3.1.78) puts the root's OWN tail in SHAP (`Ki` /
-    // `nd` for Kid's weak stem), so the old code asked about `i` (ANGA's
-    // vowel) meeting `n` (SHAP's own first char) — never the real
-    // boundary, SHAP's `d` meeting the ending's `t`. Kindte, not Kintte,
-    // was the result. Now the target is the last non-empty term's final
-    // char before `ENDING` (matching `sound_before_ending`'s reasoning in
-    // `terms.rs`; open-coded rather than calling it, joining 8.3.59 and
-    // 7.1.5 as the enumerated duplicates that helper's doc comment tracks,
-    // because this rule also needs the term index to write back into), and
-    // the trigger is `ENDING`'s own first sound directly, since tripādī
-    // rules always run after 3.1.68 and `ENDING` is always the pada's last
-    // term. √ad is unaffected: SHAP is empty there, so both reads reduce
-    // to exactly what they were.
+    // READS THE WHOLE WORD since slice 3f2, through `word_chars`, as 8.2.40
+    // and 8.4.53 do; the sūtra has no positional condition. Until then it
+    // read only the aṅga/ending junction: the last non-empty term's final
+    // char before `ENDING` against `ENDING`'s own first sound. That reading
+    // was itself a fix (7a Task 7: rudhādi's śnam-split puts the root's own
+    // tail in SHAP, and an ANGA-only read gave Kindte for Kintte), and the
+    // whole-word scan subsumes it — every junction pair is a pair of
+    // adjacent chars in the flattened word. What the junction reading could
+    // not see was a pair inside one term: √bhas's `Bs`, once 6.4.100 has
+    // elided the `a` between them. Widening it changed no prior cell's trace
+    // (the 3f2 spec's corpus-wide diff), and
+    // `khari_ca_off_bhas_is_credited_exactly_as_before_3f2` in `panini`'s
+    // trace suite holds the count.
+    //
+    // The scan takes the FIRST pair in the word. Each rule fires once per
+    // branch, so a word with two such pairs would devoice only the first;
+    // no curated cell has two.
     Rule {
         id: "8.4.55",
         name: "Kari ca",
@@ -1459,40 +1455,29 @@ pub(crate) static TRIPADI: &[Rule] = &[
         vikalpa: false,
         bars: &[],
         apply: |p| {
-            let next = p.terms.get(ENDING).and_then(|t| t.text.chars().next());
-            let Some(next) = next else { return false };
-            if !is_khar(next) {
-                return false;
+            let w = word_chars(p);
+            for i in 1..w.len() {
+                if !is_khar(w[i].2) {
+                    continue;
+                }
+                // `cartva_of` is defined only on the stops, so it is the jhal
+                // test as well: a sibilant is already its own car, and `h`
+                // has none.
+                let Some(sub) = cartva_of(w[i - 1].2) else {
+                    continue;
+                };
+                // No-op guard: a stop that is already its own car records
+                // nothing.
+                if sub == w[i - 1].2 {
+                    continue;
+                }
+                let (term, idx, _) = w[i - 1];
+                let before = p.snapshot();
+                set_char(p, term, idx, sub);
+                p.record("8.4.55", "Kari ca", before);
+                return true;
             }
-            let Some((term, idx)) =
-                p.terms[..ENDING]
-                    .iter()
-                    .enumerate()
-                    .rev()
-                    .find_map(|(ti, t)| {
-                        if t.text.is_empty() {
-                            None
-                        } else {
-                            Some((ti, t.text.chars().count() - 1))
-                        }
-                    })
-            else {
-                return false;
-            };
-            let last = p.terms[term].text.chars().nth(idx).unwrap();
-            if !is_jhal(last) {
-                return false;
-            }
-            let Some(sub) = cartva_of(last) else {
-                return false;
-            };
-            if sub == last {
-                return false;
-            }
-            let before = p.snapshot();
-            set_char(p, term, idx, sub);
-            p.record("8.4.55", "Kari ca", before);
-            true
+            false
         },
     },
     // 8.4.1 raṣābhyāṁ no ṇaḥ samānapade: `n` → `ṇ` when `r`/`ṣ` DIRECTLY
@@ -2797,6 +2782,53 @@ mod tests {
         // 8.2.74 is sip-only: at tip the `s` is left for 8.2.73.
         let mut p = sip_prakriya("abaBas", "", Purusha::Prathama);
         assert!(!(r74.apply)(&mut p));
+        assert!(p.log.is_empty());
+    }
+
+    // --- 8.4.55 khari ca: the whole word since slice 3f2 -----------------
+
+    /// √bhas at the tripādī: abhyāsa `Ba`, aṅga `anga` (`Bs` once 6.4.100
+    /// has run), an empty śap (ślu), and `ending`. No gaṇa tag: neither rule
+    /// tested with it reads one.
+    fn bhas_prakriya(anga: &str, ending: &str) -> Prakriya {
+        let mut p = Prakriya {
+            terms: with_slots(vec![Term::new(anga), Term::new(""), Term::new(ending)]),
+            ..Default::default()
+        };
+        p.terms[ABHYASA].text = "Ba".into();
+        p
+    }
+
+    #[test]
+    fn khari_ca_fires_inside_the_anga_and_at_the_junction() {
+        let rule = rules().find(|r| r.id == "8.4.55").unwrap();
+        // Word-internal: `Bs` + ati → `ps` (bapsati, before 8.4.54 takes the
+        // abhyāsa's `B`). The junction holds `s` + `a`, which is not khar.
+        let mut p = bhas_prakriya("Bs", "ati");
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.text(), "Bapsati");
+        assert_eq!(p.log.last().unwrap().sutra, "8.4.55");
+        // At the junction, as the rule always read: √indh's inD + se → intse.
+        let mut p = Prakriya {
+            terms: with_slots(vec![Term::new("inD"), Term::new(""), Term::new("se")]),
+            ..Default::default()
+        };
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.text(), "intse");
+    }
+
+    #[test]
+    fn khari_ca_records_nothing_on_an_already_voiceless_jhal() {
+        // A `t` before `s` (atsi) is already its own car, and nothing else in
+        // the word is a jhal before a khar. The khar differs from the jhal on
+        // purpose: the no-op guard must compare the substitute with the jhal,
+        // not with the khar after it.
+        let rule = rules().find(|r| r.id == "8.4.55").unwrap();
+        let mut p = Prakriya {
+            terms: with_slots(vec![Term::new("at"), Term::new(""), Term::new("si")]),
+            ..Default::default()
+        };
+        assert!(!(rule.apply)(&mut p));
         assert!(p.log.is_empty());
     }
 }
