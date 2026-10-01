@@ -1610,10 +1610,10 @@ mod tests {
             "6.4.115 keys on ANGA.text == \"BI\" with no gaṇa clause; if a \
              second curated root ever reads \"BI\" it needs a gaṇa guard"
         );
-        // Every root-specific rule of slices 3c, 3c2, 3d, 3d2 and 3e (7.4.75, 7.4.76, 7.4.77,
-        // 7.4.78, 8.2.38, 8.2.40's adhaḥ, 6.4.116–6.4.118) and 1.1.20's
-        // Tag::Ghu key on the dhātupāṭha NUMBER, so `hA`, `dA`, `DA`, `gA`,
-        // `pf`, `pF`, `Bf` and `f` need no uniqueness tripwire. `hA` is held by two
+        // Every root-specific rule of slices 3c, 3c2, 3d, 3d2, 3e and 3f2 (7.4.75, 7.4.76,
+        // 7.4.77, 7.4.78, 8.2.38, 8.2.40's adhaḥ, 6.4.116–6.4.118, 6.4.100) and
+        // 1.1.20's Tag::Ghu key on the dhātupāṭha NUMBER, so `hA`, `dA`, `DA`,
+        // `gA`, `pf`, `pF`, `Bf`, `f` and `Bas` need no uniqueness tripwire. `hA` is held by two
         // rows, 03.0008 and 03.0009, which is exactly why. Slice 3d's 7.4.66
         // and 7.1.102 name sounds (a ṛ-vowel; a labial before ṝ), not roots. Slice
         // 3d2's 6.4.78 names sounds too (an abhyāsa-final i/u before a dissimilar

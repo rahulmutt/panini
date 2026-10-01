@@ -223,4 +223,4 @@ file:line anchors are re-grepped at final HEAD.
   `ps`); new 6.4.98, 6.4.42 and the vikalpa 6.4.43 for √jan (*jajYati*,
   *jajAtaH*, *jajAyAt* ~ *jajanyAt*), with 8.4.40 widened to a palatal on the
   left (`jn` → `jY`). vidyut runs 6.4.42 before 6.1.10; check that this engine's
-  post-dvitva placement reaches the same forms. Re-probe before writing its spec.
+  post-dvitva placement reaches the same forms. Re-probe before writing its spec. (3f2's re-probe split it: √bhas is 3f2, √jan is 3f3.)

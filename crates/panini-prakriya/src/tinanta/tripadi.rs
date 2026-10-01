@@ -1037,9 +1037,10 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // counterfactual; keep the two distinct.
     //
     // The rules below are inert on the site this one writes. 8.4.55 Kari ca
-    // reads the SHAP/ENDING junction rather than the tuk's position inside
-    // ANGA, and refuses vacuous fires anyway (`sub == last`). 8.4.53 wants a
-    // jhaś after the jhal, and `C` is voiceless. 8.4.1 works on Cfnad's
+    // reads the whole word since slice 3f2, so it does reach the tuk's `c`
+    // before `C`, but `c` is already its own car and its no-op guard
+    // declines (`sub == w[i - 1].2`). 8.4.53 wants a jhaś after the jhal, and
+    // `C` is voiceless. 8.4.1 works on Cfnad's
     // adjacent `f` and `n`, which the tuk sits in front of rather than
     // between — so it is not an 8.4.2 intervener question either.
     //

@@ -27,7 +27,7 @@ is ruleless.
 comment states that a blocked prakriyā's `text()` is a partial string — often the
 bare root code — not a surface form.
 
-**It asserts the corpus totals** (101 roots, 4572 cells, 5655 forms) rather than
+**It asserts the corpus totals** (102 roots, 4608 cells, 5699 forms) rather than
 reporting whatever it enumerated. Those totals are corroborated by
 `derivation_set_shape_matches_the_audited_numbers` in
 `crates/panini/tests/paradigm/main.rs`, which each slice raises to the same totals
@@ -74,7 +74,7 @@ resolve a toolchain there. Name it explicitly:
 
 ```bash
 cd /tmp/vidyut-full/vidyut-prakriya
-mise exec rust@1.98.0 -- cargo run --release --example panini_full_audit
+mise exec rust@1.99.0 -- cargo run --release --example panini_full_audit
 ```
 
 Both checkout locations are env-overridable, defaulting to `/tmp/vidyut-full` and
@@ -82,7 +82,7 @@ Both checkout locations are env-overridable, defaulting to `/tmp/vidyut-full` an
 
 ```bash
 PANINI_AUDIT_VIDYUT=/path/to/vidyut PANINI_AUDIT_REPO=/path/to/panini \
-  mise exec rust@1.98.0 -- cargo run --release --example panini_full_audit
+  mise exec rust@1.99.0 -- cargo run --release --example panini_full_audit
 ```
 
 ## Negative controls
@@ -91,8 +91,8 @@ Run at least one before recording a clean result. Each should exit 1 and print
 real form-vs-form differences:
 
 ```bash
-PANINI_AUDIT_PERTURB=form  mise exec rust@1.98.0 -- cargo run --release --example panini_full_audit
-PANINI_AUDIT_PERTURB=entry mise exec rust@1.98.0 -- cargo run --release --example panini_full_audit
+PANINI_AUDIT_PERTURB=form  mise exec rust@1.99.0 -- cargo run --release --example panini_full_audit
+PANINI_AUDIT_PERTURB=entry mise exec rust@1.99.0 -- cargo run --release --example panini_full_audit
 ```
 
 `form` corrupts one form on this engine's side. `entry` is the one that matters:
@@ -104,10 +104,25 @@ much less; keep this one plausible if you change it.
 Optionally dump the full table:
 
 ```bash
-PANINI_AUDIT_DUMP=/tmp/audit-table.tsv mise exec rust@1.98.0 -- cargo run --release --example panini_full_audit
+PANINI_AUDIT_DUMP=/tmp/audit-table.tsv mise exec rust@1.99.0 -- cargo run --release --example panini_full_audit
 ```
 
 ## Last recorded result
+
+2026-10-01, juhotyādi 3f2 slice, vidyut
+`8da2f90bee3ce1c07505fa432fc3729e3f7e02ea`: **zero differences across 4608
+cells / 5699 forms / 102 roots**, with the `entry` negative control verified
+failing (36 √bhū cells).
+
+The verdict covers the whole juhotyādi 3f2 slice: √bhas (`03.0019`), with two
+new rules — 6.4.100 *ghasibhasor hali ca* (*bapsati*) and 8.2.26 *jhalo jhali*
+(*babDaH*) — 8.2.73 and 8.2.74 without their rudhādi gaṇa test (*abaBat*,
+*abaBaH*), and 8.4.55 *khari ca* reading the whole word (`Bs` → `ps`). A
+main-vs-branch dump of every prior cell's traces was byte-identical.
+
+Totals: 102 = 101 + 1; 4608 = 4572 + 36 (4 root×pada×lakāra blocks × 9); 5699
+= 5655 + 36 + 8 new `ALTERNATES` rows (1083 → 1091), measured via the
+harness's corpus block, not assumed.
 
 2026-10-01, juhotyādi 3f slice, vidyut
 `8da2f90bee3ce1c07505fa432fc3729e3f7e02ea`: **zero differences across 4572

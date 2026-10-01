@@ -1808,7 +1808,7 @@ fn no_8_2_73_step_appears_for_bhanj_or_pish() {
             for p in derive(d, Lakara::Lan, d.pada.padas()[0], pu, Vacana::Eka) {
                 assert!(
                     !p.log.iter().any(|s| s.sutra == "8.2.73"),
-                    "{}: 8.2.73 fired outside √hiṃs",
+                    "{}: 8.2.73 fired on √bhañj or √piṣ",
                     d.code
                 );
             }

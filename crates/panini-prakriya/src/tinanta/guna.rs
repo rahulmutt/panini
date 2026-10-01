@@ -133,10 +133,10 @@ pub(crate) static GUNA: &[Rule] = &[
     //
     // *laghūpadhasya*: a consonant-final aṅga whose penultimate is a short
     // vowel. `a` is included because vidyut credits this rule on the
-    // a-upadhā √dhan (slice 3f) and √bhas and √jan (slice 3f2), where 7.3.86
-    // has nothing to guṇate anyway. Slice 3f inherited the rule unchanged; it
-    // changes forms on 03.0021 (cikitAni), 03.0022 (tuturARi) and 03.0023
-    // (diDizARi).
+    // a-upadhā √dhan (slice 3f), √bhas (slice 3f2) and √jan (slice 3f3), where
+    // 7.3.86 has nothing to guṇate anyway. Slice 3f inherited the rule
+    // unchanged; it changes forms on 03.0021 (cikitAni), 03.0022 (tuturARi)
+    // and 03.0023 (diDizARi).
     //
     // Reads ENDING directly, as 7.3.92 does. An abhyasta aṅga is always
     // ślu'd, so SHAP is empty and the ending is the following sārvadhātuka.
@@ -913,7 +913,7 @@ pub(crate) static GUNA: &[Rule] = &[
     },
     // 6.1.78 eco'yavāyāvaḥ: e/o before a vowel → ay/av. The sūtra also covers
     // E/O → Ay/Av, but those two arms are dropped here: within the current
-    // 101-root × 4-lakāra grammar, ANGA can never end in a vṛddhi vowel (E/O)
+    // 102-root × 4-lakāra grammar, ANGA can never end in a vṛddhi vowel (E/O)
     // at the point this rule runs. `vrddhi_of` (the only source of E/O in
     // this engine) is called from four places in two rules: three in 6.1.90
     // — the aṅga arm writes the vṛddhi vowel at *position 0* of the first

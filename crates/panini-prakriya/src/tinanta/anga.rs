@@ -29,8 +29,8 @@ pub(crate) static ANGA_RULES: &[Rule] = &[
     // turns a final i/u into iy/uv. √ṛ (03.0017, slice 3d2) is the
     // vowel-initial witness: ANGA reads `f`, the abhyāsa `iy`, and both reads
     // give āṭ (EyaH). Reading the abhyāsa instead would add a clause no row
-    // can falsify (3e's and 3f's curated roots, and 3f2's, are all
-    // consonant-initial), so the ANGA read stays.
+    // can falsify (3e's, 3f's and 3f2's curated roots, and 3f3's √jan, are
+    // all consonant-initial), so the ANGA read stays.
     Rule {
         id: "6.4.71",
         name: "luNlaNlfNkzvaqudAttaH",
