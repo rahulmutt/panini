@@ -27,7 +27,7 @@ is ruleless.
 comment states that a blocked prakriyā's `text()` is a partial string — often the
 bare root code — not a surface form.
 
-**It asserts the corpus totals** (94 roots, 4212 cells, 5249 forms) rather than
+**It asserts the corpus totals** (97 roots, 4428 cells, 5486 forms) rather than
 reporting whatever it enumerated. Those totals are corroborated by
 `derivation_set_shape_matches_the_audited_numbers` in
 `crates/panini/tests/paradigm/main.rs`, which each slice raises to the same totals
@@ -108,6 +108,20 @@ PANINI_AUDIT_DUMP=/tmp/audit-table.tsv mise exec rust@1.98.0 -- cargo run --rele
 ```
 
 ## Last recorded result
+
+2026-10-01, juhotyādi 3e slice, vidyut
+`8da2f90bee3ce1c07505fa432fc3729e3f7e02ea`: **zero differences across 4428
+cells / 5486 forms / 97 roots**, with the `entry` negative control verified
+failing (36 √bhū cells).
+
+The verdict covers the whole juhotyādi 3e slice: 7.4.75 *nijāṁ trayāṇāṁ
+guṇaḥ ślau* and 7.3.87 *nābhyastasyāci piti sārvadhātuke* (barring 7.3.86),
+added for √ṇij (`03.0012`), √vij (`03.0013`) and √viṣ (`03.0014`), with √viṣ's
+`z` sandhi reaching the existing tripādī rules unchanged.
+
+Totals: 97 = 94 + 3; 4428 = 4212 + 216 (24 root×pada×lakāra blocks × 9); 5486
+= 5249 + 216 + 21 new `ALTERNATES` rows (1037 → 1058), measured via the
+harness's corpus block, not assumed.
 
 2026-09-30, juhotyādi 3d2 slice, vidyut
 `8da2f90bee3ce1c07505fa432fc3729e3f7e02ea`: **zero differences across 4212

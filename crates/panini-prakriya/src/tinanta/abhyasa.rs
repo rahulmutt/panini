@@ -1,5 +1,5 @@
-//! Reduplication: 6.1.10, 7.4.66, 7.4.60, 7.4.59, 7.4.62, 7.4.76, 7.4.77,
-//! 7.4.78, 6.4.78 — dvitva and the rules that reshape the abhyāsa.
+//! Reduplication: 6.1.10, 7.4.66, 7.4.60, 7.4.59, 7.4.62, 7.4.75, 7.4.76,
+//! 7.4.77, 7.4.78, 6.4.78 — dvitva and the rules that reshape the abhyāsa.
 //!
 //! Ordered AFTER 3.1.68 (ending at `ENDING`, śap at `SHAP` — empty on
 //! exactly the path this stage cares about) and BEFORE `anga`, so 6.4.71
@@ -25,7 +25,7 @@
 
 use crate::rule::{Rule, RuleKind};
 use crate::term::Tag;
-use crate::tinanta::sound::{cutva_of, hrasva_of, is_vowel};
+use crate::tinanta::sound::{cutva_of, guna_of, hrasva_of, is_vowel};
 use crate::tinanta::terms::{ABHYASA, ANGA, SHAP};
 
 pub(crate) static ABHYASA_RULES: &[Rule] = &[
@@ -199,6 +199,43 @@ pub(crate) static ABHYASA_RULES: &[Rule] = &[
             let rest: String = p.terms[ABHYASA].text.chars().skip(1).collect();
             p.terms[ABHYASA].text = format!("{cu}{rest}");
             p.record("7.4.62", "kuhoScuH", before);
+            true
+        },
+    },
+    // 7.4.75 nijāṁ trayāṇāṁ guṇaḥ ślau: under ślu, the abhyāsa of the three
+    // roots beginning with √ṇij takes guṇa. After 7.4.60: ni → ne (nenekti),
+    // vi → ve (vevekti, vevezwi). vidyut guṇates first, copies `nej`, trims
+    // it to `ne` by 7.4.60 and shortens it back to `ni` by 7.4.59 before this
+    // rule. This stage copies the bare root, so it skips that round trip.
+    //
+    // KEYED BY ROW NUMBER, like 7.4.76 below it. The sūtra names three roots,
+    // and the text `vij` is also tudādi's 06.0009 and rudhādi's 07.0023,
+    // neither of which reduplicates.
+    //   03.0012 Ri\ji~^r √ṇij (stored `nij`: 6.1.65 by the stored-form
+    //                          convention)
+    //   03.0013 vi\ji~^r √vij
+    //   03.0014 vi\zx~^  √viṣ
+    //
+    // Every abhyāsa this reaches is a single ekāc (6.1.10's NARROW note), so
+    // guṇating each vowel is guṇating THE vowel.
+    Rule {
+        id: "7.4.75",
+        name: "nijAM trayARAM guRaH SlO",
+        kind: RuleKind::Vidhi,
+        vikalpa: false,
+        bars: &[],
+        apply: |p| {
+            if !matches!(p.ctx.dhatupatha, "03.0012" | "03.0013" | "03.0014") {
+                return false;
+            }
+            let t: String = p.terms[ABHYASA]
+                .text
+                .chars()
+                .map(|c| guna_of(c).map_or_else(|| c.to_string(), str::to_string))
+                .collect();
+            let before = p.snapshot();
+            p.terms[ABHYASA].text = t;
+            p.record("7.4.75", "nijAM trayARAM guRaH SlO", before);
             true
         },
     },
@@ -559,6 +596,43 @@ mod tests {
     }
 
     #[test]
+    fn nijam_trayanam_gunates_the_abhyasa_of_its_three_rows() {
+        // 7.4.75. √ṇij (03.0012), √vij (03.0013) and √viṣ (03.0014), after
+        // 7.4.60: ni → ne (nenekti), vi → ve (vevekti, vevezwi).
+        let rule = rules().find(|r| r.id == "7.4.75").unwrap();
+        for (root, number, abhyasa, want) in [
+            ("nij", "03.0012", "ni", "ne"),
+            ("vij", "03.0013", "vi", "ve"),
+            ("viz", "03.0014", "vi", "ve"),
+        ] {
+            let mut p = slu_prakriya(root, "ti");
+            p.ctx.dhatupatha = number;
+            p.terms[ABHYASA].text = abhyasa.into();
+            assert!((rule.apply)(&mut p), "{number}");
+            assert_eq!(p.terms[ABHYASA].text, want, "{number}");
+            assert_eq!(p.terms[ANGA].text, root, "{number}: the aṅga is untouched");
+            assert_eq!(p.log.last().unwrap().sutra, "7.4.75");
+        }
+    }
+
+    #[test]
+    fn nijam_trayanam_declines_for_the_other_vij_rows_despite_identical_text() {
+        // Tudādi's 06.0009 and rudhādi's 07.0023 are also `vij`. Neither
+        // reduplicates, so only a hand-built prakriyā can put an abhyāsa in
+        // front of them. The number decides, not the text. "" is a hand-built
+        // prakriyā with no row.
+        let rule = rules().find(|r| r.id == "7.4.75").unwrap();
+        for number in ["06.0009", "07.0023", ""] {
+            let mut p = slu_prakriya("vij", "ti");
+            p.ctx.dhatupatha = number;
+            p.terms[ABHYASA].text = "vi".into();
+            assert!(!(rule.apply)(&mut p), "{number:?}");
+            assert_eq!(p.terms[ABHYASA].text, "vi", "{number:?}");
+            assert!(p.log.is_empty(), "{number:?}");
+        }
+    }
+
+    #[test]
     fn bhrnam_it_makes_the_abhyasa_vowel_i_for_the_three_rows_it_names() {
         // 7.4.76. √bhṛñ (03.0006), √māṅ (03.0007) and √ohāṅ (03.0008), after
         // 7.4.60, 7.4.59 and 7.4.62: Ba → Bi (bibharti), ma → mi (mimIte), Ja →
@@ -848,6 +922,25 @@ mod tests {
             assert_eq!(p.terms[ANGA].text, root, "{number}");
             let got: Vec<&str> = p.log.iter().map(|s| s.sutra.as_str()).collect();
             assert_eq!(got, ids, "{number}");
+        }
+    }
+
+    #[test]
+    fn the_nij_roots_reach_their_abhyasa_through_haladih_shesha_then_nijam_trayanam() {
+        // Slice 3e's three rows through the whole stage. 7.4.60 drops the
+        // copy's final consonant (nij → ni). 7.4.59 has nothing to shorten,
+        // because this stage copies the bare root, not vidyut's guṇated `nej`.
+        // 7.4.75 then guṇates the vowel.
+        for (root, number, want) in [
+            ("nij", "03.0012", "ne"),
+            ("vij", "03.0013", "ve"),
+            ("viz", "03.0014", "ve"),
+        ] {
+            let p = run_abhyasa_stage(root, number);
+            assert_eq!(p.terms[ABHYASA].text, want, "{number}");
+            assert_eq!(p.terms[ANGA].text, root, "{number}");
+            let got: Vec<&str> = p.log.iter().map(|s| s.sutra.as_str()).collect();
+            assert_eq!(got, vec!["6.1.10", "7.4.60", "7.4.75"], "{number}");
         }
     }
 }

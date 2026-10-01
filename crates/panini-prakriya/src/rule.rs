@@ -44,6 +44,9 @@ pub struct Rule {
     /// runs every barred rule. 6.4.117 *ā ca hau* is the first user: it keeps
     /// √hā's `A` before *hi* by changing no text, and bars 6.4.116, 6.4.113 and
     /// 6.4.112, the three rules that would otherwise change that `A`.
+    /// 7.3.87 *nābhyastasyāci piti sārvadhātuke* is the second and the first
+    /// mandatory one: it changes no text and bars 7.3.86, keeping an abhyasta
+    /// aṅga's laghu upadhā before a vowel-initial pit ending (nenijAni).
     /// Barring is by id, so barring an id that occurs twice in the pipeline
     /// (7.3.84, 7.3.86, 1.2.4) skips every occurrence on that branch.
     ///

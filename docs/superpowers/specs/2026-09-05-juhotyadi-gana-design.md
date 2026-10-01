@@ -394,6 +394,11 @@ Each gets its own spec, starting from this table and the appendix.
 > this spec's augment-guard checkpoint by argument plus witness — 6.4.71 /
 > 6.4.72 keep reading `ANGA`.
 
+> Slice 3e (`2026-10-01-juhotyadi-gana-3e-design.md`) took √ṇij, √vij and √viṣ,
+> 216 cells: 7.4.75 and 7.3.87, the latter barring 7.3.86 through `Rule.bars`.
+> 6.1.65 is not written: `Ri\ji~^r` is stored as `nij` under the stored-form
+> convention, as √nī's `RI\Y` is.
+
 ## Appendix: vidyut's inventory at `8da2f90b`
 
 Per root, over four lakāras and both padas where derivable:
