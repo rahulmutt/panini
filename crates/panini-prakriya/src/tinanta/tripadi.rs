@@ -772,8 +772,9 @@ pub(crate) static TRIPADI: &[Rule] = &[
         },
     },
     // 8.3.24 naścāpadāntasya jhali: a non-pada-final `n` becomes an
-    // anusvāra before a jhal. In this suite that `n` is always śnam's, and
-    // the jhal is whatever the weak stem's tail or the ending supplies.
+    // anusvāra before a jhal. In this suite that `n` is śnam's (rudhādi) or,
+    // in juhotyādi, the root's own (√dhan, slice 3f: daDaMsi, daDaMhi), and
+    // the jhal is whatever the stem's tail or the ending supplies.
     //
     // Paired with 8.4.58 below, which usually turns the anusvāra straight
     // back into the same `n`. The pair is not a no-op, and √hiṃs is why:
@@ -781,10 +782,16 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // follows is the root's own `s`, which is śal. hiMstaH keeps its
     // anusvāra where kfntaH does not.
     //
-    // NARROW GUARD: rudhādi only. The `n` of 7.1.3 jho'ntaH (aBavan,
-    // kfntan) is pada-final and out of scope by the sūtra's own
+    // NARROW GUARD: rudhādi and juhotyādi only. The `n` of 7.1.3 jho'ntaH
+    // (aBavan, kfntan) is pada-final and out of scope by the sūtra's own
     // `apadāntasya`; guarding on the gaṇa keeps this rule away from it
     // without needing a pada-boundary notion the engine does not have.
+    // Dropping the gaṇa test entirely credits an 8.3.24 → 8.4.58 pair on
+    // every 7.1.3 `n` (bhavanti, yanti, Apnuvanti, hinvanti: four trace pins
+    // fail). Juhotyādi is safe under it: its aṅga is abhyasta, so 7.1.4 ad
+    // abhyastāt takes the `J` (daDati) and laṅ takes jus (3.4.109), and no
+    // juhotyādi `n` is 7.1.3's. Where √dhan's `n` meets `t`/`T`, 8.4.58
+    // turns the anusvāra straight back (daDantaH), as in vidyut's trace.
     //
     // The `apadāntasya` / jhal test lives INSIDE the search, not after it:
     // the rule finds the first `n` that is genuinely followed by a jhal
@@ -805,7 +812,8 @@ pub(crate) static TRIPADI: &[Rule] = &[
         vikalpa: false,
         bars: &[],
         apply: |p| {
-            if !p.terms[ANGA].has(Tag::Rudhadi) {
+            let anga = &p.terms[ANGA];
+            if !anga.has(Tag::Rudhadi) && !anga.has(Tag::Juhotyadi) {
                 return false;
             }
             let w = word_chars(p);
@@ -2687,6 +2695,52 @@ mod tests {
             let mut p = sip_prakriya(stem, ending, purusha);
             assert!(!(rule.apply)(&mut p), "{why}");
             assert!(p.log.is_empty(), "{why}");
+        }
+    }
+
+    // --- 8.3.24 naś cāpadāntasya jhali: rudhādi and juhotyādi ------------
+
+    /// √dhan at the tripādī: abhyāsa `da`, aṅga `Dan`, an empty śap (ślu),
+    /// and `ending`. The aṅga carries Tag::Juhotyadi.
+    fn dhan_prakriya(ending: &str) -> Prakriya {
+        let mut p = Prakriya {
+            terms: with_slots(vec![Term::new("Dan"), Term::new(""), Term::new(ending)]),
+            ..Default::default()
+        };
+        p.terms[ABHYASA].text = "da".into();
+        p.terms[ANGA].add(Tag::Juhotyadi);
+        p
+    }
+
+    #[test]
+    fn nas_capadantasya_fires_on_a_juhotyadi_n_before_a_jhal() {
+        // daDaMsi, daDaMhi (`h` is a jhal), and daDaMtaH, which 8.4.58
+        // takes back to daDantaH.
+        let rule = rules().find(|r| r.id == "8.3.24").unwrap();
+        for (ending, want) in [("si", "daDaMsi"), ("hi", "daDaMhi"), ("taH", "daDaMtaH")] {
+            let mut p = dhan_prakriya(ending);
+            assert!((rule.apply)(&mut p), "{ending}");
+            assert_eq!(p.text(), want);
+            assert_eq!(p.log.last().unwrap().sutra, "8.3.24");
+        }
+    }
+
+    #[test]
+    fn nas_capadantasya_declines_off_its_two_ganas_and_before_a_non_jhal() {
+        let rule = rules().find(|r| r.id == "8.3.24").unwrap();
+        // bhvādi bhavanti: 7.1.3's `n` before `t`. The gaṇa test is what
+        // keeps the rule off it; *apadāntasya* is not modelled.
+        let mut p = Prakriya {
+            terms: with_slots(vec![Term::new("Bav"), Term::new("a"), Term::new("nti")]),
+            ..Default::default()
+        };
+        assert!(!(rule.apply)(&mut p), "bhavanti");
+        assert!(p.log.is_empty());
+        // √dhan before m, v, y: none is a jhal (daDanmi, daDanvaH, daDanyAt).
+        for ending in ["mi", "vaH", "yAt"] {
+            let mut p = dhan_prakriya(ending);
+            assert!(!(rule.apply)(&mut p), "{ending}");
+            assert!(p.log.is_empty(), "{ending}");
         }
     }
 }
