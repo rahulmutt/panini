@@ -13,7 +13,7 @@ cargo run -p panini-cli -- check 'bhavati' --trace
 
 ## Scope
 
-Finite verbs (*tiṅanta*), nine gaṇas covered, eight of them fully —
+Finite verbs (*tiṅanta*), nine gaṇas covered, all nine fully —
 *bhvādi* (1, vikaraṇa śap), *divādi* (4, śyan), *tudādi* (6, śa), *adādi*
 (2, śap luk'd), *kryādi* (9, śnā), *svādi* (5, śnu) and *rudhādi* (7,
 śnam) — plus *tanādi* (8, vikaraṇa the bare *u* of 3.1.79), **complete**
@@ -29,7 +29,7 @@ and 6.4.109 *ye ca* — and 8.2.77 *hali ca*'s own guard, 8.2.79 *na
 bhakurchurām*, which declines 8.2.77's lengthening on √kṛ's `kur` aṅga
 (`kurvanti`, not `*kUrvanti`) — and *juhotyādi* (3, the ślu gaṇa: 2.4.75
 elides śap by ślu and 6.1.10 reduplicates the root into the `ABHYASA`
-slot), **partial** at 25 of its 26 dhātupāṭha rows, √hu (`03.0001`,
+slot), **complete** at all 26 of its dhātupāṭha rows, √hu (`03.0001`,
 *juhoti*) and √ki (`03.0020`, *ciketi*), curated in slice 3a behind
 7.4.62 *kuhoś cuḥ*, 7.1.4 *ad abhyastāt*, 3.4.109 with 7.3.83 *jusi ca*,
 6.4.82 *er anekāco'saṁyogapūrvasya* and 8.4.54 *abhyāse car ca*, with
@@ -80,7 +80,13 @@ Slice 3f2 added √bhas (`03.0019`, *babhasti*), parasmaipadī, behind two new
 sūtras — 6.4.100 *ghasibhasor hali ca*, which elides its upadhā `a` before
 every kṅit (*bapsati*), and 8.2.26 *jhalo jhali* (*babdhaḥ*) — with 8.2.73
 *tipy anasteḥ* and 8.2.74 *sipi dhāto rur vā* dropping their rudhādi gaṇa test
-(*ababhat*, *ababhaḥ*) and 8.4.55 *khari ca* reading the whole word. rudhādi is
+(*ababhat*, *ababhaḥ*) and 8.4.55 *khari ca* reading the whole word.
+Slice 3f3 added √jan (`03.0025`, *jajanti*), parasmaipadī, the gaṇa's last
+row, behind three new sūtras — 6.4.98 *gamahanajanakhanaghasāṁ lopaḥ*
+(*jajñati*), 6.4.42 *janasanakhanāṁ sañjhaloḥ* (*jajātaḥ*) and the engine's
+twelfth vikalpa, 6.4.43 *ye vibhāṣā* (*jajanyāt* ~ *jajāyāt*) — with 8.4.40
+*stoḥ ścunā ścuḥ* gaining its converse arm, a stu after a ścu, guarded by the
+8.4.44 *śāt* exemption. rudhādi is
 complete at all twenty-five of its
 own roots (√kṛt, √hiṃs, √khid, √bhañj, √piṣ, √indh, √rudh,
 and — curated in slice 7c — √bhid, √kṣud, √yuj and √tṛd, and — curated in
@@ -104,22 +110,23 @@ rather than falling through to 1.3.72. What 1.3.66 does not model is the
 1.3.72's own precedent,
 since neither engine models sense. *parasmaipada* and *ātmanepada*
 (which padas a root admits is a curated verdict on its table row), over a
-curated 102-root set, in four lakāras: *laṭ* (present), *laṅ* (imperfect), *loṭ*
+curated 103-root set, in four lakāras: *laṭ* (present), *laṅ* (imperfect), *loṭ*
 (imperative), and *vidhiliṅ* (optative). A cell may have more than one valid
 form where an optional (*vikalpa*) sūtra applies — `hinvaH` and `hinuvaH` are
-both correct — and in fact 797 of the 4608 cells hold more than one form: 596
-hold two, 155 hold three (`Bavatu`, `BavatAd`, `BavatAt`, and — new in
+both correct — and in fact 808 of the 4644 cells hold more than one form: 604
+hold two, 157 hold three (`Bavatu`, `BavatAd`, `BavatAt`, and — new in
 slice 3b — √hrī's loṭ prathama and madhyama eka, and — new in slice 3c —
 √dā's and √dhā's, and — new in slice 3c2 — √gā's, and — new in slice 3d —
 the six ṛ-roots', and — new in slice 3d2 — √ṛ's, and — new in slice 3e —
 √ṇij's, √vij's and √viṣ's, and — new in slice 3f — √kit's, √tur's, √dhiṣ's
-and √dhan's, and — new in slice 3f2 — √bhas's, each by 7.1.35/8.4.56, √bhas's
-laṅ madhyama eka by 8.2.74/8.4.56),
-eighteen hold four
+and √dhan's, and — new in slice 3f2 — √bhas's, and — new in slice 3f3 —
+√jan's, each by 7.1.35/8.4.56, √bhas's laṅ madhyama eka by 8.2.74/8.4.56),
+nineteen hold four
 (rudhādi's √piṣ loṭ madhyama eka, and — new in slice 7d — √śiṣ's, and — new
 in slice 8a — fifteen more spread across tanādi's four ik-upadhā roots kziR,
 fR, tfR and GfR, and — new in slice 3b — √bhī's vidhiliṅ prathama eka,
-forking on 6.4.115 alongside 8.4.56), ten hold
+forking on 6.4.115 alongside 8.4.56, and — new in slice 3f3 — √jan's
+vidhiliṅ prathama eka, forking on 6.4.43 alongside 8.4.56), ten hold
 five (and, new in slice 3b, √bhī's loṭ prathama eka, forking on
 7.1.35/6.4.115/8.4.56, and — new in slice 3c2 — √hā's, forking on
 7.1.35/6.4.116/8.4.56), and seventeen hold six — the loṭ
