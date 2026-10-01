@@ -81,8 +81,12 @@ layout `[AGAMA, ABHYASA, ANGA, ṇic]`: before 3.1.68 index 3 is
 holds ṇic. `terms.rs` gains a NOTE recording this, and the module-level
 pipeline comment in `tinanta/mod.rs` goes from eight stages to nine.
 
-Every rule in the stage self-guards on `Tag::Curadi` (3.1.25) or on the ṇic
-term being present (the rest), so for gaṇas 1–9 the stage is inert. Rules,
+Every rule in the stage self-guards on `Tag::Curadi` (3.1.25) or on ṇic's
+*identity* at `NIC`: text `Ric` (1.3.9), `Tag::Rit` (3.4.114, 7.2.116, 3.1.32)
+or `Tag::Ardhadhatuka` (7.3.86). It is never enough that some term exists at
+index 3, because once `samjna` runs that index holds the tiṅ ending. So for
+gaṇas 1–9 the stage is inert, and it stays inert even in a hand-built chain
+that puts a tiṅ there. Rules,
 in order:
 
 1. **3.1.25** *satyāpapāśarūpavīṇātūlaślokasenālomatvacavarmavarṇacūrṇa-
@@ -131,7 +135,14 @@ final i is ṇic" reads `Tag::Nijanta` instead. None exists in 10a; 6.4.51
   After 3.1.32 that is what the śāstra wants; the trace diff and goldens are
   the check.
 - **Exhaustive `match` on `Gana`** in other crates (analyzer, CLI) must gain
-  the arm; the compiler finds them.
+  the arm; the compiler finds them. The audit harness's `gana_name` is outside
+  the workspace and needs the arm by hand.
+- **Duplicate ids shadow unit-test lookups.** 1.3.9 now occurs twice and
+  7.3.86 three times, and `sanadi` runs first, so a stage test that finds its
+  rule with `rules().find(…)` gets the sanādi entry. Found by the plan's
+  prototype: seven guard tests failed and others passed by testing the wrong
+  entry. Stage tests look rules up in their own stage's static (`GUNA`,
+  `SAMJNA`, `TIN`), and AGENTS.md records the rule.
 
 ## Pada — 1.3.74 *ṇicaś ca*
 
@@ -145,7 +156,8 @@ stays the single source of pada truth across all five variants. When the
 causative slice lands, 1.3.74 should key on `Tag::Nijanta` instead; the
 variant's doc comment names that slice as the trigger.
 
-**Rule.** 1.3.74 in `samjna.rs`, beside 1.3.66, as its structural twin:
+**Rule.** 1.3.74 in `samjna.rs`, between 1.3.72 and 1.3.78 (sūtra order), as
+1.3.66's structural twin:
 
 - `ctx.pada == Atmanepada` and ANGA has `Tag::Nic`: fires, records
   `"Ricaś ca"`;
@@ -175,7 +187,13 @@ output before writing any golden.
   prathama eka (*-at* / *-ad*), loṭ prathama eka (*-atAt* / *-atAd* /
   *-atu*), loṭ madhyama eka (*-atAt* / *-atAd* / bare *-a*), vidhiliṅ
   prathama eka (*-et* / *-ed*). Keyed by the engine's own log ∩
-  `VIKALPA_RULES`; no new vikalpa rule.
+  `VIKALPA_RULES`; no new vikalpa rule. √cur's keys carry its mandatory
+  sanādi 7.3.86 in front (`7.3.86+8.4.56`, `7.3.86+7.1.35`,
+  `7.3.86+7.1.35+8.4.56`). This is the id it shares with tanādi's optional
+  entry, the same artifact the 3e/3f keys already document.
+- **Pada-ambiguous surfaces:** the four roots are thematic and ubhayapadī, so
+  each adds √nī's four collisions (`acorayata`, `corayatAm`, `corayetAm`,
+  `corayeta`): 56 → 72.
 - **Trace pins** — new `crates/panini/tests/trace/curadi.rs`:
   - *corayati*: 3.1.25 → 3.4.114 → 7.3.86 → 3.1.32 → 1.3.78 → 3.1.68 →
     7.3.84 → 6.1.78;
@@ -197,7 +215,8 @@ output before writing any golden.
     row.
 - **Rule order:** `tinanta_rule_order_is_pinned` gains the `sanadi` stage
   and 1.3.74 at their positions.
-- **Corpus-wide fires-only-on-rows test**, extending 3f3's: 3.1.25, 3.4.114,
+- **Corpus-wide fires-only-on-rows test**, using `credited`, which moves from
+  `trace/juhotyadi.rs` to `trace/helpers.rs`: 3.1.25, 3.4.114,
   7.2.116, 3.1.32 and 1.3.74 are credited only on the four `10.x` rows; the
   guṇa-stage 7.3.86's credit count off curādi equals its count on `main`.
 - **Prior traces:** diff every prior cell's trace between `main` and the
@@ -238,6 +257,8 @@ AGENTS.md names the non-caught set verbatim.
 
 README, AGENTS.md and `docs/ARCHITECTURE.md`:
 
+- the both-pada root count 26 → 30 (README, ARCHITECTURE, the audit harness);
+  pada-ambiguous surfaces 56 → 72;
 - 103 → 107 roots; 4644 → 4932 cells; 5750 → 6062 forms; ALTERNATES
   1106 → 1130; the multi-form census (16 more multi-form cells: eight
   two-form — laṅ and vidhiliṅ prathama eka — and eight three-form — loṭ
