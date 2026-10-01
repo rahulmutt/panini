@@ -149,6 +149,11 @@ const VIKALPA_RULES: &[&str] = &[
 /// produced it. This ties each row to the grammar: find the branch that
 /// derives the row's form, intersect its log with the optional-rule set, and
 /// require exactly the rules the row claims.
+///
+/// `VIKALPA_RULES` holds ids, not arms: 7.3.86 is listed once but runs twice,
+/// as the mandatory laghūpadha guṇa and as the tanādi vikalpa entry, so a key
+/// naming 7.3.86 does not by itself mean the rule was optional. Six of the 13
+/// `7.3.86+8.4.56` keys are the mandatory firing (3e's laṅ eka cells).
 #[test]
 fn every_alternate_names_the_vikalpa_rules_that_produced_it() {
     for (root, lakara, pada, cell, form, key) in ALTERNATES.iter() {
@@ -333,7 +338,9 @@ fn derivation_set_is_exactly_pinned() {
 /// 2 `3.4.111`, 72 `6.4.107`, 145 `8.4.65`, 8 `8.2.75`, 1 `8.2.74`, 16
 /// `7.1.35+8.4.65`, 16 `7.1.35+8.4.65+8.4.56`, 270 `7.3.86` (tanādi 8a's
 /// ik-upadhā fork), 8 `7.1.35+7.3.86`, 8 `7.1.35+7.3.86+8.4.56`, 8
-/// `7.3.86+6.4.107`, 13 `7.3.86+8.4.56`, 23 `6.4.115`, 2 `7.1.35+6.4.115`,
+/// `7.3.86+6.4.107`, 13 `7.3.86+8.4.56` (six of them name the MANDATORY
+/// 7.3.86, through the id it shares with the tanādi vikalpa arm: slice 3e's
+/// laṅ prathama and madhyama eka cells, whose root guṇa 7.3.86 credits), 23 `6.4.115`, 2 `7.1.35+6.4.115`,
 /// 2 `7.1.35+6.4.115+8.4.56`, and 1 `6.4.115+8.4.56`, 14 `6.4.116`, 1 `6.4.117`, 2 `7.1.35+6.4.116` and 2
 /// `7.1.35+6.4.116+8.4.56` — √kṛ (slice 8b) adds six more
 /// rows, all folded into the pre-existing `8.4.56`/`7.1.35`/`7.1.35+8.4.56`

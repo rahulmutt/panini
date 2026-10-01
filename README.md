@@ -152,7 +152,7 @@ roots take. A root may also admit **both**
 padas — twenty-six roots that admit both padas in the curated set
 (twenty-five ubhayapadī by 1.3.72: √nī, √tud, √rudh, √bhid, √kṣud, √yuj,
 √tṛd, √ric, √vic, √chid, √chṛd, √tan, √san, √kṣaṇ, √kṣiṇ, √ṛṇ, √tṛ, √ghṛ,
-√kṛ, √dā, √dhā, √bhṛ, √nij, √vij and √viṣ; and √bhuj by 1.3.66) derive a full
+√kṛ, √dā, √dhā, √bhṛ, √ṇij, √vij and √viṣ; and √bhuj by 1.3.66) derive a full
 parasmaipada and a full ātmanepada paradigm, so a single surface can be
 genuinely pada-ambiguous.
 √van, by contrast, never enters this bucket: it is ātmanepadī by its own

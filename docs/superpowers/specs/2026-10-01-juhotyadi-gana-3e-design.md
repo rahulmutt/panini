@@ -108,8 +108,11 @@ sārvadhātuka ending. Written as an apavāda through `Rule.bars`, as 6.4.117 is
 - **A mandatory `Rule`** (`vikalpa: false`) with **`bars: &["7.3.86"]`**,
   changing no text, recording `"7.3.87", "nAByastasyAci piti sArvaDAtuke"`.
   vidyut credits the same no-op block.
-- **Placed between 7.3.84 and the first 7.3.86** (`guna.rs:150`), so the barred
-  rule runs after its barrer, as `exactly_the_pinned_bars` requires. That test
+- **Placed between 7.3.83 and the first 7.3.84**, so the barred
+  rule runs after its barrer, as `exactly_the_pinned_bars` requires. It must
+  read the aṅga before 7.3.84's guṇa, as vidyut does: after it a ṛ-final aṅga
+  is `-ar`, passes the laghūpadha clause, and the rule would credit a no-op
+  step on 31 prior ṛ-root cells (final-review C1). That test
   gains the pair `7.3.87 → 7.3.86`.
 - **Guard — all five:**
   1. `ANGA` carries `Tag::Abhyasta` (`abhyasa.rs:60-61`);

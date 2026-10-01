@@ -94,7 +94,7 @@
     compile, as `Candidate` has no `Default`). The two packages sum to the
     762 / 711 / 48 / 2 / 1 total. No 7.4.75 mutant (`abhyasa.rs`: all 12
     mutants in the file caught, none unviable) and no 7.3.87 mutant
-    (`guna.rs` lines 145-200: none missed, none timed out, none unviable; the
+    (`guna.rs` lines 114-180 after the final-review move: none missed, none timed out, none unviable; the
     24 unviable `guna.rs` mutants all sit at other lines and are the same
     type-error operator swaps as before) is non-caught, so nothing needs an
     unviable-without-reason exemption.
@@ -109,6 +109,14 @@
     `/home/dev/mutants-records/juhotyadi-3e/mutants.out/outcomes.json`, with a
     durable copy at
     `/home/dev/mutants-records/juhotyadi-3e/outcomes.durable.json`.
+    **Addendum (3e final-review fix).** The full campaign above ran with 7.3.87
+    AFTER 7.3.84. The final-review fix moved it BEFORE 7.3.84 (guard code
+    unchanged; rule order only). A `guna.rs`-scoped re-run
+    (`-o /home/dev/mutants-records/juhotyadi-3e-guna-fix`, same flags, `--file
+    crates/panini-prakriya/src/tinanta/guna.rs`, 2m57s) gives 156 mutants: 132
+    caught, 24 unviable, 0 missed, 0 timeout. `missed.txt` and `timeout.txt`
+    are both empty (0 bytes). `outcomes.json` is copied to
+    `/home/dev/mutants-records/juhotyadi-3e-guna-fix/outcomes.durable.json`.
     The juhotyādi 3d2 record it replaces: `git show c3de3e1:AGENTS.md`.
     **The per-slice history** of the floor, the cap and every campaign from
     the pada audit through slice 3d, all measured against the Θ(N²) suite,
@@ -647,7 +655,7 @@
   so the 3d entry's `controller.rs:206` was correct; both lines measured by
   grep at this commit). Juhotyādi 3e touched neither comment either; the corpus
   stands at 4428 cells as of 3e (`guna.rs:2228`'s claim now anchored at
-  `guna.rs:2376`, `controller.rs:206`'s at `controller.rs:206`: 3e's 7.3.87 rule
+  `guna.rs:2384` (moved from 2376 by the final-review comment on 7.3.87's order), `controller.rs:206`'s at `controller.rs:206`: 3e's 7.3.87 rule
   and its tests landed in `guna.rs` above the test, while `controller.rs` is
   unchanged; both lines measured by grep at this commit). A third,
   `tinanta/tripadi.rs`'s comment on 8.2.30 (formerly the one calling √bhañj

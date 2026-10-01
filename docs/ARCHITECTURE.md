@@ -37,7 +37,7 @@ implements; `tinanta::rules()` yields that flattened sequence.
 | `vikarana.rs` | 3.1.69, 3.1.73, 3.1.77, 3.1.78, 3.1.79, 3.1.81, 3.1.68, 2.4.72, 2.4.75, 3.4.111, 3.1.83, 1.2.4 | contains 3.1.68 |
 | `abhyasa.rs` | 6.1.10, 7.4.66, 7.4.60, 7.4.59, 7.4.62, 7.4.75, 7.4.76, 7.4.77, 7.4.78, 6.4.78 — dvitva and the abhyāsa's shape | after 3.1.68 |
 | `anga.rs` | 6.4.71 … 6.1.73 … 7.1.4 … 7.2.81, 6.4.23 | after 3.1.68 |
-| `guna.rs` | 7.4.21, 7.3.83, 7.3.84, 7.3.87, 7.3.86, 7.3.86 (again — its own vikalpa entry, see below), 7.3.92, 7.3.84 (again — see below), 7.1.102, 6.4.110, 6.4.108, 6.4.109, 6.4.87, 6.4.82, 6.4.77, 6.1.77, 6.1.78, 7.3.101, 6.4.119, 6.4.118, 6.4.117, 6.4.116, 6.4.113, 6.4.112, 6.4.115 — vowel gradation and vikaraṇa reshaping | after 3.1.68 |
+| `guna.rs` | 7.4.21, 7.3.83, 7.3.87, 7.3.84, 7.3.86, 7.3.86 (again — its own vikalpa entry, see below), 7.3.92, 7.3.84 (again — see below), 7.1.102, 6.4.110, 6.4.108, 6.4.109, 6.4.87, 6.4.82, 6.4.77, 6.1.77, 6.1.78, 7.3.101, 6.4.119, 6.4.118, 6.4.117, 6.4.116, 6.4.113, 6.4.112, 6.4.115 — vowel gradation and vikaraṇa reshaping | after 3.1.68 |
 | `adesha.rs` | 6.1.101 … 6.1.96, 6.4.106, 6.4.107, 6.1.90, 6.1.88 … 6.4.101, 6.4.111 | after 3.1.68 |
 | `tripadi.rs` | 8.2.77, 8.2.23, 8.2.25, 8.2.30, 8.2.31, 8.2.39, 8.2.40, 8.2.41, 8.2.74, 8.2.75, 8.2.73, 8.3.15 … 8.3.59, 8.4.40, 8.4.41, 8.3.13, 8.4.53, 8.4.54, 8.2.38, 8.4.55, 8.4.1, 8.4.2, 8.4.58, 8.4.65, 8.4.56 | after 3.1.68 |
 
@@ -348,11 +348,11 @@ tagging the copy `Abhyasa` (6.1.4) and both terms `Abhyasta` (6.1.5).
 Everything that reshapes the abhyāsa lives in its own stage, `abhyasa.rs`,
 between `vikarana` and `anga` — 7.4.62 *kuhoś cuḥ* in 3a (hu → Ju, ki →
 ci); 7.4.59/7.4.60 arrive with 3b, 7.4.76 with 3c, 7.4.78 with 3c2, and
-7.4.66/7.4.77 with 3d — so 6.4.71 always sees a finished
+7.4.66/7.4.77 with 3d, 6.4.78 with 3d2, 7.4.75 with 3e — so 6.4.71 always sees a finished
 abhyāsa and 7.1.4 *ad abhyastāt* (before 7.1.3) reads a real tag.
 **Dvitva runs before guṇa**, the Kaumudī order; vidyut-prakriya guṇates
-first, copies, and shortens the copy by 7.4.59. Forms agree for all 26
-roots and the audit compares form sets, so the divergence shows only in
+first, copies, and shortens the copy by 7.4.59. Forms agree for all 20
+curated roots and the audit compares form sets, so the divergence shows only in
 this engine's trace pins (`tests/trace/juhotyadi.rs`). 3.4.109 gives laṅ
 its jus on `Tag::Juhotyadi` as a pre-dvitva stand-in for *abhyasta* (liṭ
 must revisit it), 7.3.83 *jusi ca* guṇates before that jus over 1.1.5's
@@ -599,10 +599,10 @@ prathama and madhyama eka across the 72 roots with a parasmaipada column —
 roots never reach this guard, and the twenty-six roots that admit both
 padas (twenty-five ubhayapadī by 1.3.72 — √rudh, √nī, √tud, √bhid, √kṣud,
 √yuj, √tṛd, √ric, √vic, √chid, √chṛd, √tan, √san, √kṣaṇ, √kṣiṇ, √ṛṇ, √tṛ, √ghṛṇ,
-√kṛ, √dā, √dhā, √bhṛ, √nij, √vij and √viṣ — and √bhuj by 1.3.66) reach it in their
+√kṛ, √dā, √dhā, √bhṛ, √ṇij, √vij and √viṣ — and √bhuj by 1.3.66) reach it in their
 parasmaipada cells only, joined by juhotyādi's √hu, √ki, √bhī, √hrī, √hā
 (`03.0009`), √gā, √pṝ, √pṛ, √ghṛ (`Gf`), √hṛ, √sṛ and √ṛ (all parasmaipada-only), and
-the parasmaipada columns of √bhṛ, √nij, √vij and √viṣ; 72 + 25 = the 97
+the parasmaipada columns of √bhṛ, √ṇij, √vij and √viṣ; 72 + 25 = the 97
 curated roots) — `Bavatu ~
 BavatAd`, `Bava ~ BavatAd`. 8.4.56 optionally devoices a pada-final jaś
 (produced by the now-obligatory 8.2.39) back to its car at the end of an
