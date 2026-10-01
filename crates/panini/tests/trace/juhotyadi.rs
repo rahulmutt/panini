@@ -961,7 +961,7 @@ fn branch_trace(
 fn acikeH_trace_is_jashtva_then_das_ca() {
     // kit P laN M.E. 7.3.86's guṇa, 8.2.23 eats the sip, 8.2.39 voices the
     // `t`, then 8.2.75 takes the `d` to ru. 8.2.73 never runs on it: that
-    // rule is still rudhādi-only and wants an `s`.
+    // rule wants an `s`.
     let t = branch_trace(
         "03.0021",
         Lakara::Lan,
@@ -1105,4 +1105,152 @@ fn nas_capadantasya_is_credited_only_on_rudhadi_and_dhan() {
         hits.iter().any(|(n, _)| *n == "03.0024"),
         "√dhan no longer witnesses 8.3.24"
     );
+}
+
+#[test]
+fn bapsati_trace_elides_the_upadha_then_devoices_inside_the_anga() {
+    // Bas P laT P.B. 6.4.100 before the ṅit `ati` (7.1.4's), then 8.4.55
+    // turns the aṅga's own `B` to `p` before its `s`: a word-internal pair the
+    // junction-only reading never saw.
+    let (text, t) = cell_trace(
+        "03.0019",
+        Lakara::Lat,
+        Pada::Parasmaipada,
+        Purusha::Prathama,
+        Vacana::Bahu,
+    );
+    assert_eq!(text, "bapsati", "got {t:?}");
+    assert!(at(&t, "7.1.4") < at(&t, "6.4.100"), "got {t:?}");
+    assert!(at(&t, "6.4.100") < at(&t, "8.4.55"), "got {t:?}");
+    assert!(!t.contains(&"8.2.26".to_string()), "got {t:?}");
+}
+
+#[test]
+#[allow(non_snake_case)]
+fn babDaH_trace_is_upadha_lopa_then_jhalo_jhali_then_jhashas_tathoh() {
+    // Bas P laT P.D. Bs + tas: 8.2.26 elides the `s` between `B` and `t`,
+    // 8.2.40 voices the `t` after the jhaṣ, and 8.4.53 takes `B` to `b`.
+    let (text, t) = cell_trace(
+        "03.0019",
+        Lakara::Lat,
+        Pada::Parasmaipada,
+        Purusha::Prathama,
+        Vacana::Dvi,
+    );
+    assert_eq!(text, "babDaH", "got {t:?}");
+    assert!(at(&t, "6.4.100") < at(&t, "8.2.26"), "got {t:?}");
+    assert!(at(&t, "8.2.26") < at(&t, "8.2.40"), "got {t:?}");
+    assert!(at(&t, "8.2.40") < at(&t, "8.4.53"), "got {t:?}");
+}
+
+#[test]
+#[allow(non_snake_case)]
+fn babDi_trace_elides_the_upadha_before_her_dhih() {
+    // Bas P loT M.E. 6.4.100 runs before 6.4.101 (vidyut's order), and the
+    // `s` before `D` is 8.2.25's, not 8.2.26's.
+    let (text, t) = cell_trace(
+        "03.0019",
+        Lakara::Lot,
+        Pada::Parasmaipada,
+        Purusha::Madhyama,
+        Vacana::Eka,
+    );
+    assert_eq!(text, "babDi", "got {t:?}");
+    assert!(at(&t, "6.4.100") < at(&t, "6.4.101"), "got {t:?}");
+    assert!(at(&t, "6.4.101") < at(&t, "8.2.25"), "got {t:?}");
+    assert!(!t.contains(&"8.2.26".to_string()), "got {t:?}");
+}
+
+#[test]
+#[allow(non_snake_case)]
+fn baBastu_trace_keeps_the_upadha_before_a_pit() {
+    // Bas P loT P.E., declined branch: `tu` is pit, so 6.4.100 declines.
+    let (text, t) = cell_trace(
+        "03.0019",
+        Lakara::Lot,
+        Pada::Parasmaipada,
+        Purusha::Prathama,
+        Vacana::Eka,
+    );
+    assert_eq!(text, "baBastu", "got {t:?}");
+    assert!(!t.contains(&"6.4.100".to_string()), "got {t:?}");
+}
+
+#[test]
+#[allow(non_snake_case)]
+fn abaBat_trace_is_tipy_anasteh_then_car() {
+    // Bas P laN P.E. 8.2.23 eats the tip, 8.2.73 writes the `d`, 8.4.56
+    // devoices it. The first 8.2.73 outside rudhādi.
+    let t = branch_trace(
+        "03.0019",
+        Lakara::Lan,
+        Purusha::Prathama,
+        Vacana::Eka,
+        "abaBat",
+    );
+    assert!(at(&t, "8.2.23") < at(&t, "8.2.73"), "got {t:?}");
+    assert!(at(&t, "8.2.73") < at(&t, "8.4.56"), "got {t:?}");
+    assert!(!t.contains(&"6.4.100".to_string()), "got {t:?}");
+}
+
+#[test]
+#[allow(non_snake_case)]
+fn abaBaH_trace_is_sipi_dhatoh_without_tipy_anasteh() {
+    // Bas P laN M.E., 8.2.74's branch: the `s` goes to ru and 8.3.15 to a
+    // visarga, and 8.2.73 finds no `s` left.
+    let t = branch_trace(
+        "03.0019",
+        Lakara::Lan,
+        Purusha::Madhyama,
+        Vacana::Eka,
+        "abaBaH",
+    );
+    assert!(at(&t, "8.2.74") < at(&t, "8.3.15"), "got {t:?}");
+    assert!(!t.contains(&"8.2.73".to_string()), "got {t:?}");
+}
+
+#[test]
+fn ghasibhasor_and_jhalo_jhali_are_credited_only_on_bhas() {
+    // 6.4.100 is keyed to √bhas's row; 8.2.26 reads the whole word with no
+    // key at all. Goldens ignore traces, so this is what holds "no other
+    // root reaches 8.2.26".
+    for sutra in ["6.4.100", "8.2.26"] {
+        let hits = credited(sutra);
+        assert!(!hits.is_empty(), "√bhas no longer witnesses {sutra}");
+        for (number, _) in &hits {
+            assert_eq!(*number, "03.0019", "{sutra} credited on {number}");
+        }
+    }
+}
+
+#[test]
+fn tipy_anasteh_and_sipi_dhato_are_credited_only_on_rudhadi_and_bhas() {
+    // 8.2.73 and 8.2.74 have no gaṇa test since slice 3f2.
+    for sutra in ["8.2.73", "8.2.74"] {
+        let hits = credited(sutra);
+        for (number, gana) in &hits {
+            assert!(
+                *gana == Gana::Rudhadi || *number == "03.0019",
+                "{sutra} credited on {number}"
+            );
+        }
+        assert!(
+            hits.iter().any(|(n, _)| *n == "03.0019"),
+            "√bhas no longer witnesses {sutra}"
+        );
+    }
+}
+
+#[test]
+fn khari_ca_off_bhas_is_credited_exactly_as_before_3f2() {
+    // 8.4.55 reads the whole word since slice 3f2. A trace step carries no
+    // term boundaries, so "it fires only at the junction off √bhas" is held
+    // as the count of crediting branches outside √bhas, measured on `main`
+    // before the widening: a new word-internal firing on a prior row would
+    // add one. Update it only when a slice adds rows that credit 8.4.55.
+    let off_bhas = credited("8.4.55")
+        .into_iter()
+        .filter(|(number, _)| *number != "03.0019")
+        .count();
+    assert_eq!(off_bhas, 455);
 }
