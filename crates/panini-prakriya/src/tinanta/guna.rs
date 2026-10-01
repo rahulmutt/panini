@@ -111,37 +111,6 @@ pub(crate) static GUNA: &[Rule] = &[
             true
         },
     },
-    // 7.3.84 sārvadhātukārdhadhātukayoḥ: guṇa of the aṅga's final ik.
-    Rule {
-        id: "7.3.84",
-        name: "sArvaDAtukArDaDAtukayoH",
-        kind: RuleKind::Vidhi,
-        vikalpa: false,
-        bars: &[],
-        apply: |p| {
-            // 1.1.5 kṅiti ca: a following ṅit sārvadhātuka blocks guṇa. On
-            // the thematic path that follower is the vikaraṇa, ṅit (1.2.4)
-            // exactly when apit (śyan, śa); śap is pit and is not, so bhvādi
-            // guṇa is unaffected. On the śap-luk'd path it is the ending —
-            // see `following_sarvadhatuka`. Narrowness: the sūtra is *kṅiti*,
-            // ṅit OR kit; this engine has no kit tag because no implemented
-            // rule assigns or consumes one. Widen this test the moment a kit
-            // sārvadhātuka enters scope.
-            if following_sarvadhatuka(p).is_some_and(|t| t.has(Tag::Ngit)) {
-                return false;
-            }
-            let last = p.terms[ANGA].text.chars().last().unwrap();
-            let Some(g) = guna_of(last) else {
-                return false;
-            };
-            let before = p.snapshot();
-            let mut s: Vec<char> = p.terms[ANGA].text.chars().collect();
-            s.pop();
-            p.terms[ANGA].text = s.into_iter().collect::<String>() + g;
-            p.record("7.3.84", "sArvaDAtukArDaDAtukayoH", before);
-            true
-        },
-    },
     // 7.3.87 nābhyastasyāci piti sārvadhātuke: an abhyasta aṅga takes no
     // laghūpadha guṇa before a vowel-initial pit sārvadhātuka ending. √ṇij
     // gives nenijAni, anenijam and nenijE, not *nenejAni (slice 3e).
@@ -170,6 +139,14 @@ pub(crate) static GUNA: &[Rule] = &[
     //
     // Reads ENDING directly, as 7.3.92 does. An abhyasta aṅga is always
     // ślu'd, so SHAP is empty and the ending is the following sārvadhātuka.
+    //
+    // ORDER: immediately BEFORE the first 7.3.84, after 7.3.83. It reads the
+    // aṅga before 7.3.84's guṇa, as vidyut does (`guna_vrddhi.rs` reads the
+    // pre-guṇa aṅga). After that guṇa a ṛ-final aṅga is consonant-final
+    // `-ar` with a short upadhā, which passes the laghūpadha clause, and the
+    // rule would credit a no-op step on prior cells (`biBarARi`, `iyarARi`,
+    // `apiparam`). Before it, √bhṛ's and √ṛ's aṅgas are vowel-final and the
+    // clause declines them. It still bars only 7.3.86.
     Rule {
         id: "7.3.87",
         name: "nAByastasyAci piti sArvaDAtuke",
@@ -198,6 +175,37 @@ pub(crate) static GUNA: &[Rule] = &[
             }
             let before = p.snapshot();
             p.record("7.3.87", "nAByastasyAci piti sArvaDAtuke", before);
+            true
+        },
+    },
+    // 7.3.84 sārvadhātukārdhadhātukayoḥ: guṇa of the aṅga's final ik.
+    Rule {
+        id: "7.3.84",
+        name: "sArvaDAtukArDaDAtukayoH",
+        kind: RuleKind::Vidhi,
+        vikalpa: false,
+        bars: &[],
+        apply: |p| {
+            // 1.1.5 kṅiti ca: a following ṅit sārvadhātuka blocks guṇa. On
+            // the thematic path that follower is the vikaraṇa, ṅit (1.2.4)
+            // exactly when apit (śyan, śa); śap is pit and is not, so bhvādi
+            // guṇa is unaffected. On the śap-luk'd path it is the ending —
+            // see `following_sarvadhatuka`. Narrowness: the sūtra is *kṅiti*,
+            // ṅit OR kit; this engine has no kit tag because no implemented
+            // rule assigns or consumes one. Widen this test the moment a kit
+            // sārvadhātuka enters scope.
+            if following_sarvadhatuka(p).is_some_and(|t| t.has(Tag::Ngit)) {
+                return false;
+            }
+            let last = p.terms[ANGA].text.chars().last().unwrap();
+            let Some(g) = guna_of(last) else {
+                return false;
+            };
+            let before = p.snapshot();
+            let mut s: Vec<char> = p.terms[ANGA].text.chars().collect();
+            s.pop();
+            p.terms[ANGA].text = s.into_iter().collect::<String>() + g;
+            p.record("7.3.84", "sArvaDAtukArDaDAtukayoH", before);
             true
         },
     },
@@ -783,7 +791,7 @@ pub(crate) static GUNA: &[Rule] = &[
     // after its apavāda 6.4.82 — because every ī/ū-final curated root is
     // already past it by then: √bhū and √nī have guṇated (`Bo`, `ne`, śap
     // being pit so 1.1.5 does not block), √śī has guṇated by 7.4.21, and
-    // √vrī's follower is the hal-initial śnā. The 4212 byte-identical
+    // √vrī's follower is the hal-initial śnā. The 4428 byte-identical
     // priors are what turn that from an argument into a proof.
     //
     // THE UVAṄ HALF IS NOT WRITTEN. `U` → `uv` has no cell in the suite —

@@ -12,8 +12,8 @@
 //! inside the abhyāsa stage, before laṅ's 6.4.72 and before guṇa, where vidyut
 //! guṇates first (on pit cells only) and reaches 6.4.78 later. Slice 3e's
 //! 7.4.75 runs inside the same stage, after 7.4.60, so 7.4.59 never fires on
-//! its rows, and 7.3.87 sits in `guna` after the whole stage, where vidyut
-//! credits it between 6.1.10 and 7.4.60. Forms agree; the traces do not, and
+//! its rows, and 7.3.87 sits in `guna` after the whole stage, just before
+//! 7.3.84, where vidyut credits it between 6.1.10 and 7.4.60. Forms agree; the traces do not, and
 //! these pins are what make the engine's own order a checked fact rather than an
 //! accident.
 
@@ -860,10 +860,11 @@ fn vevekzi_trace_is_shadhoh_kah_si_then_adesha_pratyayayoh() {
 
 #[test]
 fn juhavani_trace_has_no_nabhyastasyaci() {
-    // hu P loT U.E. This is a prior cell, pinned for 7.3.87's *laghūpadhasya*
-    // clause. √hu's aṅga is vowel-final, so 7.3.84's guṇa stands
-    // (hu → ho → hav) and 7.3.87 never fires. vidyut credits it on no
-    // curated row.
+    // hu P loT U.E. A prior cell, but NOT the witness of 7.3.87's
+    // *laghūpadhasya* clause: √hu's aṅga is vowel-final (hu → ho → hav), so
+    // the clause declines it trivially. The ṛ-roots are the prior cells that
+    // test that clause; see `biBarARi_trace_has_no_nabhyastasyaci` and
+    // `nabhyastasyaci_is_credited_only_on_the_nij_vij_vish_rows`.
     let (text, t) = cell_trace(
         "03.0001",
         Lakara::Lot,
@@ -874,4 +875,63 @@ fn juhavani_trace_has_no_nabhyastasyaci() {
     assert_eq!(text, "juhavAni", "got {t:?}");
     assert!(at(&t, "3.4.92") < at(&t, "7.3.84"), "got {t:?}");
     assert!(!t.contains(&"7.3.87".to_string()), "got {t:?}");
+}
+
+#[test]
+#[allow(non_snake_case)]
+fn biBarARi_trace_has_no_nabhyastasyaci() {
+    // bhṛ P loT U.E. A prior ṛ-root cell. 7.3.87 reads the aṅga BEFORE
+    // 7.3.84's guṇa, where `Bf` is vowel-final; read after it, `Bar` passes
+    // the laghūpadha clause and the rule credits a no-op step (slice 3e's
+    // final-review C1).
+    let (text, t) = cell_trace(
+        "03.0006",
+        Lakara::Lot,
+        Pada::Parasmaipada,
+        Purusha::Uttama,
+        Vacana::Eka,
+    );
+    assert_eq!(text, "biBarARi", "got {t:?}");
+    assert!(!t.contains(&"7.3.87".to_string()), "got {t:?}");
+}
+
+#[test]
+fn nabhyastasyaci_is_credited_only_on_the_nij_vij_vish_rows() {
+    // Corpus-wide: every branch of every curated root x lakāra x pada x cell
+    // whose log carries 7.3.87 belongs to √ṇij, √vij or √viṣ. A new rule that
+    // credits itself on prior rows' traces (forms unchanged) fails here.
+    // 3f extends the allowed list.
+    const ALLOWED: [&str; 3] = ["03.0012", "03.0013", "03.0014"];
+    const CELLS: [(Purusha, Vacana); 9] = [
+        (Purusha::Prathama, Vacana::Eka),
+        (Purusha::Prathama, Vacana::Dvi),
+        (Purusha::Prathama, Vacana::Bahu),
+        (Purusha::Madhyama, Vacana::Eka),
+        (Purusha::Madhyama, Vacana::Dvi),
+        (Purusha::Madhyama, Vacana::Bahu),
+        (Purusha::Uttama, Vacana::Eka),
+        (Purusha::Uttama, Vacana::Dvi),
+        (Purusha::Uttama, Vacana::Bahu),
+    ];
+    let mut credited = 0;
+    for d in dhatus() {
+        for lakara in [Lakara::Lat, Lakara::Lan, Lakara::Lot, Lakara::VidhiLin] {
+            for &pada in d.pada.padas() {
+                for (purusha, vacana) in CELLS {
+                    for p in derive(d, lakara, pada, purusha, vacana) {
+                        if p.log.iter().any(|s| s.sutra == "7.3.87") {
+                            credited += 1;
+                            assert!(
+                                ALLOWED.contains(&d.dhatupatha),
+                                "7.3.87 credited on {} {lakara:?} {pada:?} {purusha:?} {vacana:?}: {}",
+                                d.dhatupatha,
+                                p.text()
+                            );
+                        }
+                    }
+                }
+            }
+        }
+    }
+    assert!(credited > 0, "the allowed rows no longer witness 7.3.87");
 }
