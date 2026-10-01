@@ -252,6 +252,41 @@ pub(crate) static TRIPADI: &[Rule] = &[
             true
         },
     },
+    // 8.2.26 jhalo jhali: an `s` between two jhals is elided. Ba + Bs + tas
+    // → Ba + B + tas, which 8.2.40 then takes to babDaH (√bhas, slice 3f2,
+    // once 6.4.100 has elided the root's upadhā `a`).
+    //
+    // ORDERED AFTER 8.2.25 dhi ca, in sūtra order. On babDi the `s` stands
+    // before `D`, and 8.2.25 — which needs no jhal on its left — takes it
+    // first; this rule then finds no `s`. vidyut credits the same split.
+    //
+    // Reads the WHOLE WORD, as 8.2.40 and 8.4.53 do: the sūtra has no
+    // positional condition. No curated cell outside √bhas presents jhal +
+    // `s` + jhal anywhere (the 3f2 spec's corpus-wide trace diff), and
+    // `ghasibhasor_and_jhalo_jhali_are_credited_only_on_bhas` in `panini`'s
+    // trace suite holds that as a fact. An s-aorist would be the first
+    // witness elsewhere, and this engine derives no luṅ.
+    Rule {
+        id: "8.2.26",
+        name: "Jalo Jali",
+        kind: RuleKind::Vidhi,
+        vikalpa: false,
+        bars: &[],
+        apply: |p| {
+            let w = word_chars(p);
+            for i in 1..w.len().saturating_sub(1) {
+                if w[i].2 != 's' || !is_jhal(w[i - 1].2) || !is_jhal(w[i + 1].2) {
+                    continue;
+                }
+                let (term, idx, _) = w[i];
+                let before = p.snapshot();
+                remove_char(p, term, idx);
+                p.record("8.2.26", "Jalo Jali", before);
+                return true;
+            }
+            false
+        },
+    },
     // 8.2.30 coH kuH: a cu stop (c C j J) is replaced by its ku counterpart
     // (the nearest velar by 1.1.50 sthāne'ntaratamaḥ, so voicing and
     // aspiration are preserved) when it is either word-final or immediately
@@ -2830,5 +2865,37 @@ mod tests {
         };
         assert!(!(rule.apply)(&mut p));
         assert!(p.log.is_empty());
+    }
+
+    // --- 8.2.26 jhalo jhali (slice 3f2) -----------------------------------
+
+    #[test]
+    fn jhalo_jhali_elides_an_s_between_two_jhals() {
+        // √bhas after 6.4.100: the `s` of `Bs` before a `t`/`T`-initial
+        // ending (babDaH, babDa, babDAt once 8.2.40 has run).
+        let rule = rules().find(|r| r.id == "8.2.26").unwrap();
+        for (ending, want) in [("tas", "BaBtas"), ("Ta", "BaBTa"), ("tAt", "BaBtAt")] {
+            let mut p = bhas_prakriya("Bs", ending);
+            assert!((rule.apply)(&mut p), "{ending}");
+            assert_eq!(p.text(), want);
+            assert_eq!(p.log.last().unwrap().sutra, "8.2.26");
+        }
+    }
+
+    #[test]
+    fn jhalo_jhali_declines_unless_both_neighbours_are_jhals() {
+        let rule = rules().find(|r| r.id == "8.2.26").unwrap();
+        for (anga, ending, why) in [
+            // A vowel on the left: baBasti keeps its `s`.
+            ("Bas", "ti", "a + s + t"),
+            // A vowel on the right: bapsati keeps it, for 8.4.55.
+            ("Bs", "ati", "B + s + a"),
+            // A non-jhal on the right: bapsyAt keeps it too.
+            ("Bs", "yAt", "B + s + y"),
+        ] {
+            let mut p = bhas_prakriya(anga, ending);
+            assert!(!(rule.apply)(&mut p), "{why}");
+            assert!(p.log.is_empty(), "{why}");
+        }
     }
 }
