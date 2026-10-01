@@ -75,6 +75,9 @@ A throwaway worktree at `e660c48` carried exactly the five changes below
 - a dump of every curated cell's credited-rule log (5805 prakriyā lines) was
   **byte-identical** between `main` and the prototype. No prior cell's trace
   moves, not only its golden.
+  *Execution note:* the main-branch live-branch dump actually measured 5655
+  lines (the audit harness asserts `n_branches == n_forms`), not 5805;
+  PRIORS-IDENTICAL and the 455 count held.
 
 The widening of 8.2.73 / 8.2.74 alone was also run first: the suite passed
 unchanged, and it took √bhas to 9/36 (the two laṅ eka cells).

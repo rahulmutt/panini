@@ -40,8 +40,7 @@
     shared and was loaded by other tenants with no busy process of ours, so
     this is not comparable with the 8.019s / 8.348s taken at 4572 cells on
     1.98.1 under load about 34, nor with the 5.418s / 5.419s at 4428 cells
-    under load 7.46). The floor and the probe were measured on the
-    controller's run, not re-taken by the gate task. An isolated `-j 4`
+    under load 7.46). An isolated `-j 4`
     probe of the two documented equivalent mutants ran the full suite
     uncaught in 8.644s (`adesha.rs:589:30`) and 9.056s
     (`tripadi.rs:1270:38`). Under campaign load the uncaught phases were
@@ -51,8 +50,9 @@
     rule, so the cap moved from 80 to 110 in this slice (it was 60 in 3f's
     campaign, 900 against the Θ(N²) suite, before `candidates()` answered
     from a corpus index). The campaign-load phases grew from 3f's 12.358s /
-    11.614s although the isolated probe got faster, so the rise is host
-    contention, not suite growth: take the campaign-load phase, never the
+    11.614s although the isolated probe got faster; the cause is unmeasured
+    (candidates: campaign-window host contention, the rustc 1.99.0 bump),
+    so take the campaign-load phase, never the
     isolated one. Take the floor by measurement, never by scaling it by cell
     count or by a projected contention multiplier. Re-measure the floor and
     an uncaught `-j 4` run whenever the golden suite grows, and change

@@ -48,7 +48,8 @@ pub(crate) fn is_hrasva(c: char) -> bool {
     matches!(c, 'a' | 'i' | 'u' | 'f' | 'x')
 }
 
-/// A jhal (obstruent) — the set 8.4.55's target ranges over. `d` was the
+/// A jhal (obstruent) — the set 8.4.55's target ranges over (since 3f2
+/// 8.4.55 itself filters its scan through `cartva_of`, not this). `d` was the
 /// only member this suite exercised when that comment was first written;
 /// rudhādi has since brought `t`, `s` and `D` into play too (via 8.3.24,
 /// 8.4.53 and 6.4.101 respectively), but the classifier was written

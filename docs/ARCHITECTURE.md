@@ -111,7 +111,7 @@ is carried as a tag on the aṅga term (`Tag::Divadi` / `Tag::Tudadi` / `Tag::Ad
 3.1.73, 3.1.77, 3.1.78, 3.1.79, 3.1.81, 2.4.72 and 2.4.75. Root identity
 beyond text reaches the pipeline as `Context.dhatupatha`, the row number
 `derive` stamps (slice 3c). A sūtra naming particular roots matches it
-(7.4.75, 7.4.76, 7.4.77, 8.2.38, 8.2.40's *adhaḥ*, 6.4.116–6.4.118); 7.4.78 names no root
+(7.4.75, 7.4.76, 7.4.77, 8.2.38, 8.2.40's *adhaḥ*, 6.4.100, 6.4.116–6.4.118); 7.4.78 names no root
 and is keyed on the row its Kaumudī application names, 03.0026; a sūtra naming a class becomes a
 saṁjñā tag decided from it — `Tag::Ghu`, 1.1.20's six rows in
 `tinanta/samjna.rs`'s `GHU` — because text cannot separate `03.0008 o~hA\N`
@@ -353,8 +353,8 @@ ci); 7.4.59/7.4.60 arrive with 3b, 7.4.76 with 3c, 7.4.78 with 3c2, and
 7.4.66/7.4.77 with 3d, 6.4.78 with 3d2, 7.4.75 with 3e — so 6.4.71 always sees a finished
 abhyāsa and 7.1.4 *ad abhyastāt* (before 7.1.3) reads a real tag.
 **Dvitva runs before guṇa**, the Kaumudī order; vidyut-prakriya guṇates
-first, copies, and shortens the copy by 7.4.59. Forms agree for all 20
-curated roots and the audit compares form sets, so the divergence shows only in
+first, copies, and shortens the copy by 7.4.59. Forms agree for all 25
+curated juhotyādi roots and the audit compares form sets, so the divergence shows only in
 this engine's trace pins (`tests/trace/juhotyadi.rs`). 3.4.109 gives laṅ
 its jus on `Tag::Juhotyadi` as a pre-dvitva stand-in for *abhyasta* (liṭ
 must revisit it), 7.3.83 *jusi ca* guṇates before that jus over 1.1.5's

@@ -435,8 +435,10 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // step in the trace log without changing any surface. This mirrors the
     // no-op guard 8.4.55 already carries.
     //
-    // No contention with 8.4.55 cartva: the shape that would collide, an
-    // aṅga-final jhal directly before a pada-final `t`, cannot arise because
+    // No contention with 8.4.55 cartva (which since 3f2 scans the whole
+    // word, not only the aṅga/ending boundary): the shape that would
+    // collide, an aṅga-final jhal directly before a pada-final `t`, cannot
+    // arise because
     // 8.2.23 saṁyogāntasya lopaḥ sits above and drops the second consonant
     // first. √ad, the one root whose aṅga ends in a jhal, presents `Adat` —
     // a vowel before the ending.
@@ -749,10 +751,13 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // narrowed, not closed: if a future slice's root set ever makes
     // `ENDING` empty at some other slot (a different saṁyoga shape, or
     // another rule that luks the ending), this guard would over-fire there.
-    // Since slice 3f2 that is no longer silent:
-    // `tipy_anasteh_and_sipi_dhato_are_credited_only_on_rudhadi_and_bhas`
-    // fails on the first new root this rule reaches, and the slice adding it
-    // re-verifies the invariant there.
+    // Since slice 3f2 a non-rudhādi root other than √bhas reaching it in
+    // the four derived lakāras fails
+    // `tipy_anasteh_and_sipi_dhato_are_credited_only_on_rudhadi_and_bhas`.
+    // That test exempts every rudhādi row, and `credited()` in `panini`'s
+    // trace suite covers only those four lakāras, so rudhādi rows and any
+    // new lakāra are not covered: re-verify this invariant before adding a
+    // lakāra, widening `credited()`, or widening the root set.
     Rule {
         id: "8.2.73",
         name: "tipyanasteH",
@@ -2893,6 +2898,10 @@ mod tests {
             ("Bs", "ati", "B + s + a"),
             // A non-jhal on the right: bapsyAt keeps it too.
             ("Bs", "yAt", "B + s + y"),
+            // A word-final `s` after a jhal has no right neighbour: the scan
+            // stops short of it (a `1..w.len()` bound would index past the
+            // word).
+            ("Bs", "", "B + s + end of word"),
         ] {
             let mut p = bhas_prakriya(anga, ending);
             assert!(!(rule.apply)(&mut p), "{why}");
