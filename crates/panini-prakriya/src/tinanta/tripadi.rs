@@ -46,9 +46,9 @@ use crate::tinanta::terms::{ABHYASA, ANGA, ENDING, SHAP, remove_char, set_char, 
 ///   `rudhadi_vidhilin_madhyama_eka_is_untouched_by_the_ru_alternation` in
 ///   `super::derivation_tests` is the witness.
 fn dhatu_is_pada_final(p: &Prakriya) -> bool {
-    // Defensive rather than a bare `p.terms[ENDING..]`: 8.2.73 and 8.2.74
-    // guard on `Tag::Rudhadi` first, but 8.2.75 has had no gaṇa test since
-    // slice 3f, so a hand-built prakriyā with any layout can reach here.
+    // Defensive rather than a bare `p.terms[ENDING..]`: none of 8.2.73,
+    // 8.2.74 and 8.2.75 has a gaṇa test (8.2.75 since slice 3f, the other two
+    // since 3f2), so a hand-built prakriyā with any layout can reach here.
     // `p.terms.get(ENDING)` at
     // 8.2.25 above is the same defensive idiom for a single index; `None`
     // here (fewer than `ENDING` terms at all) means there is nothing past
@@ -560,7 +560,13 @@ pub(crate) static TRIPADI: &[Rule] = &[
     },
     // 8.2.74 sipi dhāto rur vā (vikalpa): before sip, the dhātu's final
     // optionally becomes ru, which 8.3.15 then takes to a visarga.
-    // ahinas + s → ahinaH.
+    // ahinas + s → ahinaH; abaBas + s → abaBaH (juhotyādi √bhas, slice 3f2).
+    //
+    // NO GAṆA TEST since slice 3f2, as 8.2.75 since 3f: the guard is sip,
+    // the dhātu pada-final (8.2.23 has eaten the ending), and a final `s`.
+    // `tipy_anasteh_and_sipi_dhato_are_credited_only_on_rudhadi_and_bhas` in
+    // `panini`'s trace suite holds that no curated root outside rudhādi and
+    // √bhas reaches it.
     //
     // ORDERED ABOVE 8.2.73, against sūtra order, and this is load-bearing.
     // This rule replaces the DHĀTU'S OWN FINAL — the `s` — so it must see
@@ -576,7 +582,7 @@ pub(crate) static TRIPADI: &[Rule] = &[
         vikalpa: true,
         bars: &[],
         apply: |p| {
-            if !p.terms[ANGA].has(Tag::Rudhadi) || !p.ctx.is_sip() {
+            if !p.ctx.is_sip() {
                 return false;
             }
             if !dhatu_is_pada_final(p) {
@@ -647,7 +653,9 @@ pub(crate) static TRIPADI: &[Rule] = &[
         },
     },
     // 8.2.73 tipy anasteḥ: before tip, a dhātu other than √as takes `d` for
-    // its final. ahinas + t → ahinad.
+    // its final. ahinas + t → ahinad; abaBas + t → abaBad (juhotyādi √bhas,
+    // slice 3f2). No gaṇa test since 3f2, and no √as clause: √as is not
+    // curated.
     //
     // This is what fills the hole 8.2.39 leaves. 8.2.39 jhalāṁ jaśo'nte
     // declines on a final `s` because `jashtva_of('s')` is `None` — a final
@@ -696,12 +704,20 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // `no_8_2_73_step_appears_for_bhanj_or_pish` in
     // `super::derivation_tests` are the witnesses.
     //
+    // RE-VERIFIED AGAIN (slice 3f2), when this rule and 8.2.74 dropped their
+    // Tag::Rudhadi test. √bhas is the first non-rudhādi root to reach them,
+    // and it empties `ENDING` at exactly laṅ prathama/madhyama eka — the same
+    // slot family. With the gaṇa test gone, the whole suite and every prior
+    // cell's trace were unchanged (the 3f2 spec's corpus-wide trace diff).
+    //
     // This rule is OBLIGATORY (`vikalpa: false`), so the hazard is only
     // narrowed, not closed: if a future slice's root set ever makes
     // `ENDING` empty at some other slot (a different saṁyoga shape, or
-    // another rule that luks the ending), this guard would over-fire there
-    // silently — no test failure until a golden happens to catch it.
-    // Re-verify this invariant again before widening the root set further.
+    // another rule that luks the ending), this guard would over-fire there.
+    // Since slice 3f2 that is no longer silent:
+    // `tipy_anasteh_and_sipi_dhato_are_credited_only_on_rudhadi_and_bhas`
+    // fails on the first new root this rule reaches, and the slice adding it
+    // re-verifies the invariant there.
     Rule {
         id: "8.2.73",
         name: "tipyanasteH",
@@ -709,9 +725,6 @@ pub(crate) static TRIPADI: &[Rule] = &[
         vikalpa: false,
         bars: &[],
         apply: |p| {
-            if !p.terms[ANGA].has(Tag::Rudhadi) {
-                return false;
-            }
             if !dhatu_is_pada_final(p) {
                 return false;
             }
@@ -2743,5 +2756,47 @@ mod tests {
             assert!(!(rule.apply)(&mut p), "{ending}");
             assert!(p.log.is_empty(), "{ending}");
         }
+    }
+
+    // --- 8.2.73 tipy anasteḥ / 8.2.74 sipi dhāto rur vā: gaṇa-free since 3f2
+
+    #[test]
+    fn tipy_anasteh_and_sipi_dhato_fire_on_any_ganas_pada_final_s() {
+        // √bhas laṅ after 8.2.23 has eaten the ending: abaBas, with no
+        // Rudhadi tag on the aṅga. 8.2.73 writes the `d` at tip; 8.2.74 the
+        // ru at sip, which 8.3.15 finishes to abaBaH.
+        let r73 = rules().find(|r| r.id == "8.2.73").unwrap();
+        let mut p = sip_prakriya("abaBas", "", Purusha::Prathama);
+        assert!((r73.apply)(&mut p));
+        assert_eq!(p.text(), "abaBad");
+        assert_eq!(p.log.last().unwrap().sutra, "8.2.73");
+        let r74 = rules().find(|r| r.id == "8.2.74").unwrap();
+        let mut p = sip_prakriya("abaBas", "", Purusha::Madhyama);
+        assert!((r74.apply)(&mut p));
+        assert_eq!(p.text(), "abaBar");
+        assert_eq!(p.log.last().unwrap().sutra, "8.2.74");
+    }
+
+    #[test]
+    fn tipy_anasteh_and_sipi_dhato_decline_before_a_live_ending_and_off_s() {
+        let r73 = rules().find(|r| r.id == "8.2.73").unwrap();
+        let r74 = rules().find(|r| r.id == "8.2.74").unwrap();
+        for (stem, ending, why) in [
+            // is_sip() is lakāra-blind, so a vidhiliṅ madhyama eka shape
+            // passes it; only dhatu_is_pada_final keeps both rules off.
+            ("bapsyA", "s", "live ending"),
+            // a pada-final `d` is 8.2.75's, not theirs.
+            ("abaBad", "", "d-final"),
+        ] {
+            for rule in [r73, r74] {
+                let mut p = sip_prakriya(stem, ending, Purusha::Madhyama);
+                assert!(!(rule.apply)(&mut p), "{} {why}", rule.id);
+                assert!(p.log.is_empty(), "{} {why}", rule.id);
+            }
+        }
+        // 8.2.74 is sip-only: at tip the `s` is left for 8.2.73.
+        let mut p = sip_prakriya("abaBas", "", Purusha::Prathama);
+        assert!(!(r74.apply)(&mut p));
+        assert!(p.log.is_empty());
     }
 }
