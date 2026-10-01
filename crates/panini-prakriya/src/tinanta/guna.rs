@@ -1338,6 +1338,52 @@ pub(crate) static GUNA: &[Rule] = &[
             true
         },
     },
+    // 6.4.98 gamahanajanakhanaghasāṁ lopaḥ kṅity anaṅi: the upadhā `a` of
+    // √gam, √han, √jan, √khan and √ghas is elided before a VOWEL-INITIAL
+    // kṅit (*aci*, by anuvṛtti from 6.4.77). ja + jan + ati → ja + jn + ati,
+    // which 8.4.40 finishes to jajYati; likewise ajajYuH (`us`) and jajYatu
+    // (`atu`). The loṭ uttama endings are pit (3.4.92's āṭ), so jajanAni keeps
+    // its `a`; a consonant-initial kṅit is 6.4.42's (jajAtaH). *anaṅi* is
+    // vacuous here: aṅ is a luṅ vikaraṇa, and this engine derives no luṅ.
+    //
+    // KEYED BY ROW NUMBER, `03.0025 jana~`, as 6.4.100 keys √bhas: of the
+    // sūtra's five roots only √jan is curated, and a √gam, √han, √khan or
+    // √ghas row extends this key. The `an` suffix test is the operation
+    // itself, and it declines on an already-elided `jn` or on 6.4.42's `jA`.
+    //
+    // PLACEMENT: beside 6.4.100, its sibling upadhā-lopa, in sūtra order. No
+    // ā-rule in this block reads `jan` or `jn`, so no form depends on it;
+    // `jajYati_trace_is_upadha_lopa_then_shcutva` in `panini`'s trace suite
+    // pins it.
+    Rule {
+        id: "6.4.98",
+        name: "gamahanajanaKanaGasAM lopaH kNityanaNi",
+        kind: RuleKind::Vidhi,
+        vikalpa: false,
+        bars: &[],
+        apply: |p| {
+            if p.ctx.dhatupatha != "03.0025" {
+                return false;
+            }
+            let Some(follower) = following_sarvadhatuka(p) else {
+                return false;
+            };
+            if !follower.has(Tag::Ngit) {
+                return false;
+            }
+            if !follower.text.chars().next().is_some_and(is_vowel) {
+                return false;
+            }
+            let Some(stem) = p.terms[ANGA].text.strip_suffix("an") else {
+                return false;
+            };
+            let elided = format!("{stem}n");
+            let before = p.snapshot();
+            p.terms[ANGA].text = elided;
+            p.record("6.4.98", "gamahanajanaKanaGasAM lopaH kNityanaNi", before);
+            true
+        },
+    },
     // 6.4.100 ghasibhasor hali ca: the upadhā `a` of √ghas and √bhas is
     // elided before a kṅit. The sūtra says *hali* (a hal-initial follower)
     // and its *ca* carries 6.4.98's *aci* (a vowel-initial one), so the
@@ -3198,6 +3244,45 @@ mod tests {
             ("03.0019", "Bs", true, "the upadhā is already gone"),
         ] {
             let mut p = bhas_prakriya(number, anga, "ti", ngit);
+            assert!(!(rule.apply)(&mut p), "{why}");
+            assert_eq!(p.terms[ANGA].text, anga, "{why}");
+            assert!(p.log.is_empty(), "{why}");
+        }
+    }
+
+    // --- 6.4.98 / 6.4.42 / 6.4.43: √jan (slice 3f3) ------------------------
+
+    /// √jan at the guṇa stage: abhyāsa `ja` (7.4.60 has run), aṅga `anga`, an
+    /// empty śap, and `ending` (tagged Ngit when `ngit`), on the row `number`.
+    fn jan_prakriya(number: &'static str, anga: &str, ending: &str, ngit: bool) -> Prakriya {
+        let mut p = abhyasta_prakriya("ja", anga, false, ending, ngit);
+        p.ctx.dhatupatha = number;
+        p
+    }
+
+    #[test]
+    fn gamahana_elides_the_upadha_before_a_vowel_initial_kngit() {
+        // ati (jajYati), us (ajajYuH), atu (jajYatu).
+        let rule = rules().find(|r| r.id == "6.4.98").unwrap();
+        for ending in ["ati", "us", "atu"] {
+            let mut p = jan_prakriya("03.0025", "jan", ending, true);
+            assert!((rule.apply)(&mut p), "{ending}");
+            assert_eq!(p.terms[ANGA].text, "jn", "{ending}");
+            assert_eq!(p.log.last().unwrap().sutra, "6.4.98");
+        }
+    }
+
+    #[test]
+    fn gamahana_declines_off_a_vowel_initial_kngit_off_its_row_and_on_jn() {
+        let rule = rules().find(|r| r.id == "6.4.98").unwrap();
+        for (number, anga, ending, ngit, why) in [
+            ("03.0025", "jan", "tas", true, "consonant-initial: 6.4.42's"),
+            ("03.0025", "jan", "Ani", false, "pit āṭ: jajanAni"),
+            ("03.0019", "jan", "ati", true, "another juhotyādi row"),
+            ("", "jan", "ati", true, "a hand-built prakriyā names no row"),
+            ("03.0025", "jn", "ati", true, "the upadhā is already gone"),
+        ] {
+            let mut p = jan_prakriya(number, anga, ending, ngit);
             assert!(!(rule.apply)(&mut p), "{why}");
             assert_eq!(p.terms[ANGA].text, anga, "{why}");
             assert!(p.log.is_empty(), "{why}");
