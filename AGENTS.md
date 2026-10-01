@@ -152,8 +152,7 @@
   and √hā (ātmanepada), at 10 after slice 3c2 curated √hā (parasmaipada) and
   √gā, at 16 after slice 3d curated √pṝ, √pṛ, √bhṛ, √ghṛ, √hṛ
   and √sṛ, at 17 after slice 3d2 curated √ṛ, at 20 after slice 3e curated √ṇij, √vij
-  and √viṣ, at 24 after slice 3f curated √kit, √tur, √dhiṣ and √dhan, and now
-  at 25
+  and √viṣ, at 24 after slice 3f curated √kit, √tur, √dhiṣ and √dhan, at 25
   after slice 3f2 curated √bhas, and closing at 26 of 26 in slice 3f3 with √jan —
   `PARADIGM`
     stays one-form-per-cell: a cell forked by an optional rule keeps its

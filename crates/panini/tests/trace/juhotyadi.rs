@@ -1390,7 +1390,9 @@ fn shcutva_off_jan_is_credited_exactly_as_before_3f3() {
     // step carries no direction, so "the converse arm fires only on √jan" is
     // held as the credits off √jan: exactly √chid's and √chṛd's tuk (the
     // forward arm), 54 branches, measured on `main` before the widening. A
-    // new firing on a prior row, in either direction, changes the count.
+    // A new firing on a prior row's branch that does not already credit 8.4.40,
+    // in either direction, changes the count; one on a √chid/√chṛd branch that
+    // does would change its form, which the goldens hold.
     let hits = credited("8.4.40");
     assert!(
         hits.iter().any(|(n, _)| *n == "03.0025"),

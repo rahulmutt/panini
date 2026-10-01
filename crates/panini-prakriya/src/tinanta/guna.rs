@@ -1391,7 +1391,7 @@ pub(crate) static GUNA: &[Rule] = &[
     // KEYED BY ROW NUMBER, `03.0025 jana~`, as 6.4.100 keys √bhas: of the
     // sūtra's five roots only √jan is curated, and a √gam, √han, √khan or
     // √ghas row extends this key. The `an` suffix test is the operation
-    // itself, and it declines on an already-elided `jn` or on 6.4.42's `jA`.
+    // itself, and it declines on an already-elided `jn`.
     //
     // PLACEMENT: beside 6.4.100, its sibling upadhā-lopa, in sūtra order. No
     // ā-rule in this block reads `jan` or `jn`, so no form depends on it;
