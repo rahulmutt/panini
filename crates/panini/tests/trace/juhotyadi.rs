@@ -864,7 +864,7 @@ fn juhavani_trace_has_no_nabhyastasyaci() {
     // *laghūpadhasya* clause: √hu's aṅga is vowel-final (hu → ho → hav), so
     // the clause declines it trivially. The ṛ-roots are the prior cells that
     // test that clause; see `biBarARi_trace_has_no_nabhyastasyaci` and
-    // `nabhyastasyaci_is_credited_only_on_the_nij_vij_vish_rows`.
+    // `nabhyastasyaci_is_credited_only_on_the_3e_and_3f_rows`.
     let (text, t) = cell_trace(
         "03.0001",
         Lakara::Lot,
@@ -896,12 +896,15 @@ fn biBarARi_trace_has_no_nabhyastasyaci() {
 }
 
 #[test]
-fn nabhyastasyaci_is_credited_only_on_the_nij_vij_vish_rows() {
+fn nabhyastasyaci_is_credited_only_on_the_3e_and_3f_rows() {
     // Corpus-wide: every branch of every curated root x lakāra x pada x cell
-    // whose log carries 7.3.87 belongs to √ṇij, √vij or √viṣ. A new rule that
-    // credits itself on prior rows' traces (forms unchanged) fails here.
-    // 3f extends the allowed list.
-    const ALLOWED: [&str; 3] = ["03.0012", "03.0013", "03.0014"];
+    // whose log carries 7.3.87 belongs to √ṇij, √vij, √viṣ (3e) or √kit,
+    // √tur, √dhiṣ, √dhan (3f; a credited no-op on √dhan's a-upadhā). A new
+    // rule that credits itself on prior rows' traces (forms unchanged) fails
+    // here. 3f2 extends the allowed list with √bhas and √jan.
+    const ALLOWED: [&str; 7] = [
+        "03.0012", "03.0013", "03.0014", "03.0021", "03.0022", "03.0023", "03.0024",
+    ];
     const CELLS: [(Purusha, Vacana); 9] = [
         (Purusha::Prathama, Vacana::Eka),
         (Purusha::Prathama, Vacana::Dvi),
