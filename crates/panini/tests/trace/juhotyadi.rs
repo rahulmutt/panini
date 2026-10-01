@@ -10,7 +10,10 @@
 //! *ud oṣṭhyapūrvasya* after dvitva, on the aṅga alone (*pipūrtaḥ*'s
 //! abhyāsa is copied from `pF`). The same order runs 6.4.78 (slice 3d2's √ṛ)
 //! inside the abhyāsa stage, before laṅ's 6.4.72 and before guṇa, where vidyut
-//! guṇates first (on pit cells only) and reaches 6.4.78 later. Forms agree; the traces do not, and
+//! guṇates first (on pit cells only) and reaches 6.4.78 later. Slice 3e's
+//! 7.4.75 runs inside the same stage, after 7.4.60, so 7.4.59 never fires on
+//! its rows, and 7.3.87 sits in `guna` after the whole stage, where vidyut
+//! credits it between 6.1.10 and 7.4.60. Forms agree; the traces do not, and
 //! these pins are what make the engine's own order a checked fact rather than an
 //! accident.
 
@@ -730,4 +733,145 @@ fn eyaruh_trace_is_abhyasasyasavarne_then_at_then_awas_ca_on_the_abhyasa() {
     assert!(at(&t, "6.4.72") < at(&t, "7.3.83"), "got {t:?}");
     assert!(at(&t, "7.3.83") < at(&t, "6.1.90"), "got {t:?}");
     assert!(!t.contains(&"6.4.71".to_string()), "got {t:?}");
+}
+
+#[test]
+fn nenekti_trace_is_dvitva_haladih_shesha_nijam_then_upadha_guna() {
+    // nij P laT P.E. A pit, consonant-initial ending: 7.3.87 declines (*aci*),
+    // and 7.3.86 guṇates the root after the abhyāsa stage has run.
+    let (text, t) = cell_trace(
+        "03.0012",
+        Lakara::Lat,
+        Pada::Parasmaipada,
+        Purusha::Prathama,
+        Vacana::Eka,
+    );
+    assert_eq!(text, "nenekti", "got {t:?}");
+    assert!(at(&t, "6.1.10") < at(&t, "7.4.60"), "got {t:?}");
+    assert!(at(&t, "7.4.60") < at(&t, "7.4.75"), "got {t:?}");
+    assert!(at(&t, "7.4.75") < at(&t, "7.3.86"), "got {t:?}");
+    assert!(at(&t, "7.3.86") < at(&t, "8.2.30"), "got {t:?}");
+    assert!(at(&t, "8.2.30") < at(&t, "8.4.55"), "got {t:?}");
+    assert!(!t.contains(&"7.4.59".to_string()), "got {t:?}");
+    assert!(!t.contains(&"7.3.87".to_string()), "got {t:?}");
+}
+
+#[test]
+fn nenijati_trace_has_nijam_and_no_upadha_guna_or_its_block() {
+    // nij P laT P.B. `ati` is vowel-initial but ṅit (1.2.4). 7.3.86 declines
+    // on its own, and 7.3.87 must not fire (*piti*).
+    let (text, t) = cell_trace(
+        "03.0012",
+        Lakara::Lat,
+        Pada::Parasmaipada,
+        Purusha::Prathama,
+        Vacana::Bahu,
+    );
+    assert_eq!(text, "nenijati", "got {t:?}");
+    assert!(at(&t, "7.4.75") < at(&t, "7.1.4"), "got {t:?}");
+    assert!(!t.contains(&"7.3.86".to_string()), "got {t:?}");
+    assert!(!t.contains(&"7.3.87".to_string()), "got {t:?}");
+}
+
+#[test]
+fn nenijani_trace_is_nabhyastasyaci_barring_upadha_guna() {
+    // nij P loT U.E. 3.4.92's `Ani` is pit but untagged. 7.3.87 fires and
+    // bars 7.3.86, so the root keeps its `i`.
+    let (text, t) = cell_trace(
+        "03.0012",
+        Lakara::Lot,
+        Pada::Parasmaipada,
+        Purusha::Uttama,
+        Vacana::Eka,
+    );
+    assert_eq!(text, "nenijAni", "got {t:?}");
+    assert!(at(&t, "3.4.92") < at(&t, "7.4.75"), "got {t:?}");
+    assert!(at(&t, "7.4.75") < at(&t, "7.3.87"), "got {t:?}");
+    assert!(!t.contains(&"7.3.86".to_string()), "got {t:?}");
+}
+
+#[test]
+fn anenijam_trace_is_at_then_nabhyastasyaci_on_the_tagged_am() {
+    // nij P laN U.E. Laṅ's `am` keeps mip's Pit tag. 6.4.71's aṭ goes on, and
+    // 7.3.87 blocks the guṇa.
+    let (text, t) = cell_trace(
+        "03.0012",
+        Lakara::Lan,
+        Pada::Parasmaipada,
+        Purusha::Uttama,
+        Vacana::Eka,
+    );
+    assert_eq!(text, "anenijam", "got {t:?}");
+    assert!(at(&t, "7.4.75") < at(&t, "6.4.71"), "got {t:?}");
+    assert!(at(&t, "6.4.71") < at(&t, "7.3.87"), "got {t:?}");
+    assert!(!t.contains(&"7.3.86".to_string()), "got {t:?}");
+}
+
+#[test]
+fn nenikte_trace_has_nijam_and_no_guna() {
+    // nij A laT P.E. Ātmanepada `te` is ṅit: no guṇa, no block. 8.2.30 then
+    // 8.4.55 take j → g → k.
+    let (text, t) = cell_trace(
+        "03.0012",
+        Lakara::Lat,
+        Pada::Atmanepada,
+        Purusha::Prathama,
+        Vacana::Eka,
+    );
+    assert_eq!(text, "nenikte", "got {t:?}");
+    assert!(at(&t, "7.4.75") < at(&t, "8.2.30"), "got {t:?}");
+    assert!(at(&t, "8.2.30") < at(&t, "8.4.55"), "got {t:?}");
+    assert!(!t.contains(&"7.3.86".to_string()), "got {t:?}");
+    assert!(!t.contains(&"7.3.87".to_string()), "got {t:?}");
+}
+
+#[test]
+fn vevezwi_trace_is_upadha_guna_then_shtutva() {
+    // viz P laT P.E. z + t: 8.4.41 retroflexes the `t`; 8.2.41 (before s only)
+    // stays out.
+    let (text, t) = cell_trace(
+        "03.0014",
+        Lakara::Lat,
+        Pada::Parasmaipada,
+        Purusha::Prathama,
+        Vacana::Eka,
+    );
+    assert_eq!(text, "vevezwi", "got {t:?}");
+    assert!(at(&t, "7.4.75") < at(&t, "7.3.86"), "got {t:?}");
+    assert!(at(&t, "7.3.86") < at(&t, "8.4.41"), "got {t:?}");
+    assert!(!t.contains(&"8.2.41".to_string()), "got {t:?}");
+}
+
+#[test]
+fn vevekzi_trace_is_shadhoh_kah_si_then_adesha_pratyayayoh() {
+    // viz P laT M.E. z + s: 8.2.41 makes the root's `z` a `k`, then 8.3.59
+    // makes the ending's `s` a `z`.
+    let (text, t) = cell_trace(
+        "03.0014",
+        Lakara::Lat,
+        Pada::Parasmaipada,
+        Purusha::Madhyama,
+        Vacana::Eka,
+    );
+    assert_eq!(text, "vevekzi", "got {t:?}");
+    assert!(at(&t, "7.3.86") < at(&t, "8.2.41"), "got {t:?}");
+    assert!(at(&t, "8.2.41") < at(&t, "8.3.59"), "got {t:?}");
+}
+
+#[test]
+fn juhavani_trace_has_no_nabhyastasyaci() {
+    // hu P loT U.E. This is a prior cell, pinned for 7.3.87's *laghūpadhasya*
+    // clause. √hu's aṅga is vowel-final, so 7.3.84's guṇa stands
+    // (hu → ho → hav) and 7.3.87 never fires. vidyut credits it on no
+    // curated row.
+    let (text, t) = cell_trace(
+        "03.0001",
+        Lakara::Lot,
+        Pada::Parasmaipada,
+        Purusha::Uttama,
+        Vacana::Eka,
+    );
+    assert_eq!(text, "juhavAni", "got {t:?}");
+    assert!(at(&t, "3.4.92") < at(&t, "7.3.84"), "got {t:?}");
+    assert!(!t.contains(&"7.3.87".to_string()), "got {t:?}");
 }
