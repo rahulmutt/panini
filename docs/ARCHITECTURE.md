@@ -99,9 +99,9 @@ and the *bibharti* pin holds this order.
 Nine gaṇas are covered, eight of them fully: bhvādi (1), divādi (4),
 tudādi (6), adādi (2), kryādi (9), svādi (5), rudhādi (7) and tanādi (8),
 **complete** at all ten of its dhātupāṭha rows (√kṛ, `08.0010`, curated
-in slice 8b) — and juhotyādi (3), **partial** at 20 of its 26 rows (√hu,
+in slice 8b) — and juhotyādi (3), **partial** at 24 of its 26 rows (√hu,
 √ki; slice 3a; √bhī, √hrī; slice 3b; √dā, √dhā, √mā, √hā; slice 3c; √hā
-parasmaipada, √gā; slice 3c2; √pṝ, √pṛ, √bhṛ, √ghṛ, √hṛ, √sṛ; slice 3d; √ṛ; slice 3d2; √ṇij, √vij, √viṣ; slice 3e). gaṇa
+parasmaipada, √gā; slice 3c2; √pṝ, √pṛ, √bhṛ, √ghṛ, √hṛ, √sṛ; slice 3d; √ṛ; slice 3d2; √ṇij, √vij, √viṣ; slice 3e; √kit, √tur, √dhiṣ, √dhan; slice 3f). gaṇa
 is carried as a tag on the aṅga term (`Tag::Divadi` / `Tag::Tudadi` / `Tag::Adadi` /
 `Tag::Kryadi` / `Tag::Svadi` / `Tag::Rudhadi` / `Tag::Tanadi` /
 `Tag::Juhotyadi`, mirroring how
@@ -553,7 +553,7 @@ anyatarasyām*, **3.4.111** *laṅaḥ śākaṭāyanasyaiva*, **7.3.86**
 cāsyānyatarasyāṁ mvoḥ*, **8.2.74** *sipi dhāto rur vā*, **8.2.75** *daś ca*,
 **8.4.65** *jharo jhari savarṇe*, and **8.4.56** *vā'vasāne*. Three of the
 eleven arrived with rudhādi 7a: 8.2.74 and 8.2.75 the *ru* alternation on
-√hiṃs's own final before sip, and 8.4.65 the savarṇa elision that also
+√hiṃs's own final before sip (8.2.75 gaṇa-free since juhotyādi 3f, which gave it √kit's *acikeḥ*), and 8.4.65 the savarṇa elision that also
 produces the six-branch witness above. Slice 7b added none — the
 first gaṇa slice not to since the `vikalpa` flag landed. 7.3.86 arrived
 with tanādi 8a: it forks kziR's, fR's, tfR's and GfR's
@@ -593,26 +593,25 @@ gains a 6.4.107-keyed alternate — the 72-cell/eleven-root count above is
 unchanged by √kṛ.
 
 7.1.35 optionally replaces the loṭ endings `tu`/`hi` with tātaṅ (then
-8.2.39 obligatorily voices its final `t` to `d`), forking 144 cells (loṭ
-prathama and madhyama eka across the 72 roots with a parasmaipada column —
+8.2.39 obligatorily voices its final `t` to `d`), forking 152 cells (loṭ
+prathama and madhyama eka across the 76 roots with a parasmaipada column —
 `tu`/`hi` are parasmaipada endings, so the curated set's 25 ātmanepada-only
 roots never reach this guard, and the twenty-six roots that admit both
 padas (twenty-five ubhayapadī by 1.3.72 — √rudh, √nī, √tud, √bhid, √kṣud,
 √yuj, √tṛd, √ric, √vic, √chid, √chṛd, √tan, √san, √kṣaṇ, √kṣiṇ, √ṛṇ, √tṛ, √ghṛṇ,
 √kṛ, √dā, √dhā, √bhṛ, √ṇij, √vij and √viṣ — and √bhuj by 1.3.66) reach it in their
 parasmaipada cells only, joined by juhotyādi's √hu, √ki, √bhī, √hrī, √hā
-(`03.0009`), √gā, √pṝ, √pṛ, √ghṛ (`Gf`), √hṛ, √sṛ and √ṛ (all parasmaipada-only), and
-the parasmaipada columns of √bhṛ, √ṇij, √vij and √viṣ; 72 + 25 = the 97
-curated roots) — `Bavatu ~
+(`03.0009`), √gā, √pṝ, √pṛ, √ghṛ (`Gf`), √hṛ, √sṛ, √ṛ, √kit, √tur, √dhiṣ and √dhan (all parasmaipada-only), and
+the parasmaipada columns of √bhṛ, √ṇij, √vij and √viṣ; 76 + 25 = the 101 curated roots) — `Bavatu ~
 BavatAd`, `Bava ~ BavatAd`. 8.4.56 optionally devoices a pada-final jaś
 (produced by the now-obligatory 8.2.39) back to its car at the end of an
-utterance, forking 156 cells outright: laṅ and vidhiliṅ prathama eka across
-those same 72 parasmaipada columns (134 of them — 8.2.39's `d` is a
+utterance, forking 160 cells outright: laṅ and vidhiliṅ prathama eka across
+those same 76 parasmaipada columns (138 of them — 8.2.39's `d` is a
 parasmaipada-ending artifact, ātmanepada's laṅ/vidhiliṅ prathama eka endings
 are vowel-final and never reach a jhal, and the seven juhotyādi ṛ-roots
 (3d's six and 3d2's √ṛ) contribute only their vidhiliṅ cell, since their laṅ
 prathama eka ends in the aṅga's `r`, turned to visarga, not in a jaś: `abiBaH`,
-`EyaH`),
+`EyaH`; 3f's four contribute only their vidhiliṅ cell too: √tur's laṅ ends in visarga, √dhan's in `n`, and √kit's and √dhiṣ's laṅ forks key on 7.3.86 as well, see below),
 plus twenty-two rudhādi laṅ *madhyama* eka cells (√kṛt, √hiṃs, √bhañj, √piṣ,
 √rudh, √bhid, √kṣud, √yuj, √tṛd, √ric, √vic, √śiṣ, √und, √añj, √tañc, √vij,
 √vṛj, √pṛc, √tṛh, √chid, √chṛd and √bhuj — every rudhādi root with a
@@ -622,11 +621,10 @@ bucket), where
 8.2.23
 *saṁyogāntasya lopaḥ* has eaten the ending's own `s` and left the stem's
 jaś pada-final after all — `aBavad ~ aBavat`, `Baved ~ Bavet`,
-`apinaq ~ apinaw`, `aruRad ~ aruRat`. Juhotyādi 3e's six laṅ prathama and
-madhyama eka cells (`aneneg ~ anenek` etc.) also fork on 8.4.56, but their keys
+`apinaq ~ apinaw`, `aruRad ~ aruRat`. Juhotyādi 3e's six laṅ prathama and madhyama eka cells (`aneneg ~ anenek` etc.) and 3f's four (√kit's and √dhiṣ's: `aciked ~ aciket`, `adiDeq ~ adiDew`) also fork on 8.4.56, but their keys
 stack 7.3.86, which credits the root's guṇa, so they sit in the
 `7.3.86+8.4.56` bucket beside tanādi's and not in this count. 8.4.56 goes on
-forking a further 144 (the same
+forking a further 152 (the same
 loṭ cells 7.1.35 just forked) by devoicing the tātaṅ branch's `BavatAd` to
 `BavatAt`, which is
 what stacks the two rules into three-branch loṭ cells for every root

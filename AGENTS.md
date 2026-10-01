@@ -13,7 +13,7 @@
   `MISE_ENV=dev mise install`. This provides:
   - `cargo-mutants` (mutation testing) — `mise run mutants` runs
     `cargo mutants --package panini-prakriya --package panini-analyze
-    --test-workspace=true --timeout 60 -j 4`. Run the gate through the task
+    --test-workspace=true --timeout 80 -j 4`. Run the gate through the task
     rather than reconstructing the flags. The `--test-workspace` flag is
     required so each **mutant** run exercises the `panini` crate's golden
     paradigm/trace/roundtrip tests, not just the mutated packages' own unit
@@ -23,7 +23,7 @@
     is still required: cargo-mutants calibrates its per-mutant timeout from
     the baseline's runtime (`panini-prakriya`'s unit tests, ~2s, with a 20s
     floor), and that auto-calibrated value does not guarantee the 5x margin
-    over a full uncaught `panini` suite run (6-9s) under `-j 4` load.
+    over a full uncaught `panini` suite run (9.2-12.4s as measured in 3f: 9.18/9.51s in the isolated probe, 11.6/12.4s under campaign load) under `-j 4` load.
     **The cap must clear a full UNCAUGHT run of the workspace suite at the
     parallelism you actually use.** Under a cap that doesn't, a mutant that
     survives is recorded as a **timeout rather than a survivor**, so a
@@ -34,23 +34,25 @@
     timeouts). `cargo mutants` also reads `-j` from `CARGO_MUTANTS_JOBS`, so
     an unqualified cap can be defeated by the environment alone; keep `-j`
     at or below 4, or re-measure and raise the cap in step.
-    **The floor behind the 60s cap, measured at 4428 cells on
-    2026-10-01.** Two `mise run test` runs took 5.418s and
-    5.419s wall clock (host load averages 7.46 / 13.06 / 16.29 at the first
-    run's start and 6.70 / 12.71 / 16.14 at the second's end, over 1 / 5 /
-    15 minutes; the host is shared, 24 cores). An isolated `-j 4` probe of the
-    two documented equivalent mutants ran the full suite uncaught in
-    5.509s (`adesha.rs:589:30`) and 5.509s
-    (`tripadi.rs:1217:38`), at a probe load of 6.32 at its start and 5.17 at
-    its end. Those probe phases alone would give a cap of 40 (6 × the longest,
-    rounded up to the next 10s), which proved too tight under campaign load
-    in the check-form-index slice, so the cap derives from the campaign-load
-    uncaught phase instead (8.754s, below), which keeps it at 60. It was 900s
-    against the Θ(N²) suite, before `candidates()` answered from a corpus
-    index. Take the floor by measurement, never by scaling it by cell count
-    or by a projected contention multiplier. Re-measure the floor and an
-    uncaught `-j 4` run whenever the golden suite grows, and change
-    `mise.toml` and this paragraph together.
+    **The floor behind the 80s cap, measured at 4572 cells on
+    2026-10-01.** Two `mise run test` runs took 8.019s and 8.348s wall clock
+    (host load averages 33.96 / 37.65 / 28.09 at the first run's end and
+    34.20 / 37.64 / 28.14 at the second's; the host is shared, 24 cores, and
+    was heavily loaded by other tenants with no busy process of ours, so
+    this floor is not comparable with the 5.418s / 5.419s taken at 4428 cells
+    under load 7.46). An isolated `-j 4` probe of the two documented
+    equivalent mutants ran the full suite uncaught in 9.513s
+    (`adesha.rs:589:30`) and 9.177s (`tripadi.rs:1223:38`) at that same
+    loaded host. Under campaign load the uncaught phases were 12.358s and
+    11.614s (below). The cap is 6 × the longest of the campaign-load phases
+    (74.1s), rounded up to the next 10s: 80. At the old 60s the margin on the
+    longest equivalent was 4.86x, under the 5x rule, so the cap moved from 60
+    to 80 in this slice (it was 900s against the Θ(N²) suite, before
+    `candidates()` answered from a corpus index). Take the floor by
+    measurement, never by scaling it by cell count or by a projected
+    contention multiplier. Re-measure the floor and an uncaught `-j 4` run
+    whenever the golden suite grows, and change `mise.toml` and this
+    paragraph together.
     **One timeout is correct and permanent.** `tripadi.rs`'s 8.4.2 ṇatva
     backward scan decrements a loop index with `j -= 1`; the `j /= 1` mutant
     makes `j` constant, and the loop never terminates. No assertion can ever
@@ -68,56 +70,51 @@
     finished campaign. The mise shim fails in background shells ("no version
     is set for shim: cargo-mutants"); run the installed `cargo-mutants`
     binary directly, with the task's arguments.
-    **Current record (juhotyādi 3e, 2026-10-01).** Campaign at
-    `-j 4 --timeout 60`, `--package panini-prakriya --package
+    **Current record (juhotyādi 3f, 2026-10-01).** Campaign at
+    `-j 4 --timeout 60` (the cap the campaign ran under; 3f then raised it to
+    80, below), `--package panini-prakriya --package
     panini-analyze --test-workspace=true`, `-o
-    /home/dev/mutants-records/juhotyadi-3e`, launched detached, window
-    11:50:27 - 12:01:45 UTC (load average 5.00 11.54 15.60 at the start), on
-    the tree at `c3de3e1`. **762 mutants tested: 711 caught, 48 unviable, 2
+    /home/dev/mutants-records/juhotyadi-3f`, launched detached, window
+    13:03:35 - 13:22:18 UTC (host load average about 34 throughout), on the
+    tree at `d85617c`. **762 mutants tested: 711 caught, 48 unviable, 2
     missed, 1 timeout.** **panini-prakriya: 750 mutants, 703 caught, 44
     unviable, 2 missed, 1 timeout.** Its non-caught set (44 / 2 / 1) is
-    identical to 3d2's: the adesha equivalent still sits at
-    `adesha.rs:589:30` and the tripadi entries did not move. `missed.txt`
-    held exactly:
+    identical to 3e's up to the two `tripadi.rs` entries moving down 6 lines
+    (1217 to 1223, 1543 to 1549) under this slice's `tripadi.rs` edits; the
+    adesha equivalent still sits at `adesha.rs:589:30`. `missed.txt` held
+    exactly:
     ```
     crates/panini-prakriya/src/tinanta/adesha.rs:589:30: replace + with *
-    crates/panini-prakriya/src/tinanta/tripadi.rs:1217:38: replace - with /
+    crates/panini-prakriya/src/tinanta/tripadi.rs:1223:38: replace - with /
     ```
     `timeout.txt` held exactly the permanent ṇatva mutant:
     ```
-    crates/panini-prakriya/src/tinanta/tripadi.rs:1543:23: replace -= with /=
+    crates/panini-prakriya/src/tinanta/tripadi.rs:1549:23: replace -= with /=
     ```
     **panini-analyze: 12 mutants, 8 caught, 4 unviable, 0
     missed, 0 timeout.** None non-caught beyond the 4 unviable (the
     `vec![Default::default()]` and
     `HashMap::from_iter([..., vec![Default::default()]])` replacements do not
     compile, as `Candidate` has no `Default`). The two packages sum to the
-    762 / 711 / 48 / 2 / 1 total. No 7.4.75 mutant (`abhyasa.rs`: all 12
-    mutants in the file caught, none unviable) and no 7.3.87 mutant
-    (`guna.rs` lines 114-180 after the final-review move: none missed, none timed out, none unviable; the
-    24 unviable `guna.rs` mutants all sit at other lines and are the same
-    type-error operator swaps as before) is non-caught, so nothing needs an
-    unviable-without-reason exemption.
-    Under campaign load the two uncaught equivalents' test phases were 8.050s
-    (`adesha.rs:589:30`) and 8.754s (`tripadi.rs:1217:38`). Caught test phases
-    (711) ran min 0.101s, median 1.555s, p90 6.403s, max 8.754s
-    (`tripadi.rs:1313:32`, `- with /`). Against the 60s cap these are 7.45x
-    and 6.85x on the uncaught equivalents and 6.85x on the slowest caught
-    phase, all above the 5x rule, so the cap stays 60 and `mise.toml` is
-    untouched. A higher cap could only turn timeouts into outcomes, and the
-    only timeout is the permanent `j /= 1` hang. `outcomes.json` is kept at
-    `/home/dev/mutants-records/juhotyadi-3e/mutants.out/outcomes.json`, with a
+    762 / 711 / 48 / 2 / 1 total. No 8.2.75 mutant (`tripadi.rs:628-638`: 4
+    mutants, all caught) and no 8.3.24 mutant (`tripadi.rs:816-821`: 7
+    mutants, all caught) is missed, timed out or unviable, so nothing needs
+    an unviable-without-reason exemption.
+    Under campaign load the two uncaught equivalents' test phases were 12.358s
+    (`adesha.rs:589:30`) and 11.614s (`tripadi.rs:1223:38`). Caught test
+    phases (711) ran min 0.102s, median 2.262s, p90 10.253s, max 21.099s.
+    Against the 60s cap the margin on the longest equivalent was 60 / 12.358 =
+    4.86x, below the 5x rule, so the cap moves to 6 × 12.358 = 74.1s, rounded
+    up to 80, and `mise.toml` and this file changed together (margin 6.47x at
+    80; the slowest caught phase is 3.79x, but a caught mutant ends when its
+    first assertion fails, so only the uncaught equivalents set the cap). A
+    higher cap can only turn timeouts into outcomes, and the only timeout is
+    the permanent `j /= 1` hang, so the campaign's outcomes stand without a
+    re-run. `outcomes.json` is kept at
+    `/home/dev/mutants-records/juhotyadi-3f/mutants.out/outcomes.json`, with a
     durable copy at
-    `/home/dev/mutants-records/juhotyadi-3e/outcomes.durable.json`.
-    **Addendum (3e final-review fix).** The full campaign above ran with 7.3.87
-    AFTER 7.3.84. The final-review fix moved it BEFORE 7.3.84 (guard code
-    unchanged; rule order only). A `guna.rs`-scoped re-run
-    (`-o /home/dev/mutants-records/juhotyadi-3e-guna-fix`, same flags, `--file
-    crates/panini-prakriya/src/tinanta/guna.rs`, 2m57s) gives 156 mutants: 132
-    caught, 24 unviable, 0 missed, 0 timeout. `missed.txt` and `timeout.txt`
-    are both empty (0 bytes). `outcomes.json` is copied to
-    `/home/dev/mutants-records/juhotyadi-3e-guna-fix/outcomes.durable.json`.
-    The juhotyādi 3d2 record it replaces: `git show c3de3e1:AGENTS.md`.
+    `/home/dev/mutants-records/juhotyadi-3f/outcomes.durable.json`.
+    The juhotyādi 3e record it replaces: `git show d85617c:AGENTS.md`.
     **The per-slice history** of the floor, the cap and every campaign from
     the pada audit through slice 3d, all measured against the Θ(N²) suite,
     was removed in the commit that introduced this paragraph. Read it with
@@ -135,18 +132,19 @@
   target under `crates/panini-lipi/fuzz` legitimately omits it, since it uses
   `#![no_main]` plus the libfuzzer harness macro).
 - Grammar changes are gated by the golden paradigm test
-  (`crates/panini/tests/paradigm/`, 4428 cells, nine gaṇas — eight complete,
+  (`crates/panini/tests/paradigm/`, 4572 cells, nine gaṇas — eight complete,
   tanādi closing at 10/10 in slice 8b (nine of its ten dhātupāṭha rows
   curated in slice 8a; √kṛ, the tenth and last, in 8b), and juhotyādi (3)
   opened in slice 3a at 2 of its 26 rows, at 4 after slice 3b curated √bhī
   and √hrī, at 8 after slice 3c curated √dā, √dhā, √mā
   and √hā (ātmanepada), at 10 after slice 3c2 curated √hā (parasmaipada) and
   √gā, at 16 after slice 3d curated √pṝ, √pṛ, √bhṛ, √ghṛ, √hṛ
-  and √sṛ, at 17 after slice 3d2 curated √ṛ, and now at 20 of its 26 after slice 3e
-  curated √ṇij, √vij and √viṣ —
+  and √sṛ, at 17 after slice 3d2 curated √ṛ, at 20 after slice 3e curated √ṇij, √vij
+  and √viṣ, and now at 24 of its 26 after slice 3f curated √kit, √tur, √dhiṣ
+  and √dhan —
   `PARADIGM`
     stays one-form-per-cell: a cell forked by an optional rule keeps its
-    other forms — a second (587 cells), a third (143 cells), a fourth
+    other forms — a second (594 cells), a third (152 cells), a fourth
     (eighteen
     cells, rudhādi's √piṣ and — new in slice 7d — √śiṣ loṭ madhyama eka, and
     — new in slice 8a — fifteen more spread across tanādi's four ik-upadhā
@@ -162,7 +160,7 @@
     and fifth (prathama eka) or a fourth through sixth (madhyama eka), or
     seventh for slice 3c2's √hā (`03.0009`) loṭ madhyama eka, the one
     seven-form cell — in
-    `ALTERNATES` (1058 rows in all, so 4428 + 1058 = 5486 forms total); √bhuj
+    `ALTERNATES` (1083 rows in all, so 4572 + 1083 = 5655 forms total); √bhuj
     joins neither fork record — its forks stack only 7.1.35 and 8.4.56, the
     same two-deep profile as √yuj — but the √bhuj/1.3.66 slice adds two
     trace pins of its own, `bhunkte_trace_credits_1_3_66_not_1_3_72` and
@@ -432,7 +430,8 @@
     pinned by `shnams_ru_fires_on_the_dhatus_own_final` plus
     `tinanta_rule_order_is_pinned` (7b moved 8.2.75 above 8.2.73 for the
     same structural reason, which made its `p.log` read unreachable and let
-    it be deleted). **8.2.41 below
+    it be deleted). Since juhotyādi 3f, 8.2.75 carries no gaṇa test (√kit's
+    *acikeH*); 8.2.73 and 8.2.74 are still rudhādi-only. **8.2.41 below
     8.2.23** is a *derivation* constraint too, and the sharpest one this
     slice adds: at laṅ madhyama eka the ending is a bare `s`, and 8.2.23
     *saṁyogāntasya lopaḥ* elides it before 8.2.41 can see it, so the cell
@@ -565,7 +564,9 @@
   entry, 4176 cells / 5208 forms / 93 roots), and that by juhotyādi 3d2's
   (`tools/audit/README.md`'s 2026-09-30 entry, 4212 cells / 5249 forms / 94
   roots), and that by juhotyādi 3e's (`tools/audit/README.md`'s 2026-10-01
-  entry, 4428 cells / 5486 forms / 97 roots).
+  entry, 4428 cells / 5486 forms / 97 roots), and that by juhotyādi 3f's
+  (`tools/audit/README.md`'s 2026-10-01 entry, 4572 cells / 5655 forms / 101
+  roots).
   Three new `Rule`s are behind it, all root-keyed to √kṛ and all in
   `guna.rs` — 6.4.110 *ata ut sārvadhātuke*, 6.4.108 *nityaṁ karoteḥ* and
   6.4.109 *ye ca* — plus one engine change with no `Rule` of its own:
@@ -617,7 +618,7 @@
   cells across eleven roots (`key_count("6.4.107") == 72`, the same
   test), not 8 — the "8 cells" figure was never re-derived when the gaṇa
   landed. `guna.rs:1233`'s own claim ("1872 goldens move") stays stale
-  only in the ordinary corpus-size sense, not wrong in kind: 4428 goldens
+  only in the ordinary corpus-size sense, not wrong in kind: 4572 goldens
   would move today. Neither comment was touched by tanādi 8a or 8b, consistent
   with every slice since 7c. Rudhādi 7d touched neither comment — its one permitted
   engine-comment edit is the comment above
@@ -657,7 +658,7 @@
   stands at 4428 cells as of 3e (`guna.rs:2228`'s claim now anchored at
   `guna.rs:2384` (moved from 2376 by the final-review comment on 7.3.87's order), `controller.rs:206`'s at `controller.rs:206`: 3e's 7.3.87 rule
   and its tests landed in `guna.rs` above the test, while `controller.rs` is
-  unchanged; both lines measured by grep at this commit). A third,
+  unchanged; both lines measured by grep at this commit). Juhotyādi 3f touched neither comment either; the corpus stands at 4572 cells as of 3f (`guna.rs:2384`'s claim anchored at `guna.rs:2386`, `controller.rs:206`'s at `controller.rs:206`; both lines measured by grep at this commit). A third,
   `tinanta/tripadi.rs`'s comment on 8.2.30 (formerly the one calling √bhañj
   rudhādi's one cu-final curated root), was **not** left stale the same
   way: the 8.2.30/8.2.39 generalization slice rewrote it in place, since
@@ -809,7 +810,7 @@
   wherever the root text is ambiguous.** `ctx.dhatupatha` carries the row
   `derive` was called with, or `""` on a hand-built prakriyā, which every
   such guard declines. 6.4.87, 6.4.101 and 6.4.115 still key on `ANGA.text`
-  (`hu`, `BI`), safe only because `juhotyadi_rows_are_the_twenty_curated_roots`
+  (`hu`, `BI`), safe only because `juhotyadi_rows_are_the_twenty_four_curated_roots`
   asserts those codes stay unique; 7.4.75, 7.4.76, 6.4.116, 6.4.117, 6.4.118, 8.2.38
   and 8.2.40's *adhaḥ* key on numbers, because `03.0008` and `03.0009` share
   `hA`, and 7.4.77 (`03.0004`, `03.0005`, `03.0017`) follows that precedent. 7.4.75 (`03.0012`–`03.0014`) does too: `vij` is also `06.0009` and `07.0023`. 7.4.78 keys

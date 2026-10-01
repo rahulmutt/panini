@@ -741,7 +741,7 @@ mod tests {
     fn haladih_shesha_elides_every_consonant_but_the_first() {
         // 7.4.60, widened in slice 3d: the abhyāsa keeps its first hal and
         // loses every other one, final ones included. 7.4.66's `ar` is the
-        // corpus witness (Bar → Ba, bibharti). `Bas` is √bhas's (slice 3f)
+        // corpus witness (Bar → Ba, bibharti). `Bas` is √bhas's (slice 3f2)
         // shape, a final consonant 7.4.66 did not put there; the rule must
         // not depend on where the consonant came from.
         let r_60 = rules().find(|r| r.id == "7.4.60").unwrap();

@@ -132,10 +132,11 @@ pub(crate) static GUNA: &[Rule] = &[
     // seven cells per root.
     //
     // *laghūpadhasya*: a consonant-final aṅga whose penultimate is a short
-    // vowel. `a` is included because vidyut credits this rule on 3f's
-    // a-upadhā √bhas, √dhan and √jan, where 7.3.86 has nothing to guṇate
-    // anyway. 3f inherits the rule unchanged. It changes forms there on
-    // 03.0021 (cikitAni), 03.0022 (tuturARi) and 03.0023 (diDizARi).
+    // vowel. `a` is included because vidyut credits this rule on the
+    // a-upadhā √dhan (slice 3f) and √bhas and √jan (slice 3f2), where 7.3.86
+    // has nothing to guṇate anyway. Slice 3f inherited the rule unchanged; it
+    // changes forms on 03.0021 (cikitAni), 03.0022 (tuturARi) and 03.0023
+    // (diDizARi).
     //
     // Reads ENDING directly, as 7.3.92 does. An abhyasta aṅga is always
     // ślu'd, so SHAP is empty and the ending is the following sārvadhātuka.
@@ -912,7 +913,7 @@ pub(crate) static GUNA: &[Rule] = &[
     },
     // 6.1.78 eco'yavāyāvaḥ: e/o before a vowel → ay/av. The sūtra also covers
     // E/O → Ay/Av, but those two arms are dropped here: within the current
-    // 97-root × 4-lakāra grammar, ANGA can never end in a vṛddhi vowel (E/O)
+    // 101-root × 4-lakāra grammar, ANGA can never end in a vṛddhi vowel (E/O)
     // at the point this rule runs. `vrddhi_of` (the only source of E/O in
     // this engine) is called from four places in two rules: three in 6.1.90
     // — the aṅga arm writes the vṛddhi vowel at *position 0* of the first
@@ -1975,8 +1976,9 @@ mod tests {
             assert_eq!(p.terms[ENDING].text, ending, "{ending}");
             assert_eq!(p.log.last().unwrap().sutra, "7.3.87");
         }
-        // 3f's a-upadhā shape (√bhas, 03.0019). An `a` upadhā is laghu too, so
-        // the block is credited here, where 7.3.86 has nothing to guṇate.
+        // The a-upadhā shape of √bhas (03.0019, slice 3f2) and √dhan (03.0024,
+        // slice 3f). An `a` upadhā is laghu too, so the block is credited
+        // here, where 7.3.86 has nothing to guṇate.
         let mut p = abhyasta_prakriya("ba", "Bas", false, "Ani", false);
         p.terms[ENDING].add(Tag::Sarvadhatuka);
         p.ctx.lakara = Lakara::Lot;

@@ -46,10 +46,10 @@ use crate::tinanta::terms::{ABHYASA, ANGA, ENDING, SHAP, remove_char, set_char, 
 ///   `rudhadi_vidhilin_madhyama_eka_is_untouched_by_the_ru_alternation` in
 ///   `super::derivation_tests` is the witness.
 fn dhatu_is_pada_final(p: &Prakriya) -> bool {
-    // Defensive rather than a bare `p.terms[ENDING..]`: every call site
-    // guards on `Tag::Rudhadi` first, so a hand-built two-term `Prakriya`
-    // never actually reaches here today, but this helper is file-scoped and
-    // a future caller might not carry that guard. `p.terms.get(ENDING)` at
+    // Defensive rather than a bare `p.terms[ENDING..]`: 8.2.73 and 8.2.74
+    // guard on `Tag::Rudhadi` first, but 8.2.75 has had no gaṇa test since
+    // slice 3f, so a hand-built prakriyā with any layout can reach here.
+    // `p.terms.get(ENDING)` at
     // 8.2.25 above is the same defensive idiom for a single index; `None`
     // here (fewer than `ENDING` terms at all) means there is nothing past
     // the dhātu to hold it back, so the dhātu counts as pada-final.
@@ -598,29 +598,26 @@ pub(crate) static TRIPADI: &[Rule] = &[
         },
     },
     // 8.2.75 daś ca (vikalpa): and a final `d` likewise becomes ru before
-    // sip. akfRad + s → akfRaH. The counterpart of 8.2.74 for a stem whose
-    // final is already a stop — √kṛt's, voiced by 8.2.39 just above.
+    // sip. akfRad + s → akfRaH; aciked + s → acikeH (juhotyādi √kit, slice
+    // 3f). The counterpart of 8.2.74 for a stem whose final is already a
+    // stop, voiced by 8.2.39 just above.
+    //
+    // NO GAṆA TEST. Its guard is the sūtra's own: sip, the dhātu pada-final
+    // (8.2.23 has eaten the ending), and a final `d`. Through slice 3e it
+    // also required Tag::Rudhadi; slice 3f dropped that, and the whole suite
+    // passed unchanged without it, so no curated root outside rudhādi and
+    // √kit reaches this rule. `das_ca_is_credited_only_on_rudhadi_and_kit`
+    // in `panini`'s trace suite holds that as a fact.
     //
     // ORDERED ABOVE 8.2.73 (7b Task 8), against sūtra order, for the same
     // structural reason as 8.2.74 just above: this rule needs to see the
-    // dhātu's OWN `d`, not one 8.2.73 manufactured from an `s`.
-    //
-    // Until this move, that meant reading the log — declining whenever
-    // `p.log` already showed an "8.2.73" step, on the reasoning that 8.2.73
-    // is the ONLY source of a `d` this rule must not double-count (√hiṃs's
-    // `ahinas`, via 8.2.73's sip over-application, becoming `ahinad`; √kṛt
-    // is untouched by that concern, since its `d` is always 8.2.39
-    // jaśtva's and 8.2.73 never fires on it). At the new position that
-    // clause is unreachable by construction — 8.2.73 has not run yet — so
-    // it has been deleted, and the guard now rests on phonology instead:
-    // √hiṃs presents `ahinas` here, which fails this rule's own
-    // `ends_with('d')` check outright and falls through to 8.2.73
-    // unchanged (8.2.74 above has already run by this point, and either
-    // took the branch or declined); √kṛt presents `akfRad` (8.2.39 having
-    // already voiced its `t`) and this rule fires on it directly. Forms
-    // are unchanged by the move: `shnams_ru_fires_on_the_dhatus_own_final`
-    // and the 7a laṅ cell tests in `super::derivation_tests` are the
-    // witnesses.
+    // dhātu's OWN `d`, not one 8.2.73 manufactured from an `s`. At this
+    // position 8.2.73 has not run yet, so the guard rests on phonology:
+    // √hiṃs presents `ahinas`, which fails `ends_with('d')` and falls
+    // through to 8.2.73 unchanged; √kṛt presents `akfRad` and √kit
+    // `aciked`, 8.2.39 having voiced their `t`, and this rule fires on them
+    // directly. `shnams_ru_fires_on_the_dhatus_own_final` and the 7a laṅ
+    // cell tests in `super::derivation_tests` are the witnesses.
     Rule {
         id: "8.2.75",
         name: "daSca",
@@ -628,7 +625,7 @@ pub(crate) static TRIPADI: &[Rule] = &[
         vikalpa: true,
         bars: &[],
         apply: |p| {
-            if !p.terms[ANGA].has(Tag::Rudhadi) || !p.ctx.is_sip() {
+            if !p.ctx.is_sip() {
                 return false;
             }
             if !dhatu_is_pada_final(p) {
@@ -775,8 +772,9 @@ pub(crate) static TRIPADI: &[Rule] = &[
         },
     },
     // 8.3.24 naścāpadāntasya jhali: a non-pada-final `n` becomes an
-    // anusvāra before a jhal. In this suite that `n` is always śnam's, and
-    // the jhal is whatever the weak stem's tail or the ending supplies.
+    // anusvāra before a jhal. In this suite that `n` is śnam's (rudhādi) or,
+    // in juhotyādi, the root's own (√dhan, slice 3f: daDaMsi, daDaMhi), and
+    // the jhal is whatever the stem's tail or the ending supplies.
     //
     // Paired with 8.4.58 below, which usually turns the anusvāra straight
     // back into the same `n`. The pair is not a no-op, and √hiṃs is why:
@@ -784,10 +782,16 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // follows is the root's own `s`, which is śal. hiMstaH keeps its
     // anusvāra where kfntaH does not.
     //
-    // NARROW GUARD: rudhādi only. The `n` of 7.1.3 jho'ntaH (aBavan,
-    // kfntan) is pada-final and out of scope by the sūtra's own
+    // NARROW GUARD: rudhādi and juhotyādi only. The `n` of 7.1.3 jho'ntaH
+    // (aBavan, kfntan) is pada-final and out of scope by the sūtra's own
     // `apadāntasya`; guarding on the gaṇa keeps this rule away from it
     // without needing a pada-boundary notion the engine does not have.
+    // Dropping the gaṇa test entirely credits an 8.3.24 → 8.4.58 pair on
+    // every 7.1.3 `n` (bhavanti, yanti, Apnuvanti, hinvanti: four trace pins
+    // fail). Juhotyādi is safe under it: its aṅga is abhyasta, so 7.1.4 ad
+    // abhyastāt takes the `J` (daDati) and laṅ takes jus (3.4.109), and no
+    // juhotyādi `n` is 7.1.3's. Where √dhan's `n` meets `t`/`T`, 8.4.58
+    // turns the anusvāra straight back (daDantaH), as in vidyut's trace.
     //
     // The `apadāntasya` / jhal test lives INSIDE the search, not after it:
     // the rule finds the first `n` that is genuinely followed by a jhal
@@ -808,7 +812,8 @@ pub(crate) static TRIPADI: &[Rule] = &[
         vikalpa: false,
         bars: &[],
         apply: |p| {
-            if !p.terms[ANGA].has(Tag::Rudhadi) {
+            let anga = &p.terms[ANGA];
+            if !anga.has(Tag::Rudhadi) && !anga.has(Tag::Juhotyadi) {
                 return false;
             }
             let w = word_chars(p);
@@ -969,9 +974,10 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // absent, that cell's `n`-`j` pair would reach this rule's turn intact
     // and this rule WOULD fire on it. It is 8.3.24 alone that is guaranteed
     // to have already run, in every cell, because its trigger needs nothing
-    // from what follows `j`/`c`. 8.3.24's guard is `Tag::Rudhadi`, a gaṇa
-    // tag rather than a grammatical predicate, so this coverage is
-    // contingent on that tag rather than derived from the sūtra itself — a
+    // from what follows `j`/`c`. 8.3.24's guard is `Tag::Rudhadi` or
+    // `Tag::Juhotyadi`, gaṇa tags rather than a grammatical predicate, so
+    // this coverage is contingent on those tags rather than derived from the
+    // sūtra itself — a
     // documentation gap, not a latent wrongness: were 8.3.24 ever to decline
     // on one of these roots, `shcutva_of('n')` is `Some('Y')`, the same `Y`
     // that 8.3.24's `M` reaches anyway once 8.4.58 anusvArasya yayi
@@ -1563,7 +1569,7 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // as a guard ("a non-padānta n before a jhal has ALREADY become an
     // anusvāra by the time the 8.4 rules run"), a simplification taken when
     // the engine had no anusvāra machinery. It does now, but only for
-    // rudhādi: 8.3.24 above is gaṇa-guarded, so BAzante's `n` is still an
+    // rudhādi and juhotyādi: 8.3.24 above is gaṇa-guarded, so BAzante's `n` is still an
     // `n` when ṇatva runs and the fold is still load-bearing for every
     // other root. The fold therefore stays.
     //
@@ -1575,7 +1581,7 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // a vowel, so 8.3.24 never fired — still takes ṇatva.
     //
     // Retire the fold, and this constraint with it, when a slice widens
-    // 8.3.24 past rudhādi.
+    // 8.3.24 past rudhādi and juhotyādi.
     //
     // The `yayi` / parasavarṇa test lives INSIDE the search, not after it:
     // the rule finds the first anusvāra that actually HAS a parasavarṇa
@@ -1741,6 +1747,7 @@ pub(crate) static TRIPADI: &[Rule] = &[
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::context::Context;
     use crate::prakriya::Prakriya;
     use crate::term::Term;
     use crate::tinanta::rules;
@@ -1750,7 +1757,7 @@ mod tests {
     use crate::tinanta::derivation_tests::sole;
     use crate::tinanta::derive;
     use crate::tinanta::form_g;
-    use panini_data::{Lakara, Purusha, Vacana, dhatus};
+    use panini_data::{Lakara, Pada, Purusha, Vacana, dhatus};
 
     // --- 8.2.77 hali ca: guard-edge pin -----------------------------------
     //
@@ -2649,5 +2656,92 @@ mod tests {
             ..Default::default()
         };
         assert!(!(rule.apply)(&mut p));
+    }
+
+    // --- 8.2.75 daś ca: gaṇa-free since slice 3f -------------------------
+
+    /// A laṅ prakriyā at the tripādī with the whole stem in ANGA and no gaṇa
+    /// tag: 8.2.75 reads none. `ending` "" is the 8.2.23-emptied sip.
+    fn sip_prakriya(stem: &str, ending: &str, purusha: Purusha) -> Prakriya {
+        Prakriya {
+            terms: with_slots(vec![Term::new(stem), Term::new(""), Term::new(ending)]),
+            ctx: Context::new(Lakara::Lan, Pada::Parasmaipada, purusha, Vacana::Eka),
+            ..Default::default()
+        }
+    }
+
+    #[test]
+    fn das_ca_fires_on_any_ganas_pada_final_d_before_sip() {
+        // √kit laṅ madhyama eka after 8.2.39: aciked → aciker, which 8.3.15
+        // finishes to acikeH. No Rudhadi tag on the aṅga.
+        let rule = rules().find(|r| r.id == "8.2.75").unwrap();
+        let mut p = sip_prakriya("aciked", "", Purusha::Madhyama);
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.text(), "aciker");
+        assert_eq!(p.log.last().unwrap().sutra, "8.2.75");
+    }
+
+    #[test]
+    fn das_ca_declines_off_sip_off_d_and_before_a_live_ending() {
+        let rule = rules().find(|r| r.id == "8.2.75").unwrap();
+        for (stem, ending, purusha, why) in [
+            // tip: laṅ prathama eka keeps aciked.
+            ("aciked", "", Purusha::Prathama, "tip"),
+            // a pada-final `t`, not `d`.
+            ("aciket", "", Purusha::Madhyama, "t-final"),
+            // is_sip() is lakāra-blind, so a vidhiliṅ madhyama eka shape
+            // passes it; only dhatu_is_pada_final keeps the rule off.
+            ("cikit", "yAd", Purusha::Madhyama, "live ending"),
+        ] {
+            let mut p = sip_prakriya(stem, ending, purusha);
+            assert!(!(rule.apply)(&mut p), "{why}");
+            assert!(p.log.is_empty(), "{why}");
+        }
+    }
+
+    // --- 8.3.24 naś cāpadāntasya jhali: rudhādi and juhotyādi ------------
+
+    /// √dhan at the tripādī: abhyāsa `da`, aṅga `Dan`, an empty śap (ślu),
+    /// and `ending`. The aṅga carries Tag::Juhotyadi.
+    fn dhan_prakriya(ending: &str) -> Prakriya {
+        let mut p = Prakriya {
+            terms: with_slots(vec![Term::new("Dan"), Term::new(""), Term::new(ending)]),
+            ..Default::default()
+        };
+        p.terms[ABHYASA].text = "da".into();
+        p.terms[ANGA].add(Tag::Juhotyadi);
+        p
+    }
+
+    #[test]
+    fn nas_capadantasya_fires_on_a_juhotyadi_n_before_a_jhal() {
+        // daDaMsi, daDaMhi (`h` is a jhal), and daDaMtaH, which 8.4.58
+        // takes back to daDantaH.
+        let rule = rules().find(|r| r.id == "8.3.24").unwrap();
+        for (ending, want) in [("si", "daDaMsi"), ("hi", "daDaMhi"), ("taH", "daDaMtaH")] {
+            let mut p = dhan_prakriya(ending);
+            assert!((rule.apply)(&mut p), "{ending}");
+            assert_eq!(p.text(), want);
+            assert_eq!(p.log.last().unwrap().sutra, "8.3.24");
+        }
+    }
+
+    #[test]
+    fn nas_capadantasya_declines_off_its_two_ganas_and_before_a_non_jhal() {
+        let rule = rules().find(|r| r.id == "8.3.24").unwrap();
+        // bhvādi bhavanti: 7.1.3's `n` before `t`. The gaṇa test is what
+        // keeps the rule off it; *apadāntasya* is not modelled.
+        let mut p = Prakriya {
+            terms: with_slots(vec![Term::new("Bav"), Term::new("a"), Term::new("nti")]),
+            ..Default::default()
+        };
+        assert!(!(rule.apply)(&mut p), "bhavanti");
+        assert!(p.log.is_empty());
+        // √dhan before m, v, y: none is a jhal (daDanmi, daDanvaH, daDanyAt).
+        for ending in ["mi", "vaH", "yAt"] {
+            let mut p = dhan_prakriya(ending);
+            assert!(!(rule.apply)(&mut p), "{ending}");
+            assert!(p.log.is_empty(), "{ending}");
+        }
     }
 }

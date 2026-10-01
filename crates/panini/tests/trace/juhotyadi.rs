@@ -18,7 +18,7 @@
 //! accident.
 
 use crate::helpers::{at, cell_trace};
-use panini_data::{Lakara, Pada, Purusha, Vacana, dhatus};
+use panini_data::{Gana, Lakara, Pada, Purusha, Vacana, dhatus};
 use panini_prakriya::derive;
 
 #[test]
@@ -864,7 +864,7 @@ fn juhavani_trace_has_no_nabhyastasyaci() {
     // *laghūpadhasya* clause: √hu's aṅga is vowel-final (hu → ho → hav), so
     // the clause declines it trivially. The ṛ-roots are the prior cells that
     // test that clause; see `biBarARi_trace_has_no_nabhyastasyaci` and
-    // `nabhyastasyaci_is_credited_only_on_the_nij_vij_vish_rows`.
+    // `nabhyastasyaci_is_credited_only_on_the_3e_and_3f_rows`.
     let (text, t) = cell_trace(
         "03.0001",
         Lakara::Lot,
@@ -896,12 +896,15 @@ fn biBarARi_trace_has_no_nabhyastasyaci() {
 }
 
 #[test]
-fn nabhyastasyaci_is_credited_only_on_the_nij_vij_vish_rows() {
+fn nabhyastasyaci_is_credited_only_on_the_3e_and_3f_rows() {
     // Corpus-wide: every branch of every curated root x lakāra x pada x cell
-    // whose log carries 7.3.87 belongs to √ṇij, √vij or √viṣ. A new rule that
-    // credits itself on prior rows' traces (forms unchanged) fails here.
-    // 3f extends the allowed list.
-    const ALLOWED: [&str; 3] = ["03.0012", "03.0013", "03.0014"];
+    // whose log carries 7.3.87 belongs to √ṇij, √vij, √viṣ (3e) or √kit,
+    // √tur, √dhiṣ, √dhan (3f; a credited no-op on √dhan's a-upadhā). A new
+    // rule that credits itself on prior rows' traces (forms unchanged) fails
+    // here. 3f2 extends the allowed list with √bhas and √jan.
+    const ALLOWED: [&str; 7] = [
+        "03.0012", "03.0013", "03.0014", "03.0021", "03.0022", "03.0023", "03.0024",
+    ];
     const CELLS: [(Purusha, Vacana); 9] = [
         (Purusha::Prathama, Vacana::Eka),
         (Purusha::Prathama, Vacana::Dvi),
@@ -934,4 +937,172 @@ fn nabhyastasyaci_is_credited_only_on_the_nij_vij_vish_rows() {
         }
     }
     assert!(credited > 0, "the allowed rows no longer witness 7.3.87");
+}
+
+/// The derivation of `form` in one cell, for the pins on a non-declined
+/// branch (cell_trace reads branch 0 only).
+fn branch_trace(
+    number: &str,
+    lakara: Lakara,
+    purusha: Purusha,
+    vacana: Vacana,
+    form: &str,
+) -> Vec<String> {
+    let d = dhatus().iter().find(|d| d.dhatupatha == number).unwrap();
+    let p = derive(d, lakara, Pada::Parasmaipada, purusha, vacana)
+        .into_iter()
+        .find(|p| !p.blocked && p.text() == form)
+        .unwrap_or_else(|| panic!("no branch derives {form}"));
+    p.log.iter().map(|s| s.sutra.clone()).collect()
+}
+
+#[test]
+#[allow(non_snake_case)]
+fn acikeH_trace_is_jashtva_then_das_ca() {
+    // kit P laN M.E. 7.3.86's guṇa, 8.2.23 eats the sip, 8.2.39 voices the
+    // `t`, then 8.2.75 takes the `d` to ru. 8.2.73 never runs on it: that
+    // rule is still rudhādi-only and wants an `s`.
+    let t = branch_trace(
+        "03.0021",
+        Lakara::Lan,
+        Purusha::Madhyama,
+        Vacana::Eka,
+        "acikeH",
+    );
+    assert!(at(&t, "7.3.86") < at(&t, "8.2.39"), "got {t:?}");
+    assert!(at(&t, "8.2.39") < at(&t, "8.2.75"), "got {t:?}");
+    assert!(!t.contains(&"8.2.73".to_string()), "got {t:?}");
+    assert!(!t.contains(&"8.4.56".to_string()), "got {t:?}");
+}
+
+#[test]
+fn aciked_trace_has_no_ru() {
+    // kit P laN P.E. Tip, not sip: 8.2.75 declines, and the cell forks only
+    // on 8.4.56.
+    let (text, t) = cell_trace(
+        "03.0021",
+        Lakara::Lan,
+        Pada::Parasmaipada,
+        Purusha::Prathama,
+        Vacana::Eka,
+    );
+    assert_eq!(text, "aciked", "got {t:?}");
+    assert!(!t.contains(&"8.2.75".to_string()), "got {t:?}");
+    assert!(!t.contains(&"8.2.73".to_string()), "got {t:?}");
+}
+
+#[test]
+#[allow(non_snake_case)]
+fn daDaMsi_trace_keeps_its_anusvara() {
+    // Dan P laT M.E. 8.3.24 before `s`; 8.4.58 needs a following yay and
+    // `s` is not one, so the anusvāra stays.
+    let (text, t) = cell_trace(
+        "03.0024",
+        Lakara::Lat,
+        Pada::Parasmaipada,
+        Purusha::Madhyama,
+        Vacana::Eka,
+    );
+    assert_eq!(text, "daDaMsi", "got {t:?}");
+    assert!(t.contains(&"8.3.24".to_string()), "got {t:?}");
+    assert!(!t.contains(&"8.4.58".to_string()), "got {t:?}");
+}
+
+#[test]
+#[allow(non_snake_case)]
+fn daDaMhi_trace_reaches_nas_capadantasya_before_h() {
+    // Dan P loT M.E. The prep spec's open question: `h` is a jhal, and
+    // 8.3.24 reaches it. 6.4.101 does not fire: `n` is not a jhal.
+    let (text, t) = cell_trace(
+        "03.0024",
+        Lakara::Lot,
+        Pada::Parasmaipada,
+        Purusha::Madhyama,
+        Vacana::Eka,
+    );
+    assert_eq!(text, "daDaMhi", "got {t:?}");
+    assert!(t.contains(&"8.3.24".to_string()), "got {t:?}");
+    assert!(!t.contains(&"6.4.101".to_string()), "got {t:?}");
+}
+
+#[test]
+#[allow(non_snake_case)]
+fn daDantaH_trace_is_the_anusvara_round_trip() {
+    // Dan P laT P.D. 8.3.24 makes the `n` an anusvāra before `t`, and 8.4.58
+    // turns it straight back: vidyut's trace too.
+    let (text, t) = cell_trace(
+        "03.0024",
+        Lakara::Lat,
+        Pada::Parasmaipada,
+        Purusha::Prathama,
+        Vacana::Dvi,
+    );
+    assert_eq!(text, "daDantaH", "got {t:?}");
+    assert!(at(&t, "8.3.24") < at(&t, "8.4.58"), "got {t:?}");
+}
+
+const ALL_CELLS: [(Purusha, Vacana); 9] = [
+    (Purusha::Prathama, Vacana::Eka),
+    (Purusha::Prathama, Vacana::Dvi),
+    (Purusha::Prathama, Vacana::Bahu),
+    (Purusha::Madhyama, Vacana::Eka),
+    (Purusha::Madhyama, Vacana::Dvi),
+    (Purusha::Madhyama, Vacana::Bahu),
+    (Purusha::Uttama, Vacana::Eka),
+    (Purusha::Uttama, Vacana::Dvi),
+    (Purusha::Uttama, Vacana::Bahu),
+];
+
+/// Every (root, lakāra, pada, cell, branch) of the curated corpus whose log
+/// carries `sutra`, as (dhatupatha, gaṇa).
+fn credited(sutra: &str) -> Vec<(&'static str, Gana)> {
+    let mut out = Vec::new();
+    for d in dhatus() {
+        for lakara in [Lakara::Lat, Lakara::Lan, Lakara::Lot, Lakara::VidhiLin] {
+            for &pada in d.pada.padas() {
+                for (purusha, vacana) in ALL_CELLS {
+                    for p in derive(d, lakara, pada, purusha, vacana) {
+                        if !p.blocked && p.log.iter().any(|s| s.sutra == sutra) {
+                            out.push((d.dhatupatha, d.gana));
+                        }
+                    }
+                }
+            }
+        }
+    }
+    out
+}
+
+#[test]
+fn das_ca_is_credited_only_on_rudhadi_and_kit() {
+    // 8.2.75 has no gaṇa test since slice 3f. Goldens ignore traces, so this
+    // is what holds "no other root reaches it".
+    let hits = credited("8.2.75");
+    for (number, gana) in &hits {
+        assert!(
+            *gana == Gana::Rudhadi || *number == "03.0021",
+            "8.2.75 credited on {number}"
+        );
+    }
+    assert!(
+        hits.iter().any(|(n, _)| *n == "03.0021"),
+        "√kit no longer witnesses 8.2.75"
+    );
+}
+
+#[test]
+fn nas_capadantasya_is_credited_only_on_rudhadi_and_dhan() {
+    // 8.3.24 admits juhotyādi since slice 3f; only √dhan has an `n` before
+    // a jhal there.
+    let hits = credited("8.3.24");
+    for (number, gana) in &hits {
+        assert!(
+            *gana == Gana::Rudhadi || *number == "03.0024",
+            "8.3.24 credited on {number}"
+        );
+    }
+    assert!(
+        hits.iter().any(|(n, _)| *n == "03.0024"),
+        "√dhan no longer witnesses 8.3.24"
+    );
 }
