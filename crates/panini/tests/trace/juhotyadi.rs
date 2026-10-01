@@ -1256,3 +1256,152 @@ fn khari_ca_off_bhas_is_credited_exactly_as_before_3f2() {
         .count();
     assert_eq!(off_bhas, 455);
 }
+
+#[test]
+#[allow(non_snake_case)]
+fn jajYati_trace_is_upadha_lopa_then_shcutva() {
+    // jan P laT P.B. 6.4.98 elides the upadhā before the ṅit `ati` (7.1.4's),
+    // and 8.4.40's converse arm takes the `n` after the `j` to `Y`.
+    let (text, t) = cell_trace(
+        "03.0025",
+        Lakara::Lat,
+        Pada::Parasmaipada,
+        Purusha::Prathama,
+        Vacana::Bahu,
+    );
+    assert_eq!(text, "jajYati", "got {t:?}");
+    assert!(at(&t, "7.1.4") < at(&t, "6.4.98"), "got {t:?}");
+    assert!(at(&t, "6.4.98") < at(&t, "8.4.40"), "got {t:?}");
+    assert!(!t.contains(&"6.4.42".to_string()), "got {t:?}");
+}
+
+#[test]
+#[allow(non_snake_case)]
+fn ajajYuH_trace_is_at_then_upadha_lopa_then_shcutva() {
+    // jan P laN P.B. The aṭ, then 6.4.98 before `us`, then 8.4.40.
+    let (text, t) = cell_trace(
+        "03.0025",
+        Lakara::Lan,
+        Pada::Parasmaipada,
+        Purusha::Prathama,
+        Vacana::Bahu,
+    );
+    assert_eq!(text, "ajajYuH", "got {t:?}");
+    assert!(at(&t, "6.4.71") < at(&t, "6.4.98"), "got {t:?}");
+    assert!(at(&t, "6.4.98") < at(&t, "8.4.40"), "got {t:?}");
+}
+
+#[test]
+#[allow(non_snake_case)]
+fn jajAtaH_trace_takes_the_a_without_the_abhyasta_rules() {
+    // jan P laT P.D. 6.4.42 writes `jA` after 6.4.112 and 6.4.113 have run
+    // on `jan` and declined (6.4.22), so neither elides nor raises the ā.
+    let (text, t) = cell_trace(
+        "03.0025",
+        Lakara::Lat,
+        Pada::Parasmaipada,
+        Purusha::Prathama,
+        Vacana::Dvi,
+    );
+    assert_eq!(text, "jajAtaH", "got {t:?}");
+    assert!(t.contains(&"6.4.42".to_string()), "got {t:?}");
+    for absent in ["6.4.112", "6.4.113", "6.4.98", "8.3.24"] {
+        assert!(!t.contains(&absent.to_string()), "{absent}: got {t:?}");
+    }
+}
+
+#[test]
+#[allow(non_snake_case)]
+fn jajAhi_trace_takes_the_a_and_keeps_hi() {
+    // jan P loT M.E. `hi` is jhal-initial and ṅit: 6.4.42. The stem `jA` is
+    // not jhal-final, so 6.4.101 hu-jhalbhyo her dhiḥ declines.
+    let (text, t) = cell_trace(
+        "03.0025",
+        Lakara::Lot,
+        Pada::Parasmaipada,
+        Purusha::Madhyama,
+        Vacana::Eka,
+    );
+    assert_eq!(text, "jajAhi", "got {t:?}");
+    assert!(t.contains(&"6.4.42".to_string()), "got {t:?}");
+    assert!(!t.contains(&"6.4.101".to_string()), "got {t:?}");
+}
+
+#[test]
+#[allow(non_snake_case)]
+fn jajAyAt_trace_forks_on_ye_vibhasa() {
+    // jan P viDiliN P.E. 6.4.43's branch takes the ā before yāsuṭ, and no
+    // ā-of-abhyasta rule touches it; the declined branch keeps the `n`.
+    let t = branch_trace(
+        "03.0025",
+        Lakara::VidhiLin,
+        Purusha::Prathama,
+        Vacana::Eka,
+        "jajAyAt",
+    );
+    assert!(at(&t, "7.2.79") < at(&t, "6.4.43"), "got {t:?}");
+    for absent in ["6.4.112", "6.4.118", "6.4.42"] {
+        assert!(!t.contains(&absent.to_string()), "{absent}: got {t:?}");
+    }
+    let t = branch_trace(
+        "03.0025",
+        Lakara::VidhiLin,
+        Purusha::Prathama,
+        Vacana::Eka,
+        "jajanyAt",
+    );
+    assert!(!t.contains(&"6.4.43".to_string()), "got {t:?}");
+}
+
+#[test]
+fn jajanti_trace_takes_none_of_the_jan_rules_before_a_pit() {
+    // jan P laT P.E. tip is pit: no 6.4.98, 6.4.42 or 6.4.43, and the `n`
+    // before `t` goes through 8.3.24 and back by 8.4.58.
+    let (text, t) = cell_trace(
+        "03.0025",
+        Lakara::Lat,
+        Pada::Parasmaipada,
+        Purusha::Prathama,
+        Vacana::Eka,
+    );
+    assert_eq!(text, "jajanti", "got {t:?}");
+    for absent in ["6.4.98", "6.4.42", "6.4.43"] {
+        assert!(!t.contains(&absent.to_string()), "{absent}: got {t:?}");
+    }
+    assert!(at(&t, "8.3.24") < at(&t, "8.4.58"), "got {t:?}");
+}
+
+#[test]
+fn gamahana_janasana_and_ye_vibhasa_are_credited_only_on_jan() {
+    // All three are keyed by row number; 6.4.42 and 6.4.43's key holds √san
+    // too, which must never take them (its follower is the vikaraṇa `u`).
+    for sutra in ["6.4.98", "6.4.42", "6.4.43"] {
+        let hits = credited(sutra);
+        assert!(!hits.is_empty(), "√jan no longer witnesses {sutra}");
+        for (number, _) in &hits {
+            assert_eq!(*number, "03.0025", "{sutra} credited on {number}");
+        }
+    }
+}
+
+#[test]
+fn shcutva_off_jan_is_credited_exactly_as_before_3f3() {
+    // 8.4.40 has a converse arm (a ścu, then a stu) since slice 3f3. A trace
+    // step carries no direction, so "the converse arm fires only on √jan" is
+    // held as the credits off √jan: exactly √chid's and √chṛd's tuk (the
+    // forward arm), 54 branches, measured on `main` before the widening. A
+    // new firing on a prior row, in either direction, changes the count.
+    let hits = credited("8.4.40");
+    assert!(
+        hits.iter().any(|(n, _)| *n == "03.0025"),
+        "√jan no longer witnesses 8.4.40"
+    );
+    let off_jan: Vec<_> = hits.iter().filter(|(n, _)| *n != "03.0025").collect();
+    for (number, _) in &off_jan {
+        assert!(
+            *number == "07.0003" || *number == "07.0008",
+            "8.4.40 credited on {number}"
+        );
+    }
+    assert_eq!(off_jan.len(), 54);
+}
