@@ -51,10 +51,12 @@
     under the 5x rule, so the cap moved from 110 to 150 in this slice (it
     was 80 in 3f2's campaign and 60 in 3f's, 900 against the Θ(N²) suite,
     before `candidates()` answered from a corpus index). The campaign-load
-    longest phase grew from 3f2's 18.223s although the isolated probe is
-    flat; the cause is unmeasured (candidates: campaign-window host
-    contention, one more root's cells), so take the campaign-load phase,
-    never the isolated one. Take the floor by measurement, never by scaling
+    longest phase grew from 3f2's 18.223s to 23.44s (+29%); the isolated
+    probe rose too, from 8.644s / 9.056s to 10.81s / 10.79s (about +20%),
+    and so did the floor (7.848s / 7.864s to 9.077s / 8.855s), but by less
+    than the campaign-load phase. The cause is unmeasured (candidates: the
+    host load that moved between runs, one more root's cells, campaign-window
+    contention), so take the campaign-load phase, never the isolated one. Take the floor by measurement, never by scaling
     it by cell count or by a projected contention multiplier. Re-measure the
     floor and an uncaught `-j 4` run whenever the golden suite grows, and
     change `mise.toml` and this paragraph together.
