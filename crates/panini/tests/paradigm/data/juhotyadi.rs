@@ -1428,6 +1428,49 @@ pub const PARADIGM: &[ParadigmRow] = &[
             "daDanyAma",
         ],
     ),
+    (
+        "03.0019",
+        "laT",
+        Pada::Parasmaipada,
+        [
+            "baBasti", "babDaH", "bapsati", "baBassi", "babDaH", "babDa", "baBasmi", "bapsvaH",
+            "bapsmaH",
+        ],
+    ),
+    (
+        "03.0019",
+        "laN",
+        Pada::Parasmaipada,
+        [
+            "abaBad", "ababDAm", "abapsuH", "abaBad", "ababDam", "ababDa", "abaBasam", "abapsva",
+            "abapsma",
+        ],
+    ),
+    (
+        "03.0019",
+        "loT",
+        Pada::Parasmaipada,
+        [
+            "baBastu", "babDAm", "bapsatu", "babDi", "babDam", "babDa", "baBasAni", "baBasAva",
+            "baBasAma",
+        ],
+    ),
+    (
+        "03.0019",
+        "viDiliN",
+        Pada::Parasmaipada,
+        [
+            "bapsyAd",
+            "bapsyAtAm",
+            "bapsyuH",
+            "bapsyAH",
+            "bapsyAtam",
+            "bapsyAta",
+            "bapsyAm",
+            "bapsyAva",
+            "bapsyAma",
+        ],
+    ),
 ];
 
 pub const ALTERNATES: &[AlternateRow] = &[
@@ -2550,6 +2593,35 @@ pub const ALTERNATES: &[AlternateRow] = &[
         Pada::Parasmaipada,
         0,
         "daDanyAt",
+        "8.4.56",
+    ),
+    ("03.0019", "laN", Pada::Parasmaipada, 0, "abaBat", "8.4.56"),
+    ("03.0019", "laN", Pada::Parasmaipada, 3, "abaBat", "8.4.56"),
+    ("03.0019", "laN", Pada::Parasmaipada, 3, "abaBaH", "8.2.74"),
+    ("03.0019", "loT", Pada::Parasmaipada, 0, "babDAd", "7.1.35"),
+    (
+        "03.0019",
+        "loT",
+        Pada::Parasmaipada,
+        0,
+        "babDAt",
+        "7.1.35+8.4.56",
+    ),
+    ("03.0019", "loT", Pada::Parasmaipada, 3, "babDAd", "7.1.35"),
+    (
+        "03.0019",
+        "loT",
+        Pada::Parasmaipada,
+        3,
+        "babDAt",
+        "7.1.35+8.4.56",
+    ),
+    (
+        "03.0019",
+        "viDiliN",
+        Pada::Parasmaipada,
+        0,
+        "bapsyAt",
         "8.4.56",
     ),
 ];
