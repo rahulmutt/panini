@@ -408,7 +408,9 @@ fn derivation_set_is_exactly_pinned() {
 /// control verified failing (36 √bhū cells), and juhotyādi 3d2's re-ran it at
 /// the same commit over all 4212 cells / 5249 forms / 94 roots with zero
 /// differences, its `entry` negative control verified failing (36 √bhū
-/// cells). √tṛh joins none of the fork
+/// cells), and juhotyādi 3e's re-ran it at the same commit over all 4428
+/// cells / 5486 forms / 97 roots with zero differences, its `entry` negative
+/// control verified failing (36 √bhū cells). √tṛh joins none of the fork
 /// records: its deepest cells hold three forms, because 8.3.13 Qo Qe lopaH
 /// obligatorily elides the ḍh that 8.4.65 forks on for every other
 /// stop-final rudhādi root.
@@ -592,7 +594,8 @@ fn derivation_set_is_exactly_pinned() {
 /// ātmanepada columns fork nowhere. Twenty-one new rows, seven per root, all in
 /// pre-existing keys: the two laṅ eka rows per root fall in `7.3.86+8.4.56`
 /// (7.3.86 credits the pit guṇa of `aneneg`), the vidhiliṅ row in `8.4.56`, and
-/// the four loṭ tātaṅ rows per root in `7.1.35` and `7.1.35+8.4.56`. The gaṇa is PARTIAL at 20 of its 26 rows.
+/// the four loṭ tātaṅ rows per root in `7.1.35` and `7.1.35+8.4.56`. The gaṇa
+/// is PARTIAL at 20 of its 26 rows.
 /// This test is what keeps the numbers true day to day.
 #[test]
 fn derivation_set_shape_matches_the_audited_numbers() {

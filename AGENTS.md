@@ -126,17 +126,18 @@
   target under `crates/panini-lipi/fuzz` legitimately omits it, since it uses
   `#![no_main]` plus the libfuzzer harness macro).
 - Grammar changes are gated by the golden paradigm test
-  (`crates/panini/tests/paradigm/`, 4212 cells, nine gaṇas — eight complete,
+  (`crates/panini/tests/paradigm/`, 4428 cells, nine gaṇas — eight complete,
   tanādi closing at 10/10 in slice 8b (nine of its ten dhātupāṭha rows
   curated in slice 8a; √kṛ, the tenth and last, in 8b), and juhotyādi (3)
   opened in slice 3a at 2 of its 26 rows, at 4 after slice 3b curated √bhī
   and √hrī, at 8 after slice 3c curated √dā, √dhā, √mā
   and √hā (ātmanepada), at 10 after slice 3c2 curated √hā (parasmaipada) and
   √gā, at 16 after slice 3d curated √pṝ, √pṛ, √bhṛ, √ghṛ, √hṛ
-  and √sṛ, and now at 17 of its 26 after slice 3d2 curated √ṛ —
+  and √sṛ, at 17 after slice 3d2 curated √ṛ, and now at 20 of its 26 after slice 3e
+  curated √ṇij, √vij and √viṣ —
   `PARADIGM`
     stays one-form-per-cell: a cell forked by an optional rule keeps its
-    other forms — a second (578 cells), a third (137 cells), a fourth
+    other forms — a second (587 cells), a third (143 cells), a fourth
     (eighteen
     cells, rudhādi's √piṣ and — new in slice 7d — √śiṣ loṭ madhyama eka, and
     — new in slice 8a — fifteen more spread across tanādi's four ik-upadhā
@@ -152,7 +153,7 @@
     and fifth (prathama eka) or a fourth through sixth (madhyama eka), or
     seventh for slice 3c2's √hā (`03.0009`) loṭ madhyama eka, the one
     seven-form cell — in
-    `ALTERNATES` (1037 rows in all, so 4212 + 1037 = 5249 forms total); √bhuj
+    `ALTERNATES` (1058 rows in all, so 4428 + 1058 = 5486 forms total); √bhuj
     joins neither fork record — its forks stack only 7.1.35 and 8.4.56, the
     same two-deep profile as √yuj — but the √bhuj/1.3.66 slice adds two
     trace pins of its own, `bhunkte_trace_credits_1_3_66_not_1_3_72` and
@@ -554,7 +555,8 @@
   87 roots), and that by juhotyādi 3d's (`tools/audit/README.md`'s 2026-09-29
   entry, 4176 cells / 5208 forms / 93 roots), and that by juhotyādi 3d2's
   (`tools/audit/README.md`'s 2026-09-30 entry, 4212 cells / 5249 forms / 94
-  roots).
+  roots), and that by juhotyādi 3e's (`tools/audit/README.md`'s 2026-10-01
+  entry, 4428 cells / 5486 forms / 97 roots).
   Three new `Rule`s are behind it, all root-keyed to √kṛ and all in
   `guna.rs` — 6.4.110 *ata ut sārvadhātuke*, 6.4.108 *nityaṁ karoteḥ* and
   6.4.109 *ye ca* — plus one engine change with no `Rule` of its own:
@@ -606,7 +608,7 @@
   cells across eleven roots (`key_count("6.4.107") == 72`, the same
   test), not 8 — the "8 cells" figure was never re-derived when the gaṇa
   landed. `guna.rs:1233`'s own claim ("1872 goldens move") stays stale
-  only in the ordinary corpus-size sense, not wrong in kind: 4212 goldens
+  only in the ordinary corpus-size sense, not wrong in kind: 4428 goldens
   would move today. Neither comment was touched by tanādi 8a or 8b, consistent
   with every slice since 7c. Rudhādi 7d touched neither comment — its one permitted
   engine-comment edit is the comment above
@@ -642,7 +644,11 @@
   `controller.rs:206`: 3d2's 6.4.78 work grew the 6.1.78 comment in `guna.rs`
   by two lines above the test, while `controller.rs` is unchanged from 3d,
   so the 3d entry's `controller.rs:206` was correct; both lines measured by
-  grep at this commit). A third,
+  grep at this commit). Juhotyādi 3e touched neither comment either; the corpus
+  stands at 4428 cells as of 3e (`guna.rs:2228`'s claim now anchored at
+  `guna.rs:2376`, `controller.rs:206`'s at `controller.rs:206`: 3e's 7.3.87 rule
+  and its tests landed in `guna.rs` above the test, while `controller.rs` is
+  unchanged; both lines measured by grep at this commit). A third,
   `tinanta/tripadi.rs`'s comment on 8.2.30 (formerly the one calling √bhañj
   rudhādi's one cu-final curated root), was **not** left stale the same
   way: the 8.2.30/8.2.39 generalization slice rewrote it in place, since
@@ -794,10 +800,10 @@
   wherever the root text is ambiguous.** `ctx.dhatupatha` carries the row
   `derive` was called with, or `""` on a hand-built prakriyā, which every
   such guard declines. 6.4.87, 6.4.101 and 6.4.115 still key on `ANGA.text`
-  (`hu`, `BI`), safe only because `juhotyadi_rows_are_the_seventeen_curated_roots`
-  asserts those codes stay unique; 7.4.76, 6.4.116, 6.4.117, 6.4.118, 8.2.38
+  (`hu`, `BI`), safe only because `juhotyadi_rows_are_the_twenty_curated_roots`
+  asserts those codes stay unique; 7.4.75, 7.4.76, 6.4.116, 6.4.117, 6.4.118, 8.2.38
   and 8.2.40's *adhaḥ* key on numbers, because `03.0008` and `03.0009` share
-  `hA`, and 7.4.77 (`03.0004`, `03.0005`, `03.0017`) follows that precedent. 7.4.78 keys
+  `hA`, and 7.4.77 (`03.0004`, `03.0005`, `03.0017`) follows that precedent. 7.4.75 (`03.0012`–`03.0014`) does too: `vij` is also `06.0009` and `07.0023`. 7.4.78 keys
   on a number for a different reason: the sūtra names no root, the Kaumudī
   applies it to one row (03.0026), and `gA` is also `01.1101 gA\N`. A sūtra
   naming a class of roots becomes a saṁjñā tag decided from the number in `derive` —
@@ -809,7 +815,9 @@
   applied clone only), and `exactly_the_pinned_bars` requires every barred id
   to run after its barrer. 6.4.117 *ā ca hau* is the first: it changes no text,
   so without its bars 6.4.116, 6.4.113 and 6.4.112 would each still rewrite
-  the `A` it keeps. 7.1.6's read of `p.log` for 7.1.5 is an ENABLING condition,
+  the `A` it keeps. 7.3.87 is the second and the first mandatory one: it changes
+  no text and bars 7.3.86, so 7.3.86's guard carries no abhyasta exception.
+  7.1.6's read of `p.log` for 7.1.5 is an ENABLING condition,
   not a bar, and stays as it is.
 
 ## Where things live
