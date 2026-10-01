@@ -406,6 +406,11 @@ Each gets its own spec, starting from this table and the appendix.
 > 6.4.98, 6.4.100, 6.4.42, 6.4.43 and 8.2.26 and the 8.2.73 / 8.2.74 / 8.4.55
 > / 8.4.40 widenings, became slice 3f2.
 
+> Slice 3f2 (`2026-10-01-juhotyadi-gana-3f2-design.md`) split again: 3f2 took
+> √bhas alone, 36 cells, with 6.4.100 and 8.2.26 new and 8.2.73 / 8.2.74 /
+> 8.4.55 widened. √jan, with 6.4.98, 6.4.42, the vikalpa 6.4.43 and the 8.4.40
+> widening, became slice 3f3, which closes the gaṇa.
+
 ## Appendix: vidyut's inventory at `8da2f90b`
 
 Per root, over four lakāras and both padas where derivable:

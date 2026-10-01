@@ -133,10 +133,10 @@ pub(crate) static GUNA: &[Rule] = &[
     //
     // *laghūpadhasya*: a consonant-final aṅga whose penultimate is a short
     // vowel. `a` is included because vidyut credits this rule on the
-    // a-upadhā √dhan (slice 3f) and √bhas and √jan (slice 3f2), where 7.3.86
-    // has nothing to guṇate anyway. Slice 3f inherited the rule unchanged; it
-    // changes forms on 03.0021 (cikitAni), 03.0022 (tuturARi) and 03.0023
-    // (diDizARi).
+    // a-upadhā √dhan (slice 3f), √bhas (slice 3f2) and √jan (slice 3f3), where
+    // 7.3.86 has nothing to guṇate anyway. Slice 3f inherited the rule
+    // unchanged; it changes forms on 03.0021 (cikitAni), 03.0022 (tuturARi)
+    // and 03.0023 (diDizARi).
     //
     // Reads ENDING directly, as 7.3.92 does. An abhyasta aṅga is always
     // ślu'd, so SHAP is empty and the ending is the following sārvadhātuka.
@@ -913,7 +913,7 @@ pub(crate) static GUNA: &[Rule] = &[
     },
     // 6.1.78 eco'yavāyāvaḥ: e/o before a vowel → ay/av. The sūtra also covers
     // E/O → Ay/Av, but those two arms are dropped here: within the current
-    // 101-root × 4-lakāra grammar, ANGA can never end in a vṛddhi vowel (E/O)
+    // 102-root × 4-lakāra grammar, ANGA can never end in a vṛddhi vowel (E/O)
     // at the point this rule runs. `vrddhi_of` (the only source of E/O in
     // this engine) is called from four places in two rules: three in 6.1.90
     // — the aṅga arm writes the vṛddhi vowel at *position 0* of the first
@@ -1335,6 +1335,53 @@ pub(crate) static GUNA: &[Rule] = &[
             let before = p.snapshot();
             p.terms[ANGA].text = stem;
             p.record("6.4.113", "I halyaGoH", before);
+            true
+        },
+    },
+    // 6.4.100 ghasibhasor hali ca: the upadhā `a` of √ghas and √bhas is
+    // elided before a kṅit. The sūtra says *hali* (a hal-initial follower)
+    // and its *ca* carries 6.4.98's *aci* (a vowel-initial one), so the
+    // follower's first sound does not matter and no test on it is written.
+    // Bas + tas → Bs + tas (babDaH); Bas + ati → Bs + ati (bapsati); Bas +
+    // yAt → Bs + yAt (bapsyAt); Bas + tAt → Bs + tAt (babDAt — 7.1.35's
+    // tātaṅ is ṅit). Before a pit ending it declines: baBasti, baBastu,
+    // abaBat.
+    //
+    // KEYED BY ROW NUMBER, `03.0019 Basa~`, as 8.2.40 keys its *adhaḥ* on
+    // √dhā's row, not by an equality test on the aṅga's text. √ghas, the
+    // sūtra's other root, is not curated; a √ghas row extends this key. The
+    // `as` suffix test is the operation itself — the upadhā `a` before the
+    // final `s` — and it declines on an already-elided `Bs`.
+    //
+    // PLACEMENT: in this stage, after dvitva (ANGA holds the doubled base,
+    // ABHYASA the copy) and before adesha's 6.4.101 her dhiḥ, which is
+    // vidyut's order on babDi. 6.4.101's own guard asks only that the stem
+    // end in a jhal, which `Bas` and `Bs` both do, so no form depends on
+    // the order; `babDi_trace_elides_the_upadha_before_her_dhih` in
+    // `panini`'s trace suite pins it.
+    Rule {
+        id: "6.4.100",
+        name: "GasiBasorhali ca",
+        kind: RuleKind::Vidhi,
+        vikalpa: false,
+        bars: &[],
+        apply: |p| {
+            if p.ctx.dhatupatha != "03.0019" {
+                return false;
+            }
+            let Some(follower) = following_sarvadhatuka(p) else {
+                return false;
+            };
+            if !follower.has(Tag::Ngit) {
+                return false;
+            }
+            let Some(stem) = p.terms[ANGA].text.strip_suffix("as") else {
+                return false;
+            };
+            let elided = format!("{stem}s");
+            let before = p.snapshot();
+            p.terms[ANGA].text = elided;
+            p.record("6.4.100", "GasiBasorhali ca", before);
             true
         },
     },
@@ -3114,6 +3161,46 @@ mod tests {
             let mut p = tan(ending, tagged);
             assert!(!(rule.apply)(&mut p), "{ending} {tagged}");
             assert_eq!(p.terms[SHAP].text, "u");
+        }
+    }
+
+    // --- 6.4.100 ghasibhasor hali ca (slice 3f2) ---------------------------
+
+    /// √bhas at the guṇa stage: abhyāsa `Ba` (7.4.60 has run; 8.4.54's `b`
+    /// comes later), aṅga `anga`, an empty śap, and `ending` (tagged Ngit
+    /// when `ngit`), on the row `number`.
+    fn bhas_prakriya(number: &'static str, anga: &str, ending: &str, ngit: bool) -> Prakriya {
+        let mut p = abhyasta_prakriya("Ba", anga, false, ending, ngit);
+        p.ctx.dhatupatha = number;
+        p
+    }
+
+    #[test]
+    fn ghasibhasor_elides_the_upadha_before_any_kngit() {
+        // Hal-initial (tas: babDaH), vowel-initial (ati: bapsati — the *ca*'s
+        // *aci*), and the ṅit yāsuṭ (yAt: bapsyAt).
+        let rule = rules().find(|r| r.id == "6.4.100").unwrap();
+        for ending in ["tas", "ati", "yAt"] {
+            let mut p = bhas_prakriya("03.0019", "Bas", ending, true);
+            assert!((rule.apply)(&mut p), "{ending}");
+            assert_eq!(p.terms[ANGA].text, "Bs", "{ending}");
+            assert_eq!(p.log.last().unwrap().sutra, "6.4.100");
+        }
+    }
+
+    #[test]
+    fn ghasibhasor_declines_before_a_pit_off_its_row_and_on_bs() {
+        let rule = rules().find(|r| r.id == "6.4.100").unwrap();
+        for (number, anga, ngit, why) in [
+            ("03.0019", "Bas", false, "pit tip: baBasti"),
+            ("03.0024", "Bas", true, "another juhotyādi row"),
+            ("", "Bas", true, "a hand-built prakriyā names no row"),
+            ("03.0019", "Bs", true, "the upadhā is already gone"),
+        ] {
+            let mut p = bhas_prakriya(number, anga, "ti", ngit);
+            assert!(!(rule.apply)(&mut p), "{why}");
+            assert_eq!(p.terms[ANGA].text, anga, "{why}");
+            assert!(p.log.is_empty(), "{why}");
         }
     }
 }

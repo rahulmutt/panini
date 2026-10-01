@@ -37,13 +37,13 @@ implements; `tinanta::rules()` yields that flattened sequence.
 | `vikarana.rs` | 3.1.69, 3.1.73, 3.1.77, 3.1.78, 3.1.79, 3.1.81, 3.1.68, 2.4.72, 2.4.75, 3.4.111, 3.1.83, 1.2.4 | contains 3.1.68 |
 | `abhyasa.rs` | 6.1.10, 7.4.66, 7.4.60, 7.4.59, 7.4.62, 7.4.75, 7.4.76, 7.4.77, 7.4.78, 6.4.78 — dvitva and the abhyāsa's shape | after 3.1.68 |
 | `anga.rs` | 6.4.71 … 6.1.73 … 7.1.4 … 7.2.81, 6.4.23 | after 3.1.68 |
-| `guna.rs` | 7.4.21, 7.3.83, 7.3.87, 7.3.84, 7.3.86, 7.3.86 (again — its own vikalpa entry, see below), 7.3.92, 7.3.84 (again — see below), 7.1.102, 6.4.110, 6.4.108, 6.4.109, 6.4.87, 6.4.82, 6.4.77, 6.1.77, 6.1.78, 7.3.101, 6.4.119, 6.4.118, 6.4.117, 6.4.116, 6.4.113, 6.4.112, 6.4.115 — vowel gradation and vikaraṇa reshaping | after 3.1.68 |
+| `guna.rs` | 7.4.21, 7.3.83, 7.3.87, 7.3.84, 7.3.86, 7.3.86 (again — its own vikalpa entry, see below), 7.3.92, 7.3.84 (again — see below), 7.1.102, 6.4.110, 6.4.108, 6.4.109, 6.4.87, 6.4.82, 6.4.77, 6.1.77, 6.1.78, 7.3.101, 6.4.119, 6.4.118, 6.4.117, 6.4.116, 6.4.113, 6.4.100, 6.4.112, 6.4.115 — vowel gradation and vikaraṇa reshaping | after 3.1.68 |
 | `adesha.rs` | 6.1.101 … 6.1.96, 6.4.106, 6.4.107, 6.1.90, 6.1.88 … 6.4.101, 6.4.111 | after 3.1.68 |
-| `tripadi.rs` | 8.2.77, 8.2.23, 8.2.25, 8.2.30, 8.2.31, 8.2.39, 8.2.40, 8.2.41, 8.2.74, 8.2.75, 8.2.73, 8.3.15 … 8.3.59, 8.4.40, 8.4.41, 8.3.13, 8.4.53, 8.4.54, 8.2.38, 8.4.55, 8.4.1, 8.4.2, 8.4.58, 8.4.65, 8.4.56 | after 3.1.68 |
+| `tripadi.rs` | 8.2.77, 8.2.23, 8.2.25, 8.2.26, 8.2.30, 8.2.31, 8.2.39, 8.2.40, 8.2.41, 8.2.74, 8.2.75, 8.2.73, 8.3.15 … 8.3.59, 8.4.40, 8.4.41, 8.3.13, 8.4.53, 8.4.54, 8.2.38, 8.4.55, 8.4.1, 8.4.2, 8.4.58, 8.4.65, 8.4.56 | after 3.1.68 |
 
 The stage boundary is file organisation, not grammar: the flattened order is
 what matters, and `tinanta_rule_order_is_pinned` in `derivation_tests.rs`
-pins all 124 ids verbatim (72 pre-rudhādi, the twenty-one rudhādi added:
+pins all 126 ids verbatim (72 pre-rudhādi, the twenty-one rudhādi added:
 3.1.78, 6.4.23, 6.4.111, 8.2.74, 8.2.75, 8.2.73, 8.3.24, 8.4.53, 8.4.58 and
 8.4.65 in slice 7a, then 8.2.30, 8.2.40, 8.2.41 and 8.4.41 in 7b, then
 1.3.66 *Bujo'navane*, which arrived with √bhuj in the Buj slice, then
@@ -68,7 +68,9 @@ juhotyādi 3d's three: 7.4.66 *ur at*, 7.4.77 *arti-pipartyoś ca* and 7.1.102
 not added) — 121 total — then juhotyādi 3d2's one: 6.4.78
 *abhyāsasyāsavarṇe* (7.4.60 and 7.4.77 widened) — 122 total — then
 juhotyādi 3e's two: 7.4.75 *nijāṁ trayāṇāṁ guṇaḥ ślau* and 7.3.87
-*nābhyastasyāci piti sārvadhātuke* — 124 total).
+*nābhyastasyāci piti sārvadhātuke* — 124 total — then, after juhotyādi 3f
+added none, juhotyādi 3f2's two: 6.4.100 *ghasibhasor hali ca* and 8.2.26
+*jhalo jhali* (8.2.73, 8.2.74 and 8.4.55 widened) — 126 total).
 `tinanta/terms.rs` holds the term-index constants and the reason 3.1.68
 bisects the pipeline; `tinanta/sound.rs` holds the varṇa classifiers.
 
@@ -99,9 +101,9 @@ and the *bibharti* pin holds this order.
 Nine gaṇas are covered, eight of them fully: bhvādi (1), divādi (4),
 tudādi (6), adādi (2), kryādi (9), svādi (5), rudhādi (7) and tanādi (8),
 **complete** at all ten of its dhātupāṭha rows (√kṛ, `08.0010`, curated
-in slice 8b) — and juhotyādi (3), **partial** at 24 of its 26 rows (√hu,
+in slice 8b) — and juhotyādi (3), **partial** at 25 of its 26 rows (√hu,
 √ki; slice 3a; √bhī, √hrī; slice 3b; √dā, √dhā, √mā, √hā; slice 3c; √hā
-parasmaipada, √gā; slice 3c2; √pṝ, √pṛ, √bhṛ, √ghṛ, √hṛ, √sṛ; slice 3d; √ṛ; slice 3d2; √ṇij, √vij, √viṣ; slice 3e; √kit, √tur, √dhiṣ, √dhan; slice 3f). gaṇa
+parasmaipada, √gā; slice 3c2; √pṝ, √pṛ, √bhṛ, √ghṛ, √hṛ, √sṛ; slice 3d; √ṛ; slice 3d2; √ṇij, √vij, √viṣ; slice 3e; √kit, √tur, √dhiṣ, √dhan; slice 3f; √bhas; slice 3f2). gaṇa
 is carried as a tag on the aṅga term (`Tag::Divadi` / `Tag::Tudadi` / `Tag::Adadi` /
 `Tag::Kryadi` / `Tag::Svadi` / `Tag::Rudhadi` / `Tag::Tanadi` /
 `Tag::Juhotyadi`, mirroring how
@@ -109,7 +111,7 @@ is carried as a tag on the aṅga term (`Tag::Divadi` / `Tag::Tudadi` / `Tag::Ad
 3.1.73, 3.1.77, 3.1.78, 3.1.79, 3.1.81, 2.4.72 and 2.4.75. Root identity
 beyond text reaches the pipeline as `Context.dhatupatha`, the row number
 `derive` stamps (slice 3c). A sūtra naming particular roots matches it
-(7.4.75, 7.4.76, 7.4.77, 8.2.38, 8.2.40's *adhaḥ*, 6.4.116–6.4.118); 7.4.78 names no root
+(7.4.75, 7.4.76, 7.4.77, 8.2.38, 8.2.40's *adhaḥ*, 6.4.100, 6.4.116–6.4.118); 7.4.78 names no root
 and is keyed on the row its Kaumudī application names, 03.0026; a sūtra naming a class becomes a
 saṁjñā tag decided from it — `Tag::Ghu`, 1.1.20's six rows in
 `tinanta/samjna.rs`'s `GHU` — because text cannot separate `03.0008 o~hA\N`
@@ -351,8 +353,8 @@ ci); 7.4.59/7.4.60 arrive with 3b, 7.4.76 with 3c, 7.4.78 with 3c2, and
 7.4.66/7.4.77 with 3d, 6.4.78 with 3d2, 7.4.75 with 3e — so 6.4.71 always sees a finished
 abhyāsa and 7.1.4 *ad abhyastāt* (before 7.1.3) reads a real tag.
 **Dvitva runs before guṇa**, the Kaumudī order; vidyut-prakriya guṇates
-first, copies, and shortens the copy by 7.4.59. Forms agree for all 20
-curated roots and the audit compares form sets, so the divergence shows only in
+first, copies, and shortens the copy by 7.4.59. Forms agree for all 25
+curated juhotyādi roots and the audit compares form sets, so the divergence shows only in
 this engine's trace pins (`tests/trace/juhotyadi.rs`). 3.4.109 gives laṅ
 its jus on `Tag::Juhotyadi` as a pre-dvitva stand-in for *abhyasta* (liṭ
 must revisit it), 7.3.83 *jusi ca* guṇates before that jus over 1.1.5's
@@ -553,7 +555,7 @@ anyatarasyām*, **3.4.111** *laṅaḥ śākaṭāyanasyaiva*, **7.3.86**
 cāsyānyatarasyāṁ mvoḥ*, **8.2.74** *sipi dhāto rur vā*, **8.2.75** *daś ca*,
 **8.4.65** *jharo jhari savarṇe*, and **8.4.56** *vā'vasāne*. Three of the
 eleven arrived with rudhādi 7a: 8.2.74 and 8.2.75 the *ru* alternation on
-√hiṃs's own final before sip (8.2.75 gaṇa-free since juhotyādi 3f, which gave it √kit's *acikeḥ*), and 8.4.65 the savarṇa elision that also
+√hiṃs's own final before sip (8.2.75 gaṇa-free since juhotyādi 3f, which gave it √kit's *acikeḥ*, and 8.2.74 since 3f2, which gave it √bhas's *ababhaḥ*), and 8.4.65 the savarṇa elision that also
 produces the six-branch witness above. Slice 7b added none — the
 first gaṇa slice not to since the `vikalpa` flag landed. 7.3.86 arrived
 with tanādi 8a: it forks kziR's, fR's, tfR's and GfR's
@@ -593,38 +595,39 @@ gains a 6.4.107-keyed alternate — the 72-cell/eleven-root count above is
 unchanged by √kṛ.
 
 7.1.35 optionally replaces the loṭ endings `tu`/`hi` with tātaṅ (then
-8.2.39 obligatorily voices its final `t` to `d`), forking 152 cells (loṭ
-prathama and madhyama eka across the 76 roots with a parasmaipada column —
+8.2.39 obligatorily voices its final `t` to `d`), forking 154 cells (loṭ
+prathama and madhyama eka across the 77 roots with a parasmaipada column —
 `tu`/`hi` are parasmaipada endings, so the curated set's 25 ātmanepada-only
 roots never reach this guard, and the twenty-six roots that admit both
 padas (twenty-five ubhayapadī by 1.3.72 — √rudh, √nī, √tud, √bhid, √kṣud,
 √yuj, √tṛd, √ric, √vic, √chid, √chṛd, √tan, √san, √kṣaṇ, √kṣiṇ, √ṛṇ, √tṛ, √ghṛṇ,
 √kṛ, √dā, √dhā, √bhṛ, √ṇij, √vij and √viṣ — and √bhuj by 1.3.66) reach it in their
 parasmaipada cells only, joined by juhotyādi's √hu, √ki, √bhī, √hrī, √hā
-(`03.0009`), √gā, √pṝ, √pṛ, √ghṛ (`Gf`), √hṛ, √sṛ, √ṛ, √kit, √tur, √dhiṣ and √dhan (all parasmaipada-only), and
-the parasmaipada columns of √bhṛ, √ṇij, √vij and √viṣ; 76 + 25 = the 101 curated roots) — `Bavatu ~
+(`03.0009`), √gā, √pṝ, √pṛ, √ghṛ (`Gf`), √hṛ, √sṛ, √ṛ, √kit, √tur, √dhiṣ, √dhan and √bhas (all parasmaipada-only), and
+the parasmaipada columns of √bhṛ, √ṇij, √vij and √viṣ; 77 + 25 = the 102 curated roots) — `Bavatu ~
 BavatAd`, `Bava ~ BavatAd`. 8.4.56 optionally devoices a pada-final jaś
 (produced by the now-obligatory 8.2.39) back to its car at the end of an
-utterance, forking 160 cells outright: laṅ and vidhiliṅ prathama eka across
-those same 76 parasmaipada columns (138 of them — 8.2.39's `d` is a
+utterance, forking 163 cells outright: laṅ and vidhiliṅ prathama eka across
+those same 77 parasmaipada columns (140 of them — 8.2.39's `d` is a
 parasmaipada-ending artifact, ātmanepada's laṅ/vidhiliṅ prathama eka endings
 are vowel-final and never reach a jhal, and the seven juhotyādi ṛ-roots
 (3d's six and 3d2's √ṛ) contribute only their vidhiliṅ cell, since their laṅ
 prathama eka ends in the aṅga's `r`, turned to visarga, not in a jaś: `abiBaH`,
-`EyaH`; 3f's four contribute only their vidhiliṅ cell too: √tur's laṅ ends in visarga, √dhan's in `n`, and √kit's and √dhiṣ's laṅ forks key on 7.3.86 as well, see below),
+`EyaH`; 3f's four contribute only their vidhiliṅ cell too: √tur's laṅ ends in visarga, √dhan's in `n`, and √kit's and √dhiṣ's laṅ forks key on 7.3.86 as well, see below; 3f2's √bhas contributes both, its laṅ `abaBad` coming from 8.2.73),
 plus twenty-two rudhādi laṅ *madhyama* eka cells (√kṛt, √hiṃs, √bhañj, √piṣ,
 √rudh, √bhid, √kṣud, √yuj, √tṛd, √ric, √vic, √śiṣ, √und, √añj, √tañc, √vij,
 √vṛj, √pṛc, √tṛh, √chid, √chṛd and √bhuj — every rudhādi root with a
 parasmaipada column; tanādi's own aṅga is vikaraṇa-vowel-final rather than
 consonant-final at this junction, so none of its roots add to this
-bucket), where
+bucket), and — new in slice 3f2 — √bhas's laṅ madhyama eka (`abaBad ~ abaBat`,
+the first outside rudhādi), where
 8.2.23
 *saṁyogāntasya lopaḥ* has eaten the ending's own `s` and left the stem's
 jaś pada-final after all — `aBavad ~ aBavat`, `Baved ~ Bavet`,
 `apinaq ~ apinaw`, `aruRad ~ aruRat`. Juhotyādi 3e's six laṅ prathama and madhyama eka cells (`aneneg ~ anenek` etc.) and 3f's four (√kit's and √dhiṣ's: `aciked ~ aciket`, `adiDeq ~ adiDew`) also fork on 8.4.56, but their keys
 stack 7.3.86, which credits the root's guṇa, so they sit in the
 `7.3.86+8.4.56` bucket beside tanādi's and not in this count. 8.4.56 goes on
-forking a further 152 (the same
+forking a further 154 (the same
 loṭ cells 7.1.35 just forked) by devoicing the tātaṅ branch's `BavatAd` to
 `BavatAt`, which is
 what stacks the two rules into three-branch loṭ cells for every root
