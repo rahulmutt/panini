@@ -111,15 +111,21 @@ sārvadhātuka ending. Written as an apavāda through `Rule.bars`, as 6.4.117 is
 - **Placed between 7.3.84 and the first 7.3.86** (`guna.rs:150`), so the barred
   rule runs after its barrer, as `exactly_the_pinned_bars` requires. That test
   gains the pair `7.3.87 → 7.3.86`.
-- **Guard — all four:**
+- **Guard — all five:**
   1. `ANGA` carries `Tag::Abhyasta` (`abhyasa.rs:60-61`);
-  2. the ending is sārvadhātuka;
-  3. the ending's first character is a vowel;
-  4. the ending is pit, read exactly as 1.2.4 reads it
+  2. `ANGA` is laghūpadha — consonant-final, its penultimate a short vowel
+     (`a i u f x`). *pugantalaghūpadhasya* continues from 7.3.86, so the
+     block is 7.3.86's apavāda only: √hu's *juhavAni* / *ajuhavam* keep their
+     7.3.84 guṇa, and no prior trace gains a 7.3.87 step (vidyut credits none
+     on a curated row). `a` is in the set because vidyut credits the rule on
+     3f's a-upadhā √bhas, √dhan and √jan;
+  3. the ending is sārvadhātuka;
+  4. the ending's first character is a vowel;
+  5. the ending is pit, read exactly as 1.2.4 reads it
      (`samjna.rs:249`): `ending.has(Tag::Pit) || (lakara == Lot && purusha ==
      Uttama)`.
 
-  Clause 4 is not `has(Tag::Pit)` alone: only tip / sip / mip are tagged
+  Clause 5 is not `has(Tag::Pit)` alone: only tip / sip / mip are tagged
   (`samjna.rs:195`); loṭ uttama endings are pit by 3.4.92 *āḍ uttamasya pic ca*
   but are never tagged — 1.2.4 excludes them by lakāra and puruṣa. The tag alone
   would catch 1 of the 7 cells per row. The comment says so and cites 3.4.92.
@@ -138,6 +144,11 @@ sārvadhātuka ending. Written as an apavāda through `Rule.bars`, as 6.4.117 is
   - fires on `am` (tagged Pit) and on loṭ uttama `Ani` (untagged), and the
     pipeline then skips 7.3.86 on that branch;
   - declines on a non-abhyasta aṅga with a vowel-initial pit ending;
+  - declines on a vowel-final abhyasta aṅga (`hu` + `Ani`, *juhavAni*) and on
+    a guru upadhā (synthetic `nIj`);
+  - fires on the a-upadhā `Bas` + `Ani` (3f's shape, a credited no-op);
+  - declines on laṭ uttama `e` and loṭ prathama `atu` (each half of
+    `loṭ && uttama` alone);
   - declines on a consonant-initial pit ending (`mi` — *nenejmi* keeps guṇa);
   - declines on a ṅit vowel-initial ending (`ati`);
   - declines on an ārdhadhātuka ending.
