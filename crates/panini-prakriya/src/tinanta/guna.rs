@@ -19,7 +19,7 @@ use crate::tinanta::sound::{guna_of, is_vowel};
 use crate::tinanta::terms::{
     ABHYASA, ANGA, ENDING, SHAP, following_sarvadhatuka, vikarana_u_asamyogapurva,
 };
-use panini_data::Lakara;
+use panini_data::{Lakara, Purusha};
 
 pub(crate) static GUNA: &[Rule] = &[
     // 7.4.21 śīṅaḥ sārvadhātuke guṇaḥ: √śī takes guṇa (SI → Se) before a
@@ -139,6 +139,65 @@ pub(crate) static GUNA: &[Rule] = &[
             s.pop();
             p.terms[ANGA].text = s.into_iter().collect::<String>() + g;
             p.record("7.3.84", "sArvaDAtukArDaDAtukayoH", before);
+            true
+        },
+    },
+    // 7.3.87 nābhyastasyāci piti sārvadhātuke: an abhyasta aṅga takes no
+    // laghūpadha guṇa before a vowel-initial pit sārvadhātuka ending. √ṇij
+    // gives nenijAni, anenijam and nenijE, not *nenejAni (slice 3e).
+    // *pugantalaghūpadhasya* continues from 7.3.86, so this is 7.3.86's
+    // apavāda and nothing else's: √hu's juhavAni keeps its 7.3.84 guṇa.
+    //
+    // It changes no text. It bars 7.3.86 on its branch through `Rule.bars`,
+    // so 7.3.86's guard never has to know about it. This is the second user
+    // of `Rule.bars` after 6.4.117 and the first mandatory one. vidyut credits
+    // the same no-op block. Barring is by id, so the branch also skips 7.3.86's
+    // tanādi vikalpa entry below. That is inert, since no tanādi aṅga is
+    // abhyasta.
+    //
+    // *piti* is read the way 1.2.4 reads it (`samjna.rs`): the ending's
+    // Tag::Pit, OR loṭ uttama. Only tip/sip/mip are tagged pit, and laṅ's
+    // `am` keeps mip's tag. The loṭ uttama endings are pit by 3.4.92 *āḍ
+    // uttamasya pic ca*, but they are never tagged, because 1.2.4 excludes them
+    // by lakāra and puruṣa instead. The tag alone would catch one of the
+    // seven cells per root.
+    //
+    // *laghūpadhasya*: a consonant-final aṅga whose penultimate is a short
+    // vowel. `a` is included because vidyut credits this rule on 3f's
+    // a-upadhā √bhas, √dhan and √jan, where 7.3.86 has nothing to guṇate
+    // anyway. 3f inherits the rule unchanged. It changes forms there on
+    // 03.0021 (cikitAni), 03.0022 (tuturARi) and 03.0023 (diDizARi).
+    //
+    // Reads ENDING directly, as 7.3.92 does. An abhyasta aṅga is always
+    // ślu'd, so SHAP is empty and the ending is the following sārvadhātuka.
+    Rule {
+        id: "7.3.87",
+        name: "nAByastasyAci piti sArvaDAtuke",
+        kind: RuleKind::Vidhi,
+        vikalpa: false,
+        bars: &["7.3.86"],
+        apply: |p| {
+            if !p.terms[ANGA].has(Tag::Abhyasta) {
+                return false;
+            }
+            let mut rev = p.terms[ANGA].text.chars().rev();
+            let (Some(last), Some(upadha)) = (rev.next(), rev.next()) else {
+                return false;
+            };
+            if is_vowel(last) || !matches!(upadha, 'a' | 'i' | 'u' | 'f' | 'x') {
+                return false;
+            }
+            let ending = &p.terms[ENDING];
+            if !ending.has(Tag::Sarvadhatuka) || !ending.text.chars().next().is_some_and(is_vowel) {
+                return false;
+            }
+            let lot_uttama =
+                matches!(p.ctx.lakara, Lakara::Lot) && matches!(p.ctx.purusha, Purusha::Uttama);
+            if !ending.has(Tag::Pit) && !lot_uttama {
+                return false;
+            }
+            let before = p.snapshot();
+            p.record("7.3.87", "nAByastasyAci piti sArvaDAtuke", before);
             true
         },
     },
@@ -1394,7 +1453,7 @@ mod tests {
     use crate::tinanta::form_g;
     use crate::tinanta::rules;
     use crate::tinanta::terms::with_slots;
-    use panini_data::{Purusha, Vacana};
+    use panini_data::{Lakara, Purusha, Vacana};
 
     // --- 7.3.86 pugantalaGUpaDasya ca: guard-edge pins -------------------
     //
@@ -1873,6 +1932,94 @@ mod tests {
         let mut p = abhyasta_prakriya("Ja", "hA", false, ending, ngit);
         p.ctx.dhatupatha = "03.0009";
         p
+    }
+
+    /// √ṇij at the guṇa stage: abhyāsa `ne` (7.4.75 has run), aṅga `nij`
+    /// tagged Abhyasta, an empty śap, and `ending` tagged Sārvadhātuka (and
+    /// Pit when `pit`) in the given lakāra and puruṣa.
+    fn nij_prakriya(ending: &str, pit: bool, lakara: Lakara, purusha: Purusha) -> Prakriya {
+        let mut p = abhyasta_prakriya("ne", "nij", false, ending, false);
+        p.terms[ENDING].add(Tag::Sarvadhatuka);
+        if pit {
+            p.terms[ENDING].add(Tag::Pit);
+        }
+        p.ctx.lakara = lakara;
+        p.ctx.purusha = purusha;
+        p
+    }
+
+    #[test]
+    fn nabhyastasyaci_piti_blocks_upadha_guna_before_am_and_the_lot_uttama_endings() {
+        // 7.3.87 changes no text. It fires, and the controller bars 7.3.86 on
+        // its branch: anenijam, nenijAni, nenijE. Laṅ's `am` keeps mip's Pit
+        // tag. Loṭ's `Ani`/`AE` carry none: 3.4.92 makes them pit, and 1.2.4
+        // reads that off the lakāra and puruṣa, which is how this guard reads
+        // it too.
+        let rule = rules().find(|r| r.id == "7.3.87").unwrap();
+        for (ending, pit, lakara) in [
+            ("am", true, Lakara::Lan),
+            ("Ani", false, Lakara::Lot),
+            ("AE", false, Lakara::Lot),
+        ] {
+            let mut p = nij_prakriya(ending, pit, lakara, Purusha::Uttama);
+            assert!((rule.apply)(&mut p), "{ending}");
+            assert_eq!(p.terms[ANGA].text, "nij", "{ending}: no text changes");
+            assert_eq!(p.terms[ENDING].text, ending, "{ending}");
+            assert_eq!(p.log.last().unwrap().sutra, "7.3.87");
+        }
+        // 3f's a-upadhā shape (√bhas, 03.0019). An `a` upadhā is laghu too, so
+        // the block is credited here, where 7.3.86 has nothing to guṇate.
+        let mut p = abhyasta_prakriya("ba", "Bas", false, "Ani", false);
+        p.terms[ENDING].add(Tag::Sarvadhatuka);
+        p.ctx.lakara = Lakara::Lot;
+        p.ctx.purusha = Purusha::Uttama;
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "Bas");
+    }
+
+    #[test]
+    fn nabhyastasyaci_piti_declines_off_each_condition() {
+        let rule = rules().find(|r| r.id == "7.3.87").unwrap();
+        let declines = |mut p: Prakriya, why: &str| {
+            assert!(!(rule.apply)(&mut p), "{why}");
+            assert!(p.log.is_empty(), "{why}");
+        };
+        // *aci*: `mi` is pit but consonant-initial, so nenejmi keeps its guṇa.
+        declines(nij_prakriya("mi", true, Lakara::Lat, Purusha::Uttama), "mi");
+        // *piti*: a ṅit vowel-initial ending (nenijati), then each half of
+        // `loṭ && uttama` on its own: laṭ ātmanepada uttama `e` (nenije) and
+        // loṭ prathama `atu` (nenijatu).
+        declines(
+            nij_prakriya("ati", false, Lakara::Lat, Purusha::Prathama),
+            "ati",
+        );
+        declines(nij_prakriya("e", false, Lakara::Lat, Purusha::Uttama), "e");
+        declines(
+            nij_prakriya("atu", false, Lakara::Lot, Purusha::Prathama),
+            "atu",
+        );
+        // *sārvadhātuke*: the same `Ani` without the tag.
+        let mut p = nij_prakriya("Ani", false, Lakara::Lot, Purusha::Uttama);
+        p.terms[ENDING].remove(Tag::Sarvadhatuka);
+        declines(p, "ārdhadhātuka Ani");
+        // *abhyastasya*: a laghūpadha aṅga that is not abhyasta.
+        let mut p = nij_prakriya("Ani", false, Lakara::Lot, Purusha::Uttama);
+        p.terms[ANGA].remove(Tag::Abhyasta);
+        declines(p, "not abhyasta");
+        // *laghūpadhasya*, continued from 7.3.86. √hu's juhavAni keeps its 7.3.84
+        // guṇa: a vowel-final aṅga has no upadhā guṇa to block. A guru upadhā
+        // (`nIj`, synthetic) is not 7.3.86's either. A one-letter aṅga has no
+        // upadhā at all.
+        let mut p = abhyasta_prakriya("Ju", "hu", false, "Ani", false);
+        p.terms[ENDING].add(Tag::Sarvadhatuka);
+        p.ctx.lakara = Lakara::Lot;
+        p.ctx.purusha = Purusha::Uttama;
+        declines(p, "hu");
+        for anga in ["nIj", "j"] {
+            let mut p = nij_prakriya("Ani", false, Lakara::Lot, Purusha::Uttama);
+            p.terms[ANGA].text = anga.into();
+            declines(p, anga);
+        }
     }
 
     #[test]
