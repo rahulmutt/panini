@@ -2007,15 +2007,16 @@ mod tests {
         p.terms[ANGA].remove(Tag::Abhyasta);
         declines(p, "not abhyasta");
         // *laghūpadhasya*, continued from 7.3.86. √hu's juhavAni keeps its 7.3.84
-        // guṇa: a vowel-final aṅga has no upadhā guṇa to block. A guru upadhā
-        // (`nIj`, synthetic) is not 7.3.86's either. A one-letter aṅga has no
-        // upadhā at all.
+        // guṇa (the real-corpus case: `h` is no short vowel). The synthetic
+        // shapes each isolate one half of the guard: `nIj` has a guru upadhā,
+        // `j` has no upadhā at all, and `kui` is vowel-final with a short-vowel
+        // upadhā, which only the consonant-final half declines.
         let mut p = abhyasta_prakriya("Ju", "hu", false, "Ani", false);
         p.terms[ENDING].add(Tag::Sarvadhatuka);
         p.ctx.lakara = Lakara::Lot;
         p.ctx.purusha = Purusha::Uttama;
         declines(p, "hu");
-        for anga in ["nIj", "j"] {
+        for anga in ["nIj", "j", "kui"] {
             let mut p = nij_prakriya("Ani", false, Lakara::Lot, Purusha::Uttama);
             p.terms[ANGA].text = anga.into();
             declines(p, anga);
