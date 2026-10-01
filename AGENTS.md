@@ -23,7 +23,7 @@
     is still required: cargo-mutants calibrates its per-mutant timeout from
     the baseline's runtime (`panini-prakriya`'s unit tests, ~2s, with a 20s
     floor), and that auto-calibrated value does not guarantee the 5x margin
-    over a full uncaught `panini` suite run (6-9s) under `-j 4` load.
+    over a full uncaught `panini` suite run (9.2-12.4s as measured in 3f: 9.18/9.51s in the isolated probe, 11.6/12.4s under campaign load) under `-j 4` load.
     **The cap must clear a full UNCAUGHT run of the workspace suite at the
     parallelism you actually use.** Under a cap that doesn't, a mutant that
     survives is recorded as a **timeout rather than a survivor**, so a
@@ -44,10 +44,10 @@
     equivalent mutants ran the full suite uncaught in 9.513s
     (`adesha.rs:589:30`) and 9.177s (`tripadi.rs:1223:38`) at that same
     loaded host. Under campaign load the uncaught phases were 12.358s and
-    11.614s (below). The cap is 6 x the longest of the campaign-load phases
+    11.614s (below). The cap is 6 × the longest of the campaign-load phases
     (74.1s), rounded up to the next 10s: 80. At the old 60s the margin on the
     longest equivalent was 4.86x, under the 5x rule, so the cap moved from 60
-    to 80 in this slice (it was 900s against the Theta(N^2) suite, before
+    to 80 in this slice (it was 900s against the Θ(N²) suite, before
     `candidates()` answered from a corpus index). Take the floor by
     measurement, never by scaling it by cell count or by a projected
     contention multiplier. Re-measure the floor and an uncaught `-j 4` run
@@ -97,14 +97,14 @@
     `HashMap::from_iter([..., vec![Default::default()]])` replacements do not
     compile, as `Candidate` has no `Default`). The two packages sum to the
     762 / 711 / 48 / 2 / 1 total. No 8.2.75 mutant (`tripadi.rs:628-638`: 4
-    mutants, all caught) and no 8.3.24 mutant (`tripadi.rs:816-821`: 6
+    mutants, all caught) and no 8.3.24 mutant (`tripadi.rs:816-821`: 7
     mutants, all caught) is missed, timed out or unviable, so nothing needs
     an unviable-without-reason exemption.
     Under campaign load the two uncaught equivalents' test phases were 12.358s
     (`adesha.rs:589:30`) and 11.614s (`tripadi.rs:1223:38`). Caught test
     phases (711) ran min 0.102s, median 2.262s, p90 10.253s, max 21.099s.
     Against the 60s cap the margin on the longest equivalent was 60 / 12.358 =
-    4.86x, below the 5x rule, so the cap moves to 6 x 12.358 = 74.1s, rounded
+    4.86x, below the 5x rule, so the cap moves to 6 × 12.358 = 74.1s, rounded
     up to 80, and `mise.toml` and this file changed together (margin 6.47x at
     80; the slowest caught phase is 3.79x, but a caught mutant ends when its
     first assertion fails, so only the uncaught equivalents set the cap). A
