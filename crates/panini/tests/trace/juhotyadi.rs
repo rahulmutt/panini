@@ -864,7 +864,7 @@ fn juhavani_trace_has_no_nabhyastasyaci() {
     // *laghūpadhasya* clause: √hu's aṅga is vowel-final (hu → ho → hav), so
     // the clause declines it trivially. The ṛ-roots are the prior cells that
     // test that clause; see `biBarARi_trace_has_no_nabhyastasyaci` and
-    // `nabhyastasyaci_is_credited_only_on_the_3e_3f_and_3f2_rows`.
+    // `nabhyastasyaci_is_credited_only_on_the_3e_3f_3f2_and_3f3_rows`.
     let (text, t) = cell_trace(
         "03.0001",
         Lakara::Lot,
@@ -896,14 +896,15 @@ fn biBarARi_trace_has_no_nabhyastasyaci() {
 }
 
 #[test]
-fn nabhyastasyaci_is_credited_only_on_the_3e_3f_and_3f2_rows() {
+fn nabhyastasyaci_is_credited_only_on_the_3e_3f_3f2_and_3f3_rows() {
     // Corpus-wide: every branch of every curated root x lakāra x pada x cell
     // whose log carries 7.3.87 belongs to √ṇij, √vij, √viṣ (3e), √kit, √tur,
-    // √dhiṣ, √dhan (3f) or √bhas (3f2) — a credited no-op on √dhan's and
-    // √bhas's a-upadhā. A new rule that credits itself on prior rows' traces
-    // (forms unchanged) fails here. 3f3 extends the allowed list with √jan.
-    const ALLOWED: [&str; 8] = [
+    // √dhiṣ, √dhan (3f), √bhas (3f2) or √jan (3f3) — a credited no-op on
+    // √dhan's, √bhas's and √jan's a-upadhā. A new rule that credits itself on
+    // prior rows' traces (forms unchanged) fails here.
+    const ALLOWED: [&str; 9] = [
         "03.0012", "03.0013", "03.0014", "03.0019", "03.0021", "03.0022", "03.0023", "03.0024",
+        "03.0025",
     ];
     const CELLS: [(Purusha, Vacana); 9] = [
         (Purusha::Prathama, Vacana::Eka),
@@ -1091,13 +1092,14 @@ fn das_ca_is_credited_only_on_rudhadi_and_kit() {
 }
 
 #[test]
-fn nas_capadantasya_is_credited_only_on_rudhadi_and_dhan() {
-    // 8.3.24 admits juhotyādi since slice 3f; only √dhan has an `n` before
-    // a jhal there.
+fn nas_capadantasya_is_credited_only_on_rudhadi_dhan_and_jan() {
+    // 8.3.24 admits juhotyādi since slice 3f; only √dhan and √jan (3f3) have
+    // an `n` before a jhal there — √jan only before a pit ending (jajanti,
+    // jajaMsi, jajantu), since 6.4.42 takes the `n` before a kṅit one.
     let hits = credited("8.3.24");
     for (number, gana) in &hits {
         assert!(
-            *gana == Gana::Rudhadi || *number == "03.0024",
+            *gana == Gana::Rudhadi || *number == "03.0024" || *number == "03.0025",
             "8.3.24 credited on {number}"
         );
     }
