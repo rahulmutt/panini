@@ -1,4 +1,5 @@
-//! Vowel gradation and vikaraṇa reshaping: 7.4.21 … 6.4.119, 6.4.118 … 6.4.116, 6.4.113, 6.4.112, 6.4.115.
+//! Vowel gradation and vikaraṇa reshaping: 7.4.21 … 6.4.119, 6.4.118 … 6.4.116, 6.4.113, 6.4.98,
+//! 6.4.100, 6.4.112, 6.4.115, 6.4.42, 6.4.43.
 //!
 //! Split out of `anga.rs` (which had reached 1110 lines) ahead of svādi.
 //! The cut falls after 7.2.81: `anga.rs` keeps the augments and the rules
@@ -13,13 +14,54 @@
 //! puts it, between 7.3.86 and 7.3.101. Order outranks sūtra family: the
 //! flattened sequence is the grammar.
 
+use crate::prakriya::Prakriya;
 use crate::rule::{Rule, RuleKind};
 use crate::term::Tag;
-use crate::tinanta::sound::{guna_of, is_vowel};
+use crate::tinanta::sound::{guna_of, is_jhal, is_vowel};
 use crate::tinanta::terms::{
     ABHYASA, ANGA, ENDING, SHAP, following_sarvadhatuka, vikarana_u_asamyogapurva,
 };
 use panini_data::{Lakara, Purusha};
+
+/// The rows 6.4.42 and 6.4.43 name: √jan (`03.0025`) and tanādi's √san
+/// (`08.0002`). √khan, the sūtra's third root, is not curated; a √khan row
+/// extends this list.
+///
+/// √san is here although it never takes the `ā` in this corpus: its
+/// follower is the vikaraṇa `u`, which is neither ṅit (1.2.4's second arm
+/// excludes it) nor a jhal nor a `y`, so both rules decline on every √san
+/// cell (sanutaH, sanuyAt) on the grammar rather than on a missing key, and
+/// √san's goldens hold that. 6.4.107's u-lopa runs later, in `adesha.rs`.
+const JANA_SANA: &[&str] = &["03.0025", "08.0002"];
+
+/// 6.4.42 and 6.4.43's shared body: on a `JANA_SANA` row, before a kṅit
+/// follower whose first sound satisfies `takes`, the aṅga's final `n`
+/// becomes `ā` (`jan` → `jA`). The follower is read through
+/// `following_sarvadhatuka`, as 6.4.100 reads it: under ślu SHAP is empty,
+/// so it is the ending, whose `Tag::Ngit` already encodes 1.2.4, 7.1.35 and
+/// 3.4.103.
+fn janasanakhanam_a(p: &mut Prakriya, id: &str, name: &str, takes: fn(char) -> bool) -> bool {
+    if !JANA_SANA.contains(&p.ctx.dhatupatha) {
+        return false;
+    }
+    let Some(follower) = following_sarvadhatuka(p) else {
+        return false;
+    };
+    if !follower.has(Tag::Ngit) {
+        return false;
+    }
+    if !follower.text.chars().next().is_some_and(takes) {
+        return false;
+    }
+    let Some(stem) = p.terms[ANGA].text.strip_suffix("an") else {
+        return false;
+    };
+    let lengthened = format!("{stem}A");
+    let before = p.snapshot();
+    p.terms[ANGA].text = lengthened;
+    p.record(id, name, before);
+    true
+}
 
 pub(crate) static GUNA: &[Rule] = &[
     // 7.4.21 śīṅaḥ sārvadhātuke guṇaḥ: √śī takes guṇa (SI → Se) before a
@@ -1488,7 +1530,7 @@ pub(crate) static GUNA: &[Rule] = &[
     // 6.4.115 bhiyo'nyatarasyām: √bhī's ī optionally becomes hrasva.
     // bibhītaḥ / bibhitaḥ, bibhīhi / bibhihi, bibhīyāt / bibhiyāt. The
     // engine's ninth vikalpa (6.4.117 and 6.4.116, slice 3c2, are the tenth
-    // and eleventh).
+    // and eleventh; 6.4.43, slice 3f3, the twelfth).
     //
     // Operates on the AṄGA. 7.4.59 has already shortened the abhyāsa, and
     // that is a different vowel: `Bi` + `BI` is the pair this rule turns
@@ -1544,6 +1586,50 @@ pub(crate) static GUNA: &[Rule] = &[
             p.record("6.4.115", "Biyo'nyatarasyAm", before);
             true
         },
+    },
+    // --- 6.4.42 / 6.4.43: √jan's `ā` -----------------------------------------
+    //
+    // AFTER THE Ā-OF-ABHYASTA BLOCK, at the end of this stage. Both rules
+    // turn `jan` into `jA`, an `A`-final abhyasta aṅga, which is exactly what
+    // that block reads: run first, 6.4.112 would elide the new ā (*jajtaH),
+    // 6.4.113 would make it ī (*jajItaH), and a widened 6.4.118 would elide
+    // it before `y` (*jajyAt). Textually this is 6.4.22 *asiddhavat
+    // atrābhāt*: these and 6.4.112/6.4.113 are all ābhīya rules, so the ā is
+    // asiddha to them, and running after them implements that.
+    // `jajAtaH_trace_takes_the_a_without_the_abhyasta_rules` and
+    // `jajAyAt_trace_forks_on_ye_vibhasa` in `panini`'s trace suite pin it.
+    //
+    // vidyut runs 6.4.42 BEFORE dvitva and reaches the same forms: its
+    // abhyāsa copies `jaA` and 7.4.60 reduces it to `ja`, where here dvitva
+    // copies `jan` and 7.4.60 reduces that to `ja`. vidyut also writes `jaA`
+    // and credits 6.1.101 for the merge; this engine writes `jA` in one step.
+    //
+    // KEYED BY ROW NUMBER, `JANA_SANA`, and the two rules share
+    // `janasanakhanam_a`. See both.
+
+    // 6.4.42 janasanakhanāṁ sañjhaloḥ: √jan, √san and √khan take `ā` for
+    // their final before a JHAL-INITIAL kṅit (the *san* arm needs a
+    // desiderative, out of scope). ja + jan + tas → ja + jA + tas: jajAtaH,
+    // jajAhi, jajAtAt, ajajAtAm. Before a pit ending it declines: jajanti,
+    // jajantu.
+    Rule {
+        id: "6.4.42",
+        name: "janasanaKanAM saYJaloH",
+        kind: RuleKind::Vidhi,
+        vikalpa: false,
+        bars: &[],
+        apply: |p| janasanakhanam_a(p, "6.4.42", "janasanaKanAM saYJaloH", is_jhal),
+    },
+    // 6.4.43 ye vibhāṣā: the same `ā`, optionally, before a Y-INITIAL kṅit.
+    // In this corpus that is yāsuṭ, so all nine vidhiliṅ cells fork: jajanyAt
+    // (declined) ~ jajAyAt. The engine's twelfth vikalpa.
+    Rule {
+        id: "6.4.43",
+        name: "ye viBAzA",
+        kind: RuleKind::Vidhi,
+        vikalpa: true,
+        bars: &[],
+        apply: |p| janasanakhanam_a(p, "6.4.43", "ye viBAzA", |c| c == 'y'),
     },
 ];
 
@@ -3286,6 +3372,108 @@ mod tests {
             assert!(!(rule.apply)(&mut p), "{why}");
             assert_eq!(p.terms[ANGA].text, anga, "{why}");
             assert!(p.log.is_empty(), "{why}");
+        }
+    }
+
+    #[test]
+    fn janasana_takes_a_before_a_jhal_initial_kngit() {
+        // tas (jajAtaH), Ta (jajATa), hi (jajAhi), tAt (jajAtAt).
+        let rule = rules().find(|r| r.id == "6.4.42").unwrap();
+        for ending in ["tas", "Ta", "hi", "tAt"] {
+            let mut p = jan_prakriya("03.0025", "jan", ending, true);
+            assert!((rule.apply)(&mut p), "{ending}");
+            assert_eq!(p.terms[ANGA].text, "jA", "{ending}");
+            assert_eq!(p.log.last().unwrap().sutra, "6.4.42");
+        }
+    }
+
+    #[test]
+    fn ye_vibhasa_takes_a_before_a_y_initial_kngit() {
+        let rule = rules().find(|r| r.id == "6.4.43").unwrap();
+        let mut p = jan_prakriya("03.0025", "jan", "yAt", true);
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "jA");
+        assert_eq!(p.log.last().unwrap().sutra, "6.4.43");
+    }
+
+    #[test]
+    fn janasana_and_ye_vibhasa_decline_off_their_follower_class_row_and_shape() {
+        let r42 = rules().find(|r| r.id == "6.4.42").unwrap();
+        let r43 = rules().find(|r| r.id == "6.4.43").unwrap();
+        for (rule, number, anga, ending, ngit, why) in [
+            (
+                r42,
+                "03.0025",
+                "jan",
+                "yAt",
+                true,
+                "6.4.42 before y: 6.4.43's",
+            ),
+            (
+                r42,
+                "03.0025",
+                "jan",
+                "ati",
+                true,
+                "6.4.42 before a vowel: 6.4.98's",
+            ),
+            (
+                r43,
+                "03.0025",
+                "jan",
+                "tas",
+                true,
+                "6.4.43 before a jhal: 6.4.42's",
+            ),
+            (r42, "03.0025", "jan", "ti", false, "pit tip: jajanti"),
+            (r43, "03.0025", "jan", "yAt", false, "a y-initial pit"),
+            (r42, "03.0024", "jan", "tas", true, "another juhotyādi row"),
+            (r43, "03.0024", "jan", "yAt", true, "another juhotyādi row"),
+            (r42, "03.0025", "jA", "tas", true, "already lengthened"),
+        ] {
+            let mut p = jan_prakriya(number, anga, ending, ngit);
+            assert!(!(rule.apply)(&mut p), "{why}");
+            assert_eq!(p.terms[ANGA].text, anga, "{why}");
+            assert!(p.log.is_empty(), "{why}");
+        }
+    }
+
+    #[test]
+    fn janasana_and_ye_vibhasa_decline_on_san_where_u_intervenes() {
+        // Tanādi √san (`08.0002`) is in the key, but its follower is the
+        // vikaraṇa `u`: not ṅit, not a jhal, not `y`. sanutaH, sanuyAt.
+        for (id, ending) in [("6.4.42", "tas"), ("6.4.43", "yAt")] {
+            let rule = rules().find(|r| r.id == id).unwrap();
+            let mut p = Prakriya {
+                terms: with_slots(vec![Term::new("san"), Term::new("u"), Term::new(ending)]),
+                ..Default::default()
+            };
+            p.ctx.dhatupatha = "08.0002";
+            p.terms[ENDING].add(Tag::Ngit);
+            assert!(!(rule.apply)(&mut p), "{id}");
+            assert_eq!(p.terms[ANGA].text, "san", "{id}");
+            assert!(p.log.is_empty(), "{id}");
+        }
+    }
+
+    #[test]
+    fn the_abhyasta_rules_would_eat_janas_a_so_janasana_runs_after_them() {
+        // 6.4.22 asiddhavat atrābhāt, as placement: `jA` is an `A`-final
+        // abhyasta aṅga, and before a ṅit `tas` 6.4.113 would make it *jajItaH
+        // and 6.4.112 *jajtaH. Both sit above 6.4.42 and have already run on
+        // `jan` by the time it writes the ā.
+        for (id, want) in [("6.4.113", "jI"), ("6.4.112", "j")] {
+            let rule = rules().find(|r| r.id == id).unwrap();
+            let mut p = jan_prakriya("03.0025", "jA", "tas", true);
+            assert!((rule.apply)(&mut p), "{id}");
+            assert_eq!(p.terms[ANGA].text, want, "{id}");
+        }
+        let ids: Vec<&str> = rules().map(|r| r.id).collect();
+        let at = |id: &str| ids.iter().position(|r| *r == id).unwrap();
+        for id in ["6.4.42", "6.4.43"] {
+            for abhyasta_rule in ["6.4.118", "6.4.113", "6.4.112"] {
+                assert!(at(abhyasta_rule) < at(id), "{abhyasta_rule} before {id}");
+            }
         }
     }
 }
