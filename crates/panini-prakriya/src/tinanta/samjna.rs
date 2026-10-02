@@ -627,7 +627,7 @@ mod tests {
             log: vec![],
             ..Default::default()
         };
-        let rule = rules().find(|r| r.id == "1.3.9").unwrap();
+        let rule = SAMJNA.iter().find(|r| r.id == "1.3.9").unwrap();
         assert!(
             (rule.apply)(&mut p),
             "1.3.9 should report firing when tip loses its final p"

@@ -1666,7 +1666,7 @@ mod tests {
             log: vec![],
             ..Default::default()
         };
-        let rule = rules().find(|r| r.id == "7.3.86").unwrap();
+        let rule = GUNA.iter().find(|r| r.id == "7.3.86").unwrap();
         assert!(!(rule.apply)(&mut p));
         assert_eq!(p.terms[ANGA].text, "d");
     }
@@ -1683,7 +1683,7 @@ mod tests {
             log: vec![],
             ..Default::default()
         };
-        let rule = rules().find(|r| r.id == "7.3.86").unwrap();
+        let rule = GUNA.iter().find(|r| r.id == "7.3.86").unwrap();
         assert!((rule.apply)(&mut p));
         assert_eq!(p.terms[ANGA].text, "ed");
     }
@@ -1700,7 +1700,7 @@ mod tests {
             log: vec![],
             ..Default::default()
         };
-        let rule = rules().find(|r| r.id == "7.3.86").unwrap();
+        let rule = GUNA.iter().find(|r| r.id == "7.3.86").unwrap();
         assert!(!(rule.apply)(&mut p));
         assert_eq!(p.terms[ANGA].text, "Bfu");
     }
@@ -1721,7 +1721,7 @@ mod tests {
             log: vec![],
             ..Default::default()
         };
-        let rule = rules().find(|r| r.id == "7.3.86").unwrap();
+        let rule = GUNA.iter().find(|r| r.id == "7.3.86").unwrap();
         assert!((rule.apply)(&mut p));
         assert_eq!(p.terms[ANGA].text, "aBior");
     }
@@ -1745,7 +1745,7 @@ mod tests {
             log: vec![],
             ..Default::default()
         };
-        let rule = rules().find(|r| r.id == "7.3.86").unwrap();
+        let rule = GUNA.iter().find(|r| r.id == "7.3.86").unwrap();
         assert!((rule.apply)(&mut p));
         assert_eq!(p.terms[ANGA].text, "vart");
     }
@@ -1925,7 +1925,7 @@ mod tests {
             ..Default::default()
         };
         p.terms[ENDING].add(Tag::Ngit);
-        let rule = rules().find(|r| r.id == "7.3.86").unwrap();
+        let rule = GUNA.iter().find(|r| r.id == "7.3.86").unwrap();
         assert!(!(rule.apply)(&mut p));
         assert_eq!(p.terms[ANGA].text, "vft");
     }
@@ -1937,7 +1937,7 @@ mod tests {
             log: vec![],
             ..Default::default()
         };
-        let rule = rules().find(|r| r.id == "7.3.86").unwrap();
+        let rule = GUNA.iter().find(|r| r.id == "7.3.86").unwrap();
         assert!((rule.apply)(&mut p));
         assert_eq!(p.terms[ANGA].text, "vart");
     }
@@ -1956,7 +1956,7 @@ mod tests {
         p.terms[SHAP].add(Tag::Vikarana);
         p.terms[SHAP].add(Tag::Ardhadhatuka);
         p.terms[ENDING].add(Tag::Ngit);
-        let mut entries = rules().filter(|r| r.id == "7.3.86");
+        let mut entries = GUNA.iter().filter(|r| r.id == "7.3.86");
         let nitya = entries.next().unwrap();
         let vikalpa = entries.next().expect("the tanādi arm");
         assert!(!nitya.vikalpa);
@@ -1978,7 +1978,7 @@ mod tests {
             p.terms[ANGA].add(Tag::Dhatu);
             p.terms[ANGA].add(Tag::Tanadi);
             p.terms[SHAP].add(Tag::Vikarana);
-            let vikalpa = rules().filter(|r| r.id == "7.3.86").nth(1).unwrap();
+            let vikalpa = GUNA.iter().filter(|r| r.id == "7.3.86").nth(1).unwrap();
             assert!(!(vikalpa.apply)(&mut p), "{root}");
         }
     }
@@ -2001,7 +2001,7 @@ mod tests {
         p.terms[ANGA].add(Tag::Dhatu);
         p.terms[ANGA].add(Tag::Tanadi);
         p.terms[SHAP].add(Tag::Vikarana);
-        let vikalpa = rules().filter(|r| r.id == "7.3.86").nth(1).unwrap();
+        let vikalpa = GUNA.iter().filter(|r| r.id == "7.3.86").nth(1).unwrap();
         assert!(!(vikalpa.apply)(&mut p));
         assert_eq!(
             p.terms[ANGA].text, "fu",
