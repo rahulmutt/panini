@@ -82,6 +82,27 @@ pub enum Tag {
     /// The dhātu belongs to tanādi (gaṇa 8), whose vikaraṇa is the bare `u`.
     /// Read by 3.1.79 alone. Mirrors Divadi/Tudadi/Adadi/Kryadi/Svadi/Rudhadi.
     Tanadi,
+    /// The dhātu belongs to curādi (gaṇa 10). Read by 3.1.25 alone, which
+    /// adds ṇic. Mirrors Divadi/Tudadi/Adadi/Kryadi/Svadi/Rudhadi/Tanadi/
+    /// Juhotyadi.
+    Curadi,
+    /// The dhātu's ātmanepada is sanctioned by 1.3.74 *ṇicaś ca*: the
+    /// data layer's `PadaAssignment::Nic`. Read only by 1.3.74, and by
+    /// 1.3.78's ātmanepada arm, which declines rather than blocks when it
+    /// is present. Distinct from `Nijanta`, which says what the stem IS;
+    /// this says what licenses its pada. Same standing as `Anavane`: a
+    /// pada licence keyed to a sūtra, so the trace credits that sūtra and
+    /// never 1.3.72.
+    Nic,
+    /// The aṅga is a ṇijanta: 3.1.32 *sanādyantā dhātavaḥ* folded ṇic into
+    /// it, so its final `i` is ṇic's. A saṁjñā verdict, set by 3.1.32 and
+    /// pinned by its unit test; no rule reads it yet. 6.4.51 *ṇer aniṭi*,
+    /// in an ārdhadhātuka-lakāra slice, is the first rule that will.
+    Nijanta,
+    /// The pratyaya carries the ṇ-anubandha (ṇit), SLP1 `R` as `Ngit`'s
+    /// `N` is ṅ. Set on ṇic by its it-lopa in `super::sanadi`; read by
+    /// 7.2.116 *ata upadhāyāḥ*, whose following ñit/ṇit it is.
+    Rit,
     /// The dhātu belongs to juhotyādi (gaṇa 3), the ślu gaṇa. Read by
     /// 2.4.75 once the vikaraṇa exists — and, before it, by 3.4.109 as the
     /// data-layer stand-in for *abhyasta* (see that rule's comment).

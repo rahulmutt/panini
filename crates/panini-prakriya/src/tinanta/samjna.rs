@@ -282,6 +282,7 @@ mod tests {
             PadaAssignment::Atmanepada => t.add(Tag::Atmanepadin),
             PadaAssignment::Ubhayapada => t.add(Tag::Ubhayapadin),
             PadaAssignment::UbhayapadaAnavane => t.add(Tag::Anavane),
+            PadaAssignment::Nic => t.add(Tag::Nic),
         }
         t
     }

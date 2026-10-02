@@ -11,6 +11,7 @@ pub enum Gana {
     Rudhadi,
     Tanadi,
     Juhotyadi,
+    Curadi,
 }
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Pada {
@@ -41,6 +42,18 @@ pub enum PadaAssignment {
     /// *kartrabhiprāye kriyāphale*; see the 1.3.66 comment block in
     /// panini-prakriya's `tinanta/samjna.rs`.
     UbhayapadaAnavane,
+    /// Both padas derive, exactly as for `Ubhayapada` — but the ātmanepada
+    /// arm is sanctioned by 1.3.74 *ṇicaś ca*, a sūtra keyed on the affix
+    /// ṇic, rather than by any marker of the root's. Every curādi root takes
+    /// ṇic (3.1.25), so a curādi row with no pada marker of its own is
+    /// curated with this. Like `UbhayapadaAnavane`, a root carrying it must
+    /// never reach 1.3.72, or the trace credits the wrong sūtra.
+    ///
+    /// Row-driven for now: 1.3.74 reads the pada licence the data layer
+    /// supplies, not the presence of ṇic. When the causative (ṇic after a
+    /// root of any gaṇa) is implemented, 1.3.74 should key on the ṇijanta
+    /// stem instead, and this variant retires.
+    Nic,
 }
 impl PadaAssignment {
     /// The padas this assignment derives. `Ubhayapada` lists parasmaipada
@@ -50,9 +63,9 @@ impl PadaAssignment {
         match self {
             PadaAssignment::Parasmaipada => &[Pada::Parasmaipada],
             PadaAssignment::Atmanepada => &[Pada::Atmanepada],
-            PadaAssignment::Ubhayapada | PadaAssignment::UbhayapadaAnavane => {
-                &[Pada::Parasmaipada, Pada::Atmanepada]
-            }
+            PadaAssignment::Ubhayapada
+            | PadaAssignment::UbhayapadaAnavane
+            | PadaAssignment::Nic => &[Pada::Parasmaipada, Pada::Atmanepada],
         }
     }
 }
@@ -1647,6 +1660,10 @@ mod tests {
             PadaAssignment::UbhayapadaAnavane.padas(),
             &[Pada::Parasmaipada, Pada::Atmanepada]
         );
+        assert_eq!(
+            PadaAssignment::Nic.padas(),
+            &[Pada::Parasmaipada, Pada::Atmanepada]
+        );
     }
 
     #[test]
@@ -1664,6 +1681,7 @@ mod tests {
             PadaAssignment::UbhayapadaAnavane.padas()[0],
             Pada::Parasmaipada
         );
+        assert_eq!(PadaAssignment::Nic.padas()[0], Pada::Parasmaipada);
     }
 
     #[test]
@@ -2087,8 +2105,8 @@ mod tests {
         // typed into the wrong gaṇa's block still names a real upstream row,
         // so nothing else would catch it.
         //
-        // Mapped variant → prefix, not the inverse: this engine covers nine
-        // of the ten gaṇas, so only 10 has no `Gana` variant.
+        // Mapped variant → prefix, not the inverse, so a new variant must
+        // name its prefix here before it compiles.
         for d in dhatus() {
             let expected = match d.gana {
                 Gana::Bhvadi => "01",
@@ -2100,6 +2118,7 @@ mod tests {
                 Gana::Rudhadi => "07",
                 Gana::Tanadi => "08",
                 Gana::Kryadi => "09",
+                Gana::Curadi => "10",
             };
             assert!(
                 d.dhatupatha.starts_with(expected),

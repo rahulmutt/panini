@@ -96,6 +96,7 @@ pub fn derive(
         PadaAssignment::Atmanepada => t.add(Tag::Atmanepadin),
         PadaAssignment::Ubhayapada => t.add(Tag::Ubhayapadin),
         PadaAssignment::UbhayapadaAnavane => t.add(Tag::Anavane),
+        PadaAssignment::Nic => t.add(Tag::Nic),
     }
     match dhatu.gana {
         Gana::Divadi => t.add(Tag::Divadi),
@@ -106,6 +107,7 @@ pub fn derive(
         Gana::Rudhadi => t.add(Tag::Rudhadi),
         Gana::Tanadi => t.add(Tag::Tanadi),
         Gana::Juhotyadi => t.add(Tag::Juhotyadi),
+        Gana::Curadi => t.add(Tag::Curadi),
         Gana::Bhvadi => {}
     }
     p.terms = terms::with_slots(vec![t]);
