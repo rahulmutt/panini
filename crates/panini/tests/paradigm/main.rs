@@ -726,7 +726,7 @@ fn derivation_set_shape_matches_the_audited_numbers() {
          the same way; and — new in slice 3f2 — √bhas's laṅ madhyama eka (8.2.74 beside 8.4.56) \
          and its two loṭ tātaṅ cells; and — new in slice 3f3 — √jan's two loṭ tātaṅ cells; \
          and — new in slice 10a — the four curādi roots' two loṭ tātaṅ cells each, by \
-         7.1.35/8.4.56"
+         7.1.35/8.4.56; and — new in slice 10d — the six jñapādi roots', the same way"
     );
     assert_eq!(
         fours, 19,
