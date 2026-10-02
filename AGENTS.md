@@ -86,9 +86,12 @@
     missed, 1 timeout.** **panini-prakriya: 801 mutants, 754 caught, 44
     unviable, 2 missed, 1 timeout.** Its non-caught set (44 / 2 / 1) is
     identical to 3f3's, diffed as a multiset of (package, file, mutation)
-    over all 51 non-caught outcomes of both packages, and no `file:line`
-    moved: this slice touched neither `adesha.rs` nor `tripadi.rs`
-    production code. `missed.txt` held exactly:
+    over all 51 non-caught outcomes of both packages, with line numbers
+    stripped. None of the three documented entries moved (this slice touched
+    neither `adesha.rs` nor `tripadi.rs` production code); three unviable
+    entries shifted down with this slice's `mod.rs` and `terms.rs` edits:
+    `mod.rs` 63 to 65, `terms.rs` 113 to 121 and 148 to 156. `missed.txt`
+    held exactly:
     ```
     crates/panini-prakriya/src/tinanta/adesha.rs:589:30: replace + with *
     crates/panini-prakriya/src/tinanta/tripadi.rs:1289:38: replace - with /
