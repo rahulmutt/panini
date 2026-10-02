@@ -7,7 +7,7 @@ list. A curādi root whose upadeśa ends in a bare `a` (`10.0389 kaTa`
 *kathayati*) loses that `a` before ārdhadhātuka ṇic by **6.4.48** *ato
 lopaḥ ārdhadhātuke*. By 1.1.57 *acaḥ parasmin pūrvavidhau* the deleted `a`
 still counts for rules that look at what precedes it, so 7.2.116 *ata
-upadhāyāḥ* does not lengthen (*kaṭayati*, not *kāṭayati*) and 7.3.86 does
+upadhāyāḥ* does not lengthen (*kathayati*, not *kāthayati*) and 7.3.86 does
 not guṇate (*kuhayate*, not *kohayate*). The gaṇasūtra **10.0497** *ā
 garvād ātmanepadinaḥ* makes the run `10.0440 pada` … `10.0449 garva`
 ātmanepadī, as 10.0496 does for the ākusmīya.
