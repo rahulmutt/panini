@@ -34,8 +34,9 @@ The "none" rows have no laghu ik upadhā for 7.3.86 and no upadhā `a` for
 slice adds no new rule coverage. It is breadth.
 
 The `code` column is the it-stripped upadeśa in every row: none of the 33
-carries a nasal-inserting `i` (`idit`) marker or an initial `z`/`R`, so
-`dhatupatha_numbers_resolve_upstream` applies unchanged.
+carries a nasal-inserting `i` (`idit`) marker or an initial `z`/`R`. But
+`dhatupatha_numbers_resolve_upstream` does **not** apply unchanged (an
+amendment made after prototyping; see "√das and the sibling check" below).
 
 **Out:**
 
@@ -70,6 +71,28 @@ mutation survivor. The forms already match. The two rows' comments name
 them as the witnesses the mit slice inherits. Once that slice adds 01.0934,
 these goldens fail unless it also adds 10.0494.
 
+### √das and the sibling check (amendment)
+
+Prototyping found one row the spec's first draft missed.
+`dhatupatha_numbers_resolve_upstream` requires each curated number to be the
+only row in its gaṇa with the same it-stripped form and the same artha.
+`10.0195 dasa~` has the artha *darSanadaMSanayoH*, and so does its neighbour
+`10.0194 dasi~`, an excluded optional-ṇic row. The test's `stored_form`
+helper models 7.1.58 *idito num dhātoḥ* only as a special case
+(`his` → `hins`), so `dasi~` also strips to `das`, and 10.0195 reads as
+ambiguous. None of the other 32 rows trips the check.
+
+**Decision: generalize the helper, keep √das.** `stored_form` inserts the
+num after the last vowel (1.1.47 *mid aco 'ntyāt paraḥ*) for every
+**idit** upadeśa, meaning one whose last marker is `i~`. A non-final `i~`
+belongs to another marker: irit `i~r` (`ru\Di~^r`) or `cakzi~N`. Those are
+the only non-final shapes in the vendored dhātupāṭha. So `dasi~` stores as
+`dans`, and `hisi~` → `hins` still comes out unchanged. This is a test-only
+change. A new unit test pins the helper: idit `hisi~`/`dasi~`/`tatri~`/`aci~^`
+→ `hins`/`dans`/`tantr`/`anc`; non-final `ru\Di~^r` / `ca\kzi~\N` →
+`ruD` / `cakz`; plain `dasa~` / `kusma~` → `das` / `kusm`. The optional-ṇic
+slice would need the same generalization when it curates `dasi~`.
+
 ## Evidence
 
 All evidence comes from throwaway probes in `/tmp/vidyut-full`, against
@@ -99,15 +122,18 @@ table.
 ### Data — `panini-data/src/lib.rs`
 
 - **33 `Dhatu` rows**, `gana: Gana::Curadi`, `pada:
-  PadaAssignment::Akusmiya`, in dhātupāṭha order after 10b's rows. Each
+  PadaAssignment::Akusmiya`, interleaved with 10b's four so that the
+  ākusmīya block runs in dhātupāṭha order (the goldens likewise). Each
   carries 10b's comment shape: number, upadeśa, artha and root, then the
   pre-ṇic change (or "no pre-ṇic change", with the reason) and "Ātmanepadī
   by 10.0496. Slice 10c." Homograph rows add their partner number. `10.0216`
   and `10.0218` add the 10.0494 note above. `10.0233` and `10.0234` each
   name the other as sharing every form.
-- `curated_roots_have_expected_ganas_and_padas` gains the 33 rows.
+- `curated_roots_have_expected_ganas_and_padas` goes from 111 to 144 rows,
+  and `curadi_rows_are_the_eight_curated_roots` becomes
+  `…_forty_one_…` with all 41 curādi rows listed.
   `dhatupatha_numbers_resolve_upstream` covers them through the table it
-  already walks. The `AKUSMIYA` iff test and the split pada-agreement arm
+  already walks, once `stored_form` is generalized (above). The `AKUSMIYA` iff test and the split pada-agreement arm
   need no change; they pick the rows up from the table.
 - The `pada` field doc: "re-derives 102 of these 111 … four ākusmīya rows'
   are the gaṇasūtra 10.0496's" becomes **102 of these 144 … 37 ākusmīya
@@ -141,13 +167,19 @@ every cell holds one form.
 - **Homographs:** before any `check()` assertion names the root a form
   belongs to, grep the goldens for that form. *mAnayate* and its 35
   siblings belong to two rows.
+- **`check()`:** a new paradigm test checks one witness per pre-ṇic shape and
+  per homograph row. Each gets exactly one analysis, ātmanepada, opening with
+  10.0496 and crediting no pada sūtra. *mAnayate* / *amAnayata* get exactly
+  two analyses (√mān, √man), and only √man's credits 7.2.116. The
+  parasmaipada shapes are Invalid.
 - **Prior traces:** dump every prior cell's credited-rule log on main and
   on HEAD, as `trace_dump_10b.rs` does; the two must be byte-identical. A
   data-only slice should move nothing, and this proves it did not.
 
-No engine code changes, so no new unit tests. TDD here means the goldens
-and the count assertions are added first and seen failing (rows absent),
-then the data rows make them pass.
+No engine code changes. The one new unit test is the `stored_form` pin
+above, seen failing against the old helper. Otherwise TDD here means the
+count and list assertions and the `check()` test are added first and seen
+failing (rows absent), then the data rows make them pass.
 
 ## Audit
 
