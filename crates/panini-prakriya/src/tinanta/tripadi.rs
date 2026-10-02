@@ -839,6 +839,15 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // (aBavan, kfntan) is pada-final and out of scope by the sūtra's own
     // `apadāntasya`; guarding on the gaṇa keeps this rule away from it
     // without needing a pada-boundary notion the engine does not have.
+    //
+    // CURĀDI, ROOT-INTERNAL ONLY (slice 10e). Six adanta curādi roots carry
+    // their own `n` before a jhal (`sanketa`, `ansa`, `sangrAma`, `danqa`,
+    // `anka`, `anga`: *saṅketayati*, *aṃsayati*); 10c's √gandh (`ganD`)
+    // does too, and vidyut credits the pair on it as on them. For a curādi
+    // root the search is confined to `ANGA`'s own characters: that `n` is
+    // inside the dhātu, so `apadāntasya` holds by construction, and the
+    // 7.1.3 `n` of *corayanti* — in the tiṅ term, never `ANGA` — stays out
+    // of reach exactly as for every other gaṇa.
     // Dropping the gaṇa test entirely credits an 8.3.24 → 8.4.58 pair on
     // every 7.1.3 `n` (bhavanti, yanti, Apnuvanti, hinvanti: four trace pins
     // fail). Juhotyādi is safe under it: its aṅga is abhyasta, so 7.1.4 ad
@@ -866,12 +875,15 @@ pub(crate) static TRIPADI: &[Rule] = &[
         bars: &[],
         apply: |p| {
             let anga = &p.terms[ANGA];
-            if !anga.has(Tag::Rudhadi) && !anga.has(Tag::Juhotyadi) {
+            let root_only = anga.has(Tag::Curadi);
+            if !anga.has(Tag::Rudhadi) && !anga.has(Tag::Juhotyadi) && !root_only {
                 return false;
             }
             let w = word_chars(p);
-            let Some(pos) = w.iter().enumerate().position(|(i, (_, _, c))| {
-                *c == 'n' && w.get(i + 1).is_some_and(|(_, _, next)| is_jhal(*next))
+            let Some(pos) = w.iter().enumerate().position(|(i, (term, _, c))| {
+                *c == 'n'
+                    && (!root_only || *term == ANGA)
+                    && w.get(i + 1).is_some_and(|(_, _, next)| is_jhal(*next))
             }) else {
                 return false;
             };
@@ -1035,7 +1047,8 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // and this rule WOULD fire on it. It is 8.3.24 alone that is guaranteed
     // to have already run, in every cell, because its trigger needs nothing
     // from what follows `j`/`c`. 8.3.24's guard is `Tag::Rudhadi` or
-    // `Tag::Juhotyadi`, gaṇa tags rather than a grammatical predicate, so
+    // `Tag::Juhotyadi` (or `Tag::Curadi`, for a root-internal `n` only),
+    // gaṇa tags rather than a grammatical predicate, so
     // this coverage is contingent on those tags rather than derived from the
     // sūtra itself — a
     // documentation gap, not a latent wrongness: were 8.3.24 ever to decline
@@ -1634,7 +1647,9 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // a vowel, so 8.3.24 never fired — still takes ṇatva.
     //
     // Retire the fold, and this constraint with it, when a slice widens
-    // 8.3.24 past rudhādi and juhotyādi.
+    // 8.3.24 past rudhādi and juhotyādi. Slice 10e's curādi widening does
+    // not: it reaches only a curādi root's own `n`, so the 7.1.3 `n` of
+    // every non-rudhādi, non-juhotyādi root still needs the fold.
     //
     // The `yayi` / parasavarṇa test lives INSIDE the search, not after it:
     // the rule finds the first anusvāra that actually HAS a parasavarṇa

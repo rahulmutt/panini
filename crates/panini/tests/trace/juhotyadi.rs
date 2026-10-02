@@ -1060,15 +1060,30 @@ fn das_ca_is_credited_only_on_rudhadi_and_kit() {
 }
 
 #[test]
-fn nas_capadantasya_is_credited_only_on_rudhadi_dhan_and_jan() {
+fn nas_capadantasya_is_credited_only_on_rudhadi_dhan_jan_and_curadi_roots() {
     // 8.3.24 admits juhotyādi since slice 3f; only √dhan and √jan (3f3) have
     // an `n` before a jhal there — √jan only before a pit ending (jajanti,
     // jajaMsi, jajantu), since 6.4.42 takes the `n` before a kṅit one.
+    // Since slice 10e it also admits a curādi root's own `n` before a jhal:
+    // 10c's √gandh.
+    const CURADI: [&str; 1] = ["10.0204"];
     let hits = credited("8.3.24");
     for (number, gana) in &hits {
         assert!(
-            *gana == Gana::Rudhadi || *number == "03.0024" || *number == "03.0025",
+            *gana == Gana::Rudhadi
+                || *number == "03.0024"
+                || *number == "03.0025"
+                || CURADI.contains(number),
             "8.3.24 credited on {number}"
+        );
+    }
+    let curadi: Vec<_> = hits.iter().filter(|(_, g)| *g == Gana::Curadi).collect();
+    // √gandh's 36 ātmanepada branches.
+    assert_eq!(curadi.len(), 36);
+    for number in CURADI {
+        assert!(
+            curadi.iter().any(|(n, _)| *n == number),
+            "{number} no longer witnesses 8.3.24"
         );
     }
     assert!(
