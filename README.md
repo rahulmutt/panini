@@ -107,8 +107,9 @@ shortens back the upadhā 7.2.116 lengthened before ṇic, so *jñapayati*, not
 pūrvavidhau* the deleted `a` still stands for 7.2.116 and 7.3.86, so
 *kathayati*, not *kāthayati*, and *kuhayate*, not *kohayate*. Eighty-three are
 ubhayapadī by 1.3.74; nine are ātmanepadī by the gaṇasūtra 10.0497 *ā garvād
-ātmanepadinaḥ*, the engine's third non-Aṣṭādhyāyī rule. Six of them
-(√saṅketa, *saṅketayati*) carry their own `n` before a jhal, and 8.3.24
+ātmanepadinaḥ*, the engine's third non-Aṣṭādhyāyī rule. Seven of them
+(√saṅketa, *saṅketayati*) carry their own `n` before a jhal (six change form,
+the anusvāra rows; 8.4.58 restores √andha's `n`), and 8.3.24
 *naś cāpadāntasya jhali*, until then rudhādi's and juhotyādi's, now reaches a
 curādi root's own `n` too.
 Every curādi root takes ṇic (3.1.25) before the vikaraṇa; a new first

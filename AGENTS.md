@@ -735,6 +735,14 @@ and curādi (10) opened in slice 10a at 4 of its 509 rows (√cur, √laḍ, √
   integration-test binaries (e.g. `CELLS`, `LAKARA_BY_NAME`) go in
   `crates/panini/tests/common/mod.rs`, `mod`-included by each file that
   needs them — do not redefine them per test file.
+- **A deleted sound's sthānivadbhāva is a tag, not rule order.** When a rule
+  deletes a sound that 1.1.57 *acaḥ parasmin pūrvavidhau* must still let
+  block later rules, the deletion sets a tag on the term (`Tag::AtLopa`,
+  set by 6.4.48 in `tinanta::sanadi`), and each blocked rule declines on that
+  tag (7.2.116 and the sanādi 7.3.86); never rely on rule order for the
+  block. Any new upadhā-reader placed after 6.4.48 must check `Tag::AtLopa`
+  too. The tag survives 3.1.32's fold for later stages (luṅ's abhyāsa, as
+  vidyut reads its `FlagAtLopa`).
 - **Optional (*vikalpa*) rules set `Rule.vikalpa = true`.** `run_pipeline`
   forks there: it clones each live branch, applies to the clone, and keeps
   the clone only if `apply` returned true, so a rule that declines its own

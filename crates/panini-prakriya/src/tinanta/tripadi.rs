@@ -840,9 +840,10 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // `apadāntasya`; guarding on the gaṇa keeps this rule away from it
     // without needing a pada-boundary notion the engine does not have.
     //
-    // CURĀDI, ROOT-INTERNAL ONLY (slice 10e). Six adanta curādi roots carry
-    // their own `n` before a jhal (`sanketa`, `ansa`, `sangrAma`, `danqa`,
-    // `anka`, `anga`: *saṅketayati*, *aṃsayati*); 10c's √gandh (`ganD`)
+    // CURĀDI, ROOT-INTERNAL ONLY (slice 10e). Seven adanta curādi roots carry
+    // their own `n` before a jhal (`sanketa`, `ansa`, `sangrAma`, `anDa`,
+    // `danqa`, `anka`, `anga`: *saṅketayati*, *aṃsayati*; 8.4.58 restores
+    // √andha's `n` before `D`, as it does √gandh's); 10c's √gandh (`ganD`)
     // does too, and vidyut credits the pair on it as on them. For a curādi
     // root the search is confined to `ANGA`'s own characters: that `n` is
     // inside the dhātu, so `apadāntasya` holds by construction, and the
