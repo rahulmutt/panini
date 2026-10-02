@@ -1060,15 +1060,32 @@ fn das_ca_is_credited_only_on_rudhadi_and_kit() {
 }
 
 #[test]
-fn nas_capadantasya_is_credited_only_on_rudhadi_dhan_and_jan() {
+fn nas_capadantasya_is_credited_only_on_rudhadi_dhan_jan_and_curadi_roots() {
     // 8.3.24 admits juhotyādi since slice 3f; only √dhan and √jan (3f3) have
     // an `n` before a jhal there — √jan only before a pit ending (jajanti,
     // jajaMsi, jajantu), since 6.4.42 takes the `n` before a kṅit one.
+    // Since slice 10e it also admits a curādi root's own `n` before a jhal:
+    // 10c's √gandh and seven adanta roots, on every live branch.
+    const CURADI: [&str; 8] = [
+        "10.0204", "10.0433", "10.0460", "10.0467", "10.0471", "10.0472", "10.0473", "10.0474",
+    ];
     let hits = credited("8.3.24");
     for (number, gana) in &hits {
         assert!(
-            *gana == Gana::Rudhadi || *number == "03.0024" || *number == "03.0025",
+            *gana == Gana::Rudhadi
+                || *number == "03.0024"
+                || *number == "03.0025"
+                || CURADI.contains(number),
             "8.3.24 credited on {number}"
+        );
+    }
+    let curadi: Vec<_> = hits.iter().filter(|(_, g)| *g == Gana::Curadi).collect();
+    // √gandh's 36 ātmanepada branches and the seven ubhayapadī roots' 78 each.
+    assert_eq!(curadi.len(), 36 + 7 * 78);
+    for number in CURADI {
+        assert!(
+            curadi.iter().any(|(n, _)| *n == number),
+            "{number} no longer witnesses 8.3.24"
         );
     }
     assert!(
@@ -1360,7 +1377,9 @@ fn shcutva_off_jan_is_credited_exactly_as_before_3f3() {
     // forward arm), 54 branches, measured on `main` before the widening. A
     // A new firing on a prior row's branch that does not already credit 8.4.40,
     // in either direction, changes the count; one on a √chid/√chṛd branch that
-    // does would change its form, which the goldens hold.
+    // does would change its form, which the goldens hold. Slice 10e adds the
+    // three ch-initial adanta curādi roots (`Cidra`, `Ceda`, `Cada`), whose laṅ
+    // aṭ takes the same forward-arm tuk (acCidrayat).
     let hits = credited("8.4.40");
     assert!(
         hits.iter().any(|(n, _)| *n == "03.0025"),
@@ -1369,9 +1388,12 @@ fn shcutva_off_jan_is_credited_exactly_as_before_3f3() {
     let off_jan: Vec<_> = hits.iter().filter(|(n, _)| *n != "03.0025").collect();
     for (number, _) in &off_jan {
         assert!(
-            *number == "07.0003" || *number == "07.0008",
+            ["07.0003", "07.0008", "10.0469", "10.0480", "10.0481"].contains(number),
             "8.4.40 credited on {number}"
         );
     }
-    assert_eq!(off_jan.len(), 54);
+    let adanta = off_jan.iter().filter(|(n, _)| n.starts_with("10.")).count();
+    assert_eq!(off_jan.len() - adanta, 54);
+    // Each ch-initial adanta root: laṅ's 18 cells plus its one 8.4.56 fork.
+    assert_eq!(adanta, 3 * 19);
 }

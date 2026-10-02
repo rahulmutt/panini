@@ -70,6 +70,18 @@ pub enum PadaAssignment {
     /// only on the ṇic branch; this engine has no optional-ṇic roots yet, so
     /// every curated ākusmīya row takes ṇic.
     Akusmiya,
+    /// Ātmanepada only, sanctioned by the dhātupāṭha gaṇasūtra 10.0497
+    /// *ā garvād ātmanepadinaḥ*: the curādi roots from `10.0440 pada` up to
+    /// `10.0449 garva` (`AA_GARVIYA`) are ātmanepadī. Same standing as
+    /// `Akusmiya`: neither a marker of the root's nor the affix's, so a root
+    /// carrying it is credited 10.0497 and no pada sūtra at all: never
+    /// 1.3.12, 1.3.74 or 1.3.78.
+    ///
+    /// Keyed on the row's position, as the gaṇasūtra is. vidyut-prakriya
+    /// lists the same ten upadeśas (`AA_GARVIYA`). The gaṇasūtra applies only
+    /// on the ṇic branch; `10.0449 garva`, whose ṇic is optional, is not
+    /// curated yet, so every curated ā-garvīya row takes ṇic.
+    AaGarviya,
 }
 /// The ākusmīya antargaṇa of curādi: dhātupāṭha rows `10.0192` (`cita~`)
 /// through `10.0236` (`kusma~`), the scope of the gaṇasūtra 10.0496 *ā
@@ -86,6 +98,16 @@ pub const AKUSMIYA: RangeInclusive<&str> = "10.0192"..="10.0236";
 /// `10.0124 ciY`, which is mit but not yet curated (it waits on 7.2.115).
 /// `jnapadi_is_exactly_the_rows_10_0493_names` pins the range to upstream.
 pub const JNAPADI: RangeInclusive<&str> = "10.0118"..="10.0124";
+
+/// The ā-garvīya of curādi: dhātupāṭha rows `10.0440` (`pada`) through
+/// `10.0449` (`garva`), the scope of the gaṇasūtra 10.0497 *ā garvād
+/// ātmanepadinaḥ*. Compared as strings, like `AKUSMIYA`. A curated row is
+/// `PadaAssignment::AaGarviya` exactly when it is curādi and in this range;
+/// `curated_pada_agrees_with_upadesha_markers` holds both sides. Includes
+/// `10.0449 garva`, which is ā-garvīya but not yet curated (its ṇic is
+/// optional). `aa_garviya_is_exactly_the_rows_10_0497_names` pins the range
+/// to upstream.
+pub const AA_GARVIYA: RangeInclusive<&str> = "10.0440"..="10.0449";
 impl PadaAssignment {
     /// The padas this assignment derives. `Ubhayapada` lists parasmaipada
     /// first — pinned, not incidental; see
@@ -97,7 +119,7 @@ impl PadaAssignment {
             PadaAssignment::Ubhayapada
             | PadaAssignment::UbhayapadaAnavane
             | PadaAssignment::Nic => &[Pada::Parasmaipada, Pada::Atmanepada],
-            PadaAssignment::Akusmiya => &[Pada::Atmanepada],
+            PadaAssignment::Akusmiya | PadaAssignment::AaGarviya => &[Pada::Atmanepada],
         }
     }
 }
@@ -142,12 +164,12 @@ pub struct Dhatu {
     pub gana: Gana,
     /// Which pada(s) this engine derives for this root. Curated rather than
     /// read from the upadeśa's it-markers — but no longer a *deferral*:
-    /// `curated_pada_agrees_with_upadesha_markers` re-derives 102 of these 150
+    /// `curated_pada_agrees_with_upadesha_markers` re-derives 102 of these 242
     /// verdicts from the vendored upadeśa via 1.3.12 / 1.3.72 / 1.3.78 and
     /// requires them to match; `07.0017`'s (√bhuj's) is 1.3.66's root-keyed
-    /// exception, ten curādi rows' are 1.3.74's and 37 ākusmīya rows' are
-    /// the gaṇasūtra 10.0496's, each asserted explicitly from both sides, the
-    /// same way
+    /// exception, ninety-three curādi rows' are 1.3.74's, 37 ākusmīya rows'
+    /// the gaṇasūtra 10.0496's and nine ā-garvīya rows' the gaṇasūtra
+    /// 10.0497's, each asserted explicitly from both sides, the same way
     /// `dhatupatha_numbers_resolve_upstream` holds `code` to upstream.
     ///
     /// The column stayed hand-written because deriving it in production means
@@ -157,7 +179,7 @@ pub struct Dhatu {
     /// the honest arrangement; see the deferral in
     /// `docs/superpowers/specs/2026-08-16-pada-audit-design.md`.
     ///
-    /// The test covers the 150 roots curated here, not the dhātupāṭha's 2259.
+    /// The test covers the 242 roots curated here, not the dhātupāṭha's 2259.
     /// It catches a mis-assigned pada on a root a future slice adds; it does
     /// not make the table self-maintaining.
     pub pada: PadaAssignment,
@@ -1444,8 +1466,10 @@ static DHATUS: &[Dhatu] = &[
         artha: "ardane",
     },
     Dhatu {
-        // 10.0204 `ganDa~` ardane (√gandh). Guru upadhā (the conjunct `nD`),
-        // so unchanged before ṇic. Ātmanepadī by 10.0496. Slice 10c.
+        // 10.0204 `ganDa~` ardane (√gandh). Guru upadhā (the conjunct `nD`), so
+        // unchanged before ṇic. Ātmanepadī by 10.0496. Slice 10c. Since slice 10e,
+        // 8.3.24 → 8.4.58 is credited on its `n` (forms unchanged; vidyut credits
+        // the pair too).
         dhatupatha: "10.0204",
         code: "ganD",
         gana: Gana::Curadi,
@@ -1723,6 +1747,1019 @@ static DHATUS: &[Dhatu] = &[
         pada: PadaAssignment::Akusmiya,
         artha: "kutsitasmaye",
     },
+    Dhatu {
+        // 10.0108 `mArga` saMskAragatyoH (√mārga). Adanta: 6.4.48 ato lopaḥ
+        // deletes the final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted
+        // `a` still stands for 7.2.116 and 7.3.86, which decline. Ubhayapadī by
+        // 1.3.74. Slice 10e.
+        dhatupatha: "10.0108",
+        code: "mArga",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "saMskAragatyoH",
+    },
+    Dhatu {
+        // 10.0389 `kaTa` vAkyaprabanDe (√katha). Adanta: 6.4.48 ato lopaḥ deletes
+        // the final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted `a`
+        // still stands for 7.2.116 and 7.3.86, which decline. Ubhayapadī by
+        // 1.3.74. Slice 10e.
+        dhatupatha: "10.0389",
+        code: "kaTa",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "vAkyaprabanDe",
+    },
+    Dhatu {
+        // 10.0390 `vara` IpsAyAm (√vara). Adanta: 6.4.48 ato lopaḥ deletes the
+        // final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted `a` still
+        // stands for 7.2.116 and 7.3.86, which decline. Ubhayapadī by 1.3.74.
+        // Slice 10e.
+        dhatupatha: "10.0390",
+        code: "vara",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "IpsAyAm",
+    },
+    Dhatu {
+        // 10.0391 `gaRa` saNKyAne (√gaṇa). Adanta: 6.4.48 ato lopaḥ deletes the
+        // final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted `a` still
+        // stands for 7.2.116 and 7.3.86, which decline. Ubhayapadī by 1.3.74.
+        // Slice 10e.
+        dhatupatha: "10.0391",
+        code: "gaRa",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "saNKyAne",
+    },
+    Dhatu {
+        // 10.0392 `SaWa` samyagavaBAzaRe (√śaṭha). Adanta: 6.4.48 ato lopaḥ
+        // deletes the final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted
+        // `a` still stands for 7.2.116 and 7.3.86, which decline. Ubhayapadī by
+        // 1.3.74. Slice 10e.
+        dhatupatha: "10.0392",
+        code: "SaWa",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "samyagavaBAzaRe",
+    },
+    Dhatu {
+        // 10.0393 `SvaWa` samyagavaBAzaRe (√śvaṭha). Adanta: 6.4.48 ato lopaḥ
+        // deletes the final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted
+        // `a` still stands for 7.2.116 and 7.3.86, which decline. Ubhayapadī by
+        // 1.3.74. Slice 10e.
+        dhatupatha: "10.0393",
+        code: "SvaWa",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "samyagavaBAzaRe",
+    },
+    Dhatu {
+        // 10.0394 `paWa` granTe vezwane ca (√paṭha). Adanta: 6.4.48 ato lopaḥ
+        // deletes the final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted
+        // `a` still stands for 7.2.116 and 7.3.86, which decline. Ubhayapadī by
+        // 1.3.74. Slice 10e.
+        dhatupatha: "10.0394",
+        code: "paWa",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "granTe vezwane ca",
+    },
+    Dhatu {
+        // 10.0395 `vaWa` granTe (√vaṭha). Adanta: 6.4.48 ato lopaḥ deletes the
+        // final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted `a` still
+        // stands for 7.2.116 and 7.3.86, which decline. Ubhayapadī by 1.3.74.
+        // Slice 10e.
+        dhatupatha: "10.0395",
+        code: "vaWa",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "granTe",
+    },
+    Dhatu {
+        // 10.0396 `raha` tyAge (√raha). Adanta: 6.4.48 ato lopaḥ deletes the final
+        // `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted `a` still stands
+        // for 7.2.116 and 7.3.86, which decline. Ubhayapadī by 1.3.74. Shares
+        // every form with the mit `10.0122 raha~` (slice 10d). Slice 10e.
+        dhatupatha: "10.0396",
+        code: "raha",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "tyAge",
+    },
+    Dhatu {
+        // 10.0398 `stana` devaSabde (√stana). Adanta: 6.4.48 ato lopaḥ deletes the
+        // final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted `a` still
+        // stands for 7.2.116 and 7.3.86, which decline. Ubhayapadī by 1.3.74.
+        // Slice 10e.
+        dhatupatha: "10.0398",
+        code: "stana",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "devaSabde",
+    },
+    Dhatu {
+        // 10.0399 `gada` devaSabde (√gada). Adanta: 6.4.48 ato lopaḥ deletes the
+        // final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted `a` still
+        // stands for 7.2.116 and 7.3.86, which decline. Ubhayapadī by 1.3.74.
+        // Slice 10e.
+        dhatupatha: "10.0399",
+        code: "gada",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "devaSabde",
+    },
+    Dhatu {
+        // 10.0401 `paza` gatO (√paṣa). Adanta: 6.4.48 ato lopaḥ deletes the final
+        // `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted `a` still stands
+        // for 7.2.116 and 7.3.86, which decline. Ubhayapadī by 1.3.74. Slice 10e.
+        dhatupatha: "10.0401",
+        code: "paza",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "gatO",
+    },
+    Dhatu {
+        // 10.0402 `svara` Akzepe (√svara). Adanta: 6.4.48 ato lopaḥ deletes the
+        // final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted `a` still
+        // stands for 7.2.116 and 7.3.86, which decline. Ubhayapadī by 1.3.74.
+        // Slice 10e.
+        dhatupatha: "10.0402",
+        code: "svara",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "Akzepe",
+    },
+    Dhatu {
+        // 10.0403 `raca` pratiyatne (√raca). Adanta: 6.4.48 ato lopaḥ deletes the
+        // final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted `a` still
+        // stands for 7.2.116 and 7.3.86, which decline. Ubhayapadī by 1.3.74.
+        // Slice 10e.
+        dhatupatha: "10.0403",
+        code: "raca",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "pratiyatne",
+    },
+    Dhatu {
+        // 10.0404 `kala` gatO saNKyAne ca (√kala). Adanta: 6.4.48 ato lopaḥ
+        // deletes the final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted
+        // `a` still stands for 7.2.116 and 7.3.86, which decline. Ubhayapadī by
+        // 1.3.74. Slice 10e.
+        dhatupatha: "10.0404",
+        code: "kala",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "gatO saNKyAne ca",
+    },
+    Dhatu {
+        // 10.0405 `caha` parikalkane (√caha). Adanta: 6.4.48 ato lopaḥ deletes the
+        // final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted `a` still
+        // stands for 7.2.116 and 7.3.86, which decline. Ubhayapadī by 1.3.74.
+        // Shares every form with the mit `10.0120 caha~` (slice 10d). Slice 10e.
+        dhatupatha: "10.0405",
+        code: "caha",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "parikalkane",
+    },
+    Dhatu {
+        // 10.0406 `maha` pUjAyAm (√maha). Adanta: 6.4.48 ato lopaḥ deletes the
+        // final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted `a` still
+        // stands for 7.2.116 and 7.3.86, which decline. Ubhayapadī by 1.3.74.
+        // Slice 10e.
+        dhatupatha: "10.0406",
+        code: "maha",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "pUjAyAm",
+    },
+    Dhatu {
+        // 10.0407 `sAra` dOrbalye (√sāra). Adanta: 6.4.48 ato lopaḥ deletes the
+        // final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted `a` still
+        // stands for 7.2.116 and 7.3.86, which decline. Ubhayapadī by 1.3.74.
+        // Slice 10e.
+        dhatupatha: "10.0407",
+        code: "sAra",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "dOrbalye",
+    },
+    Dhatu {
+        // 10.0408 `kfpa` dOrbalye (√kṛpa). Adanta: 6.4.48 ato lopaḥ deletes the
+        // final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted `a` still
+        // stands for 7.2.116 and 7.3.86, which decline. Ubhayapadī by 1.3.74.
+        // Slice 10e.
+        dhatupatha: "10.0408",
+        code: "kfpa",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "dOrbalye",
+    },
+    Dhatu {
+        // 10.0409 `SraTa` dOrbalye (√śratha). Adanta: 6.4.48 ato lopaḥ deletes the
+        // final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted `a` still
+        // stands for 7.2.116 and 7.3.86, which decline. Ubhayapadī by 1.3.74.
+        // Slice 10e.
+        dhatupatha: "10.0409",
+        code: "SraTa",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "dOrbalye",
+    },
+    Dhatu {
+        // 10.0410 `spfha` IpsAyAm (√spṛha). Adanta: 6.4.48 ato lopaḥ deletes the
+        // final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted `a` still
+        // stands for 7.2.116 and 7.3.86, which decline. Ubhayapadī by 1.3.74.
+        // Slice 10e.
+        dhatupatha: "10.0410",
+        code: "spfha",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "IpsAyAm",
+    },
+    Dhatu {
+        // 10.0411 `BAma` kroDe (√bhāma). Adanta: 6.4.48 ato lopaḥ deletes the
+        // final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted `a` still
+        // stands for 7.2.116 and 7.3.86, which decline. Ubhayapadī by 1.3.74.
+        // Slice 10e.
+        dhatupatha: "10.0411",
+        code: "BAma",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "kroDe",
+    },
+    Dhatu {
+        // 10.0412 `sUca` pESunye (√sūca). Adanta: 6.4.48 ato lopaḥ deletes the
+        // final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted `a` still
+        // stands for 7.2.116 and 7.3.86, which decline. Ubhayapadī by 1.3.74.
+        // Slice 10e.
+        dhatupatha: "10.0412",
+        code: "sUca",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "pESunye",
+    },
+    Dhatu {
+        // 10.0413 `Kewa` BakzaRe (√kheṭa). Adanta: 6.4.48 ato lopaḥ deletes the
+        // final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted `a` still
+        // stands for 7.2.116 and 7.3.86, which decline. Ubhayapadī by 1.3.74.
+        // Slice 10e.
+        dhatupatha: "10.0413",
+        code: "Kewa",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "BakzaRe",
+    },
+    Dhatu {
+        // 10.0415 `Kowa` BakzaRe (√khoṭa). Adanta: 6.4.48 ato lopaḥ deletes the
+        // final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted `a` still
+        // stands for 7.2.116 and 7.3.86, which decline. Ubhayapadī by 1.3.74.
+        // Slice 10e.
+        dhatupatha: "10.0415",
+        code: "Kowa",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "BakzaRe",
+    },
+    Dhatu {
+        // 10.0416 `kzowa` kzepe (√kṣoṭa). Adanta: 6.4.48 ato lopaḥ deletes the
+        // final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted `a` still
+        // stands for 7.2.116 and 7.3.86, which decline. Ubhayapadī by 1.3.74.
+        // Slice 10e.
+        dhatupatha: "10.0416",
+        code: "kzowa",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "kzepe",
+    },
+    Dhatu {
+        // 10.0417 `goma` upalepane (√goma). Adanta: 6.4.48 ato lopaḥ deletes the
+        // final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted `a` still
+        // stands for 7.2.116 and 7.3.86, which decline. Ubhayapadī by 1.3.74.
+        // Slice 10e.
+        dhatupatha: "10.0417",
+        code: "goma",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "upalepane",
+    },
+    Dhatu {
+        // 10.0418 `kumAra` krIqAyAm (√kumāra). Adanta: 6.4.48 ato lopaḥ deletes
+        // the final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted `a`
+        // still stands for 7.2.116 and 7.3.86, which decline. Ubhayapadī by
+        // 1.3.74. Slice 10e.
+        dhatupatha: "10.0418",
+        code: "kumAra",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "krIqAyAm",
+    },
+    Dhatu {
+        // 10.0419 `SIla` upaDAraRe (√śīla). Adanta: 6.4.48 ato lopaḥ deletes the
+        // final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted `a` still
+        // stands for 7.2.116 and 7.3.86, which decline. Ubhayapadī by 1.3.74.
+        // Slice 10e.
+        dhatupatha: "10.0419",
+        code: "SIla",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "upaDAraRe",
+    },
+    Dhatu {
+        // 10.0420 `sAma` sAntvaprayoge (√sāma). Adanta: 6.4.48 ato lopaḥ deletes
+        // the final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted `a`
+        // still stands for 7.2.116 and 7.3.86, which decline. Ubhayapadī by
+        // 1.3.74. Slice 10e.
+        dhatupatha: "10.0420",
+        code: "sAma",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "sAntvaprayoge",
+    },
+    Dhatu {
+        // 10.0421 `vela` kAlopadeSe (√vela). Adanta: 6.4.48 ato lopaḥ deletes the
+        // final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted `a` still
+        // stands for 7.2.116 and 7.3.86, which decline. Ubhayapadī by 1.3.74.
+        // Slice 10e.
+        dhatupatha: "10.0421",
+        code: "vela",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "kAlopadeSe",
+    },
+    Dhatu {
+        // 10.0422 `kAla` kAlopadeSe (√kāla). Adanta: 6.4.48 ato lopaḥ deletes the
+        // final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted `a` still
+        // stands for 7.2.116 and 7.3.86, which decline. Ubhayapadī by 1.3.74.
+        // Slice 10e.
+        dhatupatha: "10.0422",
+        code: "kAla",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "kAlopadeSe",
+    },
+    Dhatu {
+        // 10.0423 `palpUla` lavanavapanayoH (√palpūla). Adanta: 6.4.48 ato lopaḥ
+        // deletes the final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted
+        // `a` still stands for 7.2.116 and 7.3.86, which decline. Ubhayapadī by
+        // 1.3.74. Slice 10e.
+        dhatupatha: "10.0423",
+        code: "palpUla",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "lavanavapanayoH",
+    },
+    Dhatu {
+        // 10.0424 `vAta` suKasevanayoH (√vāta). Adanta: 6.4.48 ato lopaḥ deletes
+        // the final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted `a`
+        // still stands for 7.2.116 and 7.3.86, which decline. Ubhayapadī by
+        // 1.3.74. Slice 10e.
+        dhatupatha: "10.0424",
+        code: "vAta",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "suKasevanayoH",
+    },
+    Dhatu {
+        // 10.0425 `gaveza` mArgaRe (√gaveṣa). Adanta: 6.4.48 ato lopaḥ deletes the
+        // final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted `a` still
+        // stands for 7.2.116 and 7.3.86, which decline. Ubhayapadī by 1.3.74.
+        // Slice 10e.
+        dhatupatha: "10.0425",
+        code: "gaveza",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "mArgaRe",
+    },
+    Dhatu {
+        // 10.0426 `vAsa` upasevAyAm (√vāsa). Adanta: 6.4.48 ato lopaḥ deletes the
+        // final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted `a` still
+        // stands for 7.2.116 and 7.3.86, which decline. Ubhayapadī by 1.3.74.
+        // Slice 10e.
+        dhatupatha: "10.0426",
+        code: "vAsa",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "upasevAyAm",
+    },
+    Dhatu {
+        // 10.0427 `nivAsa` AcCAdane (√nivāsa). Adanta: 6.4.48 ato lopaḥ deletes
+        // the final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted `a`
+        // still stands for 7.2.116 and 7.3.86, which decline. Ubhayapadī by
+        // 1.3.74. Slice 10e.
+        dhatupatha: "10.0427",
+        code: "nivAsa",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "AcCAdane",
+    },
+    Dhatu {
+        // 10.0428 `BAja` pfTakkarmaRi (√bhāja). Adanta: 6.4.48 ato lopaḥ deletes
+        // the final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted `a`
+        // still stands for 7.2.116 and 7.3.86, which decline. Ubhayapadī by
+        // 1.3.74. Slice 10e.
+        dhatupatha: "10.0428",
+        code: "BAja",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "pfTakkarmaRi",
+    },
+    Dhatu {
+        // 10.0429 `saBAja` prItidarSanayoH prItisevanayoH ca (√sabhāja). Adanta:
+        // 6.4.48 ato lopaḥ deletes the final `a` before ārdhadhātuka ṇic, and by
+        // 1.1.57 the deleted `a` still stands for 7.2.116 and 7.3.86, which
+        // decline. Ubhayapadī by 1.3.74. Slice 10e.
+        dhatupatha: "10.0429",
+        code: "saBAja",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "prItidarSanayoH prItisevanayoH ca",
+    },
+    Dhatu {
+        // 10.0430 `Una` parihARe (√ūna). Adanta: 6.4.48 ato lopaḥ deletes the
+        // final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted `a` still
+        // stands for 7.2.116 and 7.3.86, which decline. Ubhayapadī by 1.3.74.
+        // Slice 10e.
+        dhatupatha: "10.0430",
+        code: "Una",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "parihARe",
+    },
+    Dhatu {
+        // 10.0431 `Dvana` Sabde (√dhvana). Adanta: 6.4.48 ato lopaḥ deletes the
+        // final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted `a` still
+        // stands for 7.2.116 and 7.3.86, which decline. Ubhayapadī by 1.3.74.
+        // Slice 10e.
+        dhatupatha: "10.0431",
+        code: "Dvana",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "Sabde",
+    },
+    Dhatu {
+        // 10.0432 `kUwa` paritApe paridAhe ca (√kūṭa). Adanta: 6.4.48 ato lopaḥ
+        // deletes the final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted
+        // `a` still stands for 7.2.116 and 7.3.86, which decline. Ubhayapadī by
+        // 1.3.74. Its ātmanepada shares every form with the ākusmīya `10.0225
+        // kUwa~`. Slice 10e.
+        dhatupatha: "10.0432",
+        code: "kUwa",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "paritApe paridAhe ca",
+    },
+    Dhatu {
+        // 10.0433 `sanketa` AmantraRe (√sanketa). Adanta: 6.4.48 ato lopaḥ deletes
+        // the final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted `a` still
+        // stands for 7.2.116 and 7.3.86, which decline. Ubhayapadī by 1.3.74. Since
+        // slice 10e, 8.3.24 → 8.4.58 is credited on its `n`.
+        dhatupatha: "10.0433",
+        code: "sanketa",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "AmantraRe",
+    },
+    Dhatu {
+        // 10.0434 `grAma` AmantraRe (√grāma). Adanta: 6.4.48 ato lopaḥ deletes the
+        // final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted `a` still
+        // stands for 7.2.116 and 7.3.86, which decline. Ubhayapadī by 1.3.74.
+        // Slice 10e.
+        dhatupatha: "10.0434",
+        code: "grAma",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "AmantraRe",
+    },
+    Dhatu {
+        // 10.0435 `kuRa` AmantraRe (√kuṇa). Adanta: 6.4.48 ato lopaḥ deletes the
+        // final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted `a` still
+        // stands for 7.2.116 and 7.3.86, which decline. Ubhayapadī by 1.3.74.
+        // Slice 10e.
+        dhatupatha: "10.0435",
+        code: "kuRa",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "AmantraRe",
+    },
+    Dhatu {
+        // 10.0436 `guRa` AmantraRe (√guṇa). Adanta: 6.4.48 ato lopaḥ deletes the
+        // final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted `a` still
+        // stands for 7.2.116 and 7.3.86, which decline. Ubhayapadī by 1.3.74.
+        // Slice 10e.
+        dhatupatha: "10.0436",
+        code: "guRa",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "AmantraRe",
+    },
+    Dhatu {
+        // 10.0437 `keta` SrAvaRe AmantraRe ca (√keta). Adanta: 6.4.48 ato lopaḥ
+        // deletes the final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted
+        // `a` still stands for 7.2.116 and 7.3.86, which decline. Ubhayapadī by
+        // 1.3.74. Slice 10e.
+        dhatupatha: "10.0437",
+        code: "keta",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "SrAvaRe AmantraRe ca",
+    },
+    Dhatu {
+        // 10.0439 `stena` cOrye (√stena). Adanta: 6.4.48 ato lopaḥ deletes the
+        // final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted `a` still
+        // stands for 7.2.116 and 7.3.86, which decline. Ubhayapadī by 1.3.74.
+        // Slice 10e.
+        dhatupatha: "10.0439",
+        code: "stena",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "cOrye",
+    },
+    Dhatu {
+        // 10.0440 `pada` gatO (√pada). Adanta: 6.4.48 ato lopaḥ deletes the final
+        // `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted `a` still stands
+        // for 7.2.116 and 7.3.86, which decline. Ātmanepadī by the gaṇasūtra
+        // 10.0497. Slice 10e.
+        dhatupatha: "10.0440",
+        code: "pada",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::AaGarviya,
+        artha: "gatO",
+    },
+    Dhatu {
+        // 10.0441 `gfha` grahaRe (√gṛha). Adanta: 6.4.48 ato lopaḥ deletes the
+        // final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted `a` still
+        // stands for 7.2.116 and 7.3.86, which decline. Ātmanepadī by the
+        // gaṇasūtra 10.0497. Slice 10e.
+        dhatupatha: "10.0441",
+        code: "gfha",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::AaGarviya,
+        artha: "grahaRe",
+    },
+    Dhatu {
+        // 10.0442 `mfga` anvezaRe (√mṛga). Adanta: 6.4.48 ato lopaḥ deletes the
+        // final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted `a` still
+        // stands for 7.2.116 and 7.3.86, which decline. Ātmanepadī by the
+        // gaṇasūtra 10.0497. Slice 10e.
+        dhatupatha: "10.0442",
+        code: "mfga",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::AaGarviya,
+        artha: "anvezaRe",
+    },
+    Dhatu {
+        // 10.0443 `kuha` vismApane (√kuha). Adanta: 6.4.48 ato lopaḥ deletes the
+        // final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted `a` still
+        // stands for 7.2.116 and 7.3.86, which decline. Ātmanepadī by the
+        // gaṇasūtra 10.0497. Slice 10e.
+        dhatupatha: "10.0443",
+        code: "kuha",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::AaGarviya,
+        artha: "vismApane",
+    },
+    Dhatu {
+        // 10.0444 `SUra` vikrAntO (√śūra). Adanta: 6.4.48 ato lopaḥ deletes the
+        // final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted `a` still
+        // stands for 7.2.116 and 7.3.86, which decline. Ātmanepadī by the
+        // gaṇasūtra 10.0497. Slice 10e.
+        dhatupatha: "10.0444",
+        code: "SUra",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::AaGarviya,
+        artha: "vikrAntO",
+    },
+    Dhatu {
+        // 10.0445 `vIra` vikrAntO (√vīra). Adanta: 6.4.48 ato lopaḥ deletes the
+        // final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted `a` still
+        // stands for 7.2.116 and 7.3.86, which decline. Ātmanepadī by the
+        // gaṇasūtra 10.0497. Slice 10e.
+        dhatupatha: "10.0445",
+        code: "vIra",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::AaGarviya,
+        artha: "vikrAntO",
+    },
+    Dhatu {
+        // 10.0446 `sTUla` paribfhaRe (√sthūla). Adanta: 6.4.48 ato lopaḥ deletes
+        // the final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted `a`
+        // still stands for 7.2.116 and 7.3.86, which decline. Ātmanepadī by the
+        // gaṇasūtra 10.0497. Slice 10e.
+        dhatupatha: "10.0446",
+        code: "sTUla",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::AaGarviya,
+        artha: "paribfhaRe",
+    },
+    Dhatu {
+        // 10.0447 `arTa` upayAcYAyAm (√artha). Adanta: 6.4.48 ato lopaḥ deletes
+        // the final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted `a`
+        // still stands for 7.2.116 and 7.3.86, which decline. Ātmanepadī by the
+        // gaṇasūtra 10.0497. Slice 10e.
+        dhatupatha: "10.0447",
+        code: "arTa",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::AaGarviya,
+        artha: "upayAcYAyAm",
+    },
+    Dhatu {
+        // 10.0448 `satra` santAnakriyAyAm (√satra). Adanta: 6.4.48 ato lopaḥ
+        // deletes the final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted
+        // `a` still stands for 7.2.116 and 7.3.86, which decline. Ātmanepadī by
+        // the gaṇasūtra 10.0497. Slice 10e.
+        dhatupatha: "10.0448",
+        code: "satra",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::AaGarviya,
+        artha: "santAnakriyAyAm",
+    },
+    Dhatu {
+        // 10.0450 `sUtra` vezwane vimocane granTane ca (√sūtra). Adanta: 6.4.48
+        // ato lopaḥ deletes the final `a` before ārdhadhātuka ṇic, and by 1.1.57
+        // the deleted `a` still stands for 7.2.116 and 7.3.86, which decline.
+        // Ubhayapadī by 1.3.74. Slice 10e.
+        dhatupatha: "10.0450",
+        code: "sUtra",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "vezwane vimocane granTane ca",
+    },
+    Dhatu {
+        // 10.0452 `rUkza` pAruzye (√rūkṣa). Adanta: 6.4.48 ato lopaḥ deletes the
+        // final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted `a` still
+        // stands for 7.2.116 and 7.3.86, which decline. Ubhayapadī by 1.3.74.
+        // Slice 10e.
+        dhatupatha: "10.0452",
+        code: "rUkza",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "pAruzye",
+    },
+    Dhatu {
+        // 10.0453 `pAra` karmasamAptO (√pāra). Adanta: 6.4.48 ato lopaḥ deletes
+        // the final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted `a`
+        // still stands for 7.2.116 and 7.3.86, which decline. Ubhayapadī by
+        // 1.3.74. Slice 10e.
+        dhatupatha: "10.0453",
+        code: "pAra",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "karmasamAptO",
+    },
+    Dhatu {
+        // 10.0454 `tIra` karmasamAptO (√tīra). Adanta: 6.4.48 ato lopaḥ deletes
+        // the final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted `a`
+        // still stands for 7.2.116 and 7.3.86, which decline. Ubhayapadī by
+        // 1.3.74. Slice 10e.
+        dhatupatha: "10.0454",
+        code: "tIra",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "karmasamAptO",
+    },
+    Dhatu {
+        // 10.0455 `puwa` saMsarge (√puṭa). Adanta: 6.4.48 ato lopaḥ deletes the
+        // final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted `a` still
+        // stands for 7.2.116 and 7.3.86, which decline. Ubhayapadī by 1.3.74.
+        // Slice 10e.
+        dhatupatha: "10.0455",
+        code: "puwa",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "saMsarge",
+    },
+    Dhatu {
+        // 10.0458 `valka` darSane (√valka). Adanta: 6.4.48 ato lopaḥ deletes the
+        // final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted `a` still
+        // stands for 7.2.116 and 7.3.86, which decline. Ubhayapadī by 1.3.74.
+        // Slice 10e.
+        dhatupatha: "10.0458",
+        code: "valka",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "darSane",
+    },
+    Dhatu {
+        // 10.0459 `citra` citrIkaraRe (√citra). Adanta: 6.4.48 ato lopaḥ deletes
+        // the final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted `a`
+        // still stands for 7.2.116 and 7.3.86, which decline. Ubhayapadī by
+        // 1.3.74. Slice 10e.
+        dhatupatha: "10.0459",
+        code: "citra",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "citrIkaraRe",
+    },
+    Dhatu {
+        // 10.0460 `ansa` samAGAte (√ansa). Adanta: 6.4.48 ato lopaḥ deletes the
+        // final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted `a` still
+        // stands for 7.2.116 and 7.3.86, which decline. Ubhayapadī by 1.3.74. Since
+        // slice 10e, 8.3.24 → 8.4.58 is credited on its `n`.
+        dhatupatha: "10.0460",
+        code: "ansa",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "samAGAte",
+    },
+    Dhatu {
+        // 10.0461 `vawa` viBAjane (√vaṭa). Adanta: 6.4.48 ato lopaḥ deletes the
+        // final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted `a` still
+        // stands for 7.2.116 and 7.3.86, which decline. Ubhayapadī by 1.3.74.
+        // Slice 10e.
+        dhatupatha: "10.0461",
+        code: "vawa",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "viBAjane",
+    },
+    Dhatu {
+        // 10.0463 `laja` prakASane (√laja). Adanta: 6.4.48 ato lopaḥ deletes the
+        // final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted `a` still
+        // stands for 7.2.116 and 7.3.86, which decline. Ubhayapadī by 1.3.74.
+        // Slice 10e.
+        dhatupatha: "10.0463",
+        code: "laja",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "prakASane",
+    },
+    Dhatu {
+        // 10.0466 `miSra` samparke (√miśra). Adanta: 6.4.48 ato lopaḥ deletes the
+        // final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted `a` still
+        // stands for 7.2.116 and 7.3.86, which decline. Ubhayapadī by 1.3.74.
+        // Slice 10e.
+        dhatupatha: "10.0466",
+        code: "miSra",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "samparke",
+    },
+    Dhatu {
+        // 10.0467 `sangrAma` yudDe (√sangrāma). Adanta: 6.4.48 ato lopaḥ deletes the
+        // final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted `a` still
+        // stands for 7.2.116 and 7.3.86, which decline. Ubhayapadī by 1.3.74. Since
+        // slice 10e, 8.3.24 → 8.4.58 is credited on its `n`.
+        dhatupatha: "10.0467",
+        code: "sangrAma",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "yudDe",
+    },
+    Dhatu {
+        // 10.0468 `stoma` SlAGAyAm (√stoma). Adanta: 6.4.48 ato lopaḥ deletes the
+        // final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted `a` still
+        // stands for 7.2.116 and 7.3.86, which decline. Ubhayapadī by 1.3.74.
+        // Slice 10e.
+        dhatupatha: "10.0468",
+        code: "stoma",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "SlAGAyAm",
+    },
+    Dhatu {
+        // 10.0469 `Cidra` karRaBedane (√chidra). Adanta: 6.4.48 ato lopaḥ deletes
+        // the final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted `a`
+        // still stands for 7.2.116 and 7.3.86, which decline. Ubhayapadī by
+        // 1.3.74. Slice 10e.
+        dhatupatha: "10.0469",
+        code: "Cidra",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "karRaBedane",
+    },
+    Dhatu {
+        // 10.0471 `anDa` dfzwyupaGAte (√andha). Adanta: 6.4.48 ato lopaḥ deletes the
+        // final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted `a` still
+        // stands for 7.2.116 and 7.3.86, which decline. Ubhayapadī by 1.3.74. Since
+        // slice 10e, 8.3.24 → 8.4.58 is credited on its `n`.
+        dhatupatha: "10.0471",
+        code: "anDa",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "dfzwyupaGAte",
+    },
+    Dhatu {
+        // 10.0472 `danqa` daRqanipAte (√danḍa). Adanta: 6.4.48 ato lopaḥ deletes the
+        // final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted `a` still
+        // stands for 7.2.116 and 7.3.86, which decline. Ubhayapadī by 1.3.74. Since
+        // slice 10e, 8.3.24 → 8.4.58 is credited on its `n`.
+        dhatupatha: "10.0472",
+        code: "danqa",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "daRqanipAte",
+    },
+    Dhatu {
+        // 10.0473 `anka` pade lakzaRe ca (√anka). Adanta: 6.4.48 ato lopaḥ deletes
+        // the final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted `a` still
+        // stands for 7.2.116 and 7.3.86, which decline. Ubhayapadī by 1.3.74. Since
+        // slice 10e, 8.3.24 → 8.4.58 is credited on its `n`.
+        dhatupatha: "10.0473",
+        code: "anka",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "pade lakzaRe ca",
+    },
+    Dhatu {
+        // 10.0474 `anga` pade lakzaRe ca (√anga). Adanta: 6.4.48 ato lopaḥ deletes
+        // the final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted `a` still
+        // stands for 7.2.116 and 7.3.86, which decline. Ubhayapadī by 1.3.74. Since
+        // slice 10e, 8.3.24 → 8.4.58 is credited on its `n`.
+        dhatupatha: "10.0474",
+        code: "anga",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "pade lakzaRe ca",
+    },
+    Dhatu {
+        // 10.0475 `suKa` tatkriyAyAm (√sukha). Adanta: 6.4.48 ato lopaḥ deletes
+        // the final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted `a`
+        // still stands for 7.2.116 and 7.3.86, which decline. Ubhayapadī by
+        // 1.3.74. Slice 10e.
+        dhatupatha: "10.0475",
+        code: "suKa",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "tatkriyAyAm",
+    },
+    Dhatu {
+        // 10.0476 `duHKa` tatkriyAyAm (√duḥkha). Adanta: 6.4.48 ato lopaḥ deletes
+        // the final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted `a`
+        // still stands for 7.2.116 and 7.3.86, which decline. Ubhayapadī by
+        // 1.3.74. Slice 10e.
+        dhatupatha: "10.0476",
+        code: "duHKa",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "tatkriyAyAm",
+    },
+    Dhatu {
+        // 10.0477 `rasa` AsvAdanasnehanayoH (√rasa). Adanta: 6.4.48 ato lopaḥ
+        // deletes the final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted
+        // `a` still stands for 7.2.116 and 7.3.86, which decline. Ubhayapadī by
+        // 1.3.74. Slice 10e.
+        dhatupatha: "10.0477",
+        code: "rasa",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "AsvAdanasnehanayoH",
+    },
+    Dhatu {
+        // 10.0478 `vyaya` vittasamutsarge (√vyaya). Adanta: 6.4.48 ato lopaḥ
+        // deletes the final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted
+        // `a` still stands for 7.2.116 and 7.3.86, which decline. Ubhayapadī by
+        // 1.3.74. Slice 10e.
+        dhatupatha: "10.0478",
+        code: "vyaya",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "vittasamutsarge",
+    },
+    Dhatu {
+        // 10.0479 `rUpa` rUpakriyAyAm (√rūpa). Adanta: 6.4.48 ato lopaḥ deletes
+        // the final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted `a`
+        // still stands for 7.2.116 and 7.3.86, which decline. Ubhayapadī by
+        // 1.3.74. Slice 10e.
+        dhatupatha: "10.0479",
+        code: "rUpa",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "rUpakriyAyAm",
+    },
+    Dhatu {
+        // 10.0480 `Ceda` dvEDIkaraRe (√cheda). Adanta: 6.4.48 ato lopaḥ deletes
+        // the final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted `a`
+        // still stands for 7.2.116 and 7.3.86, which decline. Ubhayapadī by
+        // 1.3.74. Slice 10e.
+        dhatupatha: "10.0480",
+        code: "Ceda",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "dvEDIkaraRe",
+    },
+    Dhatu {
+        // 10.0481 `Cada` apavAraRe (√chada). Adanta: 6.4.48 ato lopaḥ deletes the
+        // final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted `a` still
+        // stands for 7.2.116 and 7.3.86, which decline. Ubhayapadī by 1.3.74.
+        // Slice 10e.
+        dhatupatha: "10.0481",
+        code: "Cada",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "apavAraRe",
+    },
+    Dhatu {
+        // 10.0482 `lABa` preraRe (√lābha). Adanta: 6.4.48 ato lopaḥ deletes the
+        // final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted `a` still
+        // stands for 7.2.116 and 7.3.86, which decline. Ubhayapadī by 1.3.74.
+        // Slice 10e.
+        dhatupatha: "10.0482",
+        code: "lABa",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "preraRe",
+    },
+    Dhatu {
+        // 10.0483 `vraRa` gAtravicUrRane (√vraṇa). Adanta: 6.4.48 ato lopaḥ
+        // deletes the final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted
+        // `a` still stands for 7.2.116 and 7.3.86, which decline. Ubhayapadī by
+        // 1.3.74. Slice 10e.
+        dhatupatha: "10.0483",
+        code: "vraRa",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "gAtravicUrRane",
+    },
+    Dhatu {
+        // 10.0484 `varRa` varRakriyAvistAraguRavacanezu (√varṇa). Adanta: 6.4.48
+        // ato lopaḥ deletes the final `a` before ārdhadhātuka ṇic, and by 1.1.57
+        // the deleted `a` still stands for 7.2.116 and 7.3.86, which decline.
+        // Ubhayapadī by 1.3.74. Slice 10e.
+        dhatupatha: "10.0484",
+        code: "varRa",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "varRakriyAvistAraguRavacanezu",
+    },
+    Dhatu {
+        // 10.0485 `parRa` haritaBAve (√parṇa). Adanta: 6.4.48 ato lopaḥ deletes
+        // the final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted `a`
+        // still stands for 7.2.116 and 7.3.86, which decline. Ubhayapadī by
+        // 1.3.74. Slice 10e.
+        dhatupatha: "10.0485",
+        code: "parRa",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "haritaBAve",
+    },
+    Dhatu {
+        // 10.0486 `vizka` darSane (√viṣka). Adanta: 6.4.48 ato lopaḥ deletes the
+        // final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted `a` still
+        // stands for 7.2.116 and 7.3.86, which decline. Ubhayapadī by 1.3.74. Its
+        // ātmanepada shares every form with the ākusmīya `10.0207 vizka~`. Slice
+        // 10e.
+        dhatupatha: "10.0486",
+        code: "vizka",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "darSane",
+    },
+    Dhatu {
+        // 10.0487 `kzipa` preraRe (√kṣipa). Adanta: 6.4.48 ato lopaḥ deletes the
+        // final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted `a` still
+        // stands for 7.2.116 and 7.3.86, which decline. Ubhayapadī by 1.3.74.
+        // Slice 10e.
+        dhatupatha: "10.0487",
+        code: "kzipa",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "preraRe",
+    },
+    Dhatu {
+        // 10.0488 `vasa` nivAse (√vasa). Adanta: 6.4.48 ato lopaḥ deletes the
+        // final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted `a` still
+        // stands for 7.2.116 and 7.3.86, which decline. Ubhayapadī by 1.3.74.
+        // Slice 10e.
+        dhatupatha: "10.0488",
+        code: "vasa",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "nivAse",
+    },
+    Dhatu {
+        // 10.0489 `tutTa` AvaraRe (√tuttha). Adanta: 6.4.48 ato lopaḥ deletes the
+        // final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted `a` still
+        // stands for 7.2.116 and 7.3.86, which decline. Ubhayapadī by 1.3.74.
+        // Slice 10e.
+        dhatupatha: "10.0489",
+        code: "tutTa",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "AvaraRe",
+    },
+    Dhatu {
+        // 10.0490 `palyUla` lavanavapanayoH (√palyūla). Adanta: 6.4.48 ato lopaḥ
+        // deletes the final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted
+        // `a` still stands for 7.2.116 and 7.3.86, which decline. Ubhayapadī by
+        // 1.3.74. Slice 10e.
+        dhatupatha: "10.0490",
+        code: "palyUla",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "lavanavapanayoH",
+    },
+    Dhatu {
+        // 10.0492 `Deka` darSane (√dheka). Adanta: 6.4.48 ato lopaḥ deletes the
+        // final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted `a` still
+        // stands for 7.2.116 and 7.3.86, which decline. Ubhayapadī by 1.3.74.
+        // Slice 10e.
+        dhatupatha: "10.0492",
+        code: "Deka",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "darSane",
+    },
 ];
 
 pub fn dhatus() -> &'static [Dhatu] {
@@ -1764,7 +2801,7 @@ mod tests {
 
     #[test]
     fn curated_roots_have_expected_ganas_and_padas() {
-        assert_eq!(dhatus().len(), 150);
+        assert_eq!(dhatus().len(), 242);
         let bu = dhatus().iter().find(|d| d.dhatupatha == "01.0001").unwrap();
         assert!(matches!(bu.pada, PadaAssignment::Parasmaipada));
         let labh = dhatus().iter().find(|d| d.dhatupatha == "01.1130").unwrap();
@@ -2055,7 +3092,7 @@ mod tests {
     }
 
     #[test]
-    fn curadi_rows_are_the_forty_seven_curated_roots() {
+    fn curadi_rows_are_the_one_hundred_thirty_nine_curated_roots() {
         // Slice 10a opens gaṇa 10 with four roots that need only ṇic
         // (3.1.25), 3.1.32 and the guṇa/vṛddhi before ṇic: √cur (7.3.86),
         // √laḍ (7.2.116), √bhakṣ and √bhūṣ (neither). None carries a pada
@@ -2067,7 +3104,12 @@ mod tests {
         // Slice 10d adds six of the seven jñapādi (`JNAPADI`), mit by the
         // gaṇasūtra 10.0493, whose upadhā 6.4.92 shortens back after
         // 7.2.116: √jñap, √yam, √cah, √cap, √rah, √bal, ubhayapadī by 1.3.74.
-        // The gaṇa is OPEN at 47 of its 509 dhātupāṭha rows.
+        // Slice 10e adds ninety-two adanta roots (`10.0108 mArga` and
+        // `10.0389 kaTa` … `10.0492 Deka`): 6.4.48 deletes the final `a`
+        // before ṇic, and 7.2.116 / 7.3.86 decline on its `Tag::AtLopa`.
+        // Eighty-three are ubhayapadī by 1.3.74; the nine ā-garvīya
+        // (`AA_GARVIYA`) are ātmanepadī by 10.0497. The gaṇa is OPEN at 139
+        // of its 509 dhātupāṭha rows.
         let rows: Vec<_> = dhatus()
             .iter()
             .filter(|d| d.gana == Gana::Curadi)
@@ -2123,6 +3165,98 @@ mod tests {
                 ("10.0233", "mAn", PadaAssignment::Akusmiya),
                 ("10.0234", "man", PadaAssignment::Akusmiya),
                 ("10.0236", "kusm", PadaAssignment::Akusmiya),
+                ("10.0108", "mArga", PadaAssignment::Nic),
+                ("10.0389", "kaTa", PadaAssignment::Nic),
+                ("10.0390", "vara", PadaAssignment::Nic),
+                ("10.0391", "gaRa", PadaAssignment::Nic),
+                ("10.0392", "SaWa", PadaAssignment::Nic),
+                ("10.0393", "SvaWa", PadaAssignment::Nic),
+                ("10.0394", "paWa", PadaAssignment::Nic),
+                ("10.0395", "vaWa", PadaAssignment::Nic),
+                ("10.0396", "raha", PadaAssignment::Nic),
+                ("10.0398", "stana", PadaAssignment::Nic),
+                ("10.0399", "gada", PadaAssignment::Nic),
+                ("10.0401", "paza", PadaAssignment::Nic),
+                ("10.0402", "svara", PadaAssignment::Nic),
+                ("10.0403", "raca", PadaAssignment::Nic),
+                ("10.0404", "kala", PadaAssignment::Nic),
+                ("10.0405", "caha", PadaAssignment::Nic),
+                ("10.0406", "maha", PadaAssignment::Nic),
+                ("10.0407", "sAra", PadaAssignment::Nic),
+                ("10.0408", "kfpa", PadaAssignment::Nic),
+                ("10.0409", "SraTa", PadaAssignment::Nic),
+                ("10.0410", "spfha", PadaAssignment::Nic),
+                ("10.0411", "BAma", PadaAssignment::Nic),
+                ("10.0412", "sUca", PadaAssignment::Nic),
+                ("10.0413", "Kewa", PadaAssignment::Nic),
+                ("10.0415", "Kowa", PadaAssignment::Nic),
+                ("10.0416", "kzowa", PadaAssignment::Nic),
+                ("10.0417", "goma", PadaAssignment::Nic),
+                ("10.0418", "kumAra", PadaAssignment::Nic),
+                ("10.0419", "SIla", PadaAssignment::Nic),
+                ("10.0420", "sAma", PadaAssignment::Nic),
+                ("10.0421", "vela", PadaAssignment::Nic),
+                ("10.0422", "kAla", PadaAssignment::Nic),
+                ("10.0423", "palpUla", PadaAssignment::Nic),
+                ("10.0424", "vAta", PadaAssignment::Nic),
+                ("10.0425", "gaveza", PadaAssignment::Nic),
+                ("10.0426", "vAsa", PadaAssignment::Nic),
+                ("10.0427", "nivAsa", PadaAssignment::Nic),
+                ("10.0428", "BAja", PadaAssignment::Nic),
+                ("10.0429", "saBAja", PadaAssignment::Nic),
+                ("10.0430", "Una", PadaAssignment::Nic),
+                ("10.0431", "Dvana", PadaAssignment::Nic),
+                ("10.0432", "kUwa", PadaAssignment::Nic),
+                ("10.0433", "sanketa", PadaAssignment::Nic),
+                ("10.0434", "grAma", PadaAssignment::Nic),
+                ("10.0435", "kuRa", PadaAssignment::Nic),
+                ("10.0436", "guRa", PadaAssignment::Nic),
+                ("10.0437", "keta", PadaAssignment::Nic),
+                ("10.0439", "stena", PadaAssignment::Nic),
+                ("10.0440", "pada", PadaAssignment::AaGarviya),
+                ("10.0441", "gfha", PadaAssignment::AaGarviya),
+                ("10.0442", "mfga", PadaAssignment::AaGarviya),
+                ("10.0443", "kuha", PadaAssignment::AaGarviya),
+                ("10.0444", "SUra", PadaAssignment::AaGarviya),
+                ("10.0445", "vIra", PadaAssignment::AaGarviya),
+                ("10.0446", "sTUla", PadaAssignment::AaGarviya),
+                ("10.0447", "arTa", PadaAssignment::AaGarviya),
+                ("10.0448", "satra", PadaAssignment::AaGarviya),
+                ("10.0450", "sUtra", PadaAssignment::Nic),
+                ("10.0452", "rUkza", PadaAssignment::Nic),
+                ("10.0453", "pAra", PadaAssignment::Nic),
+                ("10.0454", "tIra", PadaAssignment::Nic),
+                ("10.0455", "puwa", PadaAssignment::Nic),
+                ("10.0458", "valka", PadaAssignment::Nic),
+                ("10.0459", "citra", PadaAssignment::Nic),
+                ("10.0460", "ansa", PadaAssignment::Nic),
+                ("10.0461", "vawa", PadaAssignment::Nic),
+                ("10.0463", "laja", PadaAssignment::Nic),
+                ("10.0466", "miSra", PadaAssignment::Nic),
+                ("10.0467", "sangrAma", PadaAssignment::Nic),
+                ("10.0468", "stoma", PadaAssignment::Nic),
+                ("10.0469", "Cidra", PadaAssignment::Nic),
+                ("10.0471", "anDa", PadaAssignment::Nic),
+                ("10.0472", "danqa", PadaAssignment::Nic),
+                ("10.0473", "anka", PadaAssignment::Nic),
+                ("10.0474", "anga", PadaAssignment::Nic),
+                ("10.0475", "suKa", PadaAssignment::Nic),
+                ("10.0476", "duHKa", PadaAssignment::Nic),
+                ("10.0477", "rasa", PadaAssignment::Nic),
+                ("10.0478", "vyaya", PadaAssignment::Nic),
+                ("10.0479", "rUpa", PadaAssignment::Nic),
+                ("10.0480", "Ceda", PadaAssignment::Nic),
+                ("10.0481", "Cada", PadaAssignment::Nic),
+                ("10.0482", "lABa", PadaAssignment::Nic),
+                ("10.0483", "vraRa", PadaAssignment::Nic),
+                ("10.0484", "varRa", PadaAssignment::Nic),
+                ("10.0485", "parRa", PadaAssignment::Nic),
+                ("10.0486", "vizka", PadaAssignment::Nic),
+                ("10.0487", "kzipa", PadaAssignment::Nic),
+                ("10.0488", "vasa", PadaAssignment::Nic),
+                ("10.0489", "tutTa", PadaAssignment::Nic),
+                ("10.0490", "palyUla", PadaAssignment::Nic),
+                ("10.0492", "Deka", PadaAssignment::Nic),
             ]
         );
     }
@@ -2232,6 +3366,7 @@ mod tests {
             &[Pada::Parasmaipada, Pada::Atmanepada]
         );
         assert_eq!(PadaAssignment::Akusmiya.padas(), &[Pada::Atmanepada]);
+        assert_eq!(PadaAssignment::AaGarviya.padas(), &[Pada::Atmanepada]);
     }
 
     #[test]
@@ -2353,7 +3488,7 @@ mod tests {
     /// AFTER the `~` that marks an anunāsika it, so `~\` is an anudātta it and
     /// `~^` a svarita it — whereas a `\` sitting directly on a vowel elsewhere
     /// is the ROOT's own accent and says nothing about pada. Counted off the
-    /// vendored upadeśa: 66 of the 150 curated roots carry a `\` at all, and 45
+    /// vendored upadeśa: 66 of the 242 curated roots carry a `\` at all, and 45
     /// of those carry one on a root vowel — `01.0642 ji\`, `01.1082 smf\` and
     /// `02.0001 a\da~` among them — so conflating the two does not fail
     /// loudly; it silently calls most of the table ātmanepada.
@@ -2481,6 +3616,31 @@ mod tests {
     }
 
     #[test]
+    fn aa_garviya_is_exactly_the_rows_10_0497_names() {
+        // The gaṇasūtra 10.0497 follows `10.0449 garva` and makes the ten
+        // rows from `10.0440 pada` ātmanepadī. vidyut-prakriya lists the
+        // same ten upadeśas (`AA_GARVIYA`). `garva` is not curated, so this
+        // test — not a derivation — is what holds the range's upper end.
+        let rows = upstream_rows();
+        let in_range: Vec<&str> = rows
+            .iter()
+            .filter(|(n, _, _)| AA_GARVIYA.contains(n))
+            .map(|(_, u, _)| *u)
+            .collect();
+        assert_eq!(
+            in_range,
+            [
+                "pada", "gfha", "mfga", "kuha", "SUra", "vIra", "sTUla", "arTa", "satra", "garva"
+            ]
+        );
+        // The neighbours on either side exist upstream and fall outside.
+        for n in ["10.0439", "10.0450"] {
+            assert!(rows.iter().any(|(m, _, _)| *m == n), "{n}");
+            assert!(!AA_GARVIYA.contains(&n), "{n}");
+        }
+    }
+
+    #[test]
     fn jnapadi_is_exactly_the_rows_10_0493_names() {
         // The gaṇasūtra 10.0493 follows `10.0124 ciY` and makes the seven
         // rows from `10.0118 jYapa~` mit. vidyut-prakriya lists the same
@@ -2601,8 +3761,9 @@ mod tests {
             // so every upadeśa CORRECTLY derives parasmaipada, and the curated
             // column names the sanction instead. Inside `AKUSMIYA` it is the
             // gaṇasūtra 10.0496 ā kusmād ātmanepadinaḥ (`Akusmiya`,
-            // ātmanepada only); outside it, the affix's 1.3.74 ṇicaś ca
-            // (`Nic`, both padas). Asserted both ways, like √bhuj above, so a
+            // ātmanepada only); inside `AA_GARVIYA`, its twin 10.0497 ā
+            // garvād ātmanepadinaḥ (`AaGarviya`); outside both, the affix's
+            // 1.3.74 ṇicaś ca (`Nic`, both padas). Asserted both ways, like √bhuj above, so a
             // row on the wrong side of the range boundary fails here. A
             // curādi row that DOES carry a marker (`10.0058 zmiN`, ṅit) is a
             // later slice's, and fails the first assertion until that slice
@@ -2616,8 +3777,13 @@ mod tests {
                 );
                 let (want, why) = if AKUSMIYA.contains(&d.dhatupatha) {
                     (PadaAssignment::Akusmiya, "ākusmīya, so 10.0496's")
+                } else if AA_GARVIYA.contains(&d.dhatupatha) {
+                    (PadaAssignment::AaGarviya, "ā-garvīya, so 10.0497's")
                 } else {
-                    (PadaAssignment::Nic, "outside the ākusmīya, so 1.3.74's")
+                    (
+                        PadaAssignment::Nic,
+                        "outside the ākusmīya and the ā-garvīya, so 1.3.74's",
+                    )
                 };
                 assert_eq!(d.pada, want, "{} is curādi and {why}", d.dhatupatha);
                 continue;

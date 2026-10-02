@@ -102,6 +102,12 @@ pub enum Tag {
     /// pada licence keyed to the rule that grants it, so the trace credits
     /// that rule and no pada sūtra.
     Akusmiya,
+    /// The dhātu's ātmanepada is sanctioned by the dhātupāṭha gaṇasūtra
+    /// 10.0497 *ā garvād ātmanepadinaḥ*: the data layer's
+    /// `PadaAssignment::AaGarviya`. Read only by 10.0497 in `tinanta::sanadi`,
+    /// and by 1.3.78's ātmanepada arm, which declines rather than blocks
+    /// when it is present. Same standing as `Akusmiya`.
+    AaGarviya,
     /// The dhātu is mit by the dhātupāṭha gaṇasūtra 10.0493: a curādi root
     /// in the data layer's `JNAPADI` range, tagged by `tinanta::derive`.
     /// Read only by 10.0493, which credits it, and 6.4.92 *mitāṃ hrasvaḥ*,
@@ -113,6 +119,14 @@ pub enum Tag {
     /// pinned by its unit test; no rule reads it yet. 6.4.51 *ṇer aniṭi*,
     /// in an ārdhadhātuka-lakāra slice, is the first rule that will.
     Nijanta,
+    /// 6.4.48 *ato lopaḥ ārdhadhātuke* deleted the dhātu's final `a` (an
+    /// adanta curādi root, before ṇic). Carries 1.1.57 *acaḥ parasmin
+    /// pūrvavidhau*: the deleted `a` still counts for a rule about what
+    /// precedes it, so 7.2.116 and the sanādi 7.3.86 decline on this tag
+    /// rather than read the consonant now at the upadhā. Set by 6.4.48 in
+    /// `tinanta::sanadi`; kept through 3.1.32's fold, for later stages that
+    /// will read it as vidyut-prakriya reads its `FlagAtLopa`.
+    AtLopa,
     /// The pratyaya carries the ṇ-anubandha (ṇit), SLP1 `R` as `Ngit`'s
     /// `N` is ṅ. Set on ṇic by its it-lopa in `super::sanadi`; read by
     /// 7.2.116 *ata upadhāyāḥ*, whose following ñit/ṇit it is.

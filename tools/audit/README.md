@@ -27,7 +27,7 @@ is ruleless.
 comment states that a blocked prakriyā's `text()` is a partial string — often the
 bare root code — not a surface form.
 
-**It asserts the corpus totals** (150 roots, 6696 cells, 7862 forms) rather than
+**It asserts the corpus totals** (242 roots, 12996 cells, 14660 forms) rather than
 reporting whatever it enumerated. Those totals are corroborated by
 `derivation_set_shape_matches_the_audited_numbers` in
 `crates/panini/tests/paradigm/main.rs`, which each slice raises to the same totals
@@ -108,6 +108,26 @@ PANINI_AUDIT_DUMP=/tmp/audit-table.tsv mise exec rust@1.99.0 -- cargo run --rele
 ```
 
 ## Last recorded result
+
+2026-10-02, curādi 10e slice, vidyut
+`8da2f90bee3ce1c07505fa432fc3729e3f7e02ea`: **zero differences across 12996
+cells / 14660 forms / 242 roots**, with the `entry` negative control verified
+failing (36 √bhū cells).
+
+The verdict covers the whole curādi 10e slice: ninety-two adanta rows
+(`10.0108 mArga` and `10.0389 kaTa` … `10.0492 Deka`), eighty-three
+ubhayapadī by 1.3.74 and nine ātmanepadī by the gaṇasūtra 10.0497 *ā garvād
+ātmanepadinaḥ*. 6.4.48 *ato lopaḥ ārdhadhātuke* deletes their final `a`
+before ṇic, and by 1.1.57 7.2.116 and 7.3.86 decline (*kathayati*, not
+*kāthayati*). 8.3.24 *naś cāpadāntasya jhali* now reaches a curādi root's own
+`n`: before that widening, the six anusvāra rows (*saṅketayati*, …) were the
+slice's only differences, 432 cells. A main-vs-branch dump of every prior
+cell's traces was byte-identical except √gandh's (`10.0204`) 36 branches,
+each gaining the 8.3.24 → 8.4.58 pair vidyut also credits.
+
+Totals: 242 = 150 + 92; 12996 = 6696 + 6300 (700 root×pada×lakāra blocks ×
+9); 14660 = 7862 + 6300 + 498 new `ALTERNATES` rows (1166 → 1664), measured
+via the harness's corpus block, not assumed.
 
 2026-10-02, curādi 10d slice, vidyut
 `8da2f90bee3ce1c07505fa432fc3729e3f7e02ea`: **zero differences across 6696

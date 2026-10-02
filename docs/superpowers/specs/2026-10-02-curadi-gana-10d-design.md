@@ -356,7 +356,9 @@ Re-grep recorded file:line anchors at final HEAD.
 
 10a's order, now without the mit roots:
 
-- adanta roots, with the ā-garvīya list (10.0497);
+- adanta roots, with the ā-garvīya list (10.0497) (taken by slice 10e, see
+  `2026-10-02-curadi-gana-10e-design.md`, all but the four optional-ṇic
+  adanta rows);
 - then optional ṇic, taking the six optional-ṇic ākusmīya rows.
 
 √smiṅ and 7.2.115 before ṇic ride whichever slice first needs 7.2.115. That

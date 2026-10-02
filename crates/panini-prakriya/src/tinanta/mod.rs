@@ -105,6 +105,7 @@ pub fn derive(
         PadaAssignment::UbhayapadaAnavane => t.add(Tag::Anavane),
         PadaAssignment::Nic => t.add(Tag::Nic),
         PadaAssignment::Akusmiya => t.add(Tag::Akusmiya),
+        PadaAssignment::AaGarviya => t.add(Tag::AaGarviya),
     }
     match dhatu.gana {
         Gana::Divadi => t.add(Tag::Divadi),
