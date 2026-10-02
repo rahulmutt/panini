@@ -1509,7 +1509,11 @@ fn curadi_analyses_its_akusmiya_forms() {
 /// `mAnayate` and `amAnayata` are the one pair two rows share (`10.0233
 /// mAna~` unchanged before ṇic, `10.0234 mana~` by 7.2.116): exactly two
 /// analyses, one per root, and only √man's credits 7.2.116. The
-/// parasmaipada shapes derive nothing.
+/// parasmaipada shapes derive nothing. The single-analysis and Invalid
+/// assertions depend on the homograph partners being uncurated — `10.0189`,
+/// `10.0438`, `10.0041`, `10.0006`, `10.0034`, `10.0381` — so a slice that
+/// curates one must revisit this test (e.g. `mAnayati` becomes Valid once
+/// `10.0381` is curated, `kuwwayatu` once `10.0034` is).
 #[test]
 fn curadi_analyses_its_bulk_akusmiya_forms() {
     let engine = Panini::new();
@@ -1523,6 +1527,7 @@ fn curadi_analyses_its_bulk_akusmiya_forms() {
         ("trowayaDve", "truw"),
         ("vedayate", "vid"),
         ("kURayasva", "kUR"),
+        ("SAWayate", "SaW"),
         ("SAmayeran", "Sam"),
         ("syAmayate", "syam"),
         ("alakzayanta", "lakz"),
