@@ -133,9 +133,7 @@ pub(crate) static SANADI: &[Rule] = &[
             if n < 2 || !matches!(chars[n - 2], 'i' | 'u' | 'f' | 'x') {
                 return false;
             }
-            let Some(g) = guna_of(chars[n - 2]) else {
-                return false;
-            };
+            let g = guna_of(chars[n - 2]).expect("an ik vowel has a guṇa");
             let before = p.snapshot();
             let mut s: String = chars[..n - 2].iter().collect();
             s.push_str(g);

@@ -196,8 +196,8 @@ fn exactly_the_pinned_vikalpa_rules_are_optional() {
 /// rule ABOVE its barrer, where barring it does nothing. Pin the whole
 /// relation, and require every barred id to run after its barrer.
 ///
-/// Ids are not unique in the pipeline (7.3.84 and 1.2.4 each appear twice,
-/// 7.3.86 three times), so "runs after" means some later occurrence.
+/// Ids are not unique in the pipeline (7.3.84, 1.2.4 and 1.3.9 each appear
+/// twice, 7.3.86 three times), so "runs after" means some later occurrence.
 #[test]
 fn exactly_the_pinned_bars() {
     let ids: Vec<&str> = rules().map(|r| r.id).collect();
