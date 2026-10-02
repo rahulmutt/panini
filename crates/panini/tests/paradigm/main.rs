@@ -429,7 +429,10 @@ fn derivation_set_is_exactly_pinned() {
 /// differences, its `entry` negative control verified failing (36 √bhū
 /// cells), and curādi 10a's re-ran it at the same commit over all 4932 cells /
 /// 6062 forms / 107 roots with zero differences, its `entry` negative
-/// control verified failing (36 √bhū cells). √tṛh joins none of the fork
+/// control verified failing (36 √bhū cells), and curādi 10b's re-ran it at the
+/// same commit over all 5076 cells / 6206 forms / 111 roots with zero
+/// differences, its `entry` negative control verified failing (36 √bhū
+/// cells). √tṛh joins none of the fork
 /// records: its deepest cells hold three forms, because 8.3.13 Qo Qe lopaH
 /// obligatorily elides the ḍh that 8.4.65 forks on for every other
 /// stop-final rudhādi root.

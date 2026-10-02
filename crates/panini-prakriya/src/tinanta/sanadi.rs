@@ -30,10 +30,10 @@ pub(crate) static SANADI: &[Rule] = &[
     //
     // First in the stage because vidyut credits it there, as soon as the
     // dhātu is identified and before 3.1.25. It settles the pada outright, so
-    // no pada sūtra in `super::samjna` is credited after it: 1.3.12 and
-    // 1.3.74 decline on their own guards, 1.3.78 on this tag. The wrong pada
-    // BLOCKS, as it does under 1.3.12 — derivation, not the analyzer, is the
-    // source of truth for pada.
+    // no pada sūtra in `super::samjna` is credited after it: 1.3.12, 1.3.66,
+    // 1.3.72 and 1.3.74 decline on their own guards, 1.3.78 on this tag. The
+    // wrong pada BLOCKS, as it does under 1.3.12 — derivation, not the
+    // analyzer, is the source of truth for pada.
     Rule {
         id: "10.0496",
         name: "A kusmAd AtmanepadinaH",
@@ -378,7 +378,7 @@ mod tests {
 
     #[test]
     fn a_kusmad_declines_without_the_akusmiya_licence() {
-        // √cur (1.3.74's), √rudh (1.3.72's), √bhū (1.3.78's) and √as
+        // √cur (1.3.74's), √rudh (1.3.72's), √bhū (1.3.78's) and √ās
         // (1.3.12's) are left alone in both padas: not recorded, not blocked.
         for tags in [
             &[Tag::Curadi, Tag::Nic][..],

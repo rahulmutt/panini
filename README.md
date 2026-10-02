@@ -86,11 +86,16 @@ row, behind three new sūtras — 6.4.98 *gamahanajanakhanaghasāṁ lopaḥ*
 (*jajñati*), 6.4.42 *janasanakhanāṁ sañjhaloḥ* (*jajātaḥ*) and the engine's
 twelfth vikalpa, 6.4.43 *ye vibhāṣā* (*jajanyāt* ~ *jajāyāt*) — with 8.4.40
 *stoḥ ścunā ścuḥ* gaining its converse arm, a stu after a ścu, guarded by the
-8.4.44 *śāt* exemption. *curādi* (10) is **open** at 4 of its 509
+8.4.44 *śāt* exemption. *curādi* (10) is **open** at 8 of its 509
 dhātupāṭha rows: √cur (`10.0001`, *corayati*), √laḍ (`10.0010`,
 *lāḍayati*), √bhakṣ (`10.0033`) and √bhūṣ (`10.0255`), curated in slice 10a,
-all ubhayapadī by 1.3.74 *ṇicaś ca*. Every curādi root takes ṇic (3.1.25)
-before the vikaraṇa; a new first pipeline stage adds it, guṇates or
+all ubhayapadī by 1.3.74 *ṇicaś ca*; and four roots of the ākusmīya
+antargaṇa, √cit (`10.0192`, *cetayate*), √vṛṣ (`10.0228`, *varṣayate*), √mad
+(`10.0229`, *mādayate*) and √kusm (`10.0236`), curated in slice 10b,
+ātmanepadī by the dhātupāṭha's own gaṇasūtra 10.0496 *ā kusmād
+ātmanepadinaḥ* — the engine's one rule that is not an Aṣṭādhyāyī sūtra.
+Every curādi root takes ṇic (3.1.25) before the vikaraṇa; a new first
+pipeline stage adds it, guṇates or
 lengthens the root before it (7.3.86, 7.2.116 *ata upadhāyāḥ*), and folds it
 into the dhātu by 3.1.32 *sanādyantā dhātavaḥ*, so √cur's stem is `cori` and
 derives on through 7.3.84 and 6.1.78 like √nī's. rudhādi is
@@ -117,10 +122,10 @@ rather than falling through to 1.3.72. What 1.3.66 does not model is the
 1.3.72's own precedent,
 since neither engine models sense. *parasmaipada* and *ātmanepada*
 (which padas a root admits is a curated verdict on its table row), over a
-curated 107-root set, in four lakāras: *laṭ* (present), *laṅ* (imperfect), *loṭ*
+curated 111-root set, in four lakāras: *laṭ* (present), *laṅ* (imperfect), *loṭ*
 (imperative), and *vidhiliṅ* (optative). A cell may have more than one valid
 form where an optional (*vikalpa*) sūtra applies — `hinvaH` and `hinuvaH` are
-both correct — and in fact 824 of the 4932 cells hold more than one form: 612
+both correct — and in fact 824 of the 5076 cells hold more than one form: 612
 hold two, 165 hold three (`Bavatu`, `BavatAd`, `BavatAt`, and — new in
 slice 3b — √hrī's loṭ prathama and madhyama eka, and — new in slice 3c —
 √dā's and √dhā's, and — new in slice 3c2 — √gā's, and — new in slice 3d —

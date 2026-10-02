@@ -27,7 +27,7 @@ is ruleless.
 comment states that a blocked prakriyā's `text()` is a partial string — often the
 bare root code — not a surface form.
 
-**It asserts the corpus totals** (107 roots, 4932 cells, 6062 forms) rather than
+**It asserts the corpus totals** (111 roots, 5076 cells, 6206 forms) rather than
 reporting whatever it enumerated. Those totals are corroborated by
 `derivation_set_shape_matches_the_audited_numbers` in
 `crates/panini/tests/paradigm/main.rs`, which each slice raises to the same totals
@@ -108,6 +108,24 @@ PANINI_AUDIT_DUMP=/tmp/audit-table.tsv mise exec rust@1.99.0 -- cargo run --rele
 ```
 
 ## Last recorded result
+
+2026-10-02, curādi 10b slice, vidyut
+`8da2f90bee3ce1c07505fa432fc3729e3f7e02ea`: **zero differences across 5076
+cells / 6206 forms / 111 roots**, with the `entry` negative control verified
+failing (36 √bhū cells).
+
+The verdict covers the whole curādi 10b slice: four roots of the ākusmīya
+antargaṇa, √cit, √vṛṣ, √mad and √kusm (`10.0192`, `10.0228`, `10.0229`,
+`10.0236`), ātmanepadī by the dhātupāṭha gaṇasūtra 10.0496 *ā kusmād
+ātmanepadinaḥ*, which a new first entry of the sanādi stage credits. The
+harness compares only the padas a root admits, so it never asks about an
+ākusmīya parasmaipada cell; a throwaway probe did, and found all 144 empty
+in vidyut and blocked here. A main-vs-branch dump of every prior cell's
+traces was byte-identical.
+
+Totals: 111 = 107 + 4; 5076 = 4932 + 144 (16 root×pada×lakāra blocks × 9);
+6206 = 6062 + 144, with no new `ALTERNATES` rows (1130), measured via the
+harness's corpus block, not assumed.
 
 2026-10-02, curādi 10a slice, vidyut
 `8da2f90bee3ce1c07505fa432fc3729e3f7e02ea`: **zero differences across 4932
