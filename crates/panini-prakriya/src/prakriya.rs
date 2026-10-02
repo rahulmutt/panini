@@ -14,7 +14,7 @@ pub struct Prakriya {
     pub terms: Vec<Term>,
     pub log: Vec<RuleStep>,
     pub ctx: Context,
-    /// Set when a pada-sanction rule (1.3.12 / 1.3.78) determines the
+    /// Set when a pada-sanction rule (1.3.12 / 1.3.78, or the gaṇasūtra 10.0496 for an ākusmīya root) determines the
     /// requested derivation is impossible (wrong pada for the root), so
     /// it must not be reported. The pipeline stops with partial,
     /// not-a-real-surface-form text — that text can still collide with

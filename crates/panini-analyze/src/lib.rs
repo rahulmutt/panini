@@ -77,7 +77,7 @@ static INDEX: LazyLock<HashMap<String, Vec<Candidate>>> = LazyLock::new(|| {
 ///
 /// A blocked branch's text is a partial string (often the bare root code),
 /// never a surface form, so it is not indexed (cf. the pada blocks in
-/// 1.3.12 / 1.3.78). A candidate whose vikalpa branches produce one form
+/// 1.3.12 / 1.3.78 / 10.0496). A candidate whose vikalpa branches produce one form
 /// twice is listed under it once: `check()` re-derives the candidate and
 /// reports every matching branch itself, so a second listing would report
 /// each branch twice.

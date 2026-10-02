@@ -32,7 +32,7 @@ implements; `tinanta::rules()` yields that flattened sequence.
 
 | stage file | rules | position |
 |---|---|---|
-| `sanadi.rs` | 3.1.25, 1.3.9, 3.4.114, 7.2.116, 7.3.86, 3.1.32 — ṇic and its folding into the dhātu (curādi only) | before 3.1.68, before any tiṅ |
+| `sanadi.rs` | 10.0496, 3.1.25, 1.3.9, 3.4.114, 7.2.116, 7.3.86, 3.1.32 — the ākusmīya pada, then ṇic and its folding into the dhātu (curādi only) | before 3.1.68, before any tiṅ |
 | `samjna.rs` | 1.3.12, 1.3.66, 1.3.72, 1.3.74, 1.3.78, 3.4.78, 1.3.9, 1.2.4 | before 3.1.68 |
 | `tin.rs` | 3.4.85 … 3.4.109 … 3.4.102, 7.1.35 | before 3.1.68 |
 | `vikarana.rs` | 3.1.69, 3.1.73, 3.1.77, 3.1.78, 3.1.79, 3.1.81, 3.1.68, 2.4.72, 2.4.75, 3.4.111, 3.1.83, 1.2.4 | contains 3.1.68 |
@@ -44,7 +44,7 @@ implements; `tinanta::rules()` yields that flattened sequence.
 
 The stage boundary is file organisation, not grammar: the flattened order is
 what matters, and `tinanta_rule_order_is_pinned` in `derivation_tests.rs`
-pins all 136 ids verbatim (72 pre-rudhādi, the twenty-one rudhādi added:
+pins all 137 ids verbatim (72 pre-rudhādi, the twenty-one rudhādi added:
 3.1.78, 6.4.23, 6.4.111, 8.2.74, 8.2.75, 8.2.73, 8.3.24, 8.4.53, 8.4.58 and
 8.4.65 in slice 7a, then 8.2.30, 8.2.40, 8.2.41 and 8.4.41 in 7b, then
 1.3.66 *Bujo'navane*, which arrived with √bhuj in the Buj slice, then
@@ -76,7 +76,9 @@ juhotyādi 3f3's three: 6.4.98 *gamahanajanakhanaghasāṁ lopaḥ*, 6.4.42
 *janasanakhanāṁ sañjhaloḥ* and 6.4.43 *ye vibhāṣā* (8.4.40 widened) — 129
 total — then curādi 10a's seven: the sanādi stage's 3.1.25, 1.3.9 (ṇic's),
 3.4.114, 7.2.116, 7.3.86 (a third entry) and 3.1.32, and 1.3.74 *ṇicaś ca* in
-`samjna.rs` — 136 total).
+`samjna.rs` — 136 total — then curādi 10b's one: the dhātupāṭha gaṇasūtra
+10.0496 *ā kusmād ātmanepadinaḥ*, first in `sanadi.rs` and the only id that
+is not an Aṣṭādhyāyī sūtra — 137 total).
 `tinanta/terms.rs` holds the term-index constants and the reason 3.1.68
 bisects the pipeline; `tinanta/sound.rs` holds the varṇa classifiers.
 
@@ -109,8 +111,8 @@ tudādi (6), adādi (2), kryādi (9), svādi (5), rudhādi (7) and tanādi (8),
 **complete** at all ten of its dhātupāṭha rows (√kṛ, `08.0010`, curated
 in slice 8b) — and juhotyādi (3), **complete** at all 26 of its rows (√hu,
 √ki; slice 3a; √bhī, √hrī; slice 3b; √dā, √dhā, √mā, √hā; slice 3c; √hā
-parasmaipada, √gā; slice 3c2; √pṝ, √pṛ, √bhṛ, √ghṛ, √hṛ, √sṛ; slice 3d; √ṛ; slice 3d2; √ṇij, √vij, √viṣ; slice 3e; √kit, √tur, √dhiṣ, √dhan; slice 3f; √bhas; slice 3f2; √jan; slice 3f3) — and curādi (10), **open** at 4 of its
-509 rows (√cur, √laḍ, √bhakṣ, √bhūṣ; slice 10a). gaṇa
+parasmaipada, √gā; slice 3c2; √pṝ, √pṛ, √bhṛ, √ghṛ, √hṛ, √sṛ; slice 3d; √ṛ; slice 3d2; √ṇij, √vij, √viṣ; slice 3e; √kit, √tur, √dhiṣ, √dhan; slice 3f; √bhas; slice 3f2; √jan; slice 3f3) — and curādi (10), **open** at 8 of its
+509 rows (√cur, √laḍ, √bhakṣ, √bhūṣ; slice 10a; √cit, √vṛṣ, √mad, √kusm; slice 10b). gaṇa
 is carried as a tag on the aṅga term (`Tag::Divadi` / `Tag::Tudadi` / `Tag::Adadi` /
 `Tag::Kryadi` / `Tag::Svadi` / `Tag::Rudhadi` / `Tag::Tanadi` /
 `Tag::Juhotyadi` / `Tag::Curadi`, mirroring how
@@ -397,13 +399,18 @@ are the goldens that pin it.
 `derive` itself carries no scope gate — it only tags the dhātu and
 runs `TINANTA_RULES` (see `panini_prakriya::tinanta::derive`). A wrong-pada
 derivation is instead blocked by the pada-sanction rules (1.3.12 *anudāttaṅita
-ātmanepadam* / 1.3.78 *śeṣāt kartari parasmaipadam*), which set
+ātmanepadam* / 1.3.78 *śeṣāt kartari parasmaipadam*, and the gaṇasūtra
+10.0496 for an ākusmīya root), which set
 `Prakriya.blocked` when the requested pada doesn't match the root's tag; a
 blocked prakriya's partial text never counts as a match in `Panini::check`.
 1.3.72 *svaritañitaḥ* is the third of them and the only one that never
 blocks: it sanctions the ātmanepada of a root tagged `Tag::Ubhayapadin`, and
 1.3.78's ātmanepada arm declines rather than blocks for such a root, so both
-padas derive. `INVALID` means "not derivable within the covered grammar,"
+padas derive. The ākusmīya curādi roots (`Tag::Akusmiya`) settle their pada
+earlier, by the dhātupāṭha gaṇasūtra 10.0496 *ā kusmād ātmanepadinaḥ* at the
+head of `sanadi.rs`: it sanctions ātmanepada and blocks parasmaipada exactly
+as 1.3.12 does, and every pada sūtra in `samjna.rs` then leaves the root
+alone. `INVALID` means "not derivable within the covered grammar,"
 not "ungrammatical in Sanskrit." Coverage of the enumerable (root × lakāra)
 space is pinned by
 `crates/panini/tests/paradigm/main.rs::paradigm_covers_every_enumerable_cell`.
@@ -605,7 +612,7 @@ unchanged by √kṛ.
 7.1.35 optionally replaces the loṭ endings `tu`/`hi` with tātaṅ (then
 8.2.39 obligatorily voices its final `t` to `d`), forking 164 cells (loṭ
 prathama and madhyama eka across the 82 roots with a parasmaipada column —
-`tu`/`hi` are parasmaipada endings, so the curated set's 25 ātmanepada-only
+`tu`/`hi` are parasmaipada endings, so the curated set's 29 ātmanepada-only
 roots never reach this guard, and the thirty roots that admit both
 padas (twenty-five ubhayapadī by 1.3.72 — √rudh, √nī, √tud, √bhid, √kṣud,
 √yuj, √tṛd, √ric, √vic, √chid, √chṛd, √tan, √san, √kṣaṇ, √kṣiṇ, √ṛṇ, √tṛ, √ghṛṇ,
@@ -613,7 +620,7 @@ padas (twenty-five ubhayapadī by 1.3.72 — √rudh, √nī, √tud, √bhid, �
 √laḍ, √bhakṣ and √bhūṣ by 1.3.74) reach it in their
 parasmaipada cells only, joined by juhotyādi's √hu, √ki, √bhī, √hrī, √hā
 (`03.0009`), √gā, √pṝ, √pṛ, √ghṛ (`Gf`), √hṛ, √sṛ, √ṛ, √kit, √tur, √dhiṣ, √dhan, √bhas and √jan (all parasmaipada-only), and
-the parasmaipada columns of √bhṛ, √ṇij, √vij and √viṣ; 82 + 25 = the 107 curated roots) — `Bavatu ~
+the parasmaipada columns of √bhṛ, √ṇij, √vij and √viṣ; 82 + 29 = the 111 curated roots) — `Bavatu ~
 BavatAd`, `Bava ~ BavatAd`. 8.4.56 optionally devoices a pada-final jaś
 (produced by the now-obligatory 8.2.39) back to its car at the end of an
 utterance, forking 170 cells outright: laṅ and vidhiliṅ prathama eka across

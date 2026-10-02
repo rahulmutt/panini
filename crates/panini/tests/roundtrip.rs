@@ -87,7 +87,7 @@ fn roundtrip() {
             // The cross-product only ever asks for padas the root admits, so
             // nothing here should be blocked. Assert it rather than
             // filtering: a blocked branch appearing would mean `padas()` and
-            // the pada-sanction rules (1.3.12 / 1.3.78) had come apart.
+            // the pada-sanction rules (1.3.12 / 1.3.78 / 10.0496) had come apart.
             assert!(
                 !p.blocked,
                 "{} {} {:?} {:?} {:?} derived a blocked branch",

@@ -30,7 +30,10 @@ a pre-ṇic arm of 7.3.86, 3.1.32 and 1.3.74.
 **Out — later curādi slices, each its own class:**
 
 - ātmanepadī (ākusmīya) roots such as √cit *cetayate* — how 1.3.12 and 1.3.74
-  meet on one row;
+  meet on one row (corrected in slice 10b,
+  `2026-10-02-curadi-gana-10b-design.md`: the ākusmīya rows carry no marker;
+  their ātmanepada is the dhātupāṭha gaṇasūtra 10.0496's, and no pada sūtra
+  is credited);
 - optional-ṇic roots (*ā-dhṛṣād vā*: √cint *cintati* / *cintayati*, √arc,
   √pṝ *parati* / *pArayati*) — a whole-paradigm vikalpa, plus 7.1.58 and
   7.2.115;
@@ -287,5 +290,7 @@ HEAD.
 ## Later slices
 
 10b onward take the out-of-scope classes in roughly ascending machinery:
-ātmanepadī roots, mit roots, adanta roots, then optional ṇic. The causative
+ātmanepadī roots, mit roots, adanta roots, then optional ṇic. (10b took the
+ātmanepadī class as the ākusmīya roots and gaṇasūtra 10.0496 — see
+`2026-10-02-curadi-gana-10b-design.md`.) The causative
 and the ārdhadhātuka lakāras build on `sanadi` and `Tag::Nijanta`.

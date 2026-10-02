@@ -53,7 +53,7 @@ impl Panini {
                 // A blocked prakriya derived nothing: its text is a partial
                 // string (often the bare root code) that must never be
                 // reported as a surface form — cf. the pada blocks in
-                // 1.3.12 / 1.3.78.
+                // 1.3.12 / 1.3.78 / 10.0496.
                 if !p.blocked && p.text() == slp1 {
                     analyses.push(Analysis {
                         dhatu: c.dhatu.code.to_string(),
