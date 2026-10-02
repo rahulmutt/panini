@@ -61,8 +61,10 @@ credits 6.4.92 among its asiddhavat rules, after 7.3.84 has guṇated ṇic's
 `ANGA` and ṇic are still separate terms, and the upadhā is one character
 read. After 3.1.32 folds ṇic into `ANGA`, the root's vowel would have to be
 found inside `jYApe`. That needs a ṇic-aware upadhā read in a stage that
-today knows nothing of ṇic. The forms are the same either way, because no
-rule between the two positions reads the root's vowel. The traces differ
+today knows nothing of ṇic. The forms are the same either way for every root this slice
+curates: the only intervening rule that reads the upadhā, 7.3.86, needs a
+laghu ik upadhā and declines on these six `a`-upadhā roots. A long-ik mit
+root (√ci's slice, a causative) must revisit this placement. The traces differ
 only in where 6.4.92 appears. The goldens and the audit compare forms, and
 the trace tests pin this engine's order.
 

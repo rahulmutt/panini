@@ -186,12 +186,12 @@ pub(crate) static SANADI: &[Rule] = &[
     // √jñap makes *jñapayati*, not *jñāpayati*. Guarded on `Tag::Mit`
     // (10.0493's verdict) and on ṇit ṇic; a short upadhā declines.
     //
-    // vidyut-prakriya credits 6.4.92 later, among its asiddhavat rules,
-    // after 7.3.84 has guṇated ṇic's `i`. It sits here instead, while the
-    // root and ṇic are still separate terms, so the upadhā is one character
-    // read. After 3.1.32 folds ṇic into `ANGA`, the root's vowel would have
-    // to be found inside `jYApe`. The forms agree: no rule between the two
-    // positions reads the root's vowel.
+    // vidyut-prakriya credits 6.4.92 later, among its asiddhavat rules, after
+    // 7.3.84 guṇates ṇic's `i`. It sits here, while root and ṇic are still
+    // separate terms and the upadhā is one character read; after 3.1.32 the
+    // vowel would be inside `jYApe`. The forms agree for every root curated
+    // here: the one intervening upadhā-reader, 7.3.86, needs a laghu ik and
+    // declines on these six `a` roots. A long-ik mit root (√ci) must revisit.
     Rule {
         id: "6.4.92",
         name: "mitAM hrasvaH",

@@ -1612,8 +1612,8 @@ fn curadi_analyses_its_bulk_akusmiya_forms() {
 /// Slice 10d's `check()` witnesses: all six jñapādi rows, both padas. The
 /// goldens were grepped first — each laṭ prathama eka surface below is its
 /// own row's alone, so each must yield exactly one analysis, naming that
-/// root and pada and crediting 10.0493 and 6.4.92 in that order, after
-/// 7.2.116. `ajYapayata` is pada-ambiguous within √jñap (laṅ parasmaipada
+/// root and pada and crediting 10.0493 first, then 7.2.116, then
+/// 6.4.92. `ajYapayata` is pada-ambiguous within √jñap (laṅ parasmaipada
 /// madhyama bahu = ātmanepada prathama eka): two analyses, one per pada, both
 /// mit. The 7.2.116-only shapes (`jYApayati`, …) — what this engine derived
 /// before 6.4.92 — derive nothing.

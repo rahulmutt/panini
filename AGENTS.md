@@ -90,9 +90,11 @@
     average about 20-22), on the tree at `039eb41`. **821 mutants tested:
     770 caught, 48 unviable, 2 missed, 1 timeout.** **panini-prakriya: 809
     mutants, 762 caught, 44 unviable, 2 missed, 1 timeout.** Its non-caught
-    set (44 / 2 / 1) is identical to 10c's, diffed by file, line, column and
-    replacement: no entry moved, since this slice touched neither
-    `adesha.rs` nor `tripadi.rs`. `missed.txt` held exactly:
+    set (44 / 2 / 1) is identical to 10c's. Across both packages the 51
+    non-caught entries (48 unviable, 2 missed, 1 timeout) of the 10c and 10d
+    `outcomes.durable.json` files are identical on the full record (package,
+    span, replacement, function, genre, outcome): no entry moved, since this
+    slice touched neither `adesha.rs` nor `tripadi.rs`. `missed.txt` held exactly:
     ```
     crates/panini-prakriya/src/tinanta/adesha.rs:589:30: replace + with *
     crates/panini-prakriya/src/tinanta/tripadi.rs:1289:38: replace - with /
