@@ -78,6 +78,14 @@ pub enum PadaAssignment {
 /// `PadaAssignment::Akusmiya` exactly when it is curādi and in this range;
 /// `curated_pada_agrees_with_upadesha_markers` holds both sides.
 pub const AKUSMIYA: RangeInclusive<&str> = "10.0192"..="10.0236";
+
+/// The jñapādi of curādi: dhātupāṭha rows `10.0118` (`jYapa~`) through
+/// `10.0124` (`ciY`), the roots the gaṇasūtra 10.0493 makes mit. Compared as
+/// strings, like `AKUSMIYA`. The engine's `derive` tags a curādi root in this
+/// range `Tag::Mit`, which 10.0493 and 6.4.92 *mitāṃ hrasvaḥ* read. Includes
+/// `10.0124 ciY`, which is mit but not yet curated (it waits on 7.2.115).
+/// `jnapadi_is_exactly_the_rows_10_0493_names` pins the range to upstream.
+pub const JNAPADI: RangeInclusive<&str> = "10.0118"..="10.0124";
 impl PadaAssignment {
     /// The padas this assignment derives. `Ubhayapada` lists parasmaipada
     /// first — pinned, not incidental; see
@@ -2394,6 +2402,29 @@ mod tests {
         // No `i~` at all: the plain it-stripped form.
         assert_eq!(stored_form("dasa~"), "das");
         assert_eq!(stored_form("kusma~"), "kusm");
+    }
+
+    #[test]
+    fn jnapadi_is_exactly_the_rows_10_0493_names() {
+        // The gaṇasūtra 10.0493 follows `10.0124 ciY` and makes the seven
+        // rows from `10.0118 jYapa~` mit. vidyut-prakriya lists the same
+        // seven upadeśas (`JNAP_ADI`). `ciY` is not curated, so this test —
+        // not a derivation — is what holds the range's upper end.
+        let rows = upstream_rows();
+        let in_range: Vec<&str> = rows
+            .iter()
+            .filter(|(n, _, _)| JNAPADI.contains(n))
+            .map(|(_, u, _)| *u)
+            .collect();
+        assert_eq!(
+            in_range,
+            ["jYapa~", "yama~", "caha~", "capa~", "raha~", "bala~", "ciY"]
+        );
+        // The neighbours on either side exist upstream and fall outside.
+        for n in ["10.0117", "10.0125"] {
+            assert!(rows.iter().any(|(m, _, _)| *m == n), "{n}");
+            assert!(!JNAPADI.contains(&n), "{n}");
+        }
     }
 
     #[test]

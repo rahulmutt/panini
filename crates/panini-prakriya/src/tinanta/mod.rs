@@ -15,7 +15,7 @@ use crate::controller::run_pipeline;
 use crate::prakriya::Prakriya;
 use crate::rule::Rule;
 use crate::term::{Tag, Term};
-use panini_data::{Dhatu, Gana, Lakara, Pada, PadaAssignment, Purusha, Vacana};
+use panini_data::{Dhatu, Gana, JNAPADI, Lakara, Pada, PadaAssignment, Purusha, Vacana};
 
 mod abhyasa;
 mod adesha;
@@ -92,6 +92,11 @@ pub fn derive(
     // it feeds guarded rules and substitutes for none.
     if samjna::GHU.contains(&dhatu.dhatupatha) {
         t.add(Tag::Ghu);
+    }
+    // 10.0493's mit-tva, likewise by row number: the jñapādi are a run of
+    // curādi rows (`JNAPADI`), and 10.0493 and 6.4.92 read the tag.
+    if dhatu.gana == Gana::Curadi && JNAPADI.contains(&dhatu.dhatupatha) {
+        t.add(Tag::Mit);
     }
     match dhatu.pada {
         PadaAssignment::Parasmaipada => {}

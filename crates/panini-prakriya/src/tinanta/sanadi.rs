@@ -1,7 +1,8 @@
 //! The sanādi stage: ṇic and its folding into the dhātu — 3.1.25, ṇic's
-//! it-lopa (1.3.9), 3.4.114, 7.2.116, 7.3.86, 3.1.32 — opened by the
-//! dhātupāṭha gaṇasūtra 10.0496, which settles an ākusmīya root's pada
-//! before ṇic is added.
+//! it-lopa (1.3.9), 3.4.114, 7.2.116, 6.4.92, 7.3.86, 3.1.32 — opened by
+//! two dhātupāṭha gaṇasūtras: 10.0496, which settles an ākusmīya root's
+//! pada, and 10.0493, which credits a jñapādi root's mit-tva, both before
+//! ṇic is added.
 //!
 //! First in the pipeline, before any lakāra or tiṅ exists. The layout here
 //! is `[AGAMA, ABHYASA, ANGA, ṇic]`, ṇic at `NIC`; 3.1.32 folds ṇic into
@@ -10,13 +11,14 @@
 //! an ordinary i-final dhātu (`cori`), and 7.3.84 then 6.1.78 make `coray-`
 //! exactly as they make √nī's `nay-`. See `super::terms`.
 //!
-//! Every rule self-guards: 10.0496 on `Tag::Akusmiya`, 3.1.25 on
-//! `Tag::Curadi`, the rest on ṇic being present. For gaṇas 1–9 the stage
+//! Every rule self-guards: 10.0496 on `Tag::Akusmiya`, 10.0493 on
+//! `Tag::Mit`, 3.1.25 on `Tag::Curadi`, the rest on ṇic being present
+//! (6.4.92 on `Tag::Mit` as well). For gaṇas 1–9 the stage
 //! adds nothing and records nothing.
 
 use crate::rule::{Rule, RuleKind};
 use crate::term::{Tag, Term};
-use crate::tinanta::sound::guna_of;
+use crate::tinanta::sound::{guna_of, hrasva_of};
 use crate::tinanta::terms::{ANGA, NIC};
 use panini_data::Pada;
 
@@ -55,6 +57,34 @@ pub(crate) static SANADI: &[Rule] = &[
                     false
                 }
             }
+        },
+    },
+    // 10.0493, the gaṇasūtra closing the jñapādi (`10.0118 jYapa~` …
+    // `10.0124 ciY`): these roots are mit. The verdict is `Tag::Mit`, which
+    // `super::derive` sets from the data layer's `JNAPADI` range as it sets
+    // `Tag::Ghu`; this entry credits it and changes no text, as 10.0496
+    // credits `Tag::Akusmiya`. Second in the stage because vidyut-prakriya
+    // credits it there, once the dhātu is identified and before 3.1.25.
+    // 6.4.92 below is what the tag feeds.
+    //
+    // Not here: 01.0934 (am-final roots are mit) and 10.0494 *nānye mito
+    // 'hetau* (no other curādi root is mit, outside the causative). With no
+    // causative in this engine, 01.0934 could reach only curādi am-final
+    // roots, where 10.0494 always blocks it: neither could fire or fail a
+    // test. Both wait for a causative slice.
+    Rule {
+        id: "10.0493",
+        name: "jYapAdayo mitaH",
+        kind: RuleKind::Samjna,
+        vikalpa: false,
+        bars: &[],
+        apply: |p| {
+            if !p.terms[ANGA].has(Tag::Mit) {
+                return false;
+            }
+            let before = p.snapshot();
+            p.record("10.0493", "jYapAdayo mitaH", before);
+            true
         },
     },
     // 3.1.25 satyāpapāśarūpavīṇātūlaślokasenālomatvacavarmavarṇacūrṇa-
@@ -148,6 +178,41 @@ pub(crate) static SANADI: &[Rule] = &[
             chars[n - 2] = 'A';
             p.terms[ANGA].text = chars.into_iter().collect();
             p.record("7.2.116", "ata upaDAyAH", before);
+            true
+        },
+    },
+    // 6.4.92 mitāṃ hrasvaḥ: a mit root's upadhā is shortened before ṇi.
+    // `jYAp` → `jYap`: here it undoes the 7.2.116 vṛddhi just above, so
+    // √jñap makes *jñapayati*, not *jñāpayati*. Guarded on `Tag::Mit`
+    // (10.0493's verdict) and on ṇit ṇic; a short upadhā declines.
+    //
+    // vidyut-prakriya credits 6.4.92 later, among its asiddhavat rules,
+    // after 7.3.84 has guṇated ṇic's `i`. It sits here instead, while the
+    // root and ṇic are still separate terms, so the upadhā is one character
+    // read. After 3.1.32 folds ṇic into `ANGA`, the root's vowel would have
+    // to be found inside `jYApe`. The forms agree: no rule between the two
+    // positions reads the root's vowel.
+    Rule {
+        id: "6.4.92",
+        name: "mitAM hrasvaH",
+        kind: RuleKind::Vidhi,
+        vikalpa: false,
+        bars: &[],
+        apply: |p| {
+            if !p.terms[ANGA].has(Tag::Mit) || !p.terms.get(NIC).is_some_and(|t| t.has(Tag::Rit)) {
+                return false;
+            }
+            let mut chars: Vec<char> = p.terms[ANGA].text.chars().collect();
+            let Some(upadha) = chars.len().checked_sub(2) else {
+                return false;
+            };
+            let Some(short) = hrasva_of(chars[upadha]) else {
+                return false;
+            };
+            let before = p.snapshot();
+            chars[upadha] = short;
+            p.terms[ANGA].text = chars.into_iter().collect();
+            p.record("6.4.92", "mitAM hrasvaH", before);
             true
         },
     },
@@ -307,6 +372,61 @@ mod tests {
         }
         let mut p = with_nic("laq", Some(&[Tag::Ardhadhatuka]));
         assert!(!(rule("7.2.116").apply)(&mut p));
+    }
+
+    #[test]
+    fn jnapadayo_mitah_credits_a_mit_root_and_changes_nothing() {
+        let mut p = with_nic("jYap", None);
+        p.terms[ANGA].add(Tag::Mit);
+        assert!((rule("10.0493").apply)(&mut p));
+        let ids: Vec<&str> = p.log.iter().map(|s| s.sutra.as_str()).collect();
+        assert_eq!(ids, ["10.0493"]);
+        assert_eq!(p.terms[ANGA].text, "jYap", "a saṁjñā, not an operation");
+        // √cur is curādi but not mit.
+        let mut p = with_nic("cur", None);
+        assert!(!(rule("10.0493").apply)(&mut p));
+        assert!(p.log.is_empty());
+    }
+
+    #[test]
+    fn mitam_hrasvah_shortens_a_mit_roots_long_upadha_before_nit() {
+        // `jYAp` is 7.2.116's output for √jñap; the other three are
+        // hand-built long upadhās, one per remaining `hrasva_of` arm that a
+        // root can carry there.
+        for (root, want) in [
+            ("jYAp", "jYap"),
+            ("cIl", "cil"),
+            ("kUw", "kuw"),
+            ("pFq", "pfq"),
+        ] {
+            let mut p = with_nic(root, Some(&[Tag::Rit, Tag::Ardhadhatuka]));
+            p.terms[ANGA].add(Tag::Mit);
+            assert!((rule("6.4.92").apply)(&mut p), "{root}");
+            assert_eq!(p.terms[ANGA].text, want);
+            let ids: Vec<&str> = p.log.iter().map(|s| s.sutra.as_str()).collect();
+            assert_eq!(ids, ["6.4.92"]);
+        }
+        // A short upadhā (jYap, never lengthened), a non-vowel upadhā
+        // (yakz: k), or too short to have one (A): nothing to shorten.
+        for root in ["jYap", "yakz", "A"] {
+            let mut p = with_nic(root, Some(&[Tag::Rit, Tag::Ardhadhatuka]));
+            p.terms[ANGA].add(Tag::Mit);
+            assert!(!(rule("6.4.92").apply)(&mut p), "{root}");
+            assert_eq!(p.terms[ANGA].text, root);
+        }
+        // Not mit: √śam's `SAm` keeps 7.2.116's vṛddhi.
+        let mut p = with_nic("SAm", Some(&[Tag::Rit, Tag::Ardhadhatuka]));
+        assert!(!(rule("6.4.92").apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "SAm");
+        // Mit, but no ṇit follower: neither a bare root nor a non-ṇit
+        // pratyaya at `NIC`.
+        let mut p = with_nic("jYAp", None);
+        p.terms[ANGA].add(Tag::Mit);
+        assert!(!(rule("6.4.92").apply)(&mut p));
+        let mut p = with_nic("jYAp", Some(&[Tag::Ardhadhatuka]));
+        p.terms[ANGA].add(Tag::Mit);
+        assert!(!(rule("6.4.92").apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "jYAp");
     }
 
     #[test]

@@ -102,6 +102,12 @@ pub enum Tag {
     /// pada licence keyed to the rule that grants it, so the trace credits
     /// that rule and no pada sūtra.
     Akusmiya,
+    /// The dhātu is mit by the dhātupāṭha gaṇasūtra 10.0493: a curādi root
+    /// in the data layer's `JNAPADI` range, tagged by `tinanta::derive`.
+    /// Read only by 10.0493, which credits it, and 6.4.92 *mitāṃ hrasvaḥ*,
+    /// which shortens the root's upadhā before ṇic, both in
+    /// `tinanta::sanadi`. A saṁjñā verdict like `Ghu`, not a pada licence.
+    Mit,
     /// The aṅga is a ṇijanta: 3.1.32 *sanādyantā dhātavaḥ* folded ṇic into
     /// it, so its final `i` is ṇic's. A saṁjñā verdict, set by 3.1.32 and
     /// pinned by its unit test; no rule reads it yet. 6.4.51 *ṇer aniṭi*,
