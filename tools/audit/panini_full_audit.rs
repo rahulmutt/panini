@@ -9,9 +9,9 @@
 //! one cell the audit could not independently validate. Keying on the number
 //! removes that circularity.
 //!
-//! What it compares: for each of the 144 curated roots, for each pada the root
-//! admits (two apiece for the thirty roots that admit both padas —
-//! twenty-five ubhayapadī by 1.3.72, √bhuj by 1.3.66, and four curādi roots by
+//! What it compares: for each of the 150 curated roots, for each pada the root
+//! admits (two apiece for the thirty-six roots that admit both padas —
+//! twenty-five ubhayapadī by 1.3.72, √bhuj by 1.3.66, and ten curādi roots by
 //! 1.3.74), for each of the four
 //! lakāras this engine
 //! implements (laṭ, laṅ, loṭ, vidhiliṅ), for each of the nine puruṣa × vacana
@@ -24,10 +24,10 @@
 //! doc comment states that a blocked prakriyā's `text()` is a partial string
 //! (often the bare root code), not a surface form.
 //!
-//! Corpus invariants, asserted: 144 roots, 6264 cells, 7394 forms. These are
+//! Corpus invariants, asserted: 150 roots, 6696 cells, 7862 forms. These are
 //! facts about the repo, pinned by its own golden suite
-//! (`derivation_set_shape_matches_the_audited_numbers`): 696 root×pada×lakāra
-//! blocks × 9 cells, plus 1130 `ALTERNATES` rows. If this harness's
+//! (`derivation_set_shape_matches_the_audited_numbers`): 744 root×pada×lakāra
+//! blocks × 9 cells, plus 1166 `ALTERNATES` rows. If this harness's
 //! enumeration disagrees, the harness is wrong.
 //!
 //! Which dhātupāṭha file: the vidyut checkout's own
@@ -54,7 +54,7 @@
 //!     PANINI_AUDIT_PERTURB=form  cargo run --release --example panini_full_audit
 //!     PANINI_AUDIT_PERTURB=entry cargo run --release --example panini_full_audit
 //!
-//! Optionally dump the full 6264-cell table:
+//! Optionally dump the full 6696-cell table:
 //!
 //!     PANINI_AUDIT_DUMP=/path/to/table.tsv cargo run --release --example panini_full_audit
 
@@ -580,9 +580,9 @@ fn main() {
     println!("blocked branches : {n_blocked}");
     println!("differing cells  : {}", diffs.len());
 
-    assert_eq!(roots_seen.len(), 144, "curated roots");
-    assert_eq!(n_cells, 6264, "cells: 696 root×pada×lakāra blocks × 9");
-    assert_eq!(n_forms, 7394, "forms: 6264 cells + 1130 ALTERNATES rows");
+    assert_eq!(roots_seen.len(), 150, "curated roots");
+    assert_eq!(n_cells, 6696, "cells: 744 root×pada×lakāra blocks × 9");
+    assert_eq!(n_forms, 7862, "forms: 6696 cells + 1166 ALTERNATES rows");
     assert_eq!(
         n_branches, n_forms,
         "no cell may yield two live branches with the same text"
