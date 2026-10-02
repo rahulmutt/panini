@@ -136,8 +136,14 @@ pub(super) fn lin_a_form(number: &str, pu: Purusha, va: Vacana) -> String {
 ///
 /// Slice 10b puts the dhātupāṭha gaṇasūtra 10.0496 *ā kusmād
 /// ātmanepadinaḥ* at the very top, ahead of 3.1.25, where vidyut-prakriya
-/// credits it: it settles an ākusmīya root's pada before ṇic exists. It is
-/// the only id here that is not an Aṣṭādhyāyī sūtra.
+/// credits it: it settles an ākusmīya root's pada before ṇic exists.
+///
+/// Slice 10d adds the gaṇasūtra 10.0493 *jñapādayo mitaḥ* right after it,
+/// again where vidyut credits it, and 6.4.92 *mitāṃ hrasvaḥ* right after
+/// 7.2.116, whose vṛddhi it undoes on a mit root. vidyut credits 6.4.92
+/// later, after 7.3.84; see its comment in `sanadi.rs` for why it sits
+/// here. 10.0496 and 10.0493 are the only ids here that are not
+/// Aṣṭādhyāyī sūtras.
 ///
 /// 6.4.106/6.4.107 sit BELOW 6.1.96 but ABOVE 6.1.90, against sūtra order
 /// and against where Task 3 first placed them (after 6.4.105, below all
@@ -160,22 +166,23 @@ pub(super) fn lin_a_form(number: &str, pu: Purusha, va: Vacana) -> String {
 #[test]
 fn tinanta_rule_order_is_pinned() {
     let expected = [
-        "10.0496", "3.1.25", "1.3.9", "3.4.114", "7.2.116", "7.3.86", "3.1.32", "1.3.12", "1.3.66",
-        "1.3.72", "1.3.74", "1.3.78", "3.4.78", "1.3.9", "1.2.4", "3.4.85", "3.4.108", "3.4.109",
-        "3.4.105", "3.4.106", "3.4.101", "3.4.99", "3.4.87", "3.4.89", "3.4.86", "3.4.100",
-        "3.4.80", "3.4.79", "3.4.91", "3.4.93", "3.4.90", "3.4.92", "3.4.103", "3.4.102", "7.1.35",
-        "3.1.69", "3.1.73", "3.1.77", "3.1.78", "3.1.79", "3.1.81", "3.1.68", "2.4.72", "2.4.75",
-        "3.4.111", "3.1.83", "1.2.4", "6.1.10", "7.4.66", "7.4.60", "7.4.59", "7.4.62", "7.4.75",
-        "7.4.76", "7.4.77", "7.4.78", "6.4.78", "6.4.71", "6.4.72", "6.1.73", "7.3.100", "7.1.5",
-        "7.1.6", "7.1.4", "7.1.3", "7.2.79", "7.2.80", "7.2.81", "6.4.23", "7.4.21", "7.3.83",
-        "7.3.87", "7.3.84", "7.3.86", "7.3.86", "7.3.92", "7.3.84", "7.1.102", "6.4.110",
-        "6.4.108", "6.4.109", "6.4.87", "6.4.82", "6.4.77", "6.1.77", "6.1.78", "7.3.101",
-        "6.4.119", "6.4.118", "6.4.117", "6.4.116", "6.4.113", "6.4.98", "6.4.100", "6.4.112",
-        "6.4.115", "6.4.42", "6.4.43", "6.1.101", "6.1.96", "6.4.106", "6.4.107", "6.1.90",
-        "6.1.88", "6.1.97", "6.1.87", "6.1.66", "6.4.105", "6.4.101", "6.4.111", "8.2.77",
-        "8.2.23", "8.2.25", "8.2.26", "8.2.30", "8.2.31", "8.2.39", "8.2.40", "8.2.41", "8.2.74",
-        "8.2.75", "8.2.73", "8.3.15", "8.3.24", "8.3.59", "8.4.40", "8.4.41", "8.3.13", "8.4.53",
-        "8.4.54", "8.2.38", "8.4.55", "8.4.1", "8.4.2", "8.4.58", "8.4.65", "8.4.56",
+        "10.0496", "10.0493", "3.1.25", "1.3.9", "3.4.114", "7.2.116", "6.4.92", "7.3.86",
+        "3.1.32", "1.3.12", "1.3.66", "1.3.72", "1.3.74", "1.3.78", "3.4.78", "1.3.9", "1.2.4",
+        "3.4.85", "3.4.108", "3.4.109", "3.4.105", "3.4.106", "3.4.101", "3.4.99", "3.4.87",
+        "3.4.89", "3.4.86", "3.4.100", "3.4.80", "3.4.79", "3.4.91", "3.4.93", "3.4.90", "3.4.92",
+        "3.4.103", "3.4.102", "7.1.35", "3.1.69", "3.1.73", "3.1.77", "3.1.78", "3.1.79", "3.1.81",
+        "3.1.68", "2.4.72", "2.4.75", "3.4.111", "3.1.83", "1.2.4", "6.1.10", "7.4.66", "7.4.60",
+        "7.4.59", "7.4.62", "7.4.75", "7.4.76", "7.4.77", "7.4.78", "6.4.78", "6.4.71", "6.4.72",
+        "6.1.73", "7.3.100", "7.1.5", "7.1.6", "7.1.4", "7.1.3", "7.2.79", "7.2.80", "7.2.81",
+        "6.4.23", "7.4.21", "7.3.83", "7.3.87", "7.3.84", "7.3.86", "7.3.86", "7.3.92", "7.3.84",
+        "7.1.102", "6.4.110", "6.4.108", "6.4.109", "6.4.87", "6.4.82", "6.4.77", "6.1.77",
+        "6.1.78", "7.3.101", "6.4.119", "6.4.118", "6.4.117", "6.4.116", "6.4.113", "6.4.98",
+        "6.4.100", "6.4.112", "6.4.115", "6.4.42", "6.4.43", "6.1.101", "6.1.96", "6.4.106",
+        "6.4.107", "6.1.90", "6.1.88", "6.1.97", "6.1.87", "6.1.66", "6.4.105", "6.4.101",
+        "6.4.111", "8.2.77", "8.2.23", "8.2.25", "8.2.26", "8.2.30", "8.2.31", "8.2.39", "8.2.40",
+        "8.2.41", "8.2.74", "8.2.75", "8.2.73", "8.3.15", "8.3.24", "8.3.59", "8.4.40", "8.4.41",
+        "8.3.13", "8.4.53", "8.4.54", "8.2.38", "8.4.55", "8.4.1", "8.4.2", "8.4.58", "8.4.65",
+        "8.4.56",
     ];
     let actual: Vec<&str> = rules().map(|r| r.id).collect();
     assert_eq!(actual, expected);
@@ -2350,5 +2357,49 @@ fn derive_stamps_the_row_number_and_decides_ghu_by_it() {
         .unwrap();
         assert_eq!(p.ctx.dhatupatha, d.dhatupatha);
         assert_eq!(p.terms[ANGA].has(Tag::Ghu), is_ghu, "{}", d.dhatupatha);
+    }
+}
+
+#[test]
+fn derive_tags_mit_on_curadi_rows_in_jnapadi_only() {
+    // 10.0493's verdict, by row number and gaṇa: √jñap and √yam (in range)
+    // are mit; √śam (am-final, curādi, outside the range) and √cur are not.
+    // A non-curādi dhātu numbered inside the range is impossible upstream,
+    // so the gaṇa check is pinned with a hand-built row.
+    let row = |dhatupatha, code, gana| Dhatu {
+        dhatupatha,
+        code,
+        gana,
+        pada: if gana == Gana::Curadi {
+            PadaAssignment::Nic
+        } else {
+            PadaAssignment::Parasmaipada
+        },
+        artha: "",
+    };
+    for (d, is_mit) in [
+        (row("10.0118", "jYap", Gana::Curadi), true),
+        (row("10.0119", "yam", Gana::Curadi), true),
+        (row("10.0218", "Sam", Gana::Curadi), false),
+        (row("10.0001", "cur", Gana::Curadi), false),
+        (row("10.0118", "jYap", Gana::Bhvadi), false),
+    ] {
+        let p = derive(
+            &d,
+            Lakara::Lat,
+            Pada::Parasmaipada,
+            Purusha::Prathama,
+            Vacana::Eka,
+        )
+        .into_iter()
+        .next()
+        .unwrap();
+        assert_eq!(
+            p.terms[ANGA].has(Tag::Mit),
+            is_mit,
+            "{} {:?}",
+            d.dhatupatha,
+            d.gana
+        );
     }
 }

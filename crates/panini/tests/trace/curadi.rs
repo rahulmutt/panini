@@ -5,10 +5,12 @@
 //! 3.4.114, then 7.2.116 or 7.3.86 where the root's upadhā takes one, then
 //! 3.1.32 — before the pada sūtra, where every other gaṇa's trace opens.
 //! An ākusmīya root's trace opens one step earlier, with the gaṇasūtra
-//! 10.0496, and has no pada sūtra at all.
+//! 10.0496, and has no pada sūtra at all. A jñapādi root's also opens one
+//! step earlier, with the gaṇasūtra 10.0493, and 6.4.92 follows its
+//! 7.2.116.
 
 use crate::helpers::{at, cell_trace, credited};
-use panini_data::{AKUSMIYA, Gana, Lakara, Pada, Purusha, Vacana, dhatus};
+use panini_data::{AKUSMIYA, Gana, JNAPADI, Lakara, Pada, Purusha, Vacana, dhatus};
 use panini_prakriya::derive;
 
 #[test]
@@ -247,7 +249,7 @@ fn a_kusmad_is_credited_on_exactly_the_akusmiya_cells() {
     // 10.0496 fires on every ātmanepada cell of the 37 curated ākusmīya
     // rows — 37 roots × 4 lakāras × 9 cells, one branch each — and nowhere
     // else: every credit's number lies in the positional `AKUSMIYA` range.
-    // And 1.3.74 never reaches them: its credits stay on the four `Nic` rows.
+    // And 1.3.74 never reaches them: its credits stay on the ten `Nic` rows.
     let hits = credited("10.0496");
     assert_eq!(hits.len(), 1332);
     for (number, _) in &hits {
@@ -255,8 +257,74 @@ fn a_kusmad_is_credited_on_exactly_the_akusmiya_cells() {
     }
     for (number, _) in credited("1.3.74") {
         assert!(
-            ["10.0001", "10.0010", "10.0033", "10.0255"].contains(&number),
+            [
+                "10.0001", "10.0010", "10.0033", "10.0255", "10.0118", "10.0119", "10.0120",
+                "10.0121", "10.0122", "10.0123",
+            ]
+            .contains(&number),
             "1.3.74 credited on {number}"
         );
+    }
+}
+
+#[test]
+fn jnapayati_trace_lengthens_then_shortens_the_upadha() {
+    // jYap P laT P.E. 10.0493 credits the mit-tva before ṇic exists; 7.2.116
+    // lengthens the `a` upadhā before ṇit ṇic (`jYAp`), and 6.4.92 mitāṃ
+    // hrasvaḥ shortens it back (`jYap`) before 3.1.32 folds ṇic in.
+    let (text, t) = cell_trace(
+        "10.0118",
+        Lakara::Lat,
+        Pada::Parasmaipada,
+        Purusha::Prathama,
+        Vacana::Eka,
+    );
+    assert_eq!(text, "jYapayati", "got {t:?}");
+    assert_eq!(
+        t,
+        [
+            "10.0493", "3.1.25", "1.3.9", "3.4.114", "7.2.116", "6.4.92", "3.1.32", "1.3.78",
+            "3.4.78", "1.3.9", "3.1.68", "1.3.9", "7.3.84", "6.1.78",
+        ],
+    );
+}
+
+#[test]
+#[allow(non_snake_case)]
+fn syAmayate_and_SAmayate_keep_their_vrddhi() {
+    // √syam and √śam are am-final curādi roots, but not jñapādi: neither
+    // 10.0493 nor 6.4.92 reaches them, and 7.2.116's vṛddhi stands.
+    for (number, form) in [("10.0216", "syAmayate"), ("10.0218", "SAmayate")] {
+        let (text, t) = cell_trace(
+            number,
+            Lakara::Lat,
+            Pada::Atmanepada,
+            Purusha::Prathama,
+            Vacana::Eka,
+        );
+        assert_eq!(text, form, "got {t:?}");
+        assert!(t.contains(&"7.2.116".to_string()), "{form}: got {t:?}");
+        for absent in ["10.0493", "6.4.92"] {
+            assert!(
+                !t.contains(&absent.to_string()),
+                "{form} {absent}: got {t:?}"
+            );
+        }
+    }
+}
+
+#[test]
+fn the_mit_rules_are_credited_on_exactly_the_jnapadi_cells() {
+    // 10.0493 and 6.4.92 fire on every branch of the six curated jñapādi
+    // rows — 42 parasmaipada and 36 ātmanepada branches each, 468 in all —
+    // and nowhere else: every credit's number lies in the positional
+    // `JNAPADI` range. Goldens ignore traces, so this is what holds both
+    // rules inert on the 144 prior roots.
+    for sutra in ["10.0493", "6.4.92"] {
+        let hits = credited(sutra);
+        assert_eq!(hits.len(), 468, "{sutra}");
+        for (number, _) in &hits {
+            assert!(JNAPADI.contains(number), "{sutra} credited on {number}");
+        }
     }
 }

@@ -47,6 +47,9 @@ amendment made after prototyping; see "√das and the sibling check" below).
 - `10.0231 gf` and `10.0235 yu`, which need 7.2.115 before ṇic;
 - gaṇasūtra **10.0494** *nānye mito 'hetau* (see √syam and √śam below), mit
   roots generally, and everything else on 10a's and 10b's out-of-scope lists.
+  (Slice 10d took the mit roots — see `2026-10-02-curadi-gana-10d-design.md` —
+  and moved 01.0934 and 10.0494 to a causative slice: without a causative,
+  01.0934 can never fire.)
 
 ### Decisions
 
@@ -69,7 +72,8 @@ engine implements neither 01.0934 nor any mittva, so a 10.0494 rule here
 would block nothing. Deleting it could fail no test, and it would leave a
 mutation survivor. The forms already match. The two rows' comments name
 them as the witnesses the mit slice inherits. Once that slice adds 01.0934,
-these goldens fail unless it also adds 10.0494.
+these goldens fail unless it also adds 10.0494. (Slice 10d, the mit slice,
+did not add 01.0934; the witnesses pass to a causative slice.)
 
 ### √das and the sibling check (amendment)
 
@@ -239,7 +243,8 @@ final HEAD.
 ## Later slices
 
 10a's order, now without the ākusmīya bulk: mit roots (taking 01.0934 and
-10.0494, with √syam and √śam as the witnesses), adanta roots (with the
+10.0494, with √syam and √śam as the witnesses; slice 10d took the jñapādi and
+deferred both gaṇasūtras to a causative slice), adanta roots (with the
 ā-garvīya list, 10.0497), then optional ṇic (taking the six optional-ṇic
 ākusmīya rows). √smiṅ, and with it 7.2.115 before ṇic, rides whichever
 slice first needs 7.2.115. √gṛ (`10.0231`) and √yu (`10.0235`) are the
