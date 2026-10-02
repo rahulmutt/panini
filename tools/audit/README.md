@@ -27,7 +27,7 @@ is ruleless.
 comment states that a blocked prakriyā's `text()` is a partial string — often the
 bare root code — not a surface form.
 
-**It asserts the corpus totals** (103 roots, 4644 cells, 5750 forms) rather than
+**It asserts the corpus totals** (107 roots, 4932 cells, 6062 forms) rather than
 reporting whatever it enumerated. Those totals are corroborated by
 `derivation_set_shape_matches_the_audited_numbers` in
 `crates/panini/tests/paradigm/main.rs`, which each slice raises to the same totals
@@ -108,6 +108,22 @@ PANINI_AUDIT_DUMP=/tmp/audit-table.tsv mise exec rust@1.99.0 -- cargo run --rele
 ```
 
 ## Last recorded result
+
+2026-10-02, curādi 10a slice, vidyut
+`8da2f90bee3ce1c07505fa432fc3729e3f7e02ea`: **zero differences across 4932
+cells / 6062 forms / 107 roots**, with the `entry` negative control verified
+failing (36 √bhū cells).
+
+The verdict covers the whole curādi 10a slice: the first gaṇa-10 rows, √cur,
+√laḍ, √bhakṣ and √bhūṣ (`10.0001`, `10.0010`, `10.0033`, `10.0255`), ubhayapadī
+by 1.3.74 *ṇicaś ca*, behind a new first pipeline stage — 3.1.25 ṇic, its
+it-lopa, 3.4.114, 7.2.116 *ata upadhāyāḥ* (*lāḍayati*), a pre-ṇic 7.3.86
+(*corayati*) and 3.1.32 *sanādyantā dhātavaḥ*. A main-vs-branch dump of every
+prior cell's traces was byte-identical.
+
+Totals: 107 = 103 + 4; 4932 = 4644 + 288 (32 root×pada×lakāra blocks × 9);
+6062 = 5750 + 288 + 24 new `ALTERNATES` rows (1106 → 1130), measured via the
+harness's corpus block, not assumed.
 
 2026-10-01, juhotyādi 3f3 slice, vidyut
 `8da2f90bee3ce1c07505fa432fc3729e3f7e02ea`: **zero differences across 4644

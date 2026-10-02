@@ -47,7 +47,8 @@ that arm. `tripadi.rs`.
 8.3.24, 8.4.56 and 8.4.58.
 
 **Out of scope:** √gam, √han, √khan and √ghas (the other roots 6.4.98 and
-6.4.42 name; none is curated); 8.4.44 as a rule of its own; curādi.
+6.4.42 name; none is curated); 8.4.44 as a rule of its own; curādi (opened in
+slice 10a — `2026-10-01-curadi-gana-10a-design.md`).
 
 ## Evidence the design is complete and inert
 

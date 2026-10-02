@@ -196,8 +196,8 @@ fn exactly_the_pinned_vikalpa_rules_are_optional() {
 /// rule ABOVE its barrer, where barring it does nothing. Pin the whole
 /// relation, and require every barred id to run after its barrer.
 ///
-/// Ids are not unique in the pipeline (7.3.84, 7.3.86 and 1.2.4 each appear
-/// twice), so "runs after" means some later occurrence.
+/// Ids are not unique in the pipeline (7.3.84 and 1.2.4 each appear twice,
+/// 7.3.86 three times), so "runs after" means some later occurrence.
 #[test]
 fn exactly_the_pinned_bars() {
     let ids: Vec<&str> = rules().map(|r| r.id).collect();
@@ -738,9 +738,9 @@ fn trace_is_recorded() {
 // `TINANTA_RULES` entry with the matching `id`. `Rule.name` itself is
 // write-only dead data: what a user sees is `RuleStep.name`, populated
 // solely from the string literal passed to `p.record(...)` at each call
-// site (there are two for id "1.3.9": this rule's own body, and
-// `run_it_samjna` in `it_samjna.rs`, called from 3.1.68's body — both
-// currently pass the literal "tasya lopaH"). Comparing every recorded
+// site (there are several for id "1.3.9": each 1.3.9 rule's own body —
+// the sanādi stage's included — and `run_it_samjna` in `it_samjna.rs`,
+// called from 3.1.68's body — all currently pass the literal "tasya lopaH"). Comparing every recorded
 // step's name against `TINANTA_RULES` by id, over real derivations,
 // catches either call site drifting from `Rule.name` without having to
 // special-case which call site fired.

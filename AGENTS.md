@@ -144,7 +144,7 @@
   target under `crates/panini-lipi/fuzz` legitimately omits it, since it uses
   `#![no_main]` plus the libfuzzer harness macro).
 - Grammar changes are gated by the golden paradigm test
-  (`crates/panini/tests/paradigm/`, 4644 cells, nine gaṇas, all complete —
+  (`crates/panini/tests/paradigm/`, 4932 cells, ten gaṇas, nine complete —
   tanādi closing at 10/10 in slice 8b (nine of its ten dhātupāṭha rows
   curated in slice 8a; √kṛ, the tenth and last, in 8b), and juhotyādi (3)
   opened in slice 3a at 2 of its 26 rows, at 4 after slice 3b curated √bhī
@@ -153,10 +153,12 @@
   √gā, at 16 after slice 3d curated √pṝ, √pṛ, √bhṛ, √ghṛ, √hṛ
   and √sṛ, at 17 after slice 3d2 curated √ṛ, at 20 after slice 3e curated √ṇij, √vij
   and √viṣ, at 24 after slice 3f curated √kit, √tur, √dhiṣ and √dhan, at 25
-  after slice 3f2 curated √bhas, and closing at 26 of 26 in slice 3f3 with √jan —
+  after slice 3f2 curated √bhas, and closing at 26 of 26 in slice 3f3 with √jan,
+and curādi (10) opened in slice 10a at 4 of its 509 rows (√cur, √laḍ, √bhakṣ,
+√bhūṣ) —
   `PARADIGM`
     stays one-form-per-cell: a cell forked by an optional rule keeps its
-    other forms — a second (604 cells), a third (157 cells), a fourth
+    other forms — a second (612 cells), a third (165 cells), a fourth
     (nineteen
     cells, rudhādi's √piṣ and — new in slice 7d — √śiṣ loṭ madhyama eka, and
     — new in slice 8a — fifteen more spread across tanādi's four ik-upadhā
@@ -172,7 +174,7 @@
     and fifth (prathama eka) or a fourth through sixth (madhyama eka), or
     seventh for slice 3c2's √hā (`03.0009`) loṭ madhyama eka, the one
     seven-form cell — in
-    `ALTERNATES` (1106 rows in all, so 4644 + 1106 = 5750 forms total); √bhuj
+    `ALTERNATES` (1130 rows in all, so 4932 + 1130 = 6062 forms total); √bhuj
     joins neither fork record — its forks stack only 7.1.35 and 8.4.56, the
     same two-deep profile as √yuj — but the √bhuj/1.3.66 slice adds two
     trace pins of its own, `bhunkte_trace_credits_1_3_66_not_1_3_72` and
@@ -582,7 +584,8 @@
   roots), and that by juhotyādi 3f2's (`tools/audit/README.md`'s 2026-10-01
   entry, 4608 cells / 5699 forms / 102 roots), and that by juhotyādi 3f3's
   (`tools/audit/README.md`'s 2026-10-01 entry, 4644 cells / 5750 forms / 103
-  roots).
+  roots), and that by curādi 10a's (`tools/audit/README.md`'s 2026-10-02 entry, 4932
+  cells / 6062 forms / 107 roots).
   Three new `Rule`s are behind it, all root-keyed to √kṛ and all in
   `guna.rs` — 6.4.110 *ata ut sārvadhātuke*, 6.4.108 *nityaṁ karoteḥ* and
   6.4.109 *ye ca* — plus one engine change with no `Rule` of its own:
@@ -634,7 +637,7 @@
   cells across eleven roots (`key_count("6.4.107") == 72`, the same
   test), not 8 — the "8 cells" figure was never re-derived when the gaṇa
   landed. `guna.rs:1233`'s own claim ("1872 goldens move") stays stale
-  only in the ordinary corpus-size sense, not wrong in kind: 4644 goldens
+  only in the ordinary corpus-size sense, not wrong in kind: 4932 goldens
   would move today. Neither comment was touched by tanādi 8a or 8b, consistent
   with every slice since 7c. Rudhādi 7d touched neither comment — its one permitted
   engine-comment edit is the comment above
@@ -674,7 +677,7 @@
   stands at 4428 cells as of 3e (`guna.rs:2228`'s claim now anchored at
   `guna.rs:2384` (moved from 2376 by the final-review comment on 7.3.87's order), `controller.rs:206`'s at `controller.rs:206`: 3e's 7.3.87 rule
   and its tests landed in `guna.rs` above the test, while `controller.rs` is
-  unchanged; both lines measured by grep at this commit). Juhotyādi 3f touched neither comment either; the corpus stands at 4572 cells as of 3f (`guna.rs:2384`'s claim anchored at `guna.rs:2386`, `controller.rs:206`'s at `controller.rs:206`; both lines measured by grep at this commit). Juhotyādi 3f2 touched neither comment either; the corpus stands at 4608 cells as of 3f2 (`guna.rs:2386`'s claim anchored at `guna.rs:2433`, `controller.rs:206`'s at `controller.rs:206`; both lines measured by grep at this commit). Juhotyādi 3f3 touched neither comment either; the corpus stands at 4644 cells as of 3f3 (`guna.rs:2433`'s claim anchored at `guna.rs:2565`, `controller.rs:206`'s at `controller.rs:206`; both lines measured by grep at this commit). A third,
+  unchanged; both lines measured by grep at this commit). Juhotyādi 3f touched neither comment either; the corpus stands at 4572 cells as of 3f (`guna.rs:2384`'s claim anchored at `guna.rs:2386`, `controller.rs:206`'s at `controller.rs:206`; both lines measured by grep at this commit). Juhotyādi 3f2 touched neither comment either; the corpus stands at 4608 cells as of 3f2 (`guna.rs:2386`'s claim anchored at `guna.rs:2433`, `controller.rs:206`'s at `controller.rs:206`; both lines measured by grep at this commit). Juhotyādi 3f3 touched neither comment either; the corpus stands at 4644 cells as of 3f3 (`guna.rs:2433`'s claim anchored at `guna.rs:2565`, `controller.rs:206`'s at `controller.rs:206`; both lines measured by grep at this commit). Curādi 10a touched neither comment either; the corpus stands at 4932 cells as of 10a (`guna.rs:2433`'s claim anchored at `guna.rs:2565`, `controller.rs:206`'s at `controller.rs:206`; both lines measured by grep at this commit). A third,
   `tinanta/tripadi.rs`'s comment on 8.2.30 (formerly the one calling √bhañj
   rudhādi's one cu-final curated root), was **not** left stale the same
   way: the 8.2.30/8.2.39 generalization slice rewrote it in place, since
@@ -687,7 +690,7 @@
   time. This note is the record of that deferral, now down to two
   comments.
 - New grammar goes in `TINANTA_RULES` as a self-guarding `Rule`, not as a
-  branch inside `derive`. `TINANTA_RULES` is a list of eight stage arrays,
+  branch inside `derive`. `TINANTA_RULES` is a list of nine stage arrays,
   each living in its own file under `crates/panini-prakriya/src/tinanta/`; add
   the rule to the stage its pipeline position falls in, and add its id to
   `tinanta_rule_order_is_pinned` in the same position. Which stage a rule
@@ -699,7 +702,7 @@
   the aṅga; see `tinanta/terms.rs`. Per-rule guard tests go beside the rule
   in its stage
   file; tests asserting a surface form or trace go in
-  `tinanta/derivation_tests.rs`. **Write a per-rule guard test where the
+  `tinanta/derivation_tests.rs`. A guard test looks its rule up in its own stage's static (`GUNA.iter().find(…)`, `SAMJNA.iter()…`), never with `rules().find(…)`: ids repeat across stages — 1.3.9 twice and 7.3.86 three times since curādi 10a — and `rules()` returns the first, which is the sanādi stage's. **Write a per-rule guard test where the
   rule's precondition can be built directly on a hand-built `Prakriya`.
   Where it cannot — because only an upstream rule chain produces that
   state — cite the covering derivation or trace test in the rule's own

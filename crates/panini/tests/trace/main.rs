@@ -28,8 +28,9 @@
 //! fire.
 //!
 //! The pada-sanction step (1.3.78 for these parasmaipada roots; 1.3.12 for
-//! atmanepada roots) is the derivation's source of truth for pada and now
-//! opens every trace.
+//! atmanepada roots) is the derivation's source of truth for pada and opens
+//! every trace except curādi's, which open with the sanādi stage — 3.1.25 ṇic,
+//! ahead of any pada sanction (curādi's pada comes from 1.3.74 *ṇicaś ca*).
 
 mod helpers;
 

@@ -345,9 +345,9 @@ mod tests {
         p
     }
 
-    /// `pada_prakriya` for a curādi root, hand-built: the curādi rows land in
-    /// the data task after this one, and 1.3.74 reads only `Tag::Nic`, so the
-    /// term is constructed directly, as `anavane_prakriya` is.
+    /// `pada_prakriya` for a curādi root, hand-built: 1.3.74 reads only
+    /// `Tag::Nic`, so the term is constructed directly, as `anavane_prakriya`
+    /// is, without running the sanādi stage.
     fn nic_prakriya(pada: Pada) -> Prakriya {
         let mut t = Term::new("cur");
         t.add(Tag::Dhatu);
