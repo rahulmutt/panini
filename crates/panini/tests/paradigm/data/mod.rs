@@ -1,7 +1,7 @@
 //! The golden tables, one file per gaṇa, keyed by the
 //! dhātupāṭha-number prefix of every row: 01 bhvādi, 02 adādi, 03
 //! juhotyādi, 04 divādi, 05 svādi, 06 tudādi, 07 rudhādi, 08 tanādi, 09
-//! kryādi. Row order
+//! kryādi, 10 curādi. Row order
 //! within a file preserves the pre-split monolith's order; the
 //! concatenated statics below are what the tests in `main.rs`
 //! consume, and no test depends on row order. A new gaṇa lands as
@@ -14,6 +14,7 @@ use panini_data::Pada;
 
 pub mod adadi;
 pub mod bhvadi;
+pub mod curadi;
 pub mod divadi;
 pub mod juhotyadi;
 pub mod kryadi;
@@ -54,6 +55,7 @@ pub static PARADIGM: LazyLock<Vec<ParadigmRow>> = LazyLock::new(|| {
         kryadi::PARADIGM,
         tanadi::PARADIGM,
         juhotyadi::PARADIGM,
+        curadi::PARADIGM,
     ]
     .concat()
 });
@@ -84,6 +86,7 @@ pub static ALTERNATES: LazyLock<Vec<AlternateRow>> = LazyLock::new(|| {
         kryadi::ALTERNATES,
         tanadi::ALTERNATES,
         juhotyadi::ALTERNATES,
+        curadi::ALTERNATES,
     ]
     .concat()
 });

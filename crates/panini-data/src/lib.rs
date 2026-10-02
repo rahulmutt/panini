@@ -110,10 +110,11 @@ pub struct Dhatu {
     pub gana: Gana,
     /// Which pada(s) this engine derives for this root. Curated rather than
     /// read from the upadeśa's it-markers — but no longer a *deferral*:
-    /// `curated_pada_agrees_with_upadesha_markers` re-derives 102 of these 103
+    /// `curated_pada_agrees_with_upadesha_markers` re-derives 102 of these 107
     /// verdicts from the vendored upadeśa via 1.3.12 / 1.3.72 / 1.3.78 and
     /// requires them to match; `07.0017`'s (√bhuj's) is 1.3.66's root-keyed
-    /// exception, asserted explicitly from both sides, the same way
+    /// exception and the four curādi rows' are 1.3.74's, each asserted
+    /// explicitly from both sides, the same way
     /// `dhatupatha_numbers_resolve_upstream` holds `code` to upstream.
     ///
     /// The column stayed hand-written because deriving it in production means
@@ -123,7 +124,7 @@ pub struct Dhatu {
     /// the honest arrangement; see the deferral in
     /// `docs/superpowers/specs/2026-08-16-pada-audit-design.md`.
     ///
-    /// The test covers the 103 roots curated here, not the dhātupāṭha's 2259.
+    /// The test covers the 107 roots curated here, not the dhātupāṭha's 2259.
     /// It catches a mis-assigned pada on a root a future slice adds; it does
     /// not make the table self-maintaining.
     pub pada: PadaAssignment,
@@ -1229,6 +1230,44 @@ static DHATUS: &[Dhatu] = &[
         pada: PadaAssignment::Parasmaipada,
         artha: "stutO",
     },
+    Dhatu {
+        // 10.0001 `cura~` steye (√cur). Curādi's eponym: 3.1.25 adds ṇic,
+        // 7.3.86 guṇates the laghu upadhā before it (cor-i), and 3.1.32 makes
+        // `cori` the dhātu. Ubhayapadī by 1.3.74 ṇicaś ca. Slice 10a.
+        dhatupatha: "10.0001",
+        code: "cur",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "steye",
+    },
+    Dhatu {
+        // 10.0010 `laqa~` upasevAyAm (√laḍ). 7.2.116 ata upadhāyāḥ lengthens
+        // the `a` upadhā before ṇit ṇic (lAq-i). Ubhayapadī by 1.3.74. Slice
+        // 10a.
+        dhatupatha: "10.0010",
+        code: "laq",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "upasevAyAm",
+    },
+    Dhatu {
+        // 10.0033 `Bakza~` adane (√bhakṣ). Guru upadhā: neither 7.3.86 nor
+        // 7.2.116 touches it before ṇic. Ubhayapadī by 1.3.74. Slice 10a.
+        dhatupatha: "10.0033",
+        code: "Bakz",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "adane",
+    },
+    Dhatu {
+        // 10.0255 `BUza~` alaNkaraRe (√bhūṣ). Long upadhā, so guru: unchanged
+        // before ṇic. Ubhayapadī by 1.3.74. Slice 10a.
+        dhatupatha: "10.0255",
+        code: "BUz",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "alaNkaraRe",
+    },
 ];
 
 pub fn dhatus() -> &'static [Dhatu] {
@@ -1270,7 +1309,7 @@ mod tests {
 
     #[test]
     fn curated_roots_have_expected_ganas_and_padas() {
-        assert_eq!(dhatus().len(), 103);
+        assert_eq!(dhatus().len(), 107);
         let bu = dhatus().iter().find(|d| d.dhatupatha == "01.0001").unwrap();
         assert!(matches!(bu.pada, PadaAssignment::Parasmaipada));
         let labh = dhatus().iter().find(|d| d.dhatupatha == "01.1130").unwrap();
@@ -1561,6 +1600,29 @@ mod tests {
     }
 
     #[test]
+    fn curadi_rows_are_the_four_curated_roots() {
+        // Slice 10a opens gaṇa 10 with four roots that need only ṇic
+        // (3.1.25), 3.1.32 and the guṇa/vṛddhi before ṇic: √cur (7.3.86),
+        // √laḍ (7.2.116), √bhakṣ and √bhūṣ (neither). None carries a pada
+        // marker; all four are ubhayapadī by 1.3.74 ṇicaś ca. The gaṇa is
+        // OPEN at 4 of its 509 dhātupāṭha rows.
+        let rows: Vec<_> = dhatus()
+            .iter()
+            .filter(|d| d.gana == Gana::Curadi)
+            .map(|d| (d.dhatupatha, d.code, d.pada))
+            .collect();
+        assert_eq!(
+            rows,
+            vec![
+                ("10.0001", "cur", PadaAssignment::Nic),
+                ("10.0010", "laq", PadaAssignment::Nic),
+                ("10.0033", "Bakz", PadaAssignment::Nic),
+                ("10.0255", "BUz", PadaAssignment::Nic),
+            ]
+        );
+    }
+
+    #[test]
     fn juhotyadi_rows_are_the_twenty_six_curated_roots() {
         // Slice 3a opened the ślu gaṇa with its eponym √hu and √ki, the two
         // roots that exercise dvitva, 7.4.62, 7.1.4, 3.4.109/7.3.83, 6.4.82,
@@ -1785,7 +1847,7 @@ mod tests {
     /// AFTER the `~` that marks an anunāsika it, so `~\` is an anudātta it and
     /// `~^` a svarita it — whereas a `\` sitting directly on a vowel elsewhere
     /// is the ROOT's own accent and says nothing about pada. Counted off the
-    /// vendored upadeśa: 66 of the 103 curated roots carry a `\` at all, and 45
+    /// vendored upadeśa: 66 of the 107 curated roots carry a `\` at all, and 45
     /// of those carry one on a root vowel — `01.0642 ji\`, `01.1082 smf\` and
     /// `02.0001 a\da~` among them — so conflating the two does not fail
     /// loudly; it silently calls most of the table ātmanepada.
@@ -1978,6 +2040,28 @@ mod tests {
                     d.pada,
                     PadaAssignment::UbhayapadaAnavane,
                     "07.0017 is the root 1.3.66 names; its pada is curated, not marker-derived"
+                );
+                continue;
+            }
+            // 1.3.74 ṇicaś ca: a curādi root's ātmanepada comes from the
+            // affix 3.1.25 adds, not from any marker of its own, so its
+            // upadeśa CORRECTLY derives parasmaipada and the curated column
+            // says `Nic`. Asserted both ways, like √bhuj above. A curādi row
+            // that DOES carry a marker (the ātmanepadī ākusmīya roots) is a
+            // later slice's, and will fail here until that slice decides how
+            // 1.3.12 and 1.3.74 meet.
+            if d.gana == Gana::Curadi {
+                assert_eq!(
+                    derived,
+                    PadaAssignment::Parasmaipada,
+                    "{} {upadesha}: a marked curādi row needs its own pada decision",
+                    d.dhatupatha
+                );
+                assert_eq!(
+                    d.pada,
+                    PadaAssignment::Nic,
+                    "{} is curādi; its pada is 1.3.74's, curated as Nic",
+                    d.dhatupatha
                 );
                 continue;
             }
