@@ -7,10 +7,14 @@
 //! An ākusmīya root's trace opens one step earlier, with the gaṇasūtra
 //! 10.0496, and has no pada sūtra at all. A jñapādi root's also opens one
 //! step earlier, with the gaṇasūtra 10.0493, and 6.4.92 follows its
-//! 7.2.116.
+//! 7.2.116. An adanta root's has 6.4.48 after 3.4.114 and neither 7.2.116
+//! nor 7.3.86; an ā-garvīya root's also opens with the gaṇasūtra 10.0497,
+//! and has no pada sūtra.
 
 use crate::helpers::{at, cell_trace, credited};
-use panini_data::{AKUSMIYA, Gana, JNAPADI, Lakara, Pada, Purusha, Vacana, dhatus};
+use panini_data::{
+    AA_GARVIYA, AKUSMIYA, Gana, JNAPADI, Lakara, Pada, PadaAssignment, Purusha, Vacana, dhatus,
+};
 use panini_prakriya::derive;
 
 #[test]
@@ -249,21 +253,22 @@ fn a_kusmad_is_credited_on_exactly_the_akusmiya_cells() {
     // 10.0496 fires on every ātmanepada cell of the 37 curated ākusmīya
     // rows — 37 roots × 4 lakāras × 9 cells, one branch each — and nowhere
     // else: every credit's number lies in the positional `AKUSMIYA` range.
-    // And 1.3.74 never reaches them: its credits stay on the ten `Nic` rows.
+    // And 1.3.74 never reaches them: its credits stay on the 93 `Nic` rows,
+    // read from the curated `pada` column (ten before slice 10e, listed
+    // literally until then).
     let hits = credited("10.0496");
     assert_eq!(hits.len(), 1332);
     for (number, _) in &hits {
         assert!(AKUSMIYA.contains(number), "10.0496 credited on {number}");
     }
+    let nic: Vec<&str> = dhatus()
+        .iter()
+        .filter(|d| d.gana == Gana::Curadi && d.pada == PadaAssignment::Nic)
+        .map(|d| d.dhatupatha)
+        .collect();
+    assert_eq!(nic.len(), 93, "curated 1.3.74 rows");
     for (number, _) in credited("1.3.74") {
-        assert!(
-            [
-                "10.0001", "10.0010", "10.0033", "10.0255", "10.0118", "10.0119", "10.0120",
-                "10.0121", "10.0122", "10.0123",
-            ]
-            .contains(&number),
-            "1.3.74 credited on {number}"
-        );
+        assert!(nic.contains(&number), "1.3.74 credited on {number}");
     }
 }
 
@@ -325,6 +330,117 @@ fn the_mit_rules_are_credited_on_exactly_the_jnapadi_cells() {
         assert_eq!(hits.len(), 468, "{sutra}");
         for (number, _) in &hits {
             assert!(JNAPADI.contains(number), "{sutra} credited on {number}");
+        }
+    }
+}
+
+/// The curated adanta rows: curādi, with an `a`-final code. No row curated
+/// before slice 10e has one, so this is exactly 10e's ninety-two.
+fn adanta_rows() -> Vec<&'static str> {
+    dhatus()
+        .iter()
+        .filter(|d| d.gana == Gana::Curadi && d.code.ends_with('a'))
+        .map(|d| d.dhatupatha)
+        .collect()
+}
+
+#[test]
+#[allow(non_snake_case)]
+fn kaTayati_trace_deletes_the_a_and_skips_the_vrddhi() {
+    // kaTa P laT P.E. 6.4.48 deletes the final `a` once 3.4.114 has made ṇic
+    // ārdhadhātuka (`kaT`); by 1.1.57 the deleted `a` still stands, so
+    // 7.2.116 does not lengthen `kaT`'s `a` (not *kATayati*).
+    let (text, t) = cell_trace(
+        "10.0389",
+        Lakara::Lat,
+        Pada::Parasmaipada,
+        Purusha::Prathama,
+        Vacana::Eka,
+    );
+    assert_eq!(text, "kaTayati", "got {t:?}");
+    assert_eq!(
+        t,
+        [
+            "3.1.25", "1.3.9", "3.4.114", "6.4.48", "3.1.32", "1.3.78", "3.4.78", "1.3.9",
+            "3.1.68", "1.3.9", "7.3.84", "6.1.78",
+        ],
+    );
+    assert!(at(&t, "3.4.114") < at(&t, "6.4.48"), "got {t:?}");
+    assert!(at(&t, "6.4.48") < at(&t, "3.1.32"), "got {t:?}");
+}
+
+#[test]
+fn kuhayate_trace_opens_with_a_garvad() {
+    // kuha A laT P.E. The gaṇasūtra 10.0497 settles the pada before ṇic
+    // exists; 6.4.48 deletes the `a`, and 7.3.86 does not guṇate `kuh`'s
+    // laghu `u` (not *kohayate*). No pada sūtra is credited.
+    let (text, t) = cell_trace(
+        "10.0443",
+        Lakara::Lat,
+        Pada::Atmanepada,
+        Purusha::Prathama,
+        Vacana::Eka,
+    );
+    assert_eq!(text, "kuhayate", "got {t:?}");
+    assert_eq!(
+        t,
+        [
+            "10.0497", "3.1.25", "1.3.9", "3.4.114", "6.4.48", "3.1.32", "3.4.78", "1.2.4",
+            "3.4.79", "3.1.68", "1.3.9", "7.3.84", "6.1.78",
+        ],
+    );
+}
+
+#[test]
+fn ato_lopa_is_credited_on_exactly_the_adanta_cells() {
+    // 6.4.48 fires on every live branch of the 92 adanta rows — 83
+    // ubhayapadī roots × 78 branches and 9 ā-garvīya roots × 36 — and
+    // nowhere else. Neither 7.2.116 nor 7.3.86 is credited on any of them:
+    // that is 1.1.57's block, held corpus-wide. Goldens ignore traces, so
+    // this is also what holds 6.4.48 inert on the 150 prior roots.
+    let adanta = adanta_rows();
+    assert_eq!(adanta.len(), 92);
+    let hits = credited("6.4.48");
+    assert_eq!(hits.len(), 83 * 78 + 9 * 36);
+    for (number, _) in &hits {
+        assert!(adanta.contains(number), "6.4.48 credited on {number}");
+    }
+    for sutra in ["7.2.116", "7.3.86"] {
+        for (number, _) in credited(sutra) {
+            assert!(!adanta.contains(&number), "{sutra} credited on {number}");
+        }
+    }
+}
+
+#[test]
+fn a_garvad_is_credited_on_exactly_the_a_garviya_cells() {
+    // 10.0497 fires on every ātmanepada cell of the nine curated ā-garvīya
+    // rows, one branch each, and nowhere else: every credit's number lies in
+    // the positional `AA_GARVIYA` range. Their parasmaipada derives only
+    // blocked branches, with nothing recorded: the block is 10.0497's.
+    let hits = credited("10.0497");
+    assert_eq!(hits.len(), 9 * 36);
+    for (number, _) in &hits {
+        assert!(AA_GARVIYA.contains(number), "10.0497 credited on {number}");
+    }
+    let rows: Vec<_> = dhatus()
+        .iter()
+        .filter(|d| d.gana == Gana::Curadi && AA_GARVIYA.contains(&d.dhatupatha))
+        .collect();
+    assert_eq!(rows.len(), 9, "curated ā-garvīya rows");
+    for d in rows {
+        for lakara in [Lakara::Lat, Lakara::Lan, Lakara::Lot, Lakara::VidhiLin] {
+            for purusha in [Purusha::Prathama, Purusha::Madhyama, Purusha::Uttama] {
+                for vacana in [Vacana::Eka, Vacana::Dvi, Vacana::Bahu] {
+                    let ps = derive(d, lakara, Pada::Parasmaipada, purusha, vacana);
+                    let cell = format!("{} {lakara:?} {purusha:?} {vacana:?}", d.dhatupatha);
+                    assert!(!ps.is_empty(), "{cell}");
+                    for p in &ps {
+                        assert!(p.blocked, "{cell}: {}", p.text());
+                        assert!(p.log.is_empty(), "{cell}: {:?}", p.log);
+                    }
+                }
+            }
         }
     }
 }
