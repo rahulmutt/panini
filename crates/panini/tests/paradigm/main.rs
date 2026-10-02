@@ -293,7 +293,7 @@ fn derivation_set_is_exactly_pinned() {
 /// 7.1.35/8.4.65/8.4.56 exactly as kft/ruD/Bid/kzud/tfd's do (a five-form
 /// cell), and its loṭ parasmaipada madhyama eka ties the six-form record
 /// with the same k = 3 against the 2³ bound of eight:
-/// 5076 cells total (564 root×lakāra blocks × 9), of which 4252 hold exactly one form, 612 hold two, 165 hold three (√hrī's loṭ prathama and madhyama
+/// 6264 cells total (696 root×lakāra blocks × 9), of which 5440 hold exactly one form, 612 hold two, 165 hold three (√hrī's loṭ prathama and madhyama
 /// eka, new in slice 3b, √dā's and √dhā's, new in slice 3c, and √gā's, new in
 /// slice 3c2, and the six ṛ-roots', new in slice 3d, and √ṛ's, new in slice 3d2, and √ṇij's, √vij's and √viṣ's, new in slice 3e, and √kit's, √tur's, √dhiṣ's and √dhan's, new in slice 3f, and √bhas's, new in slice 3f2, and √jan's, new in slice 3f3, and the four curādi roots', new in slice 10a, each by
 /// 7.1.35/8.4.56, plus √bhas's laṅ madhyama eka, by 8.2.74/8.4.56), nineteen hold four (piṣ's loṭ madhyama eka, the deepest
@@ -432,7 +432,9 @@ fn derivation_set_is_exactly_pinned() {
 /// control verified failing (36 √bhū cells), and curādi 10b's re-ran it at the
 /// same commit over all 5076 cells / 6206 forms / 111 roots with zero
 /// differences, its `entry` negative control verified failing (36 √bhū
-/// cells). √tṛh joins none of the fork
+/// cells), and curādi 10c's re-ran it at the same commit over all 6264 cells
+/// / 7394 forms / 144 roots with zero differences, its `entry` negative
+/// control verified failing (36 √bhū cells). √tṛh joins none of the fork
 /// records: its deepest cells hold three forms, because 8.3.13 Qo Qe lopaH
 /// obligatorily elides the ḍh that 8.4.65 forks on for every other
 /// stop-final rudhādi root.
@@ -663,11 +665,17 @@ fn derivation_set_is_exactly_pinned() {
 /// dhātupāṭha gaṇasūtra 10.0496 *ā kusmād ātmanepadinaḥ*. Ātmanepada only,
 /// and the thematic ātmanepada paradigm forks nowhere, so all 144 new cells
 /// hold one form. No new rows. The gaṇa is OPEN at 8 of its 509 rows.
+///
+/// Slice 10c curates thirty-three more ākusmīya roots (`10.0195` through
+/// `10.0234`; six take 7.3.86 before ṇic, ten 7.2.116, seventeen neither),
+/// again ātmanepada only and one form per cell: 1188 new cells, no new
+/// rows. `10.0233 mAna~` and `10.0234 mana~` share every form. The gaṇa is
+/// OPEN at 41 of its 509 rows.
 /// This test is what keeps the numbers true day to day.
 #[test]
 fn derivation_set_shape_matches_the_audited_numbers() {
     let total_cells = PARADIGM.len() * 9;
-    assert_eq!(total_cells, 5076, "564 root×lakāra blocks × 9 cells each");
+    assert_eq!(total_cells, 6264, "696 root×lakāra blocks × 9 cells each");
 
     let mut ones = 0usize;
     let mut twos = 0usize;
@@ -696,7 +704,7 @@ fn derivation_set_shape_matches_the_audited_numbers() {
             }
         }
     }
-    assert_eq!(ones, 4252, "one-form cells");
+    assert_eq!(ones, 5440, "one-form cells");
     assert_eq!(twos, 612, "two-form cells");
     assert_eq!(
         threes, 165,
@@ -1488,6 +1496,70 @@ fn curadi_analyses_its_akusmiya_forms() {
         }
     }
     for form in ["cetayati", "varzayati", "amAdayat", "kusmayatu"] {
+        let r = engine.check(form);
+        assert!(matches!(r.verdict, Verdict::Invalid), "{form}");
+        assert!(r.analyses.is_empty(), "{form}");
+    }
+}
+
+/// Slice 10c's ākusmīya rows through `check`: one witness per pre-ṇic shape
+/// and per homograph row. The goldens were grepped first — each surface below
+/// is its own row's alone, so each must yield exactly one analysis, naming
+/// that root, ātmanepada, opening with 10.0496 and crediting no pada sūtra.
+/// `mAnayate` and `amAnayata` are the one pair two rows share (`10.0233
+/// mAna~` unchanged before ṇic, `10.0234 mana~` by 7.2.116): exactly two
+/// analyses, one per root, and only √man's credits 7.2.116. The
+/// parasmaipada shapes derive nothing. The single-analysis and Invalid
+/// assertions depend on the homograph partners being uncurated — `10.0189`,
+/// `10.0438`, `10.0041`, `10.0006`, `10.0034`, `10.0381` — so a slice that
+/// curates one must revisit this test (e.g. `mAnayati` becomes Valid once
+/// `10.0381` is curated, `kuwwayatu` once `10.0034` is).
+#[test]
+fn curadi_analyses_its_bulk_akusmiya_forms() {
+    let engine = Panini::new();
+    let ids_of =
+        |a: &panini::Analysis| -> Vec<String> { a.trace.iter().map(|s| s.sutra.clone()).collect() };
+    for (form, dhatu) in [
+        ("dAsayate", "das"),
+        ("aqepayata", "qip"),
+        ("spASayatAm", "spaS"),
+        ("tarjayeta", "tarj"),
+        ("trowayaDve", "truw"),
+        ("vedayate", "vid"),
+        ("kURayasva", "kUR"),
+        ("SAWayate", "SaW"),
+        ("SAmayeran", "Sam"),
+        ("syAmayate", "syam"),
+        ("alakzayanta", "lakz"),
+        ("kuwwayate", "kuww"),
+    ] {
+        let r = engine.check(form);
+        assert!(matches!(r.verdict, Verdict::Valid), "{form}");
+        assert_eq!(r.analyses.len(), 1, "{form}");
+        let a = &r.analyses[0];
+        assert_eq!(a.dhatu, dhatu, "{form}");
+        assert_eq!(a.pada, Pada::Atmanepada, "{form}");
+        let ids = ids_of(a);
+        assert_eq!(ids[0], "10.0496", "{form}: {ids:?}");
+        for absent in ["1.3.12", "1.3.66", "1.3.72", "1.3.74", "1.3.78"] {
+            assert!(!ids.iter().any(|i| i == absent), "{form} {absent}: {ids:?}");
+        }
+    }
+    for form in ["mAnayate", "amAnayata"] {
+        let r = engine.check(form);
+        assert!(matches!(r.verdict, Verdict::Valid), "{form}");
+        let mut roots: Vec<&str> = r.analyses.iter().map(|a| a.dhatu.as_str()).collect();
+        roots.sort_unstable();
+        assert_eq!(roots, ["mAn", "man"], "{form}");
+        for a in &r.analyses {
+            assert_eq!(a.pada, Pada::Atmanepada, "{form}");
+            let ids = ids_of(a);
+            assert_eq!(ids[0], "10.0496", "{form}: {ids:?}");
+            let lengthened = ids.iter().any(|i| i == "7.2.116");
+            assert_eq!(lengthened, a.dhatu == "man", "{form} {}: {ids:?}", a.dhatu);
+        }
+    }
+    for form in ["dAsayati", "vedayati", "mAnayati", "kuwwayatu"] {
         let r = engine.check(form);
         assert!(matches!(r.verdict, Verdict::Invalid), "{form}");
         assert!(r.analyses.is_empty(), "{form}");
