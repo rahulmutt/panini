@@ -43,9 +43,11 @@ vidhiliṅ (144 cells); `PadaAssignment::Akusmiya`; the `AKUSMIYA` range;
   slice to curate in bulk. The exceptions belong to other classes:
   optional-ṇic rows (`10.0193 daSi~`, `10.0194 dasi~`, `10.0198 tatri~`,
   `10.0199 matri~`, `10.0227 vancu~`, `10.0230 divu~`), and 7.2.115 rows
-  (`10.0231 gf`, `10.0235 yu`);
+  (`10.0231 gf`, `10.0235 yu`). Slice 10c curated thirty-three of them in bulk — see
+  `2026-10-02-curadi-gana-10c-design.md`;
 - `10.0219 lakza~`, deliberately: `10.0006 lakza~` is an ubhayapadī
-  homograph that a later slice curates;
+  homograph that a later slice curates. (Reversed in slice 10c: rows are keyed by number, so the homograph needs
+  no structural support, and 10c curated it.);
 - the ā-garvīya roots (10.0497 *ā garvād ātmanepadinaḥ*: pada, gṛha,
   mṛga …). Every one of them is adanta, so they wait for the adanta slice;
 - `10.0058 zmiN`, the only ṅit curādi row. It is ātmanepadī by 1.3.12 but
@@ -265,7 +267,7 @@ re-grepped at final HEAD.
 
 ## Later slices
 
-The remaining ākusmīya rows in bulk; then 10a's order: mit roots, adanta
+The remaining ākusmīya rows in bulk (taken by slice 10c, all but the optional-ṇic and 7.2.115 rows); then 10a's order: mit roots, adanta
 roots (with the ā-garvīya list, 10.0497), optional ṇic (which takes the
 optional-ṇic ākusmīya rows, since 10.0496 applies only on the ṇic branch).
 √smiṅ, and with it 7.2.115 before ṇic, rides whichever slice first needs
