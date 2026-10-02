@@ -121,11 +121,18 @@ pub(super) fn lin_a_form(number: &str, pu: Purusha, va: Vacana) -> String {
 /// 3.1.79 (tanādi's bare `u`) sits between 3.1.78 and 3.1.81, an apavāda
 /// to 3.1.68 ordered exactly like its neighbors.
 ///
-/// 7.3.86 also appears twice, for the same reason 7.3.84 and 1.2.4 do: one
-/// sūtra id, two distinct occasions. The nitya entry states the gaṇasūtra
-/// (never gaṇa 8); the vikalpa entry immediately after it is gaṇa 8's own
-/// Kaumudī 2547.1 optional guṇa, kept under the Pāṇinian id. Both entries
-/// are real; do not deduplicate.
+/// 7.3.86 also appears twice in the guṇa stage, for the same reason 7.3.84
+/// and 1.2.4 do: one sūtra id, two distinct occasions. The nitya entry
+/// states the gaṇasūtra (never gaṇa 8); the vikalpa entry immediately after
+/// it is gaṇa 8's own Kaumudī 2547.1 optional guṇa, kept under the Pāṇinian
+/// id. Both entries are real; do not deduplicate.
+///
+/// The sanādi stage opens the list (slice 10a): 3.1.25 adds curādi's ṇic,
+/// 1.3.9 strips its anubandhas, 3.4.114 makes it ārdhadhātuka, 7.2.116 and
+/// a THIRD 7.3.86 entry act on the root before it, and 3.1.32 folds it into
+/// the dhātu. So 1.3.9 appears twice and 7.3.86 three times. A stage
+/// test that looks a rule up by id must search its own stage's static
+/// (`GUNA`, `SAMJNA`, …), not `rules()`, or it finds the sanādi entry first.
 ///
 /// 6.4.106/6.4.107 sit BELOW 6.1.96 but ABOVE 6.1.90, against sūtra order
 /// and against where Task 3 first placed them (after 6.4.105, below all
@@ -148,21 +155,22 @@ pub(super) fn lin_a_form(number: &str, pu: Purusha, va: Vacana) -> String {
 #[test]
 fn tinanta_rule_order_is_pinned() {
     let expected = [
-        "1.3.12", "1.3.66", "1.3.72", "1.3.78", "3.4.78", "1.3.9", "1.2.4", "3.4.85", "3.4.108",
-        "3.4.109", "3.4.105", "3.4.106", "3.4.101", "3.4.99", "3.4.87", "3.4.89", "3.4.86",
-        "3.4.100", "3.4.80", "3.4.79", "3.4.91", "3.4.93", "3.4.90", "3.4.92", "3.4.103",
-        "3.4.102", "7.1.35", "3.1.69", "3.1.73", "3.1.77", "3.1.78", "3.1.79", "3.1.81", "3.1.68",
-        "2.4.72", "2.4.75", "3.4.111", "3.1.83", "1.2.4", "6.1.10", "7.4.66", "7.4.60", "7.4.59",
-        "7.4.62", "7.4.75", "7.4.76", "7.4.77", "7.4.78", "6.4.78", "6.4.71", "6.4.72", "6.1.73",
-        "7.3.100", "7.1.5", "7.1.6", "7.1.4", "7.1.3", "7.2.79", "7.2.80", "7.2.81", "6.4.23",
-        "7.4.21", "7.3.83", "7.3.87", "7.3.84", "7.3.86", "7.3.86", "7.3.92", "7.3.84", "7.1.102",
-        "6.4.110", "6.4.108", "6.4.109", "6.4.87", "6.4.82", "6.4.77", "6.1.77", "6.1.78",
-        "7.3.101", "6.4.119", "6.4.118", "6.4.117", "6.4.116", "6.4.113", "6.4.98", "6.4.100",
-        "6.4.112", "6.4.115", "6.4.42", "6.4.43", "6.1.101", "6.1.96", "6.4.106", "6.4.107",
-        "6.1.90", "6.1.88", "6.1.97", "6.1.87", "6.1.66", "6.4.105", "6.4.101", "6.4.111",
-        "8.2.77", "8.2.23", "8.2.25", "8.2.26", "8.2.30", "8.2.31", "8.2.39", "8.2.40", "8.2.41",
-        "8.2.74", "8.2.75", "8.2.73", "8.3.15", "8.3.24", "8.3.59", "8.4.40", "8.4.41", "8.3.13",
-        "8.4.53", "8.4.54", "8.2.38", "8.4.55", "8.4.1", "8.4.2", "8.4.58", "8.4.65", "8.4.56",
+        "3.1.25", "1.3.9", "3.4.114", "7.2.116", "7.3.86", "3.1.32", "1.3.12", "1.3.66", "1.3.72",
+        "1.3.74", "1.3.78", "3.4.78", "1.3.9", "1.2.4", "3.4.85", "3.4.108", "3.4.109", "3.4.105",
+        "3.4.106", "3.4.101", "3.4.99", "3.4.87", "3.4.89", "3.4.86", "3.4.100", "3.4.80",
+        "3.4.79", "3.4.91", "3.4.93", "3.4.90", "3.4.92", "3.4.103", "3.4.102", "7.1.35", "3.1.69",
+        "3.1.73", "3.1.77", "3.1.78", "3.1.79", "3.1.81", "3.1.68", "2.4.72", "2.4.75", "3.4.111",
+        "3.1.83", "1.2.4", "6.1.10", "7.4.66", "7.4.60", "7.4.59", "7.4.62", "7.4.75", "7.4.76",
+        "7.4.77", "7.4.78", "6.4.78", "6.4.71", "6.4.72", "6.1.73", "7.3.100", "7.1.5", "7.1.6",
+        "7.1.4", "7.1.3", "7.2.79", "7.2.80", "7.2.81", "6.4.23", "7.4.21", "7.3.83", "7.3.87",
+        "7.3.84", "7.3.86", "7.3.86", "7.3.92", "7.3.84", "7.1.102", "6.4.110", "6.4.108",
+        "6.4.109", "6.4.87", "6.4.82", "6.4.77", "6.1.77", "6.1.78", "7.3.101", "6.4.119",
+        "6.4.118", "6.4.117", "6.4.116", "6.4.113", "6.4.98", "6.4.100", "6.4.112", "6.4.115",
+        "6.4.42", "6.4.43", "6.1.101", "6.1.96", "6.4.106", "6.4.107", "6.1.90", "6.1.88",
+        "6.1.97", "6.1.87", "6.1.66", "6.4.105", "6.4.101", "6.4.111", "8.2.77", "8.2.23",
+        "8.2.25", "8.2.26", "8.2.30", "8.2.31", "8.2.39", "8.2.40", "8.2.41", "8.2.74", "8.2.75",
+        "8.2.73", "8.3.15", "8.3.24", "8.3.59", "8.4.40", "8.4.41", "8.3.13", "8.4.53", "8.4.54",
+        "8.2.38", "8.4.55", "8.4.1", "8.4.2", "8.4.58", "8.4.65", "8.4.56",
     ];
     let actual: Vec<&str> = rules().map(|r| r.id).collect();
     assert_eq!(actual, expected);
@@ -188,8 +196,8 @@ fn exactly_the_pinned_vikalpa_rules_are_optional() {
 /// rule ABOVE its barrer, where barring it does nothing. Pin the whole
 /// relation, and require every barred id to run after its barrer.
 ///
-/// Ids are not unique in the pipeline (7.3.84, 7.3.86 and 1.2.4 each appear
-/// twice), so "runs after" means some later occurrence.
+/// Ids are not unique in the pipeline (7.3.84, 1.2.4 and 1.3.9 each appear
+/// twice, 7.3.86 three times), so "runs after" means some later occurrence.
 #[test]
 fn exactly_the_pinned_bars() {
     let ids: Vec<&str> = rules().map(|r| r.id).collect();
@@ -730,9 +738,9 @@ fn trace_is_recorded() {
 // `TINANTA_RULES` entry with the matching `id`. `Rule.name` itself is
 // write-only dead data: what a user sees is `RuleStep.name`, populated
 // solely from the string literal passed to `p.record(...)` at each call
-// site (there are two for id "1.3.9": this rule's own body, and
-// `run_it_samjna` in `it_samjna.rs`, called from 3.1.68's body — both
-// currently pass the literal "tasya lopaH"). Comparing every recorded
+// site (there are several for id "1.3.9": each 1.3.9 rule's own body —
+// the sanādi stage's included — and `run_it_samjna` in `it_samjna.rs`,
+// called from 3.1.68's body — all currently pass the literal "tasya lopaH"). Comparing every recorded
 // step's name against `TINANTA_RULES` by id, over real derivations,
 // catches either call site drifting from `Rule.name` without having to
 // special-case which call site fired.

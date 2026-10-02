@@ -1,0 +1,160 @@
+//! curadi's ordered-trace witnesses. Helpers live in `crate::helpers`; the
+//! module doc governing this suite is in `main.rs`.
+//!
+//! Every curādi trace opens with the sanādi stage — 3.1.25 ṇic, its 1.3.9,
+//! 3.4.114, then 7.2.116 or 7.3.86 where the root's upadhā takes one, then
+//! 3.1.32 — before the pada sūtra, where every other gaṇa's trace opens.
+
+use crate::helpers::{at, cell_trace, credited};
+use panini_data::{Lakara, Pada, Purusha, Vacana};
+
+#[test]
+fn corayati_trace_is_nic_guna_sanadyanta_then_the_thematic_core() {
+    // cur P laT P.E. 7.3.86 guṇates `cur` before ṇic, 3.1.32 makes `cori`
+    // the dhātu, and only then does the pada sūtra run. 7.3.84 guṇates ṇic's
+    // `i` before śap and 6.1.78 makes it `ay`.
+    let (text, t) = cell_trace(
+        "10.0001",
+        Lakara::Lat,
+        Pada::Parasmaipada,
+        Purusha::Prathama,
+        Vacana::Eka,
+    );
+    assert_eq!(text, "corayati", "got {t:?}");
+    assert_eq!(
+        t,
+        [
+            "3.1.25", "1.3.9", "3.4.114", "7.3.86", "3.1.32", "1.3.78", "3.4.78", "1.3.9",
+            "3.1.68", "1.3.9", "7.3.84", "6.1.78",
+        ],
+    );
+}
+
+#[test]
+fn corayate_trace_credits_nicas_ca() {
+    // cur A laT P.E. 1.3.74 sanctions the ātmanepada, where 1.3.78 stands in
+    // corayati; neither 1.3.72 nor 1.3.78 is credited.
+    let (text, t) = cell_trace(
+        "10.0001",
+        Lakara::Lat,
+        Pada::Atmanepada,
+        Purusha::Prathama,
+        Vacana::Eka,
+    );
+    assert_eq!(text, "corayate", "got {t:?}");
+    assert!(at(&t, "3.1.32") < at(&t, "1.3.74"), "got {t:?}");
+    assert!(at(&t, "1.3.74") < at(&t, "3.4.78"), "got {t:?}");
+    for absent in ["1.3.72", "1.3.78", "1.3.12"] {
+        assert!(!t.contains(&absent.to_string()), "{absent}: got {t:?}");
+    }
+}
+
+#[test]
+#[allow(non_snake_case)]
+fn lAqayati_trace_takes_ata_upadhayah_not_guna() {
+    // laq P laT P.E. The `a` upadhā takes vṛddhi before ṇit ṇic; 7.3.86 has
+    // nothing to guṇate.
+    let (text, t) = cell_trace(
+        "10.0010",
+        Lakara::Lat,
+        Pada::Parasmaipada,
+        Purusha::Prathama,
+        Vacana::Eka,
+    );
+    assert_eq!(text, "lAqayati", "got {t:?}");
+    assert!(at(&t, "3.4.114") < at(&t, "7.2.116"), "got {t:?}");
+    assert!(at(&t, "7.2.116") < at(&t, "3.1.32"), "got {t:?}");
+    assert!(!t.contains(&"7.3.86".to_string()), "got {t:?}");
+}
+
+#[test]
+#[allow(non_snake_case)]
+fn Bakzayati_and_BUzayati_traces_touch_no_upadha() {
+    // Bakz and BUz have guru upadhās: ṇic goes on unchanged roots.
+    for (number, form) in [("10.0033", "Bakzayati"), ("10.0255", "BUzayati")] {
+        let (text, t) = cell_trace(
+            number,
+            Lakara::Lat,
+            Pada::Parasmaipada,
+            Purusha::Prathama,
+            Vacana::Eka,
+        );
+        assert_eq!(text, form, "got {t:?}");
+        assert!(at(&t, "3.4.114") < at(&t, "3.1.32"), "got {t:?}");
+        for absent in ["7.2.116", "7.3.86"] {
+            assert!(
+                !t.contains(&absent.to_string()),
+                "{form} {absent}: got {t:?}"
+            );
+        }
+    }
+}
+
+#[test]
+#[allow(non_snake_case)]
+fn BakzayARi_trace_takes_natva_across_the_stem() {
+    // Bakz P loT U.E. The ṣ of the root reaches the ending's `n` across
+    // `ayA` (8.4.2); √laḍ, with no trigger, keeps lAqayAni.
+    let (text, t) = cell_trace(
+        "10.0033",
+        Lakara::Lot,
+        Pada::Parasmaipada,
+        Purusha::Uttama,
+        Vacana::Eka,
+    );
+    assert_eq!(text, "BakzayARi", "got {t:?}");
+    assert!(at(&t, "6.1.101") < at(&t, "8.4.2"), "got {t:?}");
+    let (text, t) = cell_trace(
+        "10.0010",
+        Lakara::Lot,
+        Pada::Parasmaipada,
+        Purusha::Uttama,
+        Vacana::Eka,
+    );
+    assert_eq!(text, "lAqayAni", "got {t:?}");
+    assert!(!t.contains(&"8.4.2".to_string()), "got {t:?}");
+}
+
+#[test]
+fn acorayad_trace_puts_the_augment_on_the_merged_anga() {
+    // cur P laN P.E. The aṭ comes after 3.1.32, in front of the ṇijanta.
+    let (text, t) = cell_trace(
+        "10.0001",
+        Lakara::Lan,
+        Pada::Parasmaipada,
+        Purusha::Prathama,
+        Vacana::Eka,
+    );
+    assert_eq!(text, "acorayad", "got {t:?}");
+    assert!(at(&t, "3.1.32") < at(&t, "6.4.71"), "got {t:?}");
+    assert!(at(&t, "6.4.71") < at(&t, "7.3.84"), "got {t:?}");
+}
+
+#[test]
+fn the_sanadi_rules_and_nicas_ca_are_credited_only_on_curadi() {
+    // Every curated branch whose log carries one of these belongs to a
+    // `10.x` row. Goldens ignore traces, so this is what holds the new
+    // stage inert on the 103 prior roots.
+    for sutra in ["3.1.25", "3.4.114", "7.2.116", "3.1.32", "1.3.74"] {
+        let hits = credited(sutra);
+        assert!(!hits.is_empty(), "curādi no longer witnesses {sutra}");
+        for (number, _) in &hits {
+            assert!(number.starts_with("10."), "{sutra} credited on {number}");
+        }
+    }
+}
+
+#[test]
+fn pugantalaghupadhasya_off_curadi_is_credited_exactly_as_before_10a() {
+    // 7.3.86 gains a third entry in slice 10a, the sanādi one. A trace step
+    // carries no entry, so "the guṇa-stage entries are untouched" is held as
+    // the credit count off curādi: 384 branches, measured on `main` before
+    // the slice. A new firing on a prior row, from any entry, changes it.
+    let hits = credited("7.3.86");
+    assert!(
+        hits.iter().any(|(n, _)| *n == "10.0001"),
+        "√cur no longer witnesses 7.3.86"
+    );
+    let off = hits.iter().filter(|(n, _)| !n.starts_with("10.")).count();
+    assert_eq!(off, 384);
+}

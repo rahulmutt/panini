@@ -17,7 +17,7 @@
 //! these pins are what make the engine's own order a checked fact rather than an
 //! accident.
 
-use crate::helpers::{at, cell_trace};
+use crate::helpers::{at, cell_trace, credited};
 use panini_data::{Gana, Lakara, Pada, Purusha, Vacana, dhatus};
 use panini_prakriya::derive;
 
@@ -1040,38 +1040,6 @@ fn daDantaH_trace_is_the_anusvara_round_trip() {
     );
     assert_eq!(text, "daDantaH", "got {t:?}");
     assert!(at(&t, "8.3.24") < at(&t, "8.4.58"), "got {t:?}");
-}
-
-const ALL_CELLS: [(Purusha, Vacana); 9] = [
-    (Purusha::Prathama, Vacana::Eka),
-    (Purusha::Prathama, Vacana::Dvi),
-    (Purusha::Prathama, Vacana::Bahu),
-    (Purusha::Madhyama, Vacana::Eka),
-    (Purusha::Madhyama, Vacana::Dvi),
-    (Purusha::Madhyama, Vacana::Bahu),
-    (Purusha::Uttama, Vacana::Eka),
-    (Purusha::Uttama, Vacana::Dvi),
-    (Purusha::Uttama, Vacana::Bahu),
-];
-
-/// Every (root, lakāra, pada, cell, branch) of the curated corpus whose log
-/// carries `sutra`, as (dhatupatha, gaṇa).
-fn credited(sutra: &str) -> Vec<(&'static str, Gana)> {
-    let mut out = Vec::new();
-    for d in dhatus() {
-        for lakara in [Lakara::Lat, Lakara::Lan, Lakara::Lot, Lakara::VidhiLin] {
-            for &pada in d.pada.padas() {
-                for (purusha, vacana) in ALL_CELLS {
-                    for p in derive(d, lakara, pada, purusha, vacana) {
-                        if !p.blocked && p.log.iter().any(|s| s.sutra == sutra) {
-                            out.push((d.dhatupatha, d.gana));
-                        }
-                    }
-                }
-            }
-        }
-    }
-    out
 }
 
 #[test]

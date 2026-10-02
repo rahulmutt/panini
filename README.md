@@ -13,7 +13,7 @@ cargo run -p panini-cli -- check 'bhavati' --trace
 
 ## Scope
 
-Finite verbs (*tiṅanta*), nine gaṇas covered, all nine fully —
+Finite verbs (*tiṅanta*), ten gaṇas covered, nine of them fully —
 *bhvādi* (1, vikaraṇa śap), *divādi* (4, śyan), *tudādi* (6, śa), *adādi*
 (2, śap luk'd), *kryādi* (9, śnā), *svādi* (5, śnu) and *rudhādi* (7,
 śnam) — plus *tanādi* (8, vikaraṇa the bare *u* of 3.1.79), **complete**
@@ -86,7 +86,14 @@ row, behind three new sūtras — 6.4.98 *gamahanajanakhanaghasāṁ lopaḥ*
 (*jajñati*), 6.4.42 *janasanakhanāṁ sañjhaloḥ* (*jajātaḥ*) and the engine's
 twelfth vikalpa, 6.4.43 *ye vibhāṣā* (*jajanyāt* ~ *jajāyāt*) — with 8.4.40
 *stoḥ ścunā ścuḥ* gaining its converse arm, a stu after a ścu, guarded by the
-8.4.44 *śāt* exemption. rudhādi is
+8.4.44 *śāt* exemption. *curādi* (10) is **open** at 4 of its 509
+dhātupāṭha rows: √cur (`10.0001`, *corayati*), √laḍ (`10.0010`,
+*lāḍayati*), √bhakṣ (`10.0033`) and √bhūṣ (`10.0255`), curated in slice 10a,
+all ubhayapadī by 1.3.74 *ṇicaś ca*. Every curādi root takes ṇic (3.1.25)
+before the vikaraṇa; a new first pipeline stage adds it, guṇates or
+lengthens the root before it (7.3.86, 7.2.116 *ata upadhāyāḥ*), and folds it
+into the dhātu by 3.1.32 *sanādyantā dhātavaḥ*, so √cur's stem is `cori` and
+derives on through 7.3.84 and 6.1.78 like √nī's. rudhādi is
 complete at all twenty-five of its
 own roots (√kṛt, √hiṃs, √khid, √bhañj, √piṣ, √indh, √rudh,
 and — curated in slice 7c — √bhid, √kṣud, √yuj and √tṛd, and — curated in
@@ -110,17 +117,18 @@ rather than falling through to 1.3.72. What 1.3.66 does not model is the
 1.3.72's own precedent,
 since neither engine models sense. *parasmaipada* and *ātmanepada*
 (which padas a root admits is a curated verdict on its table row), over a
-curated 103-root set, in four lakāras: *laṭ* (present), *laṅ* (imperfect), *loṭ*
+curated 107-root set, in four lakāras: *laṭ* (present), *laṅ* (imperfect), *loṭ*
 (imperative), and *vidhiliṅ* (optative). A cell may have more than one valid
 form where an optional (*vikalpa*) sūtra applies — `hinvaH` and `hinuvaH` are
-both correct — and in fact 808 of the 4644 cells hold more than one form: 604
-hold two, 157 hold three (`Bavatu`, `BavatAd`, `BavatAt`, and — new in
+both correct — and in fact 824 of the 4932 cells hold more than one form: 612
+hold two, 165 hold three (`Bavatu`, `BavatAd`, `BavatAt`, and — new in
 slice 3b — √hrī's loṭ prathama and madhyama eka, and — new in slice 3c —
 √dā's and √dhā's, and — new in slice 3c2 — √gā's, and — new in slice 3d —
 the six ṛ-roots', and — new in slice 3d2 — √ṛ's, and — new in slice 3e —
 √ṇij's, √vij's and √viṣ's, and — new in slice 3f — √kit's, √tur's, √dhiṣ's
 and √dhan's, and — new in slice 3f2 — √bhas's, and — new in slice 3f3 —
-√jan's, each by 7.1.35/8.4.56, √bhas's laṅ madhyama eka by 8.2.74/8.4.56),
+√jan's, and — new in slice 10a — the four curādi roots', each by
+7.1.35/8.4.56, √bhas's laṅ madhyama eka by 8.2.74/8.4.56),
 nineteen hold four
 (rudhādi's √piṣ loṭ madhyama eka, and — new in slice 7d — √śiṣ's, and — new
 in slice 8a — fifteen more spread across tanādi's four ik-upadhā roots kziR,
@@ -168,10 +176,11 @@ replaces its palatal `j` with the velar `g` (which 8.4.55 *khari ca* later
 devoices to `k` before a `t`), and a velar is never savarṇa with the dental
 `t`/`D` that follows, so it never reaches the 8.4.65 branch the dental-final
 roots take. A root may also admit **both**
-padas — twenty-six roots that admit both padas in the curated set
+padas — thirty roots that admit both padas in the curated set
 (twenty-five ubhayapadī by 1.3.72: √nī, √tud, √rudh, √bhid, √kṣud, √yuj,
 √tṛd, √ric, √vic, √chid, √chṛd, √tan, √san, √kṣaṇ, √kṣiṇ, √ṛṇ, √tṛ, √ghṛ,
-√kṛ, √dā, √dhā, √bhṛ, √ṇij, √vij and √viṣ; and √bhuj by 1.3.66) derive a full
+√kṛ, √dā, √dhā, √bhṛ, √ṇij, √vij and √viṣ; √bhuj by 1.3.66; and curādi's √cur,
+√laḍ, √bhakṣ and √bhūṣ by 1.3.74) derive a full
 parasmaipada and a full ātmanepada paradigm, so a single surface can be
 genuinely pada-ambiguous.
 √van, by contrast, never enters this bucket: it is ātmanepadī by its own
@@ -179,24 +188,28 @@ anudātta marker (1.3.12), and while vidyut-prakriya additionally derives a
 parasmaipada `vanoti` via the gaṇasūtra Kaumudī 2547.2, that is recorded
 here, not modelled, on 1.3.72's own sense-restriction precedent, so this
 engine's √van has no parasmaipada branch to collide against.
-Fifty-six surfaces are pada-ambiguous, each of them a pinned cell in both padas
-at once: `ArRuta`, `BinttAm`, `BuNktAm`, `CfnttAm`, `CinttAm`, `DattAm`,
-`GfRutAm`, `aBintta`, `aBuNkta`, `aDatta`, `aGfRuta`, `abiBfta`, `acCfntta`,
-`acCintta`, `adatta`, `akuruta`, `akzaRuta`, `akziRuta`, `akzuntta`, `anayata`,
-`anenikta`, `ariNkta`, `arundDa`, `asanuta`, `atanuta`, `atfRuta`, `atfntta`,
-`atudata`, `avevikta`, `avevizwa`, `aviNkta`, `ayuNkta`, `biBftAm`, `dattAm`,
-`fRutAm`, `kurutAm`, `kzaRutAm`, `kziRutAm`, `kzunttAm`, `nayatAm`, `nayetAm`,
-`nayeta`, `neniktAm`, `riNktAm`, `rundDAm`, `sanutAm`, `tanutAm`, `tfRutAm`,
-`tfnttAm`, `tudatAm`, `tudetAm`, `tudeta`, `veviktAm`, `vevizwAm`, `viNktAm` and
-`yuNktAm` — `rundDAm`, for instance, is √rudh's loṭ parasmaipada prathama dvi
-*and* its loṭ ātmanepada prathama eka, and tanādi's seven ubhayapadī roots
+Seventy-two surfaces are pada-ambiguous, each of them a pinned cell in both
+padas at once: `ArRuta`, `BUzayatAm`, `BUzayetAm`, `BUzayeta`, `BakzayatAm`,
+`BakzayetAm`, `Bakzayeta`, `BinttAm`, `BuNktAm`, `CfnttAm`, `CinttAm`, `DattAm`,
+`GfRutAm`, `aBUzayata`, `aBakzayata`, `aBintta`, `aBuNkta`, `aDatta`, `aGfRuta`,
+`abiBfta`, `acCfntta`, `acCintta`, `acorayata`, `adatta`, `akuruta`, `akzaRuta`,
+`akziRuta`, `akzuntta`, `alAqayata`, `anayata`, `anenikta`, `ariNkta`,
+`arundDa`, `asanuta`, `atanuta`, `atfRuta`, `atfntta`, `atudata`, `avevikta`,
+`avevizwa`, `aviNkta`, `ayuNkta`, `biBftAm`, `corayatAm`, `corayetAm`,
+`corayeta`, `dattAm`, `fRutAm`, `kurutAm`, `kzaRutAm`, `kziRutAm`, `kzunttAm`,
+`lAqayatAm`, `lAqayetAm`, `lAqayeta`, `nayatAm`, `nayetAm`, `nayeta`,
+`neniktAm`, `riNktAm`, `rundDAm`, `sanutAm`, `tanutAm`, `tfRutAm`, `tfnttAm`,
+`tudatAm`, `tudetAm`, `tudeta`, `veviktAm`, `vevizwAm`, `viNktAm` and `yuNktAm` — `rundDAm`, for instance, is √rudh's loṭ
+parasmaipada prathama dvi *and* its loṭ ātmanepada prathama eka, and tanādi's seven ubhayapadī roots
 contribute a new shape: `atanuta` is both √tan's laṅ ātmanepada prathama eka and its laṅ
 parasmaipada madhyama bahu, and `tanutAm` is both its loṭ ātmanepada prathama
 eka and its loṭ parasmaipada prathama dvi. √kṛ (slice 8b) contributes the same
 shape: `akuruta` (laṅ ātmanepada prathama eka / parasmaipada madhyama bahu) and
 `kurutAm` (loṭ ātmanepada prathama eka / parasmaipada prathama dvi), and √bhṛ
 (slice 3d) the same again: `abiBfta` and `biBftAm`. Slice 3e's three roots do the same again:
-`anenikta`/`neniktAm`, `avevikta`/`veviktAm` and `avevizwa`/`vevizwAm`. That enumeration is no
+`anenikta`/`neniktAm`, `avevikta`/`veviktAm` and `avevizwa`/`vevizwAm`. Slice 10a's four curādi roots, thematic like √nī, contribute √nī's
+four-surface shape each: `acorayata`/`corayatAm`/`corayetAm`/`corayeta` and
+the same for `lAqaya-`, `Bakzaya-` and `BUzaya-`. That enumeration is no
 longer maintained by hand:
 `pada_ambiguous_surfaces_are_exactly_these` in
 `crates/panini/tests/paradigm/main.rs` walks `PARADIGM` and asserts exactly this

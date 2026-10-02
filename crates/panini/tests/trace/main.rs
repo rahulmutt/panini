@@ -15,7 +15,7 @@
 //!
 //! For the authoritative rule order itself, do not rely on a diagram here:
 //! read `TINANTA_RULES` in `crates/panini-prakriya/src/tinanta/mod.rs` and
-//! then its eight stage files in that order. That flattened static sequence —
+//! then its nine stage files in that order. That flattened static sequence —
 //! not this comment — is the source of truth for sequencing; a diagram in
 //! this header would drift out of sync with it as rules are added (as
 //! happened to the laṭ-only diagram this comment used to carry, before laṅ
@@ -28,13 +28,15 @@
 //! fire.
 //!
 //! The pada-sanction step (1.3.78 for these parasmaipada roots; 1.3.12 for
-//! atmanepada roots) is the derivation's source of truth for pada and now
-//! opens every trace.
+//! atmanepada roots) is the derivation's source of truth for pada and opens
+//! every trace except curādi's, which open with the sanādi stage — 3.1.25 ṇic,
+//! ahead of any pada sanction (curādi's pada comes from 1.3.74 *ṇicaś ca*).
 
 mod helpers;
 
 mod adadi;
 mod bhvadi;
+mod curadi;
 mod divadi;
 mod juhotyadi;
 mod kryadi;

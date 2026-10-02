@@ -22,6 +22,14 @@ pub(crate) const ABHYASA: usize = 1;
 /// Index of the aṅga (the dhātu) in `terms`. Stable across the pipeline.
 pub(crate) const ANGA: usize = 2;
 
+/// Index of ṇic (3.1.25) while `super::sanadi` runs — and only then.
+/// 3.1.32 folds ṇic into `ANGA` and removes this term before `super::samjna`
+/// starts, so by the time 3.4.78 pushes the ending this index is free again
+/// and the ending lands at `ENDING_PRE_SHAP`, the same value. No tiṅ exists
+/// while ṇic holds it. Present only for curādi; for every other gaṇa
+/// `sanadi` adds nothing and the slot is never occupied.
+pub(crate) const NIC: usize = 3;
+
 /// Index of the tiṅ ending *before* śap is inserted (3.1.68).
 pub(crate) const ENDING_PRE_SHAP: usize = 3;
 
@@ -48,7 +56,7 @@ pub(crate) const ENDING: usize = 4;
 // NOTE: `ENDING_PRE_SHAP` and `SHAP` are deliberately the same value (3), not
 // a typo. Rule 3.1.68 (kartari śap) inserts śap between the aṅga and the
 // ending, which shifts the ending from index 3 to index 4. This bisects the
-// flattened `TINANTA_RULES` sequence (across its eight stage files) into two
+// flattened `TINANTA_RULES` sequence (across its nine stage files) into two
 // halves along that sequence's position, not along any lakāra or
 // rule-family boundary:
 //   - Rules ordered BEFORE 3.1.68 must address the ending via

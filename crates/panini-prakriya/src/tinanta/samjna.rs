@@ -1,5 +1,5 @@
 //! Saṃjñā, pada sanction and ending insertion: 1.1.20 (as the `GHU` set),
-//! 1.3.12, 1.3.66, 1.3.72, 1.3.78, 3.4.78, 1.3.9, 1.2.4.
+//! 1.3.12, 1.3.66, 1.3.72, 1.3.74, 1.3.78, 3.4.78, 1.3.9, 1.2.4.
 //!
 //! Ordered **BEFORE** 3.1.68 — the ending lives at `ENDING_PRE_SHAP`
 //! (index 3) and śap does not exist yet. See `super::terms`.
@@ -141,6 +141,35 @@ pub(crate) static SAMJNA: &[Rule] = &[
             }
         },
     },
+    // 1.3.74 ṇicaś ca: a ṇijanta takes ātmanepada (when the fruit accrues
+    // to the agent — unmodelled, exactly as 1.3.72's *kartrabhiprāye
+    // kriyāphale* above). Affix-keyed: the guard is Tag::Nic, the data
+    // layer's PadaAssignment::Nic, which every curated curādi row carries.
+    // Not keyed on Tag::Nijanta yet — see that variant's doc comment.
+    //
+    // The parasmaipada arm DECLINES rather than blocks, for 1.3.72's and
+    // 1.3.66's reason: 1.3.78 below sanctions it. Structural twin of both;
+    // only the guard tag and the credited sūtra differ.
+    Rule {
+        id: "1.3.74",
+        name: "RicaS ca",
+        kind: RuleKind::Vidhi,
+        vikalpa: false,
+        bars: &[],
+        apply: |p| {
+            if !p.terms[ANGA].has(Tag::Nic) {
+                return false;
+            }
+            match p.ctx.pada {
+                Pada::Atmanepada => {
+                    let before = p.snapshot();
+                    p.record("1.3.74", "RicaS ca", before);
+                    true
+                }
+                Pada::Parasmaipada => false,
+            }
+        },
+    },
     // 1.3.78 śeṣāt kartari parasmaipadam: everything else takes parasmaipada.
     Rule {
         id: "1.3.78",
@@ -160,11 +189,14 @@ pub(crate) static SAMJNA: &[Rule] = &[
                 }
                 // The guard above already admits an ubhayapadī root — it is
                 // `!Atmanepadin` — so this arm is where the two sūtras overlap, and where
-                // they split on ctx.pada: 1.3.72 (Ubhayapadin) or 1.3.66 (Anavane) has
-                // already sanctioned this cell, so decline instead of blocking. Only the
-                // genuine śeṣa (no pada tag at all) blocks here.
+                // they split on ctx.pada: 1.3.72 (Ubhayapadin), 1.3.66 (Anavane) or
+                // 1.3.74 (Nic) has already sanctioned this cell, so decline instead of
+                // blocking. Only the genuine śeṣa (no pada tag at all) blocks here.
                 Pada::Atmanepada => {
-                    if p.terms[ANGA].has(Tag::Ubhayapadin) || p.terms[ANGA].has(Tag::Anavane) {
+                    if p.terms[ANGA].has(Tag::Ubhayapadin)
+                        || p.terms[ANGA].has(Tag::Anavane)
+                        || p.terms[ANGA].has(Tag::Nic)
+                    {
                         return false;
                     }
                     p.blocked = true;
@@ -282,6 +314,7 @@ mod tests {
             PadaAssignment::Atmanepada => t.add(Tag::Atmanepadin),
             PadaAssignment::Ubhayapada => t.add(Tag::Ubhayapadin),
             PadaAssignment::UbhayapadaAnavane => t.add(Tag::Anavane),
+            PadaAssignment::Nic => t.add(Tag::Nic),
         }
         t
     }
@@ -304,6 +337,21 @@ mod tests {
         let mut t = Term::new("Buj");
         t.add(Tag::Dhatu);
         t.add(Tag::Anavane);
+        let mut p = Prakriya {
+            ctx: Context::new(Lakara::Lat, pada, Purusha::Prathama, Vacana::Eka),
+            ..Default::default()
+        };
+        p.terms = with_slots(vec![t]);
+        p
+    }
+
+    /// `pada_prakriya` for a curādi root, hand-built: 1.3.74 reads only
+    /// `Tag::Nic`, so the term is constructed directly, as `anavane_prakriya`
+    /// is, without running the sanādi stage.
+    fn nic_prakriya(pada: Pada) -> Prakriya {
+        let mut t = Term::new("cur");
+        t.add(Tag::Dhatu);
+        t.add(Tag::Nic);
         let mut p = Prakriya {
             ctx: Context::new(Lakara::Lat, pada, Purusha::Prathama, Vacana::Eka),
             ..Default::default()
@@ -410,6 +458,58 @@ mod tests {
         assert!(!p.blocked, "1.3.78 blocked Buj Atmanepada");
         let mut p = anavane_prakriya(Pada::Parasmaipada);
         assert!((rule.apply)(&mut p), "1.3.78 declined Buj Parasmaipada");
+        assert!(!p.blocked);
+    }
+
+    #[test]
+    fn nicas_ca_reports_firing_only_on_atmanepada() {
+        // Same shape as 1.3.72's and 1.3.66's: 1.3.74 sanctions a Nic root's
+        // ātmanepada reading and DECLINES its parasmaipada one, without
+        // blocking — 1.3.78 sanctions that.
+        let rule = SAMJNA.iter().find(|r| r.id == "1.3.74").unwrap();
+        for (pada, fires) in [(Pada::Atmanepada, true), (Pada::Parasmaipada, false)] {
+            let mut p = nic_prakriya(pada);
+            assert_eq!((rule.apply)(&mut p), fires, "1.3.74 on {pada:?}");
+            assert!(!p.blocked, "1.3.74 must never block, {pada:?}");
+        }
+    }
+
+    #[test]
+    fn nicas_ca_declines_for_roots_without_the_nic_licence() {
+        // The guard is Tag::Nic and nothing else: √rudh (1.3.72's), √bhū
+        // (1.3.78's), √khid (1.3.12's) and √bhuj (1.3.66's) are left alone in
+        // both padas, without recording and without blocking.
+        let rule = SAMJNA.iter().find(|r| r.id == "1.3.74").unwrap();
+        for number in ["07.0001", "01.0001", "07.0012", "07.0017"] {
+            for pada in [Pada::Parasmaipada, Pada::Atmanepada] {
+                let mut p = pada_prakriya(number, pada);
+                assert!(!(rule.apply)(&mut p), "1.3.74 fired on {number} {pada:?}");
+                assert!(!p.blocked, "1.3.74 blocked {number} {pada:?}");
+                assert!(p.log.is_empty(), "1.3.74 recorded on {number} {pada:?}");
+            }
+        }
+    }
+
+    #[test]
+    fn the_other_pada_sutras_leave_a_nic_root_to_1_3_74_and_1_3_78() {
+        // The wrong-sūtra-credit case: a curādi root carries no marker, so
+        // 1.3.12, 1.3.66 and 1.3.72 must never fire on it. 1.3.78 fires on
+        // its parasmaipada and DECLINES its ātmanepada, which 1.3.74 has
+        // sanctioned — blocking there would erase the ātmanepada column.
+        for id in ["1.3.12", "1.3.66", "1.3.72"] {
+            let rule = SAMJNA.iter().find(|r| r.id == id).unwrap();
+            for pada in [Pada::Parasmaipada, Pada::Atmanepada] {
+                let mut p = nic_prakriya(pada);
+                assert!(!(rule.apply)(&mut p), "{id} fired on cur {pada:?}");
+                assert!(!p.blocked, "{id} blocked cur {pada:?}");
+            }
+        }
+        let rule = SAMJNA.iter().find(|r| r.id == "1.3.78").unwrap();
+        let mut p = nic_prakriya(Pada::Atmanepada);
+        assert!(!(rule.apply)(&mut p), "1.3.78 fired on cur Atmanepada");
+        assert!(!p.blocked, "1.3.78 blocked cur Atmanepada");
+        let mut p = nic_prakriya(Pada::Parasmaipada);
+        assert!((rule.apply)(&mut p), "1.3.78 declined cur Parasmaipada");
         assert!(!p.blocked);
     }
 
@@ -527,7 +627,7 @@ mod tests {
             log: vec![],
             ..Default::default()
         };
-        let rule = rules().find(|r| r.id == "1.3.9").unwrap();
+        let rule = SAMJNA.iter().find(|r| r.id == "1.3.9").unwrap();
         assert!(
             (rule.apply)(&mut p),
             "1.3.9 should report firing when tip loses its final p"
@@ -571,8 +671,9 @@ mod tests {
                 ..Default::default()
             };
             p.terms = with_slots(vec![Term::new("kliS")]);
+            // Stage-local: `rules()` would find the sanādi stage's 1.3.9 first.
             for id in ["3.4.78", "1.3.9", "1.2.4"] {
-                let rule = rules().find(|r| r.id == id).unwrap();
+                let rule = SAMJNA.iter().find(|r| r.id == id).unwrap();
                 (rule.apply)(&mut p);
             }
             assert!(
@@ -597,8 +698,9 @@ mod tests {
                 ..Default::default()
             };
             p.terms = with_slots(vec![Term::new("kliS")]);
+            // Stage-local: `rules()` would find the sanādi stage's 1.3.9 first.
             for id in ["3.4.78", "1.3.9", "1.2.4"] {
-                let rule = rules().find(|r| r.id == id).unwrap();
+                let rule = SAMJNA.iter().find(|r| r.id == id).unwrap();
                 (rule.apply)(&mut p);
             }
             assert!(p.terms[ENDING_PRE_SHAP].has(Tag::Pit));
@@ -621,8 +723,9 @@ mod tests {
                 ..Default::default()
             };
             p.terms = with_slots(vec![Term::new("BU")]);
+            // Stage-local: `rules()` would find the sanādi stage's 1.3.9 first.
             for id in ["3.4.78", "1.3.9", "1.2.4"] {
-                let rule = rules().find(|r| r.id == id).unwrap();
+                let rule = SAMJNA.iter().find(|r| r.id == id).unwrap();
                 (rule.apply)(&mut p);
             }
             assert!(

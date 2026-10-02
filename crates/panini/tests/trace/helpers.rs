@@ -2,7 +2,7 @@
 //! modules.
 
 use panini::Panini;
-use panini_data::{Lakara, Pada, Purusha, Vacana, dhatus};
+use panini_data::{Gana, Lakara, Pada, Purusha, Vacana, dhatus};
 use panini_prakriya::derive;
 
 pub fn trace_for(word: &str) -> Vec<String> {
@@ -46,4 +46,36 @@ pub fn at(trace: &[String], sutra: &str) -> usize {
         .iter()
         .position(|s| s == sutra)
         .unwrap_or_else(|| panic!("{sutra} absent from {trace:?}"))
+}
+
+const ALL_CELLS: [(Purusha, Vacana); 9] = [
+    (Purusha::Prathama, Vacana::Eka),
+    (Purusha::Prathama, Vacana::Dvi),
+    (Purusha::Prathama, Vacana::Bahu),
+    (Purusha::Madhyama, Vacana::Eka),
+    (Purusha::Madhyama, Vacana::Dvi),
+    (Purusha::Madhyama, Vacana::Bahu),
+    (Purusha::Uttama, Vacana::Eka),
+    (Purusha::Uttama, Vacana::Dvi),
+    (Purusha::Uttama, Vacana::Bahu),
+];
+
+/// Every (root, lakāra, pada, cell, branch) of the curated corpus whose log
+/// carries `sutra`, as (dhatupatha, gaṇa).
+pub fn credited(sutra: &str) -> Vec<(&'static str, Gana)> {
+    let mut out = Vec::new();
+    for d in dhatus() {
+        for lakara in [Lakara::Lat, Lakara::Lan, Lakara::Lot, Lakara::VidhiLin] {
+            for &pada in d.pada.padas() {
+                for (purusha, vacana) in ALL_CELLS {
+                    for p in derive(d, lakara, pada, purusha, vacana) {
+                        if !p.blocked && p.log.iter().any(|s| s.sutra == sutra) {
+                            out.push((d.dhatupatha, d.gana));
+                        }
+                    }
+                }
+            }
+        }
+    }
+    out
 }

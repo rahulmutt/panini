@@ -1,8 +1,8 @@
-//! The tiṅanta pipeline, as eight ordered rule-stage modules plus two support
+//! The tiṅanta pipeline, as nine ordered rule-stage modules plus two support
 //! layers.
 //!
-//! The eight stages — `samjna`, `tin`, `vikarana`, `abhyasa`, `anga`, `guna`, `adesha`,
-//! `tripadi` — are declared below in *pipeline* order in `TINANTA_RULES`,
+//! The nine stages — `sanadi`, `samjna`, `tin`, `vikarana`, `abhyasa`, `anga`, `guna`,
+//! `adesha`, `tripadi` — are declared below in *pipeline* order in `TINANTA_RULES`,
 //! which is the grammar's actual sequencing; the `mod` declarations above
 //! them are alphabetical and carry no ordering meaning of their own. `terms`
 //! and `sound` are support layers underneath the rules (term-layout constants
@@ -22,6 +22,7 @@ mod adesha;
 mod anga;
 mod guna;
 mod samjna;
+mod sanadi;
 mod sound;
 mod terms;
 mod tin;
@@ -48,6 +49,7 @@ pub(in crate::tinanta) use derivation_tests::form_g;
 /// sequence IS the grammar this crate implements. Every rule self-guards and
 /// returns whether it fired.
 pub static TINANTA_RULES: &[&[Rule]] = &[
+    sanadi::SANADI,
     samjna::SAMJNA,
     tin::TIN,
     vikarana::VIKARANA,
@@ -96,6 +98,7 @@ pub fn derive(
         PadaAssignment::Atmanepada => t.add(Tag::Atmanepadin),
         PadaAssignment::Ubhayapada => t.add(Tag::Ubhayapadin),
         PadaAssignment::UbhayapadaAnavane => t.add(Tag::Anavane),
+        PadaAssignment::Nic => t.add(Tag::Nic),
     }
     match dhatu.gana {
         Gana::Divadi => t.add(Tag::Divadi),
@@ -106,6 +109,7 @@ pub fn derive(
         Gana::Rudhadi => t.add(Tag::Rudhadi),
         Gana::Tanadi => t.add(Tag::Tanadi),
         Gana::Juhotyadi => t.add(Tag::Juhotyadi),
+        Gana::Curadi => t.add(Tag::Curadi),
         Gana::Bhvadi => {}
     }
     p.terms = terms::with_slots(vec![t]);
