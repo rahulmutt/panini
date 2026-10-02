@@ -13,7 +13,7 @@
   `MISE_ENV=dev mise install`. This provides:
   - `cargo-mutants` (mutation testing) — `mise run mutants` runs
     `cargo mutants --package panini-prakriya --package panini-analyze
-    --test-workspace=true --timeout 260 -j 4`. Run the gate through the task
+    --test-workspace=true --timeout 430 -j 4`. Run the gate through the task
     rather than reconstructing the flags. The `--test-workspace` flag is
     required so each **mutant** run exercises the `panini` crate's golden
     paradigm/trace/roundtrip tests, not just the mutated packages' own unit
@@ -34,32 +34,38 @@
     timeouts). `cargo mutants` also reads `-j` from `CARGO_MUTANTS_JOBS`, so
     an unqualified cap can be defeated by the environment alone; keep `-j`
     at or below 4, or re-measure and raise the cap in step.
-    **The floor behind the 260s cap, measured at 6696 cells on Rust 1.99.0,
-    2026-10-02.** Two `mise run test` runs took 16.860s and 15.610s wall
-    clock (host load averages `22.20 15.43 12.11` after the first and
-    `20.68 15.42 12.16` after the second, on 24 cores). Against 10c's
-    16.008s / 15.686s at 6264 cells (load about 16-27) the floor is flat
-    within noise despite 432 new cells; nor are these comparable with 10b's
-    23.322s / 22.548s at 5076 cells (load about 60, heavy external load with
-    no busy process of ours), 10a's 10.336s / 9.781s at 4932 cells (load
-    about 15), the 9.077s / 8.855s at 4644 cells under load about 14-34, the
-    7.848s / 7.864s at 4608 cells under load about 16-17, the 8.019s /
-    8.348s at 4572 cells on 1.98.1 under load about 34, or the 5.418s /
-    5.419s at 4428 cells under load 7.46. An isolated `-j 4` probe of the two
-    documented equivalent mutants (`-o` to a scratch directory) ran the full
-    suite uncaught in 17.71s (`adesha.rs:589:30`) and 17.70s
-    (`tripadi.rs:1289:38`). Under campaign load the uncaught phases were
-    25.90s and 42.08s (below). The cap is max(200, 6 × the longest
-    campaign-load phase, rounded up to the next 10s): 6 × 42.08s = 252.5s,
-    so **260**, moved from 200 (at 200 the margin would have been 200 /
-    42.08 = 4.75x, below the 6x formula; at 260 it is 6.18x). It was 200
-    from 10c, 170 from 10b, 150 from 3f3 (110 before, 80 in 3f2's campaign
-    and 60 in 3f's, 900 against the Θ(N²) suite, before `candidates()`
-    answered from a corpus index). The campaign-load longest phase rose from
-    10c's 31.98s to 42.08s while the isolated floor held at about 17.7s, so
-    take the campaign-load phase, never the isolated one. The 10d campaign
-    itself ran at `--timeout 200`, below the new cap, and still read both
-    equivalents as MISSED; the rise to 260 is the formula's headroom, not a
+    **The floor behind the 430s cap, measured at 12996 cells on Rust 1.99.0,
+    2026-10-02.** Two `mise run test` runs took 1m19.537s and 51.668s wall
+    clock, on a heavily loaded host (load averages `106.08 78.97 53.03`
+    before and `93.10 82.41 56.46` after the first, `73.69 78.57 56.50`
+    after the second, on 24 cores; no busy process of ours, so the load was
+    external). User CPU time was 1m51s and 1m50s, so the work is the same in
+    both and the wall clock is contention; the prototype measured about 30s
+    on a quiet host. These are NOT comparable with 10d's 16.860s / 15.610s
+    at 6696 cells (load about 21), 10c's 16.008s / 15.686s at 6264 cells,
+    10b's 23.322s / 22.548s at 5076 cells (load about 60, also external),
+    10a's 10.336s / 9.781s at 4932 cells, the 9.077s / 8.855s at 4644
+    cells, the 7.848s / 7.864s at 4608 cells, the 8.019s / 8.348s at 4572
+    cells on 1.98.1, or the 5.418s / 5.419s at 4428 cells: the cell count
+    doubled and the host was far busier. An isolated `-j 4` probe of the
+    two documented equivalent mutants (`-o` to a scratch directory, `--timeout
+    600`, host load 50-70) ran the full suite uncaught in 52.54s
+    (`adesha.rs:589:30`) and 53.13s (`tripadi.rs:1302:38`); both MISSED. The
+    probe set a provisional cap of 320 (6 × 53.13s = 318.8s, rounded up),
+    and the 10e campaign ran at `--timeout 320`; under campaign load (load
+    45-106) the uncaught phases were 66.85s and 71.31s (below), and both
+    still finished MISSED at 320. The cap is max(260, 6 × the longest
+    campaign-load phase, rounded up to the next 10s): 6 × 71.31s = 427.9s,
+    so **430**, moved from 260 (at 320 the margin would have been 320 /
+    71.31 = 4.49x, below the 6x formula; at 430 it is 6.03x). It was 260
+    from 10d, 200 from 10c, 170 from 10b, 150 from 3f3 (110 before, 80 in
+    3f2's campaign and 60 in 3f's, 900 against the Θ(N²) suite, before
+    `candidates()` answered from a corpus index). The cap rose because the
+    suite roughly doubled, but note the figures were taken on a noisy host,
+    so the 430 is conservative; take the campaign-load phase, never the
+    isolated one, and re-measure on a quiet host if one becomes available.
+    The 10e campaign itself ran below the new cap and still read both
+    equivalents as MISSED; the rise to 430 is the formula's headroom, not a
     change the record depended on.
     Take the floor by measurement, never by scaling
     it by cell count or by a projected contention multiplier. Re-measure the
@@ -82,48 +88,55 @@
     finished campaign. The mise shim fails in background shells ("no version
     is set for shim: cargo-mutants"); run the installed `cargo-mutants`
     binary directly, with the task's arguments.
-    **Current record (curādi 10d, 2026-10-02).** Campaign at
-    `-j 4 --timeout 200` (the cap before this slice's move to 260),
-    `--package panini-prakriya --package panini-analyze
-    --test-workspace=true`, `-o /home/dev/mutants-records/curadi-10d`,
-    launched detached, window 17:57:12 - 18:23:59 UTC (27 minutes; host load
-    average about 20-22), on the tree at `039eb41`. **821 mutants tested:
-    770 caught, 48 unviable, 2 missed, 1 timeout.** **panini-prakriya: 809
-    mutants, 762 caught, 44 unviable, 2 missed, 1 timeout.** Its non-caught
-    set (44 / 2 / 1) is identical to 10c's. Across both packages the 51
-    non-caught entries (48 unviable, 2 missed, 1 timeout) of the 10c and 10d
-    `outcomes.durable.json` files are identical on the full record (package,
-    span, replacement, function, genre, outcome): no entry moved, since this
-    slice touched neither `adesha.rs` nor `tripadi.rs`. `missed.txt` held exactly:
+    **Current record (curādi 10e, 2026-10-02).** Campaign at
+    `-j 4 --timeout 320` (the probe's provisional cap, below the 430 this
+    commit moves to), `--package panini-prakriya --package panini-analyze
+    --test-workspace=true`, `-o /home/dev/mutants-records/curadi-10e`,
+    launched detached with `env -u CARGO_MUTANTS_JOBS`, window 21:54:36 -
+    22:51:00 UTC (56 minutes; host load average 45-106, external), on the
+    tree at `fe5f336`. **832 mutants tested: 781 caught, 48 unviable, 2
+    missed, 1 timeout** (exit code 3, as with any timeout). **panini-prakriya:
+    820 mutants, 773 caught, 44 unviable, 2 missed, 1 timeout.** **panini-analyze:
+    12 mutants, 8 caught, 4 unviable, 0 missed, 0 timeout** (unchanged from
+    10d). The two packages sum to the 832 / 781 / 48 / 2 / 1 total.
+    Across both packages the 51 non-caught entries (48 unviable, 2 missed,
+    1 timeout) of the 10d and 10e `outcomes.durable.json` files are
+    identical on the full record (package, span, replacement, function,
+    genre, outcome) except the two `tripadi.rs` spans, which moved down by
+    exactly the 13 lines Task 3 added (`1289:38` to `1302:38` and `1602:23`
+    to `1615:23`); `adesha.rs:589:30` did not move. `missed.txt` held exactly:
     ```
     crates/panini-prakriya/src/tinanta/adesha.rs:589:30: replace + with *
-    crates/panini-prakriya/src/tinanta/tripadi.rs:1289:38: replace - with /
+    crates/panini-prakriya/src/tinanta/tripadi.rs:1302:38: replace - with /
     ```
     `timeout.txt` held exactly the permanent ṇatva mutant:
     ```
-    crates/panini-prakriya/src/tinanta/tripadi.rs:1602:23: replace -= with /=
+    crates/panini-prakriya/src/tinanta/tripadi.rs:1615:23: replace -= with /=
     ```
-    **panini-analyze: 12 mutants, 8 caught, 4 unviable, 0 missed, 0
-    timeout** (unchanged from 10c). The two packages sum to the
-    821 / 770 / 48 / 2 / 1 total. The six new-code mutants were all CAUGHT:
-    `mod.rs:98:35` (`&&` to `||`) and `mod.rs:98:19` (`==` to `!=`) in the
-    `Tag::Mit` read; `sanadi.rs:82:16` (`delete !`) in 10.0493; and
-    `sanadi.rs:202:45` (`||` to `&&`), `sanadi.rs:202:16` (`delete !`) and
-    `sanadi.rs:202:48` (`delete !`) in 6.4.92.
-    Under campaign load the two uncaught equivalents' test phases were 25.90s
-    (`adesha.rs:589:30`) and 42.08s (`tripadi.rs:1289:38`); the permanent
-    hang's was 200.04s (the cap then in force). Caught test phases (770) ran
-    min 0.10s, median 3.25s, p90 21.84s, max 44.78s. The longest equivalent
+    The eleven new-code mutants were all CAUGHT: `samjna.rs:211:25` (`||`
+    to `&&`) in 1.3.78's `AaGarviya` arm; `sanadi.rs:78:16` (`delete !`) in
+    10.0497; `sanadi.rs:211:16` (`delete !`) in 6.4.48; `sanadi.rs:236:67`
+    and `sanadi.rs:303:17` (`||` to `&&`), the two `AtLopa` guards; and
+    8.3.24's widened guard: `tripadi.rs:879:69` (`&&` to `||`), `879:72`
+    (`delete !`), `885:21` (`&&` to `||`), `885:25` (`delete !`), `885:36`
+    (`||` to `&&`) and `885:45` (`==` to `!=`).
+    Under campaign load the two uncaught equivalents' test phases were 66.85s
+    (`adesha.rs:589:30`) and 71.31s (`tripadi.rs:1302:38`); the permanent
+    hang's was 320.08s (the cap then in force). Caught test phases (781) ran
+    min 0.10s, median 7.84s, p90 39.69s, max 111.08s. The longest equivalent
     sets the cap (a caught mutant ends at its first failing assertion, so
-    only the uncaught equivalents count): 6 × 42.08s = 252.5s, rounded up to
-    **260**, so `mise.toml` and the flags at the top of this section move
-    from 200 to 260 in this commit; the margin at 260 is 260 / 42.08 =
-    6.18x. The only timeout is the permanent `j /= 1` hang. `outcomes.json`
-    is kept at
-    `/home/dev/mutants-records/curadi-10d/mutants.out/outcomes.json`, with a
+    only the uncaught equivalents count): 6 × 71.31s = 427.9s, rounded up to
+    **430**, so `mise.toml` and the flags at the top of this section move
+    from 260 to 430 in this commit; the margin at 430 is 430 / 71.31 =
+    6.03x. The campaign ran at 320, where both equivalents still finished
+    MISSED, so the record does not depend on the move. The floor was
+    measured on a heavily loaded host (see the floor paragraph), so the
+    430 is a conservative figure. The only timeout is the permanent
+    `j /= 1` hang. `outcomes.json` is kept at
+    `/home/dev/mutants-records/curadi-10e/mutants.out/outcomes.json`, with a
     durable copy at
-    `/home/dev/mutants-records/curadi-10d/outcomes.durable.json`.
-    The curādi 10c record it replaces: `git show 039eb41:AGENTS.md`.
+    `/home/dev/mutants-records/curadi-10e/outcomes.durable.json`.
+    The curādi 10d record it replaces: `git show fe5f336:AGENTS.md`.
     **The per-slice history** of the floor, the cap and every campaign from
     the pada audit through slice 3d, all measured against the Θ(N²) suite,
     was removed in the commit that introduced this paragraph. Read it with
