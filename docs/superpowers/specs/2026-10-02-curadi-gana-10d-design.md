@@ -118,6 +118,21 @@ The probes are throwaway, in `/tmp/vidyut-full`, against vidyut-prakriya at
 The goldens are generated from the probe's output, not typed from this
 table.
 
+**Prototype (amendment).** The whole slice was built on a throwaway
+worktree before the plan was written. Results:
+- the full suite, clippy and fmt-check are green;
+- the audit shows zero differences at 150 / 6696 / 7862, and the `entry`
+  control fails on 36 cells;
+- all 7394 prior live-branch logs are byte-identical, main against the
+  prototype;
+- a diff-scoped cargo-mutants run catches all 8 mutants.
+
+The prototype corrected this spec in four places, all amended inline:
+- the pada-ambiguous census grows (it is not unchanged);
+- the mit credit count is per branch (468), not per cell;
+- the 1.3.74 list in a trace test is hard-coded;
+- 6.4.92's index arithmetic needed computing once.
+
 ## Changes
 
 ### Data — `panini-data/src/lib.rs`
@@ -163,26 +178,39 @@ table.
     and only credited here, and why 01.0934 and 10.0494 are absent.
   - **6.4.92 *mitāṃ hrasvaḥ***, after 7.2.116 and before 7.3.86. Guards:
     `Tag::Mit` on `ANGA`, and ṇit ṇic at `NIC` (`Tag::Rit`). It shortens a
-    long upadhā vowel of `ANGA` (`A`→`a`, `I`→`i`, `U`→`u`, `F`→`f`) and
-    declines on a short one. In this slice's scope it only ever undoes
-    7.2.116, but the guard reads any long vowel, so √ci's `cAy`/`cAp`
-    needs no change later. Comment: the placement argument from Decisions,
-    including vidyut's later position.
+    long upadhā vowel of `ANGA` through the existing `sound::hrasva_of`
+    table (`A`→`a`, `I`→`i`, `U`→`u`, `F`→`f`, `X`→`x`), whose arms are
+    already tested, and declines on a short one. In this slice's scope it
+    only ever undoes 7.2.116. How √ci's shape reaches it is the √ci slice's
+    question: vidyut shortens the last vowel there, not the upadhā. The
+    upadhā index is computed once (`checked_sub(2)`); a prototype that
+    wrote `chars[n - 2]` twice left an equivalent `n / 2` mutant, since
+    n − 2 = n / 2 for every 3- and 4-letter witness. Comment: the placement
+    argument from Decisions, including vidyut's later position.
 - **`tinanta_rule_order_is_pinned`**: the expected list becomes `"10.0496",
   "10.0493", "3.1.25", "1.3.9", "3.4.114", "7.2.116", "6.4.92", "7.3.86",
   "3.1.32", …`. The doc paragraph for the sanādi stage gains a 10d
   sentence.
 - **Unit tests in `sanadi.rs`**, alongside 7.2.116's:
   - 10.0493 fires on a `Tag::Mit` curādi aṅga and declines without the tag;
-  - 6.4.92 shortens `jYAp` → `jYap` and a hand-built long-`I` upadhā;
-  - 6.4.92 declines on a short upadhā, without `Tag::Mit`, and without ṇit
-    ṇic present.
+  - 6.4.92 shortens `jYAp` → `jYap` and hand-built `I`/`U`/`F` upadhās;
+  - 6.4.92 declines on a short or non-vowel upadhā, without `Tag::Mit`, and
+    without ṇit ṇic present.
+- **`derive_tags_mit_on_curadi_rows_in_jnapadi_only`** in
+  `derivation_tests.rs`, beside the `Tag::Ghu` test: √jñap and √yam are
+  tagged; √śam, √cur and a hand-built bhvādi row numbered `10.0118` are not.
+- `derivation_tests.rs`'s doc for the order pin said 10.0496 is "the only
+  id here that is not an Aṣṭādhyāyī sūtra"; it now names both gaṇasūtras.
 
 ### Goldens — `crates/panini/tests/paradigm/data/curadi.rs`
 
-48 `ParadigmRow`s (6 roots × 2 padas × 4 lakāras), with `AlternateRow`s for
-the four forked parasmaipada cells per root. All are generated from the
-probe and spot-checked by hand against the Scope table.
+48 `ParadigmRow`s (6 roots × 2 padas × 4 lakāras) and 36 `AlternateRow`s
+(six per root: laṅ and vidhiliṅ prathama eka keyed `8.4.56`, and the two
+loṭ tātaṅ cells keyed `7.1.35` and `7.1.35+8.4.56` each). Neither 7.2.116
+nor 6.4.92 is a vikalpa key. They are generated from the engine and
+asserted equal, cell by cell, to vidyut's derivation sets in the same
+program. They are placed after `10.0255` in both statics, ahead of the
+ākusmīya block.
 
 ### Tests
 
@@ -198,27 +226,35 @@ probe and spot-checked by hand against the Scope table.
   | forms | 7394 | **7862** |
 
   The other buckets are unchanged. Per root, 72 cells hold 78 forms:
-  68 one-form cells, 2 two-form, 2 three-form. Its doc gains a 10d
+  68 one-form cells, 2 two-form, 2 three-form. `ALTERNATES` goes from
+  1130 to **1166** rows; the key counts `8.4.56` 170 → **182**, `7.1.35`
+  162 → **174** and `7.1.35+8.4.56` 162 → **174**. Its doc gains a 10d
   paragraph and "OPEN at 47 of its 509 rows".
+- `pada_ambiguous_surfaces_are_exactly_these`: 72 → **96**. Each new root,
+  ubhayapadī and thematic like √cur, contributes √cur's four surfaces
+  (`ajYapayata`, `jYapayatAm`, `jYapayetAm`, `jYapayeta`). None collides
+  with a pre-slice surface.
+- `a_kusmad_is_credited_on_exactly_the_akusmiya_cells`: its 1.3.74 half
+  lists the `Nic` rows literally; it goes from four to ten.
 - **`crates/panini/tests/trace/curadi.rs`**:
   - the module doc names 10.0493 and 6.4.92;
   - **`jnapayati_trace_lengthens_then_shortens_the_upadha`**: √jñap P laṭ
     prathama eka. Asserts the full trace and the order 10.0493 < 3.1.25 and
     7.2.116 < 6.4.92 < 3.1.32;
-  - **`mit_rules_are_credited_on_exactly_the_jnapadi_cells`**: a corpus-wide
-    walk over every curated row and cell. 10.0493 and 6.4.92 are each
-    credited exactly once per cell on the 432 `JNAPADI` cells and nowhere
-    else. The check reads the range, not a list of codes;
-  - √syam and √śam (am-final, not jñapādi) keep 7.2.116 and credit neither
-    new rule (*syAmayate*, *SAmayate*). These join the existing per-row
-    pre-ṇic table test's rows.
-- **`check()`**: a new paradigm test, one witness per row, so all six. The
-  witness list comes from this spec's Scope table, not a hand pick. Each of
-  the parasmaipada laṭ prathama eka and ātmanepada laṭ prathama eka forms
-  gets exactly one analysis, and that analysis credits 10.0493 and 6.4.92.
-  The lengthened forms (*jYApayati*, *yAmayati*, …) are Invalid. Before any
-  assertion names a root, grep the goldens for the form; none collides
-  today.
+  - **`the_mit_rules_are_credited_on_exactly_the_jnapadi_cells`**: a
+    corpus-wide walk (`credited`, which counts live branches). 10.0493 and
+    6.4.92 are each credited on exactly **468** branches (42 parasmaipada +
+    36 ātmanepada per root), every one inside `JNAPADI`. The check reads the
+    range, not a list of codes;
+  - **`syAmayate_and_SAmayate_keep_their_vrddhi`**: √syam and √śam
+    (am-final, not jñapādi) keep 7.2.116 and credit neither new rule.
+- **`check()`**, `curadi_analyses_its_jnapadi_forms`: all six rows, both
+  padas, from this spec's Scope table. Each laṭ prathama eka form gets exactly
+  one analysis, naming its root and pada, opening with 10.0493 and crediting
+  7.2.116 before 6.4.92. `ajYapayata`, pada-ambiguous within √jñap, gets two
+  analyses, one per pada, both mit. The lengthened forms (*jYApayati*,
+  *yAmayati*, *cAhayati*, *cApayati*, *rAhayati*, *bAlayati*,
+  *jYApayate*) are Invalid. The goldens were grepped: no witness collides.
 - **Prior traces**: dump every prior cell's credited-rule log on main and on
   HEAD, as `trace_dump_10c.rs` does; the two must be byte-identical. The
   new rules guard on `Tag::Mit`, which no prior row carries, so nothing
@@ -269,14 +305,23 @@ docs:
   - curādi "open at 41 of 509" → **47 of 509**;
 - the gaṇa history gains "at 47 after slice 10d curated six jñapādi mit
   roots";
-- ARCHITECTURE's tātaṅ paragraph: the ātmanepada-only census (62) is
-  unchanged. The new rows are ubhayapadī, so they join the parasmaipada
-  census (82 → **88**) and the both-pada count. Re-derive "82 + 62 = 144"
-  as **88 + 62 = 150**;
+- ARCHITECTURE:
+  - the rule census, 137 → **139** total, and the `sanadi.rs` row of the
+    stage table;
+  - the tātaṅ paragraph: the ātmanepada-only census (62) is unchanged. The
+    new rows are ubhayapadī, so they join the parasmaipada census (82 →
+    **88**, and 7.1.35's 164 → **176** cells) and the both-pada count
+    (thirty → **thirty-six**). "82 + 62 = 144" becomes **88 + 62 = 150**;
+  - the 8.4.56 paragraph: 170 → **182** cells outright (147 → **159** laṅ
+    and vidhiliṅ prathama eka cells), and the tātaṅ devoicing 164 →
+    **176**;
+- README: the curādi paragraph, the 150-root set, the multi-form census
+  (824 → **848** cells of 6696; 612 → **624** two-form; 165 → **177**
+  three-form), the both-pada list (thirty → thirty-six roots), and the
+  pada-ambiguous paragraph;
 - re-derive the following from the test census rather than assuming them:
-  - ALTERNATES (1130, which gains the new rows' forked cells);
-  - pada-ambiguous surfaces (72; every new parasmaipada and ātmanepada form
-    is distinct);
+  - ALTERNATES (1130 → 1166);
+  - pada-ambiguous surfaces (72 → 96);
   - the stage count;
   - every listing of the sanādi rules ("10.0496, 3.1.25, 1.3.9, 3.4.114,
     7.2.116, 7.3.86, 3.1.32", wrapped or not);
@@ -297,7 +342,8 @@ Re-grep recorded file:line anchors at final HEAD.
 
 - The 432 new cells match vidyut. All 6264 prior cells and their traces are
   byte-identical between main and HEAD.
-- 10.0493 and 6.4.92 are credited on exactly the 432 `JNAPADI` cells.
+- 10.0493 and 6.4.92 are credited on exactly the 468 live branches of the
+  six `JNAPADI` rows, and nowhere else.
 - The audit reports zero differences over 150 roots / 6696 cells / 7862
   forms, after its negative control fails.
 - The mutation campaign catches every new mutant. The rest of the
