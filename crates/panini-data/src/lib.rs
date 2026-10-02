@@ -2014,11 +2014,36 @@ mod tests {
     /// upadeśa.
     fn stored_form(upadesha: &str) -> String {
         let s = dhatvadeh_sha_sa(strip_anubandhas(upadesha));
-        // 7.1.58 idito num dhātoḥ is not derivable here, so √hiṃs is stored
-        // with the num already inserted. This is the single deviation between
-        // an it-stripped upadeśa and a stored `code`, and it is the same one
-        // the retired `Dhatu::id` doc comment recorded.
-        if s == "his" { "hins".to_string() } else { s }
+        // 7.1.58 idito num dhātoḥ is not derivable here, so an idit root is
+        // stored with the num already inserted, after its last vowel (1.1.47
+        // mid aco 'ntyāt paraḥ): `hisi~` stores as `hins`. An upadeśa is idit
+        // when its LAST marker is `i~`; a non-final `i~` belongs to another
+        // marker — irit `i~r` (`ru\Di~^r`) or `cakzi~N`. This is the single
+        // deviation between an it-stripped upadeśa and a stored `code`. It is
+        // applied to every upadeśa, not only curated ones, because the
+        // sibling check below compares a curated row against its uncurated
+        // neighbours: `10.0194 dasi~` must store as `dans`, not collide with
+        // `10.0195 dasa~`'s `das`.
+        let idit = upadesha.trim_end_matches(['\\', '^']).ends_with("i~");
+        match s.rfind(|c: char| !is_hal(c)) {
+            Some(i) if idit => format!("{}n{}", &s[..=i], &s[i + 1..]),
+            _ => s,
+        }
+    }
+
+    #[test]
+    fn stored_form_inserts_num_for_exactly_the_idit_upadeshas() {
+        // idit: the num lands after the last vowel.
+        assert_eq!(stored_form("hisi~"), "hins");
+        assert_eq!(stored_form("dasi~"), "dans");
+        assert_eq!(stored_form("tatri~"), "tantr");
+        assert_eq!(stored_form("aci~^"), "anc");
+        // A non-final `i~` is another marker's: no num.
+        assert_eq!(stored_form("ru\\Di~^r"), "ruD");
+        assert_eq!(stored_form("ca\\kzi~\\N"), "cakz");
+        // No `i~` at all: the plain it-stripped form.
+        assert_eq!(stored_form("dasa~"), "das");
+        assert_eq!(stored_form("kusma~"), "kusm");
     }
 
     #[test]
