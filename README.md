@@ -202,18 +202,23 @@ anudātta marker (1.3.12), and while vidyut-prakriya additionally derives a
 parasmaipada `vanoti` via the gaṇasūtra Kaumudī 2547.2, that is recorded
 here, not modelled, on 1.3.72's own sense-restriction precedent, so this
 engine's √van has no parasmaipada branch to collide against.
-Seventy-two surfaces are pada-ambiguous, each of them a pinned cell in both
-padas at once: `ArRuta`, `BUzayatAm`, `BUzayetAm`, `BUzayeta`, `BakzayatAm`,
+Ninety-six surfaces are pada-ambiguous, each of them a pinned cell in both padas
+at once: `ArRuta`, `BUzayatAm`, `BUzayetAm`, `BUzayeta`, `BakzayatAm`,
 `BakzayetAm`, `Bakzayeta`, `BinttAm`, `BuNktAm`, `CfnttAm`, `CinttAm`, `DattAm`,
 `GfRutAm`, `aBUzayata`, `aBakzayata`, `aBintta`, `aBuNkta`, `aDatta`, `aGfRuta`,
-`abiBfta`, `acCfntta`, `acCintta`, `acorayata`, `adatta`, `akuruta`, `akzaRuta`,
-`akziRuta`, `akzuntta`, `alAqayata`, `anayata`, `anenikta`, `ariNkta`,
+`abalayata`, `abiBfta`, `acCfntta`, `acCintta`, `acahayata`, `acapayata`,
+`acorayata`, `adatta`, `ajYapayata`, `akuruta`, `akzaRuta`, `akziRuta`,
+`akzuntta`, `alAqayata`, `anayata`, `anenikta`, `arahayata`, `ariNkta`,
 `arundDa`, `asanuta`, `atanuta`, `atfRuta`, `atfntta`, `atudata`, `avevikta`,
-`avevizwa`, `aviNkta`, `ayuNkta`, `biBftAm`, `corayatAm`, `corayetAm`,
-`corayeta`, `dattAm`, `fRutAm`, `kurutAm`, `kzaRutAm`, `kziRutAm`, `kzunttAm`,
-`lAqayatAm`, `lAqayetAm`, `lAqayeta`, `nayatAm`, `nayetAm`, `nayeta`,
-`neniktAm`, `riNktAm`, `rundDAm`, `sanutAm`, `tanutAm`, `tfRutAm`, `tfnttAm`,
-`tudatAm`, `tudetAm`, `tudeta`, `veviktAm`, `vevizwAm`, `viNktAm` and `yuNktAm` — `rundDAm`, for instance, is √rudh's loṭ
+`avevizwa`, `aviNkta`, `ayamayata`, `ayuNkta`, `balayatAm`, `balayetAm`,
+`balayeta`, `biBftAm`, `cahayatAm`, `cahayetAm`, `cahayeta`, `capayatAm`,
+`capayetAm`, `capayeta`, `corayatAm`, `corayetAm`, `corayeta`, `dattAm`,
+`fRutAm`, `jYapayatAm`, `jYapayetAm`, `jYapayeta`, `kurutAm`, `kzaRutAm`,
+`kziRutAm`, `kzunttAm`, `lAqayatAm`, `lAqayetAm`, `lAqayeta`, `nayatAm`,
+`nayetAm`, `nayeta`, `neniktAm`, `rahayatAm`, `rahayetAm`, `rahayeta`,
+`riNktAm`, `rundDAm`, `sanutAm`, `tanutAm`, `tfRutAm`, `tfnttAm`, `tudatAm`,
+`tudetAm`, `tudeta`, `veviktAm`, `vevizwAm`, `viNktAm`, `yamayatAm`,
+`yamayetAm`, `yamayeta` and `yuNktAm` — `rundDAm`, for instance, is √rudh's loṭ
 parasmaipada prathama dvi *and* its loṭ ātmanepada prathama eka, and tanādi's seven ubhayapadī roots
 contribute a new shape: `atanuta` is both √tan's laṅ ātmanepada prathama eka and its laṅ
 parasmaipada madhyama bahu, and `tanutAm` is both its loṭ ātmanepada prathama
