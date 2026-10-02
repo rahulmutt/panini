@@ -4,9 +4,12 @@
 //! Every curādi trace opens with the sanādi stage — 3.1.25 ṇic, its 1.3.9,
 //! 3.4.114, then 7.2.116 or 7.3.86 where the root's upadhā takes one, then
 //! 3.1.32 — before the pada sūtra, where every other gaṇa's trace opens.
+//! An ākusmīya root's trace opens one step earlier, with the gaṇasūtra
+//! 10.0496, and has no pada sūtra at all.
 
 use crate::helpers::{at, cell_trace, credited};
-use panini_data::{Lakara, Pada, Purusha, Vacana};
+use panini_data::{Lakara, Pada, Purusha, Vacana, dhatus};
+use panini_prakriya::derive;
 
 #[test]
 fn corayati_trace_is_nic_guna_sanadyanta_then_the_thematic_core() {
@@ -157,4 +160,100 @@ fn pugantalaghupadhasya_off_curadi_is_credited_exactly_as_before_10a() {
     );
     let off = hits.iter().filter(|(n, _)| !n.starts_with("10.")).count();
     assert_eq!(off, 384);
+}
+
+#[test]
+fn cetayate_trace_opens_with_a_kusmad_and_credits_no_pada_sutra() {
+    // cit A laT P.E. 10.0496 settles the pada before ṇic exists; 7.3.86
+    // guṇates `cit` before ṇic, 3.1.32 makes `ceti` the dhātu, and 3.4.78
+    // follows 3.1.32 directly — no 1.3.12, 1.3.74 or 1.3.78 between them.
+    let (text, t) = cell_trace(
+        "10.0192",
+        Lakara::Lat,
+        Pada::Atmanepada,
+        Purusha::Prathama,
+        Vacana::Eka,
+    );
+    assert_eq!(text, "cetayate", "got {t:?}");
+    assert_eq!(
+        t,
+        [
+            "10.0496", "3.1.25", "1.3.9", "3.4.114", "7.3.86", "3.1.32", "3.4.78", "1.2.4",
+            "3.4.79", "3.1.68", "1.3.9", "7.3.84", "6.1.78",
+        ],
+    );
+}
+
+#[test]
+#[allow(non_snake_case)]
+fn varzayate_mAdayate_and_kusmayate_take_their_pre_nic_change_or_none() {
+    // √vṛṣ: 7.3.86's ṛ arm (`vfz` → `varz`). √mad: 7.2.116, and no 7.3.86
+    // (`a` is not ik). √kusm: guru upadhā, neither. Each opens with 10.0496.
+    for (number, form, present, absent) in [
+        ("10.0228", "varzayate", &["7.3.86"][..], &["7.2.116"][..]),
+        ("10.0229", "mAdayate", &["7.2.116"][..], &["7.3.86"][..]),
+        ("10.0236", "kusmayate", &[][..], &["7.2.116", "7.3.86"][..]),
+    ] {
+        let (text, t) = cell_trace(
+            number,
+            Lakara::Lat,
+            Pada::Atmanepada,
+            Purusha::Prathama,
+            Vacana::Eka,
+        );
+        assert_eq!(text, form, "got {t:?}");
+        assert_eq!(t[0], "10.0496", "{form}: got {t:?}");
+        for sutra in present {
+            assert!(at(&t, "3.4.114") < at(&t, sutra), "{form}: got {t:?}");
+            assert!(at(&t, sutra) < at(&t, "3.1.32"), "{form}: got {t:?}");
+        }
+        for sutra in absent {
+            assert!(!t.contains(&sutra.to_string()), "{form} {sutra}: got {t:?}");
+        }
+    }
+}
+
+#[test]
+fn an_akusmiya_roots_parasmaipada_is_blocked_by_a_kusmad_alone() {
+    // Every parasmaipada cell of the four rows derives only blocked
+    // branches, and the block is 10.0496's: nothing is recorded, so no later
+    // rule ran on the branch.
+    for number in ["10.0192", "10.0228", "10.0229", "10.0236"] {
+        let d = dhatus().iter().find(|d| d.dhatupatha == number).unwrap();
+        for lakara in [Lakara::Lat, Lakara::Lan, Lakara::Lot, Lakara::VidhiLin] {
+            let ps = derive(
+                d,
+                lakara,
+                Pada::Parasmaipada,
+                Purusha::Prathama,
+                Vacana::Eka,
+            );
+            assert!(!ps.is_empty(), "{number} {lakara:?}");
+            for p in &ps {
+                assert!(p.blocked, "{number} {lakara:?}: {}", p.text());
+                assert!(p.log.is_empty(), "{number} {lakara:?}: {:?}", p.log);
+            }
+        }
+    }
+}
+
+#[test]
+fn a_kusmad_is_credited_on_exactly_the_akusmiya_cells() {
+    // 10.0496 fires on every ātmanepada cell of the four ākusmīya rows —
+    // 4 roots × 4 lakāras × 9 cells, one branch each — and nowhere else. And
+    // 1.3.74 never reaches them: its credits stay on the four `Nic` rows.
+    let hits = credited("10.0496");
+    assert_eq!(hits.len(), 144);
+    for (number, _) in &hits {
+        assert!(
+            ["10.0192", "10.0228", "10.0229", "10.0236"].contains(number),
+            "10.0496 credited on {number}"
+        );
+    }
+    for (number, _) in credited("1.3.74") {
+        assert!(
+            ["10.0001", "10.0010", "10.0033", "10.0255"].contains(&number),
+            "1.3.74 credited on {number}"
+        );
+    }
 }
