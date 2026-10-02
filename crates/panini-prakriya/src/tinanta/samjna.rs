@@ -671,8 +671,9 @@ mod tests {
                 ..Default::default()
             };
             p.terms = with_slots(vec![Term::new("kliS")]);
+            // Stage-local: `rules()` would find the sanādi stage's 1.3.9 first.
             for id in ["3.4.78", "1.3.9", "1.2.4"] {
-                let rule = rules().find(|r| r.id == id).unwrap();
+                let rule = SAMJNA.iter().find(|r| r.id == id).unwrap();
                 (rule.apply)(&mut p);
             }
             assert!(
@@ -697,8 +698,9 @@ mod tests {
                 ..Default::default()
             };
             p.terms = with_slots(vec![Term::new("kliS")]);
+            // Stage-local: `rules()` would find the sanādi stage's 1.3.9 first.
             for id in ["3.4.78", "1.3.9", "1.2.4"] {
-                let rule = rules().find(|r| r.id == id).unwrap();
+                let rule = SAMJNA.iter().find(|r| r.id == id).unwrap();
                 (rule.apply)(&mut p);
             }
             assert!(p.terms[ENDING_PRE_SHAP].has(Tag::Pit));
@@ -721,8 +723,9 @@ mod tests {
                 ..Default::default()
             };
             p.terms = with_slots(vec![Term::new("BU")]);
+            // Stage-local: `rules()` would find the sanādi stage's 1.3.9 first.
             for id in ["3.4.78", "1.3.9", "1.2.4"] {
-                let rule = rules().find(|r| r.id == id).unwrap();
+                let rule = SAMJNA.iter().find(|r| r.id == id).unwrap();
                 (rule.apply)(&mut p);
             }
             assert!(

@@ -917,7 +917,7 @@ mod tests {
         p.terms = with_slots(vec![Term::new("vrI")]);
         // Looked up in the two stages the chain spans, not in `rules()`:
         // `super::sanadi` runs first and has its own 1.3.9 (ṇic's it-lopa).
-        let stages = || super::super::samjna::SAMJNA.iter().chain(TIN.iter());
+        let stages = || crate::tinanta::samjna::SAMJNA.iter().chain(TIN.iter());
         for id in ["3.4.78", "1.3.9", "1.2.4", "3.4.85", "3.4.87"] {
             let rule = stages().find(|r| r.id == id).unwrap();
             (rule.apply)(&mut p);
@@ -941,8 +941,13 @@ mod tests {
             ..Default::default()
         };
         p.terms = with_slots(vec![Term::new("kliS")]);
+        // Stage-local: `rules()` would find the sanādi stage's 1.3.9 first.
         for id in ["3.4.78", "1.3.9", "1.2.4", "3.4.100", "3.4.103"] {
-            let rule = rules().find(|r| r.id == id).unwrap();
+            let rule = crate::tinanta::samjna::SAMJNA
+                .iter()
+                .chain(TIN.iter())
+                .find(|r| r.id == id)
+                .unwrap();
             (rule.apply)(&mut p);
         }
         assert!(p.terms[ENDING_PRE_SHAP].has(Tag::Ngit));
