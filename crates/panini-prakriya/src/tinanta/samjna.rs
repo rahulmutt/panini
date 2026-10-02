@@ -1,6 +1,11 @@
 //! Saṃjñā, pada sanction and ending insertion: 1.1.20 (as the `GHU` set),
 //! 1.3.12, 1.3.66, 1.3.72, 1.3.74, 1.3.78, 3.4.78, 1.3.9, 1.2.4.
 //!
+//! One pada sanction is settled before this stage: the dhātupāṭha gaṇasūtra
+//! 10.0496 *ā kusmād ātmanepadinaḥ*, first in `super::sanadi`, for the
+//! ākusmīya curādi roots (`Tag::Akusmiya`). Every pada sūtra here leaves
+//! such a root alone.
+//!
 //! Ordered **BEFORE** 3.1.68 — the ending lives at `ENDING_PRE_SHAP`
 //! (index 3) and śap does not exist yet. See `super::terms`.
 //!
@@ -144,7 +149,9 @@ pub(crate) static SAMJNA: &[Rule] = &[
     // 1.3.74 ṇicaś ca: a ṇijanta takes ātmanepada (when the fruit accrues
     // to the agent — unmodelled, exactly as 1.3.72's *kartrabhiprāye
     // kriyāphale* above). Affix-keyed: the guard is Tag::Nic, the data
-    // layer's PadaAssignment::Nic, which every curated curādi row carries.
+    // layer's PadaAssignment::Nic, which every curated curādi row outside the
+    // ākusmīya carries (those are 10.0496's, `Tag::Akusmiya`, and never reach
+    // here).
     // Not keyed on Tag::Nijanta yet — see that variant's doc comment.
     //
     // The parasmaipada arm DECLINES rather than blocks, for 1.3.72's and
@@ -189,13 +196,17 @@ pub(crate) static SAMJNA: &[Rule] = &[
                 }
                 // The guard above already admits an ubhayapadī root — it is
                 // `!Atmanepadin` — so this arm is where the two sūtras overlap, and where
-                // they split on ctx.pada: 1.3.72 (Ubhayapadin), 1.3.66 (Anavane) or
-                // 1.3.74 (Nic) has already sanctioned this cell, so decline instead of
-                // blocking. Only the genuine śeṣa (no pada tag at all) blocks here.
+                // they split on ctx.pada: 1.3.72 (Ubhayapadin), 1.3.66 (Anavane),
+                // 1.3.74 (Nic) or the gaṇasūtra 10.0496 (Akusmiya, in `super::sanadi`)
+                // has already sanctioned this cell, so decline instead of blocking.
+                // Only the genuine śeṣa (no pada tag at all) blocks here. An
+                // Akusmiya root never reaches the parasmaipada arm above: 10.0496
+                // has already blocked that branch.
                 Pada::Atmanepada => {
                     if p.terms[ANGA].has(Tag::Ubhayapadin)
                         || p.terms[ANGA].has(Tag::Anavane)
                         || p.terms[ANGA].has(Tag::Nic)
+                        || p.terms[ANGA].has(Tag::Akusmiya)
                     {
                         return false;
                     }
@@ -512,6 +523,47 @@ mod tests {
         let mut p = nic_prakriya(Pada::Parasmaipada);
         assert!((rule.apply)(&mut p), "1.3.78 declined cur Parasmaipada");
         assert!(!p.blocked);
+    }
+
+    /// `pada_prakriya` for an ākusmīya root, hand-built as `nic_prakriya`
+    /// is: √cit, tagged as `super::derive` tags a `PadaAssignment::Akusmiya`
+    /// row, without running the sanādi stage.
+    fn akusmiya_prakriya(pada: Pada) -> Prakriya {
+        let mut t = Term::new("cit");
+        t.add(Tag::Dhatu);
+        t.add(Tag::Curadi);
+        t.add(Tag::Akusmiya);
+        let mut p = Prakriya {
+            ctx: Context::new(Lakara::Lat, pada, Purusha::Prathama, Vacana::Eka),
+            ..Default::default()
+        };
+        p.terms = with_slots(vec![t]);
+        p
+    }
+
+    #[test]
+    fn every_pada_sutra_leaves_an_akusmiya_root_to_10_0496() {
+        // 10.0496 has sanctioned an ākusmīya root's ātmanepada in
+        // `super::sanadi`, so no pada sūtra of this stage may record on it
+        // or block it: 1.3.12, 1.3.66, 1.3.72 and 1.3.74 for want of their
+        // tags, 1.3.78 by declining on `Tag::Akusmiya`. The four are checked
+        // in both padas; 1.3.78 in ātmanepada only, because its parasmaipada
+        // arm is unreachable: 10.0496 has already blocked that branch, and
+        // the controller runs no later rule on a blocked branch.
+        for id in ["1.3.12", "1.3.66", "1.3.72", "1.3.74", "1.3.78"] {
+            let rule = SAMJNA.iter().find(|r| r.id == id).unwrap();
+            let mut p = akusmiya_prakriya(Pada::Atmanepada);
+            assert!(!(rule.apply)(&mut p), "{id} fired on cit Atmanepada");
+            assert!(!p.blocked, "{id} blocked cit Atmanepada");
+            assert!(p.log.is_empty(), "{id} recorded on cit Atmanepada");
+        }
+        for id in ["1.3.12", "1.3.66", "1.3.72", "1.3.74"] {
+            let rule = SAMJNA.iter().find(|r| r.id == id).unwrap();
+            let mut p = akusmiya_prakriya(Pada::Parasmaipada);
+            assert!(!(rule.apply)(&mut p), "{id} fired on cit Parasmaipada");
+            assert!(!p.blocked, "{id} blocked cit Parasmaipada");
+            assert!(p.log.is_empty(), "{id} recorded on cit Parasmaipada");
+        }
     }
 
     #[test]

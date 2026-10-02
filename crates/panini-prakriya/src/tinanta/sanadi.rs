@@ -1,5 +1,7 @@
 //! The sanādi stage: ṇic and its folding into the dhātu — 3.1.25, ṇic's
-//! it-lopa (1.3.9), 3.4.114, 7.2.116, 7.3.86, 3.1.32.
+//! it-lopa (1.3.9), 3.4.114, 7.2.116, 7.3.86, 3.1.32 — opened by the
+//! dhātupāṭha gaṇasūtra 10.0496, which settles an ākusmīya root's pada
+//! before ṇic is added.
 //!
 //! First in the pipeline, before any lakāra or tiṅ exists. The layout here
 //! is `[AGAMA, ABHYASA, ANGA, ṇic]`, ṇic at `NIC`; 3.1.32 folds ṇic into
@@ -8,15 +10,53 @@
 //! an ordinary i-final dhātu (`cori`), and 7.3.84 then 6.1.78 make `coray-`
 //! exactly as they make √nī's `nay-`. See `super::terms`.
 //!
-//! Every rule self-guards: 3.1.25 on `Tag::Curadi`, the rest on ṇic being
-//! present. For gaṇas 1–9 the stage adds nothing and records nothing.
+//! Every rule self-guards: 10.0496 on `Tag::Akusmiya`, 3.1.25 on
+//! `Tag::Curadi`, the rest on ṇic being present. For gaṇas 1–9 the stage
+//! adds nothing and records nothing.
 
 use crate::rule::{Rule, RuleKind};
 use crate::term::{Tag, Term};
 use crate::tinanta::sound::guna_of;
 use crate::tinanta::terms::{ANGA, NIC};
+use panini_data::Pada;
 
 pub(crate) static SANADI: &[Rule] = &[
+    // 10.0496 ā kusmād ātmanepadinaḥ: the curādi roots up to kusm are
+    // ātmanepadī — the data layer's `AKUSMIYA` range, carried here as
+    // `Tag::Akusmiya`. A gaṇasūtra of the dhātupāṭha, not a sūtra of the
+    // Aṣṭādhyāyī, and the first such id in this engine: numbered as
+    // vidyut-prakriya numbers it (`DP("10.0496")`), by its position in the
+    // dhātupāṭha. Rule ids are opaque strings everywhere they are read.
+    //
+    // First in the stage because vidyut credits it there, as soon as the
+    // dhātu is identified and before 3.1.25. It settles the pada outright, so
+    // no pada sūtra in `super::samjna` is credited after it: 1.3.12 and
+    // 1.3.74 decline on their own guards, 1.3.78 on this tag. The wrong pada
+    // BLOCKS, as it does under 1.3.12 — derivation, not the analyzer, is the
+    // source of truth for pada.
+    Rule {
+        id: "10.0496",
+        name: "A kusmAd AtmanepadinaH",
+        kind: RuleKind::Vidhi,
+        vikalpa: false,
+        bars: &[],
+        apply: |p| {
+            if !p.terms[ANGA].has(Tag::Akusmiya) {
+                return false;
+            }
+            match p.ctx.pada {
+                Pada::Atmanepada => {
+                    let before = p.snapshot();
+                    p.record("10.0496", "A kusmAd AtmanepadinaH", before);
+                    true
+                }
+                Pada::Parasmaipada => {
+                    p.blocked = true;
+                    false
+                }
+            }
+        },
+    },
     // 3.1.25 satyāpapāśarūpavīṇātūlaślokasenālomatvacavarmavarṇacūrṇa-
     // curādibhyo ṇic: ṇic after a curādi root. The sūtra's nominal bases
     // (satya, pāśa, …) are not in scope; the gaṇa is.
@@ -170,8 +210,10 @@ pub(crate) static SANADI: &[Rule] = &[
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::context::Context;
     use crate::prakriya::Prakriya;
     use crate::tinanta::terms::with_slots;
+    use panini_data::{Lakara, Purusha, Vacana};
 
     /// The sanādi stage's own entry for `id` — looked up in `SANADI`, not
     /// `rules()`, so it can never be another stage's 1.3.9 or 7.3.86.
@@ -299,5 +341,57 @@ mod tests {
         p.terms.push(Term::new("ti"));
         assert!(!(rule("3.1.32").apply)(&mut p));
         assert_eq!(p.terms.len(), NIC + 1);
+    }
+
+    /// A bare dhātu carrying `tags`, in a laṭ prathama eka context for `pada`
+    /// — all 10.0496 reads.
+    fn pada_dhatu(root: &str, tags: &[Tag], pada: Pada) -> Prakriya {
+        let mut anga = Term::new(root);
+        anga.add(Tag::Dhatu);
+        for tag in tags {
+            anga.add(*tag);
+        }
+        Prakriya {
+            ctx: Context::new(Lakara::Lat, pada, Purusha::Prathama, Vacana::Eka),
+            terms: with_slots(vec![anga]),
+            ..Default::default()
+        }
+    }
+
+    #[test]
+    fn a_kusmad_sanctions_an_akusmiya_roots_atmanepada() {
+        let mut p = pada_dhatu("cit", &[Tag::Curadi, Tag::Akusmiya], Pada::Atmanepada);
+        assert!((rule("10.0496").apply)(&mut p));
+        assert!(!p.blocked);
+        let ids: Vec<&str> = p.log.iter().map(|s| s.sutra.as_str()).collect();
+        assert_eq!(ids, ["10.0496"]);
+        assert_eq!(p.terms[ANGA].text, "cit", "a sanction, not an operation");
+    }
+
+    #[test]
+    fn a_kusmad_blocks_an_akusmiya_roots_parasmaipada() {
+        let mut p = pada_dhatu("cit", &[Tag::Curadi, Tag::Akusmiya], Pada::Parasmaipada);
+        assert!(!(rule("10.0496").apply)(&mut p));
+        assert!(p.blocked);
+        assert!(p.log.is_empty());
+    }
+
+    #[test]
+    fn a_kusmad_declines_without_the_akusmiya_licence() {
+        // √cur (1.3.74's), √rudh (1.3.72's), √bhū (1.3.78's) and √as
+        // (1.3.12's) are left alone in both padas: not recorded, not blocked.
+        for tags in [
+            &[Tag::Curadi, Tag::Nic][..],
+            &[Tag::Ubhayapadin][..],
+            &[][..],
+            &[Tag::Atmanepadin][..],
+        ] {
+            for pada in [Pada::Parasmaipada, Pada::Atmanepada] {
+                let mut p = pada_dhatu("x", tags, pada);
+                assert!(!(rule("10.0496").apply)(&mut p), "{tags:?} {pada:?}");
+                assert!(!p.blocked, "{tags:?} {pada:?}");
+                assert!(p.log.is_empty(), "{tags:?} {pada:?}");
+            }
+        }
     }
 }
