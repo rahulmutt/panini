@@ -1440,9 +1440,7 @@ static DHATUS: &[Dhatu] = &[
     },
     Dhatu {
         // 10.0201 `tarja~` tarjane (√tarj). Guru upadhā (the conjunct `rj`),
-        // so unchanged before ṇic. Ātmanepadī by 10.0496. Slice 10c. Since slice 10e
-        // 8.3.24 → 8.4.58 is credited on its `n` (forms unchanged; vidyut credits
-        // the pair too).
+        // so unchanged before ṇic. Ātmanepadī by 10.0496. Slice 10c.
         dhatupatha: "10.0201",
         code: "tarj",
         gana: Gana::Curadi,
@@ -1468,8 +1466,10 @@ static DHATUS: &[Dhatu] = &[
         artha: "ardane",
     },
     Dhatu {
-        // 10.0204 `ganDa~` ardane (√gandh). Guru upadhā (the conjunct `nD`),
-        // so unchanged before ṇic. Ātmanepadī by 10.0496. Slice 10c.
+        // 10.0204 `ganDa~` ardane (√gandh). Guru upadhā (the conjunct `nD`), so
+        // unchanged before ṇic. Ātmanepadī by 10.0496. Slice 10c. Since slice 10e,
+        // 8.3.24 → 8.4.58 is credited on its `n` (forms unchanged; vidyut credits
+        // the pair too).
         dhatupatha: "10.0204",
         code: "ganD",
         gana: Gana::Curadi,
@@ -2211,10 +2211,9 @@ static DHATUS: &[Dhatu] = &[
     },
     Dhatu {
         // 10.0433 `sanketa` AmantraRe (√sanketa). Adanta: 6.4.48 ato lopaḥ deletes
-        // the final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted `a`
-        // still stands for 7.2.116 and 7.3.86, which decline. Ubhayapadī by
-        // 1.3.74. Slice 10e. Since 10e, 8.3.24 → 8.4.58 is
-        // credited on its `n`.
+        // the final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted `a` still
+        // stands for 7.2.116 and 7.3.86, which decline. Ubhayapadī by 1.3.74. Since
+        // slice 10e, 8.3.24 → 8.4.58 is credited on its `n`.
         dhatupatha: "10.0433",
         code: "sanketa",
         gana: Gana::Curadi,
@@ -2455,9 +2454,8 @@ static DHATUS: &[Dhatu] = &[
     Dhatu {
         // 10.0460 `ansa` samAGAte (√ansa). Adanta: 6.4.48 ato lopaḥ deletes the
         // final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted `a` still
-        // stands for 7.2.116 and 7.3.86, which decline. Ubhayapadī by 1.3.74.
-        // Slice 10e. Since 10e, 8.3.24 → 8.4.58 is
-        // credited on its `n`.
+        // stands for 7.2.116 and 7.3.86, which decline. Ubhayapadī by 1.3.74. Since
+        // slice 10e, 8.3.24 → 8.4.58 is credited on its `n`.
         dhatupatha: "10.0460",
         code: "ansa",
         gana: Gana::Curadi,
@@ -2498,11 +2496,10 @@ static DHATUS: &[Dhatu] = &[
         artha: "samparke",
     },
     Dhatu {
-        // 10.0467 `sangrAma` yudDe (√sangrāma). Adanta: 6.4.48 ato lopaḥ deletes
-        // the final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted `a`
-        // still stands for 7.2.116 and 7.3.86, which decline. Ubhayapadī by
-        // 1.3.74. Slice 10e. Since 10e, 8.3.24 → 8.4.58 is
-        // credited on its `n`.
+        // 10.0467 `sangrAma` yudDe (√sangrāma). Adanta: 6.4.48 ato lopaḥ deletes the
+        // final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted `a` still
+        // stands for 7.2.116 and 7.3.86, which decline. Ubhayapadī by 1.3.74. Since
+        // slice 10e, 8.3.24 → 8.4.58 is credited on its `n`.
         dhatupatha: "10.0467",
         code: "sangrAma",
         gana: Gana::Curadi,
@@ -2532,11 +2529,10 @@ static DHATUS: &[Dhatu] = &[
         artha: "karRaBedane",
     },
     Dhatu {
-        // 10.0471 `anDa` dfzwyupaGAte (√andha). Adanta: 6.4.48 ato lopaḥ deletes
-        // the final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted `a`
-        // still stands for 7.2.116 and 7.3.86, which decline. Ubhayapadī by
-        // 1.3.74. Slice 10e. Since 10e, 8.3.24 → 8.4.58 is
-        // credited on its `n`.
+        // 10.0471 `anDa` dfzwyupaGAte (√andha). Adanta: 6.4.48 ato lopaḥ deletes the
+        // final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted `a` still
+        // stands for 7.2.116 and 7.3.86, which decline. Ubhayapadī by 1.3.74. Since
+        // slice 10e, 8.3.24 → 8.4.58 is credited on its `n`.
         dhatupatha: "10.0471",
         code: "anDa",
         gana: Gana::Curadi,
@@ -2544,11 +2540,10 @@ static DHATUS: &[Dhatu] = &[
         artha: "dfzwyupaGAte",
     },
     Dhatu {
-        // 10.0472 `danqa` daRqanipAte (√danḍa). Adanta: 6.4.48 ato lopaḥ deletes
-        // the final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted `a`
-        // still stands for 7.2.116 and 7.3.86, which decline. Ubhayapadī by
-        // 1.3.74. Slice 10e. Since 10e, 8.3.24 → 8.4.58 is
-        // credited on its `n`.
+        // 10.0472 `danqa` daRqanipAte (√danḍa). Adanta: 6.4.48 ato lopaḥ deletes the
+        // final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted `a` still
+        // stands for 7.2.116 and 7.3.86, which decline. Ubhayapadī by 1.3.74. Since
+        // slice 10e, 8.3.24 → 8.4.58 is credited on its `n`.
         dhatupatha: "10.0472",
         code: "danqa",
         gana: Gana::Curadi,
@@ -2557,10 +2552,9 @@ static DHATUS: &[Dhatu] = &[
     },
     Dhatu {
         // 10.0473 `anka` pade lakzaRe ca (√anka). Adanta: 6.4.48 ato lopaḥ deletes
-        // the final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted `a`
-        // still stands for 7.2.116 and 7.3.86, which decline. Ubhayapadī by
-        // 1.3.74. Slice 10e. Since 10e, 8.3.24 → 8.4.58 is
-        // credited on its `n`.
+        // the final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted `a` still
+        // stands for 7.2.116 and 7.3.86, which decline. Ubhayapadī by 1.3.74. Since
+        // slice 10e, 8.3.24 → 8.4.58 is credited on its `n`.
         dhatupatha: "10.0473",
         code: "anka",
         gana: Gana::Curadi,
@@ -2569,10 +2563,9 @@ static DHATUS: &[Dhatu] = &[
     },
     Dhatu {
         // 10.0474 `anga` pade lakzaRe ca (√anga). Adanta: 6.4.48 ato lopaḥ deletes
-        // the final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted `a`
-        // still stands for 7.2.116 and 7.3.86, which decline. Ubhayapadī by
-        // 1.3.74. Slice 10e. Since 10e, 8.3.24 → 8.4.58 is
-        // credited on its `n`.
+        // the final `a` before ārdhadhātuka ṇic, and by 1.1.57 the deleted `a` still
+        // stands for 7.2.116 and 7.3.86, which decline. Ubhayapadī by 1.3.74. Since
+        // slice 10e, 8.3.24 → 8.4.58 is credited on its `n`.
         dhatupatha: "10.0474",
         code: "anga",
         gana: Gana::Curadi,
