@@ -399,7 +399,8 @@ are the goldens that pin it.
 `derive` itself carries no scope gate — it only tags the dhātu and
 runs `TINANTA_RULES` (see `panini_prakriya::tinanta::derive`). A wrong-pada
 derivation is instead blocked by the pada-sanction rules (1.3.12 *anudāttaṅita
-ātmanepadam* / 1.3.78 *śeṣāt kartari parasmaipadam*), which set
+ātmanepadam* / 1.3.78 *śeṣāt kartari parasmaipadam*, and the gaṇasūtra
+10.0496 for an ākusmīya root), which set
 `Prakriya.blocked` when the requested pada doesn't match the root's tag; a
 blocked prakriya's partial text never counts as a match in `Panini::check`.
 1.3.72 *svaritañitaḥ* is the third of them and the only one that never

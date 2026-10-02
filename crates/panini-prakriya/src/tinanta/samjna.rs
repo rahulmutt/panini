@@ -92,7 +92,7 @@ pub(crate) static SAMJNA: &[Rule] = &[
         apply: |p| {
             // svarita/ñit ubhayapadī roots are 1.3.72's business;
             // parasmaipada-only roots 1.3.78's; ātmanepada-only ones
-            // 1.3.12's.
+            // 1.3.12's, or 10.0496's for an ākusmīya root.
             if !p.terms[ANGA].has(Tag::Anavane) {
                 return false;
             }
@@ -132,7 +132,7 @@ pub(crate) static SAMJNA: &[Rule] = &[
         bars: &[],
         apply: |p| {
             // parasmaipada-only roots are 1.3.78's business; ātmanepada-only
-            // ones are 1.3.12's.
+            // ones are 1.3.12's, or 10.0496's for an ākusmīya root.
             if !p.terms[ANGA].has(Tag::Ubhayapadin) {
                 return false;
             }

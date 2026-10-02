@@ -91,7 +91,7 @@
     mutants, 756 caught, 44 unviable, 2 missed, 1 timeout.** Its non-caught
     set (44 / 2 / 1) is identical to 10a's, diffed as a multiset of
     (package, file, mutation kind, replacement, function, outcome) over all 51
-    non-caught outcomes; no line or column moved either (this slice edited
+    non-caught outcomes; no non-caught entry's line or column moved either (this slice edited
     neither `adesha.rs` nor `tripadi.rs`, and its `mod.rs`, `term.rs` and
     `guna.rs` edits shifted no unviable entry). `missed.txt` held exactly:
     ```
@@ -107,13 +107,13 @@
     `HashMap::from_iter([..., vec![Default::default()]])` replacements do not
     compile, as `Candidate` has no `Default`). The two packages sum to the
     815 / 764 / 48 / 2 / 1 total. No mutant of the new code is missed, timed
-    out or unviable; every one is caught. 10.0496 (`sanadi.rs:24-55`) has one
+    out or unviable; every one is caught. 10.0496 (`sanadi.rs:24-59`) has one
     mutant, `sanadi.rs:44:16` (`delete !` on the `Tag::Akusmiya` guard):
-    caught. 1.3.78's three new `||` arms (the `Akusmiya` reads in
-    `samjna.rs`) have three mutants, `samjna.rs:207:25`, `208:25` and
-    `209:25` (each `||` to `&&`): all caught. cargo-mutants generates no
-    arm-deletion mutant for 10.0496's exhaustive `match` arms, `derive` or
-    `padas()`. `derive`'s own mutants (`mod.rs:81-83`, two return-value
+    caught. 1.3.78's `||` chain, now three operators with one new
+    (`samjna.rs:209:25`, the `Akusmiya` read) plus 10a's two at `207:25` and
+    `208:25` (each `||` to `&&`): all caught. cargo-mutants generates no
+    arm-deletion mutant for 10.0496's exhaustive `match` arms, or
+    `derive` (`padas()` lives in `panini-data`, which is not mutated). `derive`'s own mutants (`mod.rs:81-83`, two return-value
     replacements and two field deletions) are caught as well.
     Under campaign load the two uncaught equivalents' test phases were 20.59s
     (`adesha.rs:589:30`) and 27.46s (`tripadi.rs:1289:38`); the permanent

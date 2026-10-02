@@ -221,17 +221,16 @@ fn an_akusmiya_roots_parasmaipada_is_blocked_by_a_kusmad_alone() {
     for number in ["10.0192", "10.0228", "10.0229", "10.0236"] {
         let d = dhatus().iter().find(|d| d.dhatupatha == number).unwrap();
         for lakara in [Lakara::Lat, Lakara::Lan, Lakara::Lot, Lakara::VidhiLin] {
-            let ps = derive(
-                d,
-                lakara,
-                Pada::Parasmaipada,
-                Purusha::Prathama,
-                Vacana::Eka,
-            );
-            assert!(!ps.is_empty(), "{number} {lakara:?}");
-            for p in &ps {
-                assert!(p.blocked, "{number} {lakara:?}: {}", p.text());
-                assert!(p.log.is_empty(), "{number} {lakara:?}: {:?}", p.log);
+            for purusha in [Purusha::Prathama, Purusha::Madhyama, Purusha::Uttama] {
+                for vacana in [Vacana::Eka, Vacana::Dvi, Vacana::Bahu] {
+                    let ps = derive(d, lakara, Pada::Parasmaipada, purusha, vacana);
+                    let cell = format!("{number} {lakara:?} {purusha:?} {vacana:?}");
+                    assert!(!ps.is_empty(), "{cell}");
+                    for p in &ps {
+                        assert!(p.blocked, "{cell}: {}", p.text());
+                        assert!(p.log.is_empty(), "{cell}: {:?}", p.log);
+                    }
+                }
             }
         }
     }

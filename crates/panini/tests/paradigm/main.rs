@@ -1482,7 +1482,7 @@ fn curadi_analyses_its_akusmiya_forms() {
             assert_eq!(a.pada, Pada::Atmanepada, "{form}");
             let ids: Vec<&str> = a.trace.iter().map(|s| s.sutra.as_str()).collect();
             assert_eq!(ids[0], "10.0496", "{form}: {ids:?}");
-            for absent in ["1.3.12", "1.3.74", "1.3.78"] {
+            for absent in ["1.3.12", "1.3.66", "1.3.72", "1.3.74", "1.3.78"] {
                 assert!(!ids.contains(&absent), "{form} {absent}: {ids:?}");
             }
         }
