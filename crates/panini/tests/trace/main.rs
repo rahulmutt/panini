@@ -29,8 +29,10 @@
 //!
 //! The pada-sanction step (1.3.78 for these parasmaipada roots; 1.3.12 for
 //! atmanepada roots) is the derivation's source of truth for pada and opens
-//! every trace except curādi's, which open with the sanādi stage — 3.1.25 ṇic,
-//! ahead of any pada sanction (curādi's pada comes from 1.3.74 *ṇicaś ca*).
+//! every trace except curādi's, which open with the sanādi stage: an ākusmīya
+//! root's with the gaṇasūtra 10.0496 *ā kusmād ātmanepadinaḥ*, which settles
+//! its pada so no pada sūtra is credited; every other curādi root's with
+//! 3.1.25 ṇic, ahead of 1.3.74 *ṇicaś ca*.
 
 mod helpers;
 
