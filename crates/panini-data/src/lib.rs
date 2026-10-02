@@ -70,6 +70,18 @@ pub enum PadaAssignment {
     /// only on the ṇic branch; this engine has no optional-ṇic roots yet, so
     /// every curated ākusmīya row takes ṇic.
     Akusmiya,
+    /// Ātmanepada only, sanctioned by the dhātupāṭha gaṇasūtra 10.0497
+    /// *ā garvād ātmanepadinaḥ*: the curādi roots from `10.0440 pada` up to
+    /// `10.0449 garva` (`AA_GARVIYA`) are ātmanepadī. Same standing as
+    /// `Akusmiya`: neither a marker of the root's nor the affix's, so a root
+    /// carrying it is credited 10.0497 and no pada sūtra at all: never
+    /// 1.3.12, 1.3.74 or 1.3.78.
+    ///
+    /// Keyed on the row's position, as the gaṇasūtra is. vidyut-prakriya
+    /// lists the same ten upadeśas (`AA_GARVIYA`). The gaṇasūtra applies only
+    /// on the ṇic branch; `10.0449 garva`, whose ṇic is optional, is not
+    /// curated yet, so every curated ā-garvīya row takes ṇic.
+    AaGarviya,
 }
 /// The ākusmīya antargaṇa of curādi: dhātupāṭha rows `10.0192` (`cita~`)
 /// through `10.0236` (`kusma~`), the scope of the gaṇasūtra 10.0496 *ā
@@ -86,6 +98,16 @@ pub const AKUSMIYA: RangeInclusive<&str> = "10.0192"..="10.0236";
 /// `10.0124 ciY`, which is mit but not yet curated (it waits on 7.2.115).
 /// `jnapadi_is_exactly_the_rows_10_0493_names` pins the range to upstream.
 pub const JNAPADI: RangeInclusive<&str> = "10.0118"..="10.0124";
+
+/// The ā-garvīya of curādi: dhātupāṭha rows `10.0440` (`pada`) through
+/// `10.0449` (`garva`), the scope of the gaṇasūtra 10.0497 *ā garvād
+/// ātmanepadinaḥ*. Compared as strings, like `AKUSMIYA`. A curated row is
+/// `PadaAssignment::AaGarviya` exactly when it is curādi and in this range;
+/// `curated_pada_agrees_with_upadesha_markers` holds both sides. Includes
+/// `10.0449 garva`, which is ā-garvīya but not yet curated (its ṇic is
+/// optional). `aa_garviya_is_exactly_the_rows_10_0497_names` pins the range
+/// to upstream.
+pub const AA_GARVIYA: RangeInclusive<&str> = "10.0440"..="10.0449";
 impl PadaAssignment {
     /// The padas this assignment derives. `Ubhayapada` lists parasmaipada
     /// first — pinned, not incidental; see
@@ -97,7 +119,7 @@ impl PadaAssignment {
             PadaAssignment::Ubhayapada
             | PadaAssignment::UbhayapadaAnavane
             | PadaAssignment::Nic => &[Pada::Parasmaipada, Pada::Atmanepada],
-            PadaAssignment::Akusmiya => &[Pada::Atmanepada],
+            PadaAssignment::Akusmiya | PadaAssignment::AaGarviya => &[Pada::Atmanepada],
         }
     }
 }
@@ -2232,6 +2254,7 @@ mod tests {
             &[Pada::Parasmaipada, Pada::Atmanepada]
         );
         assert_eq!(PadaAssignment::Akusmiya.padas(), &[Pada::Atmanepada]);
+        assert_eq!(PadaAssignment::AaGarviya.padas(), &[Pada::Atmanepada]);
     }
 
     #[test]
@@ -2481,6 +2504,31 @@ mod tests {
     }
 
     #[test]
+    fn aa_garviya_is_exactly_the_rows_10_0497_names() {
+        // The gaṇasūtra 10.0497 follows `10.0449 garva` and makes the ten
+        // rows from `10.0440 pada` ātmanepadī. vidyut-prakriya lists the
+        // same ten upadeśas (`AA_GARVIYA`). `garva` is not curated, so this
+        // test — not a derivation — is what holds the range's upper end.
+        let rows = upstream_rows();
+        let in_range: Vec<&str> = rows
+            .iter()
+            .filter(|(n, _, _)| AA_GARVIYA.contains(n))
+            .map(|(_, u, _)| *u)
+            .collect();
+        assert_eq!(
+            in_range,
+            [
+                "pada", "gfha", "mfga", "kuha", "SUra", "vIra", "sTUla", "arTa", "satra", "garva"
+            ]
+        );
+        // The neighbours on either side exist upstream and fall outside.
+        for n in ["10.0439", "10.0450"] {
+            assert!(rows.iter().any(|(m, _, _)| *m == n), "{n}");
+            assert!(!AA_GARVIYA.contains(&n), "{n}");
+        }
+    }
+
+    #[test]
     fn jnapadi_is_exactly_the_rows_10_0493_names() {
         // The gaṇasūtra 10.0493 follows `10.0124 ciY` and makes the seven
         // rows from `10.0118 jYapa~` mit. vidyut-prakriya lists the same
@@ -2601,8 +2649,9 @@ mod tests {
             // so every upadeśa CORRECTLY derives parasmaipada, and the curated
             // column names the sanction instead. Inside `AKUSMIYA` it is the
             // gaṇasūtra 10.0496 ā kusmād ātmanepadinaḥ (`Akusmiya`,
-            // ātmanepada only); outside it, the affix's 1.3.74 ṇicaś ca
-            // (`Nic`, both padas). Asserted both ways, like √bhuj above, so a
+            // ātmanepada only); inside `AA_GARVIYA`, its twin 10.0497 ā
+            // garvād ātmanepadinaḥ (`AaGarviya`); outside both, the affix's
+            // 1.3.74 ṇicaś ca (`Nic`, both padas). Asserted both ways, like √bhuj above, so a
             // row on the wrong side of the range boundary fails here. A
             // curādi row that DOES carry a marker (`10.0058 zmiN`, ṅit) is a
             // later slice's, and fails the first assertion until that slice
@@ -2616,8 +2665,13 @@ mod tests {
                 );
                 let (want, why) = if AKUSMIYA.contains(&d.dhatupatha) {
                     (PadaAssignment::Akusmiya, "ākusmīya, so 10.0496's")
+                } else if AA_GARVIYA.contains(&d.dhatupatha) {
+                    (PadaAssignment::AaGarviya, "ā-garvīya, so 10.0497's")
                 } else {
-                    (PadaAssignment::Nic, "outside the ākusmīya, so 1.3.74's")
+                    (
+                        PadaAssignment::Nic,
+                        "outside the ākusmīya and the ā-garvīya, so 1.3.74's",
+                    )
                 };
                 assert_eq!(d.pada, want, "{} is curādi and {why}", d.dhatupatha);
                 continue;

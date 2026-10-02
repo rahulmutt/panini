@@ -1,8 +1,8 @@
 //! The sanādi stage: ṇic and its folding into the dhātu — 3.1.25, ṇic's
-//! it-lopa (1.3.9), 3.4.114, 7.2.116, 6.4.92, 7.3.86, 3.1.32 — opened by
-//! two dhātupāṭha gaṇasūtras: 10.0496, which settles an ākusmīya root's
-//! pada, and 10.0493, which credits a jñapādi root's mit-tva, both before
-//! ṇic is added.
+//! it-lopa (1.3.9), 3.4.114, 6.4.48, 7.2.116, 6.4.92, 7.3.86, 3.1.32 —
+//! opened by three dhātupāṭha gaṇasūtras: 10.0496 and 10.0497, which settle
+//! an ākusmīya or ā-garvīya root's pada, and 10.0493, which credits a
+//! jñapādi root's mit-tva, all before ṇic is added.
 //!
 //! First in the pipeline, before any lakāra or tiṅ exists. The layout here
 //! is `[AGAMA, ABHYASA, ANGA, ṇic]`, ṇic at `NIC`; 3.1.32 folds ṇic into
@@ -11,10 +11,11 @@
 //! an ordinary i-final dhātu (`cori`), and 7.3.84 then 6.1.78 make `coray-`
 //! exactly as they make √nī's `nay-`. See `super::terms`.
 //!
-//! Every rule self-guards: 10.0496 on `Tag::Akusmiya`, 10.0493 on
-//! `Tag::Mit`, 3.1.25 on `Tag::Curadi`, the rest on ṇic being present
-//! (6.4.92 on `Tag::Mit` as well). For gaṇas 1–9 the stage
-//! adds nothing and records nothing.
+//! Every rule self-guards: 10.0496 on `Tag::Akusmiya`, 10.0497 on
+//! `Tag::AaGarviya`, 10.0493 on `Tag::Mit`, 3.1.25 on `Tag::Curadi`, the
+//! rest on ṇic being present (6.4.48 on an `a`-final aṅga as well, 6.4.92 on
+//! `Tag::Mit`, and 7.2.116 and 7.3.86 decline on 6.4.48's `Tag::AtLopa`).
+//! For gaṇas 1–9 the stage adds nothing and records nothing.
 
 use crate::rule::{Rule, RuleKind};
 use crate::term::{Tag, Term};
@@ -50,6 +51,37 @@ pub(crate) static SANADI: &[Rule] = &[
                 Pada::Atmanepada => {
                     let before = p.snapshot();
                     p.record("10.0496", "A kusmAd AtmanepadinaH", before);
+                    true
+                }
+                Pada::Parasmaipada => {
+                    p.blocked = true;
+                    false
+                }
+            }
+        },
+    },
+    // 10.0497 ā garvād ātmanepadinaḥ: the curādi roots from `10.0440 pada` up
+    // to `10.0449 garva` are ātmanepadī — the data layer's `AA_GARVIYA`
+    // range, carried here as `Tag::AaGarviya`. 10.0496's twin in every
+    // respect but the range: it settles the pada outright, so no pada sūtra
+    // in `super::samjna` is credited after it, and the parasmaipada branch
+    // BLOCKS. vidyut-prakriya credits it where it credits 10.0496, before
+    // 3.1.25. The range includes `10.0449 garva`, whose ṇic is optional and
+    // which is not curated yet: the gaṇasūtra applies only on its ṇic branch.
+    Rule {
+        id: "10.0497",
+        name: "A garvAd AtmanepadinaH",
+        kind: RuleKind::Vidhi,
+        vikalpa: false,
+        bars: &[],
+        apply: |p| {
+            if !p.terms[ANGA].has(Tag::AaGarviya) {
+                return false;
+            }
+            match p.ctx.pada {
+                Pada::Atmanepada => {
+                    let before = p.snapshot();
+                    p.record("10.0497", "A garvAd AtmanepadinaH", before);
                     true
                 }
                 Pada::Parasmaipada => {
@@ -156,6 +188,40 @@ pub(crate) static SANADI: &[Rule] = &[
             true
         },
     },
+    // 6.4.48 ato lopaḥ ārdhadhātuke: an aṅga's final `a` is deleted before an
+    // ārdhadhātuka affix. The adanta curādi roots (`10.0389 kaTa` …) meet it
+    // here, before ṇic: `kaTa` → `kaT`. vidyut-prakriya credits it at this
+    // very point, after 3.4.114 and before 3.1.32.
+    //
+    // The lopa is not the end of the `a`. By 1.1.57 acaḥ parasmin
+    // pūrvavidhau, a vowel replaced because of what follows still stands for
+    // a rule about what precedes it: 7.2.116 and 7.3.86 below would read
+    // `kaT`'s `a` and `kuh`'s `u` as the upadhā, but the deleted `a` is still
+    // there for them, so *kathayati*, not *kāthayati*, and *kuhayate*, not
+    // *kohayate*. `Tag::AtLopa` carries that, and both decline on it. 1.1.57
+    // is a paribhāṣā and is not credited, as vidyut does not credit it. The
+    // tag outlives 3.1.32, for later stages that must know the `a` was there.
+    Rule {
+        id: "6.4.48",
+        name: "ato lopaH",
+        kind: RuleKind::Vidhi,
+        vikalpa: false,
+        bars: &[],
+        apply: |p| {
+            if !p.terms.get(NIC).is_some_and(|t| t.has(Tag::Ardhadhatuka)) {
+                return false;
+            }
+            let Some(stem) = p.terms[ANGA].text.strip_suffix('a') else {
+                return false;
+            };
+            let stem = stem.to_string();
+            let before = p.snapshot();
+            p.terms[ANGA].text = stem;
+            p.terms[ANGA].add(Tag::AtLopa);
+            p.record("6.4.48", "ato lopaH", before);
+            true
+        },
+    },
     // 7.2.116 ata upadhāyāḥ: vṛddhi of an `a` upadhā before a ñit or ṇit
     // affix. `laq` → `lAq` before ṇic. Only ṇit has a carrier in this engine
     // (`Tag::Rit`); no ñit affix is in scope.
@@ -166,7 +232,9 @@ pub(crate) static SANADI: &[Rule] = &[
         vikalpa: false,
         bars: &[],
         apply: |p| {
-            if !p.terms.get(NIC).is_some_and(|t| t.has(Tag::Rit)) {
+            // 1.1.57: 6.4.48's deleted `a` still stands; see 6.4.48 above.
+            if !p.terms.get(NIC).is_some_and(|t| t.has(Tag::Rit)) || p.terms[ANGA].has(Tag::AtLopa)
+            {
                 return false;
             }
             let mut chars: Vec<char> = p.terms[ANGA].text.chars().collect();
@@ -230,7 +298,10 @@ pub(crate) static SANADI: &[Rule] = &[
         vikalpa: false,
         bars: &[],
         apply: |p| {
-            if !p.terms.get(NIC).is_some_and(|t| t.has(Tag::Ardhadhatuka)) {
+            // 1.1.57: 6.4.48's deleted `a` still stands; see 6.4.48 above.
+            if !p.terms.get(NIC).is_some_and(|t| t.has(Tag::Ardhadhatuka))
+                || p.terms[ANGA].has(Tag::AtLopa)
+            {
                 return false;
             }
             let chars: Vec<char> = p.terms[ANGA].text.chars().collect();
@@ -354,6 +425,52 @@ mod tests {
         p.terms.push(Term::new("ti"));
         assert!(!(rule("3.4.114").apply)(&mut p));
         assert!(!p.terms[NIC].has(Tag::Ardhadhatuka));
+    }
+
+    #[test]
+    fn ato_lopa_deletes_an_adanta_roots_a_before_ardhadhatuka_nic() {
+        for (root, want) in [("kaTa", "kaT"), ("kuha", "kuh"), ("Una", "Un")] {
+            let mut p = with_nic(root, Some(&[Tag::Rit, Tag::Ardhadhatuka]));
+            assert!((rule("6.4.48").apply)(&mut p), "{root}");
+            assert_eq!(p.terms[ANGA].text, want);
+            assert!(p.terms[ANGA].has(Tag::AtLopa), "{root}");
+            let ids: Vec<&str> = p.log.iter().map(|s| s.sutra.as_str()).collect();
+            assert_eq!(ids, ["6.4.48"]);
+        }
+        // Not `a`-final: a consonant (cur) or a long `A` (pA).
+        for root in ["cur", "pA"] {
+            let mut p = with_nic(root, Some(&[Tag::Rit, Tag::Ardhadhatuka]));
+            assert!(!(rule("6.4.48").apply)(&mut p), "{root}");
+            assert_eq!(p.terms[ANGA].text, root);
+            assert!(!p.terms[ANGA].has(Tag::AtLopa), "{root}");
+        }
+        // `a`-final, but no ārdhadhātuka follower: no ṇic at all, or a ṇic
+        // that 3.4.114 has not reached yet.
+        for nic in [None, Some(&[Tag::Rit][..])] {
+            let mut p = with_nic("kaTa", nic);
+            assert!(!(rule("6.4.48").apply)(&mut p), "{nic:?}");
+            assert_eq!(p.terms[ANGA].text, "kaTa");
+            assert!(!p.terms[ANGA].has(Tag::AtLopa), "{nic:?}");
+        }
+    }
+
+    #[test]
+    fn the_upadha_rules_decline_after_ato_lopa() {
+        // 1.1.57: after 6.4.48, `kaT`'s `a` and `kuh`'s `u` sit at the upadhā,
+        // but the deleted `a` still stands for 7.2.116 and 7.3.86.
+        for (id, root) in [("7.2.116", "kaT"), ("7.3.86", "kuh")] {
+            let mut p = with_nic(root, Some(&[Tag::Rit, Tag::Ardhadhatuka]));
+            p.terms[ANGA].add(Tag::AtLopa);
+            assert!(!(rule(id).apply)(&mut p), "{id} {root}");
+            assert_eq!(p.terms[ANGA].text, root);
+            assert!(p.log.is_empty(), "{id} {root}");
+        }
+        // The same shapes without the tag are ordinary roots, and both fire.
+        for (id, root, want) in [("7.2.116", "kaT", "kAT"), ("7.3.86", "kuh", "koh")] {
+            let mut p = with_nic(root, Some(&[Tag::Rit, Tag::Ardhadhatuka]));
+            assert!((rule(id).apply)(&mut p), "{id} {root}");
+            assert_eq!(p.terms[ANGA].text, want);
+        }
     }
 
     #[test]
@@ -509,6 +626,40 @@ mod tests {
             for pada in [Pada::Parasmaipada, Pada::Atmanepada] {
                 let mut p = pada_dhatu("x", tags, pada);
                 assert!(!(rule("10.0496").apply)(&mut p), "{tags:?} {pada:?}");
+                assert!(!p.blocked, "{tags:?} {pada:?}");
+                assert!(p.log.is_empty(), "{tags:?} {pada:?}");
+            }
+        }
+    }
+
+    #[test]
+    fn a_garvad_sanctions_an_a_garviya_roots_atmanepada_and_blocks_its_parasmaipada() {
+        let mut p = pada_dhatu("kuha", &[Tag::Curadi, Tag::AaGarviya], Pada::Atmanepada);
+        assert!((rule("10.0497").apply)(&mut p));
+        assert!(!p.blocked);
+        let ids: Vec<&str> = p.log.iter().map(|s| s.sutra.as_str()).collect();
+        assert_eq!(ids, ["10.0497"]);
+        assert_eq!(p.terms[ANGA].text, "kuha", "a sanction, not an operation");
+        let mut p = pada_dhatu("kuha", &[Tag::Curadi, Tag::AaGarviya], Pada::Parasmaipada);
+        assert!(!(rule("10.0497").apply)(&mut p));
+        assert!(p.blocked);
+        assert!(p.log.is_empty());
+    }
+
+    #[test]
+    fn a_garvad_declines_without_the_a_garviya_licence() {
+        // An ākusmīya root is 10.0496's, not 10.0497's; √cur, √rudh, √bhū
+        // and √ās are left alone too. Both padas: not recorded, not blocked.
+        for tags in [
+            &[Tag::Curadi, Tag::Akusmiya][..],
+            &[Tag::Curadi, Tag::Nic][..],
+            &[Tag::Ubhayapadin][..],
+            &[][..],
+            &[Tag::Atmanepadin][..],
+        ] {
+            for pada in [Pada::Parasmaipada, Pada::Atmanepada] {
+                let mut p = pada_dhatu("x", tags, pada);
+                assert!(!(rule("10.0497").apply)(&mut p), "{tags:?} {pada:?}");
                 assert!(!p.blocked, "{tags:?} {pada:?}");
                 assert!(p.log.is_empty(), "{tags:?} {pada:?}");
             }

@@ -197,16 +197,18 @@ pub(crate) static SAMJNA: &[Rule] = &[
                 // The guard above already admits an ubhayapadī root — it is
                 // `!Atmanepadin` — so this arm is where the two sūtras overlap, and where
                 // they split on ctx.pada: 1.3.72 (Ubhayapadin), 1.3.66 (Anavane),
-                // 1.3.74 (Nic) or the gaṇasūtra 10.0496 (Akusmiya, in `super::sanadi`)
-                // has already sanctioned this cell, so decline instead of blocking.
-                // Only the genuine śeṣa (no pada tag at all) blocks here. An
-                // Akusmiya root never reaches the parasmaipada arm above: 10.0496
-                // has already blocked that branch.
+                // 1.3.74 (Nic) or the gaṇasūtras 10.0496 (Akusmiya) and 10.0497
+                // (AaGarviya), both in `super::sanadi`, have already sanctioned this
+                // cell, so decline instead of blocking. Only the genuine śeṣa (no
+                // pada tag at all) blocks here. An Akusmiya or AaGarviya root never
+                // reaches the parasmaipada arm above: its gaṇasūtra has already
+                // blocked that branch.
                 Pada::Atmanepada => {
                     if p.terms[ANGA].has(Tag::Ubhayapadin)
                         || p.terms[ANGA].has(Tag::Anavane)
                         || p.terms[ANGA].has(Tag::Nic)
                         || p.terms[ANGA].has(Tag::Akusmiya)
+                        || p.terms[ANGA].has(Tag::AaGarviya)
                     {
                         return false;
                     }
@@ -327,6 +329,7 @@ mod tests {
             PadaAssignment::UbhayapadaAnavane => t.add(Tag::Anavane),
             PadaAssignment::Nic => t.add(Tag::Nic),
             PadaAssignment::Akusmiya => t.add(Tag::Akusmiya),
+            PadaAssignment::AaGarviya => t.add(Tag::AaGarviya),
         }
         t
     }
@@ -563,6 +566,37 @@ mod tests {
             assert!(!(rule.apply)(&mut p), "{id} fired on cit Parasmaipada");
             assert!(!p.blocked, "{id} blocked cit Parasmaipada");
             assert!(p.log.is_empty(), "{id} recorded on cit Parasmaipada");
+        }
+    }
+
+    #[test]
+    fn every_pada_sutra_leaves_an_a_garviya_root_to_10_0497() {
+        // 10.0497 is 10.0496's twin: it has sanctioned an ā-garvīya root's
+        // ātmanepada in `super::sanadi`, so no pada sūtra here may record on
+        // it or block it — 1.3.78 declining on `Tag::AaGarviya`, the rest for
+        // want of their tags. 1.3.78's parasmaipada arm is unreachable, as
+        // for the ākusmīya: 10.0497 has already blocked that branch.
+        let a_garviya = |pada| {
+            let mut p = akusmiya_prakriya(pada);
+            p.terms[ANGA] = Term::new("kuha");
+            p.terms[ANGA].add(Tag::Dhatu);
+            p.terms[ANGA].add(Tag::Curadi);
+            p.terms[ANGA].add(Tag::AaGarviya);
+            p
+        };
+        for id in ["1.3.12", "1.3.66", "1.3.72", "1.3.74", "1.3.78"] {
+            let rule = SAMJNA.iter().find(|r| r.id == id).unwrap();
+            let mut p = a_garviya(Pada::Atmanepada);
+            assert!(!(rule.apply)(&mut p), "{id} fired on kuha Atmanepada");
+            assert!(!p.blocked, "{id} blocked kuha Atmanepada");
+            assert!(p.log.is_empty(), "{id} recorded on kuha Atmanepada");
+        }
+        for id in ["1.3.12", "1.3.66", "1.3.72", "1.3.74"] {
+            let rule = SAMJNA.iter().find(|r| r.id == id).unwrap();
+            let mut p = a_garviya(Pada::Parasmaipada);
+            assert!(!(rule.apply)(&mut p), "{id} fired on kuha Parasmaipada");
+            assert!(!p.blocked, "{id} blocked kuha Parasmaipada");
+            assert!(p.log.is_empty(), "{id} recorded on kuha Parasmaipada");
         }
     }
 
