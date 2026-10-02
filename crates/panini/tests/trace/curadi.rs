@@ -8,7 +8,7 @@
 //! 10.0496, and has no pada sūtra at all.
 
 use crate::helpers::{at, cell_trace, credited};
-use panini_data::{Lakara, Pada, Purusha, Vacana, dhatus};
+use panini_data::{AKUSMIYA, Gana, Lakara, Pada, Purusha, Vacana, dhatus};
 use panini_prakriya::derive;
 
 #[test]
@@ -215,11 +215,17 @@ fn varzayate_mAdayate_and_kusmayate_take_their_pre_nic_change_or_none() {
 
 #[test]
 fn an_akusmiya_roots_parasmaipada_is_blocked_by_a_kusmad_alone() {
-    // Every parasmaipada cell of the four rows derives only blocked
-    // branches, and the block is 10.0496's: nothing is recorded, so no later
-    // rule ran on the branch.
-    for number in ["10.0192", "10.0228", "10.0229", "10.0236"] {
-        let d = dhatus().iter().find(|d| d.dhatupatha == number).unwrap();
+    // Every parasmaipada cell of every curated ākusmīya row derives only
+    // blocked branches, and the block is 10.0496's: nothing is recorded, so
+    // no later rule ran on the branch. The rows are found by the positional
+    // `AKUSMIYA` range, not by the curated `pada` column.
+    let rows: Vec<_> = dhatus()
+        .iter()
+        .filter(|d| d.gana == Gana::Curadi && AKUSMIYA.contains(&d.dhatupatha))
+        .collect();
+    assert_eq!(rows.len(), 37, "curated ākusmīya rows");
+    for d in rows {
+        let number = d.dhatupatha;
         for lakara in [Lakara::Lat, Lakara::Lan, Lakara::Lot, Lakara::VidhiLin] {
             for purusha in [Purusha::Prathama, Purusha::Madhyama, Purusha::Uttama] {
                 for vacana in [Vacana::Eka, Vacana::Dvi, Vacana::Bahu] {
@@ -238,16 +244,14 @@ fn an_akusmiya_roots_parasmaipada_is_blocked_by_a_kusmad_alone() {
 
 #[test]
 fn a_kusmad_is_credited_on_exactly_the_akusmiya_cells() {
-    // 10.0496 fires on every ātmanepada cell of the four ākusmīya rows —
-    // 4 roots × 4 lakāras × 9 cells, one branch each — and nowhere else. And
-    // 1.3.74 never reaches them: its credits stay on the four `Nic` rows.
+    // 10.0496 fires on every ātmanepada cell of the 37 curated ākusmīya
+    // rows — 37 roots × 4 lakāras × 9 cells, one branch each — and nowhere
+    // else: every credit's number lies in the positional `AKUSMIYA` range.
+    // And 1.3.74 never reaches them: its credits stay on the four `Nic` rows.
     let hits = credited("10.0496");
-    assert_eq!(hits.len(), 144);
+    assert_eq!(hits.len(), 1332);
     for (number, _) in &hits {
-        assert!(
-            ["10.0192", "10.0228", "10.0229", "10.0236"].contains(number),
-            "10.0496 credited on {number}"
-        );
+        assert!(AKUSMIYA.contains(number), "10.0496 credited on {number}");
     }
     for (number, _) in credited("1.3.74") {
         assert!(
