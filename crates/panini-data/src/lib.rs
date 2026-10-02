@@ -1,5 +1,7 @@
 #![forbid(unsafe_code)]
 
+use std::ops::RangeInclusive;
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Gana {
     Bhvadi,
@@ -46,7 +48,8 @@ pub enum PadaAssignment {
     /// arm is sanctioned by 1.3.74 *ṇicaś ca*, a sūtra keyed on the affix
     /// ṇic, rather than by any marker of the root's. Every curādi root takes
     /// ṇic (3.1.25), so a curādi row with no pada marker of its own is
-    /// curated with this. Like `UbhayapadaAnavane`, a root carrying it must
+    /// curated with this — unless it is ākusmīya (`AKUSMIYA`), which is
+    /// `Akusmiya`. Like `UbhayapadaAnavane`, a root carrying it must
     /// never reach 1.3.72, or the trace credits the wrong sūtra.
     ///
     /// Row-driven for now: 1.3.74 reads the pada licence the data layer
@@ -54,7 +57,27 @@ pub enum PadaAssignment {
     /// root of any gaṇa) is implemented, 1.3.74 should key on the ṇijanta
     /// stem instead, and this variant retires.
     Nic,
+    /// Ātmanepada only, sanctioned by the dhātupāṭha gaṇasūtra 10.0496
+    /// *ā kusmād ātmanepadinaḥ*: the curādi roots from `10.0192 cita~` up to
+    /// `10.0236 kusma~` (`AKUSMIYA`) are ātmanepadī. Not a marker of the
+    /// root's — their upadeśas carry none, so 1.3.12 never reaches them — and
+    /// not the affix's, so 1.3.74 must not credit them either. A root
+    /// carrying it is credited 10.0496 and no pada sūtra at all: never
+    /// 1.3.12, 1.3.74 or 1.3.78.
+    ///
+    /// Keyed on the row's position, as the gaṇasūtra is; vidyut-prakriya
+    /// reads the same range (`maybe_find_antargana`). The gaṇasūtra applies
+    /// only on the ṇic branch; this engine has no optional-ṇic roots yet, so
+    /// every curated ākusmīya row takes ṇic.
+    Akusmiya,
 }
+/// The ākusmīya antargaṇa of curādi: dhātupāṭha rows `10.0192` (`cita~`)
+/// through `10.0236` (`kusma~`), the scope of the gaṇasūtra 10.0496 *ā
+/// kusmād ātmanepadinaḥ*. Compared as strings, which the zero-padded
+/// numbering makes order-correct. A curated row is
+/// `PadaAssignment::Akusmiya` exactly when it is curādi and in this range;
+/// `curated_pada_agrees_with_upadesha_markers` holds both sides.
+pub const AKUSMIYA: RangeInclusive<&str> = "10.0192"..="10.0236";
 impl PadaAssignment {
     /// The padas this assignment derives. `Ubhayapada` lists parasmaipada
     /// first — pinned, not incidental; see
@@ -66,6 +89,7 @@ impl PadaAssignment {
             PadaAssignment::Ubhayapada
             | PadaAssignment::UbhayapadaAnavane
             | PadaAssignment::Nic => &[Pada::Parasmaipada, Pada::Atmanepada],
+            PadaAssignment::Akusmiya => &[Pada::Atmanepada],
         }
     }
 }
@@ -1726,6 +1750,7 @@ mod tests {
             PadaAssignment::Nic.padas(),
             &[Pada::Parasmaipada, Pada::Atmanepada]
         );
+        assert_eq!(PadaAssignment::Akusmiya.padas(), &[Pada::Atmanepada]);
     }
 
     #[test]

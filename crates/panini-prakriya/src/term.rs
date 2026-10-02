@@ -94,6 +94,14 @@ pub enum Tag {
     /// pada licence keyed to a sūtra, so the trace credits that sūtra and
     /// never 1.3.72.
     Nic,
+    /// The dhātu's ātmanepada is sanctioned by the dhātupāṭha gaṇasūtra
+    /// 10.0496 *ā kusmād ātmanepadinaḥ*: the data layer's
+    /// `PadaAssignment::Akusmiya`. Read only by 10.0496 in `tinanta::sanadi`,
+    /// and by 1.3.78's ātmanepada arm, which declines rather than
+    /// blocks when it is present. Same standing as `Nic` and `Anavane`: a
+    /// pada licence keyed to the rule that grants it, so the trace credits
+    /// that rule and no pada sūtra.
+    Akusmiya,
     /// The aṅga is a ṇijanta: 3.1.32 *sanādyantā dhātavaḥ* folded ṇic into
     /// it, so its final `i` is ṇic's. A saṁjñā verdict, set by 3.1.32 and
     /// pinned by its unit test; no rule reads it yet. 6.4.51 *ṇer aniṭi*,
