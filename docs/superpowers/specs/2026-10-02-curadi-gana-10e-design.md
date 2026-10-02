@@ -42,8 +42,12 @@ beyond 6.4.48. Every one of those rules already exists:
 | √spṛha | 1 (`10.0410 spfha`) | 8.4.2; vidyut also credits 8.3.110 (see Decisions) |
 
 The ā-garvīya class includes the vowel-initial `10.0447 arTa` (6.4.72).
-The anusvāra rows (`sanketa`, `sangrAma`, `danqa`, `ansa`, `anka`,
-`anga`, `stana` …) reuse 8.3.24 and 8.4.58.
+The six anusvāra rows (`sanketa`, `sangrAma`, `danqa`, `ansa`, `anka`,
+`anga`) need **8.3.24** *naś cāpadāntasya jhali* on the root's own `n`,
+then 8.4.58 (except `ansa`, whose `s` is no yay: *aṃsayati*). `anDa` takes
+the same pair, with 8.4.58 restoring the `n`. 8.3.24 exists but is
+guarded to rudhādi and juhotyādi, so it is widened (amendment, see
+Decisions).
 
 **Out:**
 
@@ -109,6 +113,25 @@ of the root's `s`. This engine's 8.3.59 retroflexes only an affix-initial
 block, and the forms agree. The difference is in the trace only. The goldens
 and the audit compare forms.
 
+**8.3.24 widens to a curādi root's own `n` (amendment).** The
+prototype found the engine deriving *sanketayati* where vidyut has
+*saṅketayati*: 432 cells over the six anusvāra rows, the only
+differences in the slice. 8.3.24 is gaṇa-guarded to rudhādi and juhotyādi
+so that it never reaches the 7.1.3 `n` of *bhavanti* or *corayanti*, which
+the engine has no pada-boundary notion to exclude. The widening admits a
+curādi root, but searches only `ANGA`'s own characters. That `n` is inside
+the dhātu, so *apadāntasya* holds by construction, and the 7.1.3 `n` (in
+the tiṅ term) stays out of reach. No new rule id. One prior row moves:
+10c's `10.0204 ganD` has its own `n` before `D`, and its 36 branches gain
+the 8.3.24 → 8.4.58 pair. vidyut credits that pair on *gandhayate* too,
+and the form is unchanged. `is_natva_target`'s fold of 8.3.24 stays: the
+7.1.3 `n` of every non-rudhādi, non-juhotyādi root still needs it.
+
+Two alternatives were rejected. Storing the post-sandhi codes (`saNketa`,
+`aMsa`, …) like the `hins` / `stiG` precedents would keep a rule's output
+in data. Deferring the six rows would split the class for no reason the
+grammar gives.
+
 **Four homograph pairs.** Four new rows share surfaces with curated rows:
 
 | new row | curated row | shared cells |
@@ -152,6 +175,34 @@ The probes are throwaway, in `/tmp/vidyut-full`, against vidyut-prakriya at
 
 The goldens are generated from the engine and asserted equal to vidyut's
 derivation sets, cell by cell. They are not typed from this spec.
+
+**Prototype (amendment).** The whole slice was built on a throwaway
+worktree before the plan was written. Results:
+- the full suite, clippy and fmt-check are green;
+- the golden generator derived all 6300 new cells (6798 forms) with the
+  prototype engine and found every one equal to vidyut's set, once 8.3.24
+  was widened. Before that it found 432 differences, all on the six
+  anusvāra rows;
+- the audit shows zero differences at 242 / 12996 / 14660, and the `entry`
+  control fails on 36 cells;
+- of the 7862 prior live-branch logs, all are byte-identical main against
+  the prototype except √gandh's 36, each of which gains exactly 8.3.24 →
+  8.4.58;
+- every projected count held: 1444 blocks, 11816 / 790 / 343 one-, two-
+  and three-form cells, ALTERNATES 1664 (348 / 340 / 340 by key), 6798
+  6.4.48 credits, 324 10.0497 credits, pada-ambiguous surfaces 96 → 420.
+
+The prototype corrected this spec in five places, all amended inline:
+- 8.3.24 widens (Decisions), so it adds a guard change in `tripadi.rs`;
+- two juhotyādi trace tests pin 8.3.24's and 8.4.40's credit sites and
+  move: 8.3.24 gains √gandh and seven adanta rows (582 curādi branches),
+  and 8.4.40 gains the three ch-initial rows' laṅ (57 branches);
+- 10d's `curadi_analyses_its_jnapadi_forms` expects two analyses for
+  *rahayati* and *cahayati*;
+- the `check()` witnesses are adjusted to forms that are their row's alone:
+  laṅ uses bahuvacana (*Onayan*, *acCidrayan*), because the prathama eka
+  forms fork on 8.4.56;
+- the success criterion on prior traces names √gandh's exception.
 
 ## Changes
 
@@ -289,25 +340,36 @@ among the existing curādi blocks (the rows are all `10.0108` or
   from this spec's enumeration (shape class × homograph rows), not picked by
   hand. Every surface's expected analyses come from grepping the goldens:
   - plain: *kaTayati*, *gaRayati*;
-  - would-be 7.3.86: *guRayati*, *kuRayati*;
+  - would-be 7.3.86: *guRayati*, *kuRayate*;
   - ṇatva: *mArgayARi*;
-  - vowel-initial laṅ: *Onayat*, and *ArTayata* (ā-garvīya);
-  - ch-initial laṅ: *acCidrayat*;
-  - anusvāra: *saNketayati*, *daRqayati*;
+  - vowel-initial laṅ: *Onayan*, and *ArTayata* (ā-garvīya);
+  - ch-initial laṅ: *acCidrayan*;
+  - anusvāra: *saNketayati*, *daRqayate*, *aMsayati* (each credits 8.3.24);
   - ā-garvīya: *padayate*, *gfhayate*, *kuhayate*. Each has one ātmanepada
     analysis; *padayati* is Invalid;
   - homographs: *rahayati* and *cahayati* each get two analyses (the mit row
     and the adanta row); *kUwayate* and *vizkayate* each get two (the
     ākusmīya row and the adanta row);
   - the forms the block prevents are Invalid: *kATayati*, *gARayati*
-    (7.2.116) and *kohayate* (7.3.86).
+    (7.2.116), *kohayate* and *goRayati* (7.3.86), and so are
+    *sanketayati* (no 8.3.24) and the ā-garvīya parasmaipada *padayati*
+    and *kuhayati*.
+- 10d's `curadi_analyses_its_jnapadi_forms`: *rahayati* and *cahayati*
+  now have two analyses each; it checks the mit one.
+- **`crates/panini/tests/trace/juhotyadi.rs`**:
+  - `nas_capadantasya_is_credited_only_on_rudhadi_dhan_and_jan` →
+    `…_rudhadi_dhan_jan_and_curadi_roots`. It admits exactly eight curādi
+    rows (`10.0204` and seven adanta rows) and pins their **582** branches;
+  - `shcutva_off_jan_is_credited_exactly_as_before_3f3` admits the three
+    ch-initial adanta rows and pins their **57** branches beside the old 54.
 
   The goldens are grepped for each witness before asserting how many
   analyses it has.
 - **Prior traces**: dump every prior cell's credited-rule log on main and
-  on HEAD, as `trace_dump_10d.rs` does; the two must be byte-identical.
-  6.4.48 needs an `a`-final `ANGA`, which no prior row has, and the two new
-  guards read a tag no prior row carries. The dump proves it.
+  on HEAD, as `trace_dump_10d.rs` does. They must be byte-identical except
+  √gandh's 36 lines, each of which gains exactly ` 8.3.24 8.4.58`. 6.4.48
+  needs an `a`-final `ANGA`, which no prior row has, and the two new guards
+  read a tag no prior row carries. The dump proves it.
 
 TDD order:
 
@@ -328,8 +390,8 @@ grows by 9.
 
 ## Mutation gate
 
-The production change is small: two tags, one variant, two rules and two
-guards. But the suite nearly doubles in cells. Re-measure the uncaught-suite
+The production change is small: two tags, one variant, two rules, two
+guards and 8.3.24's widened guard. But the suite nearly doubles in cells. Re-measure the uncaught-suite
 floor at the parallelism used, and set the cap from that measurement: 6×
 the floor, rounded up to the next 10 s. Do not scale the old cap by the
 cell count. Background shells die at about 60 minutes, so chunk the
@@ -339,9 +401,11 @@ invocation.
 
 Expected outcome:
 
-- every mutant of 6.4.48, 10.0497, the two `Tag::AtLopa` guards, the
-  `AaGarviya` arms and `AA_GARVIYA` is caught;
-- the rest of the non-caught set is identical to 10d's.
+- every mutant of 6.4.48, 10.0497, the two `Tag::AtLopa` guards, 8.3.24's
+  widened guard, the `AaGarviya` arms and `AA_GARVIYA` is caught;
+- the rest of the non-caught set is 10d's. The two `tripadi.rs` entries
+  keep their columns but move down by the lines the 8.3.24 comment adds,
+  so locate them with `--list`; never compute their positions.
 
 A change in the old set means the extra suite time pushed a survivor into
 TIMEOUT, and the cap is wrong. AGENTS.md names the non-caught set verbatim.
@@ -397,7 +461,8 @@ Re-grep recorded file:line anchors at final HEAD.
 ## Success criteria
 
 - The 6300 new cells match vidyut. All 6696 prior cells and their traces
-  are byte-identical between main and HEAD.
+  are byte-identical between main and HEAD, except that √gandh's 36
+  branches gain 8.3.24 → 8.4.58, the pair vidyut credits.
 - 6.4.48 is credited on exactly the 6798 live branches of the 92 rows, and
   10.0497 on exactly the 324 ātmanepada branches of the 9 ā-garvīya rows;
   7.2.116 and 7.3.86 are credited on no adanta branch.
