@@ -38,7 +38,7 @@ pub fn all_candidates() -> Vec<Candidate> {
     for d in dhatus() {
         for &lakara in LAKARAS {
             for &(purusha, vacana) in CELLS {
-                for &pada in d.pada.padas() {
+                for &pada in d.padas() {
                     out.push(Candidate {
                         dhatu: d,
                         lakara,
@@ -146,7 +146,7 @@ mod tests {
     fn all_candidates_is_the_full_cross_product() {
         let expected: usize = dhatus()
             .iter()
-            .map(|d| LAKARAS.len() * CELLS.len() * d.pada.padas().len())
+            .map(|d| LAKARAS.len() * CELLS.len() * d.padas().len())
             .sum();
         assert_eq!(all_candidates().len(), expected);
     }

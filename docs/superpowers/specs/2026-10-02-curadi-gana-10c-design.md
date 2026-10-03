@@ -246,6 +246,6 @@ final HEAD.
 10.0494, with √syam and √śam as the witnesses; slice 10d took the jñapādi and
 deferred both gaṇasūtras to a causative slice), adanta roots (with the
 ā-garvīya list, 10.0497), then optional ṇic (taking the six optional-ṇic
-ākusmīya rows). √smiṅ, and with it 7.2.115 before ṇic, rides whichever
+ākusmīya rows; taken by slice 10f, see `2026-10-02-curadi-gana-10f-design.md`). √smiṅ, and with it 7.2.115 before ṇic, rides whichever
 slice first needs 7.2.115. √gṛ (`10.0231`) and √yu (`10.0235`) are the
 ākusmīya rows that wait on it.

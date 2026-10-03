@@ -67,8 +67,9 @@ pub enum PadaAssignment {
     ///
     /// Keyed on the row's position, as the gaṇasūtra is; vidyut-prakriya
     /// reads the same range (`maybe_find_antargana`). The gaṇasūtra applies
-    /// only on the ṇic branch; this engine has no optional-ṇic roots yet, so
-    /// every curated ākusmīya row takes ṇic.
+    /// only on the ṇic branch: a row whose ṇic is optional (`OPTIONAL_NIC`,
+    /// slice 10f's six) is still `Akusmiya`, the ṇic branch's verdict, and
+    /// `Dhatu::padas` adds the ṇic-less branch's parasmaipada.
     Akusmiya,
     /// Ātmanepada only, sanctioned by the dhātupāṭha gaṇasūtra 10.0497
     /// *ā garvād ātmanepadinaḥ*: the curādi roots from `10.0440 pada` up to
@@ -79,8 +80,8 @@ pub enum PadaAssignment {
     ///
     /// Keyed on the row's position, as the gaṇasūtra is. vidyut-prakriya
     /// lists the same ten upadeśas (`AA_GARVIYA`). The gaṇasūtra applies only
-    /// on the ṇic branch; `10.0449 garva`, whose ṇic is optional, is not
-    /// curated yet, so every curated ā-garvīya row takes ṇic.
+    /// on the ṇic branch: `10.0449 garva`, whose ṇic is optional (`OPTIONAL_NIC`),
+    /// is still `AaGarviya`, and `Dhatu::padas` adds its ṇic-less parasmaipada.
     AaGarviya,
 }
 /// The ākusmīya antargaṇa of curādi: dhātupāṭha rows `10.0192` (`cita~`)
@@ -104,10 +105,43 @@ pub const JNAPADI: RangeInclusive<&str> = "10.0118"..="10.0124";
 /// ātmanepadinaḥ*. Compared as strings, like `AKUSMIYA`. A curated row is
 /// `PadaAssignment::AaGarviya` exactly when it is curādi and in this range;
 /// `curated_pada_agrees_with_upadesha_markers` holds both sides. Includes
-/// `10.0449 garva`, which is ā-garvīya but not yet curated (its ṇic is
-/// optional). `aa_garviya_is_exactly_the_rows_10_0497_names` pins the range
-/// to upstream.
+/// `10.0449 garva`, whose ṇic is optional (`OPTIONAL_NIC`): 10.0497 makes
+/// only its ṇic branch ātmanepadī. `aa_garviya_is_exactly_the_rows_10_0497_names`
+/// pins the range to upstream.
 pub const AA_GARVIYA: RangeInclusive<&str> = "10.0440"..="10.0449";
+
+/// The curādi rows whose ṇic is optional, each with the Kaumudī id that
+/// makes it so: 2564 for an idit root, 2570 for a ñit or udit root, 2573.1
+/// for `pata`, and 2573.3 for the roots that rule names (`mUtra`, `katra`,
+/// `garva`). Keyed by dhātupāṭha number, as `JNAPADI` is: the engine never
+/// sees an upadeśa's markers, so `danS` and `div` cannot say they are idit
+/// or udit. The engine's sanādi stage forks each listed row into a ṇic
+/// branch and a ṇic-less one (`Dhatu::padas`).
+///
+/// Lists curated rows only. `optional_nic_matches_upadesha_markers`
+/// re-derives every entry from the vendored upadeśa and holds the table to
+/// exactly the curated rows those markers select.
+pub const OPTIONAL_NIC: &[(&str, &str)] = &[
+    ("10.0193", "2564"),
+    ("10.0194", "2564"),
+    ("10.0198", "2564"),
+    ("10.0199", "2564"),
+    ("10.0227", "2570"),
+    ("10.0230", "2570"),
+    ("10.0400", "2573.1"),
+    ("10.0449", "2573.3"),
+    ("10.0451", "2573.3"),
+    ("10.0456", "2573.3"),
+];
+
+/// The Kaumudī id that makes row `dhatupatha`'s ṇic optional, if any
+/// (`OPTIONAL_NIC`).
+pub fn optional_nic(dhatupatha: &str) -> Option<&'static str> {
+    OPTIONAL_NIC
+        .iter()
+        .find(|(n, _)| *n == dhatupatha)
+        .map(|(_, id)| *id)
+}
 impl PadaAssignment {
     /// The padas this assignment derives. `Ubhayapada` lists parasmaipada
     /// first — pinned, not incidental; see
@@ -164,13 +198,15 @@ pub struct Dhatu {
     pub gana: Gana,
     /// Which pada(s) this engine derives for this root. Curated rather than
     /// read from the upadeśa's it-markers — but no longer a *deferral*:
-    /// `curated_pada_agrees_with_upadesha_markers` re-derives 102 of these 242
+    /// `curated_pada_agrees_with_upadesha_markers` re-derives 102 of these 252
     /// verdicts from the vendored upadeśa via 1.3.12 / 1.3.72 / 1.3.78 and
     /// requires them to match; `07.0017`'s (√bhuj's) is 1.3.66's root-keyed
-    /// exception, ninety-three curādi rows' are 1.3.74's, 37 ākusmīya rows'
-    /// the gaṇasūtra 10.0496's and nine ā-garvīya rows' the gaṇasūtra
+    /// exception, ninety-six curādi rows' are 1.3.74's, 43 ākusmīya rows'
+    /// the gaṇasūtra 10.0496's and ten ā-garvīya rows' the gaṇasūtra
     /// 10.0497's, each asserted explicitly from both sides, the same way
-    /// `dhatupatha_numbers_resolve_upstream` holds `code` to upstream.
+    /// `dhatupatha_numbers_resolve_upstream` holds `code` to upstream. For
+    /// the ten curādi rows whose ṇic is optional this is the ṇic branch's
+    /// pada; the test also re-derives their ṇic-less branch's, 1.3.78's.
     ///
     /// The column stayed hand-written because deriving it in production means
     /// running it-stripping in production, and upadeśa preprocessing is not
@@ -179,11 +215,26 @@ pub struct Dhatu {
     /// the honest arrangement; see the deferral in
     /// `docs/superpowers/specs/2026-08-16-pada-audit-design.md`.
     ///
-    /// The test covers the 242 roots curated here, not the dhātupāṭha's 2259.
+    /// The test covers the 252 roots curated here, not the dhātupāṭha's 2259.
     /// It catches a mis-assigned pada on a root a future slice adds; it does
     /// not make the table self-maintaining.
     pub pada: PadaAssignment,
     pub artha: &'static str,
+}
+
+impl Dhatu {
+    /// The padas this root derives. `pada` is the ṇic branch's verdict; a
+    /// root whose ṇic is optional (`OPTIONAL_NIC`) also derives its ṇic-less
+    /// branch, parasmaipada by 1.3.78 for every row listed there. So an
+    /// ākusmīya or ā-garvīya row in the table admits both padas,
+    /// parasmaipada first, as `PadaAssignment::padas` orders every
+    /// two-pada assignment.
+    pub fn padas(&self) -> &'static [Pada] {
+        match (optional_nic(self.dhatupatha), self.pada.padas()) {
+            (Some(_), [Pada::Atmanepada]) => &[Pada::Parasmaipada, Pada::Atmanepada],
+            (_, padas) => padas,
+        }
+    }
 }
 
 static DHATUS: &[Dhatu] = &[
@@ -2760,6 +2811,110 @@ static DHATUS: &[Dhatu] = &[
         pada: PadaAssignment::Nic,
         artha: "darSane",
     },
+    Dhatu {
+        // 10.0193 `daSi~` daMSane (√daṃś). Idit, so its ṇic is optional by Kaumudī
+        // 2564 (7.1.58's num stored, as for `hins`). Ātmanepadī by the gaṇasūtra
+        // 10.0496 on its ṇic branch (*daṃśayate*); parasmaipadī by 1.3.78 on its
+        // ṇic-less branch (*daṃśati*). Slice 10f.
+        dhatupatha: "10.0193",
+        code: "danS",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Akusmiya,
+        artha: "daMSane",
+    },
+    Dhatu {
+        // 10.0194 `dasi~` darSanadaMSanayoH (√daṃs). Idit: ṇic optional by Kaumudī
+        // 2564. Ātmanepadī by 10.0496 with ṇic (*daṃsayate*), parasmaipadī by
+        // 1.3.78 without (*daṃsati*). Slice 10f.
+        dhatupatha: "10.0194",
+        code: "dans",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Akusmiya,
+        artha: "darSanadaMSanayoH",
+    },
+    Dhatu {
+        // 10.0198 `tatri~` kuwumbaDAraRe (√tantr). Idit: ṇic optional by Kaumudī
+        // 2564. Ātmanepadī by 10.0496 with ṇic (*tantrayate*), parasmaipadī by
+        // 1.3.78 without (*tantrati*). Slice 10f.
+        dhatupatha: "10.0198",
+        code: "tantr",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Akusmiya,
+        artha: "kuwumbaDAraRe",
+    },
+    Dhatu {
+        // 10.0199 `matri~` guptapariBAzaRe (√mantr). Idit: ṇic optional by Kaumudī
+        // 2564. Ātmanepadī by 10.0496 with ṇic (*mantrayate*), parasmaipadī by
+        // 1.3.78 without (*mantrati*). Slice 10f.
+        dhatupatha: "10.0199",
+        code: "mantr",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Akusmiya,
+        artha: "guptapariBAzaRe",
+    },
+    Dhatu {
+        // 10.0227 `vancu~` pralamBane (√vañc). Udit: ṇic optional by Kaumudī 2570.
+        // Ātmanepadī by 10.0496 with ṇic (*vañcayate*), parasmaipadī by 1.3.78
+        // without (*vañcati*). vidyut also runs a text-free 7.3.63 here, which
+        // this engine does not model. Slice 10f.
+        dhatupatha: "10.0227",
+        code: "vanc",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Akusmiya,
+        artha: "pralamBane",
+    },
+    Dhatu {
+        // 10.0230 `divu~` parikUjane (√div). Udit: ṇic optional by Kaumudī 2570.
+        // Ātmanepadī by 10.0496 with ṇic (*devayate*), parasmaipadī by 1.3.78
+        // without (*devati*, 7.3.86's guṇa before śap). Slice 10f.
+        dhatupatha: "10.0230",
+        code: "div",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Akusmiya,
+        artha: "parikUjane",
+    },
+    Dhatu {
+        // 10.0400 `pata` gatO (√pat). Adanta, with ṇic optional by Kaumudī 2573.1
+        // (*patati*). On the ṇic branch 2573.2 optionally deletes the final `a`
+        // first, so 7.2.116 lengthens (*pātayati*); otherwise 6.4.48 deletes it
+        // and 7.2.116 declines (*patayati*). Ubhayapadī by 1.3.74 with ṇic,
+        // parasmaipadī by 1.3.78 without. Slice 10f.
+        dhatupatha: "10.0400",
+        code: "pata",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "gatO",
+    },
+    Dhatu {
+        // 10.0449 `garva` mAne (√garv). Adanta and ā-garvīya, with ṇic optional by
+        // Kaumudī 2573.3. Ātmanepadī by 10.0497 with ṇic (*garvayate*),
+        // parasmaipadī by 1.3.78 without (*garvati*). Slice 10f.
+        dhatupatha: "10.0449",
+        code: "garva",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::AaGarviya,
+        artha: "mAne",
+    },
+    Dhatu {
+        // 10.0451 `mUtra` prasravaRe (√mūtr). Adanta, with ṇic optional by Kaumudī
+        // 2573.3. Ubhayapadī by 1.3.74 with ṇic (*mūtrayati*), parasmaipadī by
+        // 1.3.78 without (*mūtrati*). Slice 10f.
+        dhatupatha: "10.0451",
+        code: "mUtra",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "prasravaRe",
+    },
+    Dhatu {
+        // 10.0456 `katra` SETilye (√katr). Adanta, with ṇic optional by Kaumudī
+        // 2573.3. Ubhayapadī by 1.3.74 with ṇic (*katrayati*), parasmaipadī by
+        // 1.3.78 without (*katrati*). Slice 10f.
+        dhatupatha: "10.0456",
+        code: "katra",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "SETilye",
+    },
 ];
 
 pub fn dhatus() -> &'static [Dhatu] {
@@ -2801,7 +2956,7 @@ mod tests {
 
     #[test]
     fn curated_roots_have_expected_ganas_and_padas() {
-        assert_eq!(dhatus().len(), 242);
+        assert_eq!(dhatus().len(), 252);
         let bu = dhatus().iter().find(|d| d.dhatupatha == "01.0001").unwrap();
         assert!(matches!(bu.pada, PadaAssignment::Parasmaipada));
         let labh = dhatus().iter().find(|d| d.dhatupatha == "01.1130").unwrap();
@@ -3092,7 +3247,7 @@ mod tests {
     }
 
     #[test]
-    fn curadi_rows_are_the_one_hundred_thirty_nine_curated_roots() {
+    fn curadi_rows_are_the_one_hundred_forty_nine_curated_roots() {
         // Slice 10a opens gaṇa 10 with four roots that need only ṇic
         // (3.1.25), 3.1.32 and the guṇa/vṛddhi before ṇic: √cur (7.3.86),
         // √laḍ (7.2.116), √bhakṣ and √bhūṣ (neither). None carries a pada
@@ -3108,8 +3263,10 @@ mod tests {
         // `10.0389 kaTa` … `10.0492 Deka`): 6.4.48 deletes the final `a`
         // before ṇic, and 7.2.116 / 7.3.86 decline on its `Tag::AtLopa`.
         // Eighty-three are ubhayapadī by 1.3.74; the nine ā-garvīya
-        // (`AA_GARVIYA`) are ātmanepadī by 10.0497. The gaṇa is OPEN at 139
-        // of its 509 dhātupāṭha rows.
+        // (`AA_GARVIYA`) are ātmanepadī by 10.0497. Slice 10f adds the ten
+        // rows whose ṇic is optional (`OPTIONAL_NIC`): six ākusmīya, `garva`,
+        // `mUtra`, `katra` and `pata`, each curated with its ṇic branch's
+        // pada. The gaṇa is OPEN at 149 of its 509 dhātupāṭha rows.
         let rows: Vec<_> = dhatus()
             .iter()
             .filter(|d| d.gana == Gana::Curadi)
@@ -3257,6 +3414,16 @@ mod tests {
                 ("10.0489", "tutTa", PadaAssignment::Nic),
                 ("10.0490", "palyUla", PadaAssignment::Nic),
                 ("10.0492", "Deka", PadaAssignment::Nic),
+                ("10.0193", "danS", PadaAssignment::Akusmiya),
+                ("10.0194", "dans", PadaAssignment::Akusmiya),
+                ("10.0198", "tantr", PadaAssignment::Akusmiya),
+                ("10.0199", "mantr", PadaAssignment::Akusmiya),
+                ("10.0227", "vanc", PadaAssignment::Akusmiya),
+                ("10.0230", "div", PadaAssignment::Akusmiya),
+                ("10.0400", "pata", PadaAssignment::Nic),
+                ("10.0449", "garva", PadaAssignment::AaGarviya),
+                ("10.0451", "mUtra", PadaAssignment::Nic),
+                ("10.0456", "katra", PadaAssignment::Nic),
             ]
         );
     }
@@ -3367,6 +3534,34 @@ mod tests {
         );
         assert_eq!(PadaAssignment::Akusmiya.padas(), &[Pada::Atmanepada]);
         assert_eq!(PadaAssignment::AaGarviya.padas(), &[Pada::Atmanepada]);
+    }
+
+    #[test]
+    fn dhatu_padas_add_the_nicless_parasmaipada() {
+        // A root whose ṇic is optional derives its ṇic branch's padas plus the
+        // ṇic-less branch's parasmaipada, parasmaipada first. One row per
+        // ṇic-branch assignment, and a row outside the table for contrast.
+        let padas = |n: &str| dhatus().iter().find(|d| d.dhatupatha == n).unwrap().padas();
+        let both = &[Pada::Parasmaipada, Pada::Atmanepada];
+        assert_eq!(padas("10.0193"), both, "ākusmīya daSi~");
+        assert_eq!(padas("10.0449"), both, "ā-garvīya garva");
+        assert_eq!(padas("10.0451"), both, "1.3.74 mUtra");
+        assert_eq!(
+            padas("10.0192"),
+            &[Pada::Atmanepada],
+            "ākusmīya cita~, ṇic only"
+        );
+        assert_eq!(
+            padas("10.0440"),
+            &[Pada::Atmanepada],
+            "ā-garvīya pada, ṇic only"
+        );
+        assert_eq!(padas("01.0001"), &[Pada::Parasmaipada]);
+        for d in dhatus() {
+            if optional_nic(d.dhatupatha).is_none() {
+                assert_eq!(d.padas(), d.pada.padas(), "{}", d.dhatupatha);
+            }
+        }
     }
 
     #[test]
@@ -3488,7 +3683,7 @@ mod tests {
     /// AFTER the `~` that marks an anunāsika it, so `~\` is an anudātta it and
     /// `~^` a svarita it — whereas a `\` sitting directly on a vowel elsewhere
     /// is the ROOT's own accent and says nothing about pada. Counted off the
-    /// vendored upadeśa: 66 of the 242 curated roots carry a `\` at all, and 45
+    /// vendored upadeśa: 66 of the 252 curated roots carry a `\` at all, and 45
     /// of those carry one on a root vowel — `01.0642 ji\`, `01.1082 smf\` and
     /// `02.0001 a\da~` among them — so conflating the two does not fail
     /// loudly; it silently calls most of the table ātmanepada.
@@ -3615,12 +3810,68 @@ mod tests {
         assert_eq!(stored_form("kusma~"), "kusm");
     }
 
+    /// The Kaumudī id that makes a curādi upadeśa's ṇic optional, read from
+    /// the upadeśa as vidyut-prakriya reads it: 2564 for an idit root (last
+    /// marker `i~`), 2570 for a ñit or udit one (last marker `Y` or `u~`),
+    /// 2573.1 for `pata`, and 2573.3 for the three roots the Kaumudī names
+    /// there. 2573.3 is a list, not a shape: `Cidra`, `sUtra` and the rest
+    /// have a conjunct before their final `a` and take ṇic. Only the triggers
+    /// slice 10f curates; the ādhṛṣīya / āsvadīya gaṇasūtras (10.0498,
+    /// 10.0499) and 2565 / 2571 / 2572 are later slices'.
+    fn optional_nic_from_upadesha(upadesha: &str) -> Option<&'static str> {
+        let u = upadesha.trim_end_matches(['\\', '^']);
+        if u.ends_with("i~") {
+            Some("2564")
+        } else if u.ends_with("u~") || u.ends_with('Y') {
+            Some("2570")
+        } else if u == "pata" {
+            Some("2573.1")
+        } else if ["mUtra", "katra", "garva"].contains(&u) {
+            Some("2573.3")
+        } else {
+            None
+        }
+    }
+
+    #[test]
+    fn optional_nic_matches_upadesha_markers() {
+        // Every table entry is what its upadeśa says, and every curated
+        // curādi row whose upadeśa says so is in the table: the table is
+        // exactly the curated rows those markers select. Non-circular, as
+        // `dhatupatha_numbers_resolve_upstream` is: the upadeśa comes from
+        // the vendored dhātupāṭha, not from the table.
+        let rows = upstream_rows();
+        let upadesha = |n: &str| rows.iter().find(|(m, _, _)| *m == n).unwrap().1;
+        for (n, id) in OPTIONAL_NIC {
+            assert_eq!(optional_nic_from_upadesha(upadesha(n)), Some(*id), "{n}");
+            assert!(
+                dhatus().iter().any(|d| d.dhatupatha == *n),
+                "{n} is not curated"
+            );
+        }
+        for d in dhatus().iter().filter(|d| d.gana == Gana::Curadi) {
+            assert_eq!(
+                optional_nic(d.dhatupatha),
+                optional_nic_from_upadesha(upadesha(d.dhatupatha)),
+                "{} {}",
+                d.dhatupatha,
+                upadesha(d.dhatupatha)
+            );
+        }
+        assert_eq!(OPTIONAL_NIC.len(), 10);
+        // 2573.3 is the Kaumudī's list: a conjunct-before-`a` curādi root
+        // outside it (`10.0469 Cidra`, curated in 10e) is no optional-ṇic row.
+        assert_eq!(optional_nic_from_upadesha("Cidra"), None);
+        assert_eq!(optional_nic("10.0469"), None);
+    }
+
     #[test]
     fn aa_garviya_is_exactly_the_rows_10_0497_names() {
         // The gaṇasūtra 10.0497 follows `10.0449 garva` and makes the ten
         // rows from `10.0440 pada` ātmanepadī. vidyut-prakriya lists the
-        // same ten upadeśas (`AA_GARVIYA`). `garva` is not curated, so this
-        // test — not a derivation — is what holds the range's upper end.
+        // same ten upadeśas (`AA_GARVIYA`). `garva`'s ṇic is optional, so this
+        // test — not only its ṇic branch's derivations — holds the range's
+        // upper end.
         let rows = upstream_rows();
         let in_range: Vec<&str> = rows
             .iter()
@@ -3786,6 +4037,18 @@ mod tests {
                     )
                 };
                 assert_eq!(d.pada, want, "{} is curādi and {why}", d.dhatupatha);
+                // That is the ṇic branch's pada. A row whose ṇic is optional
+                // also derives without it, where its own markers decide by
+                // 1.3.12 / 1.3.72 / 1.3.78: parasmaipada for every row listed.
+                if optional_nic(d.dhatupatha).is_some() {
+                    assert_eq!(
+                        derived,
+                        PadaAssignment::Parasmaipada,
+                        "{} {upadesha}: its ṇic-less branch is 1.3.78's",
+                        d.dhatupatha
+                    );
+                    assert!(d.padas().contains(&Pada::Parasmaipada), "{}", d.dhatupatha);
+                }
                 continue;
             }
             if derived != d.pada {

@@ -920,7 +920,7 @@ fn nabhyastasyaci_is_credited_only_on_the_3e_3f_3f2_and_3f3_rows() {
     let mut credited = 0;
     for d in dhatus() {
         for lakara in [Lakara::Lat, Lakara::Lan, Lakara::Lot, Lakara::VidhiLin] {
-            for &pada in d.pada.padas() {
+            for &pada in d.padas() {
                 for (purusha, vacana) in CELLS {
                     for p in derive(d, lakara, pada, purusha, vacana) {
                         if p.log.iter().any(|s| s.sutra == "7.3.87") {
@@ -1065,9 +1065,12 @@ fn nas_capadantasya_is_credited_only_on_rudhadi_dhan_jan_and_curadi_roots() {
     // an `n` before a jhal there — √jan only before a pit ending (jajanti,
     // jajaMsi, jajantu), since 6.4.42 takes the `n` before a kṅit one.
     // Since slice 10e it also admits a curādi root's own `n` before a jhal:
-    // 10c's √gandh and seven adanta roots, on every live branch.
-    const CURADI: [&str; 8] = [
+    // 10c's √gandh and seven adanta roots, on every live branch, and since
+    // slice 10f five optional-ṇic ākusmīya roots (`danS`, `dans`, `tantr`,
+    // `mantr`, `vanc`) on both their branches.
+    const CURADI: [&str; 13] = [
         "10.0204", "10.0433", "10.0460", "10.0467", "10.0471", "10.0472", "10.0473", "10.0474",
+        "10.0193", "10.0194", "10.0198", "10.0199", "10.0227",
     ];
     let hits = credited("8.3.24");
     for (number, gana) in &hits {
@@ -1080,8 +1083,10 @@ fn nas_capadantasya_is_credited_only_on_rudhadi_dhan_jan_and_curadi_roots() {
         );
     }
     let curadi: Vec<_> = hits.iter().filter(|(_, g)| *g == Gana::Curadi).collect();
-    // √gandh's 36 ātmanepada branches and the seven ubhayapadī roots' 78 each.
-    assert_eq!(curadi.len(), 36 + 7 * 78);
+    // √gandh's 36 ātmanepada branches, the seven ubhayapadī roots' 78 each,
+    // and the five optional-ṇic roots' 78 each (42 ṇic-less parasmaipada, 36
+    // ṇic ātmanepada).
+    assert_eq!(curadi.len(), 36 + 7 * 78 + 5 * 78);
     for number in CURADI {
         assert!(
             curadi.iter().any(|(n, _)| *n == number),

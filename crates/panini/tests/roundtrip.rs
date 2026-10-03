@@ -9,7 +9,7 @@ use std::collections::HashMap;
 
 use panini::Panini;
 use panini_analyze::all_candidates;
-use panini_data::{Lakara, Pada, Purusha, Vacana};
+use panini_data::{Lakara, Pada, Purusha, Vacana, optional_nic};
 use panini_prakriya::derive;
 
 fn fingerprint(
@@ -83,20 +83,32 @@ fn roundtrip() {
     let oracle = oracle();
     for c in all_candidates() {
         let (d, lakara, pada, purusha, vacana) = (c.dhatu, c.lakara, c.pada, c.purusha, c.vacana);
-        for p in engine.derive(d, lakara, pada, purusha, vacana) {
-            // The cross-product only ever asks for padas the root admits, so
-            // nothing here should be blocked. Assert it rather than
-            // filtering: a blocked branch appearing would mean `padas()` and
-            // the pada-sanction rules (1.3.12 / 1.3.78 / 10.0496) had come apart.
+        let branches = engine.derive(d, lakara, pada, purusha, vacana);
+        // The cross-product only ever asks for padas the root admits, so
+        // every cell has a live branch, and only a root whose ṇic is
+        // optional (`OPTIONAL_NIC`) blocks one: its ṇic and ṇic-less
+        // branches can differ in pada (10.0496 / 10.0497 / 1.3.78). Any
+        // other blocked branch would mean `padas()` and the pada-sanction
+        // rules had come apart.
+        let cell = format!(
+            "{} {} {:?} {:?} {:?}",
+            d.code,
+            panini::lakara_name(lakara),
+            pada,
+            purusha,
+            vacana
+        );
+        assert!(
+            branches.iter().any(|p| !p.blocked),
+            "{cell} derived no live branch"
+        );
+        for p in &branches {
             assert!(
-                !p.blocked,
-                "{} {} {:?} {:?} {:?} derived a blocked branch",
-                d.code,
-                panini::lakara_name(lakara),
-                pada,
-                purusha,
-                vacana
+                !p.blocked || optional_nic(d.dhatupatha).is_some(),
+                "{cell} derived a blocked branch"
             );
+        }
+        for p in branches.iter().filter(|p| !p.blocked) {
             let form = p.text();
             let r = engine.check(&form);
             assert!(

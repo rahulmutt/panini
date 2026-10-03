@@ -56,6 +56,64 @@ use crate::tinanta::terms::{
 use panini_data::Lakara;
 
 pub(crate) static ADESHA: &[Rule] = &[
+    // 6.1.97 ato guṇe, at the aṅga–śap junction: an aṅga ending in a short
+    // `a` before śap's `a` gives para-rūpa, katra + a + ti → katrati. Only
+    // the ṇic-less branch of an adanta curādi root (Kaumudī 2573.1 / 2573.3:
+    // `pata`, `mUtra`, `katra`, `garva`) reaches śap with that `a` still in
+    // place; with ṇic, 6.4.48 has deleted it. A second entry under this id,
+    // FIRST in the stage because vidyut-prakriya resolves this junction
+    // before the vikaraṇa meets the ending: *patāni* credits 6.1.97 here,
+    // then 6.1.101's bhvādi arm; *katranti* credits 6.1.97 twice, this entry
+    // then the junction entry below. The aṅga loses its final `a`; śap
+    // already spells the single vowel that results. The 6.1.101 entry below
+    // repeats this body for śap's long `A` rather than share a helper, as
+    // this stage's arms do, so each keeps its own mutation pin.
+    Rule {
+        id: "6.1.97",
+        name: "ato guRe",
+        kind: RuleKind::Vidhi,
+        vikalpa: false,
+        bars: &[],
+        apply: |p| {
+            if !p.terms[SHAP].has(Tag::Thematic) || !p.terms[SHAP].text.starts_with('a') {
+                return false;
+            }
+            let Some(stem) = p.terms[ANGA].text.strip_suffix('a') else {
+                return false;
+            };
+            let stem = stem.to_string();
+            let before = p.snapshot();
+            p.terms[ANGA].text = stem;
+            p.record("6.1.97", "ato guRe", before);
+            true
+        },
+    },
+    // 6.1.101 akaḥ savarṇe dīrghaḥ, at the same junction once 7.3.101 *ato
+    // dīrgho yañi* has lengthened śap before a yañ-initial ending: pata + A +
+    // mi → patAmi. The `a` and the `A` are savarṇa, so the long vowel the
+    // śap spells is the result. 6.1.97 above declines here: `A` is no guṇa
+    // vowel. A second entry under this id, beside the four-armed one below,
+    // which reads the vikaraṇa–ending junction instead.
+    Rule {
+        id: "6.1.101",
+        name: "akaH savarRe dIrGaH",
+        kind: RuleKind::Vidhi,
+        vikalpa: false,
+        bars: &[],
+        apply: |p| {
+            if !p.terms[SHAP].has(Tag::Thematic) || !p.terms[SHAP].text.starts_with('A') {
+                return false;
+            }
+            let Some(stem) = p.terms[ANGA].text.strip_suffix('a') else {
+                return false;
+            };
+            let stem = stem.to_string();
+            let before = p.snapshot();
+            p.terms[ANGA].text = stem;
+            p.record("6.1.101", "akaH savarRe dIrGaH", before);
+            true
+        },
+    },
     // 6.1.101 akaḥ savarṇe dīrghaḥ: an ak vowel followed by a savarṇa vowel
     // coalesces into the corresponding long vowel. Four arms:
     //   - vidhiliṅ 1sg, śap-final-`a` declined (7.2.80 skipped): the yāsuṭ ā
@@ -812,6 +870,14 @@ mod tests {
     use crate::tinanta::terms::{ABHYASA, AGAMA, with_slots};
     use panini_data::{Pada, Purusha, Vacana, dhatus};
 
+    /// The stage's LAST entry under `id`. 6.1.97 and 6.1.101 each have two
+    /// since slice 10f: an aṅga–śap entry at the head of the stage and the
+    /// vikaraṇa–ending entry these tests were written for, which is the
+    /// last. For every other id the stage has one entry, so this is it.
+    fn junction(id: &str) -> &'static Rule {
+        ADESHA.iter().rev().find(|r| r.id == id).unwrap()
+    }
+
     #[test]
     fn vali_lopa_spares_a_following_vowel() {
         // BaveyuH keeps its y because `u` is not a val consonant; Baveva
@@ -1222,14 +1288,14 @@ mod tests {
             log: vec![],
             ..Default::default()
         };
-        let rule = rules().find(|r| r.id == "6.1.101").unwrap();
+        let rule = junction("6.1.101");
         assert!(!(rule.apply)(&mut p));
         assert_eq!(p.terms[ANGA].text, "yA");
     }
 
     #[test]
     fn savarna_dirgha_adadi_lin_1sg_arm() {
-        let rule = rules().find(|r| r.id == "6.1.101").unwrap();
+        let rule = junction("6.1.101");
 
         // Fires: adādi liṅ 1sg ending `yAam` (śap empty) -> `yAm`.
         let mut p = Prakriya {
@@ -1319,7 +1385,7 @@ mod tests {
             blocked: false,
             barred: Vec::new(),
         };
-        let rule = rules().find(|r| r.id == "6.1.101").unwrap();
+        let rule = junction("6.1.101");
         assert!(!(rule.apply)(&mut p));
         assert_eq!(p.terms[ANGA].text, "yA");
     }
@@ -1330,7 +1396,7 @@ mod tests {
         // gaṇa's vikaraṇa (empty, or `a`-final): it needs its own arm because
         // neither the adādi arm (SHAP empty) nor the bhvādi arm (SHAP ends
         // `a`) covers it.
-        let rule = rules().find(|r| r.id == "6.1.101").unwrap();
+        let rule = junction("6.1.101");
 
         // Fires: mip's 3.4.101 `am` ending meets the vikaraṇa's `A` -> `nAm`
         // (kliS laṅ uttama eka, akliSnAm).
@@ -1370,7 +1436,7 @@ mod tests {
         // Kaumudī's path and vidyut's. FORM-NEUTRAL: 6.1.101 then 6.1.88 would
         // spell dadE too, so this decline is held only by this test and the
         // dadE trace pin.
-        let rule = rules().find(|r| r.id == "6.1.101").unwrap();
+        let rule = junction("6.1.101");
         let mut p = Prakriya {
             terms: with_slots(vec![Term::new("dA"), Term::new(""), Term::new("AE")]),
             ..Default::default()
@@ -1387,7 +1453,7 @@ mod tests {
         // admits 'e', 'o' and 'O', none of which any golden reaches. "Ao" is
         // a guard-only witness: narrowing the set to just 'E' would make this
         // arm wrongly fire and coalesce "Ao" -> "o".
-        let rule = rules().find(|r| r.id == "6.1.101").unwrap();
+        let rule = junction("6.1.101");
         let mut p = Prakriya {
             terms: with_slots(vec![Term::new("dA"), Term::new(""), Term::new("Ao")]),
             ..Default::default()
@@ -1402,7 +1468,7 @@ mod tests {
         // no ekādeśa to make and 6.1.101 takes dA + A as before. `aE` is the
         // `starts_with('A')` clause's only witness: an `a` before an ec is not
         // the āṭ, is still savarṇa with the ā, and must still coalesce.
-        let rule = rules().find(|r| r.id == "6.1.101").unwrap();
+        let rule = junction("6.1.101");
         for (ending, want) in [("Ani", "ni"), ("AvahE", "vahE"), ("aE", "E")] {
             let mut p = Prakriya {
                 terms: with_slots(vec![Term::new("dA"), Term::new(""), Term::new(ending)]),
@@ -1512,7 +1578,7 @@ mod tests {
         };
         p.terms[ABHYASA].text = "da".into();
         for (id, fires) in [("6.1.101", false), ("6.1.90", true), ("6.1.88", true)] {
-            let r = rules().find(|r| r.id == id).unwrap();
+            let r = junction(id);
             assert_eq!((r.apply)(&mut p), fires, "{id}");
         }
         assert_eq!(p.text(), "dadE");
@@ -1545,7 +1611,7 @@ mod tests {
             log: vec![],
             ..Default::default()
         };
-        let rule = rules().find(|r| r.id == "6.1.101").unwrap();
+        let rule = junction("6.1.101");
         assert!(!(rule.apply)(&mut p));
         assert_eq!(p.terms[ANGA].text, "kliS");
     }
@@ -1826,5 +1892,91 @@ mod tests {
         let step = weak.log.iter().find(|s| s.sutra == "6.4.111").unwrap();
         assert_eq!(step.before, "kfnatanti");
         assert_eq!(step.after, "kfntanti");
+    }
+
+    // --- slice 10f: the aṅga–śap entries of 6.1.97 and 6.1.101 -------------
+
+    /// The stage's FIRST entry under `id`: for 6.1.97 and 6.1.101, the
+    /// aṅga–śap entry at the head of the stage.
+    fn anga_shap(id: &str) -> &'static Rule {
+        ADESHA.iter().find(|r| r.id == id).unwrap()
+    }
+
+    /// `anga` + a śap spelled `shap` (thematic unless `thematic` is false)
+    /// + `ending`.
+    fn anga_shap_prakriya(anga: &str, shap: &str, thematic: bool, ending: &str) -> Prakriya {
+        let mut s = Term::new(shap);
+        if thematic {
+            s.add(Tag::Thematic);
+        }
+        Prakriya {
+            terms: with_slots(vec![Term::new(anga), s, Term::new(ending)]),
+            ..Default::default()
+        }
+    }
+
+    #[test]
+    fn the_anga_shap_entries_head_the_stage() {
+        let ids: Vec<&str> = ADESHA.iter().take(2).map(|r| r.id).collect();
+        assert_eq!(ids, ["6.1.97", "6.1.101"]);
+        assert_eq!(ADESHA.iter().filter(|r| r.id == "6.1.97").count(), 2);
+        assert_eq!(ADESHA.iter().filter(|r| r.id == "6.1.101").count(), 2);
+    }
+
+    #[test]
+    fn ato_gune_merges_an_a_final_anga_into_shaps_a() {
+        // katra + a + ti → katr + a + ti: the aṅga loses its `a`, the śap
+        // spells the para-rūpa vowel, the ending is untouched.
+        let mut p = anga_shap_prakriya("katra", "a", true, "ti");
+        assert!((anga_shap("6.1.97").apply)(&mut p));
+        assert_eq!(p.text(), "katrati");
+        assert_eq!(p.terms[ANGA].text, "katr");
+        assert_eq!(p.terms[SHAP].text, "a");
+        assert_eq!(p.terms[ENDING].text, "ti");
+        let ids: Vec<&str> = p.log.iter().map(|s| s.sutra.as_str()).collect();
+        assert_eq!(ids, ["6.1.97"]);
+        // Declines: a consonant-final aṅga (Bav), a long `A`-final one (pA),
+        // a lengthened śap (`A`, 6.1.101's), and a non-thematic vikaraṇa.
+        for (anga, shap, thematic) in [
+            ("Bav", "a", true),
+            ("pA", "a", true),
+            ("katra", "A", true),
+            ("katra", "a", false),
+        ] {
+            let mut p = anga_shap_prakriya(anga, shap, thematic, "ti");
+            assert!(
+                !(anga_shap("6.1.97").apply)(&mut p),
+                "{anga} {shap} {thematic}"
+            );
+            assert_eq!(p.terms[ANGA].text, anga);
+            assert!(p.log.is_empty());
+        }
+    }
+
+    #[test]
+    fn savarna_dirgha_merges_an_a_final_anga_into_a_lengthened_shap() {
+        // pata + A + mi (7.3.101) → pat + A + mi.
+        let mut p = anga_shap_prakriya("pata", "A", true, "mi");
+        assert!((anga_shap("6.1.101").apply)(&mut p));
+        assert_eq!(p.text(), "patAmi");
+        assert_eq!(p.terms[ANGA].text, "pat");
+        let ids: Vec<&str> = p.log.iter().map(|s| s.sutra.as_str()).collect();
+        assert_eq!(ids, ["6.1.101"]);
+        // Declines on an unlengthened śap (6.1.97's), a consonant-final
+        // aṅga, and a non-thematic `A` vikaraṇa (kryādi's nA ends in `A` but
+        // is not śap).
+        for (anga, shap, thematic) in [
+            ("pata", "a", true),
+            ("Bav", "A", true),
+            ("pata", "A", false),
+        ] {
+            let mut p = anga_shap_prakriya(anga, shap, thematic, "mi");
+            assert!(
+                !(anga_shap("6.1.101").apply)(&mut p),
+                "{anga} {shap} {thematic}"
+            );
+            assert_eq!(p.terms[ANGA].text, anga);
+            assert!(p.log.is_empty());
+        }
     }
 }

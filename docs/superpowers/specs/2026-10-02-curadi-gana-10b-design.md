@@ -268,6 +268,7 @@ re-grepped at final HEAD.
 
 The remaining ākusmīya rows in bulk (taken by slice 10c, see `2026-10-02-curadi-gana-10c-design.md`, all but the optional-ṇic and 7.2.115 rows); then 10a's order: mit roots, adanta
 roots (with the ā-garvīya list, 10.0497), optional ṇic (which takes the
-optional-ṇic ākusmīya rows, since 10.0496 applies only on the ṇic branch).
+optional-ṇic ākusmīya rows, since 10.0496 applies only on the ṇic branch;
+taken by slice 10f, see `2026-10-02-curadi-gana-10f-design.md`).
 √smiṅ, and with it 7.2.115 before ṇic, rides whichever slice first needs
 7.2.115.

@@ -84,9 +84,10 @@ impl Panini {
     /// (vikalpa) rule can fork the prakriyā, so the vec may hold more than
     /// one entry, and any entry may be `blocked` — a blocked prakriyā's
     /// `text()` is a partial string, not a surface form, and callers must
-    /// filter those out before using the result. Index 0 is always the
-    /// declined reading, i.e. what this method would have returned with no
-    /// optional rule in play.
+    /// filter those out before using the result. Index 0 is the declined
+    /// reading but may itself be blocked while a later branch is live (an
+    /// optional-ṇic root's ṇic branch in a pada it does not admit); a cell's
+    /// form is the first live branch.
     pub fn derive(
         &self,
         dhatu: &panini_data::Dhatu,
