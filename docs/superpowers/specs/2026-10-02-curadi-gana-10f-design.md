@@ -12,8 +12,10 @@ markers. The ṇic-only pada gaṇasūtras 10.0496 (ākusmīya) and 10.0497
 adds 2573.2, an optional deletion of its final `a` on the ṇic branch, so
 that 7.2.116 lengthens (*pātayati* beside *patayati*).
 
-This slice builds that mechanism, adds the five ids, and curates the ten
-rows earlier specs set aside for it: the six optional-ṇic ākusmīya rows
+This slice builds that mechanism, adds the five ids, gives 6.1.97 and
+6.1.101 a second entry for the junction a ṇic-less adanta root brings
+(amendment, see Decisions), and curates the ten rows earlier specs set
+aside for it: the six optional-ṇic ākusmīya rows
 (10b, 10c) and the four optional-ṇic adanta rows (10e).
 
 ## Scope
@@ -116,6 +118,36 @@ Nothing ṇic-dependent needs a new guard either: 3.4.114, 6.4.48, 7.2.116,
 the sanādi 7.3.86 and 3.1.32 all self-guard on ṇic being present. No new
 tag is needed.
 
+**Rule names are the Siddhānta-Kaumudī's own text (amendment).** Every
+`Rule.name` in this engine is SLP1 sūtra text. vidyut's `data/kaumudi.tsv`
+has the text for 2570 (`YitkaraRasAmarTyAdasya RijvikalpaH`, at √ci),
+2573.1 (`vA RijantaH`) and 2573.2 (`vA'danta ityeke`, both at √pat), but
+not for 2564 or 2573.3. Those come from the SK text ashtadhyayi.com
+publishes (github `ashtadhyayi-com/data`, `sutraani/kaumudi.txt`): 2564 is
+*iditkaraṇaṃ ṇicaḥ pākṣikatve liṅgam* (at √cit, under 1.3.74),
+`iditkaraRaM RicaH pAkzikatve liNgam`; 2573.3 is *adantatvasāmarthyāṇ
+ṇijvikalpaḥ* (at √garv), `adantatvasAmarTyARRijvikalpaH`. The second says
+why vidyut keeps 2573.3 to a list: the SK ties the option to those roots'
+being adanta, and names only `mUtra`, `katra` and `garva` (with `karta`).
+
+**The ṇic-less adanta branch needs a new junction (amendment).** The
+prototype derived *katraati* where vidyut has *katrati*: 144 cells, the
+four adanta rows' whole ṇic-less parasmaipada. Without ṇic, 6.4.48 never
+deletes the root's final `a`, so the aṅga reaches śap still `a`-final,
+which no root did before. vidyut resolves that junction first, before
+the vikaraṇa meets the ending: 6.1.97 *ato guṇe* for `a` + `a`
+(*katrati*; *katranti* credits 6.1.97 twice, then the śap–*anti* one), and
+6.1.101 *akaḥ savarṇe dīrghaḥ* once 7.3.101 has lengthened śap
+(*patāmi*). The engine's 6.1.97 and 6.1.101 read only the vikaraṇa–ending
+junction, and `ADESHA` runs 6.1.101 before 6.1.97, so an arm inside either
+would credit *patāni*'s two steps in the wrong order. Each id therefore
+gets a second `Rule` entry at the head of `ADESHA`, sharing one helper
+(`merge_anga_a`): the aṅga loses its final `a` when a thematic śap begins
+with `a` (6.1.97) or `A` (6.1.101). Ids already repeat across entries
+(7.3.86 has three), so no new id. The `adesha.rs` unit tests that look up
+6.1.101 by id switch to a stage-local `junction(id)` helper that returns
+the last entry, the one they were written for.
+
 **2573.2 is a fifth vikalpa, on `pata`'s ṇic branch only.** It runs after
 the four triggers and before 3.1.25. Its guard is `OPTIONAL_NIC`'s 2573.1
 entry, and the ṇic-less branch has it barred. It deletes `ANGA`'s final
@@ -137,6 +169,15 @@ The audit compares form sets.
 in `PARADIGM`. In `pata`'s cells index 0 is *patayati* (both 2573.1 and
 2573.2 declined). *pātayati* and *patati* go to `ALTERNATES`.
 
+**The pinned form is the first live branch (amendment).**
+`derivation_set_is_exactly_pinned` asserted `branches[0].text()`, which
+in those blocked cells is a partial string. It now compares the first
+live branch, which is `branches[0]` for every pre-slice cell (no prior
+corpus cell holds a blocked branch). For the same reason `roundtrip`,
+which asserted that no admitted pada derives a blocked branch, now
+requires a live branch in every cell and admits blocked ones only on an
+`OPTIONAL_NIC` row. The audit counts 612 such blocked branches.
+
 ## Forms
 
 | rows | parasmaipada | ātmanepada |
@@ -155,10 +196,12 @@ corpus goes from 242 roots / 12996 cells / 14660 forms (1664 alternates)
 to **252 roots / 13716 cells / 15644 forms (1928 alternates)**. Curādi goes
 from 139 to **149 of 509** rows.
 
-**Fork census.** Forms per new cell: 1 form in 548 cells, 2 in 114, 3 in 46,
-4 in 4, 6 in 6, 9 in 2. Counted as AGENTS.md counts them (cells holding at
-least a k-th form), the slice adds 172 seconds, 58 thirds, 12 fourths,
-8 fifths, 8 sixths, and 2 cells each with a seventh, eighth and ninth form.
+**Fork census (amended).** Forms per new cell: 1 form in 548 cells, 2 in
+114, 3 in 46, 4 in 4, 6 in 6, 9 in 2. AGENTS.md's census counts exact
+buckets (its "a second (790 cells)" is the two-form bucket), so the slice
+takes the buckets to 12364 one-form, 904 two-form, 389 three-form, 23
+four-form, 10 five-form, 23 six-form, 1 seven-form and 2 nine-form cells.
+The first draft read the census as cumulative; it is not.
 **`pata`'s parasmaipada loṭ prathama eka and madhyama eka are the new
 record at nine forms each** (three readings × the tātaṅ triple), past
 slice 3c2's seven-form √hā (`03.0009`) loṭ madhyama eka. The
@@ -207,6 +250,21 @@ The probes are throwaway, in `/tmp/vidyut-full`, against vidyut-prakriya at
     keeps the declined branch at index 0, applies `bars` to the applied
     clone only, and collapses convergent live branches.
 
+**Prototype (amendment).** The slice was built end to end on a throwaway
+worktree before the plan was written:
+
+- the golden generator found every one of the 720 new cells' derivation
+  sets equal to vidyut's: 720 cells, 984 forms, 0 differences (144 before
+  the aṅga–śap entries, see Decisions);
+- a main-vs-prototype dump of all 14660 prior live branches' traces was
+  byte-identical;
+- the audit at 252 roots / 13716 cells / 15644 forms showed zero
+  differences, and the `entry` control failed on 36 cells;
+- `cargo mutants --in-diff` over the production diff: 17 mutants, 15
+  caught, 2 unviable, 0 missed;
+- pada-ambiguous surfaces 420 → 432 (`mUtra`, `katra` and `pata`'s ṇic
+  branch, four each).
+
 ## Testing
 
 **Unit tests (`tinanta/sanadi.rs`), each with a negative control:**
@@ -246,7 +304,12 @@ The probes are throwaway, in `/tmp/vidyut-full`, against vidyut-prakriya at
 rows. 10.0496, 10.0497 and 1.3.74 never appear on a branch credited with
 2564, 2570, 2573.1 or 2573.3. Goldens ignore traces (3e), so the plan also
 diffs every trace of the 242 pre-slice roots main ↔ HEAD, and they must be
-byte-identical.
+byte-identical. That diff, not a `credited()` count, is what holds the
+aṅga–śap entries inert on prior roots: `credited` cannot tell an id's two
+entries apart, and the old 6.1.101 fires on √cur. The new entries get
+guard-level unit tests in `adesha.rs` (fires on an `a`-final aṅga before
+the matching thematic śap; declines on a consonant- or `A`-final aṅga, the
+other vowel, and a non-thematic vikaraṇa).
 
 **Goldens (`crates/panini/tests/paradigm/`):**
 
@@ -258,13 +321,16 @@ byte-identical.
   `mUtra` P (both forms) and A, `pata` P (three forms) and A (two). Every
   ākusmīya / `garva` parasmaipada witness asserts that the ṇic branch
   blocked and the only live form is ṇic-less.
-- A pin on `pata` P loṭ prathama eka's nine forms.
+- The census's new nine-form arm, which with `derivation_set_is_exactly_pinned`
+  pins `pata` P loṭ prathama and madhyama eka's nine forms.
 
-**Trace example** `examples/optional_nic_trace_10f.rs`:
+**Trace pins** in `crates/panini/tests/trace/curadi.rs` (amended: tests,
+not an example file):
 
 - √daṃś parasmaipada laṭ prathama eka: **2564** → 1.3.78 → 3.4.78 → 3.1.68
   … (no 3.1.25, no 10.0496);
-- √daṃś ātmanepada: 10.0496 → 3.1.25 … as 10c's ākusmīya rows;
+- √daṃś ātmanepada: 10.0496 → 3.1.25 … as 10c's ākusmīya rows (held by
+  the *daṃśayate* `check()` witness rather than a pin of its own);
 - `pata` laṭ prathama eka, all three readings: **2573.1** (ṇic-less);
   **2573.2** → 3.1.25 → 7.2.116 (*pātayati*); 3.1.25 → 6.4.48
   (*patayati*).
@@ -293,8 +359,11 @@ roots / 13716 cells / 15644 forms.
   15644 / 1928); the pada census; the fork census, including the new
   nine-form record that replaces √hā's "the one seven-form cell"; the
   mutation record.
-- **ARCHITECTURE:** the rule-order pin count (+5 ids), including any "pins
-  all N ids" sentence at the top of the census paragraph.
+- **ARCHITECTURE:** the rule-order pin count, 141 → 148 entries (five new
+  ids and the second 6.1.97 and 6.1.101 entries), including the "pins all N
+  ids" sentence at the top of the census paragraph; the stage table's
+  `sanadi.rs` and `adesha.rs` rows; the 7.1.35 / 8.4.56 fork counts (342 →
+  362, 348 → 354).
 - **`tinanta/sanadi.rs`:** the module doc's rule list and "Every rule
   self-guards" paragraph; 10.0497's comment ("not curated yet").
 - **`panini-data`:** the `PadaAssignment` docs that say "this engine has
