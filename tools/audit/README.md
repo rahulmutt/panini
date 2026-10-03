@@ -27,7 +27,7 @@ is ruleless.
 comment states that a blocked prakriyā's `text()` is a partial string — often the
 bare root code — not a surface form.
 
-**It asserts the corpus totals** (242 roots, 12996 cells, 14660 forms) rather than
+**It asserts the corpus totals** (252 roots, 13716 cells, 15644 forms) rather than
 reporting whatever it enumerated. Those totals are corroborated by
 `derivation_set_shape_matches_the_audited_numbers` in
 `crates/panini/tests/paradigm/main.rs`, which each slice raises to the same totals
@@ -108,6 +108,26 @@ PANINI_AUDIT_DUMP=/tmp/audit-table.tsv mise exec rust@1.99.0 -- cargo run --rele
 ```
 
 ## Last recorded result
+
+2026-10-03, curādi 10f slice, vidyut
+`8da2f90bee3ce1c07505fa432fc3729e3f7e02ea`: **zero differences across 13716
+cells / 15644 forms / 252 roots**, with the `entry` negative control verified
+failing (36 √bhū cells).
+
+The verdict covers the whole curādi 10f slice: the ten rows whose ṇic is
+optional (Kaumudī 2564, 2570, 2573.1, 2573.3), each derived on its ṇic and
+its ṇic-less branch. The harness now enumerates `Dhatu::padas`, which adds
+the ṇic-less parasmaipada to an ākusmīya or ā-garvīya row's ātmanepada, so
+for the first time a corpus cell holds blocked branches beside its live
+ones: 612 of them (each optional-ṇic row's ṇic or ṇic-less branch in the
+pada it does not admit). Before 6.1.97's and 6.1.101's aṅga–śap entries the
+four adanta rows' ṇic-less parasmaipada were the slice's only differences,
+144 cells (*katraati* for *katrati*). A main-vs-branch dump of every prior
+cell's traces was byte-identical, all 14660 live branches.
+
+Totals: 252 = 242 + 10; 13716 = 12996 + 720 (80 root×pada×lakāra blocks ×
+9); 15644 = 14660 + 720 + 264 new `ALTERNATES` rows (1664 → 1928), measured
+via the harness's corpus block, not assumed.
 
 2026-10-02, curādi 10e slice, vidyut
 `8da2f90bee3ce1c07505fa432fc3729e3f7e02ea`: **zero differences across 12996

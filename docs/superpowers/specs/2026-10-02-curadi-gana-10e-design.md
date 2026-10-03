@@ -474,7 +474,8 @@ Re-grep recorded file:line anchors at final HEAD.
 
 ## Later slices
 
-- Optional ṇic, next. It takes the six optional-ṇic ākusmīya rows and the
+- Optional ṇic, next (taken by slice 10f, see
+  `2026-10-02-curadi-gana-10f-design.md`). It takes the six optional-ṇic ākusmīya rows and the
   four optional-ṇic adanta rows (`pata`, `mUtra`, `katra`, `garva`), with
   Kaumudī 2573.1–.3 and 10.0497's ṇic-branch restriction on `garva`.
 - √smiṅ and 7.2.115 before ṇic ride whichever slice first needs 7.2.115.

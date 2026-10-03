@@ -1,8 +1,11 @@
 //! The sanādi stage: ṇic and its folding into the dhātu — 3.1.25, ṇic's
 //! it-lopa (1.3.9), 3.4.114, 6.4.48, 7.2.116, 6.4.92, 7.3.86, 3.1.32 —
-//! opened by three dhātupāṭha gaṇasūtras: 10.0496 and 10.0497, which settle
-//! an ākusmīya or ā-garvīya root's pada, and 10.0493, which credits a
-//! jñapādi root's mit-tva, all before ṇic is added.
+//! opened by four Kaumudī vikalpas (2564, 2570, 2573.1, 2573.3) that fork a
+//! root whose ṇic is optional into its ṇic and ṇic-less branches, a fifth
+//! (2573.2) that forks `pata`'s ṇic branch on its final `a`, and three
+//! dhātupāṭha gaṇasūtras: 10.0496 and 10.0497, which settle an ākusmīya or
+//! ā-garvīya root's pada, and 10.0493, which credits a jñapādi root's
+//! mit-tva, all before ṇic is added.
 //!
 //! First in the pipeline, before any lakāra or tiṅ exists. The layout here
 //! is `[AGAMA, ABHYASA, ANGA, ṇic]`, ṇic at `NIC`; 3.1.32 folds ṇic into
@@ -11,7 +14,8 @@
 //! an ordinary i-final dhātu (`cori`), and 7.3.84 then 6.1.78 make `coray-`
 //! exactly as they make √nī's `nay-`. See `super::terms`.
 //!
-//! Every rule self-guards: 10.0496 on `Tag::Akusmiya`, 10.0497 on
+//! Every rule self-guards: the four optional-ṇic vikalpas on the row's
+//! `OPTIONAL_NIC` entry, 2573.2 on `pata`'s, 10.0496 on `Tag::Akusmiya`, 10.0497 on
 //! `Tag::AaGarviya`, 10.0493 on `Tag::Mit`, 3.1.25 on `Tag::Curadi`, the
 //! rest on ṇic being present (6.4.48 on an `a`-final aṅga as well, 6.4.92 on
 //! `Tag::Mit`, and 7.2.116 and 7.3.86 decline on 6.4.48's `Tag::AtLopa`).
@@ -159,8 +163,9 @@ pub(crate) static SANADI: &[Rule] = &[
     // respect but the range: it settles the pada outright, so no pada sūtra
     // in `super::samjna` is credited after it, and the parasmaipada branch
     // BLOCKS. vidyut-prakriya credits it where it credits 10.0496, before
-    // 3.1.25. The range includes `10.0449 garva`, whose ṇic is optional and
-    // which is not curated yet: the gaṇasūtra applies only on its ṇic branch.
+    // 3.1.25. The range includes `10.0449 garva`, whose ṇic is optional
+    // (Kaumudī 2573.3): the gaṇasūtra applies only on its ṇic branch, and on
+    // the ṇic-less one 2573.3 has removed `Tag::AaGarviya`, so this declines.
     Rule {
         id: "10.0497",
         name: "A garvAd AtmanepadinaH",
