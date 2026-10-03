@@ -115,7 +115,7 @@ cells / 22724 forms / 311 roots**, with the `entry` negative control verified
 failing (36 √bhū cells).
 
 The verdict covers the whole curādi 10g slice: fifty-nine more rows whose ṇic
-is optional, every idit (Kaumudī 2564) and udit (2570) curādi row outside the
+is optional, every idit (Kaumudī 2564) and ñit/udit (2570) curādi row outside the
 āsvadīya and ādhṛṣīya but `10.0124 ciY`, each derived on its ṇic and its
 ṇic-less branch. Blocked branches rose from 612 to 2736, the 2124 = 59 × 36
 ṇic-less ātmanepada cells. Before 8.4.2 counted the anusvāra as an intervener

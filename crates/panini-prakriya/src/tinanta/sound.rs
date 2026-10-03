@@ -136,10 +136,13 @@ pub(crate) fn is_natva_trigger(c: char) -> bool {
 /// an aṭ vowel (and upasargas are out of scope entirely). num is read from
 /// its sound: a root's num is stored as `n` (7.1.58 is the stored-`code`
 /// simplification), 8.3.24 has made it the anusvāra `M` before a jhal by the
-/// time ṇatva scans, and 8.4.58 turns it into a pu-class `m` only after. In
-/// the covered grammar a root-internal `M` comes from num alone, so `M` is
-/// num's textual reading here — the approximation slice 10g's √kṣamp
-/// (`10.0112 kzanp`, *kṣampāṇi*) needs.
+/// time ṇatva scans in the gaṇas 8.3.24 reaches (rudhādi, juhotyādi, and a
+/// curādi root's own `n`), and 8.4.58 turns it into a pu-class `m` only
+/// after. Elsewhere a stored num is still `n` when ṇatva scans and breaks the
+/// 8.4.2 run, so a future non-curādi idit root with a trigger before its num
+/// would need 8.3.24's gate widened. In the covered grammar a root-internal
+/// `M` comes from num alone, so `M` is num's textual reading here — the
+/// approximation slice 10g's √kṣamp (`10.0112 kzanp`, *kṣampāṇi*) needs.
 ///
 /// Note `r` and the r-vowels are BOTH triggers and interveners. Callers must
 /// test for a trigger first; see 8.4.2's backward scan.

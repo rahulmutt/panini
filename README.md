@@ -119,7 +119,7 @@ branch and a ṇic-less one. The ṇic-less branch is parasmaipada by 1.3.78
 and runs the bhvādi path, where an adanta root's own `a` merges with śap's
 by 6.1.97 or, after 7.3.101, 6.1.101 (*mūtrati*, *patāmi*); `pata` has a
 third reading, 2573.2's *pātayati*. Slice 10g curated fifty-nine more:
-every idit (2564) and udit (2570) curādi row outside the āsvadīya and
+every idit (2564) and ñit/udit (2570) curādi row outside the āsvadīya and
 ādhṛṣīya but √ci, all ubhayapadī by 1.3.74 with ṇic (√cint, *cintayati*
 beside *cintati*). One of them, √kṣamp, made 8.4.2 *aṭkupvāṅnumvyavāye 'pi*
 read its *num*: the root's stored `n` reaches ṇatva as the anusvāra 8.3.24

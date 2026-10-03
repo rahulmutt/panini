@@ -1413,10 +1413,10 @@ fn shcutva_off_jan_is_credited_exactly_as_before_3f3() {
             "8.4.40 credited on {number}"
         );
     }
-    let adanta = off_jan.iter().filter(|(n, _)| n.starts_with("10.")).count();
-    assert_eq!(off_jan.len() - adanta, 54);
+    let curadi = off_jan.iter().filter(|(n, _)| n.starts_with("10.")).count();
+    assert_eq!(off_jan.len() - curadi, 54);
     // Each ch-initial adanta root: laṅ's 18 cells plus its one 8.4.56 fork.
     // Each ch-initial optional-ṇic root: laṅ's 9 ātmanepada cells, and its
     // 9 parasmaipada ones twice (ṇic and ṇic-less) plus their two 8.4.56 forks.
-    assert_eq!(adanta, 3 * 19 + 3 * 29);
+    assert_eq!(curadi, 3 * 19 + 3 * 29);
 }

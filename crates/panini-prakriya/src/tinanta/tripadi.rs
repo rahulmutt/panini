@@ -67,10 +67,12 @@ fn dhatu_is_pada_final(p: &Prakriya) -> bool {
 ///   - **8.3.24 naś cāpadāntasya jhali**: a non-padānta n before a jhal has
 ///     ALREADY become an anusvāra by the time the 8.4 rules run, and 8.4.58
 ///     restores it afterwards — so no such n can be a target (BAzante, not
-///     *BAzaRte). This engine has no anusvāra machinery; the condition below
-///     is exactly equivalent within tripādī order.
+///     *BAzaRte). The rule 8.3.24 itself is modelled, but only for rudhādi,
+///     juhotyādi and a curādi root's own `n`; the condition below still
+///     covers every other gaṇa, and is exactly equivalent within tripādī
+///     order.
 ///
-/// Retire both in favour of the real rules when liṭ/luṅ bring 8.3.24 in.
+/// Retire both in favour of the real rules once 8.3.24 reaches every gaṇa.
 fn is_natva_target(w: &[(usize, usize, char)], i: usize) -> bool {
     if w[i].2 != 'n' {
         return false;
@@ -2155,12 +2157,16 @@ mod tests {
         let r842 = rules().find(|r| r.id == "8.4.2").unwrap();
         assert!((r842.apply)(&mut p));
         assert_eq!(p.text(), "kzaMpARi");
-        // The dental n of a root without num stays: kzap + Ani has the same
-        // run with no M, and 8.4.2 fires there too — the pu p and the aw
-        // vowels already intervene. What M adds is exactly one link.
-        let mut p = natva_prakriya("kzap", "", "Ani");
-        assert!((r842.apply)(&mut p));
-        assert_eq!(p.text(), "kzapARi");
+        // Contrast, the converse of the above: the same root with num still
+        // written as `n` (not yet 8.3.24's M). `n` is no intervener, so the
+        // scan from the ending's `n` stops at it and 8.4.2 declines; the
+        // root's own `n` is spared by the jhal guard (`p` follows it). Only
+        // M carries the scan. (Removing `'M'` from the intervener set fails
+        // the assertion above, at `(r842.apply)(&mut p)`; this one pins that
+        // `n` itself never became an intervener.)
+        let mut p = natva_prakriya("kzanp", "", "Ani");
+        assert!(!(r842.apply)(&mut p), "n is no intervener: the scan stops");
+        assert_eq!(p.text(), "kzanpAni");
     }
 
     #[test]
@@ -2185,7 +2191,8 @@ mod tests {
         // BAzante: z, the aw vowel a, then n -- but the n is followed by the
         // jhal `t`. In the full grammar 8.3.24 naS cApadAntasya jhali has
         // already made that n an anusvAra by the time 8.4.1 runs, and 8.4.58
-        // restores it afterwards. This engine has no anusvAra machinery, so
+        // restores it afterwards. The engine's 8.3.24 reaches only rudhAdi,
+        // juhotyAdi and a curAdi root's own n, and this is a bhvAdi root, so
         // the bleeding is encoded as this guard. Another existing golden.
         assert_eq!(
             form_g("01.0696", Lakara::Lat, Purusha::Prathama, Vacana::Bahu),

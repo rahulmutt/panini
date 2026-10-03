@@ -154,7 +154,7 @@ const VIKALPA_RULES: &[&str] = &[
 /// `VIKALPA_RULES` holds ids, not arms: 7.3.86 is listed once but runs three times,
 /// as the mandatory guṇa-stage laghūpadha guṇa, as the tanādi vikalpa entry and,
 /// since slice 10a, as the sanādi entry before ṇic, so a key
-/// naming 7.3.86 does not by itself mean the rule was optional. Twelve of the 19 `7.3.86+8.4.56` keys are the mandatory firing (3e's laṅ eka cells, 3f's √kit and √dhiṣ ones, and slice 10a's √cur laṅ and vidhiliṅ prathama eka, where the firing is the sanādi entry before ṇic), and so is the 7.3.86 of the one `7.3.86+8.2.75` key (√kit's `acikeH`) and of the four `7.3.86+7.1.35`/`7.3.86+7.1.35+8.4.56` keys (√cur's loṭ tātaṅ cells — the only keys where 7.3.86 precedes 7.1.35, because the sanādi stage runs first), and of 10f's six `2570+…7.3.86…` keys (√div's ṇic-less guṇa).
+/// naming 7.3.86 does not by itself mean the rule was optional. Sixteen of the 23 `7.3.86+8.4.56` keys are the mandatory firing (ten juhotyādi: 3e's laṅ eka cells and 3f's √kit and √dhiṣ ones; six curādi: slice 10a's √cur laṅ and vidhiliṅ prathama eka, and slice 10g's √div and √śṛdh on their ṇic branch, where the firing is the sanādi entry before ṇic; the other seven are the tanādi vikalpa), and so is the 7.3.86 of the one `7.3.86+8.2.75` key (√kit's `acikeH`) and of the four `7.3.86+7.1.35`/`7.3.86+7.1.35+8.4.56` keys (√cur's loṭ tātaṅ cells — the only keys where 7.3.86 precedes 7.1.35, because the sanādi stage runs first), and of 10f's six `2570+…7.3.86…` keys (√div's ṇic-less guṇa).
 #[test]
 fn every_alternate_names_the_vikalpa_rules_that_produced_it() {
     for (root, lakara, pada, cell, form, key) in ALTERNATES.iter() {
@@ -361,9 +361,9 @@ fn derivation_set_is_exactly_pinned() {
 /// 2 `3.4.111`, 72 `6.4.107`, 145 `8.4.65`, 8 `8.2.75`, 2 `8.2.74` (√hiṃs's ahinaH and, new in slice 3f2, √bhas's abaBaH), 16
 /// `7.1.35+8.4.65`, 16 `7.1.35+8.4.65+8.4.56`, 270 `7.3.86` (tanādi 8a's
 /// ik-upadhā fork), 8 `7.1.35+7.3.86`, 8 `7.1.35+7.3.86+8.4.56`, 8
-/// `7.3.86+6.4.107`, 23 `7.3.86+8.4.56` (twelve of them name the MANDATORY
-/// 7.3.86, through the id it shares with the tanādi vikalpa arm: slice 3e's
-/// laṅ prathama and madhyama eka cells and slice 3f's √kit and √dhiṣ ones, whose root guṇa 7.3.86 credits, and slice 10a's √cur laṅ and vidhiliṅ prathama eka, whose guṇa before ṇic the sanādi 7.3.86 credits), 1 `7.3.86+8.2.75` (√kit's acikeH, the same mandatory 7.3.86), 23 `6.4.115`, 2 `7.1.35+6.4.115`,
+/// `7.3.86+6.4.107`, 23 `7.3.86+8.4.56` (sixteen of them name the MANDATORY
+/// 7.3.86, through the id it shares with the tanādi vikalpa arm: ten juhotyādi, slice 3e's
+/// laṅ prathama and madhyama eka cells and slice 3f's √kit and √dhiṣ ones, whose root guṇa 7.3.86 credits, and six curādi, slice 10a's √cur laṅ and vidhiliṅ prathama eka and slice 10g's √div and √śṛdh ṇic-branch ones, whose guṇa before ṇic the sanādi 7.3.86 credits; the other seven are the tanādi vikalpa), 1 `7.3.86+8.2.75` (√kit's acikeH, the same mandatory 7.3.86), 23 `6.4.115`, 2 `7.1.35+6.4.115`,
 /// 2 `7.1.35+6.4.115+8.4.56`, and 1 `6.4.115+8.4.56`, 14 `6.4.116`, 1 `6.4.117`, 2 `7.1.35+6.4.116` and 2
 /// `7.1.35+6.4.116+8.4.56`, 9 `6.4.43` and 1 `6.4.43+8.4.56` (slice 3f3's √jan), 6 `7.3.86+7.1.35` and 6
 /// `7.3.86+7.1.35+8.4.56` (slice 10a's √cur, its sanādi 7.3.86 ahead of 7.1.35, and slice 10g's √śṛdh and
@@ -748,7 +748,7 @@ fn derivation_set_is_exactly_pinned() {
 /// gaṇa is OPEN at 149 of its 509 rows.
 ///
 /// Slice 10g curates fifty-nine more optional-ṇic rows: every idit (Kaumudī
-/// 2564) and udit (2570) curādi row outside the āsvadīya and ādhṛṣīya but
+/// 2564) and ñit/udit (2570) curādi row outside the āsvadīya and ādhṛṣīya but
 /// `10.0124 ciY`, all `Nic`. The ṇic branch is live in both padas, so it is
 /// the pinned form; every parasmaipada cell adds the ṇic-less reading
 /// beside it. 4248 new cells, 2832 new rows. The gaṇa is OPEN at 208 of its

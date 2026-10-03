@@ -401,14 +401,16 @@ is keyed on √gā, `03.0026`, and never co-fires with it), so it precedes
 
 8.4.1 / 8.4.2 are the engine's first ṇatva. They are guarded to skip an `n`
 that is word-final or immediately followed by a jhal — the effect of 8.4.37
-*padāntasya* and of 8.3.24 *naś cāpadāntasya jhali* bleeding the rule, neither
-of which is modelled here because the engine has no anusvāra machinery. The
-guard is exactly equivalent within tripādī order; it costs trace fidelity, and
+*padāntasya* and of 8.3.24 *naś cāpadāntasya jhali* bleeding the rule. 8.4.37 is
+not modelled; 8.3.24 is, but only for rudhādi, juhotyādi and a curādi root's
+own `n` (its gate in `tripadi.rs`), so the guard still folds it in for every
+other gaṇa. The guard is exactly equivalent within tripādī order; it costs trace fidelity, and
 it is the first thing liṭ and luṅ will want retired. `asmaran` and `BAzante`
 are the goldens that pin it. Since slice 10g, 8.4.2's intervener set
 (`sound.rs`'s `is_natva_intervener`) also counts the anusvāra `M` as num's
-textual reading: a root's stored num reaches ṇatva as the anusvāra 8.3.24
-has made of it, and 8.4.58 turns it into a pu `m` only afterwards
+textual reading: in the gaṇas 8.3.24 reaches, a root's stored num reaches
+ṇatva as the anusvāra 8.3.24 has made of it (elsewhere it is still `n` and
+breaks the run), and 8.4.58 turns it into a pu `m` only afterwards
 (√kṣamp's *kṣampāṇi*, `10.0112`).
 
 `derive` itself carries no scope gate — it only tags the dhātu and

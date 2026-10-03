@@ -3917,7 +3917,7 @@ mod tests {
         // rows whose ṇic is optional (`OPTIONAL_NIC`): six ākusmīya, `garva`,
         // `mUtra`, `katra` and `pata`, each curated with its ṇic branch's
         // pada. Slice 10g adds fifty-nine more, every idit (Kaumudī 2564) and
-        // udit (2570) row outside the āsvadīya and ādhṛṣīya but `10.0124 ciY`,
+        // ñit/udit (2570) row outside the āsvadīya and ādhṛṣīya but `10.0124 ciY`,
         // all ubhayapadī by 1.3.74 with ṇic. The gaṇa is OPEN at 208 of its
         // 509 dhātupāṭha rows.
         let rows: Vec<_> = dhatus()
@@ -4688,16 +4688,25 @@ mod tests {
             // Siblings that differ in their optional-ṇic verdict are distinct
             // roots to this engine, which reads that verdict by number
             // (`OPTIONAL_NIC`): `10.0174 SraRu~` (2570) beside `10.0063 SraRa~`
-            // (none) is the case, pinned below.
+            // (none) is the case, pinned below. The verdict only tells curādi
+            // rows apart (the engine keys `OPTIONAL_NIC` by number there
+            // alone), so every other gaṇa compares no verdict.
             let gana_prefix = &d.dhatupatha[..2];
-            let verdict = optional_nic_from_upadesha(upadesha);
+            let verdict = |u: &str| {
+                if gana_prefix == "10" {
+                    optional_nic_from_upadesha(u)
+                } else {
+                    None
+                }
+            };
+            let own_verdict = verdict(upadesha);
             let siblings = rows
                 .iter()
                 .filter(|(n, u, a)| {
                     n.starts_with(gana_prefix)
                         && stored_form(u) == stripped
                         && *a == *artha
-                        && optional_nic_from_upadesha(u) == verdict
+                        && verdict(u) == own_verdict
                 })
                 .count();
             assert_eq!(
