@@ -108,6 +108,39 @@ pub const JNAPADI: RangeInclusive<&str> = "10.0118"..="10.0124";
 /// optional). `aa_garviya_is_exactly_the_rows_10_0497_names` pins the range
 /// to upstream.
 pub const AA_GARVIYA: RangeInclusive<&str> = "10.0440"..="10.0449";
+
+/// The curādi rows whose ṇic is optional, each with the Kaumudī id that
+/// makes it so: 2564 for an idit root, 2570 for a ñit or udit root, 2573.1
+/// for `pata`, and 2573.3 for the roots that rule names (`mUtra`, `katra`,
+/// `garva`). Keyed by dhātupāṭha number, as `JNAPADI` is: the engine never
+/// sees an upadeśa's markers, so `danS` and `div` cannot say they are idit
+/// or udit. The engine's sanādi stage forks each listed row into a ṇic
+/// branch and a ṇic-less one (`Dhatu::padas`).
+///
+/// Lists curated rows only. `optional_nic_matches_upadesha_markers`
+/// re-derives every entry from the vendored upadeśa and holds the table to
+/// exactly the curated rows those markers select.
+pub const OPTIONAL_NIC: &[(&str, &str)] = &[
+    ("10.0193", "2564"),
+    ("10.0194", "2564"),
+    ("10.0198", "2564"),
+    ("10.0199", "2564"),
+    ("10.0227", "2570"),
+    ("10.0230", "2570"),
+    ("10.0400", "2573.1"),
+    ("10.0449", "2573.3"),
+    ("10.0451", "2573.3"),
+    ("10.0456", "2573.3"),
+];
+
+/// The Kaumudī id that makes row `dhatupatha`'s ṇic optional, if any
+/// (`OPTIONAL_NIC`).
+pub fn optional_nic(dhatupatha: &str) -> Option<&'static str> {
+    OPTIONAL_NIC
+        .iter()
+        .find(|(n, _)| *n == dhatupatha)
+        .map(|(_, id)| *id)
+}
 impl PadaAssignment {
     /// The padas this assignment derives. `Ubhayapada` lists parasmaipada
     /// first — pinned, not incidental; see
@@ -184,6 +217,21 @@ pub struct Dhatu {
     /// not make the table self-maintaining.
     pub pada: PadaAssignment,
     pub artha: &'static str,
+}
+
+impl Dhatu {
+    /// The padas this root derives. `pada` is the ṇic branch's verdict; a
+    /// root whose ṇic is optional (`OPTIONAL_NIC`) also derives its ṇic-less
+    /// branch, parasmaipada by 1.3.78 for every row listed there. So an
+    /// ākusmīya or ā-garvīya row in the table admits both padas,
+    /// parasmaipada first, as `PadaAssignment::padas` orders every
+    /// two-pada assignment.
+    pub fn padas(&self) -> &'static [Pada] {
+        match (optional_nic(self.dhatupatha), self.pada.padas()) {
+            (Some(_), [Pada::Atmanepada]) => &[Pada::Parasmaipada, Pada::Atmanepada],
+            (_, padas) => padas,
+        }
+    }
 }
 
 static DHATUS: &[Dhatu] = &[

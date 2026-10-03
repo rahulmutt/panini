@@ -66,7 +66,7 @@ pub fn credited(sutra: &str) -> Vec<(&'static str, Gana)> {
     let mut out = Vec::new();
     for d in dhatus() {
         for lakara in [Lakara::Lat, Lakara::Lan, Lakara::Lot, Lakara::VidhiLin] {
-            for &pada in d.pada.padas() {
+            for &pada in d.padas() {
                 for (purusha, vacana) in ALL_CELLS {
                     for p in derive(d, lakara, pada, purusha, vacana) {
                         if !p.blocked && p.log.iter().any(|s| s.sutra == sutra) {

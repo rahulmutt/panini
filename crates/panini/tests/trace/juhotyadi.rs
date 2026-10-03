@@ -920,7 +920,7 @@ fn nabhyastasyaci_is_credited_only_on_the_3e_3f_3f2_and_3f3_rows() {
     let mut credited = 0;
     for d in dhatus() {
         for lakara in [Lakara::Lat, Lakara::Lan, Lakara::Lot, Lakara::VidhiLin] {
-            for &pada in d.pada.padas() {
+            for &pada in d.padas() {
                 for (purusha, vacana) in CELLS {
                     for p in derive(d, lakara, pada, purusha, vacana) {
                         if p.log.iter().any(|s| s.sutra == "7.3.87") {

@@ -200,10 +200,19 @@ fn derivation_set_is_exactly_pinned() {
                 .unwrap();
 
             let branches = derive(d, lak, *row_pada, pu, va);
+            // The pinned form is the first LIVE branch, the declined
+            // derivation among those that survive. Before slice 10f that was
+            // always index 0. An optional-ṇic root's ṇic branch is index 0
+            // and, in an ākusmīya or ā-garvīya root's parasmaipada,
+            // blocked by 10.0496 / 10.0497: the ṇic-less branch is the cell.
+            let first_live = branches
+                .iter()
+                .find(|p| !p.blocked)
+                .unwrap_or_else(|| panic!("no live branch for {root} {lakara} cell {cell}"));
             assert_eq!(
-                branches[0].text(),
+                first_live.text(),
                 *expected,
-                "index 0 must be the declined derivation for {root} {lakara} cell {cell}"
+                "the first live branch must be the declined derivation for {root} {lakara} cell {cell}"
             );
 
             let mut actual: Vec<String> = branches
@@ -861,7 +870,7 @@ fn paradigm_covers_every_enumerable_cell() {
     let mut unpinned: Vec<(&str, &str, Pada)> = Vec::new();
     for d in dhatus() {
         for &lakara in panini_analyze::LAKARAS {
-            for &pada in d.pada.padas() {
+            for &pada in d.padas() {
                 let triple = (d.dhatupatha, panini::lakara_name(lakara), pada);
                 if !pinned.contains(&triple) {
                     unpinned.push(triple);
@@ -885,7 +894,7 @@ fn paradigm_covers_every_enumerable_cell() {
     // Catches a duplicated PARADIGM block masking a missing one above.
     let enumerable: usize = dhatus()
         .iter()
-        .map(|d| d.pada.padas().len() * panini_analyze::LAKARAS.len())
+        .map(|d| d.padas().len() * panini_analyze::LAKARAS.len())
         .sum();
     assert_eq!(
         PARADIGM.len() + GATED.len(),
