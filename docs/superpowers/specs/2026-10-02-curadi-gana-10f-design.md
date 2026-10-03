@@ -141,9 +141,10 @@ the vikaraṇa meets the ending: 6.1.97 *ato guṇe* for `a` + `a`
 (*patāmi*). The engine's 6.1.97 and 6.1.101 read only the vikaraṇa–ending
 junction, and `ADESHA` runs 6.1.101 before 6.1.97, so an arm inside either
 would credit *patāni*'s two steps in the wrong order. Each id therefore
-gets a second `Rule` entry at the head of `ADESHA`, sharing one helper
-(`merge_anga_a`): the aṅga loses its final `a` when a thematic śap begins
-with `a` (6.1.97) or `A` (6.1.101). Ids already repeat across entries
+gets a second `Rule` entry at the head of `ADESHA`, each with its own
+body (this stage's arms repeat their lookups rather than share a helper,
+so each keeps its own mutation pin): the aṅga loses its final `a` when a
+thematic śap begins with `a` (6.1.97) or `A` (6.1.101). Ids already repeat across entries
 (7.3.86 has three), so no new id. The `adesha.rs` unit tests that look up
 6.1.101 by id switch to a stage-local `junction(id)` helper that returns
 the last entry, the one they were written for.
