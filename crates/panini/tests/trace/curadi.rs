@@ -553,7 +553,7 @@ fn pata_traces_its_three_readings() {
 #[test]
 fn the_optional_nic_ids_are_credited_only_on_their_rows() {
     // Each Kaumudī id fires only on the rows `OPTIONAL_NIC` gives it, and on
-    // every cell of each: one ṇic-less branch per cell in each pada (live in
+    // every cell of each: at least one ṇic-less branch per cell in each pada (live in
     // parasmaipada, blocked by 1.3.78 in ātmanepada). 2573.2 fires only on
     // `pata`. Goldens ignore traces, so this is also what holds all five
     // inert on the 242 prior roots.

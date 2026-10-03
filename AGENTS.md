@@ -94,7 +94,7 @@
     the floor paragraph), `--package panini-prakriya --package panini-analyze
     --test-workspace=true`, `-o /home/dev/mutants-records/curadi-10f`,
     launched detached with `env -u CARGO_MUTANTS_JOBS`, window 07:12:50 -
-    08:25:00 UTC (72 minutes; host load average 30-60, external), on the
+    08:25:00 UTC (72 minutes; load not recorded for the window; the probe saw 29-39, external), on the
     tree at `5e0a00e`. **842 mutants tested: 791 caught, 48 unviable, 2
     missed, 1 timeout** (exit code 3, as with any timeout). **panini-prakriya:
     830 mutants, 783 caught, 44 unviable, 2 missed, 1 timeout.** **panini-analyze:
@@ -210,8 +210,9 @@ and curādi (10) opened in slice 10a at 4 of its 509 rows (√cur, √laḍ, √
     exactly the union of the two. The suite is no longer filtered by any
     one-form-per-cell convention — the
     "retiring the conventions" slice retired the last two (7.1.35 tātaṅ,
-    8.4.56 pausal cartva), and `PARADIGM`'s index 0 is now genuinely the
-    declined derivation rather than a hand-picked citation form: prathama
+    8.4.56 pausal cartva), and `PARADIGM`'s pinned form is now genuinely the
+    first live branch (the declined derivation; but see 10f: index 0 may be
+    blocked) rather than a hand-picked citation form: prathama
     eka of laṅ and vidhiliṅ is the jaś form for parasmaipada roots
     (`aBavad`, `Baved`), since 8.2.39 *jhalāṁ jaśo'nte* is obligatory;
     bhvādi/divādi/
@@ -767,8 +768,10 @@ and curādi (10) opened in slice 10a at 4 of its 509 rows (√cur, √laḍ, √
   the clone only if `apply` returned true, so a rule that declines its own
   guard forks nothing. The declined branch keeps its index and the applied
   clone is inserted immediately after it, which is why index 0 of a
-  derivation is always what the engine would have produced with no optional
-  rules at all. `derive` therefore returns `Vec<Prakriya>`, and a cell may
+  derivation is the engine's no-optional-rules reading. Index 0 may be
+  blocked while a later branch is live (an optional-ṇic root's ṇic branch
+  in a pada it does not admit, slice 10f), and a cell's form is the first
+  live branch. `derive` therefore returns `Vec<Prakriya>`, and a cell may
   have more than one valid form. Add an optional rule exactly as any other —
   in its stage file, with its id in `tinanta_rule_order_is_pinned` in
   position — and also add it to

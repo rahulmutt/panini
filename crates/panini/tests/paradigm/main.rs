@@ -154,7 +154,7 @@ const VIKALPA_RULES: &[&str] = &[
 /// `VIKALPA_RULES` holds ids, not arms: 7.3.86 is listed once but runs three times,
 /// as the mandatory guṇa-stage laghūpadha guṇa, as the tanādi vikalpa entry and,
 /// since slice 10a, as the sanādi entry before ṇic, so a key
-/// naming 7.3.86 does not by itself mean the rule was optional. Twelve of the 19 `7.3.86+8.4.56` keys are the mandatory firing (3e's laṅ eka cells, 3f's √kit and √dhiṣ ones, and slice 10a's √cur laṅ and vidhiliṅ prathama eka, where the firing is the sanādi entry before ṇic), and so is the 7.3.86 of the one `7.3.86+8.2.75` key (√kit's `acikeH`) and of the four `7.3.86+7.1.35`/`7.3.86+7.1.35+8.4.56` keys (√cur's loṭ tātaṅ cells — the only keys where 7.3.86 precedes 7.1.35, because the sanādi stage runs first).
+/// naming 7.3.86 does not by itself mean the rule was optional. Twelve of the 19 `7.3.86+8.4.56` keys are the mandatory firing (3e's laṅ eka cells, 3f's √kit and √dhiṣ ones, and slice 10a's √cur laṅ and vidhiliṅ prathama eka, where the firing is the sanādi entry before ṇic), and so is the 7.3.86 of the one `7.3.86+8.2.75` key (√kit's `acikeH`) and of the four `7.3.86+7.1.35`/`7.3.86+7.1.35+8.4.56` keys (√cur's loṭ tātaṅ cells — the only keys where 7.3.86 precedes 7.1.35, because the sanādi stage runs first), and of 10f's six `2570+…7.3.86…` keys (√div's ṇic-less guṇa).
 #[test]
 fn every_alternate_names_the_vikalpa_rules_that_produced_it() {
     for (root, lakara, pada, cell, form, key) in ALTERNATES.iter() {
@@ -200,11 +200,10 @@ fn derivation_set_is_exactly_pinned() {
                 .unwrap();
 
             let branches = derive(d, lak, *row_pada, pu, va);
-            // The pinned form is the first LIVE branch, the declined
-            // derivation among those that survive. Before slice 10f that was
-            // always index 0. An optional-ṇic root's ṇic branch is index 0
-            // and, in an ākusmīya or ā-garvīya root's parasmaipada,
-            // blocked by 10.0496 / 10.0497: the ṇic-less branch is the cell.
+            // The pinned form is the first LIVE branch. Before slice 10f that
+            // was always index 0. An optional-ṇic root's ṇic branch is index
+            // 0 and, in an ākusmīya or ā-garvīya root's parasmaipada, blocked
+            // by 10.0496 / 10.0497: a later (applied) branch is the cell.
             let first_live = branches
                 .iter()
                 .find(|p| !p.blocked)
@@ -212,7 +211,7 @@ fn derivation_set_is_exactly_pinned() {
             assert_eq!(
                 first_live.text(),
                 *expected,
-                "the first live branch must be the declined derivation for {root} {lakara} cell {cell}"
+                "the pinned form must be the first live branch for {root} {lakara} cell {cell}"
             );
 
             let mut actual: Vec<String> = branches
