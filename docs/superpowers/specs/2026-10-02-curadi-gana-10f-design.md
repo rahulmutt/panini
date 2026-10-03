@@ -379,7 +379,8 @@ roots / 13716 cells / 15644 forms.
 
 ## Later slices
 
-- Bulk optional-ṇic rows: the 57 idit (2564) and 10 ñit/udit (2570) rows,
+- Bulk optional-ṇic rows: the 57 idit (2564) and 10 ñit/udit (2570) rows
+  (taken by slice 10g, all but √ci, see `2026-10-03-curadi-gana-10g-design.md`),
   then 10.0498 ādhṛṣīya and 10.0499 āsvadīya, then 2565, 2571 and 2572.
   Each widens `OPTIONAL_NIC` and its marker test.
 - √smiṅ and 7.2.115 before ṇic ride whichever slice first needs 7.2.115.

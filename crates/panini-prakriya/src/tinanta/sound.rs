@@ -127,16 +127,22 @@ pub(crate) fn is_natva_trigger(c: char) -> bool {
     matches!(c, 'r' | 'z' | 'f' | 'F')
 }
 
-/// 8.4.2's intervention set: aṭ (the vowels plus `h y v r`), ku (`k K g G N`)
-/// and pu (`p P b B m`).
+/// 8.4.2's intervention set: aṭ (the vowels plus `h y v r`), ku (`k K g G N`),
+/// pu (`p P b B m`), and the anusvāra `M`, standing in for num.
 ///
 /// The sūtra also names **āṅ** and **num**, which are morphemes rather than
 /// varṇa classes. Ṇatva runs in the tripādī over assembled text, where
-/// morpheme identity is gone — and neither is a loss: āṅ is the upasarga `ā`,
-/// already an aṭ vowel, and num's nasal cannot occur in the intervening
-/// position for any form in the covered grammar (no num-infixing root is in
-/// scope, and upasargas are out of scope entirely). Revisit when either
-/// enters scope.
+/// morpheme identity is gone. āṅ is no loss: it is the upasarga `ā`, already
+/// an aṭ vowel (and upasargas are out of scope entirely). num is read from
+/// its sound: a root's num is stored as `n` (7.1.58 is the stored-`code`
+/// simplification), 8.3.24 has made it the anusvāra `M` before a jhal by the
+/// time ṇatva scans in the gaṇas 8.3.24 reaches (rudhādi, juhotyādi, and a
+/// curādi root's own `n`), and 8.4.58 turns it into a pu-class `m` only
+/// after. Elsewhere a stored num is still `n` when ṇatva scans and breaks the
+/// 8.4.2 run, so a future non-curādi idit root with a trigger before its num
+/// would need 8.3.24's gate widened. In the covered grammar a root-internal
+/// `M` comes from num alone, so `M` is num's textual reading here — the
+/// approximation slice 10g's √kṣamp (`10.0112 kzanp`, *kṣampāṇi*) needs.
 ///
 /// Note `r` and the r-vowels are BOTH triggers and interveners. Callers must
 /// test for a trigger first; see 8.4.2's backward scan.
@@ -144,7 +150,7 @@ pub(crate) fn is_natva_intervener(c: char) -> bool {
     is_vowel(c)
         || matches!(
             c,
-            'h' | 'y' | 'v' | 'r' | 'k' | 'K' | 'g' | 'G' | 'N' | 'p' | 'P' | 'b' | 'B' | 'm'
+            'h' | 'y' | 'v' | 'r' | 'k' | 'K' | 'g' | 'G' | 'N' | 'p' | 'P' | 'b' | 'B' | 'm' | 'M'
         )
 }
 
@@ -710,7 +716,7 @@ mod tests {
     }
 
     #[test]
-    fn natva_intervener_is_at_ku_pu_and_nothing_else() {
+    fn natva_intervener_is_at_ku_pu_num_and_nothing_else() {
         // 8.4.2 aw-ku-pu-AN-num-vyavAye'pi. aw = the vowels plus h y v r.
         for c in [
             'a', 'A', 'i', 'I', 'u', 'U', 'f', 'F', 'x', 'X', 'e', 'E', 'o', 'O', 'h', 'y', 'v',
@@ -726,6 +732,9 @@ mod tests {
         for c in ['p', 'P', 'b', 'B', 'm'] {
             assert!(is_natva_intervener(c), "pu member {c} should intervene");
         }
+        // num, read as the anusvāra 8.3.24 has made of it by the time ṇatva
+        // scans (√kṣamp's kzaMpAni → kzaMpARi).
+        assert!(is_natva_intervener('M'), "num's anusvāra should intervene");
         // Everything else BREAKS the intervention. `t` is the one that
         // protects an existing golden (avartanta); `S` and the retroflex `R`
         // itself are the same non-trigger, non-intervener shape but have no
