@@ -103,8 +103,8 @@
     Across both packages the 51 non-caught entries (48 unviable, 2 missed,
     1 timeout) of the 10e and 10f `outcomes.durable.json` files are
     identical on the full record (package, span, replacement, function,
-    genre, outcome) except for moved spans: the sixteen `adesha.rs` entries
-    (fifteen unviable and the missed one) all moved down by exactly the 58
+    genre, outcome) except for moved spans: the fifteen `adesha.rs` entries
+    (fourteen unviable and the missed one) all moved down by exactly the 58
     lines the two head entries added above them (`589:30` to `647:30`,
     `376:17` to `434:17`, `660:17` to `718:17`, and so on), and the two
     `tripadi.rs` spans sit one line below 10e's recorded positions (`1302:38`
