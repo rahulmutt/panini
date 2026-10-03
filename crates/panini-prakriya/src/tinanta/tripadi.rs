@@ -2145,6 +2145,25 @@ mod tests {
     }
 
     #[test]
+    fn natva_fires_across_nums_anusvara_under_8_4_2() {
+        // kzaMp + Ani (√kṣamp's loṭ uttama eka, 10.0112): z, the aw vowel a,
+        // num's anusvāra M (8.3.24 has run), the pu p, the aw vowel A, then n.
+        // 8.4.2 names num; read as M, it carries the scan to the z.
+        let mut p = natva_prakriya("kzaMp", "", "Ani");
+        let r841 = rules().find(|r| r.id == "8.4.1").unwrap();
+        assert!(!(r841.apply)(&mut p), "8.4.1 must not fire non-adjacently");
+        let r842 = rules().find(|r| r.id == "8.4.2").unwrap();
+        assert!((r842.apply)(&mut p));
+        assert_eq!(p.text(), "kzaMpARi");
+        // The dental n of a root without num stays: kzap + Ani has the same
+        // run with no M, and 8.4.2 fires there too — the pu p and the aw
+        // vowels already intervene. What M adds is exactly one link.
+        let mut p = natva_prakriya("kzap", "", "Ani");
+        assert!((r842.apply)(&mut p));
+        assert_eq!(p.text(), "kzapARi");
+    }
+
+    #[test]
     fn natva_declines_word_finally_per_8_4_37() {
         // asmaran: r, the aw vowel a, then a WORD-FINAL n. 8.4.37 padAntasya
         // forbids Natva there. This is an existing golden -- a mutant that
