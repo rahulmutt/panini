@@ -263,7 +263,7 @@ fn a_kusmad_is_credited_on_exactly_the_akusmiya_cells() {
     // rows — 43 roots × 4 lakāras × 9 cells, one branch each, the six
     // optional-ṇic rows' on their ṇic branch — and nowhere else: every
     // credit's number lies in the positional `AKUSMIYA` range. And 1.3.74
-    // never reaches them: its credits stay on the 96 `Nic` rows, read from
+    // never reaches them: its credits stay on the 155 `Nic` rows, read from
     // the curated `pada` column (ten before slice 10e, listed literally until
     // then).
     let hits = credited("10.0496");
@@ -276,7 +276,7 @@ fn a_kusmad_is_credited_on_exactly_the_akusmiya_cells() {
         .filter(|d| d.gana == Gana::Curadi && d.pada == PadaAssignment::Nic)
         .map(|d| d.dhatupatha)
         .collect();
-    assert_eq!(nic.len(), 96, "curated 1.3.74 rows");
+    assert_eq!(nic.len(), 155, "curated 1.3.74 rows");
     for (number, _) in credited("1.3.74") {
         assert!(nic.contains(&number), "1.3.74 credited on {number}");
     }
@@ -556,10 +556,30 @@ fn the_optional_nic_ids_are_credited_only_on_their_rows() {
     // every cell of each: at least one ṇic-less branch per cell in each pada (live in
     // parasmaipada, blocked by 1.3.78 in ātmanepada). 2573.2 fires only on
     // `pata`. Goldens ignore traces, so this is also what holds all five
-    // inert on the 242 prior roots.
+    // inert on every root outside `OPTIONAL_NIC`. The 2564 and 2570 rows are
+    // the 10f and 10g specs' row tables, listed literally.
     for (id, rows) in [
-        ("2564", &["10.0193", "10.0194", "10.0198", "10.0199"][..]),
-        ("2570", &["10.0227", "10.0230"][..]),
+        (
+            "2564",
+            &[
+                "10.0193", "10.0194", "10.0198", "10.0199", "10.0002", "10.0003", "10.0004",
+                "10.0005", "10.0007", "10.0009", "10.0011", "10.0013", "10.0014", "10.0043",
+                "10.0045", "10.0047", "10.0048", "10.0049", "10.0060", "10.0062", "10.0066",
+                "10.0067", "10.0068", "10.0069", "10.0070", "10.0071", "10.0072", "10.0073",
+                "10.0074", "10.0075", "10.0076", "10.0077", "10.0105", "10.0106", "10.0107",
+                "10.0111", "10.0112", "10.0113", "10.0114", "10.0130", "10.0135", "10.0147",
+                "10.0153", "10.0157", "10.0158", "10.0159", "10.0160", "10.0164", "10.0166",
+                "10.0171", "10.0182", "10.0185", "10.0241", "10.0254", "10.0267", "10.0464",
+                "10.0465",
+            ][..],
+        ),
+        (
+            "2570",
+            &[
+                "10.0227", "10.0230", "10.0174", "10.0184", "10.0243", "10.0249", "10.0260",
+                "10.0266",
+            ][..],
+        ),
         ("2573.1", &["10.0400"][..]),
         ("2573.2", &["10.0400"][..]),
         ("2573.3", &["10.0449", "10.0451", "10.0456"][..]),
@@ -669,4 +689,103 @@ fn the_anga_shap_junction_resolves_before_the_ending() {
     let nicless = branches.iter().find(|p| p.text() == "mUtranti").unwrap();
     let n = nicless.log.iter().filter(|s| s.sutra == "6.1.97").count();
     assert_eq!(n, 2, "aṅga–śap, then śap–anti");
+}
+
+/// The places 8.4.2 retroflexes an `n` across num's anusvāra `M`: walk back
+/// from the changed `n` in the step's `before` text to its trigger, and
+/// report whether an `M` lay between.
+fn natva_crossed_num(step: &panini_prakriya::RuleStep) -> bool {
+    let before: Vec<char> = step.before.chars().collect();
+    let after: Vec<char> = step.after.chars().collect();
+    let i = before
+        .iter()
+        .zip(&after)
+        .position(|(b, a)| b != a)
+        .expect("8.4.2 changed nothing");
+    assert_eq!((before[i], after[i]), ('n', 'R'), "{step:?}");
+    let trigger = before[..i]
+        .iter()
+        .rposition(|c| matches!(c, 'r' | 'z' | 'f' | 'F'))
+        .expect("8.4.2 without a trigger");
+    before[trigger..i].contains(&'M')
+}
+
+#[test]
+fn natva_crosses_num_only_on_kzamp() {
+    // 8.4.2 reads num as the anusvāra 8.3.24 has made of it (slice 10g).
+    // Goldens ignore traces, so this is what holds that reading to √kṣamp's
+    // cells: across the corpus, every live branch whose 8.4.2 crosses an `M`
+    // is `10.0112 kzanp`'s loṭ parasmaipada uttama eka, one ṇic and one
+    // ṇic-less, and both are found.
+    let mut crossed = Vec::new();
+    for d in dhatus() {
+        for lakara in [Lakara::Lat, Lakara::Lan, Lakara::Lot, Lakara::VidhiLin] {
+            for &pada in d.padas() {
+                for purusha in [Purusha::Prathama, Purusha::Madhyama, Purusha::Uttama] {
+                    for vacana in [Vacana::Eka, Vacana::Dvi, Vacana::Bahu] {
+                        for p in derive(d, lakara, pada, purusha, vacana) {
+                            if p.blocked {
+                                continue;
+                            }
+                            for s in p.log.iter().filter(|s| s.sutra == "8.4.2") {
+                                if natva_crossed_num(s) {
+                                    crossed.push((
+                                        d.dhatupatha,
+                                        lakara,
+                                        pada,
+                                        purusha,
+                                        vacana,
+                                        p.text(),
+                                    ));
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    let mut forms: Vec<String> = crossed.iter().map(|c| c.5.clone()).collect();
+    forms.sort_unstable();
+    assert_eq!(forms, ["kzampARi", "kzampayARi"], "{crossed:?}");
+    for (number, lakara, pada, purusha, vacana, _) in &crossed {
+        assert_eq!(*number, "10.0112");
+        assert_eq!(
+            (*lakara, *pada, *purusha, *vacana),
+            (
+                Lakara::Lot,
+                Pada::Parasmaipada,
+                Purusha::Uttama,
+                Vacana::Eka
+            )
+        );
+    }
+}
+
+#[test]
+#[allow(non_snake_case)]
+fn kzampARi_traces_8_4_2_across_num_on_both_branches() {
+    // kzanp P loT U.E. On both branches 8.3.24 makes the stored num an
+    // anusvāra, 8.4.2 retroflexes the ending's `n` across it, and only then
+    // does 8.4.58 make it `m`.
+    let d = dhatus().iter().find(|d| d.dhatupatha == "10.0112").unwrap();
+    let mut got: Vec<String> = Vec::new();
+    for p in derive(
+        d,
+        Lakara::Lot,
+        Pada::Parasmaipada,
+        Purusha::Uttama,
+        Vacana::Eka,
+    ) {
+        if p.blocked {
+            continue;
+        }
+        let t: Vec<String> = p.log.iter().map(|s| s.sutra.clone()).collect();
+        assert!(at(&t, "8.3.24") < at(&t, "8.4.2"), "{t:?}");
+        assert!(at(&t, "8.4.2") < at(&t, "8.4.58"), "{t:?}");
+        assert!(!t.contains(&"8.4.1".to_string()), "{t:?}");
+        got.push(p.text());
+    }
+    got.sort_unstable();
+    assert_eq!(got, ["kzampARi", "kzampayARi"]);
 }
