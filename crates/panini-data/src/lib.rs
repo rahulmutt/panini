@@ -119,6 +119,7 @@ pub const JNAPADI: RangeInclusive<&str> = "10.0118"..="10.0124";
 /// upadeśas in any gaṇa (`gupU~`, `DUpa~`, `viCa~`, `paRa~\`, `pana~\`);
 /// each joins this list when its row is curated. The engine's `derive` tags
 /// a listed root `Tag::Aya`, which 3.1.28 reads.
+/// `aya_is_exactly_the_curated_rows_3_1_28_names` pins it to upstream.
 pub const AYA: [&str; 2] = ["10.0303", "10.0304"];
 
 /// The ā-garvīya of curādi: dhātupāṭha rows `10.0440` (`pada`) through
@@ -132,11 +133,13 @@ pub const AYA: [&str; 2] = ["10.0303", "10.0304"];
 pub const AA_GARVIYA: RangeInclusive<&str> = "10.0440"..="10.0449";
 
 /// The curādi rows whose ṇic is optional, each with the id of the rule that
-/// makes it so: the dhātupāṭha gaṇasūtra 10.0498 *ā dhṛṣād vā* for an
-/// ādhṛṣīya row (`10.0338`–`10.0388`), which vidyut-prakriya decides before
-/// any marker, and otherwise the Kaumudī's 2564 for an idit root, 2570 for a
-/// ñit or udit root, 2573.1 for `pata`, and 2573.3 for the roots that rule
-/// names (`mUtra`, `katra`, `garva`). Keyed by dhātupāṭha number, as
+/// makes it so: the dhātupāṭha gaṇasūtras 10.0498 *ā dhṛṣād vā* for an
+/// ādhṛṣīya row (`10.0338`–`10.0388`) and 10.0499 *ā svadaḥ sakarmakāt* for
+/// an āsvadīya one (`10.0279`–`10.0337`), which vidyut-prakriya decides
+/// before any marker, and otherwise the Kaumudī's 2564 for an idit root,
+/// 2565 for `pF`, 2570 for a ñit or udit root, 2571 for `Guzi~r`, 2573.1
+/// for `pata`, and 2573.3 for the roots that rule names (`mUtra`, `katra`,
+/// `garva`). Keyed by dhātupāṭha number, as
 /// `JNAPADI` is: the engine never
 /// sees an upadeśa's markers, so `danS` and `div` cannot say they are idit
 /// or udit. The engine's sanādi stage forks each listed row into a ṇic
@@ -155,6 +158,7 @@ pub const OPTIONAL_NIC: &[(&str, &str)] = &[
     ("10.0011", "2564"),
     ("10.0013", "2564"),
     ("10.0014", "2564"),
+    ("10.0022", "2565"),
     ("10.0043", "2564"),
     ("10.0045", "2564"),
     ("10.0047", "2564"),
@@ -205,10 +209,70 @@ pub const OPTIONAL_NIC: &[(&str, &str)] = &[
     ("10.0241", "2564"),
     ("10.0243", "2570"),
     ("10.0249", "2570"),
+    ("10.0251", "2571"),
     ("10.0254", "2564"),
     ("10.0260", "2570"),
     ("10.0266", "2570"),
     ("10.0267", "2564"),
+    ("10.0279", "10.0499"),
+    ("10.0280", "10.0499"),
+    ("10.0281", "10.0499"),
+    ("10.0282", "10.0499"),
+    ("10.0283", "10.0499"),
+    ("10.0284", "10.0499"),
+    ("10.0285", "10.0499"),
+    ("10.0286", "10.0499"),
+    ("10.0287", "10.0499"),
+    ("10.0288", "10.0499"),
+    ("10.0289", "10.0499"),
+    ("10.0290", "10.0499"),
+    ("10.0291", "10.0499"),
+    ("10.0292", "10.0499"),
+    ("10.0293", "10.0499"),
+    ("10.0294", "10.0499"),
+    ("10.0295", "10.0499"),
+    ("10.0296", "10.0499"),
+    ("10.0297", "10.0499"),
+    ("10.0298", "10.0499"),
+    ("10.0299", "10.0499"),
+    ("10.0300", "10.0499"),
+    ("10.0301", "10.0499"),
+    ("10.0302", "10.0499"),
+    ("10.0303", "10.0499"),
+    ("10.0304", "10.0499"),
+    ("10.0305", "10.0499"),
+    ("10.0306", "10.0499"),
+    ("10.0307", "10.0499"),
+    ("10.0308", "10.0499"),
+    ("10.0309", "10.0499"),
+    ("10.0310", "10.0499"),
+    ("10.0311", "10.0499"),
+    ("10.0312", "10.0499"),
+    ("10.0313", "10.0499"),
+    ("10.0314", "10.0499"),
+    ("10.0315", "10.0499"),
+    ("10.0316", "10.0499"),
+    ("10.0317", "10.0499"),
+    ("10.0318", "10.0499"),
+    ("10.0319", "10.0499"),
+    ("10.0320", "10.0499"),
+    ("10.0321", "10.0499"),
+    ("10.0322", "10.0499"),
+    ("10.0323", "10.0499"),
+    ("10.0324", "10.0499"),
+    ("10.0325", "10.0499"),
+    ("10.0326", "10.0499"),
+    ("10.0327", "10.0499"),
+    ("10.0328", "10.0499"),
+    ("10.0329", "10.0499"),
+    ("10.0330", "10.0499"),
+    ("10.0331", "10.0499"),
+    ("10.0332", "10.0499"),
+    ("10.0333", "10.0499"),
+    ("10.0334", "10.0499"),
+    ("10.0335", "10.0499"),
+    ("10.0336", "10.0499"),
+    ("10.0337", "10.0499"),
     ("10.0338", "10.0498"),
     ("10.0339", "10.0498"),
     ("10.0340", "10.0498"),
@@ -332,15 +396,15 @@ pub struct Dhatu {
     pub gana: Gana,
     /// Which pada(s) this engine derives for this root. Curated rather than
     /// read from the upadeśa's it-markers — but no longer a *deferral*:
-    /// `curated_pada_agrees_with_upadesha_markers` re-derives 102 of these 361
+    /// `curated_pada_agrees_with_upadesha_markers` re-derives 102 of these 422
     /// verdicts from the vendored upadeśa via 1.3.12 / 1.3.72 / 1.3.78 and
     /// requires them to match; `07.0017`'s (√bhuj's) is 1.3.66's root-keyed
-    /// exception, 199 curādi rows' are 1.3.74's, six more 1.3.74's with ṇic
+    /// exception, 260 curādi rows' are 1.3.74's, six more 1.3.74's with ṇic
     /// and 1.3.72's without (`NicUbhayapada`), 43 ākusmīya rows'
     /// the gaṇasūtra 10.0496's and ten ā-garvīya rows' the gaṇasūtra
     /// 10.0497's, each asserted explicitly from both sides, the same way
     /// `dhatupatha_numbers_resolve_upstream` holds `code` to upstream. For
-    /// the 119 curādi rows whose ṇic is optional this is the ṇic branch's
+    /// the 180 curādi rows whose ṇic is optional this is the ṇic branch's
     /// pada; the test also re-derives their ṇic-less branch's from the
     /// upadeśa: 1.3.72's for the six `NicUbhayapada` rows, 1.3.78's for the
     /// rest.
@@ -352,7 +416,7 @@ pub struct Dhatu {
     /// the honest arrangement; see the deferral in
     /// `docs/superpowers/specs/2026-08-16-pada-audit-design.md`.
     ///
-    /// The test covers the 361 roots curated here, not the dhātupāṭha's 2259.
+    /// The test covers the 422 roots curated here, not the dhātupāṭha's 2259.
     /// It catches a mis-assigned pada on a root a future slice adds; it does
     /// not make the table self-maintaining.
     pub pada: PadaAssignment,
@@ -4156,6 +4220,649 @@ static DHATUS: &[Dhatu] = &[
         pada: PadaAssignment::Nic,
         artha: "prasahane",
     },
+    Dhatu {
+        // 10.0022 `pF` pUraRe (√pṝ). Ṇic optional by Kaumudī 2565. Ubhayapadī by
+        // 1.3.74 with ṇic (*pārayati*), parasmaipadī by 1.3.78 without (*parati*).
+        // 7.2.115 *aco ñṇiti* lengthens the final before ṇic. Slice 10i.
+        dhatupatha: "10.0022",
+        code: "pF",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "pUraRe",
+    },
+    Dhatu {
+        // 10.0251 `Guzi~r` viSabdane (√ghuṣ). Ṇic optional by Kaumudī 2571.
+        // Ubhayapadī by 1.3.74 with ṇic (*ghoṣayati*), parasmaipadī by 1.3.78
+        // without (*ghoṣati*). Irit (`i~r`), not idit, so not 2564's. Slice 10i.
+        dhatupatha: "10.0251",
+        code: "Guz",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "viSabdane",
+    },
+    Dhatu {
+        // 10.0279 `grasa~` grahaRe (√gras). Āsvadīya: ṇic optional by 10.0499.
+        // Ubhayapadī by 1.3.74 with ṇic (*grāsayati*), parasmaipadī by 1.3.78
+        // without (*grasati*). Slice 10i.
+        dhatupatha: "10.0279",
+        code: "gras",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "grahaRe",
+    },
+    Dhatu {
+        // 10.0280 `puza~` DAraRe (√puṣ). Āsvadīya: ṇic optional by 10.0499.
+        // Ubhayapadī by 1.3.74 with ṇic (*poṣayati*), parasmaipadī by 1.3.78
+        // without (*poṣati*). Slice 10i.
+        dhatupatha: "10.0280",
+        code: "puz",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "DAraRe",
+    },
+    Dhatu {
+        // 10.0281 `dala~` vidAraRe (√dal). Āsvadīya: ṇic optional by 10.0499.
+        // Ubhayapadī by 1.3.74 with ṇic (*dālayati*), parasmaipadī by 1.3.78
+        // without (*dalati*). Slice 10i.
+        dhatupatha: "10.0281",
+        code: "dal",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "vidAraRe",
+    },
+    Dhatu {
+        // 10.0282 `pawa~` BAzAyAm (√paṭ). Āsvadīya: ṇic optional by 10.0499.
+        // Ubhayapadī by 1.3.74 with ṇic (*pāṭayati*), parasmaipadī by 1.3.78
+        // without (*paṭati*). Slice 10i.
+        dhatupatha: "10.0282",
+        code: "paw",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "BAzAyAm",
+    },
+    Dhatu {
+        // 10.0283 `puwa~` BAzAyAm (√puṭ). Āsvadīya: ṇic optional by 10.0499.
+        // Ubhayapadī by 1.3.74 with ṇic (*poṭayati*), parasmaipadī by 1.3.78
+        // without (*poṭati*). Slice 10i.
+        dhatupatha: "10.0283",
+        code: "puw",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "BAzAyAm",
+    },
+    Dhatu {
+        // 10.0284 `luwa~` BAzAyAm (√luṭ). Āsvadīya: ṇic optional by 10.0499.
+        // Ubhayapadī by 1.3.74 with ṇic (*loṭayati*), parasmaipadī by 1.3.78
+        // without (*loṭati*). Slice 10i.
+        dhatupatha: "10.0284",
+        code: "luw",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "BAzAyAm",
+    },
+    Dhatu {
+        // 10.0285 `tuji~` BAzAyAm (√tuñj). Āsvadīya: ṇic optional by 10.0499.
+        // Ubhayapadī by 1.3.74 with ṇic (*tuñjayati*), parasmaipadī by 1.3.78
+        // without (*tuñjati*). Idit (7.1.58's num stored), but āsvadīya:
+        // 10.0499's, not 2564's. Slice 10i.
+        dhatupatha: "10.0285",
+        code: "tunj",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "BAzAyAm",
+    },
+    Dhatu {
+        // 10.0286 `miji~` BAzAyAm (√miñj). Āsvadīya: ṇic optional by 10.0499.
+        // Ubhayapadī by 1.3.74 with ṇic (*miñjayati*), parasmaipadī by 1.3.78
+        // without (*miñjati*). Idit (7.1.58's num stored), but āsvadīya:
+        // 10.0499's, not 2564's. Slice 10i.
+        dhatupatha: "10.0286",
+        code: "minj",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "BAzAyAm",
+    },
+    Dhatu {
+        // 10.0287 `piji~` BAzAyAm (√piñj). Āsvadīya: ṇic optional by 10.0499.
+        // Ubhayapadī by 1.3.74 with ṇic (*piñjayati*), parasmaipadī by 1.3.78
+        // without (*piñjati*). Idit (7.1.58's num stored), but āsvadīya:
+        // 10.0499's, not 2564's. Slice 10i.
+        dhatupatha: "10.0287",
+        code: "pinj",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "BAzAyAm",
+    },
+    Dhatu {
+        // 10.0288 `laka~` AsvAdane (√lak). Āsvadīya: ṇic optional by 10.0499.
+        // Ubhayapadī by 1.3.74 with ṇic (*lākayati*), parasmaipadī by 1.3.78
+        // without (*lakati*). Slice 10i.
+        dhatupatha: "10.0288",
+        code: "lak",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "AsvAdane",
+    },
+    Dhatu {
+        // 10.0289 `luji~` BAzAyAm (√luñj). Āsvadīya: ṇic optional by 10.0499.
+        // Ubhayapadī by 1.3.74 with ṇic (*luñjayati*), parasmaipadī by 1.3.78
+        // without (*luñjati*). Idit (7.1.58's num stored), but āsvadīya:
+        // 10.0499's, not 2564's. Slice 10i.
+        dhatupatha: "10.0289",
+        code: "lunj",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "BAzAyAm",
+    },
+    Dhatu {
+        // 10.0290 `Baji~` BAzAyAm (√bhañj). Āsvadīya: ṇic optional by 10.0499.
+        // Ubhayapadī by 1.3.74 with ṇic (*bhañjayati*), parasmaipadī by 1.3.78
+        // without (*bhañjati*). Idit (7.1.58's num stored), but āsvadīya:
+        // 10.0499's, not 2564's. Slice 10i.
+        dhatupatha: "10.0290",
+        code: "Banj",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "BAzAyAm",
+    },
+    Dhatu {
+        // 10.0291 `laGi~` BAzAyAm (√laṅgh). Āsvadīya: ṇic optional by 10.0499.
+        // Ubhayapadī by 1.3.74 with ṇic (*laṅghayati*), parasmaipadī by 1.3.78
+        // without (*laṅghati*). Idit (7.1.58's num stored). Listed twice in the
+        // dhātupāṭha, identically: `10.0291` and `10.0327`. Slice 10i.
+        dhatupatha: "10.0291",
+        code: "lanG",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "BAzAyAm",
+    },
+    Dhatu {
+        // 10.0292 `trasi~` BAzAyAm (√traṃs). Āsvadīya: ṇic optional by 10.0499.
+        // Ubhayapadī by 1.3.74 with ṇic (*traṃsayati*), parasmaipadī by 1.3.78
+        // without (*traṃsati*). Idit (7.1.58's num stored), but āsvadīya:
+        // 10.0499's, not 2564's. Slice 10i.
+        dhatupatha: "10.0292",
+        code: "trans",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "BAzAyAm",
+    },
+    Dhatu {
+        // 10.0293 `pisi~` BAzAyAm (√piṃs). Āsvadīya: ṇic optional by 10.0499.
+        // Ubhayapadī by 1.3.74 with ṇic (*piṃsayati*), parasmaipadī by 1.3.78
+        // without (*piṃsati*). Idit (7.1.58's num stored), but āsvadīya:
+        // 10.0499's, not 2564's. Slice 10i.
+        dhatupatha: "10.0293",
+        code: "pins",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "BAzAyAm",
+    },
+    Dhatu {
+        // 10.0294 `kusi~` BAzAyAm (√kuṃs). Āsvadīya: ṇic optional by 10.0499.
+        // Ubhayapadī by 1.3.74 with ṇic (*kuṃsayati*), parasmaipadī by 1.3.78
+        // without (*kuṃsati*). Idit (7.1.58's num stored), but āsvadīya:
+        // 10.0499's, not 2564's. Slice 10i.
+        dhatupatha: "10.0294",
+        code: "kuns",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "BAzAyAm",
+    },
+    Dhatu {
+        // 10.0295 `daSi~` BAzAyAm (√daṃś). Āsvadīya: ṇic optional by 10.0499.
+        // Ubhayapadī by 1.3.74 with ṇic (*daṃśayati*), parasmaipadī by 1.3.78
+        // without (*daṃśati*). Idit (7.1.58's num stored), but āsvadīya:
+        // 10.0499's, not 2564's. Slice 10i.
+        dhatupatha: "10.0295",
+        code: "danS",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "BAzAyAm",
+    },
+    Dhatu {
+        // 10.0296 `kuSi~` BAzAyAm (√kuṃś). Āsvadīya: ṇic optional by 10.0499.
+        // Ubhayapadī by 1.3.74 with ṇic (*kuṃśayati*), parasmaipadī by 1.3.78
+        // without (*kuṃśati*). Idit (7.1.58's num stored), but āsvadīya:
+        // 10.0499's, not 2564's. Slice 10i.
+        dhatupatha: "10.0296",
+        code: "kunS",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "BAzAyAm",
+    },
+    Dhatu {
+        // 10.0297 `Gawa~` BAzAyAm (√ghaṭ). Āsvadīya: ṇic optional by 10.0499.
+        // Ubhayapadī by 1.3.74 with ṇic (*ghāṭayati*), parasmaipadī by 1.3.78
+        // without (*ghaṭati*). Slice 10i.
+        dhatupatha: "10.0297",
+        code: "Gaw",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "BAzAyAm",
+    },
+    Dhatu {
+        // 10.0298 `Gawi~` BAzAyAm (√ghaṇṭ). Āsvadīya: ṇic optional by 10.0499.
+        // Ubhayapadī by 1.3.74 with ṇic (*ghaṇṭayati*), parasmaipadī by 1.3.78
+        // without (*ghaṇṭati*). Idit (7.1.58's num stored), but āsvadīya:
+        // 10.0499's, not 2564's. Slice 10i.
+        dhatupatha: "10.0298",
+        code: "Ganw",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "BAzAyAm",
+    },
+    Dhatu {
+        // 10.0299 `bfhi~` BAzAyAm (√bṛṃh). Āsvadīya: ṇic optional by 10.0499.
+        // Ubhayapadī by 1.3.74 with ṇic (*bṛṃhayati*), parasmaipadī by 1.3.78
+        // without (*bṛṃhati*). Idit (7.1.58's num stored), but āsvadīya:
+        // 10.0499's, not 2564's. Slice 10i.
+        dhatupatha: "10.0299",
+        code: "bfnh",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "BAzAyAm",
+    },
+    Dhatu {
+        // 10.0300 `barha~` BAzAyAm (√barh). Āsvadīya: ṇic optional by 10.0499.
+        // Ubhayapadī by 1.3.74 with ṇic (*barhayati*), parasmaipadī by 1.3.78
+        // without (*barhati*). Slice 10i.
+        dhatupatha: "10.0300",
+        code: "barh",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "BAzAyAm",
+    },
+    Dhatu {
+        // 10.0301 `balha~` BAzAyAm (√balh). Āsvadīya: ṇic optional by 10.0499.
+        // Ubhayapadī by 1.3.74 with ṇic (*balhayati*), parasmaipadī by 1.3.78
+        // without (*balhati*). Slice 10i.
+        dhatupatha: "10.0301",
+        code: "balh",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "BAzAyAm",
+    },
+    Dhatu {
+        // 10.0302 `gupa~` BAzAyAm (√gup). Āsvadīya: ṇic optional by 10.0499.
+        // Ubhayapadī by 1.3.74 with ṇic (*gopayati*), parasmaipadī by 1.3.78
+        // without (*gopati*). Slice 10i.
+        dhatupatha: "10.0302",
+        code: "gup",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "BAzAyAm",
+    },
+    Dhatu {
+        // 10.0303 `DUpa~` BAzAyAm (√dhūp). Āsvadīya: ṇic optional by 10.0499.
+        // Ubhayapadī by 1.3.74 with ṇic (*dhūpayati*), parasmaipadī by 1.3.78
+        // without (*dhūpāyati*). Without ṇic, 3.1.28 gives āya. Slice 10i.
+        dhatupatha: "10.0303",
+        code: "DUp",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "BAzAyAm",
+    },
+    Dhatu {
+        // 10.0304 `viCa~` BAzAyAm (√vich). Āsvadīya: ṇic optional by 10.0499.
+        // Ubhayapadī by 1.3.74 with ṇic (*vicchayati*), parasmaipadī by 1.3.78
+        // without (*vicchāyati*). Without ṇic, 3.1.28 gives āya; on both branches
+        // 6.1.73's tuk comes before guṇa. Slice 10i.
+        dhatupatha: "10.0304",
+        code: "viC",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "BAzAyAm",
+    },
+    Dhatu {
+        // 10.0305 `cIva~` BAzAyAm (√cīv). Āsvadīya: ṇic optional by 10.0499.
+        // Ubhayapadī by 1.3.74 with ṇic (*cīvayati*), parasmaipadī by 1.3.78
+        // without (*cīvati*). Slice 10i.
+        dhatupatha: "10.0305",
+        code: "cIv",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "BAzAyAm",
+    },
+    Dhatu {
+        // 10.0306 `puTa~` BAzAyAm (√puth). Āsvadīya: ṇic optional by 10.0499.
+        // Ubhayapadī by 1.3.74 with ṇic (*pothayati*), parasmaipadī by 1.3.78
+        // without (*pothati*). Slice 10i.
+        dhatupatha: "10.0306",
+        code: "puT",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "BAzAyAm",
+    },
+    Dhatu {
+        // 10.0307 `lokf~` BAzAyAm (√lok). Āsvadīya: ṇic optional by 10.0499.
+        // Ubhayapadī by 1.3.74 with ṇic (*lokayati*), parasmaipadī by 1.3.78
+        // without (*lokati*). Slice 10i.
+        dhatupatha: "10.0307",
+        code: "lok",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "BAzAyAm",
+    },
+    Dhatu {
+        // 10.0308 `locf~` BAzAyAm (√loc). Āsvadīya: ṇic optional by 10.0499.
+        // Ubhayapadī by 1.3.74 with ṇic (*locayati*), parasmaipadī by 1.3.78
+        // without (*locati*). Slice 10i.
+        dhatupatha: "10.0308",
+        code: "loc",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "BAzAyAm",
+    },
+    Dhatu {
+        // 10.0309 `Rada~` BAzAyAm (√nad). Āsvadīya: ṇic optional by 10.0499.
+        // Ubhayapadī by 1.3.74 with ṇic (*nādayati*), parasmaipadī by 1.3.78
+        // without (*nadati*). Slice 10i.
+        dhatupatha: "10.0309",
+        code: "nad",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "BAzAyAm",
+    },
+    Dhatu {
+        // 10.0310 `kupa~` BAzAyAm (√kup). Āsvadīya: ṇic optional by 10.0499.
+        // Ubhayapadī by 1.3.74 with ṇic (*kopayati*), parasmaipadī by 1.3.78
+        // without (*kopati*). Slice 10i.
+        dhatupatha: "10.0310",
+        code: "kup",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "BAzAyAm",
+    },
+    Dhatu {
+        // 10.0311 `tarka~` BAzAyAm (√tark). Āsvadīya: ṇic optional by 10.0499.
+        // Ubhayapadī by 1.3.74 with ṇic (*tarkayati*), parasmaipadī by 1.3.78
+        // without (*tarkati*). Slice 10i.
+        dhatupatha: "10.0311",
+        code: "tark",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "BAzAyAm",
+    },
+    Dhatu {
+        // 10.0312 `vftu~` BAzAyAm (√vṛt). Āsvadīya: ṇic optional by 10.0499.
+        // Ubhayapadī by 1.3.74 with ṇic (*vartayati*), parasmaipadī by 1.3.78
+        // without (*vartati*). Udit, but āsvadīya: 10.0499's, not 2570's. Slice
+        // 10i.
+        dhatupatha: "10.0312",
+        code: "vft",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "BAzAyAm",
+    },
+    Dhatu {
+        // 10.0313 `vfDu~` BAzAyAm (√vṛdh). Āsvadīya: ṇic optional by 10.0499.
+        // Ubhayapadī by 1.3.74 with ṇic (*vardhayati*), parasmaipadī by 1.3.78
+        // without (*vardhati*). Udit, but āsvadīya: 10.0499's, not 2570's. Slice
+        // 10i.
+        dhatupatha: "10.0313",
+        code: "vfD",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "BAzAyAm",
+    },
+    Dhatu {
+        // 10.0314 `ruwa~` BAzAyAm (√ruṭ). Āsvadīya: ṇic optional by 10.0499.
+        // Ubhayapadī by 1.3.74 with ṇic (*roṭayati*), parasmaipadī by 1.3.78
+        // without (*roṭati*). Slice 10i.
+        dhatupatha: "10.0314",
+        code: "ruw",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "BAzAyAm",
+    },
+    Dhatu {
+        // 10.0315 `laji~` BAzAyAm (√lañj). Āsvadīya: ṇic optional by 10.0499.
+        // Ubhayapadī by 1.3.74 with ṇic (*lañjayati*), parasmaipadī by 1.3.78
+        // without (*lañjati*). Idit (7.1.58's num stored), but āsvadīya:
+        // 10.0499's, not 2564's. Slice 10i.
+        dhatupatha: "10.0315",
+        code: "lanj",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "BAzAyAm",
+    },
+    Dhatu {
+        // 10.0316 `aji~` BAzAyAm (√añj). Āsvadīya: ṇic optional by 10.0499.
+        // Ubhayapadī by 1.3.74 with ṇic (*añjayati*), parasmaipadī by 1.3.78
+        // without (*añjati*). Idit (7.1.58's num stored), but āsvadīya: 10.0499's,
+        // not 2564's. Slice 10i.
+        dhatupatha: "10.0316",
+        code: "anj",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "BAzAyAm",
+    },
+    Dhatu {
+        // 10.0317 `dasi~` BAzAyAm (√daṃs). Āsvadīya: ṇic optional by 10.0499.
+        // Ubhayapadī by 1.3.74 with ṇic (*daṃsayati*), parasmaipadī by 1.3.78
+        // without (*daṃsati*). Idit (7.1.58's num stored), but āsvadīya:
+        // 10.0499's, not 2564's. Slice 10i.
+        dhatupatha: "10.0317",
+        code: "dans",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "BAzAyAm",
+    },
+    Dhatu {
+        // 10.0318 `BfSi~` BAzAyAm (√bhṛṃś). Āsvadīya: ṇic optional by 10.0499.
+        // Ubhayapadī by 1.3.74 with ṇic (*bhṛṃśayati*), parasmaipadī by 1.3.78
+        // without (*bhṛṃśati*). Idit (7.1.58's num stored), but āsvadīya:
+        // 10.0499's, not 2564's. Slice 10i.
+        dhatupatha: "10.0318",
+        code: "BfnS",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "BAzAyAm",
+    },
+    Dhatu {
+        // 10.0319 `ruSi~` BAzAyAm (√ruṃś). Āsvadīya: ṇic optional by 10.0499.
+        // Ubhayapadī by 1.3.74 with ṇic (*ruṃśayati*), parasmaipadī by 1.3.78
+        // without (*ruṃśati*). Idit (7.1.58's num stored), but āsvadīya:
+        // 10.0499's, not 2564's. Slice 10i.
+        dhatupatha: "10.0319",
+        code: "runS",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "BAzAyAm",
+    },
+    Dhatu {
+        // 10.0320 `SIka~` BAzAyAm (√śīk). Āsvadīya: ṇic optional by 10.0499.
+        // Ubhayapadī by 1.3.74 with ṇic (*śīkayati*), parasmaipadī by 1.3.78
+        // without (*śīkati*). Slice 10i.
+        dhatupatha: "10.0320",
+        code: "SIk",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "BAzAyAm",
+    },
+    Dhatu {
+        // 10.0321 `rusi~` BAzAyAm (√ruṃs). Āsvadīya: ṇic optional by 10.0499.
+        // Ubhayapadī by 1.3.74 with ṇic (*ruṃsayati*), parasmaipadī by 1.3.78
+        // without (*ruṃsati*). Idit (7.1.58's num stored), but āsvadīya:
+        // 10.0499's, not 2564's. Slice 10i.
+        dhatupatha: "10.0321",
+        code: "runs",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "BAzAyAm",
+    },
+    Dhatu {
+        // 10.0322 `nawi~` BAzAyAm (√naṇṭ). Āsvadīya: ṇic optional by 10.0499.
+        // Ubhayapadī by 1.3.74 with ṇic (*naṇṭayati*), parasmaipadī by 1.3.78
+        // without (*naṇṭati*). Idit (7.1.58's num stored), but āsvadīya:
+        // 10.0499's, not 2564's. Slice 10i.
+        dhatupatha: "10.0322",
+        code: "nanw",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "BAzAyAm",
+    },
+    Dhatu {
+        // 10.0323 `puwi~` BAzAyAm (√puṇṭ). Āsvadīya: ṇic optional by 10.0499.
+        // Ubhayapadī by 1.3.74 with ṇic (*puṇṭayati*), parasmaipadī by 1.3.78
+        // without (*puṇṭati*). Idit (7.1.58's num stored), but āsvadīya:
+        // 10.0499's, not 2564's. Slice 10i.
+        dhatupatha: "10.0323",
+        code: "punw",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "BAzAyAm",
+    },
+    Dhatu {
+        // 10.0324 `ji` BAzAyAm (√ji). Āsvadīya: ṇic optional by 10.0499.
+        // Ubhayapadī by 1.3.74 with ṇic (*jāyayati*), parasmaipadī by 1.3.78
+        // without (*jayati*). 7.2.115 *aco ñṇiti* lengthens the final before ṇic.
+        // Slice 10i.
+        dhatupatha: "10.0324",
+        code: "ji",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "BAzAyAm",
+    },
+    Dhatu {
+        // 10.0325 `ci` BAzAyAm (√ci). Āsvadīya: ṇic optional by 10.0499.
+        // Ubhayapadī by 1.3.74 with ṇic (*cāyayati*), parasmaipadī by 1.3.78
+        // without (*cayati*). 7.2.115 *aco ñṇiti* lengthens the final before ṇic.
+        // Slice 10i.
+        dhatupatha: "10.0325",
+        code: "ci",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "BAzAyAm",
+    },
+    Dhatu {
+        // 10.0326 `raDi~` BAzAyAm (√randh). Āsvadīya: ṇic optional by 10.0499.
+        // Ubhayapadī by 1.3.74 with ṇic (*randhayati*), parasmaipadī by 1.3.78
+        // without (*randhati*). Idit (7.1.58's num stored), but āsvadīya:
+        // 10.0499's, not 2564's. Slice 10i.
+        dhatupatha: "10.0326",
+        code: "ranD",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "BAzAyAm",
+    },
+    Dhatu {
+        // 10.0327 `laGi~` BAzAyAm (√laṅgh). Āsvadīya: ṇic optional by 10.0499.
+        // Ubhayapadī by 1.3.74 with ṇic (*laṅghayati*), parasmaipadī by 1.3.78
+        // without (*laṅghati*). Idit (7.1.58's num stored). Listed twice in the
+        // dhātupāṭha, identically: `10.0291` and `10.0327`. Slice 10i.
+        dhatupatha: "10.0327",
+        code: "lanG",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "BAzAyAm",
+    },
+    Dhatu {
+        // 10.0328 `ahi~` BAzAyAm (√aṃh). Āsvadīya: ṇic optional by 10.0499.
+        // Ubhayapadī by 1.3.74 with ṇic (*aṃhayati*), parasmaipadī by 1.3.78
+        // without (*aṃhati*). Idit (7.1.58's num stored), but āsvadīya: 10.0499's,
+        // not 2564's. Slice 10i.
+        dhatupatha: "10.0328",
+        code: "anh",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "BAzAyAm",
+    },
+    Dhatu {
+        // 10.0329 `rahi~` BAzAyAm (√raṃh). Āsvadīya: ṇic optional by 10.0499.
+        // Ubhayapadī by 1.3.74 with ṇic (*raṃhayati*), parasmaipadī by 1.3.78
+        // without (*raṃhati*). Idit (7.1.58's num stored), but āsvadīya:
+        // 10.0499's, not 2564's. Slice 10i.
+        dhatupatha: "10.0329",
+        code: "ranh",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "BAzAyAm",
+    },
+    Dhatu {
+        // 10.0330 `mahi~` BAzAyAm (√maṃh). Āsvadīya: ṇic optional by 10.0499.
+        // Ubhayapadī by 1.3.74 with ṇic (*maṃhayati*), parasmaipadī by 1.3.78
+        // without (*maṃhati*). Idit (7.1.58's num stored), but āsvadīya:
+        // 10.0499's, not 2564's. Slice 10i.
+        dhatupatha: "10.0330",
+        code: "manh",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "BAzAyAm",
+    },
+    Dhatu {
+        // 10.0331 `laqi~` BAzAyAm (√laṇḍ). Āsvadīya: ṇic optional by 10.0499.
+        // Ubhayapadī by 1.3.74 with ṇic (*laṇḍayati*), parasmaipadī by 1.3.78
+        // without (*laṇḍati*). Idit (7.1.58's num stored), but āsvadīya:
+        // 10.0499's, not 2564's. Slice 10i.
+        dhatupatha: "10.0331",
+        code: "lanq",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "BAzAyAm",
+    },
+    Dhatu {
+        // 10.0332 `taqa~` BAzAyAm (√taḍ). Āsvadīya: ṇic optional by 10.0499.
+        // Ubhayapadī by 1.3.74 with ṇic (*tāḍayati*), parasmaipadī by 1.3.78
+        // without (*taḍati*). Slice 10i.
+        dhatupatha: "10.0332",
+        code: "taq",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "BAzAyAm",
+    },
+    Dhatu {
+        // 10.0333 `nala~` BAzAyAm (√nal). Āsvadīya: ṇic optional by 10.0499.
+        // Ubhayapadī by 1.3.74 with ṇic (*nālayati*), parasmaipadī by 1.3.78
+        // without (*nalati*). Slice 10i.
+        dhatupatha: "10.0333",
+        code: "nal",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "BAzAyAm",
+    },
+    Dhatu {
+        // 10.0334 `pUrI~` ApyAyane (√pūr). Āsvadīya: ṇic optional by 10.0499.
+        // Ubhayapadī by 1.3.74 with ṇic (*pūrayati*), parasmaipadī by 1.3.78
+        // without (*pūrati*). Īdit, but āsvadīya: 10.0499's, not 2572's. Slice
+        // 10i.
+        dhatupatha: "10.0334",
+        code: "pUr",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "ApyAyane",
+    },
+    Dhatu {
+        // 10.0335 `ruja~` hiMsAyAm (√ruj). Āsvadīya: ṇic optional by 10.0499.
+        // Ubhayapadī by 1.3.74 with ṇic (*rojayati*), parasmaipadī by 1.3.78
+        // without (*rojati*). Slice 10i.
+        dhatupatha: "10.0335",
+        code: "ruj",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "hiMsAyAm",
+    },
+    Dhatu {
+        // 10.0336 `zvada~` AsvAdane (√svad). Āsvadīya: ṇic optional by 10.0499.
+        // Ubhayapadī by 1.3.74 with ṇic (*svādayati*), parasmaipadī by 1.3.78
+        // without (*svadati*). Slice 10i.
+        dhatupatha: "10.0336",
+        code: "svad",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "AsvAdane",
+    },
+    Dhatu {
+        // 10.0337 `svAda~` AsvAdane (√svād). Āsvadīya: ṇic optional by 10.0499.
+        // Ubhayapadī by 1.3.74 with ṇic (*svādayati*), parasmaipadī by 1.3.78
+        // without (*svādati*). Slice 10i.
+        dhatupatha: "10.0337",
+        code: "svAd",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "AsvAdane",
+    },
 ];
 
 pub fn dhatus() -> &'static [Dhatu] {
@@ -4197,7 +4904,7 @@ mod tests {
 
     #[test]
     fn curated_roots_have_expected_ganas_and_padas() {
-        assert_eq!(dhatus().len(), 361);
+        assert_eq!(dhatus().len(), 422);
         let bu = dhatus().iter().find(|d| d.dhatupatha == "01.0001").unwrap();
         assert!(matches!(bu.pada, PadaAssignment::Parasmaipada));
         let labh = dhatus().iter().find(|d| d.dhatupatha == "01.1130").unwrap();
@@ -4488,7 +5195,7 @@ mod tests {
     }
 
     #[test]
-    fn curadi_rows_are_the_two_hundred_fifty_eight_curated_roots() {
+    fn curadi_rows_are_the_three_hundred_nineteen_curated_roots() {
         // Slice 10a opens gaṇa 10 with four roots that need only ṇic
         // (3.1.25), 3.1.32 and the guṇa/vṛddhi before ṇic: √cur (7.3.86),
         // √laḍ (7.2.116), √bhakṣ and √bhūṣ (neither). None carries a pada
@@ -4512,8 +5219,10 @@ mod tests {
         // all ubhayapadī by 1.3.74 with ṇic. Slice 10h adds fifty of the
         // fifty-one ādhṛṣīya (10.0498, all but `10.0368 za\da~`), ubhayapadī by
         // 1.3.74 with ṇic; the six svarita or ñit among them are
-        // `NicUbhayapada`, ubhayapadī by 1.3.72 without it too. The gaṇa is
-        // OPEN at 258 of its 509 dhātupāṭha rows.
+        // `NicUbhayapada`, ubhayapadī by 1.3.72 without it too. Slice 10i adds
+        // the fifty-nine āsvadīya (10.0499), `10.0022 pF` (Kaumudī 2565) and
+        // `10.0251 Guzi~r` (2571), ubhayapadī by 1.3.74 with ṇic. The gaṇa is
+        // OPEN at 319 of its 509 dhātupāṭha rows.
         let rows: Vec<_> = dhatus()
             .iter()
             .filter(|d| d.gana == Gana::Curadi)
@@ -4780,6 +5489,67 @@ mod tests {
                 ("10.0386", "mfj", PadaAssignment::Nic),
                 ("10.0387", "mfz", PadaAssignment::NicUbhayapada),
                 ("10.0388", "Dfz", PadaAssignment::Nic),
+                ("10.0022", "pF", PadaAssignment::Nic),
+                ("10.0251", "Guz", PadaAssignment::Nic),
+                ("10.0279", "gras", PadaAssignment::Nic),
+                ("10.0280", "puz", PadaAssignment::Nic),
+                ("10.0281", "dal", PadaAssignment::Nic),
+                ("10.0282", "paw", PadaAssignment::Nic),
+                ("10.0283", "puw", PadaAssignment::Nic),
+                ("10.0284", "luw", PadaAssignment::Nic),
+                ("10.0285", "tunj", PadaAssignment::Nic),
+                ("10.0286", "minj", PadaAssignment::Nic),
+                ("10.0287", "pinj", PadaAssignment::Nic),
+                ("10.0288", "lak", PadaAssignment::Nic),
+                ("10.0289", "lunj", PadaAssignment::Nic),
+                ("10.0290", "Banj", PadaAssignment::Nic),
+                ("10.0291", "lanG", PadaAssignment::Nic),
+                ("10.0292", "trans", PadaAssignment::Nic),
+                ("10.0293", "pins", PadaAssignment::Nic),
+                ("10.0294", "kuns", PadaAssignment::Nic),
+                ("10.0295", "danS", PadaAssignment::Nic),
+                ("10.0296", "kunS", PadaAssignment::Nic),
+                ("10.0297", "Gaw", PadaAssignment::Nic),
+                ("10.0298", "Ganw", PadaAssignment::Nic),
+                ("10.0299", "bfnh", PadaAssignment::Nic),
+                ("10.0300", "barh", PadaAssignment::Nic),
+                ("10.0301", "balh", PadaAssignment::Nic),
+                ("10.0302", "gup", PadaAssignment::Nic),
+                ("10.0303", "DUp", PadaAssignment::Nic),
+                ("10.0304", "viC", PadaAssignment::Nic),
+                ("10.0305", "cIv", PadaAssignment::Nic),
+                ("10.0306", "puT", PadaAssignment::Nic),
+                ("10.0307", "lok", PadaAssignment::Nic),
+                ("10.0308", "loc", PadaAssignment::Nic),
+                ("10.0309", "nad", PadaAssignment::Nic),
+                ("10.0310", "kup", PadaAssignment::Nic),
+                ("10.0311", "tark", PadaAssignment::Nic),
+                ("10.0312", "vft", PadaAssignment::Nic),
+                ("10.0313", "vfD", PadaAssignment::Nic),
+                ("10.0314", "ruw", PadaAssignment::Nic),
+                ("10.0315", "lanj", PadaAssignment::Nic),
+                ("10.0316", "anj", PadaAssignment::Nic),
+                ("10.0317", "dans", PadaAssignment::Nic),
+                ("10.0318", "BfnS", PadaAssignment::Nic),
+                ("10.0319", "runS", PadaAssignment::Nic),
+                ("10.0320", "SIk", PadaAssignment::Nic),
+                ("10.0321", "runs", PadaAssignment::Nic),
+                ("10.0322", "nanw", PadaAssignment::Nic),
+                ("10.0323", "punw", PadaAssignment::Nic),
+                ("10.0324", "ji", PadaAssignment::Nic),
+                ("10.0325", "ci", PadaAssignment::Nic),
+                ("10.0326", "ranD", PadaAssignment::Nic),
+                ("10.0327", "lanG", PadaAssignment::Nic),
+                ("10.0328", "anh", PadaAssignment::Nic),
+                ("10.0329", "ranh", PadaAssignment::Nic),
+                ("10.0330", "manh", PadaAssignment::Nic),
+                ("10.0331", "lanq", PadaAssignment::Nic),
+                ("10.0332", "taq", PadaAssignment::Nic),
+                ("10.0333", "nal", PadaAssignment::Nic),
+                ("10.0334", "pUr", PadaAssignment::Nic),
+                ("10.0335", "ruj", PadaAssignment::Nic),
+                ("10.0336", "svad", PadaAssignment::Nic),
+                ("10.0337", "svAd", PadaAssignment::Nic),
             ]
         );
     }
@@ -5171,26 +5941,32 @@ mod tests {
     }
 
     /// The id of the rule that makes curādi row `number`'s ṇic optional, read
-    /// as vidyut-prakriya reads it: first the ādhṛṣīya, by position (10.0498,
-    /// rows `10.0338`–`10.0388`, before any marker), then the upadeśa: 2564
-    /// for an idit root (last marker `i~`), 2570 for a ñit or udit one (last
-    /// marker `Y` or `u~`), 2573.1 for `pata`, and 2573.3 for the three roots
-    /// the Kaumudī names there. 2573.3 is a list, not a shape: `Cidra`,
-    /// `sUtra` and the rest have a conjunct before their final `a` and take
-    /// ṇic. Only the triggers slices 10f to 10h curate; the āsvadīya
-    /// gaṇasūtra (10.0499) and 2565 / 2571 / 2572 are later slices'. vidyut
-    /// decides the āsvadīya BEFORE idit or udit too, so inside its rows
-    /// (`10.0279`–`10.0337`) this reading would be wrong;
-    /// `optional_nic_matches_upadesha_markers` keeps the table out of them.
+    /// as vidyut-prakriya reads it: first the two antargaṇas, by position
+    /// (10.0498, rows `10.0338`–`10.0388`, and 10.0499, rows
+    /// `10.0279`–`10.0337`, before any marker), then the upadeśa: 2564 for an
+    /// idit root (last marker `i~`), 2565 for an `F`-final one, 2570 for a ñit
+    /// or udit one (last marker `Y` or `u~`), 2571 for `Guzi~r`, 2573.1 for
+    /// `pata`, and 2573.3 for the three roots the Kaumudī names there. 2573.3
+    /// is a list, not a shape: `Cidra`, `sUtra` and the rest have a conjunct
+    /// before their final `a` and take ṇic. vidyut's 2572 (īdit) has no arm:
+    /// every īdit curādi row is in one of the two antargaṇas, which come
+    /// first, as `optional_nic_matches_upadesha_markers` pins.
     fn optional_nic_from_upadesha(number: &str, upadesha: &str) -> Option<&'static str> {
         if ("10.0338"..="10.0388").contains(&number) {
             return Some("10.0498");
         }
+        if ("10.0279"..="10.0337").contains(&number) {
+            return Some("10.0499");
+        }
         let u = upadesha.trim_end_matches(['\\', '^']);
         if u.ends_with("i~") {
             Some("2564")
+        } else if u.ends_with('F') {
+            Some("2565")
         } else if u.ends_with("u~") || u.ends_with('Y') {
             Some("2570")
+        } else if u == "Guzi~r" {
+            Some("2571")
         } else if u == "pata" {
             Some("2573.1")
         } else if ["mUtra", "katra", "garva"].contains(&u) {
@@ -5225,23 +6001,45 @@ mod tests {
                 upadesha(d.dhatupatha)
             );
         }
-        assert_eq!(OPTIONAL_NIC.len(), 119);
-        // vidyut's `dhatu_karya.rs` checks the āsvadīya (10.0499, rows
-        // 279–337) before idit or udit too, and the reading above does not
-        // know it. No table row may fall in that range until a slice teaches
-        // it the gaṇasūtra. Nor may `10.0368 za\da~`: the reading above makes
-        // it 10.0498's, but vidyut derives it with the upasarga ā, which this
-        // engine does not model.
-        for (n, _) in OPTIONAL_NIC {
-            assert!(
-                !("10.0279"..="10.0337").contains(n) && *n != "10.0368",
-                "{n} is āsvadīya, or the upasarga-bound `10.0368 za\\da~`"
-            );
-        }
+        assert_eq!(OPTIONAL_NIC.len(), 180);
+        // `10.0368 za\da~` stays out: the reading above makes it 10.0498's,
+        // but vidyut derives it with the upasarga ā, which this engine does
+        // not model.
+        assert!(OPTIONAL_NIC.iter().all(|(n, _)| *n != "10.0368"));
         assert_eq!(
             optional_nic_from_upadesha("10.0368", upadesha("10.0368")),
             Some("10.0498")
         );
+        // The one-row triggers reach one row each, and 2572 (īdit) none:
+        // outside the two antargaṇas `pF` is the only `F`-final curādi row
+        // (`10.0346 jF` is ādhṛṣīya), `Guzi~r` is one row, and every īdit
+        // curādi row is inside.
+        let antargana = |n: &str| ("10.0279"..="10.0388").contains(&n);
+        let shape = |u: &str| u.trim_end_matches(['\\', '^']).to_string();
+        let curadi: Vec<(&str, String)> = rows
+            .iter()
+            .filter(|(n, _, _)| n.starts_with("10."))
+            .map(|(n, u, _)| (*n, shape(u)))
+            .collect();
+        let f_final: Vec<&str> = curadi
+            .iter()
+            .filter(|(n, u)| !antargana(n) && u.ends_with('F'))
+            .map(|(n, _)| *n)
+            .collect();
+        assert_eq!(f_final, ["10.0022"]);
+        let ghuz: Vec<&str> = curadi
+            .iter()
+            .filter(|(_, u)| u == "Guzi~r")
+            .map(|(n, _)| *n)
+            .collect();
+        assert_eq!(ghuz, ["10.0251"]);
+        let idit: Vec<&str> = curadi
+            .iter()
+            .filter(|(_, u)| u.ends_with("I~"))
+            .map(|(n, _)| *n)
+            .collect();
+        assert!(!idit.is_empty());
+        assert!(idit.iter().all(|n| antargana(n)), "{idit:?}");
         // 2573.3 is the Kaumudī's list: a conjunct-before-`a` curādi root
         // outside it (`10.0469 Cidra`, curated in 10e) is no optional-ṇic row.
         assert_eq!(optional_nic_from_upadesha("10.0469", "Cidra"), None);
@@ -5297,6 +6095,13 @@ mod tests {
         }
     }
 
+    /// The one pair of curated rows the dhātupāṭha lists twice, identically
+    /// (upadeśa, artha and optional-ṇic verdict): `laGi~ BAzAyAm` at
+    /// `10.0291` and `10.0327`, both āsvadīya. vidyut-prakriya derives both,
+    /// so both are curated, and each is the other's one allowed sibling in
+    /// `dhatupatha_numbers_resolve_upstream`.
+    const IDENTICAL_UPSTREAM_PAIR: [&str; 2] = ["10.0291", "10.0327"];
+
     #[test]
     fn dhatupatha_numbers_resolve_upstream() {
         let rows = upstream_rows();
@@ -5349,7 +6154,9 @@ mod tests {
             // (none) is the case, pinned below, and so is `10.0367 arha~`
             // (10.0498) beside `10.0257 arha~` (none). The verdict only tells
             // curādi rows apart (the engine keys `OPTIONAL_NIC` by number
-            // there alone), so every other gaṇa compares no verdict.
+            // there alone), so every other gaṇa compares no verdict. The two
+            // rows of `IDENTICAL_UPSTREAM_PAIR` differ in nothing, so each has
+            // the other as its one allowed sibling.
             let gana_prefix = &d.dhatupatha[..2];
             let verdict = |n: &str, u: &str| {
                 if gana_prefix == "10" {
@@ -5368,8 +6175,13 @@ mod tests {
                         && verdict(n, u) == own_verdict
                 })
                 .count();
+            let allowed = if IDENTICAL_UPSTREAM_PAIR.contains(&d.dhatupatha) {
+                2
+            } else {
+                1
+            };
             assert_eq!(
-                siblings, 1,
+                siblings, allowed,
                 "{} is ambiguous: {siblings} rows in gaṇa {gana_prefix} share \
                  ({stripped}, {artha})",
                 d.dhatupatha
@@ -5388,6 +6200,42 @@ mod tests {
         assert_eq!(optional_nic_from_upadesha("10.0063", sran_a), None);
         assert_eq!(optional_nic("10.0174"), Some("2570"));
         assert_eq!(optional_nic("10.0063"), None);
+        // `laGi~` twice: the pair is still identical upstream, and both rows
+        // are curated.
+        let (_, u1, a1) = row(IDENTICAL_UPSTREAM_PAIR[0]);
+        let (_, u2, a2) = row(IDENTICAL_UPSTREAM_PAIR[1]);
+        assert_eq!((u1, a1), ("laGi~", "BAzAyAm"));
+        assert_eq!((u2, a2), (u1, a1));
+        for n in IDENTICAL_UPSTREAM_PAIR {
+            assert!(dhatus().iter().any(|d| d.dhatupatha == n), "{n}");
+        }
+    }
+
+    #[test]
+    fn aya_is_exactly_the_curated_rows_3_1_28_names() {
+        // 3.1.28 names five roots, and vidyut-prakriya keys it on their
+        // upadeśas in any gaṇa. `AYA` is exactly the curated rows that carry
+        // one. Non-circular: the upadeśa comes from the vendored dhātupāṭha.
+        let rows = upstream_rows();
+        let named = ["gupU~", "DUpa~", "viCa~", "paRa~\\", "pana~\\"];
+        for u in named {
+            assert!(rows.iter().any(|(_, v, _)| *v == u), "{u} is not upstream");
+        }
+        let mut curated: Vec<&str> = dhatus()
+            .iter()
+            .filter(|d| {
+                rows.iter()
+                    .any(|(n, u, _)| *n == d.dhatupatha && named.contains(u))
+            })
+            .map(|d| d.dhatupatha)
+            .collect();
+        curated.sort_unstable();
+        assert_eq!(curated, AYA);
+        // Curādi `10.0302 gupa~` stores as `gup`, as the bhvādi `gupU~` does,
+        // and is not named: why `AYA` is keyed by number.
+        let gupa = rows.iter().find(|(n, _, _)| *n == "10.0302").unwrap().1;
+        assert_eq!(stored_form(gupa), stored_form("gupU~"));
+        assert!(!AYA.contains(&"10.0302"));
     }
 
     #[test]
