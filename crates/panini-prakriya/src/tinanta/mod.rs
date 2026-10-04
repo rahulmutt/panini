@@ -99,12 +99,20 @@ pub fn derive(
     if dhatu.gana == Gana::Curadi && JNAPADI.contains(&dhatu.dhatupatha) {
         t.add(Tag::Mit);
     }
+    // 7.2.114's √mṛj, likewise by row number (`samjna::MRJ`).
+    if samjna::MRJ.contains(&dhatu.dhatupatha) {
+        t.add(Tag::Mrj);
+    }
     match dhatu.pada {
         PadaAssignment::Parasmaipada => {}
         PadaAssignment::Atmanepada => t.add(Tag::Atmanepadin),
         PadaAssignment::Ubhayapada => t.add(Tag::Ubhayapadin),
         PadaAssignment::UbhayapadaAnavane => t.add(Tag::Anavane),
         PadaAssignment::Nic => t.add(Tag::Nic),
+        PadaAssignment::NicUbhayapada => {
+            t.add(Tag::Nic);
+            t.add(Tag::NicUbhayapada);
+        }
         PadaAssignment::Akusmiya => t.add(Tag::Akusmiya),
         PadaAssignment::AaGarviya => t.add(Tag::AaGarviya),
     }

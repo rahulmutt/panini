@@ -94,6 +94,13 @@ pub enum Tag {
     /// pada licence keyed to a sūtra, so the trace credits that sūtra and
     /// never 1.3.72.
     Nic,
+    /// The dhātu's ṇic-less branch is ubhayapadī by 1.3.72: the data layer's
+    /// `PadaAssignment::NicUbhayapada`, carried beside `Nic`, which licenses
+    /// the ṇic branch. Read only by the sanādi stage's optional-ṇic forks
+    /// (`skip_nic`), which add `Ubhayapadin` when they strip `Nic` from a root
+    /// carrying it. 1.3.72 still reads `Ubhayapadin` alone, so it fires on
+    /// the ṇic-less branch only, and the ṇic branch's credit stays 1.3.74's.
+    NicUbhayapada,
     /// The dhātu's ātmanepada is sanctioned by the dhātupāṭha gaṇasūtra
     /// 10.0496 *ā kusmād ātmanepadinaḥ*: the data layer's
     /// `PadaAssignment::Akusmiya`. Read only by 10.0496 in `tinanta::sanadi`,
@@ -116,8 +123,10 @@ pub enum Tag {
     Mit,
     /// The aṅga is a ṇijanta: 3.1.32 *sanādyantā dhātavaḥ* folded ṇic into
     /// it, so its final `i` is ṇic's. A saṁjñā verdict, set by 3.1.32 and
-    /// pinned by its unit test; no rule reads it yet. 6.4.51 *ṇer aniṭi*,
-    /// in an ārdhadhātuka-lakāra slice, is the first rule that will.
+    /// pinned by its unit test. Read only by the guṇa stage's 7.2.114, which
+    /// declines on it: a ṇijanta √mṛj took its vṛddhi before ṇic, in
+    /// `tinanta::sanadi`. 6.4.51 *ṇer aniṭi*, in an ārdhadhātuka-lakāra
+    /// slice, will read it too.
     Nijanta,
     /// 6.4.48 *ato lopaḥ ārdhadhātuke* deleted the dhātu's final `a` (an
     /// adanta curādi root, before ṇic). Carries 1.1.57 *acaḥ parasmin
@@ -154,6 +163,12 @@ pub enum Tag {
     /// `dA` and is not ghu. A saṁjñā verdict, like `Abhyasta`, so no step is
     /// recorded. Read by 6.4.113's *aghoḥ* and by 6.4.119.
     Ghu,
+    /// 7.2.114 *mṛjer vṛddhiḥ*: the aṅga is √mṛj. Set by `tinanta::derive`
+    /// from the row NUMBER (`tinanta::samjna::MRJ`), as `Ghu` is: the sūtra
+    /// names a root, and a root is a dhātupāṭha row, not a spelling. A
+    /// saṁjñā verdict, so no step is recorded. Read by the two 7.2.114
+    /// entries, in `tinanta::sanadi` and `tinanta::guna`.
+    Mrj,
     /// The term at `SHAP` IS one of the four a-final vikaraṇas — śap
     /// (3.1.68), śyan (3.1.69), śa (3.1.77) or śānac (3.1.83) — each
     /// a-final once its own it-lopa runs ("a"/"ya"/"a"/"Ana"). This is an

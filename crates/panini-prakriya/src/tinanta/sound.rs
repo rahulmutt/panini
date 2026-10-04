@@ -17,17 +17,19 @@ pub(crate) fn guna_of(v: char) -> Option<&'static str> {
 
 /// Vṛddhi substitute of a vowel (1.1.1 vṛddhir ādaic; golden-reachable via
 /// 6.1.90 for e/I (eD/Ikz), E (loṭ's 3.4.93), u (rudhādi 7d's √und,
-/// `Onad`), and f (tanādi 8a's √ṛṇ laṅ, `ArRot`), and via 6.1.88 *vṛddhir
-/// eci* for E as well (juhotyādi 3c's dadE/mimE/jihE/daDE) — the remaining
-/// arms (a/A/U/o/O) are unit-test-only; see `vrddhi_of_ac_vowels_all_arms`
+/// `Onad`), and f (tanādi 8a's √ṛṇ laṅ, `ArRot`), via 6.1.88 *vṛddhir
+/// eci* for E as well (juhotyādi 3c's dadE/mimE/jihE/daDE), and via 7.2.115
+/// *aco ñṇiti* for I, U, f and F (curādi 10h's `lAyayati`, `BAvayati`,
+/// `vArayati`, `jArayati`) and 7.2.114 for f (`mArjati`) — the remaining
+/// arms (a/A/o/O) are unit-test-only; see `vrddhi_of_ac_vowels_all_arms`
 /// below for the full inventory).
 pub(crate) fn vrddhi_of(v: char) -> Option<&'static str> {
     match v {
         'a' | 'A' => Some("A"),
         'i' | 'I' | 'e' | 'E' => Some("E"),
         'u' | 'U' | 'o' | 'O' => Some("O"),
-        // 1.1.51 uraR raparaH: a vṛddhi substitute for f carries the r.
-        'f' => Some("Ar"),
+        // 1.1.51 uraR raparaH: a vṛddhi substitute for f or F carries the r.
+        'f' | 'F' => Some("Ar"),
         _ => None,
     }
 }
@@ -411,6 +413,8 @@ mod tests {
         assert_eq!(vrddhi_of('o'), Some("O"));
         assert_eq!(vrddhi_of('O'), Some("O"));
         assert_eq!(vrddhi_of('f'), Some("Ar"));
+        // 7.2.115 on √jṝ's ṇic branch (`jArayati`): F's vṛddhi carries the r too.
+        assert_eq!(vrddhi_of('F'), Some("Ar"));
         // Non-ac letters (consonants) have no vRddhi substitute.
         assert_eq!(vrddhi_of('t'), None);
     }

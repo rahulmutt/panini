@@ -57,6 +57,15 @@ pub enum PadaAssignment {
     /// root of any gaṇa) is implemented, 1.3.74 should key on the ṇijanta
     /// stem instead, and this variant retires.
     Nic,
+    /// Both padas derive on the ṇic branch, exactly as for `Nic` — and on the
+    /// ṇic-LESS branch too, because the row's own upadeśa is svarita or ñit.
+    /// One sūtra sanctions the ātmanepada on each branch: 1.3.74 *ṇicaś ca*
+    /// where ṇic is taken, 1.3.72 *svaritañitaḥ* where it is not. vidyut-
+    /// prakriya reads the svarita/ñit marker of the term it is handed, and on
+    /// the ṇic branch that term is ṇic, which carries none: 1.3.72 never
+    /// reaches a ṇic branch, and 1.3.74 never a ṇic-less one. Only a row whose
+    /// ṇic is optional (`OPTIONAL_NIC`) can carry it.
+    NicUbhayapada,
     /// Ātmanepada only, sanctioned by the dhātupāṭha gaṇasūtra 10.0496
     /// *ā kusmād ātmanepadinaḥ*: the curādi roots from `10.0192 cita~` up to
     /// `10.0236 kusma~` (`AKUSMIYA`) are ātmanepadī. Not a marker of the
@@ -211,7 +220,8 @@ impl PadaAssignment {
             PadaAssignment::Atmanepada => &[Pada::Atmanepada],
             PadaAssignment::Ubhayapada
             | PadaAssignment::UbhayapadaAnavane
-            | PadaAssignment::Nic => &[Pada::Parasmaipada, Pada::Atmanepada],
+            | PadaAssignment::Nic
+            | PadaAssignment::NicUbhayapada => &[Pada::Parasmaipada, Pada::Atmanepada],
             PadaAssignment::Akusmiya | PadaAssignment::AaGarviya => &[Pada::Atmanepada],
         }
     }
@@ -4242,6 +4252,10 @@ mod tests {
         );
         assert_eq!(
             PadaAssignment::Nic.padas(),
+            &[Pada::Parasmaipada, Pada::Atmanepada]
+        );
+        assert_eq!(
+            PadaAssignment::NicUbhayapada.padas(),
             &[Pada::Parasmaipada, Pada::Atmanepada]
         );
         assert_eq!(PadaAssignment::Akusmiya.padas(), &[Pada::Atmanepada]);

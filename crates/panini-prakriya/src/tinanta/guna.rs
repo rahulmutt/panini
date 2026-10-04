@@ -17,7 +17,7 @@
 use crate::prakriya::Prakriya;
 use crate::rule::{Rule, RuleKind};
 use crate::term::Tag;
-use crate::tinanta::sound::{guna_of, is_jhal, is_vowel};
+use crate::tinanta::sound::{guna_of, is_jhal, is_vowel, vrddhi_of};
 use crate::tinanta::terms::{
     ABHYASA, ANGA, ENDING, SHAP, following_sarvadhatuka, vikarana_u_asamyogapurva,
 };
@@ -218,6 +218,37 @@ pub(crate) static GUNA: &[Rule] = &[
             }
             let before = p.snapshot();
             p.record("7.3.87", "nAByastasyAci piti sArvaDAtuke", before);
+            true
+        },
+    },
+    // 7.2.114 mṛjer vṛddhiḥ, on the ṇic-less branch: before the sārvadhātuka
+    // śap, √mṛj's `f` takes vṛddhi in place of 7.3.86's guṇa (`mfj` →
+    // `mArj`, *mārjati*), and 7.3.86 then finds no laghu ik. The ṇic branch
+    // took its vṛddhi in `super::sanadi`, so a ṇijanta aṅga (`Tag::Nijanta`)
+    // declines here, as does one before a ṅit sārvadhātuka (1.1.5 kṅiti ca,
+    // as at 7.3.84 below). Guarded on `Tag::Mrj` (`super::samjna::MRJ`).
+    Rule {
+        id: "7.2.114",
+        name: "mfjer vfdDiH",
+        kind: RuleKind::Vidhi,
+        vikalpa: false,
+        bars: &[],
+        apply: |p| {
+            if !p.terms[ANGA].has(Tag::Mrj) || p.terms[ANGA].has(Tag::Nijanta) {
+                return false;
+            }
+            if following_sarvadhatuka(p).is_some_and(|t| t.has(Tag::Ngit)) {
+                return false;
+            }
+            let text = &p.terms[ANGA].text;
+            let Some(i) = text.find(['i', 'u', 'f', 'x']) else {
+                return false;
+            };
+            let v = vrddhi_of(text[i..].chars().next().unwrap()).unwrap();
+            let text = format!("{}{v}{}", &text[..i], &text[i + 1..]);
+            let before = p.snapshot();
+            p.terms[ANGA].text = text;
+            p.record("7.2.114", "mfjer vfdDiH", before);
             true
         },
     },
@@ -1653,6 +1684,51 @@ mod tests {
     // different edge.
 
     #[test]
+    fn mrjer_vrddhih_takes_vrddhi_before_shap_on_the_nicless_mrj_only() {
+        // mfj + a + ti → mArj + a + ti; 7.3.86 then finds no laghu ik.
+        let mrj = |text: &str| {
+            let mut t = Term::new(text);
+            t.add(Tag::Mrj);
+            t
+        };
+        let mut p = Prakriya {
+            terms: with_slots(vec![mrj("mfj"), Term::new("a"), Term::new("ti")]),
+            ..Default::default()
+        };
+        let rule = GUNA.iter().find(|r| r.id == "7.2.114").unwrap();
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "mArj");
+        let r7386 = GUNA.iter().find(|r| r.id == "7.3.86").unwrap();
+        assert!(!(r7386.apply)(&mut p));
+        // Untagged: 7.3.86's guṇa, as for any root.
+        let mut p = Prakriya {
+            terms: with_slots(vec![Term::new("mfj"), Term::new("a"), Term::new("ti")]),
+            ..Default::default()
+        };
+        assert!(!(rule.apply)(&mut p));
+        assert!((r7386.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "marj");
+        // A ṇijanta √mṛj took its vṛddhi before ṇic: declines.
+        let mut anga = mrj("mfji");
+        anga.add(Tag::Nijanta);
+        let mut p = Prakriya {
+            terms: with_slots(vec![anga, Term::new("a"), Term::new("ti")]),
+            ..Default::default()
+        };
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "mfji");
+        // 1.1.5 kṅiti ca: a ṅit sārvadhātuka follower blocks it.
+        let mut shap = Term::new("a");
+        shap.add(Tag::Ngit);
+        let mut p = Prakriya {
+            terms: with_slots(vec![mrj("mfj"), shap, Term::new("ti")]),
+            ..Default::default()
+        };
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "mfj");
+    }
+
+    #[test]
     fn pugantalaghupadhasya_one_char_anga_returns_false_without_panic() {
         // n=1: `n < 2` alone is true, so `||` short-circuits and the body
         // never touches `chars[n - 2]`. The `<` -> `==` mutant makes
@@ -1767,7 +1843,7 @@ mod tests {
             log: vec![],
             ..Default::default()
         };
-        let rule = rules().find(|r| r.id == "6.1.78").unwrap();
+        let rule = GUNA.iter().find(|r| r.id == "6.1.78").unwrap();
         assert!(!(rule.apply)(&mut p));
         assert_eq!(p.terms[ANGA].text, "Se");
     }
@@ -1791,7 +1867,7 @@ mod tests {
             log: vec![],
             ..Default::default()
         };
-        let rule = rules().find(|r| r.id == "6.1.78").unwrap();
+        let rule = GUNA.iter().find(|r| r.id == "6.1.78").unwrap();
         assert!(!(rule.apply)(&mut p));
         assert_eq!(p.terms[SHAP].text, "no");
     }
@@ -1816,7 +1892,7 @@ mod tests {
             log: vec![],
             ..Default::default()
         };
-        let rule = rules().find(|r| r.id == "6.1.78").unwrap();
+        let rule = GUNA.iter().find(|r| r.id == "6.1.78").unwrap();
         assert!(!(rule.apply)(&mut p));
         assert_eq!(p.terms[ANGA].text, "Se");
         assert_eq!(p.terms[ENDING].text, "Iran");
@@ -2615,7 +2691,7 @@ mod tests {
             terms: with_slots(vec![Term::new("Ap"), Term::new("no"), Term::new("Ani")]),
             ..Default::default()
         };
-        let rule = rules().find(|r| r.id == "6.1.78").unwrap();
+        let rule = GUNA.iter().find(|r| r.id == "6.1.78").unwrap();
         assert!((rule.apply)(&mut p));
         assert_eq!(p.terms[SHAP].text, "nav");
         assert_eq!(p.terms[ANGA].text, "Ap");
@@ -2628,7 +2704,7 @@ mod tests {
             terms: with_slots(vec![Term::new("Ap"), Term::new("no"), Term::new("ti")]),
             ..Default::default()
         };
-        let rule = rules().find(|r| r.id == "6.1.78").unwrap();
+        let rule = GUNA.iter().find(|r| r.id == "6.1.78").unwrap();
         assert!(!(rule.apply)(&mut p));
         assert_eq!(p.terms[SHAP].text, "no");
     }
@@ -2640,7 +2716,7 @@ mod tests {
             terms: with_slots(vec![Term::new("Bo"), Term::new("a"), Term::new("ti")]),
             ..Default::default()
         };
-        let rule = rules().find(|r| r.id == "6.1.78").unwrap();
+        let rule = GUNA.iter().find(|r| r.id == "6.1.78").unwrap();
         assert!((rule.apply)(&mut p));
         assert_eq!(p.terms[ANGA].text, "Bav");
         assert_eq!(p.terms[SHAP].text, "a");
@@ -2653,7 +2729,7 @@ mod tests {
             terms: with_slots(vec![Term::new("Se"), Term::new(""), Term::new("Iyran")]),
             ..Default::default()
         };
-        let rule = rules().find(|r| r.id == "6.1.78").unwrap();
+        let rule = GUNA.iter().find(|r| r.id == "6.1.78").unwrap();
         assert!((rule.apply)(&mut p));
         assert_eq!(p.terms[ANGA].text, "Say");
     }
