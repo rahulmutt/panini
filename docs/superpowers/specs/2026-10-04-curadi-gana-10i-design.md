@@ -368,6 +368,7 @@ at the worktree for the run and restored after.
 - The one-row triggers are done; 2572 is unreachable (Out).
 - √gṛ (`10.0231`), √yu (`10.0235`) and √smiṅ: curation slices, 7.2.115 is
   in. √ci (`10.0124`) also needs 6.1.54 and 7.3.36.
+  (Slice 10j took √smiṅ, √gṛ, √yu and √ci: see `2026-10-04-curadi-gana-10j-design.md`.)
 - Upasargas, and with them `10.0368 za\da~` (7.3.78) and 6.1.76 *padāntād
   vā*.
 - `gupU~`, `paRa~\` and `pana~\` join `AYA` when curated. `paRa~\`'s āya is

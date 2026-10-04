@@ -27,7 +27,7 @@ is ruleless.
 comment states that a blocked prakriyā's `text()` is a partial string — often the
 bare root code — not a surface form.
 
-**It asserts the corpus totals** (422 roots, 25956 cells, 36416 forms) rather than
+**It asserts the corpus totals** (430 roots, 26424 cells, 37070 forms) rather than
 reporting whatever it enumerated. Those totals are corroborated by
 `derivation_set_shape_matches_the_audited_numbers` in
 `crates/panini/tests/paradigm/main.rs`, which each slice raises to the same totals
@@ -108,6 +108,26 @@ PANINI_AUDIT_DUMP=/tmp/audit-table.tsv mise exec rust@1.99.0 -- cargo run --rele
 ```
 
 ## Last recorded result
+
+2026-10-04, curādi 10j slice, vidyut
+`8da2f90bee3ce1c07505fa432fc3729e3f7e02ea`: **zero differences across 26424
+cells / 37070 forms / 430 roots**, with the `entry` negative control verified
+failing (36 √bhū cells).
+
+The verdict covers the whole curādi 10j slice: the eight ajanta rows √smiṅ,
+√ci, √ghṛ, √gṛ, √yu, √jñā, √cyu and √bhū, and the three rules they bring:
+6.1.54 *cisphuror ṇau* (√ci's optional `A`), 7.3.36's puk (√ci's 6.1.54
+branch and √jñā) and Kaumudī 2567 (√smiṅ's ātmanepada under ṇic), with
+10.0493 and 6.4.92 moved for √ci. Blocked branches stay at 6516: the three
+ātmanepadī rows admit only ātmanepada, and √ci admits both padas on every
+branch. On the throwaway prototype, disabling 6.1.54 as a control made 72
+cells differ, all √ci's. A main-vs-branch dump of every prior cell's
+branches, blocked ones included, was byte-identical, all 42932 of them
+(36416 live).
+
+Totals: 430 = 422 + 8; 26424 = 25956 + 468 (52 root×pada×lakāra blocks ×
+9); 37070 = 36416 + 468 + 186 new `ALTERNATES` rows (10460 → 10646),
+measured via the harness's corpus block, not assumed.
 
 2026-10-04, curādi 10i slice, vidyut
 `8da2f90bee3ce1c07505fa432fc3729e3f7e02ea`: **zero differences across 25956

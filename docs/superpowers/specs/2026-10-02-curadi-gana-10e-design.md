@@ -480,6 +480,7 @@ Re-grep recorded file:line anchors at final HEAD.
   Kaumudī 2573.1–.3 and 10.0497's ṇic-branch restriction on `garva`.
 - √smiṅ and 7.2.115 before ṇic ride whichever slice first needs 7.2.115.
   That slice takes √gṛ (`10.0231`), √yu (`10.0235`) and √ci (`10.0124`).
+  (Slice 10j took √smiṅ, √gṛ, √yu and √ci: see `2026-10-04-curadi-gana-10j-design.md`.)
 - A causative (hetumaṇic) slice takes the gaṇasūtras 01.0934 and 10.0494.
 - The ārdhadhātuka lakāras and luṅ will read `Tag::AtLopa` (luṅ's
   abhyāsa, as vidyut's `abhyasasya.rs` does).

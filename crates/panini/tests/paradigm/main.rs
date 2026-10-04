@@ -302,7 +302,7 @@ fn derivation_set_is_exactly_pinned() {
 /// 7.1.35/8.4.65/8.4.56 exactly as kft/ruD/Bid/kzud/tfd's do (a five-form
 /// cell), and its loṭ parasmaipada madhyama eka ties the six-form record
 /// with the same k = 3 against the 2³ bound of eight:
-/// 25956 cells total (2884 root×lakāra blocks × 9), of which 18268 hold exactly one form, 6424 hold two, 525 hold three (√hrī's loṭ prathama and madhyama
+/// 26424 cells total (2936 root×lakāra blocks × 9), of which 18648 hold exactly one form, 6432 hold two, 601 hold three (√hrī's loṭ prathama and madhyama
 /// eka, new in slice 3b, √dā's and √dhā's, new in slice 3c, and √gā's, new in
 /// slice 3c2, and the six ṛ-roots', new in slice 3d, and √ṛ's, new in slice 3d2, and √ṇij's, √vij's and √viṣ's, new in slice 3e, and √kit's, √tur's, √dhiṣ's and √dhan's, new in slice 3f, and √bhas's, new in slice 3f2, and √jan's, new in slice 3f3, and the four curādi roots', new in slice 10a, and the six jñapādi roots', new in slice 10d, and the eighty-three ubhayapadī adanta roots', new in slice 10e, each by
 /// 7.1.35/8.4.56, plus √bhas's laṅ madhyama eka, by 8.2.74/8.4.56; slice 10f's
@@ -311,7 +311,9 @@ fn derivation_set_is_exactly_pinned() {
 /// slice 10h's fifty add 1680 two-form cells the same way, in parasmaipada and
 /// in four `NicUbhayapada` rows' ātmanepada, and 136 three-form ones, √dhū's
 /// and √prī's ṇic branch forking again on 7.3.37.2's nuk, and slice 10i's
-/// sixty-one add 1952 two-form cells, a ṇic and a ṇic-less reading each), 359 hold four (piṣ's loṭ madhyama eka, the deepest
+/// sixty-one add 1952 two-form cells, a ṇic and a ṇic-less reading each, and
+/// slice 10j's √ghṛ, √jñā, √cyu and √bhū eight two-form and eight three-form
+/// cells as √cur's, and √ci 68 three-form ones), 359 hold four (piṣ's loṭ madhyama eka, the deepest
 /// fork added in 7b, Siz's loṭ parasmaipada madhyama eka (slice 7d), and — new in
 /// slice 8a — fifteen more spread across the four ik-upadhā tanādi roots
 /// kziR/fR/tfR/GfR; √kṛ, slice 8b, adds none to this bucket; and — new in slice
@@ -331,7 +333,7 @@ fn derivation_set_is_exactly_pinned() {
 /// none to this bucket, neither does √kṛ, slice 8b, and — new in slice
 /// 3b — √bhī's loṭ prathama eka, forking on 7.1.35/6.4.115/8.4.56, and — new in slice 3c2 — √hā's loṭ
 /// prathama eka, forking on 7.1.35/6.4.116/8.4.56) and
-/// 363
+/// 365
 /// hold six (√kṛt's loṭ madhyama eka, `kfndDi`/`kfnDi`'s cell, ruD's loṭ
 /// parasmaipada madhyama eka, `rundDi`/`runDi`/`rundDAd`/`runDAd`/
 /// `rundDAt`/`runDAt`, Bid's, kzud's and tfd's loṭ
@@ -360,17 +362,20 @@ fn derivation_set_is_exactly_pinned() {
 /// ādhṛṣīya rows', the same way, and √dhū's and √prī's laṅ and vidhiliṅ
 /// parasmaipada prathama eka, three readings × 8.4.56; and — new in slice
 /// 10i — the sixty-one rows' loṭ parasmaipada prathama and madhyama eka,
-/// the same way), one — new in
+/// the same way; and — new in slice 10j — √ci's laṅ and vidhiliṅ parasmaipada
+/// prathama eka, three readings × 8.4.56), one — new in
 /// slice 3c2 — holds SEVEN: √hā's loṭ parasmaipada madhyama eka, where 6.4.117
 /// is the first optional rule to bar others (`Rule.bars`), so its three
-/// readings before *hi* are not a 2^k product; and six hold NINE, the engine's
+/// readings before *hi* are not a 2^k product; and eight hold NINE, the engine's
 /// record: `pata`'s loṭ parasmaipada prathama and madhyama eka (new in slice
 /// 10f), its three readings (2573.1's ṇic-less *pata-*, 2573.2's *pāta-*, and
 /// 6.4.48's *pata-* with ṇic) × the tātaṅ triple, and — new in slice 10h —
 /// √dhū's and √prī's, theirs (10.0498's ṇic-less one, 7.3.37.2's nuk, and
-/// 7.2.115's vṛddhi with ṇic) × the same triple. No cell holds eight.
+/// 7.2.115's vṛddhi with ṇic) × the same triple, and — new in slice 10j —
+/// √ci's (2570's ṇic-less one, 6.1.54's `cA` with puk, and the declined
+/// ṇic branch) × the same triple. No cell holds eight.
 /// `ALTERNATES`
-/// itself has 10460 rows, keyed 636 `8.4.56`, 628 `7.1.35`, 628 `7.1.35+8.4.56`,
+/// itself has 10646 rows, keyed 646 `8.4.56`, 638 `7.1.35`, 638 `7.1.35+8.4.56`,
 /// 2 `3.4.111`, 72 `6.4.107`, 145 `8.4.65`, 8 `8.2.75`, 2 `8.2.74` (√hiṃs's ahinaH and, new in slice 3f2, √bhas's abaBaH), 16
 /// `7.1.35+8.4.65`, 16 `7.1.35+8.4.65+8.4.56`, 270 `7.3.86` (tanādi 8a's
 /// ik-upadhā fork), 8 `7.1.35+7.3.86`, 8 `7.1.35+7.3.86+8.4.56`, 8
@@ -417,7 +422,11 @@ fn derivation_set_is_exactly_pinned() {
 /// `2571+7.1.35+7.3.86+8.4.56` (√ghuṣ, whose ṇic-less guṇa is the same
 /// mandatory 7.3.86) — and folds 100 rows apiece into `8.4.56`, `7.1.35` and
 /// `7.1.35+8.4.56` and 22 apiece into `7.3.86+8.4.56`, `7.3.86+7.1.35` and
-/// `7.3.86+7.1.35+8.4.56` — √kṛ (slice 8b) adds six more
+/// `7.3.86+7.1.35+8.4.56`. Slice 10j opens four keys — 72 `6.1.54` and 2
+/// apiece `6.1.54+8.4.56`, `6.1.54+7.1.35` and `6.1.54+7.1.35+8.4.56` (√ci's
+/// 6.1.54 branch) — adds 72 to `2570` and 2 apiece to `2570+8.4.56`,
+/// `2570+7.1.35` and `2570+7.1.35+8.4.56` (√ci's ṇic-less branch), and folds
+/// 10 rows apiece into `8.4.56`, `7.1.35` and `7.1.35+8.4.56` — √kṛ (slice 8b) adds six more
 /// rows, all folded into the pre-existing `8.4.56`/`7.1.35`/`7.1.35+8.4.56`
 /// keys above, two apiece: `8.4.56` gains `akarot` (laṅ parasmaipada
 /// prathama eka) and `kuryAt` (vidhiliṅ parasmaipada prathama eka);
@@ -523,7 +532,9 @@ fn derivation_set_is_exactly_pinned() {
 /// verified failing (36 √bhū cells), and curādi 10i's re-ran it at the same
 /// commit over all 25956 cells / 36416 forms / 422 roots with zero
 /// differences, its `entry` negative control verified failing (36 √bhū
-/// cells). √tṛh joins none of the fork
+/// cells), and curādi 10j's re-ran it at the same commit over all 26424
+/// cells / 37070 forms / 430 roots with zero differences, its `entry`
+/// negative control verified failing (36 √bhū cells). √tṛh joins none of the fork
 /// records: its deepest cells hold three forms, because 8.3.13 Qo Qe lopaH
 /// obligatorily elides the ḍh that 8.4.65 forks on for every other
 /// stop-final rudhādi root.

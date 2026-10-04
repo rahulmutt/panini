@@ -138,9 +138,10 @@ pub(super) fn lin_a_form(number: &str, pu: Purusha, va: Vacana) -> String {
 /// ātmanepadinaḥ* at the very top, ahead of 3.1.25, where vidyut-prakriya
 /// credits it: it settles an ākusmīya root's pada before ṇic exists.
 ///
-/// Slice 10d adds the gaṇasūtra 10.0493 *jñapādayo mitaḥ* right after it,
+/// Slice 10d adds the gaṇasūtra 10.0493 *jñapādayo mitaḥ* right after it
+/// (both moved in 10j; see below),
 /// again where vidyut credits it, and 6.4.92 *mitāṃ hrasvaḥ* right after
-/// 7.2.116, whose vṛddhi it undoes on a mit root. vidyut credits 6.4.92
+/// 7.2.116 (since moved), whose vṛddhi it undoes on a mit root. vidyut credits 6.4.92
 /// later, after 7.3.84; see its comment in `sanadi.rs` for why it sits
 /// here.
 ///

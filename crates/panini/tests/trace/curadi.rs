@@ -7,15 +7,18 @@
 //! An ākusmīya root's trace opens one step earlier, with the gaṇasūtra
 //! 10.0496, and has no pada sūtra at all. A jñapādi root's also opens one
 //! step earlier, with the gaṇasūtra 10.0493, and 6.4.92 follows its
-//! 7.2.116. An adanta root's has 6.4.48 after 3.4.114 and neither 7.2.116
+//! 7.2.116 (on √ci, its 7.2.115 and 6.1.78, or its 6.1.54 and 7.3.36's puk).
+//! An adanta root's has 6.4.48 after 3.4.114 and neither 7.2.116
 //! nor 7.3.86; an ā-garvīya root's also opens with the gaṇasūtra 10.0497,
 //! and has no pada sūtra. A root whose ṇic is optional (`OPTIONAL_NIC`)
 //! has a ṇic-less branch besides, opening with the id that makes it so
-//! (10.0498, 10.0499, 2564, 2565, 2570, 2571, 2573.1, 2573.3) and running
+//! (10.0498, 10.0499, 2564, 2565, 2570, 2571, 2573.1, 2573.3; after 10.0493 on
+//! √ci) and running
 //! the bhvādi path with 1.3.78 — or, in a `NicUbhayapada` row's ātmanepada,
 //! 1.3.72. A vowel-final root's ṇic branch has 7.2.115 (and 6.1.78) before
 //! 3.1.32, √dhū's and √prī's the vārttika 7.3.37.2 instead on a second
-//! branch, and √mṛj's 7.2.114. √dhūp's and √vich's ṇic-less branch has
+//! branch, √jñā's 7.3.36's puk instead, and √mṛj's 7.2.114. √smiṅ's pada
+//! sūtra is Kaumudī 2567, then 1.3.12. √dhūp's and √vich's ṇic-less branch has
 //! 3.1.28's āya, which 3.4.114 and 3.1.32 treat as they treat ṇic, and
 //! √vich's every branch the sanādi 6.1.73's tuk before 3.1.32.
 
