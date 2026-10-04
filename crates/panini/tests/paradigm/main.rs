@@ -501,7 +501,10 @@ fn derivation_set_is_exactly_pinned() {
 /// roots with zero differences, its `entry` negative control verified
 /// failing (36 √bhū cells), and curādi 10g's re-ran it at the same commit
 /// over all 17964 cells / 22724 forms / 311 roots with zero differences,
-/// its `entry` negative control verified failing (36 √bhū cells). √tṛh joins none of the fork
+/// its `entry` negative control verified failing (36 √bhū cells), and
+/// curādi 10h's re-ran it at the same commit over all 21564 cells / 29096
+/// forms / 361 roots with zero differences, its `entry` negative control
+/// verified failing (36 √bhū cells). √tṛh joins none of the fork
 /// records: its deepest cells hold three forms, because 8.3.13 Qo Qe lopaH
 /// obligatorily elides the ḍh that 8.4.65 forks on for every other
 /// stop-final rudhādi root.
@@ -1393,7 +1396,10 @@ fn acikeh_analyses_as_both_ki_and_kit() {
 
 /// The surfaces that are genuinely pada-ambiguous — the same string pinned
 /// as both a parasmaipada and an ātmanepada cell, so `check` reports two
-/// analyses differing in pada. `README.md` quotes this list; before this
+/// analyses differing in pada. The list is of the PINNED (`PARADIGM`) forms
+/// only: from slice 10h, a ṇic-less branch can be live in both padas, and
+/// the surfaces that only `ALTERNATES` pins (`avadata`, say) are pada-ambiguous
+/// too but uncounted here. `README.md` quotes this list; before this
 /// test it was hand-maintained prose with nothing behind it, and the
 /// ubhayapadī root count going from three to seven in slice 7c is exactly
 /// the kind of change that would have grown it silently.

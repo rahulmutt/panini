@@ -105,7 +105,8 @@ pub const AKUSMIYA: RangeInclusive<&str> = "10.0192"..="10.0236";
 /// `10.0124` (`ciY`), the roots the gaṇasūtra 10.0493 makes mit. Compared as
 /// strings, like `AKUSMIYA`. The engine's `derive` tags a curādi root in this
 /// range `Tag::Mit`, which 10.0493 and 6.4.92 *mitāṃ hrasvaḥ* read. Includes
-/// `10.0124 ciY`, which is mit but not yet curated (it waits on 7.2.115).
+/// `10.0124 ciY`, which is mit but not yet curated: 7.2.115 is in since slice
+/// 10h, but √ci still waits on its own slice, for 6.1.54 and 7.3.36.
 /// `jnapadi_is_exactly_the_rows_10_0493_names` pins the range to upstream.
 pub const JNAPADI: RangeInclusive<&str> = "10.0118"..="10.0124";
 
@@ -255,7 +256,7 @@ pub const OPTIONAL_NIC: &[(&str, &str)] = &[
     ("10.0465", "2564"),
 ];
 
-/// The Kaumudī id that makes row `dhatupatha`'s ṇic optional, if any
+/// The id of the rule that makes row `dhatupatha`'s ṇic optional, if any
 /// (`OPTIONAL_NIC`).
 pub fn optional_nic(dhatupatha: &str) -> Option<&'static str> {
     OPTIONAL_NIC
@@ -5031,7 +5032,7 @@ mod tests {
     /// AFTER the `~` that marks an anunāsika it, so `~\` is an anudātta it and
     /// `~^` a svarita it — whereas a `\` sitting directly on a vowel elsewhere
     /// is the ROOT's own accent and says nothing about pada. Counted off the
-    /// vendored upadeśa: 66 of the 311 curated roots carry a `\` at all, and 45
+    /// vendored upadeśa: 73 of the 361 curated roots carry a `\` at all, and 52
     /// of those carry one on a root vowel — `01.0642 ji\`, `01.1082 smf\` and
     /// `02.0001 a\da~` among them — so conflating the two does not fail
     /// loudly; it silently calls most of the table ātmanepada.
