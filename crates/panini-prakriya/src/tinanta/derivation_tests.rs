@@ -150,15 +150,17 @@ pub(super) fn lin_a_form(number: &str, pu: Purusha, va: Vacana) -> String {
 /// as ṇic is ārdhadhātuka. 7.2.116 and 7.3.86 then decline on its
 /// `Tag::AtLopa` (1.1.57).
 ///
-/// Slice 10f opens the list with five Kaumudī vikalpa rules, ahead of
-/// 10.0496, because vidyut-prakriya decides ṇic before the pada gaṇasūtras:
+/// Slice 10f opened the list with five Kaumudī vikalpa rules, ahead of
+/// 10.0496 (slice 10h puts the gaṇasūtra 10.0498 *ā dhṛṣād vā* first of
+/// all, the same fork for the ādhṛṣīya rows), because vidyut-prakriya decides ṇic before the pada gaṇasūtras:
 /// 2564, 2570, 2573.1 and 2573.3 fork a root whose ṇic is optional into its
 /// ṇic and ṇic-less branches, and 2573.2 then forks `pata`'s ṇic branch on
 /// its final `a`. It also adds a second 6.1.97 and a second 6.1.101 at the
 /// head of the adesha stage, for an aṅga-final `a` meeting śap, which only
 /// the ṇic-less adanta branch reaches; see their comments in
-/// `tinanta/adesha.rs`. 10.0496, 10.0497, 10.0493 and the five Kaumudī ids
-/// are the only ids here that are not Aṣṭādhyāyī sūtras.
+/// `tinanta/adesha.rs`. The ids here that are not Aṣṭādhyāyī sūtras are the
+/// four gaṇasūtras (10.0493, 10.0496, 10.0497, 10.0498), the five Kaumudī ids
+/// and the vārttika 7.3.37.2.
 ///
 /// 6.4.106/6.4.107 sit BELOW 6.1.96 but ABOVE 6.1.90, against sūtra order
 /// and against where Task 3 first placed them (after 6.4.105, below all
