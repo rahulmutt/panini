@@ -878,7 +878,12 @@ fn kzampARi_traces_8_4_2_across_num_on_both_branches() {
 }
 
 /// The rows whose live branches credit `sutra` — in the sanādi stage only
-/// (before 3.1.32 folds ṇic in) when `sanadi` is set — sorted, each once.
+/// when `sanadi` is set — sorted, each once. The stage ends where the next
+/// opens, at the first of 3.1.32 (which closes it where it fires) and the pada
+/// rules 1.3.12, 1.3.66, 1.3.72, 1.3.74, 1.3.78 (which open the stage after
+/// it, so a branch without 3.1.32 still has a bounded window); 3.4.78, the tiṅ
+/// substitution that every live branch credits, is the backstop. The aṅga
+/// stage's later credits stay outside.
 fn rows_crediting(sutra: &str, sanadi: bool) -> Vec<&'static str> {
     let mut rows = Vec::new();
     for d in dhatus() {
@@ -892,7 +897,15 @@ fn rows_crediting(sutra: &str, sanadi: bool) -> Vec<&'static str> {
                             }
                             let ids: Vec<&str> = p.log.iter().map(|s| s.sutra.as_str()).collect();
                             let end = if sanadi {
-                                ids.iter().position(|s| *s == "3.1.32").unwrap_or(0)
+                                ids.iter()
+                                    .position(|s| {
+                                        [
+                                            "3.1.32", "1.3.12", "1.3.66", "1.3.72", "1.3.74",
+                                            "1.3.78", "3.4.78",
+                                        ]
+                                        .contains(s)
+                                    })
+                                    .expect("every live branch reaches the stage after sanādi")
                             } else {
                                 ids.len()
                             };
