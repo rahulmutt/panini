@@ -15,7 +15,7 @@ use crate::controller::run_pipeline;
 use crate::prakriya::Prakriya;
 use crate::rule::Rule;
 use crate::term::{Tag, Term};
-use panini_data::{Dhatu, Gana, JNAPADI, Lakara, Pada, PadaAssignment, Purusha, Vacana};
+use panini_data::{AYA, Dhatu, Gana, JNAPADI, Lakara, Pada, PadaAssignment, Purusha, Vacana};
 
 mod abhyasa;
 mod adesha;
@@ -102,6 +102,10 @@ pub fn derive(
     // 7.2.114's √mṛj, likewise by row number (`samjna::MRJ`).
     if samjna::MRJ.contains(&dhatu.dhatupatha) {
         t.add(Tag::Mrj);
+    }
+    // 3.1.28's āya, likewise by row number (`AYA`).
+    if AYA.contains(&dhatu.dhatupatha) {
+        t.add(Tag::Aya);
     }
     match dhatu.pada {
         PadaAssignment::Parasmaipada => {}

@@ -169,6 +169,13 @@ pub enum Tag {
     /// saṁjñā verdict, so no step is recorded. Read by the two 7.2.114
     /// entries, in `tinanta::sanadi` and `tinanta::guna`.
     Mrj,
+    /// 3.1.28 *gupūdhūpavicchipaṇipanibhya āyaḥ*: the dhātu takes the
+    /// pratyaya āya. Set by `tinanta::derive` from the row NUMBER
+    /// (`panini_data::AYA`), as `Mrj` is: curādi `10.0302 gupa~` stores as
+    /// `gup`, as the bhvādi `gupU~` the sūtra names does, and takes no āya.
+    /// A saṁjñā verdict, so no step is recorded. Read only by 3.1.28, in
+    /// `tinanta::sanadi`, which adds āya where no ṇic was taken.
+    Aya,
     /// The term at `SHAP` IS one of the four a-final vikaraṇas — śap
     /// (3.1.68), śyan (3.1.69), śa (3.1.77) or śānac (3.1.83) — each
     /// a-final once its own it-lopa runs ("a"/"ya"/"a"/"Ana"). This is an

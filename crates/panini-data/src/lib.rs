@@ -110,6 +110,17 @@ pub const AKUSMIYA: RangeInclusive<&str> = "10.0192"..="10.0236";
 /// `jnapadi_is_exactly_the_rows_10_0493_names` pins the range to upstream.
 pub const JNAPADI: RangeInclusive<&str> = "10.0118"..="10.0124";
 
+/// The rows 3.1.28 *gupūdhūpavicchipaṇipanibhya āyaḥ* gives the pratyaya
+/// āya: `10.0303 DUpa~` and `10.0304 viCa~`, which take it where their
+/// optional ṇic is not taken (*dhūpāyati*, *vicchāyati*). Keyed by
+/// dhātupāṭha number, as `JNAPADI` is, because a stored code cannot decide
+/// it: `10.0302 gupa~` stores as `gup`, as the bhvādi `gupU~` the sūtra
+/// names does, and takes no āya. vidyut-prakriya keys the sūtra on five
+/// upadeśas in any gaṇa (`gupU~`, `DUpa~`, `viCa~`, `paRa~\`, `pana~\`);
+/// each joins this list when its row is curated. The engine's `derive` tags
+/// a listed root `Tag::Aya`, which 3.1.28 reads.
+pub const AYA: [&str; 2] = ["10.0303", "10.0304"];
+
 /// The ā-garvīya of curādi: dhātupāṭha rows `10.0440` (`pada`) through
 /// `10.0449` (`garva`), the scope of the gaṇasūtra 10.0497 *ā garvād
 /// ātmanepadinaḥ*. Compared as strings, like `AKUSMIYA`. A curated row is
