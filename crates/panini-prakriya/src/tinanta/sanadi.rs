@@ -28,7 +28,10 @@
 //! well, 6.4.92 on `Tag::Mit`, 7.3.37.2 on √dhū's and √prī's text, 7.2.115
 //! on an ac-final aṅga, 6.1.78 on an ec-final one, 7.2.114 on `Tag::Mrj`,
 //! and 7.2.116 and 7.3.86 decline on 6.4.48's `Tag::AtLopa`).
-//! For gaṇas 1–9 the stage adds nothing and records nothing.
+//! 6.1.73 and 3.1.28 carry no gaṇa guard, only their own conditions (3.1.28
+//! reads the āya rows); on today's corpus the gaṇas 1–9 add nothing and
+//! record nothing, and 6.1.73 fires only on √vich, which
+//! `the_10i_aya_and_tuk_fire_only_on_their_rows` pins.
 
 use crate::prakriya::Prakriya;
 use crate::rule::{Rule, RuleKind};

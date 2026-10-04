@@ -32,7 +32,7 @@ implements; `tinanta::rules()` yields that flattened sequence.
 
 | stage file | rules | position |
 |---|---|---|
-| `sanadi.rs` | 10.0498, 10.0499, 2564, 2565, 2570, 2571, 2573.1, 2573.3, 2573.2, 10.0496, 10.0497, 10.0493, 3.1.25, 3.1.28, 1.3.9, 3.4.114, 6.4.48, 7.2.116, 6.4.92, 7.3.37.2, 7.2.115, 6.1.78, 7.2.114, 6.1.73, 7.3.86, 3.1.32 — the optional-ṇic fork, the ākusmīya and ā-garvīya pada and the jñapādi's mit-tva, then ṇic, or āya where √dhūp and √vich take none, the adanta root's final `a`, the root's vṛddhi or guṇa or √dhū's and √prī's nuk, √vich's tuk ahead of guṇa, and the pratyaya's folding into the dhātu (curādi only) | before 3.1.68, before any tiṅ |
+| `sanadi.rs` | 10.0498, 10.0499, 2564, 2565, 2570, 2571, 2573.1, 2573.3, 2573.2, 10.0496, 10.0497, 10.0493, 3.1.25, 3.1.28, 1.3.9, 3.4.114, 6.4.48, 7.2.116, 6.4.92, 7.3.37.2, 7.2.115, 6.1.78, 7.2.114, 6.1.73, 7.3.86, 3.1.32 — the optional-ṇic fork, the ākusmīya and ā-garvīya pada and the jñapādi's mit-tva, then ṇic, or āya where √dhūp and √vich take none, the adanta root's final `a`, the root's vṛddhi or guṇa or √dhū's and √prī's nuk, √vich's tuk ahead of guṇa, and the pratyaya's folding into the dhātu (curādi only today: 6.1.73 has no gaṇa guard, and fires only on √vich) | before 3.1.68, before any tiṅ |
 | `samjna.rs` | 1.3.12, 1.3.66, 1.3.72, 1.3.74, 1.3.78, 3.4.78, 1.3.9, 1.2.4 | before 3.1.68 |
 | `tin.rs` | 3.4.85 … 3.4.109 … 3.4.102, 7.1.35 | before 3.1.68 |
 | `vikarana.rs` | 3.1.69, 3.1.73, 3.1.77, 3.1.78, 3.1.79, 3.1.81, 3.1.68, 2.4.72, 2.4.75, 3.4.111, 3.1.83, 1.2.4 | contains 3.1.68 |

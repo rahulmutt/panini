@@ -160,7 +160,7 @@ pub(super) fn lin_a_form(number: &str, pu: Purusha, va: Vacana) -> String {
 /// ṇic and ṇic-less branches, and 2573.2 then forks `pata`'s ṇic branch on
 /// its final `a`. It also adds a second 6.1.97 and a second 6.1.101 at the
 /// head of the adesha stage, for an aṅga-final `a` meeting śap, which only
-/// the ṇic-less adanta branch reaches; see their comments in
+/// the ṇic-less adanta branch and the āya branch of √dhūp and √vich reach; see their comments in
 /// `tinanta/adesha.rs`. The ids here that are not Aṣṭādhyāyī sūtras are the
 /// five gaṇasūtras (10.0493 and 10.0496 to 10.0499), the seven Kaumudī ids
 /// and the vārttika 7.3.37.2.
@@ -237,8 +237,8 @@ fn exactly_the_pinned_vikalpa_rules_are_optional() {
 /// rule ABOVE its barrer, where barring it does nothing. Pin the whole
 /// relation, and require every barred id to run after its barrer.
 ///
-/// Ids are not unique in the pipeline (7.3.84, 1.2.4, 1.3.9, 6.1.78, 7.2.114
-/// and 6.1.73 each appear twice, 7.3.86 three times), so "runs after" means
+/// Ids are not unique in the pipeline (7.3.84, 1.2.4, 1.3.9, 6.1.78, 7.2.114,
+/// 6.1.73, 6.1.97 and 6.1.101 each appear twice, 7.3.86 three times), so "runs after" means
 /// some later occurrence.
 #[test]
 fn exactly_the_pinned_bars() {

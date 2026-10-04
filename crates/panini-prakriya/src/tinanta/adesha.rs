@@ -59,8 +59,9 @@ pub(crate) static ADESHA: &[Rule] = &[
     // 6.1.97 ato guṇe, at the aṅga–śap junction: an aṅga ending in a short
     // `a` before śap's `a` gives para-rūpa, katra + a + ti → katrati. Only
     // the ṇic-less branch of an adanta curādi root (Kaumudī 2573.1 / 2573.3:
-    // `pata`, `mUtra`, `katra`, `garva`) reaches śap with that `a` still in
-    // place; with ṇic, 6.4.48 has deleted it. A second entry under this id,
+    // `pata`, `mUtra`, `katra`, `garva`) and the āya branch of √dhūp and
+    // √vich (3.1.28: `DUpAya`, `viCAya`) reach śap with an `a`-final aṅga;
+    // with ṇic, 6.4.48 has deleted it. A second entry under this id,
     // FIRST in the stage because vidyut-prakriya resolves this junction
     // before the vikaraṇa meets the ending: *patāni* credits 6.1.97 here,
     // then 6.1.101's bhvādi arm; *katranti* credits 6.1.97 twice, this entry
@@ -92,8 +93,9 @@ pub(crate) static ADESHA: &[Rule] = &[
     // dīrgho yañi* has lengthened śap before a yañ-initial ending: pata + A +
     // mi → patAmi. The `a` and the `A` are savarṇa, so the long vowel the
     // śap spells is the result. 6.1.97 above declines here: `A` is no guṇa
-    // vowel. A second entry under this id, beside the four-armed one below,
-    // which reads the vikaraṇa–ending junction instead.
+    // vowel. The āya branch reaches it too: *dhūpāyāmi* credits it after
+    // 7.3.101. A second entry under this id, beside the four-armed one
+    // below, which reads the vikaraṇa–ending junction instead.
     Rule {
         id: "6.1.101",
         name: "akaH savarRe dIrGaH",

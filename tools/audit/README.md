@@ -120,8 +120,8 @@ whose ṇic the gaṇasūtra 10.0499 makes optional, and `10.0022 pF` and
 on its ṇic and its ṇic-less branch; and 3.1.28's āya on √dhūp's and √vich's
 ṇic-less branch and the sanādi 6.1.73's tuk on √vich's every branch, which
 the slice adds. Blocked branches rose from 4320 to 6516, the 2196 = 61 × 36
-ṇic-less ātmanepada cells. Disabling the sanādi 6.1.73, as a control, made
-72 cells differ. A main-vs-branch dump of every prior cell's branches,
+ṇic-less ātmanepada cells. On the throwaway prototype, disabling the
+sanādi 6.1.73 as a control made 72 cells differ. A main-vs-branch dump of every prior cell's branches,
 blocked ones included, was byte-identical, all 33416 of them (29096 live).
 
 Totals: 422 = 361 + 61; 25956 = 21564 + 4392 (488 root×pada×lakāra blocks ×
