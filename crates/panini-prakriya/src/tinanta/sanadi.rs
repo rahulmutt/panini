@@ -1018,6 +1018,9 @@ mod tests {
     fn each_optional_nic_rule_takes_the_nicless_branch_on_its_own_rows() {
         // (rule, a row it owns, that row's root and ṇic-branch pada tag)
         for (id, number, root, tag) in [
+            ("10.0498", "10.0338", "yuj", Tag::Nic),
+            // The idit √hiṃs is 10.0498's, not 2564's.
+            ("10.0498", "10.0366", "hins", Tag::Nic),
             ("2564", "10.0193", "danS", Tag::Akusmiya),
             ("2570", "10.0230", "div", Tag::Akusmiya),
             ("2573.1", "10.0400", "pata", Tag::Nic),
@@ -1064,8 +1067,10 @@ mod tests {
     #[test]
     fn an_optional_nic_rule_declines_off_its_rows() {
         // A sibling id's row, a curādi row outside the table (√cur, the
-        // ākusmīya √cit, the adanta √kath), and a row with no number at all.
-        for id in ["2564", "2570", "2573.1", "2573.3"] {
+        // ākusmīya √cit, the adanta √kath), a row with no number at all, and
+        // `10.0368 zad`: inside 10.0498's range but uncurated, so
+        // the verdict is keyed on the table, not on position alone.
+        for id in ["10.0498", "2564", "2570", "2573.1", "2573.3"] {
             for (number, root, tag) in [
                 ("10.0193", "danS", Tag::Akusmiya),
                 ("10.0230", "div", Tag::Akusmiya),
@@ -1075,6 +1080,7 @@ mod tests {
                 ("10.0192", "cit", Tag::Akusmiya),
                 ("10.0389", "kaTa", Tag::Nic),
                 ("", "cur", Tag::Nic),
+                ("10.0368", "zad", Tag::Nic),
             ] {
                 if optional_nic(number) == Some(id) {
                     continue;
