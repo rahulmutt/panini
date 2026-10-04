@@ -23,8 +23,11 @@ run = "cargo fmt --all --check"
 # actual gate on the guarded rules in panini-prakriya.
 #
 # --timeout must clear a FULL, UNCAUGHT run of the workspace suite at the
-# parallelism actually used. cargo-mutants reads -j from CARGO_MUTANTS_JOBS,
-# so an unqualified cap can be defeated by the environment alone; keep -j <= 4.
+# parallelism actually used, and the slowest CAUGHT mutant's test phase too:
+# a mutant that makes the vikalpa rules fork on every root (skip_nic -> true)
+# blows up the derivation before any assertion fails. cargo-mutants reads -j
+# from CARGO_MUTANTS_JOBS, so an unqualified cap can be defeated by the
+# environment alone; keep -j <= 4.
 #
 # Under too short a cap a genuine survivor is recorded as a TIMEOUT rather
 # than a MISSED, which makes a reported zero-survivor run vacuous. Always
@@ -38,7 +41,7 @@ run = "cargo fmt --all --check"
 # The floor and margin behind this number are recorded in AGENTS.md's
 # cargo-mutants paragraph, the single source for this reasoning. Re-check it
 # whenever the golden suite grows.
-run = "cargo mutants --package panini-prakriya --package panini-analyze --test-workspace=true --timeout 1810 -j 4"
+run = "cargo mutants --package panini-prakriya --package panini-analyze --test-workspace=true --timeout 5140 -j 4"
 
 [tasks.audit]
 run = "cargo audit && cargo deny check"
