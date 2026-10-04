@@ -147,6 +147,15 @@ expects one analysis per row.
   *bhāvayati*).
 - No other new form is shared with an existing row.
 
+**Negative witnesses become positive,** as 10i's *daṃśayati* did:
+- `cayayati` is in 10i's "derives nothing" list, as the guṇa shape `10.0325
+  ci` must not take. It is now √ci's (`10.0124`) declined ṇic form, so it
+  leaves that list and the 10j witnesses pin it as √ci's alone.
+- `jYApayati` and `jYApayate` are in 10d's list of 7.2.116-only shapes √jñap
+  must not take. They are now √jñā's (`10.0258`), so they leave that list too.
+- `capayati` and `capayate` gain √ci's analysis beside √cap's, so 10d's
+  witnesses count two, √cap's first.
+
 `trace_for` returns the first analysis; the plan pins which row that is
 wherever a test relies on it, and greps the goldens for every witness form
 before asserting an analysis count.
