@@ -1,5 +1,5 @@
 //! Saṃjñā, pada sanction and ending insertion: 1.1.20 (as the `GHU` set),
-//! 1.3.12, 1.3.66, 1.3.72, 1.3.74, 1.3.78, 3.4.78, 1.3.9, 1.2.4.
+//! Kaumudī 2567, 1.3.12, 1.3.66, 1.3.72, 1.3.74, 1.3.78, 3.4.78, 1.3.9, 1.2.4.
 //!
 //! One pada sanction is settled before this stage: the dhātupāṭha gaṇasūtra
 //! 10.0496 *ā kusmād ātmanepadinaḥ*, first in `super::sanadi`, for the
@@ -43,7 +43,48 @@ pub(crate) const GHU: [&str; 6] = [
 /// `super::derive` reads this to add `Tag::Mrj`.
 pub(crate) const MRJ: [&str; 1] = ["10.0386"];
 
+/// 6.1.54 cisphuror ṇau: the dhātupāṭha rows that are the √ci the sūtra
+/// names. By number, as `MRJ` is: vidyut-prakriya keys the sūtra on the
+/// upadeśas `ciY` and `ci\Y`, and curādi `10.0325 ci` (*bhāṣāyām*) stores
+/// as the same `ci`. `10.0124 ciY` is the row that meets ṇic; svādi
+/// `05.0005 ci\Y` would need a causative, as would the sūtra's other root,
+/// tudādi `06.0121 sPura~`. Pinned to upstream by
+/// `cisphur_is_the_ciy_row_6_1_54_names`. The sanādi 6.1.54 reads it.
+pub(crate) const CISPHUR: [&str; 1] = ["10.0124"];
+
 pub(crate) static SAMJNA: &[Rule] = &[
+    // Kaumudī 2567: a ṅit curādi root stays ātmanepadī under ṇic. With ṇic,
+    // 1.3.74 ṇicaś ca would govern and 1.3.78 admit parasmaipada too; the
+    // Kaumudī reads the ṅit as having a purpose only if the ṇijanta takes
+    // the ātmanepada (*ṅittvasyāvayave 'caritārthatvāṇ ṇijantāt taṅ*,
+    // *smāyayate*, on `10.0058 zmiN`). vidyut-prakriya steps
+    // `Kaumudi("2567")` and then runs 1.3.12 (`atmanepada.rs`), which
+    // sanctions or blocks below. Guarded on `Tag::Curadi`, `Tag::Nijanta`
+    // and `Tag::Atmanepadin` (the data layer's `PadaAssignment::Atmanepada`,
+    // which a curādi row carries only with a ṅit upadeśa:
+    // `curated_pada_agrees_with_upadesha_markers`). Records in the ātmanepada
+    // only; on a parasmaipada request it declines, and 1.3.12 blocks. Not a
+    // sūtra of the Aṣṭādhyāyī: numbered as vidyut numbers it.
+    Rule {
+        id: "2567",
+        name: "NittvasyAvayave'caritArTatvAR RijantAt taN",
+        kind: RuleKind::Vidhi,
+        vikalpa: false,
+        bars: &[],
+        apply: |p| {
+            let anga = &p.terms[ANGA];
+            if !anga.has(Tag::Curadi)
+                || !anga.has(Tag::Nijanta)
+                || !anga.has(Tag::Atmanepadin)
+                || p.ctx.pada != Pada::Atmanepada
+            {
+                return false;
+            }
+            let before = p.snapshot();
+            p.record("2567", "NittvasyAvayave'caritArTatvAR RijantAt taN", before);
+            true
+        },
+    },
     // 1.3.12 anudāttaṅita ātmanepadam: a root carrying the anudātta/ṅit
     // marker (here: the data-layer Atmanepadin tag) takes ātmanepada.
     // Sanctions the requested pada; the wrong pada BLOCKS the derivation —
@@ -489,6 +530,60 @@ mod tests {
         assert!(!p.blocked);
     }
 
+    /// A curādi ṇijanta carrying `tags`, as the sanādi stage leaves √smiṅ
+    /// (`smAyi`), in `pada`. Hand-built, as `nic_prakriya` is: 2567 reads
+    /// only tags.
+    fn nijanta_prakriya(tags: &[Tag], pada: Pada) -> Prakriya {
+        let mut t = Term::new("smAyi");
+        t.add(Tag::Dhatu);
+        for tag in tags {
+            t.add(*tag);
+        }
+        let mut p = Prakriya {
+            ctx: Context::new(Lakara::Lat, pada, Purusha::Prathama, Vacana::Eka),
+            ..Default::default()
+        };
+        p.terms = with_slots(vec![t]);
+        p
+    }
+
+    #[test]
+    fn nittva_keeps_a_nit_curadi_nijanta_atmanepadi() {
+        let rule = SAMJNA.iter().find(|r| r.id == "2567").unwrap();
+        let r1312 = SAMJNA.iter().find(|r| r.id == "1.3.12").unwrap();
+        let smin = [Tag::Curadi, Tag::Atmanepadin, Tag::Nijanta];
+        let mut p = nijanta_prakriya(&smin, Pada::Atmanepada);
+        assert!((rule.apply)(&mut p));
+        assert!((r1312.apply)(&mut p));
+        assert!(!p.blocked);
+        let ids: Vec<&str> = p.log.iter().map(|s| s.sutra.as_str()).collect();
+        assert_eq!(ids, ["2567", "1.3.12"]);
+        assert_eq!(p.terms[ANGA].text, "smAyi", "a sanction, not an operation");
+        // Parasmaipada: 2567 declines and records nothing; 1.3.12 blocks, as
+        // for any ātmanepadī root.
+        let mut p = nijanta_prakriya(&smin, Pada::Parasmaipada);
+        assert!(!(rule.apply)(&mut p));
+        assert!(!p.blocked);
+        assert!(p.log.is_empty());
+        assert!(!(r1312.apply)(&mut p));
+        assert!(p.blocked);
+        // One guard tag missing: not curādi, not ātmanepadī (√cur's `Nic`, an
+        // ākusmīya root's `Akusmiya`), or no ṇic taken.
+        for tags in [
+            &[Tag::Atmanepadin, Tag::Nijanta][..],
+            &[Tag::Curadi, Tag::Nic, Tag::Nijanta][..],
+            &[Tag::Curadi, Tag::Akusmiya, Tag::Nijanta][..],
+            &[Tag::Curadi, Tag::Atmanepadin][..],
+        ] {
+            for pada in [Pada::Parasmaipada, Pada::Atmanepada] {
+                let mut p = nijanta_prakriya(tags, pada);
+                assert!(!(rule.apply)(&mut p), "{tags:?} {pada:?}");
+                assert!(!p.blocked, "{tags:?} {pada:?}");
+                assert!(p.log.is_empty(), "{tags:?} {pada:?}");
+            }
+        }
+    }
+
     #[test]
     fn nicas_ca_reports_firing_only_on_atmanepada() {
         // Same shape as 1.3.72's and 1.3.66's: 1.3.74 sanctions a Nic root's
@@ -894,6 +989,21 @@ mod tests {
         assert_eq!(upstream_upadesha("10.0386"), Some("mfjU~"));
         assert_eq!(upstream_upadesha("02.0061"), Some("mfjU~"));
         assert!(!dhatus().iter().any(|d| d.dhatupatha == "02.0061"));
+    }
+
+    #[test]
+    fn cisphur_is_the_ciy_row_6_1_54_names() {
+        // 6.1.54 cisphuror ṇau. vidyut-prakriya keys it on the upadeśas `ciY`
+        // and `ci\Y`, and on `sPura~`. Curādi `10.0325 ci` stores as the
+        // same `ci` and is not √ci of 6.1.54; svādi `ci\Y` and tudādi
+        // `sPura~` meet ṇic only in a causative.
+        assert_eq!(CISPHUR, ["10.0124"]);
+        assert_eq!(upstream_upadesha("10.0124"), Some("ciY"));
+        assert_eq!(upstream_upadesha("10.0325"), Some("ci"));
+        for (number, upadesha) in [("05.0005", "ci\\Y"), ("06.0121", "sPura~")] {
+            assert_eq!(upstream_upadesha(number), Some(upadesha), "{number}");
+            assert!(!dhatus().iter().any(|d| d.dhatupatha == number), "{number}");
+        }
     }
 
     #[test]
