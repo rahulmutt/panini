@@ -986,7 +986,7 @@ pub(crate) static GUNA: &[Rule] = &[
     },
     // 6.1.78 eco'yavāyāvaḥ: e/o before a vowel → ay/av. The sūtra also covers
     // E/O → Ay/Av, but those two arms are dropped here: within the current
-    // 361-root × 4-lakāra grammar, ANGA can never end in a vṛddhi vowel (E/O)
+    // 422-root × 4-lakāra grammar, ANGA can never end in a vṛddhi vowel (E/O)
     // at the point this rule runs. `vrddhi_of` (the only source of E/O in
     // this engine) is called by 6.1.90 (three) and 6.1.88 (one) in
     // `adesha.rs`, 7.2.115 and 7.2.114 in `sanadi.rs`, and this file's 7.2.114.
