@@ -36,6 +36,13 @@ pub(crate) const GHU: [&str; 6] = [
     "01.1050", "01.1079", "01.1117", "03.0010", "03.0011", "04.0043",
 ];
 
+/// 7.2.114 mṛjer vṛddhiḥ: the dhātupāṭha rows that are √mṛj. By number, as
+/// `GHU` is: the sūtra names a root, and a root is a row. `10.0386 mfjU~`
+/// (curādi) is the one curated; adādi's `02.0061 mfjU~` joins the list when
+/// it is. Pinned to upstream by `mrj_is_the_curated_row_7_2_114_names`.
+/// `super::derive` reads this to add `Tag::Mrj`.
+pub(crate) const MRJ: [&str; 1] = ["10.0386"];
+
 pub(crate) static SAMJNA: &[Rule] = &[
     // 1.3.12 anudāttaṅita ātmanepadam: a root carrying the anudātta/ṅit
     // marker (here: the data-layer Atmanepadin tag) takes ātmanepada.
@@ -149,9 +156,11 @@ pub(crate) static SAMJNA: &[Rule] = &[
     // 1.3.74 ṇicaś ca: a ṇijanta takes ātmanepada (when the fruit accrues
     // to the agent — unmodelled, exactly as 1.3.72's *kartrabhiprāye
     // kriyāphale* above). Affix-keyed: the guard is Tag::Nic, the data
-    // layer's PadaAssignment::Nic, which every curated curādi row outside the
-    // ākusmīya carries (those are 10.0496's, `Tag::Akusmiya`, and never reach
-    // here).
+    // layer's PadaAssignment::Nic or NicUbhayapada, which every curated curādi
+    // row outside the ākusmīya carries (those are 10.0496's, `Tag::Akusmiya`,
+    // and never reach here). On an optional-ṇic row's ṇic-less branch the
+    // sanādi fork has removed it, so 1.3.74 declines there; a NicUbhayapada
+    // row's ṇic-less ātmanepada is 1.3.72's.
     // Not keyed on Tag::Nijanta yet — see that variant's doc comment.
     //
     // The parasmaipada arm DECLINES rather than blocks, for 1.3.72's and
@@ -328,6 +337,10 @@ mod tests {
             PadaAssignment::Ubhayapada => t.add(Tag::Ubhayapadin),
             PadaAssignment::UbhayapadaAnavane => t.add(Tag::Anavane),
             PadaAssignment::Nic => t.add(Tag::Nic),
+            PadaAssignment::NicUbhayapada => {
+                t.add(Tag::Nic);
+                t.add(Tag::NicUbhayapada);
+            }
             PadaAssignment::Akusmiya => t.add(Tag::Akusmiya),
             PadaAssignment::AaGarviya => t.add(Tag::AaGarviya),
         }
@@ -525,6 +538,39 @@ mod tests {
         assert!(!p.blocked, "1.3.78 blocked cur Atmanepada");
         let mut p = nic_prakriya(Pada::Parasmaipada);
         assert!((rule.apply)(&mut p), "1.3.78 declined cur Parasmaipada");
+        assert!(!p.blocked);
+    }
+
+    /// `nic_prakriya` for a `PadaAssignment::NicUbhayapada` root's ṇic
+    /// branch, tagged as `super::derive` tags it: √vṛ (`10.0345 vfY`).
+    fn nic_ubhayapada_prakriya(pada: Pada) -> Prakriya {
+        let mut p = nic_prakriya(pada);
+        p.terms[ANGA].text = "vf".into();
+        p.terms[ANGA].add(Tag::NicUbhayapada);
+        p
+    }
+
+    #[test]
+    fn a_nic_ubhayapada_roots_nic_branch_is_1_3_74s_not_1_3_72s() {
+        // On the ṇic branch nothing has added `Tag::Ubhayapadin`: 1.3.72
+        // declines in both padas, and 1.3.74 and 1.3.78 behave exactly as for
+        // a `Nic` root. The ṇic-less branch is pinned in `super::sanadi`.
+        let r1372 = SAMJNA.iter().find(|r| r.id == "1.3.72").unwrap();
+        let r1374 = SAMJNA.iter().find(|r| r.id == "1.3.74").unwrap();
+        let r1378 = SAMJNA.iter().find(|r| r.id == "1.3.78").unwrap();
+        for pada in [Pada::Parasmaipada, Pada::Atmanepada] {
+            let mut p = nic_ubhayapada_prakriya(pada);
+            assert!(!(r1372.apply)(&mut p), "1.3.72 fired on vf {pada:?}");
+            assert!(!p.blocked, "1.3.72 blocked vf {pada:?}");
+            assert!(p.log.is_empty(), "1.3.72 recorded on vf {pada:?}");
+        }
+        let mut p = nic_ubhayapada_prakriya(Pada::Atmanepada);
+        assert!((r1374.apply)(&mut p));
+        assert!(!(r1378.apply)(&mut p), "1.3.78 fired on vf Atmanepada");
+        assert!(!p.blocked);
+        let mut p = nic_ubhayapada_prakriya(Pada::Parasmaipada);
+        assert!(!(r1374.apply)(&mut p));
+        assert!((r1378.apply)(&mut p), "1.3.78 declined vf Parasmaipada");
         assert!(!p.blocked);
     }
 
@@ -838,6 +884,16 @@ mod tests {
                     None
                 }
             })
+    }
+
+    #[test]
+    fn mrj_is_the_curated_row_7_2_114_names() {
+        // 7.2.114 mṛjer vṛddhiḥ. The curādi row is the one curated; adādi's
+        // √mṛj has the same upadeśa and joins `MRJ` when it is curated.
+        assert_eq!(MRJ, ["10.0386"]);
+        assert_eq!(upstream_upadesha("10.0386"), Some("mfjU~"));
+        assert_eq!(upstream_upadesha("02.0061"), Some("mfjU~"));
+        assert!(!dhatus().iter().any(|d| d.dhatupatha == "02.0061"));
     }
 
     #[test]

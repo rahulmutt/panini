@@ -247,7 +247,9 @@ does not hand-pick it.
 
 - 10.0498 ādhṛṣīya (51 rows), then 10.0499 āsvadīya (59 rows). Each
   teaches `optional_nic_from_upadesha` its range and drops this slice's
-  exclusion assertion.
+  exclusion assertion. (Slice 10h took fifty of the ādhṛṣīya, all but
+  `10.0368 za\da~`: see `2026-10-03-curadi-gana-10h-design.md`.)
 - The one-row triggers 2565 (`pF`), 2571 (`Guzi~r`) and 2572 (īdit).
-- √ci (`10.0124`) rides the 7.2.115 slice with √gṛ and √yu.
+- √ci (`10.0124`), √gṛ and √yu. 7.2.115 landed in slice 10h, so √gṛ and √yu
+  are curation; √ci also needs 6.1.54 and 7.3.36.
 - A causative (hetumaṇic) slice takes 01.0934 and 10.0494.

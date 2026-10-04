@@ -17,7 +17,7 @@
 use crate::prakriya::Prakriya;
 use crate::rule::{Rule, RuleKind};
 use crate::term::Tag;
-use crate::tinanta::sound::{guna_of, is_jhal, is_vowel};
+use crate::tinanta::sound::{guna_of, is_jhal, is_vowel, vrddhi_of};
 use crate::tinanta::terms::{
     ABHYASA, ANGA, ENDING, SHAP, following_sarvadhatuka, vikarana_u_asamyogapurva,
 };
@@ -218,6 +218,37 @@ pub(crate) static GUNA: &[Rule] = &[
             }
             let before = p.snapshot();
             p.record("7.3.87", "nAByastasyAci piti sArvaDAtuke", before);
+            true
+        },
+    },
+    // 7.2.114 mṛjer vṛddhiḥ, on the ṇic-less branch: before the sārvadhātuka
+    // śap, √mṛj's `f` takes vṛddhi in place of 7.3.86's guṇa (`mfj` →
+    // `mArj`, *mārjati*), and 7.3.86 then finds no laghu ik. The ṇic branch
+    // took its vṛddhi in `super::sanadi`, so a ṇijanta aṅga (`Tag::Nijanta`)
+    // declines here, as does one before a ṅit sārvadhātuka (1.1.5 kṅiti ca,
+    // as at 7.3.84 below). Guarded on `Tag::Mrj` (`super::samjna::MRJ`).
+    Rule {
+        id: "7.2.114",
+        name: "mfjer vfdDiH",
+        kind: RuleKind::Vidhi,
+        vikalpa: false,
+        bars: &[],
+        apply: |p| {
+            if !p.terms[ANGA].has(Tag::Mrj) || p.terms[ANGA].has(Tag::Nijanta) {
+                return false;
+            }
+            if following_sarvadhatuka(p).is_some_and(|t| t.has(Tag::Ngit)) {
+                return false;
+            }
+            let text = &p.terms[ANGA].text;
+            let Some(i) = text.find(['i', 'u', 'f', 'x']) else {
+                return false;
+            };
+            let v = vrddhi_of(text[i..].chars().next().unwrap()).unwrap();
+            let text = format!("{}{v}{}", &text[..i], &text[i + 1..]);
+            let before = p.snapshot();
+            p.terms[ANGA].text = text;
+            p.record("7.2.114", "mfjer vfdDiH", before);
             true
         },
     },
@@ -955,22 +986,22 @@ pub(crate) static GUNA: &[Rule] = &[
     },
     // 6.1.78 eco'yavāyāvaḥ: e/o before a vowel → ay/av. The sūtra also covers
     // E/O → Ay/Av, but those two arms are dropped here: within the current
-    // 311-root × 4-lakāra grammar, ANGA can never end in a vṛddhi vowel (E/O)
+    // 361-root × 4-lakāra grammar, ANGA can never end in a vṛddhi vowel (E/O)
     // at the point this rule runs. `vrddhi_of` (the only source of E/O in
-    // this engine) is called from four places in two rules: three in 6.1.90
-    // — the aṅga arm writes the vṛddhi vowel at *position 0* of the first
-    // non-empty term after `AGAMA` (replacing the āṭ augment + that term's
-    // first vowel): the aṅga, or for √ṛ the abhyāsa `iy` (`iy` → `Ey`), never
-    // at the aṅga's last character, and the other two arms write into
-    // SHAP/ENDING, not ANGA — and one in 6.1.88 *vṛddhir eci* (juhotyādi 3c), which
-    // writes its vṛddhi vowel into ENDING alone (da + dA + E → da + d + E),
-    // never into ANGA. The one single-character aṅga, √ṛ's `f`, is never the
-    // term the aṅga arm writes into (the abhyāsa precedes it), so there is
-    // no one-character tail to worry about either. And the order is decisive
-    // on its own regardless of where either caller writes: both 6.1.90 and
-    // 6.1.88 live in `adesha.rs`, which runs *after* the whole of `guna.rs`
-    // — so no E/O either one produces can ever be seen by 6.1.78, which has
-    // already run by then.
+    // this engine) is called by 6.1.90 (three) and 6.1.88 (one) in
+    // `adesha.rs`, 7.2.115 and 7.2.114 in `sanadi.rs`, and this file's 7.2.114.
+    // The `adesha.rs` ones run after the whole of `guna.rs`, so 6.1.78
+    // cannot see their E/O; 6.1.90's aṅga arm also writes at position 0,
+    // and the 6.1.88 and other 6.1.90 arms write SHAP/ENDING, never ANGA.
+    // The sanādi ones do reach ANGA: 7.2.115 gives lE/BO/jrE before ṇic's
+    // vowel (7.2.114 gives Ar). But the sanādi 6.1.78 (E/O arms kept)
+    // runs right after 7.2.115 and resolves that E/O to Ay/Av before
+    // 3.1.32 folds ṇic in, so this guṇa-stage entry never meets E/O.
+    // The one single-character aṅga, √ṛ's `f`, is never the term the
+    // 6.1.90 aṅga arm writes into (the abhyāsa precedes it), so there is
+    // no one-character tail to worry about either. Order alone decides
+    // it: by the time this entry runs, no E/O remains in ANGA, and the
+    // `adesha.rs` callers only run afterwards.
     // Unexecutable arms cannot be kept under the mutation gate — the same
     // discipline that removed 8.4.53 in `super::tripadi` as unreachable in
     // `9fa8e5f` (it was later RESTORED, once rudhādi supplied a witness —
@@ -1653,6 +1684,51 @@ mod tests {
     // different edge.
 
     #[test]
+    fn mrjer_vrddhih_takes_vrddhi_before_shap_on_the_nicless_mrj_only() {
+        // mfj + a + ti → mArj + a + ti; 7.3.86 then finds no laghu ik.
+        let mrj = |text: &str| {
+            let mut t = Term::new(text);
+            t.add(Tag::Mrj);
+            t
+        };
+        let mut p = Prakriya {
+            terms: with_slots(vec![mrj("mfj"), Term::new("a"), Term::new("ti")]),
+            ..Default::default()
+        };
+        let rule = GUNA.iter().find(|r| r.id == "7.2.114").unwrap();
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "mArj");
+        let r7386 = GUNA.iter().find(|r| r.id == "7.3.86").unwrap();
+        assert!(!(r7386.apply)(&mut p));
+        // Untagged: 7.3.86's guṇa, as for any root.
+        let mut p = Prakriya {
+            terms: with_slots(vec![Term::new("mfj"), Term::new("a"), Term::new("ti")]),
+            ..Default::default()
+        };
+        assert!(!(rule.apply)(&mut p));
+        assert!((r7386.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "marj");
+        // A ṇijanta √mṛj took its vṛddhi before ṇic: declines.
+        let mut anga = mrj("mfji");
+        anga.add(Tag::Nijanta);
+        let mut p = Prakriya {
+            terms: with_slots(vec![anga, Term::new("a"), Term::new("ti")]),
+            ..Default::default()
+        };
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "mfji");
+        // 1.1.5 kṅiti ca: a ṅit sārvadhātuka follower blocks it.
+        let mut shap = Term::new("a");
+        shap.add(Tag::Ngit);
+        let mut p = Prakriya {
+            terms: with_slots(vec![mrj("mfj"), shap, Term::new("ti")]),
+            ..Default::default()
+        };
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "mfj");
+    }
+
+    #[test]
     fn pugantalaghupadhasya_one_char_anga_returns_false_without_panic() {
         // n=1: `n < 2` alone is true, so `||` short-circuits and the body
         // never touches `chars[n - 2]`. The `<` -> `==` mutant makes
@@ -1767,7 +1843,7 @@ mod tests {
             log: vec![],
             ..Default::default()
         };
-        let rule = rules().find(|r| r.id == "6.1.78").unwrap();
+        let rule = GUNA.iter().find(|r| r.id == "6.1.78").unwrap();
         assert!(!(rule.apply)(&mut p));
         assert_eq!(p.terms[ANGA].text, "Se");
     }
@@ -1791,7 +1867,7 @@ mod tests {
             log: vec![],
             ..Default::default()
         };
-        let rule = rules().find(|r| r.id == "6.1.78").unwrap();
+        let rule = GUNA.iter().find(|r| r.id == "6.1.78").unwrap();
         assert!(!(rule.apply)(&mut p));
         assert_eq!(p.terms[SHAP].text, "no");
     }
@@ -1816,7 +1892,7 @@ mod tests {
             log: vec![],
             ..Default::default()
         };
-        let rule = rules().find(|r| r.id == "6.1.78").unwrap();
+        let rule = GUNA.iter().find(|r| r.id == "6.1.78").unwrap();
         assert!(!(rule.apply)(&mut p));
         assert_eq!(p.terms[ANGA].text, "Se");
         assert_eq!(p.terms[ENDING].text, "Iran");
@@ -2615,7 +2691,7 @@ mod tests {
             terms: with_slots(vec![Term::new("Ap"), Term::new("no"), Term::new("Ani")]),
             ..Default::default()
         };
-        let rule = rules().find(|r| r.id == "6.1.78").unwrap();
+        let rule = GUNA.iter().find(|r| r.id == "6.1.78").unwrap();
         assert!((rule.apply)(&mut p));
         assert_eq!(p.terms[SHAP].text, "nav");
         assert_eq!(p.terms[ANGA].text, "Ap");
@@ -2628,7 +2704,7 @@ mod tests {
             terms: with_slots(vec![Term::new("Ap"), Term::new("no"), Term::new("ti")]),
             ..Default::default()
         };
-        let rule = rules().find(|r| r.id == "6.1.78").unwrap();
+        let rule = GUNA.iter().find(|r| r.id == "6.1.78").unwrap();
         assert!(!(rule.apply)(&mut p));
         assert_eq!(p.terms[SHAP].text, "no");
     }
@@ -2640,7 +2716,7 @@ mod tests {
             terms: with_slots(vec![Term::new("Bo"), Term::new("a"), Term::new("ti")]),
             ..Default::default()
         };
-        let rule = rules().find(|r| r.id == "6.1.78").unwrap();
+        let rule = GUNA.iter().find(|r| r.id == "6.1.78").unwrap();
         assert!((rule.apply)(&mut p));
         assert_eq!(p.terms[ANGA].text, "Bav");
         assert_eq!(p.terms[SHAP].text, "a");
@@ -2653,7 +2729,7 @@ mod tests {
             terms: with_slots(vec![Term::new("Se"), Term::new(""), Term::new("Iyran")]),
             ..Default::default()
         };
-        let rule = rules().find(|r| r.id == "6.1.78").unwrap();
+        let rule = GUNA.iter().find(|r| r.id == "6.1.78").unwrap();
         assert!((rule.apply)(&mut p));
         assert_eq!(p.terms[ANGA].text, "Say");
     }

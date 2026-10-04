@@ -27,7 +27,7 @@ is ruleless.
 comment states that a blocked prakriyā's `text()` is a partial string — often the
 bare root code — not a surface form.
 
-**It asserts the corpus totals** (311 roots, 17964 cells, 22724 forms) rather than
+**It asserts the corpus totals** (361 roots, 21564 cells, 29096 forms) rather than
 reporting whatever it enumerated. Those totals are corroborated by
 `derivation_set_shape_matches_the_audited_numbers` in
 `crates/panini/tests/paradigm/main.rs`, which each slice raises to the same totals
@@ -108,6 +108,27 @@ PANINI_AUDIT_DUMP=/tmp/audit-table.tsv mise exec rust@1.99.0 -- cargo run --rele
 ```
 
 ## Last recorded result
+
+2026-10-04, curādi 10h slice, vidyut
+`8da2f90bee3ce1c07505fa432fc3729e3f7e02ea`: **zero differences across 21564
+cells / 29096 forms / 361 roots**, with the `entry` negative control verified
+failing (36 √bhū cells).
+
+The verdict covers the whole curādi 10h slice: fifty of the fifty-one
+ādhṛṣīya rows, whose ṇic the gaṇasūtra 10.0498 makes optional (all but
+`10.0368 za\da~`, which vidyut derives with the upasarga ā), each derived on
+its ṇic and its ṇic-less branch; the six svarita or ñit rows' ṇic-less branch
+in both padas, by 1.3.72; and 7.2.115, the sanādi 6.1.78, the vārttika
+7.3.37.2 and 7.2.114, which the slice adds. Blocked branches rose from 2736
+to 4320, the 1584 = 44 × 36 ṇic-less ātmanepada cells of the `Nic` rows. A
+throwaway prototype's audit was the same, zero differences, from its first
+run; dropping √prī's nuk, as a control, made 72 cells differ. A
+main-vs-branch dump of every prior cell's traces was byte-identical, all
+22724 live branches.
+
+Totals: 361 = 311 + 50; 21564 = 17964 + 3600 (400 root×pada×lakāra blocks ×
+9); 29096 = 22724 + 3600 + 2772 new `ALTERNATES` rows (4760 → 7532), measured
+via the harness's corpus block, not assumed.
 
 2026-10-03, curādi 10g slice, vidyut
 `8da2f90bee3ce1c07505fa432fc3729e3f7e02ea`: **zero differences across 17964

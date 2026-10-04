@@ -1069,8 +1069,10 @@ fn nas_capadantasya_is_credited_only_on_rudhadi_dhan_jan_and_curadi_roots() {
     // slice 10f five optional-ṇic ākusmīya roots (`danS`, `dans`, `tantr`,
     // `mantr`, `vanc`) on both their branches, and since slice 10g the
     // fifty-three idit rows (num stored) and `10.0266 anc`, on every live
-    // branch of both.
-    const CURADI: [&str; 67] = [
+    // branch of both, and since slice 10h six ādhṛṣīya rows with an `n`
+    // before a jhal (`granT` twice, `hins`, `SunD`, `SranT`, `kanW`), on
+    // every live branch of both.
+    const CURADI: [&str; 73] = [
         "10.0204", "10.0433", "10.0460", "10.0467", "10.0471", "10.0472", "10.0473", "10.0474",
         "10.0193", "10.0194", "10.0198", "10.0199", "10.0227", "10.0002", "10.0003", "10.0004",
         "10.0005", "10.0007", "10.0009", "10.0011", "10.0013", "10.0014", "10.0043", "10.0045",
@@ -1079,7 +1081,8 @@ fn nas_capadantasya_is_credited_only_on_rudhadi_dhan_jan_and_curadi_roots() {
         "10.0077", "10.0105", "10.0106", "10.0107", "10.0111", "10.0112", "10.0113", "10.0114",
         "10.0130", "10.0135", "10.0147", "10.0153", "10.0157", "10.0158", "10.0159", "10.0160",
         "10.0164", "10.0166", "10.0171", "10.0182", "10.0185", "10.0241", "10.0254", "10.0267",
-        "10.0464", "10.0465", "10.0266",
+        "10.0464", "10.0465", "10.0266", "10.0362", "10.0366", "10.0369", "10.0374", "10.0375",
+        "10.0385",
     ];
     let hits = credited("8.3.24");
     for (number, gana) in &hits {
@@ -1094,9 +1097,10 @@ fn nas_capadantasya_is_credited_only_on_rudhadi_dhan_jan_and_curadi_roots() {
     let curadi: Vec<_> = hits.iter().filter(|(_, g)| *g == Gana::Curadi).collect();
     // √gandh's 36 ātmanepada branches, the seven ubhayapadī roots' 78 each,
     // the five optional-ṇic roots' 78 each (42 ṇic-less parasmaipada, 36
-    // ṇic ātmanepada), and slice 10g's fifty-four 120 each (every live
-    // branch: 84 parasmaipada, ṇic and ṇic-less, and 36 ṇic ātmanepada).
-    assert_eq!(curadi.len(), 36 + 7 * 78 + 5 * 78 + 54 * 120);
+    // ṇic ātmanepada), and slice 10g's fifty-four and slice 10h's six 120
+    // each (every live branch: 84 parasmaipada, ṇic and ṇic-less, and 36 ṇic
+    // ātmanepada).
+    assert_eq!(curadi.len(), 36 + 7 * 78 + 5 * 78 + 60 * 120);
     for number in CURADI {
         assert!(
             curadi.iter().any(|(n, _)| *n == number),
@@ -1396,7 +1400,8 @@ fn shcutva_off_jan_is_credited_exactly_as_before_3f3() {
     // three ch-initial adanta curādi roots (`Cidra`, `Ceda`, `Cada`), whose laṅ
     // aṭ takes the same forward-arm tuk (acCidrayat), and slice 10g the three
     // ch-initial optional-ṇic roots (`Cand`, `Canj`, `Canp`), on both branches
-    // (acCandayat, acCandat).
+    // (acCandayat, acCandat), and slice 10h the three ch-initial ādhṛṣīya
+    // roots (`Cfd`, `Cfp`, `Cad`) the same way (acCardayat, acCardat).
     let hits = credited("8.4.40");
     assert!(
         hits.iter().any(|(n, _)| *n == "03.0025"),
@@ -1407,7 +1412,7 @@ fn shcutva_off_jan_is_credited_exactly_as_before_3f3() {
         assert!(
             [
                 "07.0003", "07.0008", "10.0469", "10.0480", "10.0481", "10.0062", "10.0114",
-                "10.0171"
+                "10.0171", "10.0352", "10.0354", "10.0370"
             ]
             .contains(number),
             "8.4.40 credited on {number}"
@@ -1417,6 +1422,7 @@ fn shcutva_off_jan_is_credited_exactly_as_before_3f3() {
     assert_eq!(off_jan.len() - curadi, 54);
     // Each ch-initial adanta root: laṅ's 18 cells plus its one 8.4.56 fork.
     // Each ch-initial optional-ṇic root: laṅ's 9 ātmanepada cells, and its
-    // 9 parasmaipada ones twice (ṇic and ṇic-less) plus their two 8.4.56 forks.
-    assert_eq!(curadi, 3 * 19 + 3 * 29);
+    // 9 parasmaipada ones twice (ṇic and ṇic-less) plus their two 8.4.56 forks,
+    // slice 10g's three and slice 10h's three alike.
+    assert_eq!(curadi, 3 * 19 + 6 * 29);
 }
