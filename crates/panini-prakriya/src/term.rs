@@ -28,8 +28,8 @@ pub enum Tag {
     ///
     /// The tag is deliberately NOT named for 1.3.72's condition. It means:
     /// **1.3.72's condition holds AND 1.3.12's does not** -- the residue
-    /// after 1.3.12, which is what the data layer's
-    /// PadaAssignment::Ubhayapada stores.
+    /// after 1.3.12, which the data layer's PadaAssignment::Ubhayapada stores
+    /// (and `skip_nic` sets for a NicUbhayapada row's ṇic-less branch).
     ///
     /// The counterexample that forces the distinction is Vindh: its upadesha
     /// `YiinDI~\` carries an initial Yi -- an it by 1.3.5 adirYiwuqavaH, not
@@ -138,7 +138,7 @@ pub enum Tag {
     AtLopa,
     /// The pratyaya carries the ṇ-anubandha (ṇit), SLP1 `R` as `Ngit`'s
     /// `N` is ṅ. Set on ṇic by its it-lopa in `super::sanadi`; read by
-    /// 7.2.116 *ata upadhāyāḥ*, whose following ñit/ṇit it is.
+    /// 7.2.116, 7.3.37.2, 7.2.115 and the sanādi 6.1.78.
     Rit,
     /// The dhātu belongs to juhotyādi (gaṇa 3), the ślu gaṇa. Read by
     /// 2.4.75 once the vikaraṇa exists — and, before it, by 3.4.109 as the

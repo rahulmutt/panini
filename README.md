@@ -128,7 +128,7 @@ fifty of the fifty-one ādhṛṣīya rows, whose ṇic the dhātupāṭha gaṇ
 10.0498 *ā dhṛṣād vā* makes optional (√yuj, *yojayati* beside *yojati*);
 `10.0368 za\da~` waits for upasargas. The six svarita or ñit among them are
 ubhayapadī without ṇic too, by 1.3.72 (√vṛ, *varate*). Before ṇic, 7.2.115
-*aco ñṇiti* lengthens a final vowel (*lāyayati*, *bhāvayati*), the vārttika
+*aco ñṇiti* takes vṛddhi of a final vowel (*lāyayati*, *bhāvayati*), the vārttika
 7.3.37.2 gives √dhū and √prī an optional nuk instead (*dhūnayati*,
 *prīṇayati*), and 7.2.114 *mṛjer vṛddhiḥ* gives √mṛj vṛddhi on both branches
 (*mārjati*, *mārjayati*).

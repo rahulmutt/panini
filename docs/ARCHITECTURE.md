@@ -38,7 +38,7 @@ implements; `tinanta::rules()` yields that flattened sequence.
 | `vikarana.rs` | 3.1.69, 3.1.73, 3.1.77, 3.1.78, 3.1.79, 3.1.81, 3.1.68, 2.4.72, 2.4.75, 3.4.111, 3.1.83, 1.2.4 | contains 3.1.68 |
 | `abhyasa.rs` | 6.1.10, 7.4.66, 7.4.60, 7.4.59, 7.4.62, 7.4.75, 7.4.76, 7.4.77, 7.4.78, 6.4.78 — dvitva and the abhyāsa's shape | after 3.1.68 |
 | `anga.rs` | 6.4.71 … 6.1.73 … 7.1.4 … 7.2.81, 6.4.23 | after 3.1.68 |
-| `guna.rs` | 7.4.21, 7.3.83, 7.3.87, 7.3.84, 7.3.86, 7.3.86 (again — its own vikalpa entry, see below), 7.3.92, 7.3.84 (again — see below), 7.1.102, 6.4.110, 6.4.108, 6.4.109, 6.4.87, 6.4.82, 6.4.77, 6.1.77, 6.1.78, 7.3.101, 6.4.119, 6.4.118, 6.4.117, 6.4.116, 6.4.113, 6.4.98, 6.4.100, 6.4.112, 6.4.115, 6.4.42, 6.4.43 — vowel gradation and vikaraṇa reshaping | after 3.1.68 |
+| `guna.rs` | 7.4.21, 7.3.83, 7.3.87, 7.2.114, 7.3.84, 7.3.86, 7.3.86 (again — its own vikalpa entry, see below), 7.3.92, 7.3.84 (again — see below), 7.1.102, 6.4.110, 6.4.108, 6.4.109, 6.4.87, 6.4.82, 6.4.77, 6.1.77, 6.1.78, 7.3.101, 6.4.119, 6.4.118, 6.4.117, 6.4.116, 6.4.113, 6.4.98, 6.4.100, 6.4.112, 6.4.115, 6.4.42, 6.4.43 — vowel gradation and vikaraṇa reshaping | after 3.1.68 |
 | `adesha.rs` | 6.1.97, 6.1.101 (their aṅga–śap entries), 6.1.101 … 6.1.96, 6.4.106, 6.4.107, 6.1.90, 6.1.88 … 6.4.101, 6.4.111 | after 3.1.68 |
 | `tripadi.rs` | 8.2.77, 8.2.23, 8.2.25, 8.2.26, 8.2.30, 8.2.31, 8.2.39, 8.2.40, 8.2.41, 8.2.74, 8.2.75, 8.2.73, 8.3.15 … 8.3.59, 8.4.40, 8.4.41, 8.3.13, 8.4.53, 8.4.54, 8.2.38, 8.4.55, 8.4.1, 8.4.2, 8.4.58, 8.4.65, 8.4.56 | after 3.1.68 |
 
@@ -574,7 +574,7 @@ vikalpa unique to √bhī, forking all four lakāras but stacking with 7.1.35
 here in loṭ — in the role rudhādi's 8.4.65 and
 tanādi's 7.3.86 each play. One more cell joins the record, taking it to
 **seventeen cells holding six forms** across three distinct mechanisms;
-nothing exceeded six until slice 3c2's seven-form cell (see `Rule.bars`, above; slice 10f's nine-form pata loṭ parasmaipada prathama/madhyama eka cells now hold the record). √bhī's loṭ **parasmaipada prathama**
+nothing exceeded six until slice 3c2's seven-form cell (see `Rule.bars`, above; slice 10f's nine-form pata loṭ parasmaipada prathama/madhyama eka cells and slice 10h's √dhū and √prī loṭ tātaṅ cells, six nine-form cells in all, now hold the record). √bhī's loṭ **parasmaipada prathama**
 eka is the matching five-form cell
 (`biBetu`/`biBItAd`/`biBitAd`/`biBitAt`/`biBItAt`), joining the eight-cell
 five-form record above and taking it to nine (slice 3c2's √hā loṭ prathama eka takes it to ten); and √bhī's vidhiliṅ prathama eka

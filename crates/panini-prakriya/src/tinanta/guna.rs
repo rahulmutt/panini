@@ -988,20 +988,20 @@ pub(crate) static GUNA: &[Rule] = &[
     // E/O → Ay/Av, but those two arms are dropped here: within the current
     // 361-root × 4-lakāra grammar, ANGA can never end in a vṛddhi vowel (E/O)
     // at the point this rule runs. `vrddhi_of` (the only source of E/O in
-    // this engine) is called from four places in two rules: three in 6.1.90
-    // — the aṅga arm writes the vṛddhi vowel at *position 0* of the first
-    // non-empty term after `AGAMA` (replacing the āṭ augment + that term's
-    // first vowel): the aṅga, or for √ṛ the abhyāsa `iy` (`iy` → `Ey`), never
-    // at the aṅga's last character, and the other two arms write into
-    // SHAP/ENDING, not ANGA — and one in 6.1.88 *vṛddhir eci* (juhotyādi 3c), which
-    // writes its vṛddhi vowel into ENDING alone (da + dA + E → da + d + E),
-    // never into ANGA. The one single-character aṅga, √ṛ's `f`, is never the
-    // term the aṅga arm writes into (the abhyāsa precedes it), so there is
-    // no one-character tail to worry about either. And the order is decisive
-    // on its own regardless of where either caller writes: both 6.1.90 and
-    // 6.1.88 live in `adesha.rs`, which runs *after* the whole of `guna.rs`
-    // — so no E/O either one produces can ever be seen by 6.1.78, which has
-    // already run by then.
+    // this engine) is called by 6.1.90 (three) and 6.1.88 (one) in
+    // `adesha.rs`, 7.2.115 and 7.2.114 in `sanadi.rs`, and this file's 7.2.114.
+    // The `adesha.rs` ones run after the whole of `guna.rs`, so 6.1.78
+    // cannot see their E/O; 6.1.90's aṅga arm also writes at position 0,
+    // and the 6.1.88 and other 6.1.90 arms write SHAP/ENDING, never ANGA.
+    // The sanādi ones do reach ANGA: 7.2.115 gives lE/BO/jrE before ṇic's
+    // vowel (7.2.114 gives Ar). But the sanādi 6.1.78 (E/O arms kept)
+    // runs right after 7.2.115 and resolves that E/O to Ay/Av before
+    // 3.1.32 folds ṇic in, so this guṇa-stage entry never meets E/O.
+    // The one single-character aṅga, √ṛ's `f`, is never the term the
+    // 6.1.90 aṅga arm writes into (the abhyāsa precedes it), so there is
+    // no one-character tail to worry about either. Order alone decides
+    // it: by the time this entry runs, no E/O remains in ANGA, and the
+    // `adesha.rs` callers only run afterwards.
     // Unexecutable arms cannot be kept under the mutation gate — the same
     // discipline that removed 8.4.53 in `super::tripadi` as unreachable in
     // `9fa8e5f` (it was later RESTORED, once rudhādi supplied a witness —

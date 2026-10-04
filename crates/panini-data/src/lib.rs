@@ -3686,7 +3686,7 @@ static DHATUS: &[Dhatu] = &[
     Dhatu {
         // 10.0343 `lI` dravIkaraRe (√lī). Ādhṛṣīya: ṇic optional by 10.0498.
         // Ubhayapadī by 1.3.74 with ṇic (*lāyayati*), parasmaipadī by 1.3.78
-        // without (*layati*). 7.2.115 *aco ñṇiti* lengthens the final before ṇic.
+        // without (*layati*). 7.2.115 *aco ñṇiti* takes vṛddhi of the final before ṇic.
         // Slice 10h.
         dhatupatha: "10.0343",
         code: "lI",
@@ -3718,7 +3718,7 @@ static DHATUS: &[Dhatu] = &[
     Dhatu {
         // 10.0346 `jF` vayohAnO (√jṝ). Ādhṛṣīya: ṇic optional by 10.0498.
         // Ubhayapadī by 1.3.74 with ṇic (*jārayati*), parasmaipadī by 1.3.78
-        // without (*jarati*). 7.2.115 *aco ñṇiti* lengthens the final before ṇic.
+        // without (*jarati*). 7.2.115 *aco ñṇiti* takes vṛddhi of the final before ṇic.
         // Slice 10h.
         dhatupatha: "10.0346",
         code: "jF",
@@ -3729,7 +3729,7 @@ static DHATUS: &[Dhatu] = &[
     Dhatu {
         // 10.0347 `jri\` vayohAnO (√jri). Ādhṛṣīya: ṇic optional by 10.0498.
         // Ubhayapadī by 1.3.74 with ṇic (*jrāyayati*), parasmaipadī by 1.3.78
-        // without (*jrayati*). 7.2.115 *aco ñṇiti* lengthens the final before ṇic.
+        // without (*jrayati*). 7.2.115 *aco ñṇiti* takes vṛddhi of the final before ṇic.
         // Slice 10h.
         dhatupatha: "10.0347",
         code: "jri",
@@ -3870,7 +3870,7 @@ static DHATUS: &[Dhatu] = &[
     Dhatu {
         // 10.0361 `mI\` gatO (√mī). Ādhṛṣīya: ṇic optional by 10.0498. Ubhayapadī
         // by 1.3.74 with ṇic (*māyayati*), parasmaipadī by 1.3.78 without
-        // (*mayati*). 7.2.115 *aco ñṇiti* lengthens the final before ṇic. Slice
+        // (*mayati*). 7.2.115 *aco ñṇiti* takes vṛddhi of the final before ṇic. Slice
         // 10h.
         dhatupatha: "10.0361",
         code: "mI",
@@ -4076,7 +4076,7 @@ static DHATUS: &[Dhatu] = &[
     Dhatu {
         // 10.0382 `BU` prAptO (√bhū). Ādhṛṣīya: ṇic optional by 10.0498.
         // Ubhayapadī by 1.3.74 with ṇic (*bhāvayati*), parasmaipadī by 1.3.78
-        // without (*bhavati*). 7.2.115 *aco ñṇiti* lengthens the final before ṇic.
+        // without (*bhavati*). 7.2.115 *aco ñṇiti* takes vṛddhi of the final before ṇic.
         // Slice 10h.
         dhatupatha: "10.0382",
         code: "BU",
