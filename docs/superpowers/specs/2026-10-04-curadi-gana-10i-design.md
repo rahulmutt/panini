@@ -290,7 +290,7 @@ audit harness's asserts):**
 - 3.1.28 adds āya only under `Tag::Aya`, and only when ṇic was declined.
 - 3.1.32 sets `Tag::Nijanta` for ṇic, not for āya.
 - The sanādi 6.1.73: on `viC` before ṇic, tuk lands before guṇa reads the
-  upadhā (`vicC`, not `veC`); it declines with no short vowel before `C`.
+  upadhā (`vitC`, which 8.4.40 later makes `vicC`, not `veC`); it declines with no short vowel before `C`.
 
 **Corpus-wide tests (fires-only-on-rows):**
 - **New:** 3.1.28 fires on exactly `10.0303` and `10.0304`, on their
