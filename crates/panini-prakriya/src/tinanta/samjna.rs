@@ -999,6 +999,7 @@ mod tests {
         // `sPura~` meet ṇic only in a causative.
         assert_eq!(CISPHUR, ["10.0124"]);
         assert_eq!(upstream_upadesha("10.0124"), Some("ciY"));
+        assert!(dhatus().iter().any(|d| d.dhatupatha == "10.0124"));
         assert_eq!(upstream_upadesha("10.0325"), Some("ci"));
         for (number, upadesha) in [("05.0005", "ci\\Y"), ("06.0121", "sPura~")] {
             assert_eq!(upstream_upadesha(number), Some(upadesha), "{number}");

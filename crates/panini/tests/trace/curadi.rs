@@ -244,7 +244,7 @@ fn an_akusmiya_roots_parasmaipada_is_blocked_by_a_kusmad_alone() {
                 && optional_nic(d.dhatupatha).is_none()
         })
         .collect();
-    assert_eq!(rows.len(), 37, "curated ākusmīya rows with ṇic");
+    assert_eq!(rows.len(), 39, "curated ākusmīya rows with ṇic");
     for d in rows {
         let number = d.dhatupatha;
         for lakara in [Lakara::Lat, Lakara::Lan, Lakara::Lot, Lakara::VidhiLin] {
@@ -265,15 +265,16 @@ fn an_akusmiya_roots_parasmaipada_is_blocked_by_a_kusmad_alone() {
 
 #[test]
 fn a_kusmad_is_credited_on_exactly_the_akusmiya_cells() {
-    // 10.0496 fires on every ātmanepada cell of the 43 curated ākusmīya
-    // rows — 43 roots × 4 lakāras × 9 cells, one branch each, the six
-    // optional-ṇic rows' on their ṇic branch — and nowhere else: every
-    // credit's number lies in the positional `AKUSMIYA` range. And 1.3.74
-    // never reaches them: its credits stay on the 260 `Nic` rows and the six
-    // `NicUbhayapada` rows' ṇic branch, read from the curated `pada` column
-    // (ten before slice 10e, listed literally until then).
+    // 10.0496 fires on every ātmanepada cell of the 45 curated ākusmīya
+    // rows (the whole range, since slice 10j) — 45 roots × 4 lakāras × 9
+    // cells, one branch each, the six optional-ṇic rows' on their ṇic branch
+    // — and nowhere else: every credit's number lies in the positional
+    // `AKUSMIYA` range. And 1.3.74 never reaches them: its credits stay on the
+    // 264 `Nic` rows and the seven `NicUbhayapada` rows' ṇic branch, read from
+    // the curated `pada` column (ten before slice 10e, listed literally until
+    // then).
     let hits = credited("10.0496");
-    assert_eq!(hits.len(), 43 * 36);
+    assert_eq!(hits.len(), 45 * 36);
     for (number, _) in &hits {
         assert!(AKUSMIYA.contains(number), "10.0496 credited on {number}");
     }
@@ -282,13 +283,13 @@ fn a_kusmad_is_credited_on_exactly_the_akusmiya_cells() {
         .filter(|d| d.gana == Gana::Curadi && d.pada == PadaAssignment::Nic)
         .map(|d| d.dhatupatha)
         .collect();
-    assert_eq!(nic.len(), 260, "curated 1.3.74 rows");
+    assert_eq!(nic.len(), 264, "curated 1.3.74 rows");
     let nic_ubhayapada: Vec<&str> = dhatus()
         .iter()
         .filter(|d| d.pada == PadaAssignment::NicUbhayapada)
         .map(|d| d.dhatupatha)
         .collect();
-    assert_eq!(nic_ubhayapada.len(), 6, "curated 1.3.74-and-1.3.72 rows");
+    assert_eq!(nic_ubhayapada.len(), 7, "curated 1.3.74-and-1.3.72 rows");
     for (number, _) in credited("1.3.74") {
         assert!(
             nic.contains(&number) || nic_ubhayapada.contains(&number),
@@ -345,14 +346,17 @@ fn syAmayate_and_SAmayate_keep_their_vrddhi() {
 
 #[test]
 fn the_mit_rules_are_credited_on_exactly_the_jnapadi_cells() {
-    // 10.0493 and 6.4.92 fire on every branch of the six curated jñapādi
-    // rows — 42 parasmaipada and 36 ātmanepada branches each, 468 in all —
-    // and nowhere else: every credit's number lies in the positional
-    // `JNAPADI` range. Goldens ignore traces, so this is what holds both
-    // rules inert on the 144 prior roots.
-    for sutra in ["10.0493", "6.4.92"] {
+    // 10.0493 fires on every branch of the seven curated jñapādi rows, and
+    // 6.4.92 on every ṇic branch: 42 parasmaipada and 36 ātmanepada branches
+    // for each of the six that take ṇic, 468 in all; and for √ci
+    // (`10.0124`), whose ṇic is optional, 126 and 108 branches, two thirds of
+    // them ṇic branches (6.1.54 forks each in two), so 10.0493 has 234 more
+    // and 6.4.92 156. Nowhere else: every credit's number lies in the
+    // positional `JNAPADI` range. Goldens ignore traces, so this is what
+    // holds both rules inert on every other root.
+    for (sutra, n) in [("10.0493", 702), ("6.4.92", 624)] {
         let hits = credited(sutra);
-        assert_eq!(hits.len(), 468, "{sutra}");
+        assert_eq!(hits.len(), n, "{sutra}");
         for (number, _) in &hits {
             assert!(JNAPADI.contains(number), "{sutra} credited on {number}");
         }
@@ -494,6 +498,14 @@ fn optional_nic_rows() -> Vec<&'static panini_data::Dhatu> {
         .collect()
 }
 
+/// Whether a branch crediting `ids` is the ṇic-less one `id` opens: `id` is
+/// its first credit, or its second after 10.0493, which is credited ahead of
+/// the fork on a mit row (√ci, `10.0124`), as vidyut credits it.
+fn opens_nicless(ids: &[&str], id: &str) -> bool {
+    let ids = ids.strip_prefix(&["10.0493"][..]).unwrap_or(ids);
+    ids.first() == Some(&id)
+}
+
 #[test]
 #[allow(non_snake_case)]
 fn daMSati_trace_has_no_nic_and_no_a_kusmad() {
@@ -573,7 +585,7 @@ fn the_optional_nic_ids_are_credited_only_on_their_rows() {
     // for a `NicUbhayapada` row's, which 1.3.72 sanctions). 2573.2 fires only
     // on `pata`. Goldens ignore traces, so this is also what holds all nine
     // inert on every root outside `OPTIONAL_NIC`. The 10.0498, 10.0499, 2564
-    // and 2570 rows are the 10f to 10i specs' row tables, listed literally.
+    // and 2570 rows are the 10f to 10j specs' row tables, listed literally.
     for (id, rows) in [
         (
             "10.0498",
@@ -620,7 +632,7 @@ fn the_optional_nic_ids_are_credited_only_on_their_rows() {
             "2570",
             &[
                 "10.0227", "10.0230", "10.0174", "10.0184", "10.0243", "10.0249", "10.0260",
-                "10.0266",
+                "10.0266", "10.0124",
             ][..],
         ),
         ("2565", &["10.0022"][..]),
@@ -645,7 +657,11 @@ fn the_optional_nic_ids_are_credited_only_on_their_rows() {
                         );
                         let nicless: Vec<_> = derive(d, lakara, pada, purusha, vacana)
                             .into_iter()
-                            .filter(|p| p.log.first().is_some_and(|s| s.sutra == id))
+                            .filter(|p| {
+                                let ids: Vec<&str> =
+                                    p.log.iter().map(|s| s.sutra.as_str()).collect();
+                                opens_nicless(&ids, id)
+                            })
                             .collect();
                         assert!(!nicless.is_empty(), "{cell}: no ṇic-less branch");
                         let blocks =
@@ -687,7 +703,7 @@ fn no_nic_pada_rule_reaches_a_nicless_branch() {
                         );
                         for p in derive(d, lakara, pada, purusha, vacana) {
                             let ids: Vec<&str> = p.log.iter().map(|s| s.sutra.as_str()).collect();
-                            if ids.first() == Some(&id) {
+                            if opens_nicless(&ids, id) {
                                 for absent in nic_only {
                                     assert!(!ids.contains(&absent), "{cell} {absent}: {ids:?}");
                                 }
@@ -880,8 +896,8 @@ fn kzampARi_traces_8_4_2_across_num_on_both_branches() {
 /// The rows whose live branches credit `sutra` — in the sanādi stage only
 /// when `sanadi` is set — sorted, each once. The stage ends where the next
 /// opens, at the first of 3.1.32 (which closes it where it fires) and the pada
-/// rules 1.3.12, 1.3.66, 1.3.72, 1.3.74, 1.3.78 (which open the stage after
-/// it, so a branch without 3.1.32 still has a bounded window); 3.4.78, the tiṅ
+/// rules 2567, 1.3.12, 1.3.66, 1.3.72, 1.3.74, 1.3.78 (which open the stage
+/// after it, so a branch without 3.1.32 still has a bounded window); 3.4.78, the tiṅ
 /// substitution that every live branch credits, is the backstop. The aṅga
 /// stage's later credits stay outside.
 fn rows_crediting(sutra: &str, sanadi: bool) -> Vec<&'static str> {
@@ -900,8 +916,8 @@ fn rows_crediting(sutra: &str, sanadi: bool) -> Vec<&'static str> {
                                 ids.iter()
                                     .position(|s| {
                                         [
-                                            "3.1.32", "1.3.12", "1.3.66", "1.3.72", "1.3.74",
-                                            "1.3.78", "3.4.78",
+                                            "3.1.32", "2567", "1.3.12", "1.3.66", "1.3.72",
+                                            "1.3.74", "1.3.78", "3.4.78",
                                         ]
                                         .contains(s)
                                     })
@@ -927,22 +943,25 @@ fn rows_crediting(sutra: &str, sanadi: bool) -> Vec<&'static str> {
 fn the_10h_vrddhi_and_nuk_rules_fire_only_on_their_rows() {
     // Goldens ignore traces, so this is what holds slice 10h's rules to
     // their rows across the corpus: 7.2.115 on exactly the eight vowel-final
-    // ādhṛṣīya rows and, since slice 10i, √pṝ, √ji and √ci; the sanādi 6.1.78
-    // on the six of those ādhṛṣīya rows whose vṛddhi is an ec (√vṛ and √jṝ
-    // reach `Ar` directly, as √pṝ does) and on √ji and √ci; 7.3.37.2 on √dhū
-    // and √prī; and 7.2.114 on √mṛj, before ṇic and on its ṇic-less branch
-    // alike.
+    // ādhṛṣīya rows, since slice 10i √pṝ, √ji and √ci (`10.0325`), and since
+    // slice 10j √smiṅ, √ci (`10.0124`), √ghṛ, √gṛ, √yu, √cyu and √bhū — never
+    // √jñā, whose puk comes first; the sanādi 6.1.78 on the rows whose
+    // vṛddhi is an ec (√vṛ, √jṝ, √pṝ, √ghṛ and √gṛ reach `Ar` directly);
+    // 7.3.37.2 on √dhū and √prī; and 7.2.114 on √mṛj, before ṇic and on its
+    // ṇic-less branch alike.
     assert_eq!(
         rows_crediting("7.2.115", false),
         [
-            "10.0022", "10.0324", "10.0325", "10.0343", "10.0345", "10.0346", "10.0347", "10.0361",
-            "10.0372", "10.0373", "10.0382"
+            "10.0022", "10.0058", "10.0124", "10.0152", "10.0231", "10.0235", "10.0275", "10.0277",
+            "10.0324", "10.0325", "10.0343", "10.0345", "10.0346", "10.0347", "10.0361", "10.0372",
+            "10.0373", "10.0382"
         ]
     );
     assert_eq!(
         rows_crediting("6.1.78", true),
         [
-            "10.0324", "10.0325", "10.0343", "10.0347", "10.0361", "10.0372", "10.0373", "10.0382"
+            "10.0058", "10.0124", "10.0235", "10.0275", "10.0277", "10.0324", "10.0325", "10.0343",
+            "10.0347", "10.0361", "10.0372", "10.0373", "10.0382"
         ]
     );
     assert_eq!(rows_crediting("7.3.37.2", false), ["10.0372", "10.0373"]);
@@ -996,6 +1015,18 @@ fn the_10i_aya_and_tuk_fire_only_on_their_rows() {
     // their ṇic-less branches), and the sanādi 6.1.73 on √vich alone.
     assert_eq!(rows_crediting("3.1.28", true), ["10.0303", "10.0304"]);
     assert_eq!(rows_crediting("6.1.73", true), ["10.0304"]);
+}
+
+#[test]
+fn the_10j_rules_fire_only_on_their_rows() {
+    // Goldens ignore traces, so this is what holds slice 10j's three new
+    // rules to their rows across the corpus: 6.1.54 on √ci (`10.0124`) alone,
+    // never on the āsvadīya `10.0325 ci`; 7.3.36's puk on √ci's 6.1.54 branch
+    // and √jñā, the two ā-final aṅgas before ṇic; and Kaumudī 2567 on √smiṅ,
+    // the one ṅit curādi row.
+    assert_eq!(rows_crediting("6.1.54", true), ["10.0124"]);
+    assert_eq!(rows_crediting("7.3.36", true), ["10.0124", "10.0258"]);
+    assert_eq!(rows_crediting("2567", false), ["10.0058"]);
 }
 
 #[test]

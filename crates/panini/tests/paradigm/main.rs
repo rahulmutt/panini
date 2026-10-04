@@ -141,12 +141,12 @@ fn every_alternate_names_a_real_cell() {
 /// 6.4.116, 6.4.115 and 6.4.43 right after 7.3.86, not last as they sit
 /// here.
 const VIKALPA_RULES: &[&str] = &[
-    "10.0498", "10.0499", "2564", "2565", "2570", "2571", "2573.1", "2573.3", "2573.2", "7.3.37.2",
-    "7.1.35", "3.4.111", "7.3.86", "6.4.107", "8.2.74", "8.2.75", "8.4.65", "8.4.56", "6.4.115",
-    "6.4.117", "6.4.116", "6.4.43",
+    "10.0498", "10.0499", "2564", "2565", "2570", "2571", "2573.1", "2573.3", "2573.2", "6.1.54",
+    "7.3.37.2", "7.1.35", "3.4.111", "7.3.86", "6.4.107", "8.2.74", "8.2.75", "8.4.65", "8.4.56",
+    "6.4.115", "6.4.117", "6.4.116", "6.4.43",
 ];
 
-/// `ALTERNATES` is otherwise 10460 bare strings, and a string can be right for
+/// `ALTERNATES` is otherwise 10646 bare strings, and a string can be right for
 /// the wrong reason — `BavatAt` is a real form whether or not 8.4.56 is what
 /// produced it. This ties each row to the grammar: find the branch that
 /// derives the row's form, intersect its log with the optional-rule set, and
@@ -809,11 +809,19 @@ fn derivation_set_is_exactly_pinned() {
 /// cell adds the ṇic-less reading beside it — for √dhūp and √vich, 3.1.28's
 /// āya stem (*dhūpāyati*, *vicchāyati*). 4392 new cells, 2928 new rows. The
 /// gaṇa is OPEN at 319 of its 509 rows.
+///
+/// Slice 10j curates the eight ajanta rows 7.2.115, 6.1.54 and 7.3.36 reach:
+/// √ghṛ, √jñā, √cyu and √bhū (`Nic`), which fork exactly where √cur does;
+/// √gṛ and √yu, ākusmīya, and √smiṅ, ātmanepadī under ṇic by Kaumudī 2567,
+/// one form per cell; and √ci (`NicUbhayapada`), whose every cell holds
+/// three readings: the ṇic branch declined (*cayayati*, the pinned form),
+/// 6.1.54's (*capayati*) and 2570's ṇic-less one (*cayati*), in both padas.
+/// 468 new cells, 186 new rows. The gaṇa is OPEN at 327 of its 509 rows.
 /// This test is what keeps the numbers true day to day.
 #[test]
 fn derivation_set_shape_matches_the_audited_numbers() {
     let total_cells = PARADIGM.len() * 9;
-    assert_eq!(total_cells, 25956, "2884 root×lakāra blocks × 9 cells each");
+    assert_eq!(total_cells, 26424, "2936 root×lakāra blocks × 9 cells each");
 
     let mut ones = 0usize;
     let mut twos = 0usize;
@@ -844,10 +852,10 @@ fn derivation_set_shape_matches_the_audited_numbers() {
             }
         }
     }
-    assert_eq!(ones, 18268, "one-form cells");
-    assert_eq!(twos, 6424, "two-form cells");
+    assert_eq!(ones, 18648, "one-form cells");
+    assert_eq!(twos, 6432, "two-form cells");
     assert_eq!(
-        threes, 525,
+        threes, 601,
         "three-form cells — new in slice 3b — √hrī's loṭ prathama and madhyama eka, each by \
          7.1.35/8.4.56; and — new in slice 3c — √dā's and √dhā's, the same way; and — new in \
          slice 3c2 — √gā's, the same way; and — new in slice 3d — the six ṛ-roots', the same way; \
@@ -860,7 +868,9 @@ fn derivation_set_shape_matches_the_audited_numbers() {
          in slice 10e — the eighty-three ubhayapadī adanta roots', the same way; and — new in slice \
          10f — the optional-ṇic rows' (2564/2570/2573.x beside 7.1.35/8.4.56); and — new in \
          slice 10h — √dhū's and √prī's every cell that forks on neither 7.1.35 nor 8.4.56 \
-         (10.0498 and 7.3.37.2 beside the ṇic form)"
+         (10.0498 and 7.3.37.2 beside the ṇic form); and — new in slice 10j — √ghṛ's, √jñā's, \
+         √cyu's and √bhū's two loṭ tātaṅ cells, by 7.1.35/8.4.56, and √ci's every cell that \
+         forks on neither (6.1.54 and 2570 beside the ṇic form)"
     );
     assert_eq!(
         fours, 359,
@@ -885,7 +895,7 @@ fn derivation_set_shape_matches_the_audited_numbers() {
          prathama eka, forking on 7.1.35/6.4.116/8.4.56"
     );
     assert_eq!(
-        sixes, 363,
+        sixes, 365,
         "six-form cells — kft loṭ madhyama eka, ruD loṭ parasmaipada madhyama eka, Bid, kzud \
          and tfd's loṭ parasmaipada madhyama eka, und's (slice 7d), Cid's and Cfd's loṭ \
          parasmaipada madhyama eka (slice 7f), and — new in slice 8a — kziR, fR, tfR and GfR's \
@@ -900,7 +910,9 @@ fn derivation_set_shape_matches_the_audited_numbers() {
          slice 10h — forty-eight ādhṛṣīya rows' the same cells (10.0498 beside 7.1.35/8.4.56), \
          and √dhū's and √prī's laṅ and vidhiliṅ parasmaipada prathama eka (10.0498 and \
          7.3.37.2 beside 8.4.56); and — new in slice 10i — the sixty-one rows' loṭ \
-         parasmaipada prathama and madhyama eka (10.0499/2565/2571 beside 7.1.35/8.4.56)"
+         parasmaipada prathama and madhyama eka (10.0499/2565/2571 beside 7.1.35/8.4.56); and \
+         — new in slice 10j — √ci's laṅ and vidhiliṅ parasmaipada prathama eka (6.1.54 and 2570 \
+         beside 8.4.56)"
     );
     assert_eq!(
         sevens, 1,
@@ -911,24 +923,25 @@ fn derivation_set_shape_matches_the_audited_numbers() {
     );
 
     assert_eq!(
-        nines, 6,
+        nines, 8,
         "nine-form cells — new in slice 10f, the engine's record: pata's loṭ parasmaipada \
          prathama and madhyama eka, three readings (2573.1 ṇic-less, 2573.2 pAta-, 6.4.48 \
          pata-) × the tātaṅ triple (7.1.35/8.4.56); and — new in slice 10h — √dhū's and \
          √prī's, three readings (10.0498 ṇic-less, 7.3.37.2's nuk, 7.2.115's vṛddhi) × the \
-         same triple"
+         same triple; and — new in slice 10j — √ci's, three readings (2570 ṇic-less, 6.1.54's \
+         `cA` with 7.3.36's puk, 7.2.115's vṛddhi) × the same triple"
     );
 
-    assert_eq!(ALTERNATES.len(), 10460, "ALTERNATES row count");
+    assert_eq!(ALTERNATES.len(), 10646, "ALTERNATES row count");
     let key_count = |key: &str| {
         ALTERNATES
             .iter()
             .filter(|(_, _, _, _, _, k)| *k == key)
             .count()
     };
-    assert_eq!(key_count("8.4.56"), 636, "8.4.56-only alternates");
-    assert_eq!(key_count("7.1.35"), 628, "7.1.35-only alternates");
-    assert_eq!(key_count("7.1.35+8.4.56"), 628, "7.1.35+8.4.56 alternates");
+    assert_eq!(key_count("8.4.56"), 646, "8.4.56-only alternates");
+    assert_eq!(key_count("7.1.35"), 638, "7.1.35-only alternates");
+    assert_eq!(key_count("7.1.35+8.4.56"), 638, "7.1.35+8.4.56 alternates");
     assert_eq!(key_count("3.4.111"), 2, "3.4.111 alternates");
     assert_eq!(key_count("6.4.107"), 72, "6.4.107 alternates");
     assert_eq!(key_count("8.4.65"), 145, "8.4.65-only alternates");
@@ -976,9 +989,11 @@ fn derivation_set_shape_matches_the_audited_numbers() {
     );
     // Slice 10f's five Kaumudī vikalpa ids, alone and stacked, with slice
     // 10g's fifty-nine rows: 2564 alone, 2570 alone and 2570+7.3.86 are 10g's.
+    // Slice 10j's √ci adds 72 to 2570 alone, its ṇic-less branch in both
+    // padas, and two to each of 2570's 8.4.56 and 7.1.35 stacks.
     for (key, n) in [
         ("2564", 1908),
-        ("2570", 144),
+        ("2570", 216),
         ("2570+7.3.86", 72),
         ("2573.1", 36),
         ("2573.2", 72),
@@ -989,9 +1004,9 @@ fn derivation_set_shape_matches_the_audited_numbers() {
         ("2573.3+8.4.56", 6),
         ("2573.3+7.1.35", 6),
         ("2573.3+7.1.35+8.4.56", 6),
-        ("2570+8.4.56", 10),
-        ("2570+7.1.35", 10),
-        ("2570+7.1.35+8.4.56", 10),
+        ("2570+8.4.56", 12),
+        ("2570+7.1.35", 12),
+        ("2570+7.1.35+8.4.56", 12),
         ("2570+7.3.86+8.4.56", 6),
         ("2570+7.1.35+7.3.86", 6),
         ("2570+7.1.35+7.3.86+8.4.56", 6),
@@ -1044,6 +1059,16 @@ fn derivation_set_shape_matches_the_audited_numbers() {
         ("2571+7.3.86+8.4.56", 2),
         ("2571+7.1.35+7.3.86", 2),
         ("2571+7.1.35+7.3.86+8.4.56", 2),
+    ] {
+        assert_eq!(key_count(key), n, "{key} alternates");
+    }
+    // Slice 10j's vikalpa id, alone and stacked: 6.1.54 on √ci's ṇic branch,
+    // in both padas.
+    for (key, n) in [
+        ("6.1.54", 72),
+        ("6.1.54+8.4.56", 2),
+        ("6.1.54+7.1.35", 2),
+        ("6.1.54+7.1.35+8.4.56", 2),
     ] {
         assert_eq!(key_count(key), n, "{key} alternates");
     }
@@ -1590,6 +1615,10 @@ fn pada_ambiguous_surfaces_are_exactly_these() {
     // `laGi~` twice and `svad` / `svAd`, share theirs (−8). `danS` and `dans`
     // add theirs: their earlier rows are ākusmīya, with only the ātmanepada
     // half. 208 more, taking the set from 839 to 1047.
+    // Slice 10j's √ghṛ, √jñā, √cyu and √ci (its declined ṇic branch, the
+    // pinned form) contribute the same four each — 16 more, taking the set
+    // from 1047 to 1063. √bhū's four are the ādhṛṣīya `10.0382 BU`'s already;
+    // √gṛ, √yu and √smiṅ are ātmanepadī only.
     assert_eq!(
         both,
         vec![
@@ -1680,6 +1709,9 @@ fn pada_ambiguous_surfaces_are_exactly_these() {
             "DvanayetAm",
             "Dvanayeta",
             "Erayata",
+            "GArayatAm",
+            "GArayetAm",
+            "GArayeta",
             "GAwayatAm",
             "GAwayetAm",
             "GAwayeta",
@@ -1765,6 +1797,7 @@ fn pada_ambiguous_surfaces_are_exactly_these() {
             "aDatta",
             "aDekayata",
             "aDvanayata",
+            "aGArayata",
             "aGAwayata",
             "aGaRwayata",
             "aGfRuta",
@@ -1829,11 +1862,13 @@ fn pada_ambiguous_surfaces_are_exactly_these() {
             "acampayata",
             "acapayata",
             "acarpayata",
+            "acayayata",
             "acintayata",
             "acitrayata",
             "acorayata",
             "acuRwayata",
             "acumbayata",
+            "acyAvayata",
             "adAlayata",
             "adaMSayata",
             "adaMhayata",
@@ -1860,6 +1895,7 @@ fn pada_ambiguous_surfaces_are_exactly_these() {
             "ajArayata",
             "ajAsayata",
             "ajAyayata",
+            "ajYApayata",
             "ajYapayata",
             "ajaMsayata",
             "ajamBayata",
@@ -2077,6 +2113,9 @@ fn pada_ambiguous_surfaces_are_exactly_these() {
             "carpayatAm",
             "carpayetAm",
             "carpayeta",
+            "cayayatAm",
+            "cayayetAm",
+            "cayayeta",
             "cintayatAm",
             "cintayetAm",
             "cintayeta",
@@ -2092,6 +2131,9 @@ fn pada_ambiguous_surfaces_are_exactly_these() {
             "cumbayatAm",
             "cumbayetAm",
             "cumbayeta",
+            "cyAvayatAm",
+            "cyAvayetAm",
+            "cyAvayeta",
             "dAlayatAm",
             "dAlayetAm",
             "dAlayeta",
@@ -2169,6 +2211,9 @@ fn pada_ambiguous_surfaces_are_exactly_these() {
             "jAyayatAm",
             "jAyayetAm",
             "jAyayeta",
+            "jYApayatAm",
+            "jYApayetAm",
+            "jYApayeta",
             "jYapayatAm",
             "jYapayetAm",
             "jYapayeta",
@@ -2854,11 +2899,14 @@ fn curadi_analyses_its_bulk_akusmiya_forms() {
 /// root and pada and crediting 10.0493 first, then 7.2.116, then
 /// 6.4.92 — except that since slice 10e √cah's and √rah's surfaces are
 /// shared with the adanta homographs `10.0405 caha` and `10.0396 raha`
-/// (see `curadi_analyses_its_adanta_forms`): two analyses, of which the mit
-/// one is checked here. `ajYapayata` is pada-ambiguous within √jñap (laṅ parasmaipada
+/// (see `curadi_analyses_its_adanta_forms`), and since slice 10j √cap's with
+/// √ci's 6.1.54 branch (`10.0124`, see `curadi_analyses_its_ajanta_forms`):
+/// two analyses, of which the √cap one, 7.2.116's, is checked here.
+/// `ajYapayata` is pada-ambiguous within √jñap (laṅ parasmaipada
 /// madhyama bahu = ātmanepada prathama eka): two analyses, one per pada, both
-/// mit. The 7.2.116-only shapes (`jYApayati`, …) — what this engine derived
-/// before 6.4.92 — derive nothing.
+/// mit. The 7.2.116-only shapes (`yAmayati`, …) — what this engine derived
+/// before 6.4.92 — derive nothing; √jñap's, `jYApayati`, is √jñā's
+/// (`10.0258`, 7.3.36) since slice 10j.
 #[test]
 fn curadi_analyses_its_jnapadi_forms() {
     let engine = Panini::new();
@@ -2884,7 +2932,7 @@ fn curadi_analyses_its_jnapadi_forms() {
         for (form, pada) in [(parasmai, Pada::Parasmaipada), (atmane, Pada::Atmanepada)] {
             let r = engine.check(form);
             assert!(matches!(r.verdict, Verdict::Valid), "{form}");
-            let homograph = matches!(dhatu, "cah" | "rah");
+            let homograph = matches!(dhatu, "cah" | "rah" | "cap");
             assert_eq!(r.analyses.len(), if homograph { 2 } else { 1 }, "{form}");
             let a = r.analyses.iter().find(|a| a.dhatu == dhatu).unwrap();
             assert_eq!(a.pada, pada, "{form}");
@@ -2900,15 +2948,7 @@ fn curadi_analyses_its_jnapadi_forms() {
         assert_eq!(a.dhatu, "jYap");
         assert_mit("ajYapayata", &ids_of(a));
     }
-    for form in [
-        "jYApayati",
-        "yAmayati",
-        "cAhayati",
-        "cApayati",
-        "rAhayati",
-        "bAlayati",
-        "jYApayate",
-    ] {
+    for form in ["yAmayati", "cAhayati", "cApayati", "rAhayati", "bAlayati"] {
         let r = engine.check(form);
         assert!(matches!(r.verdict, Verdict::Invalid), "{form}");
         assert!(r.analyses.is_empty(), "{form}");
@@ -3408,7 +3448,14 @@ fn curadi_analyses_its_asvadiya_forms() {
             &[],
             &["7.2.115", "6.1.78"],
         ),
-        ("cayati", &["ci"], Pada::Parasmaipada, &["10.0499"], &[]),
+        // √ci (`10.0124`, slice 10j) shares the ṇic-less `cayati`, 2570's.
+        (
+            "cayati",
+            &["ci", "ci"],
+            Pada::Parasmaipada,
+            &["10.0499", "2570"],
+            &[],
+        ),
         // The īdit `pUrI~` and the udit `vftu~` are 10.0499's, not 2572's
         // or 2570's.
         ("pUrati", &["pUr"], Pada::Parasmaipada, &["10.0499"], &[]),
@@ -3498,7 +3545,12 @@ fn curadi_analyses_its_asvadiya_forms() {
             }
         }
         if !opens.is_empty() {
-            let mut opened: Vec<String> = r.analyses.iter().map(|a| ids_of(a)[0].clone()).collect();
+            // The id each analysis opens with, after 10.0493 on a mit row.
+            let mut opened: Vec<String> = r
+                .analyses
+                .iter()
+                .map(|a| ids_of(a).into_iter().find(|i| i != "10.0493").unwrap())
+                .collect();
             opened.sort_unstable();
             let mut want = opens.to_vec();
             want.sort_unstable();
@@ -3540,7 +3592,172 @@ fn curadi_analyses_its_asvadiya_forms() {
     }
     for form in [
         "grasate", "parate", "Gozate", "DUpati", "vicCati", "DUpAyate", "veCayati", "jayayati",
-        "cayayati",
+    ] {
+        let r = engine.check(form);
+        assert!(matches!(r.verdict, Verdict::Invalid), "{form}");
+        assert!(r.analyses.is_empty(), "{form}");
+    }
+}
+
+/// Slice 10j's `check()` witnesses, from its spec's tables: each row's laṭ
+/// prathama eka in every pada it admits, √ci's three readings in each, the
+/// parasmaipada `smi`, `gf` and `yu` block, and every homograph the spec
+/// names. The goldens were grepped for every witness first: a single-root
+/// witness is its own row's alone, and a homograph witness is exactly its
+/// rows', one analysis each. The other row came first in the table
+/// (`capayati`'s √cap, `cayati`'s āsvadīya `10.0325 ci`, `BAvayati`'s
+/// ādhṛṣīya `10.0382 BU`), so its analysis comes first and `trace_for` keeps
+/// answering with it; that order is pinned here, and the slice's row's
+/// analysis, the last, must credit the listed ids in order. The shapes the
+/// slice rules out derive nothing.
+#[test]
+fn curadi_analyses_its_ajanta_forms() {
+    let engine = Panini::new();
+    // (form, its roots in analysis order, pada, the ids the slice's row's
+    // analysis credits, in order)
+    for (form, dhatus, pada, credits) in [
+        (
+            "smAyayate",
+            &["smi"][..],
+            Pada::Atmanepada,
+            &["3.1.25", "7.2.115", "6.1.78", "3.1.32", "2567", "1.3.12"][..],
+        ),
+        (
+            "cayayati",
+            &["ci"],
+            Pada::Parasmaipada,
+            &["10.0493", "3.1.25", "7.2.115", "6.1.78", "6.4.92", "1.3.78"],
+        ),
+        (
+            "cayayate",
+            &["ci"],
+            Pada::Atmanepada,
+            &["10.0493", "3.1.25", "7.2.115", "6.1.78", "6.4.92", "1.3.74"],
+        ),
+        (
+            "capayati",
+            &["cap", "ci"],
+            Pada::Parasmaipada,
+            &["10.0493", "3.1.25", "6.1.54", "7.3.36", "6.4.92", "1.3.78"],
+        ),
+        (
+            "capayate",
+            &["cap", "ci"],
+            Pada::Atmanepada,
+            &["10.0493", "3.1.25", "6.1.54", "7.3.36", "6.4.92", "1.3.74"],
+        ),
+        (
+            "cayati",
+            &["ci", "ci"],
+            Pada::Parasmaipada,
+            &["10.0493", "2570", "1.3.78"],
+        ),
+        (
+            "cayate",
+            &["ci"],
+            Pada::Atmanepada,
+            &["10.0493", "2570", "1.3.72"],
+        ),
+        (
+            "GArayati",
+            &["Gf"],
+            Pada::Parasmaipada,
+            &["7.2.115", "1.3.78"],
+        ),
+        (
+            "GArayate",
+            &["Gf"],
+            Pada::Atmanepada,
+            &["7.2.115", "1.3.74"],
+        ),
+        (
+            "gArayate",
+            &["gf"],
+            Pada::Atmanepada,
+            &["10.0496", "3.1.25", "7.2.115"],
+        ),
+        (
+            "yAvayate",
+            &["yu"],
+            Pada::Atmanepada,
+            &["10.0496", "3.1.25", "7.2.115", "6.1.78"],
+        ),
+        (
+            "jYApayati",
+            &["jYA"],
+            Pada::Parasmaipada,
+            &["3.1.25", "7.3.36", "1.3.78"],
+        ),
+        (
+            "jYApayate",
+            &["jYA"],
+            Pada::Atmanepada,
+            &["3.1.25", "7.3.36", "1.3.74"],
+        ),
+        (
+            "cyAvayati",
+            &["cyu"],
+            Pada::Parasmaipada,
+            &["7.2.115", "6.1.78", "1.3.78"],
+        ),
+        (
+            "cyAvayate",
+            &["cyu"],
+            Pada::Atmanepada,
+            &["7.2.115", "6.1.78", "1.3.74"],
+        ),
+        (
+            "BAvayati",
+            &["BU", "BU"],
+            Pada::Parasmaipada,
+            &["7.2.115", "6.1.78", "1.3.78"],
+        ),
+        (
+            "BAvayate",
+            &["BU", "BU"],
+            Pada::Atmanepada,
+            &["7.2.115", "6.1.78", "1.3.74"],
+        ),
+    ] {
+        let r = engine.check(form);
+        assert!(matches!(r.verdict, Verdict::Valid), "{form}");
+        let got: Vec<&str> = r.analyses.iter().map(|a| a.dhatu.as_str()).collect();
+        assert_eq!(got, dhatus, "{form}");
+        for a in &r.analyses {
+            assert_eq!(a.pada, pada, "{form}");
+        }
+        let ids: Vec<&str> = r
+            .analyses
+            .last()
+            .unwrap()
+            .trace
+            .iter()
+            .map(|s| s.sutra.as_str())
+            .collect();
+        let mut at = 0;
+        for id in credits {
+            let next = ids[at..].iter().position(|i| i == id);
+            assert!(next.is_some(), "{form} {id} out of order: {ids:?}");
+            at += next.unwrap() + 1;
+        }
+        // Only √ci's 6.1.54 branch and √jñā take puk, and neither takes
+        // 7.2.115 then.
+        if credits.contains(&"7.3.36") {
+            assert!(!ids.contains(&"7.2.115"), "{form}: {ids:?}");
+        }
+    }
+    // The parasmaipada of an ātmanepadī root (√smiṅ by 2567 and 1.3.12, √gṛ
+    // and √yu by 10.0496), guṇa where 7.2.115 gives vṛddhi, √ci's 6.1.54
+    // branch without 6.4.92, and √jñā without its puk.
+    for form in [
+        "smAyayati",
+        "gArayati",
+        "yAvayati",
+        "smayayate",
+        "Garayati",
+        "cyavayati",
+        "cApayati",
+        "jYAyayati",
     ] {
         let r = engine.check(form);
         assert!(matches!(r.verdict, Verdict::Invalid), "{form}");

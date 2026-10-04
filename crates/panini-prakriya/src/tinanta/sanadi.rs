@@ -1361,6 +1361,8 @@ mod tests {
             ("2564", "10.0193", "danS", Tag::Akusmiya),
             ("2565", "10.0022", "pF", Tag::Nic),
             ("2570", "10.0230", "div", Tag::Akusmiya),
+            // √ci, the one mit row whose ṇic is optional.
+            ("2570", "10.0124", "ci", Tag::Nic),
             ("2571", "10.0251", "Guz", Tag::Nic),
             ("2573.1", "10.0400", "pata", Tag::Nic),
             ("2573.3", "10.0449", "garva", Tag::AaGarviya),
@@ -1420,6 +1422,7 @@ mod tests {
                 ("10.0279", "gras", Tag::Nic),
                 ("10.0022", "pF", Tag::Nic),
                 ("10.0251", "Guz", Tag::Nic),
+                ("10.0124", "ci", Tag::Nic),
                 ("10.0001", "cur", Tag::Nic),
                 ("10.0192", "cit", Tag::Akusmiya),
                 ("10.0389", "kaTa", Tag::Nic),
