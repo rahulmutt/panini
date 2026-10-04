@@ -248,8 +248,11 @@ does not hand-pick it.
 - 10.0498 ādhṛṣīya (51 rows), then 10.0499 āsvadīya (59 rows). Each
   teaches `optional_nic_from_upadesha` its range and drops this slice's
   exclusion assertion. (Slice 10h took fifty of the ādhṛṣīya, all but
-  `10.0368 za\da~`: see `2026-10-03-curadi-gana-10h-design.md`.)
-- The one-row triggers 2565 (`pF`), 2571 (`Guzi~r`) and 2572 (īdit).
+  `10.0368 za\da~`: see `2026-10-03-curadi-gana-10h-design.md`. Slice 10i
+  took the āsvadīya: see `2026-10-04-curadi-gana-10i-design.md`.)
+- The one-row triggers 2565 (`pF`) and 2571 (`Guzi~r`), both taken by slice
+  10i. 2572 (īdit) is unreachable: every īdit curādi row is āsvadīya or
+  ādhṛṣīya, and vidyut checks both antargaṇas first.
 - √ci (`10.0124`), √gṛ and √yu. 7.2.115 landed in slice 10h, so √gṛ and √yu
   are curation; √ci also needs 6.1.54 and 7.3.36.
 - A causative (hetumaṇic) slice takes 01.0934 and 10.0494.

@@ -297,8 +297,11 @@ worktree for the run and restored after.
 ## Later slices
 
 - 10.0499 āsvadīya (59 rows, 279–337). Teaches the helper its range and
-  drops the rest of the exclusion assertion.
-- The one-row triggers 2565 (`pF`), 2571 (`Guzi~r`) and 2572 (īdit).
+  drops the rest of the exclusion assertion. (Slice 10i took it: see
+  `2026-10-04-curadi-gana-10i-design.md`.)
+- The one-row triggers 2565 (`pF`) and 2571 (`Guzi~r`), both taken by slice
+  10i. 2572 (īdit) is unreachable: every īdit curādi row is āsvadīya or
+  ādhṛṣīya, and vidyut checks both antargaṇas first.
 - √gṛ (`10.0231`), √yu (`10.0235`) and √smiṅ: 7.2.115 is in, so these are
   curation slices. √ci (`10.0124`) also needs 6.1.54 and 7.3.36.
 - Upasargas, and with them `10.0368 za\da~` (7.3.78).

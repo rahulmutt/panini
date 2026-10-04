@@ -22,11 +22,12 @@ pub(crate) const ABHYASA: usize = 1;
 /// Index of the aṅga (the dhātu) in `terms`. Stable across the pipeline.
 pub(crate) const ANGA: usize = 2;
 
-/// Index of ṇic (3.1.25) while `super::sanadi` runs — and only then.
+/// Index of ṇic (3.1.25), or of 3.1.28's āya, while `super::sanadi` runs — and only then.
 /// 3.1.32 folds ṇic into `ANGA` and removes this term before `super::samjna`
 /// starts, so by the time 3.4.78 pushes the ending this index is free again
 /// and the ending lands at `ENDING_PRE_SHAP`, the same value. No tiṅ exists
-/// while ṇic holds it. Present only for curādi; for every other gaṇa
+/// while ṇic holds it. Occupied only on curādi rows today: the stage's
+/// rules read ṇic or āya, and no other gaṇa has either, so for them
 /// `sanadi` adds nothing and the slot is never occupied.
 pub(crate) const NIC: usize = 3;
 

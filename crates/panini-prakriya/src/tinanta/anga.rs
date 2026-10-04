@@ -3,11 +3,29 @@
 //! Ordered AFTER 3.1.68 — ending at `ENDING`, śap at `SHAP`, and
 //! `terms[SHAP].text` may be empty (2.4.72). See `super::terms`.
 
+use crate::prakriya::Prakriya;
 use crate::rule::{Rule, RuleKind};
 use crate::term::Tag;
 use crate::tinanta::sound::{is_hrasva, is_vowel};
 use crate::tinanta::terms::{AGAMA, ANGA, ENDING, SHAP, insert_char, word_chars};
 use panini_data::{Lakara, Pada};
+
+/// 6.1.73 Ce ca, applied: the first short vowel before a `C` anywhere in
+/// the word takes tuk after it (the aṅga stage's entry explains the
+/// whole-word scan). One function behind two entries: `ANGA_RULES`', for
+/// the laṅ aṭ, and `super::sanadi`'s, for a root-internal site, taken there
+/// before guṇa. Shared, so the two cannot drift apart.
+pub(crate) fn che_ca(p: &mut Prakriya) -> bool {
+    let w = word_chars(p);
+    let Some(pos) = (1..w.len()).find(|i| w[*i].2 == 'C' && is_hrasva(w[i - 1].2)) else {
+        return false;
+    };
+    let (term, idx, _) = w[pos - 1];
+    let before = p.snapshot();
+    insert_char(p, term, idx + 1, 't');
+    p.record("6.1.73", "Ce ca", before);
+    true
+}
 
 pub(crate) static ANGA_RULES: &[Rule] = &[
     // 6.4.71 luṅlaṅlṛṅkṣvaḍudāttaḥ: the aṭ-āgama precedes the aṅga in laṅ.
@@ -84,12 +102,14 @@ pub(crate) static ANGA_RULES: &[Rule] = &[
     // aCid → atCid, which 8.4.40 stoH ScunA ScuH then carries to acCid.
     //
     // Below the 6.4.71/6.4.72 āgama pair (6.4.72 sits between this rule
-    // and 6.4.71 in the array), and 6.4.71 is what manufactures the whole
-    // of this rule's precondition: the only short vowel any curated root
-    // presents before a `C` is the aṭ-āgama laṅ prefixes onto a C-initial
-    // aṅga. Outside laṅ the `C` is word-initial and this rule has nothing
-    // to sit after, which is why √chid's and √chṛd's laṭ, loṭ and
-    // vidhiliṅ cells never take it.
+    // and 6.4.71 in the array), and 6.4.71 is what manufactures this
+    // entry's one site: the aṭ-āgama laṅ prefixes onto a C-initial aṅga.
+    // Outside laṅ that `C` is word-initial and the rule has nothing to sit
+    // after, which is why √chid's and √chṛd's laṭ, loṭ and vidhiliṅ cells
+    // never take it. A root-internal site (√vich, `viC`) is the sanādi
+    // stage's: its entry under this id takes it before guṇa can read the
+    // root's `i` (`super::sanadi`), and this one then finds that `C` after
+    // the `t` and declines.
     //
     // WHOLE-WORD, not ANGA-local, and deliberately. 6.1.73's condition is a
     // saṁhitā condition; the aṭ-plus-root site is where this corpus happens
@@ -100,7 +120,7 @@ pub(crate) static ANGA_RULES: &[Rule] = &[
     // `z`-only trigger).
     //
     // The tuk lands in whichever term holds the short vowel — `AGAMA`, for
-    // the laṅ aṭ that is this corpus's only site — because `word_chars`
+    // the laṅ aṭ that is this entry's only site — because `word_chars`
     // addresses the whole word. ANGA's first character stays `C` and its
     // penult is untouched, so 6.4.72's `is_vowel(first)` guard and every
     // upadhā read below this point are unmoved.
@@ -109,26 +129,15 @@ pub(crate) static ANGA_RULES: &[Rule] = &[
     // short vowel, is deliberately absent rather than overlooked: the aṭ is
     // word-internal here, so no site in this corpus is pada-final and the
     // augment is obligatory. Implement it when an upasarga or a preceding
-    // pada enters scope — and note it would be this engine's eighth vikalpa
-    // rule, so `exactly_the_pinned_vikalpa_rules_are_optional` must change
-    // with it.
+    // pada enters scope — and note it would be a vikalpa rule, so
+    // `exactly_the_pinned_vikalpa_rules_are_optional` must change with it.
     Rule {
         id: "6.1.73",
         name: "Ce ca",
         kind: RuleKind::Vidhi,
         vikalpa: false,
         bars: &[],
-        apply: |p| {
-            let w = word_chars(p);
-            let Some(pos) = (1..w.len()).find(|i| w[*i].2 == 'C' && is_hrasva(w[i - 1].2)) else {
-                return false;
-            };
-            let (term, idx, _) = w[pos - 1];
-            let before = p.snapshot();
-            insert_char(p, term, idx + 1, 't');
-            p.record("6.1.73", "Ce ca", before);
-            true
-        },
+        apply: che_ca,
     },
     // 7.3.100 adaH sarvezAm: √ad prefixes aṭ (`a`) to a laṅ singular
     // consonant ending (2sg s, 3sg t). Without it, Ad+s / Ad+t are word-final
@@ -794,9 +803,10 @@ mod tests {
 
     #[test]
     fn che_ca_inserts_tuk_only_after_a_short_vowel() {
-        let rule = rules().find(|r| r.id == "6.1.73").unwrap();
+        // This stage's entry: the sanādi stage has its own under this id.
+        let rule = ANGA_RULES.iter().find(|r| r.id == "6.1.73").unwrap();
 
-        // The one site this corpus reaches: 6.4.71's aṭ before a C-initial
+        // This entry's one site: 6.4.71's aṭ before a C-initial
         // aṅga. The augment is its own term, so `word_chars` finds the short
         // vowel at (AGAMA, 0) and the tuk lands after it — in AGAMA, which
         // then reads `at`. The word is atCinadt exactly as before.
@@ -812,7 +822,8 @@ mod tests {
 
         // Word-initial `C`: nothing precedes it, so there is no short vowel
         // to attach to. This is every laṭ, loṭ and vidhiliṅ cell of √chid
-        // and √chṛd, and it is why the two new sūtras are laṅ-only.
+        // and √chṛd, and it is why this entry fires in laṅ only (√vich's
+        // root-internal site, in every lakāra, is the sanādi entry's).
         let mut p = Prakriya {
             terms: with_slots(vec![Term::new("Ci"), Term::new("nad"), Term::new("ti")]),
             ..Default::default()
