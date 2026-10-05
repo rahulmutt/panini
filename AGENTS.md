@@ -89,10 +89,10 @@
     2846.36s** (10j: 3232.46s; 10i: TIMEOUT at 1810 in the campaign, CAUGHT
     in 1559.33s rerun alone at `-j 1`; 10h: 469.47s with 2^5 forks) and the
     `==` mutant in 2191.20s (10j: 2287.81s; 10i: 1762.02s; 10h: 322.20s).
-    The probe ran the same pair about 62% slower than the campaign (4617.70s
+    The probe ran the same pair 62–69% slower than the campaign (4617.70s
     against 2846.36s, and 3695.74s against 2191.20s) with the host load
-    differing and unsampled in the campaign window; the larger suite alone
-    pushes the probe's reading 19% above 10j's 3885.06s. The cap is max(430,
+    differing and unsampled in the campaign window; its reading is 19% above
+    10j's 3885.06s, under different load. The cap is max(430,
     6 × the longest campaign-load equivalent phase, 2 × the longest
     campaign-load caught phase), rounded up to the next 10s, over both
     readings of the `true` mutant in the same `-j 4` side-by-side setup: the

@@ -3377,8 +3377,9 @@ fn curadi_analyses_its_akusmiya_forms() {
 
 /// Slice 10c's ākusmīya rows through `check`: one witness per pre-ṇic shape
 /// and per homograph row. The goldens were grepped first — each surface below
-/// is its own row's alone, so each must yield exactly one analysis, naming
-/// that root, ātmanepada, opening with 10.0496 and crediting no pada sūtra.
+/// is its own row's alone, so each must yield exactly one ākusmīya analysis,
+/// naming that root, ātmanepada, opening with 10.0496 and crediting no pada
+/// sūtra.
 /// `mAnayate` and `amAnayata` are the one pair two ākusmīya rows share
 /// (`10.0233 mAna~` unchanged before ṇic, `10.0234 mana~` by 7.2.116): one
 /// analysis per root opening with 10.0496, and only √man's credits 7.2.116.
@@ -4380,8 +4381,10 @@ fn curadi_analyses_its_ajanta_forms() {
 /// the row curated earlier answers first. Every analysis is a ṇic branch: it
 /// credits 3.1.25 and 1.3.78 (these are parasmaipada surfaces) and no
 /// optional-ṇic id. The five ākusmīya partners' ātmanepada surfaces are
-/// `curadi_analyses_its_bulk_akusmiya_forms`'s; their parasmaipada ones are
-/// this slice's rows' alone. The shapes the slice rules out — no ṇic, no
+/// `curadi_analyses_its_bulk_akusmiya_forms`'s; their parasmaipada laṭ
+/// witnesses are this slice's rows' alone, but four laṅ, loṭ and vidhiliṅ
+/// surfaces per partner (*-ayata*, *-ayatām*, *-ayetām*, *-ayeta*) are shared
+/// with the ātmanepada row. The shapes the slice rules out — no ṇic, no
 /// guṇa or vṛddhi before it, no anusvāra, no tuk — derive nothing.
 #[test]
 fn curadi_analyses_its_plain_nic_forms() {

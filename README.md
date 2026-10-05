@@ -148,8 +148,8 @@ and which forks three ways: 6.1.54 *cisphuror ṇau* optionally gives `cA`,
 *cayayati*, beside *cayati*). Slice 10k curated the 155 plain
 obligatory-ṇic rows that need nothing new, all ubhayapadī by 1.3.74: 7.3.86
 or 7.2.116 before ṇic or neither (*codayati*, *jālayati*, *pīḍayati*), and
-existing rules on new rows: 8.3.24 and 8.4.58 on a root's own `n`
-(*sambayati*, *puṃsayati*) and the sanādi 6.1.73's tuk on √pich
+existing rules on new rows: 8.3.24 on a root's own `n` (*puṃsayati*),
+8.3.24 with 8.4.58 (*sambayati*), and the sanādi 6.1.73's tuk on √pich
 (*picchayati*). Two of its rows, `10.0051 zAntva~` and `10.0052 sAntva~`,
 are the same root once 6.1.64 makes the `z` an `s`; both are curated.
 Every curādi root takes ṇic (3.1.25) before the vikaraṇa; a new first

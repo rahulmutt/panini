@@ -5015,8 +5015,9 @@ static DHATUS: &[Dhatu] = &[
     Dhatu {
         // 10.0019 `SraTa~` prayatne (√śrath). 7.2.116 ata upadhāyāḥ lengthens
         // the `a` upadhā before ṇit ṇic (SrAT-i). Homograph of the ubhayapadī
-        // curādi row `10.0360 SraTa~`: they share every form. Ubhayapadī by
-        // 1.3.74 (*śrāthayati*). Slice 10k.
+        // curādi row `10.0360 SraTa~`: every form of this row is also the
+        // partner's (its ṇic branch's). Ubhayapadī by 1.3.74 (*śrāthayati*).
+        // Slice 10k.
         dhatupatha: "10.0019",
         code: "SraT",
         gana: Gana::Curadi,
@@ -5055,10 +5056,10 @@ static DHATUS: &[Dhatu] = &[
         artha: "parigrahe",
     },
     Dhatu {
-        // 10.0025 `varRa~` preraRe (√varṇ). Guru upadhā (the conjunct `rR`), so
-        // unchanged before ṇic. Homograph of the ubhayapadī curādi row `10.0484
-        // varRa`: they share every form. Ubhayapadī by 1.3.74 (*varṇayati*).
-        // Slice 10k.
+        // 10.0025 `varRa~` preraRe (√varṇ). Guru upadhā (the conjunct `rR`),
+        // so unchanged before ṇic. Homograph of the ubhayapadī curādi row
+        // `10.0484 varRa`: every form of this row is also the partner's (its
+        // ṇic branch's). Ubhayapadī by 1.3.74 (*varṇayati*). Slice 10k.
         dhatupatha: "10.0025",
         code: "varR",
         gana: Gana::Curadi,
@@ -5276,10 +5277,10 @@ static DHATUS: &[Dhatu] = &[
         artha: "pariBAzaRe",
     },
     Dhatu {
-        // 10.0054 `valka~` pariBAzaRe (√valk). Guru upadhā (the conjunct `lk`),
-        // so unchanged before ṇic. Homograph of the ubhayapadī curādi row
-        // `10.0458 valka`: they share every form. Ubhayapadī by 1.3.74
-        // (*valkayati*). Slice 10k.
+        // 10.0054 `valka~` pariBAzaRe (√valk). Guru upadhā (the conjunct
+        // `lk`), so unchanged before ṇic. Homograph of the ubhayapadī curādi
+        // row `10.0458 valka`: every form of this row is also the partner's
+        // (its ṇic branch's). Ubhayapadī by 1.3.74 (*valkayati*). Slice 10k.
         dhatupatha: "10.0054",
         code: "valk",
         gana: Gana::Curadi,
@@ -5336,8 +5337,9 @@ static DHATUS: &[Dhatu] = &[
     Dhatu {
         // 10.0063 `SraRa~` dAne (√śraṇ). 7.2.116 ata upadhāyāḥ lengthens the
         // `a` upadhā before ṇit ṇic (SrAR-i). Homograph of the ubhayapadī
-        // curādi row `10.0174 SraRu~`: they share every form. Ubhayapadī by
-        // 1.3.74 (*śrāṇayati*). Slice 10k.
+        // curādi row `10.0174 SraRu~`: every form of this row is also the
+        // partner's (its ṇic branch's). Ubhayapadī by 1.3.74 (*śrāṇayati*).
+        // Slice 10k.
         dhatupatha: "10.0063",
         code: "SraR",
         gana: Gana::Curadi,
@@ -5345,10 +5347,11 @@ static DHATUS: &[Dhatu] = &[
         artha: "dAne",
     },
     Dhatu {
-        // 10.0064 `taqa~` AGAte (√taḍ). 7.2.116 ata upadhāyāḥ lengthens the `a`
-        // upadhā before ṇit ṇic (tAq-i). Homograph of the ubhayapadī curādi row
-        // `10.0332 taqa~`: they share every form. Ubhayapadī by 1.3.74
-        // (*tāḍayati*). Slice 10k.
+        // 10.0064 `taqa~` AGAte (√taḍ). 7.2.116 ata upadhāyāḥ lengthens the
+        // `a` upadhā before ṇit ṇic (tAq-i). Homograph of the ubhayapadī
+        // curādi row `10.0332 taqa~`: every form of this row is also the
+        // partner's (its ṇic branch's). Ubhayapadī by 1.3.74 (*tāḍayati*).
+        // Slice 10k.
         dhatupatha: "10.0064",
         code: "taq",
         gana: Gana::Curadi,
@@ -5366,10 +5369,11 @@ static DHATUS: &[Dhatu] = &[
         artha: "Bedane",
     },
     Dhatu {
-        // 10.0078 `Carda~` vamane (√chard). Guru upadhā (the conjunct `rd`), so
-        // unchanged before ṇic. In laṅ the aṭ takes 6.1.73's tuk (acC-).
-        // Homograph of the ubhayapadī curādi row `10.0352 CfdI~`: they share
-        // every form. Ubhayapadī by 1.3.74 (*chardayati*). Slice 10k.
+        // 10.0078 `Carda~` vamane (√chard). Guru upadhā (the conjunct `rd`),
+        // so unchanged before ṇic. In laṅ the aṭ takes 6.1.73's tuk (acC-).
+        // Homograph of the ubhayapadī curādi row `10.0352 CfdI~`: every form
+        // of this row is also the partner's (its ṇic branch's). Ubhayapadī by
+        // 1.3.74 (*chardayati*). Slice 10k.
         dhatupatha: "10.0078",
         code: "Card",
         gana: Gana::Curadi,
@@ -5508,10 +5512,11 @@ static DHATUS: &[Dhatu] = &[
         artha: "rohaRe",
     },
     Dhatu {
-        // 10.0093 `kala~` kzepe (√kal). 7.2.116 ata upadhāyāḥ lengthens the `a`
-        // upadhā before ṇit ṇic (kAl-i). Homograph of the ubhayapadī curādi row
-        // `10.0422 kAla`: they share every form. Ubhayapadī by 1.3.74
-        // (*kālayati*). Slice 10k.
+        // 10.0093 `kala~` kzepe (√kal). 7.2.116 ata upadhāyāḥ lengthens the
+        // `a` upadhā before ṇit ṇic (kAl-i). Homograph of the ubhayapadī
+        // curādi row `10.0422 kAla`: every form of this row is also the
+        // partner's (its ṇic branch's). Ubhayapadī by 1.3.74 (*kālayati*).
+        // Slice 10k.
         dhatupatha: "10.0093",
         code: "kal",
         gana: Gana::Curadi,
@@ -5519,9 +5524,9 @@ static DHATUS: &[Dhatu] = &[
         artha: "kzepe",
     },
     Dhatu {
-        // 10.0094 `vila~` kzepe (√vil). 7.3.86 guṇates the laghu upadhā before
-        // ṇic (vel-i). Homograph of the ubhayapadī curādi row `10.0421 vela`:
-        // they share every form. Ubhayapadī by 1.3.74 (*velayati*). Slice 10k.
+        // 10.0094 `vila~` kzepe (√vil). 7.3.86 guṇates the laghu upadhā before ṇic (vel-i).
+        // Homograph of the ubhayapadī curādi row `10.0421 vela`: every form of this row is also the
+        // partner's (its ṇic branch's). Ubhayapadī by 1.3.74 (*velayati*). Slice 10k.
         dhatupatha: "10.0094",
         code: "vil",
         gana: Gana::Curadi,
@@ -5881,8 +5886,8 @@ static DHATUS: &[Dhatu] = &[
     Dhatu {
         // 10.0150 `mArja~` SabdArTe (√mārj). Guru upadhā (the conjunct `rj`),
         // so unchanged before ṇic. Homograph of the ubhayapadī curādi row
-        // `10.0386 mfjU~`: they share every form. Ubhayapadī by 1.3.74
-        // (*mārjayati*). Slice 10k.
+        // `10.0386 mfjU~`: every form of this row is also the partner's (its
+        // ṇic branch's). Ubhayapadī by 1.3.74 (*mārjayati*). Slice 10k.
         dhatupatha: "10.0150",
         code: "mArj",
         gana: Gana::Curadi,
@@ -5911,8 +5916,8 @@ static DHATUS: &[Dhatu] = &[
     Dhatu {
         // 10.0156 `varDa~` CedanapUraRayoH (√vardh). Guru upadhā (the conjunct
         // `rD`), so unchanged before ṇic. Homograph of the ubhayapadī curādi
-        // row `10.0313 vfDu~`: they share every form. Ubhayapadī by 1.3.74
-        // (*vardhayati*). Slice 10k.
+        // row `10.0313 vfDu~`: every form of this row is also the partner's
+        // (its ṇic branch's). Ubhayapadī by 1.3.74 (*vardhayati*). Slice 10k.
         dhatupatha: "10.0156",
         code: "varD",
         gana: Gana::Curadi,
@@ -5998,8 +6003,8 @@ static DHATUS: &[Dhatu] = &[
     Dhatu {
         // 10.0173 `barha~` hiMsAyAm (√barh). Guru upadhā (the conjunct `rh`),
         // so unchanged before ṇic. Homograph of the ubhayapadī curādi row
-        // `10.0300 barha~`: they share every form. Ubhayapadī by 1.3.74
-        // (*barhayati*). Slice 10k.
+        // `10.0300 barha~`: every form of this row is also the partner's (its
+        // ṇic branch's). Ubhayapadī by 1.3.74 (*barhayati*). Slice 10k.
         dhatupatha: "10.0173",
         code: "barh",
         gana: Gana::Curadi,
@@ -6082,9 +6087,9 @@ static DHATUS: &[Dhatu] = &[
         artha: "roze",
     },
     Dhatu {
-        // 10.0188 `ruwa~` roze (√ruṭ). 7.3.86 guṇates the laghu upadhā before
-        // ṇic (row-i). Homograph of the ubhayapadī curādi row `10.0314 ruwa~`:
-        // they share every form. Ubhayapadī by 1.3.74 (*roṭayati*). Slice 10k.
+        // 10.0188 `ruwa~` roze (√ruṭ). 7.3.86 guṇates the laghu upadhā before ṇic (row-i).
+        // Homograph of the ubhayapadī curādi row `10.0314 ruwa~`: every form of this row is also
+        // the partner's (its ṇic branch's). Ubhayapadī by 1.3.74 (*roṭayati*). Slice 10k.
         dhatupatha: "10.0188",
         code: "ruw",
         gana: Gana::Curadi,
@@ -6211,9 +6216,10 @@ static DHATUS: &[Dhatu] = &[
     },
     Dhatu {
         // 10.0248 `Gawa~` saNGAte (√ghaṭ). 7.2.116 ata upadhāyāḥ lengthens the
-        // `a` upadhā before ṇit ṇic (GAw-i). Homograph of the ubhayapadī curādi
-        // row `10.0297 Gawa~`: they share every form. Ubhayapadī by 1.3.74
-        // (*ghāṭayati*). Slice 10k.
+        // `a` upadhā before ṇit ṇic (GAw-i). Homograph of the ubhayapadī
+        // curādi row `10.0297 Gawa~`: every form of this row is also the
+        // partner's (its ṇic branch's). Ubhayapadī by 1.3.74 (*ghāṭayati*).
+        // Slice 10k.
         dhatupatha: "10.0248",
         code: "Gaw",
         gana: Gana::Curadi,
@@ -6261,10 +6267,9 @@ static DHATUS: &[Dhatu] = &[
         artha: "mocane",
     },
     Dhatu {
-        // 10.0257 `arha~` pUjAyAm (√arh). Guru upadhā (the conjunct `rh`), so
-        // unchanged before ṇic. Homograph of the ubhayapadī curādi row `10.0367
-        // arha~`: they share every form. Ubhayapadī by 1.3.74 (*arhayati*).
-        // Slice 10k.
+        // 10.0257 `arha~` pUjAyAm (√arh). Guru upadhā (the conjunct `rh`), so unchanged before ṇic.
+        // Homograph of the ubhayapadī curādi row `10.0367 arha~`: every form of this row is also
+        // the partner's (its ṇic branch's). Ubhayapadī by 1.3.74 (*arhayati*). Slice 10k.
         dhatupatha: "10.0257",
         code: "arh",
         gana: Gana::Curadi,
@@ -6274,8 +6279,9 @@ static DHATUS: &[Dhatu] = &[
     Dhatu {
         // 10.0259 `Baja~` viSrARane (√bhaj). 7.2.116 ata upadhāyāḥ lengthens
         // the `a` upadhā before ṇit ṇic (BAj-i). Homograph of the ubhayapadī
-        // curādi row `10.0428 BAja`: they share every form. Ubhayapadī by
-        // 1.3.74 (*bhājayati*). Slice 10k.
+        // curādi row `10.0428 BAja`: every form of this row is also the
+        // partner's (its ṇic branch's). Ubhayapadī by 1.3.74 (*bhājayati*).
+        // Slice 10k.
         dhatupatha: "10.0259",
         code: "Baj",
         gana: Gana::Curadi,
@@ -6374,8 +6380,9 @@ static DHATUS: &[Dhatu] = &[
     Dhatu {
         // 10.0273 `vasa~` snehacCedApaharaRezu (√vas). 7.2.116 ata upadhāyāḥ
         // lengthens the `a` upadhā before ṇit ṇic (vAs-i). Homograph of the
-        // ubhayapadī curādi row `10.0426 vAsa`: they share every form.
-        // Ubhayapadī by 1.3.74 (*vāsayati*). Slice 10k.
+        // ubhayapadī curādi row `10.0426 vAsa`: every form of this row is also
+        // the partner's (its ṇic branch's). Ubhayapadī by 1.3.74 (*vāsayati*).
+        // Slice 10k.
         dhatupatha: "10.0273",
         code: "vas",
         gana: Gana::Curadi,

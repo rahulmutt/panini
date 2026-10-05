@@ -682,7 +682,7 @@ pub(crate) static SANADI: &[Rule] = &[
         },
     },
     // 6.1.73 che ca, before ṇic or āya: √vich's `i` (√pich's too, slice 10k)
-    // takes tuk here, before the sanādi 7.3.86 reads it as a laghu upadhā (`viC` →
+    // takes tuk here, before the sanādi 7.3.86 can read it as a laghu upadhā (`viC` →
     // `vitC`, so *vicchayati*, not *vechayati*; 8.4.40 later makes the `t`
     // a `c`). vidyut-prakriya credits it at this point ("tuk-Agama can block
     // guna", `angasya.rs`). A second entry under the aṅga stage's id, with
