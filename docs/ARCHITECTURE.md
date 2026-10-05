@@ -79,8 +79,8 @@ total — then curādi 10a's seven: the sanādi stage's 3.1.25, 1.3.9 (ṇic's),
 `samjna.rs` — 136 total — then curādi 10b's one: the dhātupāṭha gaṇasūtra
 10.0496 *ā kusmād ātmanepadinaḥ*, first in `sanadi.rs` and the first id that
 is not an Aṣṭādhyāyī sūtra — 137 total — then curādi 10d's two: the
-gaṇasūtra 10.0493 *jñapādayo mitaḥ*, second in `sanadi.rs`, and 6.4.92
-*mitāṃ hrasvaḥ*, right after 7.2.116 — 139 total — then curādi 10e's two:
+gaṇasūtra 10.0493 *jñapādayo mitaḥ*, second in `sanadi.rs` (since moved in 10j), and 6.4.92
+*mitāṃ hrasvaḥ*, right after 7.2.116 (since moved in 10j) — 139 total — then curādi 10e's two:
 the gaṇasūtra 10.0497 *ā garvād ātmanepadinaḥ*, right after 10.0496, and
 6.4.48 *ato lopaḥ ārdhadhātuke*, right after 3.4.114, whose `Tag::AtLopa`
 7.2.116 and 7.3.86 decline on (1.1.57 *acaḥ parasmin pūrvavidhau*) — 141
@@ -93,7 +93,7 @@ five ahead of 10.0496, and second entries for 6.1.97 *ato guṇe* and 6.1.101
 gaṇasūtra 10.0498 *ā dhṛṣād vā*, first in `sanadi.rs`; the vārttika 7.3.37.2
 *dhūñprīñor nug vaktavyaḥ* (the first vārttika id), 7.2.115 *aco ñṇiti*, a
 second entry for 6.1.78 *eco 'yavāyāvaḥ* and 7.2.114 *mṛjer vṛddhiḥ*,
-between 6.4.92 and the sanādi 7.3.86; and a second 7.2.114 in `guna.rs`,
+between 6.4.92 and the sanādi 7.3.86 (since moved in 10j); and a second 7.2.114 in `guna.rs`,
 right before 7.3.84 — 154 total — then curādi 10i's five: the gaṇasūtra
 10.0499 *ā svadaḥ sakarmakāt* after 10.0498; the Kaumudī's 2565 and 2571
 after 2564 and 2570; 3.1.28 *gupūdhūpavicchipaṇipanibhya āyaḥ* after

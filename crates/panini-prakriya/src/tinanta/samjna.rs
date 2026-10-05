@@ -2,7 +2,8 @@
 //! Kaumudī 2567, 1.3.12, 1.3.66, 1.3.72, 1.3.74, 1.3.78, 3.4.78, 1.3.9, 1.2.4.
 //!
 //! One pada sanction is settled before this stage: the dhātupāṭha gaṇasūtra
-//! 10.0496 *ā kusmād ātmanepadinaḥ*, first in `super::sanadi`, for the
+//! 10.0496 *ā kusmād ātmanepadinaḥ*, in `super::sanadi` after the
+//! optional-ṇic fork, for the
 //! ākusmīya curādi roots (`Tag::Akusmiya`). Every pada sūtra here leaves
 //! such a root alone.
 //!

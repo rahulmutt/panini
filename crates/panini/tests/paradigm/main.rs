@@ -3618,7 +3618,9 @@ fn curadi_analyses_its_asvadiya_forms() {
 /// rows', one analysis each. The other row came first in the table
 /// (`capayati`'s √cap, `cayati`'s āsvadīya `10.0325 ci`, `BAvayati`'s
 /// ādhṛṣīya `10.0382 BU`), so its analysis comes first and `trace_for` keeps
-/// answering with it; that order is pinned here, and the slice's row's
+/// answering with it; that order is pinned here for `capayati` and `cayati`
+/// (√bhū's two analyses, `10.0382` and `10.0277`, cannot be told apart through
+/// `check()`, which carries no row number), and the slice's row's
 /// analysis, the last, must credit the listed ids in order. The shapes the
 /// slice rules out derive nothing.
 #[test]
