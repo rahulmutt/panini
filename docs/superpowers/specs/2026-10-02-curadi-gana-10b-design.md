@@ -271,4 +271,4 @@ roots (with the ā-garvīya list, 10.0497), optional ṇic (which takes the
 optional-ṇic ākusmīya rows, since 10.0496 applies only on the ṇic branch;
 taken by slice 10f, see `2026-10-02-curadi-gana-10f-design.md`).
 √smiṅ, and with it 7.2.115 before ṇic, rides whichever slice first needs
-7.2.115.
+7.2.115. (Slice 10j took √smiṅ, √gṛ, √yu and √ci: see `2026-10-04-curadi-gana-10j-design.md`.)

@@ -138,7 +138,8 @@ pub(super) fn lin_a_form(number: &str, pu: Purusha, va: Vacana) -> String {
 /// ātmanepadinaḥ* at the very top, ahead of 3.1.25, where vidyut-prakriya
 /// credits it: it settles an ākusmīya root's pada before ṇic exists.
 ///
-/// Slice 10d adds the gaṇasūtra 10.0493 *jñapādayo mitaḥ* right after it,
+/// Slice 10d adds the gaṇasūtra 10.0493 *jñapādayo mitaḥ* right after it
+/// (10.0493 and 6.4.92 both moved in 10j; see below),
 /// again where vidyut credits it, and 6.4.92 *mitāṃ hrasvaḥ* right after
 /// 7.2.116, whose vṛddhi it undoes on a mit root. vidyut credits 6.4.92
 /// later, after 7.3.84; see its comment in `sanadi.rs` for why it sits
@@ -171,6 +172,14 @@ pub(super) fn lin_a_form(number: &str, pu: Purusha, va: Vacana) -> String {
 /// they treat ṇic. It also adds a second 6.1.73 *che ca* right before the
 /// sanādi 7.3.86, whose guṇa √vich's tuk must block.
 ///
+/// Slice 10j moves 10.0493 to the very top, ahead of the optional-ṇic
+/// vikalpas, where vidyut tags a jñapādi root mit (`dhatu_karya.rs`): √ci
+/// (`10.0124`) is mit and its ṇic is optional. It adds 6.1.54 *cisphuror
+/// ṇau* right after 6.4.48, 7.3.36's puk right before 7.2.115, and Kaumudī
+/// 2567 right before 1.3.12. And it moves 6.4.92 from after 7.2.116 to after
+/// the sanādi 6.1.78: √ci's long vowel comes from 7.2.115 or 6.1.54, so
+/// 6.4.92 must read the aṅga after both.
+///
 /// 6.4.106/6.4.107 sit BELOW 6.1.96 but ABOVE 6.1.90, against sūtra order
 /// and against where Task 3 first placed them (after 6.4.105, below all
 /// four of 6.1.90/97/87/66). 6.4.107's move is load-bearing: laṅ's āṭ-
@@ -192,25 +201,25 @@ pub(super) fn lin_a_form(number: &str, pu: Purusha, va: Vacana) -> String {
 #[test]
 fn tinanta_rule_order_is_pinned() {
     let expected = [
-        "10.0498", "10.0499", "2564", "2565", "2570", "2571", "2573.1", "2573.3", "2573.2",
-        "10.0496", "10.0497", "10.0493", "3.1.25", "3.1.28", "1.3.9", "3.4.114", "6.4.48",
-        "7.2.116", "6.4.92", "7.3.37.2", "7.2.115", "6.1.78", "7.2.114", "6.1.73", "7.3.86",
-        "3.1.32", "1.3.12", "1.3.66", "1.3.72", "1.3.74", "1.3.78", "3.4.78", "1.3.9", "1.2.4",
-        "3.4.85", "3.4.108", "3.4.109", "3.4.105", "3.4.106", "3.4.101", "3.4.99", "3.4.87",
-        "3.4.89", "3.4.86", "3.4.100", "3.4.80", "3.4.79", "3.4.91", "3.4.93", "3.4.90", "3.4.92",
-        "3.4.103", "3.4.102", "7.1.35", "3.1.69", "3.1.73", "3.1.77", "3.1.78", "3.1.79", "3.1.81",
-        "3.1.68", "2.4.72", "2.4.75", "3.4.111", "3.1.83", "1.2.4", "6.1.10", "7.4.66", "7.4.60",
-        "7.4.59", "7.4.62", "7.4.75", "7.4.76", "7.4.77", "7.4.78", "6.4.78", "6.4.71", "6.4.72",
-        "6.1.73", "7.3.100", "7.1.5", "7.1.6", "7.1.4", "7.1.3", "7.2.79", "7.2.80", "7.2.81",
-        "6.4.23", "7.4.21", "7.3.83", "7.3.87", "7.2.114", "7.3.84", "7.3.86", "7.3.86", "7.3.92",
-        "7.3.84", "7.1.102", "6.4.110", "6.4.108", "6.4.109", "6.4.87", "6.4.82", "6.4.77",
-        "6.1.77", "6.1.78", "7.3.101", "6.4.119", "6.4.118", "6.4.117", "6.4.116", "6.4.113",
-        "6.4.98", "6.4.100", "6.4.112", "6.4.115", "6.4.42", "6.4.43", "6.1.97", "6.1.101",
-        "6.1.101", "6.1.96", "6.4.106", "6.4.107", "6.1.90", "6.1.88", "6.1.97", "6.1.87",
-        "6.1.66", "6.4.105", "6.4.101", "6.4.111", "8.2.77", "8.2.23", "8.2.25", "8.2.26",
-        "8.2.30", "8.2.31", "8.2.39", "8.2.40", "8.2.41", "8.2.74", "8.2.75", "8.2.73", "8.3.15",
-        "8.3.24", "8.3.59", "8.4.40", "8.4.41", "8.3.13", "8.4.53", "8.4.54", "8.2.38", "8.4.55",
-        "8.4.1", "8.4.2", "8.4.58", "8.4.65", "8.4.56",
+        "10.0493", "10.0498", "10.0499", "2564", "2565", "2570", "2571", "2573.1", "2573.3",
+        "2573.2", "10.0496", "10.0497", "3.1.25", "3.1.28", "1.3.9", "3.4.114", "6.4.48", "6.1.54",
+        "7.2.116", "7.3.37.2", "7.3.36", "7.2.115", "6.1.78", "6.4.92", "7.2.114", "6.1.73",
+        "7.3.86", "3.1.32", "2567", "1.3.12", "1.3.66", "1.3.72", "1.3.74", "1.3.78", "3.4.78",
+        "1.3.9", "1.2.4", "3.4.85", "3.4.108", "3.4.109", "3.4.105", "3.4.106", "3.4.101",
+        "3.4.99", "3.4.87", "3.4.89", "3.4.86", "3.4.100", "3.4.80", "3.4.79", "3.4.91", "3.4.93",
+        "3.4.90", "3.4.92", "3.4.103", "3.4.102", "7.1.35", "3.1.69", "3.1.73", "3.1.77", "3.1.78",
+        "3.1.79", "3.1.81", "3.1.68", "2.4.72", "2.4.75", "3.4.111", "3.1.83", "1.2.4", "6.1.10",
+        "7.4.66", "7.4.60", "7.4.59", "7.4.62", "7.4.75", "7.4.76", "7.4.77", "7.4.78", "6.4.78",
+        "6.4.71", "6.4.72", "6.1.73", "7.3.100", "7.1.5", "7.1.6", "7.1.4", "7.1.3", "7.2.79",
+        "7.2.80", "7.2.81", "6.4.23", "7.4.21", "7.3.83", "7.3.87", "7.2.114", "7.3.84", "7.3.86",
+        "7.3.86", "7.3.92", "7.3.84", "7.1.102", "6.4.110", "6.4.108", "6.4.109", "6.4.87",
+        "6.4.82", "6.4.77", "6.1.77", "6.1.78", "7.3.101", "6.4.119", "6.4.118", "6.4.117",
+        "6.4.116", "6.4.113", "6.4.98", "6.4.100", "6.4.112", "6.4.115", "6.4.42", "6.4.43",
+        "6.1.97", "6.1.101", "6.1.101", "6.1.96", "6.4.106", "6.4.107", "6.1.90", "6.1.88",
+        "6.1.97", "6.1.87", "6.1.66", "6.4.105", "6.4.101", "6.4.111", "8.2.77", "8.2.23",
+        "8.2.25", "8.2.26", "8.2.30", "8.2.31", "8.2.39", "8.2.40", "8.2.41", "8.2.74", "8.2.75",
+        "8.2.73", "8.3.15", "8.3.24", "8.3.59", "8.4.40", "8.4.41", "8.3.13", "8.4.53", "8.4.54",
+        "8.2.38", "8.4.55", "8.4.1", "8.4.2", "8.4.58", "8.4.65", "8.4.56",
     ];
     let actual: Vec<&str> = rules().map(|r| r.id).collect();
     assert_eq!(actual, expected);
@@ -226,8 +235,8 @@ fn exactly_the_pinned_vikalpa_rules_are_optional() {
     let actual: Vec<&str> = rules().filter(|r| r.vikalpa).map(|r| r.id).collect();
     let expected = [
         "10.0498", "10.0499", "2564", "2565", "2570", "2571", "2573.1", "2573.3", "2573.2",
-        "7.3.37.2", "7.1.35", "3.4.111", "7.3.86", "6.4.117", "6.4.116", "6.4.115", "6.4.43",
-        "6.4.107", "8.2.74", "8.2.75", "8.4.65", "8.4.56",
+        "6.1.54", "7.3.37.2", "7.1.35", "3.4.111", "7.3.86", "6.4.117", "6.4.116", "6.4.115",
+        "6.4.43", "6.4.107", "8.2.74", "8.2.75", "8.4.65", "8.4.56",
     ];
     assert_eq!(actual, expected);
 }
@@ -2440,4 +2449,120 @@ fn derive_tags_mit_on_curadi_rows_in_jnapadi_only() {
             d.gana
         );
     }
+}
+
+/// A curādi row slice 10j's rules reach, hand-built: `derive` reads only the
+/// row number, the code, the gaṇa and the pada assignment, and the rules
+/// under test need nothing else.
+fn ajanta_row(dhatupatha: &'static str, code: &'static str, pada: PadaAssignment) -> Dhatu {
+    Dhatu {
+        dhatupatha,
+        code,
+        gana: Gana::Curadi,
+        pada,
+        artha: "",
+    }
+}
+
+/// The ids a branch credits in the sanādi stage: everything up to and
+/// including 3.1.32, or the whole log if 3.1.32 never ran.
+fn sanadi_ids(p: &Prakriya) -> Vec<&str> {
+    let ids: Vec<&str> = p.log.iter().map(|s| s.sutra.as_str()).collect();
+    match ids.iter().position(|id| *id == "3.1.32") {
+        Some(i) => ids[..=i].to_vec(),
+        None => ids,
+    }
+}
+
+#[test]
+fn ci_forks_on_6_1_54_and_shortens_after_vrddhi_and_puk() {
+    // √ci's ṇic branches: 6.1.54 declined, then 7.2.115 and 6.1.78 make the
+    // long `cAy`; taken, 7.3.36 makes `cAp`. 6.4.92 shortens both, so it must
+    // run after all four. The ṇic-less branch (2570's, once the row is in
+    // `OPTIONAL_NIC`) is filtered out: it never reaches 3.1.25.
+    let ci = ajanta_row("10.0124", "ci", PadaAssignment::NicUbhayapada);
+    let branches = derive(
+        &ci,
+        Lakara::Lat,
+        Pada::Parasmaipada,
+        Purusha::Prathama,
+        Vacana::Eka,
+    );
+    let mut nic: Vec<(String, Vec<&str>)> = Vec::new();
+    for p in &branches {
+        let ids = sanadi_ids(p);
+        if ids.contains(&"3.1.25") {
+            assert!(!p.blocked);
+            nic.push((p.text(), ids));
+        }
+    }
+    assert_eq!(
+        nic,
+        [
+            (
+                "cayayati".to_string(),
+                vec![
+                    "10.0493", "3.1.25", "1.3.9", "3.4.114", "7.2.115", "6.1.78", "6.4.92",
+                    "3.1.32",
+                ]
+            ),
+            (
+                "capayati".to_string(),
+                vec![
+                    "10.0493", "3.1.25", "1.3.9", "3.4.114", "6.1.54", "7.3.36", "6.4.92",
+                    "3.1.32",
+                ]
+            ),
+        ]
+    );
+}
+
+#[test]
+fn jna_takes_puk_and_no_vrddhi_before_nic() {
+    // `10.0258 jYA` is not mit: puk, no 7.2.115 (it would find the `p`), and
+    // no 6.4.92, so the `A` stays long.
+    let jna = ajanta_row("10.0258", "jYA", PadaAssignment::Nic);
+    let p = sole(derive(
+        &jna,
+        Lakara::Lat,
+        Pada::Parasmaipada,
+        Purusha::Prathama,
+        Vacana::Eka,
+    ));
+    assert_eq!(p.text(), "jYApayati");
+    assert_eq!(
+        sanadi_ids(&p),
+        ["3.1.25", "1.3.9", "3.4.114", "7.3.36", "3.1.32"]
+    );
+}
+
+#[test]
+fn smin_stays_atmanepadi_under_nic_by_2567() {
+    // √smiṅ (`10.0058 zmiN`, stored `smi`) is ṅit: under ṇic, Kaumudī 2567
+    // keeps it ātmanepadī and 1.3.12 credits, not 1.3.74.
+    let smin = ajanta_row("10.0058", "smi", PadaAssignment::Atmanepada);
+    let p = sole(derive(
+        &smin,
+        Lakara::Lat,
+        Pada::Atmanepada,
+        Purusha::Prathama,
+        Vacana::Eka,
+    ));
+    assert_eq!(p.text(), "smAyayate");
+    let ids: Vec<&str> = p.log.iter().map(|s| s.sutra.as_str()).collect();
+    assert_eq!(
+        ids[..8],
+        [
+            "3.1.25", "1.3.9", "3.4.114", "7.2.115", "6.1.78", "3.1.32", "2567", "1.3.12"
+        ]
+    );
+    assert!(!ids.contains(&"1.3.74"));
+    let p = sole(derive(
+        &smin,
+        Lakara::Lat,
+        Pada::Parasmaipada,
+        Purusha::Prathama,
+        Vacana::Eka,
+    ));
+    assert!(p.blocked);
 }

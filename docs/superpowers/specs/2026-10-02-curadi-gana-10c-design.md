@@ -248,4 +248,4 @@ deferred both gaṇasūtras to a causative slice), adanta roots (with the
 ā-garvīya list, 10.0497), then optional ṇic (taking the six optional-ṇic
 ākusmīya rows; taken by slice 10f, see `2026-10-02-curadi-gana-10f-design.md`). √smiṅ, and with it 7.2.115 before ṇic, rides whichever
 slice first needs 7.2.115. √gṛ (`10.0231`) and √yu (`10.0235`) are the
-ākusmīya rows that wait on it.
+ākusmīya rows that wait on it. (Slice 10j took √smiṅ, √gṛ, √yu and √ci: see `2026-10-04-curadi-gana-10j-design.md`.)

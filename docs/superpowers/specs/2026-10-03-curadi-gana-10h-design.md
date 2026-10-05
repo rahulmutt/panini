@@ -304,5 +304,6 @@ worktree for the run and restored after.
   ādhṛṣīya, and vidyut checks both antargaṇas first.
 - √gṛ (`10.0231`), √yu (`10.0235`) and √smiṅ: 7.2.115 is in, so these are
   curation slices. √ci (`10.0124`) also needs 6.1.54 and 7.3.36.
+  (Slice 10j took √smiṅ, √gṛ, √yu and √ci: see `2026-10-04-curadi-gana-10j-design.md`.)
 - Upasargas, and with them `10.0368 za\da~` (7.3.78).
 - A causative (hetumaṇic) slice takes 01.0934 and 10.0494.

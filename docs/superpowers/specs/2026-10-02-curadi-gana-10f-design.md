@@ -386,5 +386,6 @@ roots / 13716 cells / 15644 forms.
 - √smiṅ and 7.2.115 before ṇic ride whichever slice first needs 7.2.115.
   That slice takes √gṛ (`10.0231`), √yu (`10.0235`) and √ci (`10.0124`).
   √ci's optional ṇic is 2570, and it will reuse this slice's mechanism.
+  (Slice 10j took √smiṅ, √gṛ, √yu and √ci: see `2026-10-04-curadi-gana-10j-design.md`.)
 - A causative (hetumaṇic) slice takes the gaṇasūtras 01.0934 and 10.0494.
 - The ārdhadhātuka lakāras and luṅ will read `Tag::AtLopa`.

@@ -104,9 +104,8 @@ pub const AKUSMIYA: RangeInclusive<&str> = "10.0192"..="10.0236";
 /// The jñapādi of curādi: dhātupāṭha rows `10.0118` (`jYapa~`) through
 /// `10.0124` (`ciY`), the roots the gaṇasūtra 10.0493 makes mit. Compared as
 /// strings, like `AKUSMIYA`. The engine's `derive` tags a curādi root in this
-/// range `Tag::Mit`, which 10.0493 and 6.4.92 *mitāṃ hrasvaḥ* read. Includes
-/// `10.0124 ciY`, which is mit but not yet curated: 7.2.115 is in since slice
-/// 10h, but √ci still waits on its own slice, for 6.1.54 and 7.3.36.
+/// range `Tag::Mit`, which 10.0493 and 6.4.92 *mitāṃ hrasvaḥ* read. All seven
+/// are curated; `10.0124 ciY`, the last, since slice 10j.
 /// `jnapadi_is_exactly_the_rows_10_0493_names` pins the range to upstream.
 pub const JNAPADI: RangeInclusive<&str> = "10.0118"..="10.0124";
 
@@ -185,6 +184,7 @@ pub const OPTIONAL_NIC: &[(&str, &str)] = &[
     ("10.0112", "2564"),
     ("10.0113", "2564"),
     ("10.0114", "2564"),
+    ("10.0124", "2570"),
     ("10.0130", "2564"),
     ("10.0135", "2564"),
     ("10.0147", "2564"),
@@ -396,17 +396,18 @@ pub struct Dhatu {
     pub gana: Gana,
     /// Which pada(s) this engine derives for this root. Curated rather than
     /// read from the upadeśa's it-markers — but no longer a *deferral*:
-    /// `curated_pada_agrees_with_upadesha_markers` re-derives 102 of these 422
+    /// `curated_pada_agrees_with_upadesha_markers` re-derives 102 of these 430
     /// verdicts from the vendored upadeśa via 1.3.12 / 1.3.72 / 1.3.78 and
     /// requires them to match; `07.0017`'s (√bhuj's) is 1.3.66's root-keyed
-    /// exception, 260 curādi rows' are 1.3.74's, six more 1.3.74's with ṇic
-    /// and 1.3.72's without (`NicUbhayapada`), 43 ākusmīya rows'
-    /// the gaṇasūtra 10.0496's and ten ā-garvīya rows' the gaṇasūtra
-    /// 10.0497's, each asserted explicitly from both sides, the same way
+    /// exception, 264 curādi rows' are 1.3.74's, seven more 1.3.74's with ṇic
+    /// and 1.3.72's without (`NicUbhayapada`), 45 ākusmīya rows'
+    /// the gaṇasūtra 10.0496's, ten ā-garvīya rows' the gaṇasūtra
+    /// 10.0497's and `10.0058 zmiN`'s Kaumudī 2567's and 1.3.12's, each
+    /// asserted explicitly from both sides, the same way
     /// `dhatupatha_numbers_resolve_upstream` holds `code` to upstream. For
-    /// the 180 curādi rows whose ṇic is optional this is the ṇic branch's
+    /// the 181 curādi rows whose ṇic is optional this is the ṇic branch's
     /// pada; the test also re-derives their ṇic-less branch's from the
-    /// upadeśa: 1.3.72's for the six `NicUbhayapada` rows, 1.3.78's for the
+    /// upadeśa: 1.3.72's for the seven `NicUbhayapada` rows, 1.3.78's for the
     /// rest.
     ///
     /// The column stayed hand-written because deriving it in production means
@@ -416,7 +417,7 @@ pub struct Dhatu {
     /// the honest arrangement; see the deferral in
     /// `docs/superpowers/specs/2026-08-16-pada-audit-design.md`.
     ///
-    /// The test covers the 422 roots curated here, not the dhātupāṭha's 2259.
+    /// The test covers the 430 roots curated here, not the dhātupāṭha's 2259.
     /// It catches a mis-assigned pada on a root a future slice adds; it does
     /// not make the table self-maintaining.
     pub pada: PadaAssignment,
@@ -4863,6 +4864,86 @@ static DHATUS: &[Dhatu] = &[
         pada: PadaAssignment::Nic,
         artha: "AsvAdane",
     },
+    Dhatu {
+        // 10.0058 `zmiN` anAdare (√smiṅ). Ṅit, so ātmanepadī, and under ṇic
+        // Kaumudī 2567 keeps it so: 1.3.12 credits, not 1.3.74 (*smāyayate*).
+        // 7.2.115 *aco ñṇiti* and the sanādi 6.1.78 make `smAy`. Stored per
+        // 6.1.64. Slice 10j.
+        dhatupatha: "10.0058",
+        code: "smi",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Atmanepada,
+        artha: "anAdare",
+    },
+    Dhatu {
+        // 10.0124 `ciY` cayane (√ci). Jñapādi, so mit (10.0493); ñit, so ṇic
+        // optional by Kaumudī 2570. Ubhayapadī by 1.3.74 with ṇic, where 6.1.54
+        // *cisphuror ṇau* optionally gives `cA` and 7.3.36 its puk
+        // (*capayati*), or 7.2.115 and 6.1.78 give `cAy` (*cayayati*), and
+        // 6.4.92 shortens both; ubhayapadī by 1.3.72 without (*cayati* /
+        // *cayate*). Slice 10j.
+        dhatupatha: "10.0124",
+        code: "ci",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::NicUbhayapada,
+        artha: "cayane",
+    },
+    Dhatu {
+        // 10.0152 `Gf` prasravaRe (√ghṛ). Ubhayapadī by 1.3.74 (*ghārayati*).
+        // 7.2.115 *aco ñṇiti* makes `GAr` (1.1.51). Slice 10j.
+        dhatupatha: "10.0152",
+        code: "Gf",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "prasravaRe",
+    },
+    Dhatu {
+        // 10.0231 `gf` vijYAne (√gṛ). Ākusmīya: ātmanepadī by 10.0496
+        // (*gārayate*). 7.2.115 makes `gAr`. Slice 10j.
+        dhatupatha: "10.0231",
+        code: "gf",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Akusmiya,
+        artha: "vijYAne",
+    },
+    Dhatu {
+        // 10.0235 `yu` jugupsAyAm (√yu). Ākusmīya: ātmanepadī by 10.0496
+        // (*yāvayate*). 7.2.115 and the sanādi 6.1.78 make `yAv`. Slice 10j.
+        dhatupatha: "10.0235",
+        code: "yu",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Akusmiya,
+        artha: "jugupsAyAm",
+    },
+    Dhatu {
+        // 10.0258 `jYA` niyoge (√jñā). Ubhayapadī by 1.3.74 (*jñāpayati*).
+        // 7.3.36 adds puk; outside the jñapādi, so not mit, and the `A` stays
+        // long. Slice 10j.
+        dhatupatha: "10.0258",
+        code: "jYA",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "niyoge",
+    },
+    Dhatu {
+        // 10.0275 `cyu` sahane hasane ca (√cyu). Ubhayapadī by 1.3.74
+        // (*cyāvayati*). 7.2.115 and the sanādi 6.1.78 make `cyAv`. Slice 10j.
+        dhatupatha: "10.0275",
+        code: "cyu",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "sahane hasane ca",
+    },
+    Dhatu {
+        // 10.0277 `BU` avakalkane (√bhū). Ubhayapadī by 1.3.74 (*bhāvayati*),
+        // as the ādhṛṣīya `10.0382 BU` is on its ṇic branch. 7.2.115 and the
+        // sanādi 6.1.78 make `BAv`. Slice 10j.
+        dhatupatha: "10.0277",
+        code: "BU",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "avakalkane",
+    },
 ];
 
 pub fn dhatus() -> &'static [Dhatu] {
@@ -4904,7 +4985,7 @@ mod tests {
 
     #[test]
     fn curated_roots_have_expected_ganas_and_padas() {
-        assert_eq!(dhatus().len(), 422);
+        assert_eq!(dhatus().len(), 430);
         let bu = dhatus().iter().find(|d| d.dhatupatha == "01.0001").unwrap();
         assert!(matches!(bu.pada, PadaAssignment::Parasmaipada));
         let labh = dhatus().iter().find(|d| d.dhatupatha == "01.1130").unwrap();
@@ -5195,7 +5276,7 @@ mod tests {
     }
 
     #[test]
-    fn curadi_rows_are_the_three_hundred_nineteen_curated_roots() {
+    fn curadi_rows_are_the_three_hundred_twenty_seven_curated_roots() {
         // Slice 10a opens gaṇa 10 with four roots that need only ṇic
         // (3.1.25), 3.1.32 and the guṇa/vṛddhi before ṇic: √cur (7.3.86),
         // √laḍ (7.2.116), √bhakṣ and √bhūṣ (neither). None carries a pada
@@ -5221,8 +5302,12 @@ mod tests {
         // 1.3.74 with ṇic; the six svarita or ñit among them are
         // `NicUbhayapada`, ubhayapadī by 1.3.72 without it too. Slice 10i adds
         // the fifty-nine āsvadīya (10.0499), `10.0022 pF` (Kaumudī 2565) and
-        // `10.0251 Guzi~r` (2571), ubhayapadī by 1.3.74 with ṇic. The gaṇa is
-        // OPEN at 319 of its 509 dhātupāṭha rows.
+        // `10.0251 Guzi~r` (2571), ubhayapadī by 1.3.74 with ṇic. Slice 10j
+        // adds the eight ajanta rows 7.2.115, 6.1.54 and 7.3.36 reach: √ghṛ,
+        // √jñā, √cyu and √bhū, ubhayapadī by 1.3.74; √gṛ and √yu, the last two
+        // ākusmīya, by 10.0496; √ci, the last jñapādi, `NicUbhayapada` with
+        // ṇic optional by 2570; and √smiṅ, ātmanepadī under ṇic by Kaumudī
+        // 2567. The gaṇa is OPEN at 327 of its 509 dhātupāṭha rows.
         let rows: Vec<_> = dhatus()
             .iter()
             .filter(|d| d.gana == Gana::Curadi)
@@ -5550,6 +5635,14 @@ mod tests {
                 ("10.0335", "ruj", PadaAssignment::Nic),
                 ("10.0336", "svad", PadaAssignment::Nic),
                 ("10.0337", "svAd", PadaAssignment::Nic),
+                ("10.0058", "smi", PadaAssignment::Atmanepada),
+                ("10.0124", "ci", PadaAssignment::NicUbhayapada),
+                ("10.0152", "Gf", PadaAssignment::Nic),
+                ("10.0231", "gf", PadaAssignment::Akusmiya),
+                ("10.0235", "yu", PadaAssignment::Akusmiya),
+                ("10.0258", "jYA", PadaAssignment::Nic),
+                ("10.0275", "cyu", PadaAssignment::Nic),
+                ("10.0277", "BU", PadaAssignment::Nic),
             ]
         );
     }
@@ -5813,7 +5906,7 @@ mod tests {
     /// AFTER the `~` that marks an anunāsika it, so `~\` is an anudātta it and
     /// `~^` a svarita it — whereas a `\` sitting directly on a vowel elsewhere
     /// is the ROOT's own accent and says nothing about pada. Counted off the
-    /// vendored upadeśa: 73 of the 422 curated roots carry a `\` at all, and 52
+    /// vendored upadeśa: 73 of the 430 curated roots carry a `\` at all, and 52
     /// of those carry one on a root vowel — `01.0642 ji\`, `01.1082 smf\` and
     /// `02.0001 a\da~` among them — so conflating the two does not fail
     /// loudly; it silently calls most of the table ātmanepada.
@@ -6001,7 +6094,7 @@ mod tests {
                 upadesha(d.dhatupatha)
             );
         }
-        assert_eq!(OPTIONAL_NIC.len(), 180);
+        assert_eq!(OPTIONAL_NIC.len(), 181);
         // `10.0368 za\da~` stays out: the reading above makes it 10.0498's,
         // but vidyut derives it with the upasarga ā, which this engine does
         // not model.
@@ -6076,8 +6169,9 @@ mod tests {
     fn jnapadi_is_exactly_the_rows_10_0493_names() {
         // The gaṇasūtra 10.0493 follows `10.0124 ciY` and makes the seven
         // rows from `10.0118 jYapa~` mit. vidyut-prakriya lists the same
-        // seven upadeśas (`JNAP_ADI`). `ciY` is not curated, so this test —
-        // not a derivation — is what holds the range's upper end.
+        // seven upadeśas (`JNAP_ADI`). All seven are curated since slice 10j,
+        // so derivations credit 10.0493 at both ends of the range; this test
+        // holds the range itself to upstream.
         let rows = upstream_rows();
         let in_range: Vec<&str> = rows
             .iter()
@@ -6281,13 +6375,25 @@ mod tests {
             // decides only a ṇic-less branch, so a marked curādi row is allowed
             // only where its ṇic is optional and the marker is svarita or ñit:
             // its ṇic-less branch is 1.3.72's (`NicUbhayapada`, slice 10h's six
-            // ādhṛṣīya). Any other marked curādi row (`10.0058 zmiN`, ṅit) is a
-            // later slice's, and fails the first assertion until that slice
-            // decides how 1.3.12 meets ṇic.
+            // ādhṛṣīya, and √ci). One marked row decides its ṇic branch too: a
+            // ṅit row stays ātmanepadī under ṇic by Kaumudī 2567, and 1.3.12
+            // credits (`10.0058 zmiN`, the one ṅit curādi row upstream). The
+            // check reads the ṅ, not the verdict: an anudāttet row (`za\da~`)
+            // marks ātmanepada too, but takes 1.3.74 under ṇic. Any other
+            // marked curādi row fails the first assertion until a slice
+            // decides its pada.
             if d.gana == Gana::Curadi {
+                let ngit = upadesha.trim_end_matches(['\\', '^']).ends_with('N');
                 let nicless_ubhaya =
                     optional_nic(d.dhatupatha).is_some() && derived == PadaAssignment::Ubhayapada;
-                if !nicless_ubhaya {
+                if ngit {
+                    assert_eq!(
+                        derived,
+                        PadaAssignment::Atmanepada,
+                        "{} {upadesha}: ṅit, so 1.3.12's",
+                        d.dhatupatha
+                    );
+                } else if !nicless_ubhaya {
                     assert_eq!(
                         derived,
                         PadaAssignment::Parasmaipada,
@@ -6299,6 +6405,8 @@ mod tests {
                     (PadaAssignment::Akusmiya, "ākusmīya, so 10.0496's")
                 } else if AA_GARVIYA.contains(&d.dhatupatha) {
                     (PadaAssignment::AaGarviya, "ā-garvīya, so 10.0497's")
+                } else if ngit {
+                    (PadaAssignment::Atmanepada, "ṅit, so Kaumudī 2567's")
                 } else if nicless_ubhaya {
                     (
                         PadaAssignment::NicUbhayapada,
@@ -6342,6 +6450,16 @@ mod tests {
             "pada column disagrees with the vendored upadeśa:\n  {}",
             wrong.join("\n  ")
         );
+        // The ṅit arm above reaches one row: `10.0058 zmiN` is the one ṅit
+        // curādi row upstream.
+        let ngit_curadi: Vec<&str> = rows
+            .iter()
+            .filter(|(n, u, _)| {
+                n.starts_with("10.") && u.trim_end_matches(['\\', '^']).ends_with('N')
+            })
+            .map(|(n, _, _)| *n)
+            .collect();
+        assert_eq!(ngit_curadi, ["10.0058"]);
     }
 
     #[test]

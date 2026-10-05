@@ -363,6 +363,6 @@ Re-grep recorded file:line anchors at final HEAD.
 
 √smiṅ and 7.2.115 before ṇic ride whichever slice first needs 7.2.115. That
 slice takes √gṛ (`10.0231`), √yu (`10.0235`) and √ci (`10.0124`). √ci also
-brings 6.1.54, 7.3.36 and its optional ṇic. A causative (hetumaṇic) slice,
+brings 6.1.54, 7.3.36 and its optional ṇic. (Slice 10j took √smiṅ, √gṛ, √yu and √ci: see `2026-10-04-curadi-gana-10j-design.md`.) A causative (hetumaṇic) slice,
 whenever it comes, takes the gaṇasūtras 01.0934 and 10.0494, with √syam
 and √śam as their curādi witnesses.

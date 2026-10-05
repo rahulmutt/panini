@@ -254,5 +254,5 @@ does not hand-pick it.
   10i. 2572 (īdit) is unreachable: every īdit curādi row is āsvadīya or
   ādhṛṣīya, and vidyut checks both antargaṇas first.
 - √ci (`10.0124`), √gṛ and √yu. 7.2.115 landed in slice 10h, so √gṛ and √yu
-  are curation; √ci also needs 6.1.54 and 7.3.36.
+  are curation; √ci also needs 6.1.54 and 7.3.36. (Slice 10j took √smiṅ, √gṛ, √yu and √ci: see `2026-10-04-curadi-gana-10j-design.md`.)
 - A causative (hetumaṇic) slice takes 01.0934 and 10.0494.
