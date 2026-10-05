@@ -20,7 +20,8 @@
 //! branch, √jñā's 7.3.36's puk instead, and √mṛj's 7.2.114. √smiṅ's pada
 //! sūtra is Kaumudī 2567, then 1.3.12. √dhūp's and √vich's ṇic-less branch has
 //! 3.1.28's āya, which 3.4.114 and 3.1.32 treat as they treat ṇic, and
-//! √vich's every branch the sanādi 6.1.73's tuk before 3.1.32.
+//! √vich's every branch the sanādi 6.1.73's tuk before 3.1.32, as √pich's
+//! (slice 10k) ṇic branch does.
 
 use crate::helpers::{at, cell_trace, credited};
 use panini_data::{
@@ -273,7 +274,7 @@ fn a_kusmad_is_credited_on_exactly_the_akusmiya_cells() {
     // cells, one branch each, the six optional-ṇic rows' on their ṇic branch
     // — and nowhere else: every credit's number lies in the positional
     // `AKUSMIYA` range. And 1.3.74 never reaches them: its credits stay on the
-    // 264 `Nic` rows and the seven `NicUbhayapada` rows' ṇic branch, read from
+    // 419 `Nic` rows and the seven `NicUbhayapada` rows' ṇic branch, read from
     // the curated `pada` column (ten before slice 10e, listed literally until
     // then).
     let hits = credited("10.0496");
@@ -286,7 +287,7 @@ fn a_kusmad_is_credited_on_exactly_the_akusmiya_cells() {
         .filter(|d| d.gana == Gana::Curadi && d.pada == PadaAssignment::Nic)
         .map(|d| d.dhatupatha)
         .collect();
-    assert_eq!(nic.len(), 264, "curated 1.3.74 rows");
+    assert_eq!(nic.len(), 419, "curated 1.3.74 rows");
     let nic_ubhayapada: Vec<&str> = dhatus()
         .iter()
         .filter(|d| d.pada == PadaAssignment::NicUbhayapada)
@@ -1015,9 +1016,10 @@ fn the_10i_aya_and_tuk_fire_only_on_their_rows() {
     // Goldens ignore traces, so this is what holds slice 10i's two new
     // sanādi entries to their rows across the corpus: 3.1.28 on √dhūp and
     // √vich alone (`no_nic_pada_rule_reaches_a_nicless_branch` holds it to
-    // their ṇic-less branches), and the sanādi 6.1.73 on √vich alone.
+    // their ṇic-less branches), and the sanādi 6.1.73 on √vich and, since
+    // slice 10k, √pich (`10.0061 piC`, picCayati) alone.
     assert_eq!(rows_crediting("3.1.28", true), ["10.0303", "10.0304"]);
-    assert_eq!(rows_crediting("6.1.73", true), ["10.0304"]);
+    assert_eq!(rows_crediting("6.1.73", true), ["10.0061", "10.0304"]);
 }
 
 #[test]

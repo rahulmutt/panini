@@ -62,7 +62,9 @@ that. Rows are keyed by dhātupāṭha number, and `code` is deliberately not
 unique (both √aś rows spell `aS`), so a homograph needs no structural
 support. When a partner is curated later, its ātmanepada cells will repeat
 these forms. That is expected, the same as any two rows sharing a surface.
-Each homograph row's comment names its partner number.
+Each homograph row's comment names its partner number. (Slice 10k curated
+the five ubhayapadī partners `10.0006`, `10.0034`, `10.0041`, `10.0189` and
+`10.0438`: see `2026-10-05-curadi-gana-10k-design.md`.)
 
 **√syam and √śam are in, without 10.0494.** vidyut credits 10.0494 on
 `10.0216 syama~` and `10.0218 Sama~`. In vidyut it is a bare `p.step` in

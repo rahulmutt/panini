@@ -324,7 +324,9 @@ now) and restored after.
   `10.0006`–`10.0191` and `10.0237`–`10.0278`, plus stragglers
   (`10.0397`, `10.0414`, `10.0438`, `10.0457`, `10.0462`, `10.0470`,
   `10.0491`). Prototype-audit them first: no spec has examined them, and
-  each batch may hide rules.
+  each batch may hide rules. (The prototype found 164; slice 10k took the
+  155 that need nothing new, and slice 10l takes the nine that need rules:
+  see `2026-10-05-curadi-gana-10k-design.md`.)
 - Upasargas, and with them `10.0368 za\da~` (7.3.78) and 6.1.76 *padāntād
   vā*.
 - `gupU~`, `paRa~\` and `pana~\` join `AYA` when curated.

@@ -31,8 +31,8 @@
 //! `Tag::Mrj`, and 7.2.116 and 7.3.86 decline on 6.4.48's `Tag::AtLopa`).
 //! 6.1.73 and 3.1.28 carry no gaṇa guard, only their own conditions (3.1.28
 //! reads the āya rows); on today's corpus the gaṇas 1–9 add nothing and
-//! record nothing, and 6.1.73 fires only on √vich, which
-//! `the_10i_aya_and_tuk_fire_only_on_their_rows` pins.
+//! record nothing, and 6.1.73 fires only on √vich and √pich (slice 10k),
+//! which `the_10i_aya_and_tuk_fire_only_on_their_rows` pins.
 
 use crate::prakriya::Prakriya;
 use crate::rule::{Rule, RuleKind};
@@ -681,8 +681,8 @@ pub(crate) static SANADI: &[Rule] = &[
             true
         },
     },
-    // 6.1.73 che ca, before ṇic or āya: √vich's `i` takes tuk here, before
-    // the sanādi 7.3.86 below can read it as a laghu upadhā (`viC` →
+    // 6.1.73 che ca, before ṇic or āya: √vich's `i` (√pich's too, slice 10k)
+    // takes tuk here, before the sanādi 7.3.86 can read it as a laghu upadhā (`viC` →
     // `vitC`, so *vicchayati*, not *vechayati*; 8.4.40 later makes the `t`
     // a `c`). vidyut-prakriya credits it at this point ("tuk-Agama can block
     // guna", `angasya.rs`). A second entry under the aṅga stage's id, with
