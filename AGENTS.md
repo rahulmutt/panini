@@ -13,7 +13,7 @@
   `MISE_ENV=dev mise install`. This provides:
   - `cargo-mutants` (mutation testing) — `mise run mutants` runs
     `cargo mutants --package panini-prakriya --package panini-analyze
-    --test-workspace=true --timeout 6470 -j 4`. Run the gate through the task
+    --test-workspace=true --timeout 7780 -j 4`. Run the gate through the task
     rather than reconstructing the flags. The `--test-workspace` flag is
     required so each **mutant** run exercises the `panini` crate's golden
     paradigm/trace/roundtrip tests, not just the mutated packages' own unit
@@ -34,7 +34,7 @@
     timeouts). `cargo mutants` also reads `-j` from `CARGO_MUTANTS_JOBS`, so
     an unqualified cap can be defeated by the environment alone; keep `-j`
     at or below 4, or re-measure and raise the cap in step.
-    **The floor behind the 6470s cap, measured at 26424 cells on Rust 1.99.0,
+    **The floor behind the 7780s cap, measured at 26424 cells on Rust 1.99.0,
     2026-10-04.** Two `mise run test` runs took 7m6.732s and 4m29.176s wall
     clock (user CPU 9m13.3s and 9m11.3s), on a host under heavy external load
     (load averages `67.93 81.19 77.50` before, `78.60 90.24 83.74` between and
@@ -82,28 +82,34 @@
     TIMEOUT at 1810 in the campaign, CAUGHT in 1559.33s rerun alone at `-j 1`,
     estimated at 2323.7s - 2567.4s under campaign load; 10h: 469.47s with 2^5
     forks) and the `==` mutant in 2287.81s (10i: 1762.02s; 10h: 322.20s). The
-    cap is max(430, 6 × the longest campaign-load equivalent phase, 2 × the
-    longest campaign-load caught phase), rounded up to the next 10s: 2 ×
-    3232.46s = 6464.91s, so **6470** (margins: 2.00x over the `true` mutant's
-    3232.46s, 2.83x over the `==` mutant's 2287.81s, 21.7x over the longest
-    equivalent; only 1.67x over the probe's 3885.06s, which ran both
-    `skip_nic` mutants side by side at load up to 127, a heavier contention
-    than the campaign gave them). 10j moved it to 6470 from 5140; 10i had
-    moved it to 5140 from 1810 on 10i's estimate, 10g to 1810 from 1210 on its
-    300.16s phase, 1210 from 10f (430 from 10e, 320 in 10e's campaign, 260
-    from 10d), 200 from 10c, 170 from 10b, 150 from 3f3 (110 before, 80 in
-    3f2's campaign and 60 in 3f's, 900 against the Θ(N²) suite, before
-    `candidates()` answered from a corpus index). Each new optional-ṇic
-    vikalpa rule doubles the `skip_nic` mutants' work, so re-run them alone
-    whenever one is added. The campaign-load phase swings between campaigns
-    (300.16s in 10g, 142.46s in 10h) with host contention, so the cap is not
-    lowered on one quiet measurement. The permanent hang below costs one full
-    cap per campaign (6470s of one `-j 4` slot). Take the campaign-load phase,
-    never the isolated one, and re-measure on a quiet host if one becomes
-    available. Take the floor by measurement, never by scaling it by cell
-    count or by a projected contention multiplier. Re-measure the floor and an
-    uncaught `-j 4` run whenever the golden suite grows, and change
-    `mise.toml` and this paragraph together.
+    `true` mutant's rise from 1559.33s (alone, `-j 1`, in 10i) is its `-j 4`
+    pairing with the `==` sibling, which both the probe and the campaign ran
+    side by side, plus host load; it is not 6.1.54, which forks only √ci's
+    rows. The cap is max(430, 6 × the longest campaign-load equivalent phase,
+    2 × the longest campaign-load caught phase), rounded up to the next 10s,
+    over both readings of the `true` mutant in the same `-j 4` side-by-side
+    setup: the probe's 3885.06s and the campaign's 3232.46s differ only in
+    external load (35-127 in the probe; the campaign's load in the window was
+    not sampled), and the cap is not lowered on the quieter one. 2 × 3885.06s
+    = 7770.12s, so **7780**, the cap the campaign ran and validated (margins:
+    2.00x over the probe's 3885.06s, 2.41x over the campaign's 3232.46s, 3.40x
+    over the `==` mutant's 2287.81s, 26.1x over the longest campaign-load
+    equivalent's 298.02s and 31.1x over the other's 250.01s). 10j moved it to
+    7780 from 5140; 10i had moved it to 5140 from 1810 on 10i's estimate, 10g
+    to 1810 from 1210 on its 300.16s phase, 1210 from 10f (430 from 10e, 320
+    in 10e's campaign, 260 from 10d), 200 from 10c, 170 from 10b, 150 from 3f3
+    (110 before, 80 in 3f2's campaign and 60 in 3f's, 900 against the Θ(N²)
+    suite, before `candidates()` answered from a corpus index). Each new
+    optional-ṇic vikalpa rule doubles the `skip_nic` mutants' work, so re-run
+    them alone whenever one is added. The campaign-load phase swings between
+    campaigns (300.16s in 10g, 142.46s in 10h) with host contention, so the
+    cap is not lowered on one quiet measurement. The permanent hang below
+    costs one full cap per campaign (7780s of one `-j 4` slot). Take the
+    campaign-load phase, never the isolated one, and re-measure on a quiet
+    host if one becomes available. Take the floor by measurement, never by
+    scaling it by cell count or by a projected contention multiplier.
+    Re-measure the floor and an uncaught `-j 4` run whenever the golden suite
+    grows, and change `mise.toml` and this paragraph together.
     **One timeout is correct and permanent.** `tripadi.rs`'s 8.4.2 ṇatva
     backward scan decrements a loop index with `j -= 1`; the `j /= 1` mutant
     makes `j` constant, and the loop never terminates. No assertion can ever
@@ -182,11 +188,13 @@
     median 24.09s, p90 173.39s, max 3232.46s (`sanadi.rs:57:5` `skip_nic`
     `true`; then `sanadi.rs:57:39` at 2287.81s, and `guna.rs:207:31` `||` →
     `&&` at 632.82s and `guna.rs:215:53` `&&` → `||` at 612.64s, 217.31s and
-    256.14s in 10i). The cap is **6470** (2 × the `skip_nic` `true` mutant's
-    3232.46s; the floor paragraph has the arithmetic), set in `mise.toml` and
-    above. Its margins: 6470 / 298.02 = 21.7x over the longest equivalent,
-    6470 / 3232.46 = 2.00x over the slowest caught phase. The only timeout is
-    the permanent `j /= 1` hang. `outcomes.json` is kept at
+    256.14s in 10i). The cap is **7780** (2 × the `skip_nic` `true` mutant's
+    3885.06s in the probe, not lowered on the campaign's quieter 3232.46s; the
+    floor paragraph has the arithmetic), set in `mise.toml` and above, and the
+    campaign ran at it. Its margins: 7780 / 298.02 = 26.1x over the longest
+    equivalent, 7780 / 3885.06 = 2.00x and 7780 / 3232.46 = 2.41x over the
+    `true` mutant's two readings. The only timeout is the permanent `j /= 1`
+    hang. `outcomes.json` is kept at
     `/home/dev/mutants-records/curadi-10j/mutants.out/outcomes.json`, with a
     durable copy at
     `/home/dev/mutants-records/curadi-10j/outcomes.durable.json`; the probe's
