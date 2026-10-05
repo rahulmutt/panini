@@ -396,10 +396,10 @@ pub struct Dhatu {
     pub gana: Gana,
     /// Which pada(s) this engine derives for this root. Curated rather than
     /// read from the upadeśa's it-markers — but no longer a *deferral*:
-    /// `curated_pada_agrees_with_upadesha_markers` re-derives 102 of these 430
+    /// `curated_pada_agrees_with_upadesha_markers` re-derives 102 of these 585
     /// verdicts from the vendored upadeśa via 1.3.12 / 1.3.72 / 1.3.78 and
     /// requires them to match; `07.0017`'s (√bhuj's) is 1.3.66's root-keyed
-    /// exception, 264 curādi rows' are 1.3.74's, seven more 1.3.74's with ṇic
+    /// exception, 419 curādi rows' are 1.3.74's, seven more 1.3.74's with ṇic
     /// and 1.3.72's without (`NicUbhayapada`), 45 ākusmīya rows'
     /// the gaṇasūtra 10.0496's, ten ā-garvīya rows' the gaṇasūtra
     /// 10.0497's and `10.0058 zmiN`'s Kaumudī 2567's and 1.3.12's, each
@@ -417,7 +417,7 @@ pub struct Dhatu {
     /// the honest arrangement; see the deferral in
     /// `docs/superpowers/specs/2026-08-16-pada-audit-design.md`.
     ///
-    /// The test covers the 430 roots curated here, not the dhātupāṭha's 2259.
+    /// The test covers the 585 roots curated here, not the dhātupāṭha's 2259.
     /// It catches a mis-assigned pada on a root a future slice adds; it does
     /// not make the table self-maintaining.
     pub pada: PadaAssignment,
@@ -4944,6 +4944,1529 @@ static DHATUS: &[Dhatu] = &[
         pada: PadaAssignment::Nic,
         artha: "avakalkane",
     },
+    Dhatu {
+        // 10.0006 `lakza~` darSanANkanayoH (√lakṣ). Guru upadhā (the conjunct
+        // `kz`), so unchanged before ṇic. Shares its ātmanepada forms with the
+        // ākusmīya `10.0219 lakza~`. Ubhayapadī by 1.3.74 (*lakṣayati*). Slice
+        // 10k.
+        dhatupatha: "10.0006",
+        code: "lakz",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "darSanANkanayoH",
+    },
+    Dhatu {
+        // 10.0008 `kudf~` anftaBAzaRe (√kud). 7.3.86 guṇates the laghu upadhā
+        // before ṇic (kod-i). Ubhayapadī by 1.3.74 (*kodayati*). Slice 10k.
+        dhatupatha: "10.0008",
+        code: "kud",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "anftaBAzaRe",
+    },
+    Dhatu {
+        // 10.0012 `mida~` snehane (√mid). 7.3.86 guṇates the laghu upadhā
+        // before ṇic (med-i). Ubhayapadī by 1.3.74 (*medayati*). Slice 10k.
+        dhatupatha: "10.0012",
+        code: "mid",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "snehane",
+    },
+    Dhatu {
+        // 10.0015 `jala~` apavAraRe (√jal). 7.2.116 ata upadhāyāḥ lengthens the
+        // `a` upadhā before ṇit ṇic (jAl-i). Ubhayapadī by 1.3.74 (*jālayati*).
+        // Slice 10k.
+        dhatupatha: "10.0015",
+        code: "jal",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "apavAraRe",
+    },
+    Dhatu {
+        // 10.0016 `laja~` apavAraRe (√laj). 7.2.116 ata upadhāyāḥ lengthens the
+        // `a` upadhā before ṇit ṇic (lAj-i). Ubhayapadī by 1.3.74 (*lājayati*).
+        // Slice 10k.
+        dhatupatha: "10.0016",
+        code: "laj",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "apavAraRe",
+    },
+    Dhatu {
+        // 10.0017 `pIqa~` avagAhane (√pīḍ). Long upadhā vowel `I`, so unchanged
+        // before ṇic. Ubhayapadī by 1.3.74 (*pīḍayati*). Slice 10k.
+        dhatupatha: "10.0017",
+        code: "pIq",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "avagAhane",
+    },
+    Dhatu {
+        // 10.0018 `nawa~` avaspandane (√naṭ). 7.2.116 ata upadhāyāḥ lengthens
+        // the `a` upadhā before ṇit ṇic (nAw-i). Ubhayapadī by 1.3.74
+        // (*nāṭayati*). Slice 10k.
+        dhatupatha: "10.0018",
+        code: "naw",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "avaspandane",
+    },
+    Dhatu {
+        // 10.0019 `SraTa~` prayatne (√śrath). 7.2.116 ata upadhāyāḥ lengthens
+        // the `a` upadhā before ṇit ṇic (SrAT-i). Homograph of the ubhayapadī
+        // curādi row `10.0360 SraTa~`: they share every form. Ubhayapadī by
+        // 1.3.74 (*śrāthayati*). Slice 10k.
+        dhatupatha: "10.0019",
+        code: "SraT",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "prayatne",
+    },
+    Dhatu {
+        // 10.0020 `baDa~` saMyamane (√badh). 7.2.116 ata upadhāyāḥ lengthens
+        // the `a` upadhā before ṇit ṇic (bAD-i). Ubhayapadī by 1.3.74
+        // (*bādhayati*). Slice 10k.
+        dhatupatha: "10.0020",
+        code: "baD",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "saMyamane",
+    },
+    Dhatu {
+        // 10.0021 `banDa~` saMyamane (√bandh). Guru upadhā (the conjunct `nD`),
+        // so unchanged before ṇic. 8.3.24 makes its `n` an anusvāra before `D`,
+        // and 8.4.58 restores `n`. Ubhayapadī by 1.3.74 (*bandhayati*). Slice
+        // 10k.
+        dhatupatha: "10.0021",
+        code: "banD",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "saMyamane",
+    },
+    Dhatu {
+        // 10.0024 `pakza~` parigrahe (√pakṣ). Guru upadhā (the conjunct `kz`),
+        // so unchanged before ṇic. Ubhayapadī by 1.3.74 (*pakṣayati*). Slice
+        // 10k.
+        dhatupatha: "10.0024",
+        code: "pakz",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "parigrahe",
+    },
+    Dhatu {
+        // 10.0025 `varRa~` preraRe (√varṇ). Guru upadhā (the conjunct `rR`), so
+        // unchanged before ṇic. Homograph of the ubhayapadī curādi row `10.0484
+        // varRa`: they share every form. Ubhayapadī by 1.3.74 (*varṇayati*).
+        // Slice 10k.
+        dhatupatha: "10.0025",
+        code: "varR",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "preraRe",
+    },
+    Dhatu {
+        // 10.0027 `praTa~` praKyAne (√prath). 7.2.116 ata upadhāyāḥ lengthens
+        // the `a` upadhā before ṇit ṇic (prAT-i). Ubhayapadī by 1.3.74
+        // (*prāthayati*). Slice 10k.
+        dhatupatha: "10.0027",
+        code: "praT",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "praKyAne",
+    },
+    Dhatu {
+        // 10.0028 `pfTa~` prakzepe (√pṛth). 7.3.86 guṇates the laghu upadhā `f`
+        // to `ar` (1.1.51) before ṇic (parT-i). Shares every form with `10.0186
+        // parTa~`. Ubhayapadī by 1.3.74 (*parthayati*). Slice 10k.
+        dhatupatha: "10.0028",
+        code: "pfT",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "prakzepe",
+    },
+    Dhatu {
+        // 10.0029 `paTa~` prakzepe (√path). 7.2.116 ata upadhāyāḥ lengthens the
+        // `a` upadhā before ṇit ṇic (pAT-i). Ubhayapadī by 1.3.74
+        // (*pāthayati*). Slice 10k.
+        dhatupatha: "10.0029",
+        code: "paT",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "prakzepe",
+    },
+    Dhatu {
+        // 10.0030 `zanba~` sambanDane (√sanb). Guru upadhā (the conjunct `nb`),
+        // so unchanged before ṇic. Stored per 6.1.64. 8.3.24 makes its `n` an
+        // anusvāra, and 8.4.58 makes that `m` before `b`. Ubhayapadī by 1.3.74
+        // (*sambayati*). Slice 10k.
+        dhatupatha: "10.0030",
+        code: "sanb",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "sambanDane",
+    },
+    Dhatu {
+        // 10.0031 `Sanba~` sambanDane (√śanb). Guru upadhā (the conjunct `nb`),
+        // so unchanged before ṇic. 8.3.24 makes its `n` an anusvāra, and 8.4.58
+        // makes that `m` before `b`. Ubhayapadī by 1.3.74 (*śambayati*). Slice
+        // 10k.
+        dhatupatha: "10.0031",
+        code: "Sanb",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "sambanDane",
+    },
+    Dhatu {
+        // 10.0032 `sAnba~` sambanDane (√sānb). Guru upadhā (the conjunct `nb`),
+        // so unchanged before ṇic. 8.3.24 makes its `n` an anusvāra, and 8.4.58
+        // makes that `m` before `b`. Ubhayapadī by 1.3.74 (*sāmbayati*). Slice
+        // 10k.
+        dhatupatha: "10.0032",
+        code: "sAnb",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "sambanDane",
+    },
+    Dhatu {
+        // 10.0034 `kuwwa~` CedanaBartsanayoH (√kuṭṭ). Guru upadhā (the conjunct
+        // `ww`), so unchanged before ṇic. Shares its ātmanepada forms with the
+        // ākusmīya `10.0226 kuwwa~`. Ubhayapadī by 1.3.74 (*kuṭṭayati*). Slice
+        // 10k.
+        dhatupatha: "10.0034",
+        code: "kuww",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "CedanaBartsanayoH",
+    },
+    Dhatu {
+        // 10.0035 `puwwa~` alpIBAve (√puṭṭ). Guru upadhā (the conjunct `ww`),
+        // so unchanged before ṇic. Ubhayapadī by 1.3.74 (*puṭṭayati*). Slice
+        // 10k.
+        dhatupatha: "10.0035",
+        code: "puww",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "alpIBAve",
+    },
+    Dhatu {
+        // 10.0036 `cuwwa~` alpIBAve (√cuṭṭ). Guru upadhā (the conjunct `ww`),
+        // so unchanged before ṇic. Ubhayapadī by 1.3.74 (*cuṭṭayati*). Slice
+        // 10k.
+        dhatupatha: "10.0036",
+        code: "cuww",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "alpIBAve",
+    },
+    Dhatu {
+        // 10.0038 `zuwwa~` anAdare (√suṭṭ). Guru upadhā (the conjunct `ww`), so
+        // unchanged before ṇic. Stored per 6.1.64. Ubhayapadī by 1.3.74
+        // (*suṭṭayati*). Slice 10k.
+        dhatupatha: "10.0038",
+        code: "suww",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "anAdare",
+    },
+    Dhatu {
+        // 10.0039 `lunwa~` steye (√lunṭ). Guru upadhā (the conjunct `nw`), so
+        // unchanged before ṇic. 8.3.24 makes its `n` an anusvāra, and 8.4.58
+        // makes that `R` before `w`. Ubhayapadī by 1.3.74 (*luṇṭayati*). Slice
+        // 10k.
+        dhatupatha: "10.0039",
+        code: "lunw",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "steye",
+    },
+    Dhatu {
+        // 10.0040 `lunWa~` steye (√lunṭh). Guru upadhā (the conjunct `nW`), so
+        // unchanged before ṇic. 8.3.24 makes its `n` an anusvāra, and 8.4.58
+        // makes that `R` before `W`. Ubhayapadī by 1.3.74 (*luṇṭhayati*). Slice
+        // 10k.
+        dhatupatha: "10.0040",
+        code: "lunW",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "steye",
+    },
+    Dhatu {
+        // 10.0041 `SaWa~` asaMskAragatyoH (√śaṭh). 7.2.116 ata upadhāyāḥ
+        // lengthens the `a` upadhā before ṇit ṇic (SAW-i). Shares its
+        // ātmanepada forms with the ākusmīya `10.0214 SaWa~`. Ubhayapadī by
+        // 1.3.74 (*śāṭhayati*). Slice 10k.
+        dhatupatha: "10.0041",
+        code: "SaW",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "asaMskAragatyoH",
+    },
+    Dhatu {
+        // 10.0042 `SvaWa~` asaMskAragatyoH (√śvaṭh). 7.2.116 ata upadhāyāḥ
+        // lengthens the `a` upadhā before ṇit ṇic (SvAW-i). Ubhayapadī by
+        // 1.3.74 (*śvāṭhayati*). Slice 10k.
+        dhatupatha: "10.0042",
+        code: "SvaW",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "asaMskAragatyoH",
+    },
+    Dhatu {
+        // 10.0044 `tuja~` hiMsAbalAdAnaniketanezu (√tuj). 7.3.86 guṇates the
+        // laghu upadhā before ṇic (toj-i). Ubhayapadī by 1.3.74 (*tojayati*).
+        // Slice 10k.
+        dhatupatha: "10.0044",
+        code: "tuj",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "hiMsAbalAdAnaniketanezu",
+    },
+    Dhatu {
+        // 10.0046 `pija~` hiMsAbalAdAnaniketanezu (√pij). 7.3.86 guṇates the
+        // laghu upadhā before ṇic (pej-i). Ubhayapadī by 1.3.74 (*pejayati*).
+        // Slice 10k.
+        dhatupatha: "10.0046",
+        code: "pij",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "hiMsAbalAdAnaniketanezu",
+    },
+    Dhatu {
+        // 10.0050 `pisa~` gatO (√pis). 7.3.86 guṇates the laghu upadhā before
+        // ṇic (pes-i). Ubhayapadī by 1.3.74 (*pesayati*). Slice 10k.
+        dhatupatha: "10.0050",
+        code: "pis",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "gatO",
+    },
+    Dhatu {
+        // 10.0051 `zAntva~` sAmaprayoge (√sāntv). Guru upadhā (the conjunct
+        // `ntv`), so unchanged before ṇic. Stored per 6.1.64. 8.3.24 makes its
+        // `n` an anusvāra before `t`, and 8.4.58 restores `n`. Shares every
+        // form with `10.0052 sAntva~`. `CONVERGENT_UPADESHA_PAIR` lets the two
+        // resolve. Ubhayapadī by 1.3.74 (*sāntvayati*). Slice 10k.
+        dhatupatha: "10.0051",
+        code: "sAntv",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "sAmaprayoge",
+    },
+    Dhatu {
+        // 10.0052 `sAntva~` sAmaprayoge (√sāntv). Guru upadhā (the conjunct
+        // `ntv`), so unchanged before ṇic. 8.3.24 makes its `n` an anusvāra
+        // before `t`, and 8.4.58 restores `n`. Shares every form with `10.0051
+        // zAntva~`. `CONVERGENT_UPADESHA_PAIR` lets the two resolve. Ubhayapadī
+        // by 1.3.74 (*sāntvayati*). Slice 10k.
+        dhatupatha: "10.0052",
+        code: "sAntv",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "sAmaprayoge",
+    },
+    Dhatu {
+        // 10.0053 `Svalka~` pariBAzaRe (√śvalk). Guru upadhā (the conjunct
+        // `lk`), so unchanged before ṇic. Ubhayapadī by 1.3.74 (*śvalkayati*).
+        // Slice 10k.
+        dhatupatha: "10.0053",
+        code: "Svalk",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "pariBAzaRe",
+    },
+    Dhatu {
+        // 10.0054 `valka~` pariBAzaRe (√valk). Guru upadhā (the conjunct `lk`),
+        // so unchanged before ṇic. Homograph of the ubhayapadī curādi row
+        // `10.0458 valka`: they share every form. Ubhayapadī by 1.3.74
+        // (*valkayati*). Slice 10k.
+        dhatupatha: "10.0054",
+        code: "valk",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "pariBAzaRe",
+    },
+    Dhatu {
+        // 10.0055 `zRiha~` snehane (√snih). 7.3.86 guṇates the laghu upadhā
+        // before ṇic (sneh-i). Stored per 6.1.64. Ubhayapadī by 1.3.74
+        // (*snehayati*). Slice 10k.
+        dhatupatha: "10.0055",
+        code: "snih",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "snehane",
+    },
+    Dhatu {
+        // 10.0056 `sPiwa~` hiMsAyAm (√sphiṭ). 7.3.86 guṇates the laghu upadhā
+        // before ṇic (sPew-i). Ubhayapadī by 1.3.74 (*spheṭayati*). Slice 10k.
+        dhatupatha: "10.0056",
+        code: "sPiw",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "hiMsAyAm",
+    },
+    Dhatu {
+        // 10.0057 `smiwa~` anAdare (√smiṭ). 7.3.86 guṇates the laghu upadhā
+        // before ṇic (smew-i). Ubhayapadī by 1.3.74 (*smeṭayati*). Slice 10k.
+        dhatupatha: "10.0057",
+        code: "smiw",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "anAdare",
+    },
+    Dhatu {
+        // 10.0059 `Sliza~` SlezaRe (√śliṣ). 7.3.86 guṇates the laghu upadhā
+        // before ṇic (Slez-i). Ubhayapadī by 1.3.74 (*śleṣayati*). Slice 10k.
+        dhatupatha: "10.0059",
+        code: "Sliz",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "SlezaRe",
+    },
+    Dhatu {
+        // 10.0061 `piCa~` kuwwane (√pich). The sanādi 6.1.73 che ca gives tuk
+        // before its `C` (picC), so the upadhā is guru and unchanged before
+        // ṇic. Ubhayapadī by 1.3.74 (*picchayati*). Slice 10k.
+        dhatupatha: "10.0061",
+        code: "piC",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "kuwwane",
+    },
+    Dhatu {
+        // 10.0063 `SraRa~` dAne (√śraṇ). 7.2.116 ata upadhāyāḥ lengthens the
+        // `a` upadhā before ṇit ṇic (SrAR-i). Homograph of the ubhayapadī
+        // curādi row `10.0174 SraRu~`: they share every form. Ubhayapadī by
+        // 1.3.74 (*śrāṇayati*). Slice 10k.
+        dhatupatha: "10.0063",
+        code: "SraR",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "dAne",
+    },
+    Dhatu {
+        // 10.0064 `taqa~` AGAte (√taḍ). 7.2.116 ata upadhāyāḥ lengthens the `a`
+        // upadhā before ṇit ṇic (tAq-i). Homograph of the ubhayapadī curādi row
+        // `10.0332 taqa~`: they share every form. Ubhayapadī by 1.3.74
+        // (*tāḍayati*). Slice 10k.
+        dhatupatha: "10.0064",
+        code: "taq",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "AGAte",
+    },
+    Dhatu {
+        // 10.0065 `Kaqa~` Bedane (√khaḍ). 7.2.116 ata upadhāyāḥ lengthens the
+        // `a` upadhā before ṇit ṇic (KAq-i). Ubhayapadī by 1.3.74
+        // (*khāḍayati*). Slice 10k.
+        dhatupatha: "10.0065",
+        code: "Kaq",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "Bedane",
+    },
+    Dhatu {
+        // 10.0078 `Carda~` vamane (√chard). Guru upadhā (the conjunct `rd`), so
+        // unchanged before ṇic. In laṅ the aṭ takes 6.1.73's tuk (acC-).
+        // Homograph of the ubhayapadī curādi row `10.0352 CfdI~`: they share
+        // every form. Ubhayapadī by 1.3.74 (*chardayati*). Slice 10k.
+        dhatupatha: "10.0078",
+        code: "Card",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "vamane",
+    },
+    Dhatu {
+        // 10.0079 `pusta~` AdarAnAdarayoH (√pust). Guru upadhā (the conjunct
+        // `st`), so unchanged before ṇic. Ubhayapadī by 1.3.74 (*pustayati*).
+        // Slice 10k.
+        dhatupatha: "10.0079",
+        code: "pust",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "AdarAnAdarayoH",
+    },
+    Dhatu {
+        // 10.0080 `busta~` AdarAnAdarayoH (√bust). Guru upadhā (the conjunct
+        // `st`), so unchanged before ṇic. Ubhayapadī by 1.3.74 (*bustayati*).
+        // Slice 10k.
+        dhatupatha: "10.0080",
+        code: "bust",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "AdarAnAdarayoH",
+    },
+    Dhatu {
+        // 10.0081 `cuda~` saYcodane (√cud). 7.3.86 guṇates the laghu upadhā
+        // before ṇic (cod-i). Ubhayapadī by 1.3.74 (*codayati*). Slice 10k.
+        dhatupatha: "10.0081",
+        code: "cud",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "saYcodane",
+    },
+    Dhatu {
+        // 10.0082 `nakka~` nASane (√nakk). Guru upadhā (the conjunct `kk`), so
+        // unchanged before ṇic. Ubhayapadī by 1.3.74 (*nakkayati*). Slice 10k.
+        dhatupatha: "10.0082",
+        code: "nakk",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "nASane",
+    },
+    Dhatu {
+        // 10.0083 `Dakka~` nASane (√dhakk). Guru upadhā (the conjunct `kk`), so
+        // unchanged before ṇic. Ubhayapadī by 1.3.74 (*dhakkayati*). Slice 10k.
+        dhatupatha: "10.0083",
+        code: "Dakk",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "nASane",
+    },
+    Dhatu {
+        // 10.0084 `cakka~` vyaTane (√cakk). Guru upadhā (the conjunct `kk`), so
+        // unchanged before ṇic. Ubhayapadī by 1.3.74 (*cakkayati*). Slice 10k.
+        dhatupatha: "10.0084",
+        code: "cakk",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "vyaTane",
+    },
+    Dhatu {
+        // 10.0085 `cukka~` vyaTane (√cukk). Guru upadhā (the conjunct `kk`), so
+        // unchanged before ṇic. Ubhayapadī by 1.3.74 (*cukkayati*). Slice 10k.
+        dhatupatha: "10.0085",
+        code: "cukk",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "vyaTane",
+    },
+    Dhatu {
+        // 10.0086 `kzala~` SOcakarmaRi (√kṣal). 7.2.116 ata upadhāyāḥ lengthens
+        // the `a` upadhā before ṇit ṇic (kzAl-i). Ubhayapadī by 1.3.74
+        // (*kṣālayati*). Slice 10k.
+        dhatupatha: "10.0086",
+        code: "kzal",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "SOcakarmaRi",
+    },
+    Dhatu {
+        // 10.0087 `tala~` pratizWAyAm (√tal). 7.2.116 ata upadhāyāḥ lengthens
+        // the `a` upadhā before ṇit ṇic (tAl-i). Ubhayapadī by 1.3.74
+        // (*tālayati*). Slice 10k.
+        dhatupatha: "10.0087",
+        code: "tal",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "pratizWAyAm",
+    },
+    Dhatu {
+        // 10.0088 `tula~` unmAne (√tul). 7.3.86 guṇates the laghu upadhā before
+        // ṇic (tol-i). Ubhayapadī by 1.3.74 (*tolayati*). Slice 10k.
+        dhatupatha: "10.0088",
+        code: "tul",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "unmAne",
+    },
+    Dhatu {
+        // 10.0089 `dula~` utkzepe (√dul). 7.3.86 guṇates the laghu upadhā
+        // before ṇic (dol-i). Ubhayapadī by 1.3.74 (*dolayati*). Slice 10k.
+        dhatupatha: "10.0089",
+        code: "dul",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "utkzepe",
+    },
+    Dhatu {
+        // 10.0090 `pula~` mahattve (√pul). 7.3.86 guṇates the laghu upadhā
+        // before ṇic (pol-i). Shares every form with `10.0131 pula~`.
+        // Ubhayapadī by 1.3.74 (*polayati*). Slice 10k.
+        dhatupatha: "10.0090",
+        code: "pul",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "mahattve",
+    },
+    Dhatu {
+        // 10.0091 `cula~` samucCrAye (√cul). 7.3.86 guṇates the laghu upadhā
+        // before ṇic (col-i). Ubhayapadī by 1.3.74 (*colayati*). Slice 10k.
+        dhatupatha: "10.0091",
+        code: "cul",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "samucCrAye",
+    },
+    Dhatu {
+        // 10.0092 `mUla~` rohaRe (√mūl). Long upadhā vowel `U`, so unchanged
+        // before ṇic. Ubhayapadī by 1.3.74 (*mūlayati*). Slice 10k.
+        dhatupatha: "10.0092",
+        code: "mUl",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "rohaRe",
+    },
+    Dhatu {
+        // 10.0093 `kala~` kzepe (√kal). 7.2.116 ata upadhāyāḥ lengthens the `a`
+        // upadhā before ṇit ṇic (kAl-i). Homograph of the ubhayapadī curādi row
+        // `10.0422 kAla`: they share every form. Ubhayapadī by 1.3.74
+        // (*kālayati*). Slice 10k.
+        dhatupatha: "10.0093",
+        code: "kal",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "kzepe",
+    },
+    Dhatu {
+        // 10.0094 `vila~` kzepe (√vil). 7.3.86 guṇates the laghu upadhā before
+        // ṇic (vel-i). Homograph of the ubhayapadī curādi row `10.0421 vela`:
+        // they share every form. Ubhayapadī by 1.3.74 (*velayati*). Slice 10k.
+        dhatupatha: "10.0094",
+        code: "vil",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "kzepe",
+    },
+    Dhatu {
+        // 10.0095 `bila~` Bedane (√bil). 7.3.86 guṇates the laghu upadhā before
+        // ṇic (bel-i). Ubhayapadī by 1.3.74 (*belayati*). Slice 10k.
+        dhatupatha: "10.0095",
+        code: "bil",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "Bedane",
+    },
+    Dhatu {
+        // 10.0096 `tila~` snehane (√til). 7.3.86 guṇates the laghu upadhā
+        // before ṇic (tel-i). Ubhayapadī by 1.3.74 (*telayati*). Slice 10k.
+        dhatupatha: "10.0096",
+        code: "til",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "snehane",
+    },
+    Dhatu {
+        // 10.0097 `cala~` BftO (√cal). 7.2.116 ata upadhāyāḥ lengthens the `a`
+        // upadhā before ṇit ṇic (cAl-i). Ubhayapadī by 1.3.74 (*cālayati*).
+        // Slice 10k.
+        dhatupatha: "10.0097",
+        code: "cal",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "BftO",
+    },
+    Dhatu {
+        // 10.0098 `pAla~` rakzaRe (√pāl). Long upadhā vowel `A`, so unchanged
+        // before ṇic. Shares every form with `10.0099 pala~`. Ubhayapadī by
+        // 1.3.74 (*pālayati*). Slice 10k.
+        dhatupatha: "10.0098",
+        code: "pAl",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "rakzaRe",
+    },
+    Dhatu {
+        // 10.0099 `pala~` rakzaRe (√pal). 7.2.116 ata upadhāyāḥ lengthens the
+        // `a` upadhā before ṇit ṇic (pAl-i). Shares every form with `10.0098
+        // pAla~`. Ubhayapadī by 1.3.74 (*pālayati*). Slice 10k.
+        dhatupatha: "10.0099",
+        code: "pal",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "rakzaRe",
+    },
+    Dhatu {
+        // 10.0100 `lUza~` hiMsAyAm (√lūṣ). Long upadhā vowel `U`, so unchanged
+        // before ṇic. Ubhayapadī by 1.3.74 (*lūṣayati*). Slice 10k.
+        dhatupatha: "10.0100",
+        code: "lUz",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "hiMsAyAm",
+    },
+    Dhatu {
+        // 10.0101 `Sulba~` mAne (√śulb). Guru upadhā (the conjunct `lb`), so
+        // unchanged before ṇic. Ubhayapadī by 1.3.74 (*śulbayati*). Slice 10k.
+        dhatupatha: "10.0101",
+        code: "Sulb",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "mAne",
+    },
+    Dhatu {
+        // 10.0102 `SUrpa~` mAne (√śūrp). Guru upadhā (the conjunct `rp`), so
+        // unchanged before ṇic. Ubhayapadī by 1.3.74 (*śūrpayati*). Slice 10k.
+        dhatupatha: "10.0102",
+        code: "SUrp",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "mAne",
+    },
+    Dhatu {
+        // 10.0103 `cuwa~` Cedane (√cuṭ). 7.3.86 guṇates the laghu upadhā before
+        // ṇic (cow-i). Ubhayapadī by 1.3.74 (*coṭayati*). Slice 10k.
+        dhatupatha: "10.0103",
+        code: "cuw",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "Cedane",
+    },
+    Dhatu {
+        // 10.0104 `muwa~` saYcUrRane (√muṭ). 7.3.86 guṇates the laghu upadhā
+        // before ṇic (mow-i). Ubhayapadī by 1.3.74 (*moṭayati*). Slice 10k.
+        dhatupatha: "10.0104",
+        code: "muw",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "saYcUrRane",
+    },
+    Dhatu {
+        // 10.0109 `vraja~` saMskAragatyoH (√vraj). 7.2.116 ata upadhāyāḥ
+        // lengthens the `a` upadhā before ṇit ṇic (vrAj-i). Ubhayapadī by
+        // 1.3.74 (*vrājayati*). Slice 10k.
+        dhatupatha: "10.0109",
+        code: "vraj",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "saMskAragatyoH",
+    },
+    Dhatu {
+        // 10.0110 `Sulka~` atisparSane (√śulk). Guru upadhā (the conjunct
+        // `lk`), so unchanged before ṇic. Ubhayapadī by 1.3.74 (*śulkayati*).
+        // Slice 10k.
+        dhatupatha: "10.0110",
+        code: "Sulk",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "atisparSane",
+    },
+    Dhatu {
+        // 10.0115 `Svarta~` gatyAm (√śvart). Guru upadhā (the conjunct `rt`),
+        // so unchanged before ṇic. Ubhayapadī by 1.3.74 (*śvartayati*). Slice
+        // 10k.
+        dhatupatha: "10.0115",
+        code: "Svart",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "gatyAm",
+    },
+    Dhatu {
+        // 10.0116 `svarta~` kfcCrajIvane, gatyAm (√svart). Guru upadhā (the
+        // conjunct `rt`), so unchanged before ṇic. Ubhayapadī by 1.3.74
+        // (*svartayati*). Slice 10k.
+        dhatupatha: "10.0116",
+        code: "svart",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "kfcCrajIvane, gatyAm",
+    },
+    Dhatu {
+        // 10.0117 `SvaBra~` gatyAm (√śvabhr). Guru upadhā (the conjunct `Br`),
+        // so unchanged before ṇic. Ubhayapadī by 1.3.74 (*śvabhrayati*). Slice
+        // 10k.
+        dhatupatha: "10.0117",
+        code: "SvaBr",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "gatyAm",
+    },
+    Dhatu {
+        // 10.0125 `Gawwa~` calane (√ghaṭṭ). Guru upadhā (the conjunct `ww`), so
+        // unchanged before ṇic. Ubhayapadī by 1.3.74 (*ghaṭṭayati*). Slice 10k.
+        dhatupatha: "10.0125",
+        code: "Gaww",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "calane",
+    },
+    Dhatu {
+        // 10.0126 `musta~` saNGAte (√must). Guru upadhā (the conjunct `st`), so
+        // unchanged before ṇic. Ubhayapadī by 1.3.74 (*mustayati*). Slice 10k.
+        dhatupatha: "10.0126",
+        code: "must",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "saNGAte",
+    },
+    Dhatu {
+        // 10.0127 `Kawwa~` saMvaraRe (√khaṭṭ). Guru upadhā (the conjunct `ww`),
+        // so unchanged before ṇic. Ubhayapadī by 1.3.74 (*khaṭṭayati*). Slice
+        // 10k.
+        dhatupatha: "10.0127",
+        code: "Kaww",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "saMvaraRe",
+    },
+    Dhatu {
+        // 10.0128 `zawwa~` hiMsAyAm (√saṭṭ). Guru upadhā (the conjunct `ww`),
+        // so unchanged before ṇic. Stored per 6.1.64. Ubhayapadī by 1.3.74
+        // (*saṭṭayati*). Slice 10k.
+        dhatupatha: "10.0128",
+        code: "saww",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "hiMsAyAm",
+    },
+    Dhatu {
+        // 10.0129 `sPiwwa~` hiMsAyAm (√sphiṭṭ). Guru upadhā (the conjunct
+        // `ww`), so unchanged before ṇic. Ubhayapadī by 1.3.74 (*sphiṭṭayati*).
+        // Slice 10k.
+        dhatupatha: "10.0129",
+        code: "sPiww",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "hiMsAyAm",
+    },
+    Dhatu {
+        // 10.0131 `pula~` saNGAte (√pul). 7.3.86 guṇates the laghu upadhā
+        // before ṇic (pol-i). Shares every form with `10.0090 pula~`.
+        // Ubhayapadī by 1.3.74 (*polayati*). Slice 10k.
+        dhatupatha: "10.0131",
+        code: "pul",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "saNGAte",
+    },
+    Dhatu {
+        // 10.0132 `pUrRa~` saNGAte (√pūrṇ). Guru upadhā (the conjunct `rR`), so
+        // unchanged before ṇic. Ubhayapadī by 1.3.74 (*pūrṇayati*). Slice 10k.
+        dhatupatha: "10.0132",
+        code: "pUrR",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "saNGAte",
+    },
+    Dhatu {
+        // 10.0133 `puRa~` saNGAte (√puṇ). 7.3.86 guṇates the laghu upadhā
+        // before ṇic (poR-i). Ubhayapadī by 1.3.74 (*poṇayati*). Slice 10k.
+        dhatupatha: "10.0133",
+        code: "puR",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "saNGAte",
+    },
+    Dhatu {
+        // 10.0134 `punsa~` aBivarDane (√puns). Guru upadhā (the conjunct `ns`),
+        // so unchanged before ṇic. 8.3.24 makes its `n` an anusvāra before `s`,
+        // which stays. Ubhayapadī by 1.3.74 (*puṃsayati*). Slice 10k.
+        dhatupatha: "10.0134",
+        code: "puns",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "aBivarDane",
+    },
+    Dhatu {
+        // 10.0136 `vyapa~` kzaye (√vyap). 7.2.116 ata upadhāyāḥ lengthens the
+        // `a` upadhā before ṇit ṇic (vyAp-i). Ubhayapadī by 1.3.74
+        // (*vyāpayati*). Slice 10k.
+        dhatupatha: "10.0136",
+        code: "vyap",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "kzaye",
+    },
+    Dhatu {
+        // 10.0137 `vyaya~` kzaye (√vyay). 7.2.116 ata upadhāyāḥ lengthens the
+        // `a` upadhā before ṇit ṇic (vyAy-i). Ubhayapadī by 1.3.74
+        // (*vyāyayati*). Slice 10k.
+        dhatupatha: "10.0137",
+        code: "vyay",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "kzaye",
+    },
+    Dhatu {
+        // 10.0138 `pUla~` saNGAte (√pūl). Long upadhā vowel `U`, so unchanged
+        // before ṇic. Ubhayapadī by 1.3.74 (*pūlayati*). Slice 10k.
+        dhatupatha: "10.0138",
+        code: "pUl",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "saNGAte",
+    },
+    Dhatu {
+        // 10.0139 `DUsa~` kAntikaraRe (√dhūs). Long upadhā vowel `U`, so
+        // unchanged before ṇic. Ubhayapadī by 1.3.74 (*dhūsayati*). Slice 10k.
+        dhatupatha: "10.0139",
+        code: "DUs",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "kAntikaraRe",
+    },
+    Dhatu {
+        // 10.0140 `DUza~` kAntikaraRe (√dhūṣ). Long upadhā vowel `U`, so
+        // unchanged before ṇic. Ubhayapadī by 1.3.74 (*dhūṣayati*). Slice 10k.
+        dhatupatha: "10.0140",
+        code: "DUz",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "kAntikaraRe",
+    },
+    Dhatu {
+        // 10.0141 `DUSa~` kAntikaraRe (√dhūś). Long upadhā vowel `U`, so
+        // unchanged before ṇic. Ubhayapadī by 1.3.74 (*dhūśayati*). Slice 10k.
+        dhatupatha: "10.0141",
+        code: "DUS",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "kAntikaraRe",
+    },
+    Dhatu {
+        // 10.0142 `kIwa~` varRe (√kīṭ). Long upadhā vowel `I`, so unchanged
+        // before ṇic. Ubhayapadī by 1.3.74 (*kīṭayati*). Slice 10k.
+        dhatupatha: "10.0142",
+        code: "kIw",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "varRe",
+    },
+    Dhatu {
+        // 10.0143 `cUrRa~` saNkocane (√cūrṇ). Guru upadhā (the conjunct `rR`),
+        // so unchanged before ṇic. Ubhayapadī by 1.3.74 (*cūrṇayati*). Slice
+        // 10k.
+        dhatupatha: "10.0143",
+        code: "cUrR",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "saNkocane",
+    },
+    Dhatu {
+        // 10.0144 `pUja~` pUjAyAm (√pūj). Long upadhā vowel `U`, so unchanged
+        // before ṇic. Ubhayapadī by 1.3.74 (*pūjayati*). Slice 10k.
+        dhatupatha: "10.0144",
+        code: "pUj",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "pUjAyAm",
+    },
+    Dhatu {
+        // 10.0145 `arka~` stavane (√ark). Guru upadhā (the conjunct `rk`), so
+        // unchanged before ṇic. Ubhayapadī by 1.3.74 (*arkayati*). Slice 10k.
+        dhatupatha: "10.0145",
+        code: "ark",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "stavane",
+    },
+    Dhatu {
+        // 10.0146 `SuWa~` Alasye (√śuṭh). 7.3.86 guṇates the laghu upadhā
+        // before ṇic (SoW-i). Ubhayapadī by 1.3.74 (*śoṭhayati*). Slice 10k.
+        dhatupatha: "10.0146",
+        code: "SuW",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "Alasye",
+    },
+    Dhatu {
+        // 10.0148 `juqa~` preraRe (√juḍ). 7.3.86 guṇates the laghu upadhā
+        // before ṇic (joq-i). Ubhayapadī by 1.3.74 (*joḍayati*). Slice 10k.
+        dhatupatha: "10.0148",
+        code: "juq",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "preraRe",
+    },
+    Dhatu {
+        // 10.0149 `gaja~` SabdArTe (√gaj). 7.2.116 ata upadhāyāḥ lengthens the
+        // `a` upadhā before ṇit ṇic (gAj-i). Ubhayapadī by 1.3.74 (*gājayati*).
+        // Slice 10k.
+        dhatupatha: "10.0149",
+        code: "gaj",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "SabdArTe",
+    },
+    Dhatu {
+        // 10.0150 `mArja~` SabdArTe (√mārj). Guru upadhā (the conjunct `rj`),
+        // so unchanged before ṇic. Homograph of the ubhayapadī curādi row
+        // `10.0386 mfjU~`: they share every form. Ubhayapadī by 1.3.74
+        // (*mārjayati*). Slice 10k.
+        dhatupatha: "10.0150",
+        code: "mArj",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "SabdArTe",
+    },
+    Dhatu {
+        // 10.0151 `marca~` SabdArTe (√marc). Guru upadhā (the conjunct `rc`),
+        // so unchanged before ṇic. Ubhayapadī by 1.3.74 (*marcayati*). Slice
+        // 10k.
+        dhatupatha: "10.0151",
+        code: "marc",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "SabdArTe",
+    },
+    Dhatu {
+        // 10.0154 `tija~` niSAne (√tij). 7.3.86 guṇates the laghu upadhā before
+        // ṇic (tej-i). Ubhayapadī by 1.3.74 (*tejayati*). Slice 10k.
+        dhatupatha: "10.0154",
+        code: "tij",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "niSAne",
+    },
+    Dhatu {
+        // 10.0156 `varDa~` CedanapUraRayoH (√vardh). Guru upadhā (the conjunct
+        // `rD`), so unchanged before ṇic. Homograph of the ubhayapadī curādi
+        // row `10.0313 vfDu~`: they share every form. Ubhayapadī by 1.3.74
+        // (*vardhayati*). Slice 10k.
+        dhatupatha: "10.0156",
+        code: "varD",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "CedanapUraRayoH",
+    },
+    Dhatu {
+        // 10.0161 `hlapa~` vyaktAyAM vAci (√hlap). 7.2.116 ata upadhāyāḥ
+        // lengthens the `a` upadhā before ṇit ṇic (hlAp-i). Ubhayapadī by
+        // 1.3.74 (*hlāpayati*). Slice 10k.
+        dhatupatha: "10.0161",
+        code: "hlap",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "vyaktAyAM vAci",
+    },
+    Dhatu {
+        // 10.0162 `klapa~` vyaktAyAM vAci (√klap). 7.2.116 ata upadhāyāḥ
+        // lengthens the `a` upadhā before ṇit ṇic (klAp-i). Ubhayapadī by
+        // 1.3.74 (*klāpayati*). Slice 10k.
+        dhatupatha: "10.0162",
+        code: "klap",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "vyaktAyAM vAci",
+    },
+    Dhatu {
+        // 10.0163 `hrapa~` vyaktAyAM vAci (√hrap). 7.2.116 ata upadhāyāḥ
+        // lengthens the `a` upadhā before ṇit ṇic (hrAp-i). Ubhayapadī by
+        // 1.3.74 (*hrāpayati*). Slice 10k.
+        dhatupatha: "10.0163",
+        code: "hrap",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "vyaktAyAM vAci",
+    },
+    Dhatu {
+        // 10.0165 `brIsa~` hiMsAyAm (√brīs). Long upadhā vowel `I`, so
+        // unchanged before ṇic. Ubhayapadī by 1.3.74 (*brīsayati*). Slice 10k.
+        dhatupatha: "10.0165",
+        code: "brIs",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "hiMsAyAm",
+    },
+    Dhatu {
+        // 10.0167 `ila~` preraRe (√il). 7.3.86 guṇates the laghu upadhā before
+        // ṇic (el-i). Ubhayapadī by 1.3.74 (*elayati*). Slice 10k.
+        dhatupatha: "10.0167",
+        code: "il",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "preraRe",
+    },
+    Dhatu {
+        // 10.0168 `mrakza~` mlecCane (√mrakṣ). Guru upadhā (the conjunct `kz`),
+        // so unchanged before ṇic. Ubhayapadī by 1.3.74 (*mrakṣayati*). Slice
+        // 10k.
+        dhatupatha: "10.0168",
+        code: "mrakz",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "mlecCane",
+    },
+    Dhatu {
+        // 10.0169 `asta~` saNGAte (√ast). Guru upadhā (the conjunct `st`), so
+        // unchanged before ṇic. Ubhayapadī by 1.3.74 (*astayati*). Slice 10k.
+        dhatupatha: "10.0169",
+        code: "ast",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "saNGAte",
+    },
+    Dhatu {
+        // 10.0172 `brUsa~` hiMsAyAm (√brūs). Long upadhā vowel `U`, so
+        // unchanged before ṇic. Ubhayapadī by 1.3.74 (*brūsayati*). Slice 10k.
+        dhatupatha: "10.0172",
+        code: "brUs",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "hiMsAyAm",
+    },
+    Dhatu {
+        // 10.0173 `barha~` hiMsAyAm (√barh). Guru upadhā (the conjunct `rh`),
+        // so unchanged before ṇic. Homograph of the ubhayapadī curādi row
+        // `10.0300 barha~`: they share every form. Ubhayapadī by 1.3.74
+        // (*barhayati*). Slice 10k.
+        dhatupatha: "10.0173",
+        code: "barh",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "hiMsAyAm",
+    },
+    Dhatu {
+        // 10.0176 `bula~` nimajjane (√bul). 7.3.86 guṇates the laghu upadhā
+        // before ṇic (bol-i). Ubhayapadī by 1.3.74 (*bolayati*). Slice 10k.
+        dhatupatha: "10.0176",
+        code: "bul",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "nimajjane",
+    },
+    Dhatu {
+        // 10.0177 `garja~` Sabde (√garj). Guru upadhā (the conjunct `rj`), so
+        // unchanged before ṇic. Ubhayapadī by 1.3.74 (*garjayati*). Slice 10k.
+        dhatupatha: "10.0177",
+        code: "garj",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "Sabde",
+    },
+    Dhatu {
+        // 10.0178 `garda~` Sabde (√gard). Guru upadhā (the conjunct `rd`), so
+        // unchanged before ṇic. Ubhayapadī by 1.3.74 (*gardayati*). Slice 10k.
+        dhatupatha: "10.0178",
+        code: "gard",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "Sabde",
+    },
+    Dhatu {
+        // 10.0179 `garDa~` aBikANkzAyAm (√gardh). Guru upadhā (the conjunct
+        // `rD`), so unchanged before ṇic. Ubhayapadī by 1.3.74 (*gardhayati*).
+        // Slice 10k.
+        dhatupatha: "10.0179",
+        code: "garD",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "aBikANkzAyAm",
+    },
+    Dhatu {
+        // 10.0181 `pUrva~` niketane (√pūrv). Guru upadhā (the conjunct `rv`),
+        // so unchanged before ṇic. Ubhayapadī by 1.3.74 (*pūrvayati*). Slice
+        // 10k.
+        dhatupatha: "10.0181",
+        code: "pUrv",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "niketane",
+    },
+    Dhatu {
+        // 10.0183 `Iqa~` stutO (√īḍ). Long upadhā vowel `I`, so unchanged
+        // before ṇic. Ubhayapadī by 1.3.74 (*īḍayati*). Slice 10k.
+        dhatupatha: "10.0183",
+        code: "Iq",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "stutO",
+    },
+    Dhatu {
+        // 10.0186 `parTa~` prakzepe (√parth). Guru upadhā (the conjunct `rT`),
+        // so unchanged before ṇic. Shares every form with `10.0028 pfTa~`.
+        // Ubhayapadī by 1.3.74 (*parthayati*). Slice 10k.
+        dhatupatha: "10.0186",
+        code: "parT",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "prakzepe",
+    },
+    Dhatu {
+        // 10.0187 `ruza~` roze (√ruṣ). 7.3.86 guṇates the laghu upadhā before
+        // ṇic (roz-i). Ubhayapadī by 1.3.74 (*roṣayati*). Slice 10k.
+        dhatupatha: "10.0187",
+        code: "ruz",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "roze",
+    },
+    Dhatu {
+        // 10.0188 `ruwa~` roze (√ruṭ). 7.3.86 guṇates the laghu upadhā before
+        // ṇic (row-i). Homograph of the ubhayapadī curādi row `10.0314 ruwa~`:
+        // they share every form. Ubhayapadī by 1.3.74 (*roṭayati*). Slice 10k.
+        dhatupatha: "10.0188",
+        code: "ruw",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "roze",
+    },
+    Dhatu {
+        // 10.0189 `qipa~` kzepe (√ḍip). 7.3.86 guṇates the laghu upadhā before
+        // ṇic (qep-i). Shares its ātmanepada forms with the ākusmīya `10.0197
+        // qipa~`. Ubhayapadī by 1.3.74 (*ḍepayati*). Slice 10k.
+        dhatupatha: "10.0189",
+        code: "qip",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "kzepe",
+    },
+    Dhatu {
+        // 10.0190 `zwupa~` samucCrAye (√stup). 7.3.86 guṇates the laghu upadhā
+        // before ṇic (stop-i). Stored per 6.1.64. Ubhayapadī by 1.3.74
+        // (*stopayati*). Slice 10k.
+        dhatupatha: "10.0190",
+        code: "stup",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "samucCrAye",
+    },
+    Dhatu {
+        // 10.0191 `zwUpa~` samucCrAye (√stūp). Long upadhā vowel `U`, so
+        // unchanged before ṇic. Stored per 6.1.64. Ubhayapadī by 1.3.74
+        // (*stūpayati*). Slice 10k.
+        dhatupatha: "10.0191",
+        code: "stUp",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "samucCrAye",
+    },
+    Dhatu {
+        // 10.0237 `carca~` aDyayane (√carc). Guru upadhā (the conjunct `rc`),
+        // so unchanged before ṇic. Ubhayapadī by 1.3.74 (*carcayati*). Slice
+        // 10k.
+        dhatupatha: "10.0237",
+        code: "carc",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "aDyayane",
+    },
+    Dhatu {
+        // 10.0238 `bukka~` BazaRe (√bukk). Guru upadhā (the conjunct `kk`), so
+        // unchanged before ṇic. Ubhayapadī by 1.3.74 (*bukkayati*). Slice 10k.
+        dhatupatha: "10.0238",
+        code: "bukk",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "BazaRe",
+    },
+    Dhatu {
+        // 10.0239 `Sabda~` AvizkAre, BazaRe (√śabd). Guru upadhā (the conjunct
+        // `bd`), so unchanged before ṇic. Ubhayapadī by 1.3.74 (*śabdayati*).
+        // Slice 10k.
+        dhatupatha: "10.0239",
+        code: "Sabd",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "AvizkAre, BazaRe",
+    },
+    Dhatu {
+        // 10.0240 `kaRa~` nimIlane (√kaṇ). 7.2.116 ata upadhāyāḥ lengthens the
+        // `a` upadhā before ṇit ṇic (kAR-i). Ubhayapadī by 1.3.74 (*kāṇayati*).
+        // Slice 10k.
+        dhatupatha: "10.0240",
+        code: "kaR",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "nimIlane",
+    },
+    Dhatu {
+        // 10.0242 `zUda~` kzaraRe AsravaRe ApravaRe GAte ca (√sūd). Long upadhā
+        // vowel `U`, so unchanged before ṇic. Stored per 6.1.64. Ubhayapadī by
+        // 1.3.74 (*sūdayati*). Slice 10k.
+        dhatupatha: "10.0242",
+        code: "sUd",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "kzaraRe AsravaRe ApravaRe GAte ca",
+    },
+    Dhatu {
+        // 10.0244 `paSa~` banDane (√paś). 7.2.116 ata upadhāyāḥ lengthens the
+        // `a` upadhā before ṇit ṇic (pAS-i). Ubhayapadī by 1.3.74 (*pāśayati*).
+        // Slice 10k.
+        dhatupatha: "10.0244",
+        code: "paS",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "banDane",
+    },
+    Dhatu {
+        // 10.0245 `ama~` roge (√am). 7.2.116 ata upadhāyāḥ lengthens the `a`
+        // upadhā before ṇit ṇic (Am-i). Ubhayapadī by 1.3.74 (*āmayati*). Slice
+        // 10k.
+        dhatupatha: "10.0245",
+        code: "am",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "roge",
+    },
+    Dhatu {
+        // 10.0246 `cawa~` Bedane (√caṭ). 7.2.116 ata upadhāyāḥ lengthens the
+        // `a` upadhā before ṇit ṇic (cAw-i). Ubhayapadī by 1.3.74 (*cāṭayati*).
+        // Slice 10k.
+        dhatupatha: "10.0246",
+        code: "caw",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "Bedane",
+    },
+    Dhatu {
+        // 10.0247 `sPuwa~` Bedane (√sphuṭ). 7.3.86 guṇates the laghu upadhā
+        // before ṇic (sPow-i). Ubhayapadī by 1.3.74 (*sphoṭayati*). Slice 10k.
+        dhatupatha: "10.0247",
+        code: "sPuw",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "Bedane",
+    },
+    Dhatu {
+        // 10.0248 `Gawa~` saNGAte (√ghaṭ). 7.2.116 ata upadhāyāḥ lengthens the
+        // `a` upadhā before ṇit ṇic (GAw-i). Homograph of the ubhayapadī curādi
+        // row `10.0297 Gawa~`: they share every form. Ubhayapadī by 1.3.74
+        // (*ghāṭayati*). Slice 10k.
+        dhatupatha: "10.0248",
+        code: "Gaw",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "saNGAte",
+    },
+    Dhatu {
+        // 10.0250 `arja~` pratiyatne (√arj). Guru upadhā (the conjunct `rj`),
+        // so unchanged before ṇic. Ubhayapadī by 1.3.74 (*arjayati*). Slice
+        // 10k.
+        dhatupatha: "10.0250",
+        code: "arj",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "pratiyatne",
+    },
+    Dhatu {
+        // 10.0252 `kranda~` sAtatye (√krand). Guru upadhā (the conjunct `nd`),
+        // so unchanged before ṇic. 8.3.24 makes its `n` an anusvāra before `d`,
+        // and 8.4.58 restores `n`. Ubhayapadī by 1.3.74 (*krandayati*). Slice
+        // 10k.
+        dhatupatha: "10.0252",
+        code: "krand",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "sAtatye",
+    },
+    Dhatu {
+        // 10.0253 `lasa~` Silpayoge (√las). 7.2.116 ata upadhāyāḥ lengthens the
+        // `a` upadhā before ṇit ṇic (lAs-i). Ubhayapadī by 1.3.74 (*lāsayati*).
+        // Slice 10k.
+        dhatupatha: "10.0253",
+        code: "las",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "Silpayoge",
+    },
+    Dhatu {
+        // 10.0256 `mokza~` mocane (√mokṣ). Guru upadhā (the conjunct `kz`), so
+        // unchanged before ṇic. Ubhayapadī by 1.3.74 (*mokṣayati*). Slice 10k.
+        dhatupatha: "10.0256",
+        code: "mokz",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "mocane",
+    },
+    Dhatu {
+        // 10.0257 `arha~` pUjAyAm (√arh). Guru upadhā (the conjunct `rh`), so
+        // unchanged before ṇic. Homograph of the ubhayapadī curādi row `10.0367
+        // arha~`: they share every form. Ubhayapadī by 1.3.74 (*arhayati*).
+        // Slice 10k.
+        dhatupatha: "10.0257",
+        code: "arh",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "pUjAyAm",
+    },
+    Dhatu {
+        // 10.0259 `Baja~` viSrARane (√bhaj). 7.2.116 ata upadhāyāḥ lengthens
+        // the `a` upadhā before ṇit ṇic (BAj-i). Homograph of the ubhayapadī
+        // curādi row `10.0428 BAja`: they share every form. Ubhayapadī by
+        // 1.3.74 (*bhājayati*). Slice 10k.
+        dhatupatha: "10.0259",
+        code: "Baj",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "viSrARane",
+    },
+    Dhatu {
+        // 10.0261 `yata~` nikAropaskArayoH (√yat). 7.2.116 ata upadhāyāḥ
+        // lengthens the `a` upadhā before ṇit ṇic (yAt-i). Ubhayapadī by 1.3.74
+        // (*yātayati*). Slice 10k.
+        dhatupatha: "10.0261",
+        code: "yat",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "nikAropaskArayoH",
+    },
+    Dhatu {
+        // 10.0262 `raka~` AsvAdane (√rak). 7.2.116 ata upadhāyāḥ lengthens the
+        // `a` upadhā before ṇit ṇic (rAk-i). Ubhayapadī by 1.3.74 (*rākayati*).
+        // Slice 10k.
+        dhatupatha: "10.0262",
+        code: "rak",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "AsvAdane",
+    },
+    Dhatu {
+        // 10.0263 `laga~` AsvAdane (√lag). 7.2.116 ata upadhāyāḥ lengthens the
+        // `a` upadhā before ṇit ṇic (lAg-i). Ubhayapadī by 1.3.74 (*lāgayati*).
+        // Slice 10k.
+        dhatupatha: "10.0263",
+        code: "lag",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "AsvAdane",
+    },
+    Dhatu {
+        // 10.0264 `raGa~` AsvAdane (√ragh). 7.2.116 ata upadhāyāḥ lengthens the
+        // `a` upadhā before ṇit ṇic (rAG-i). Ubhayapadī by 1.3.74
+        // (*rāghayati*). Slice 10k.
+        dhatupatha: "10.0264",
+        code: "raG",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "AsvAdane",
+    },
+    Dhatu {
+        // 10.0265 `raga~` AsvAdane (√rag). 7.2.116 ata upadhāyāḥ lengthens the
+        // `a` upadhā before ṇit ṇic (rAg-i). Ubhayapadī by 1.3.74 (*rāgayati*).
+        // Slice 10k.
+        dhatupatha: "10.0265",
+        code: "rag",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "AsvAdane",
+    },
+    Dhatu {
+        // 10.0268 `muda~` saMsarge (√mud). 7.3.86 guṇates the laghu upadhā
+        // before ṇic (mod-i). Ubhayapadī by 1.3.74 (*modayati*). Slice 10k.
+        dhatupatha: "10.0268",
+        code: "mud",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "saMsarge",
+    },
+    Dhatu {
+        // 10.0269 `trasa~` DAraRe grahaRe vAraRe ca (√tras). 7.2.116 ata
+        // upadhāyāḥ lengthens the `a` upadhā before ṇit ṇic (trAs-i).
+        // Ubhayapadī by 1.3.74 (*trāsayati*). Slice 10k.
+        dhatupatha: "10.0269",
+        code: "tras",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "DAraRe grahaRe vAraRe ca",
+    },
+    Dhatu {
+        // 10.0271 `uDrasa~` uYCe (√udhras). 7.2.116 ata upadhāyāḥ lengthens the
+        // `a` upadhā before ṇit ṇic (uDrAs-i). Ubhayapadī by 1.3.74
+        // (*udhrāsayati*). Slice 10k.
+        dhatupatha: "10.0271",
+        code: "uDras",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "uYCe",
+    },
+    Dhatu {
+        // 10.0272 `muca~` pramocane modane ca (√muc). 7.3.86 guṇates the laghu
+        // upadhā before ṇic (moc-i). Ubhayapadī by 1.3.74 (*mocayati*). Slice
+        // 10k.
+        dhatupatha: "10.0272",
+        code: "muc",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "pramocane modane ca",
+    },
+    Dhatu {
+        // 10.0273 `vasa~` snehacCedApaharaRezu (√vas). 7.2.116 ata upadhāyāḥ
+        // lengthens the `a` upadhā before ṇit ṇic (vAs-i). Homograph of the
+        // ubhayapadī curādi row `10.0426 vAsa`: they share every form.
+        // Ubhayapadī by 1.3.74 (*vāsayati*). Slice 10k.
+        dhatupatha: "10.0273",
+        code: "vas",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "snehacCedApaharaRezu",
+    },
+    Dhatu {
+        // 10.0274 `cara~` saMSaye (√car). 7.2.116 ata upadhāyāḥ lengthens the
+        // `a` upadhā before ṇit ṇic (cAr-i). Ubhayapadī by 1.3.74 (*cārayati*).
+        // Slice 10k.
+        dhatupatha: "10.0274",
+        code: "car",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "saMSaye",
+    },
+    Dhatu {
+        // 10.0276 `cyusa~` sahane hasane ca (√cyus). 7.3.86 guṇates the laghu
+        // upadhā before ṇic (cyos-i). Ubhayapadī by 1.3.74 (*cyosayati*). Slice
+        // 10k.
+        dhatupatha: "10.0276",
+        code: "cyus",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "sahane hasane ca",
+    },
+    Dhatu {
+        // 10.0397 `raNga~` gatO (√raṅg). Guru upadhā (the conjunct `Ng`), so
+        // unchanged before ṇic. Ubhayapadī by 1.3.74 (*raṅgayati*). Slice 10k.
+        dhatupatha: "10.0397",
+        code: "raNg",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "gatO",
+    },
+    Dhatu {
+        // 10.0414 `Keqa~` BakzaRe (√kheḍ). Long upadhā vowel `e`, so unchanged
+        // before ṇic. Ubhayapadī by 1.3.74 (*kheḍayati*). Slice 10k.
+        dhatupatha: "10.0414",
+        code: "Keq",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "BakzaRe",
+    },
+    Dhatu {
+        // 10.0438 `kURa~` saNkocane (√kūṇ). Long upadhā vowel `U`, so unchanged
+        // before ṇic. Shares its ātmanepada forms with the ākusmīya `10.0211
+        // kURa~`. Ubhayapadī by 1.3.74 (*kūṇayati*). Slice 10k.
+        dhatupatha: "10.0438",
+        code: "kUR",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "saNkocane",
+    },
+    Dhatu {
+        // 10.0457 `karta~` SETilye (√kart). Guru upadhā (the conjunct `rt`), so
+        // unchanged before ṇic. Ubhayapadī by 1.3.74 (*kartayati*). Slice 10k.
+        dhatupatha: "10.0457",
+        code: "kart",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "SETilye",
+    },
+    Dhatu {
+        // 10.0462 `Cuwa~` Cedane (√chuṭ). 7.3.86 guṇates the laghu upadhā
+        // before ṇic (Cow-i). In laṅ the aṭ takes 6.1.73's tuk (acC-).
+        // Ubhayapadī by 1.3.74 (*choṭayati*). Slice 10k.
+        dhatupatha: "10.0462",
+        code: "Cuw",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "Cedane",
+    },
+    Dhatu {
+        // 10.0470 `karRa~` Bedane (√karṇ). Guru upadhā (the conjunct `rR`), so
+        // unchanged before ṇic. Ubhayapadī by 1.3.74 (*karṇayati*). Slice 10k.
+        dhatupatha: "10.0470",
+        code: "karR",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "Bedane",
+    },
+    Dhatu {
+        // 10.0491 `ruWa~` BAzAyAm (√ruṭh). 7.3.86 guṇates the laghu upadhā
+        // before ṇic (roW-i). Ubhayapadī by 1.3.74 (*roṭhayati*). Slice 10k.
+        dhatupatha: "10.0491",
+        code: "ruW",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "BAzAyAm",
+    },
 ];
 
 pub fn dhatus() -> &'static [Dhatu] {
@@ -4985,7 +6508,7 @@ mod tests {
 
     #[test]
     fn curated_roots_have_expected_ganas_and_padas() {
-        assert_eq!(dhatus().len(), 430);
+        assert_eq!(dhatus().len(), 585);
         let bu = dhatus().iter().find(|d| d.dhatupatha == "01.0001").unwrap();
         assert!(matches!(bu.pada, PadaAssignment::Parasmaipada));
         let labh = dhatus().iter().find(|d| d.dhatupatha == "01.1130").unwrap();
@@ -5276,7 +6799,7 @@ mod tests {
     }
 
     #[test]
-    fn curadi_rows_are_the_three_hundred_twenty_seven_curated_roots() {
+    fn curadi_rows_are_the_four_hundred_eighty_two_curated_roots() {
         // Slice 10a opens gaṇa 10 with four roots that need only ṇic
         // (3.1.25), 3.1.32 and the guṇa/vṛddhi before ṇic: √cur (7.3.86),
         // √laḍ (7.2.116), √bhakṣ and √bhūṣ (neither). None carries a pada
@@ -5307,7 +6830,10 @@ mod tests {
         // √jñā, √cyu and √bhū, ubhayapadī by 1.3.74; √gṛ and √yu, the last two
         // ākusmīya, by 10.0496; √ci, the last jñapādi, `NicUbhayapada` with
         // ṇic optional by 2570; and √smiṅ, ātmanepadī under ṇic by Kaumudī
-        // 2567. The gaṇa is OPEN at 327 of its 509 dhātupāṭha rows.
+        // 2567. Slice 10k adds the 155 plain obligatory-ṇic rows that need
+        // nothing new: thirty-seven by 7.3.86, forty by 7.2.116 and
+        // seventy-eight unchanged before ṇic, all ubhayapadī by 1.3.74. The
+        // gaṇa is OPEN at 482 of its 509 dhātupāṭha rows.
         let rows: Vec<_> = dhatus()
             .iter()
             .filter(|d| d.gana == Gana::Curadi)
@@ -5643,6 +7169,161 @@ mod tests {
                 ("10.0258", "jYA", PadaAssignment::Nic),
                 ("10.0275", "cyu", PadaAssignment::Nic),
                 ("10.0277", "BU", PadaAssignment::Nic),
+                ("10.0006", "lakz", PadaAssignment::Nic),
+                ("10.0008", "kud", PadaAssignment::Nic),
+                ("10.0012", "mid", PadaAssignment::Nic),
+                ("10.0015", "jal", PadaAssignment::Nic),
+                ("10.0016", "laj", PadaAssignment::Nic),
+                ("10.0017", "pIq", PadaAssignment::Nic),
+                ("10.0018", "naw", PadaAssignment::Nic),
+                ("10.0019", "SraT", PadaAssignment::Nic),
+                ("10.0020", "baD", PadaAssignment::Nic),
+                ("10.0021", "banD", PadaAssignment::Nic),
+                ("10.0024", "pakz", PadaAssignment::Nic),
+                ("10.0025", "varR", PadaAssignment::Nic),
+                ("10.0027", "praT", PadaAssignment::Nic),
+                ("10.0028", "pfT", PadaAssignment::Nic),
+                ("10.0029", "paT", PadaAssignment::Nic),
+                ("10.0030", "sanb", PadaAssignment::Nic),
+                ("10.0031", "Sanb", PadaAssignment::Nic),
+                ("10.0032", "sAnb", PadaAssignment::Nic),
+                ("10.0034", "kuww", PadaAssignment::Nic),
+                ("10.0035", "puww", PadaAssignment::Nic),
+                ("10.0036", "cuww", PadaAssignment::Nic),
+                ("10.0038", "suww", PadaAssignment::Nic),
+                ("10.0039", "lunw", PadaAssignment::Nic),
+                ("10.0040", "lunW", PadaAssignment::Nic),
+                ("10.0041", "SaW", PadaAssignment::Nic),
+                ("10.0042", "SvaW", PadaAssignment::Nic),
+                ("10.0044", "tuj", PadaAssignment::Nic),
+                ("10.0046", "pij", PadaAssignment::Nic),
+                ("10.0050", "pis", PadaAssignment::Nic),
+                ("10.0051", "sAntv", PadaAssignment::Nic),
+                ("10.0052", "sAntv", PadaAssignment::Nic),
+                ("10.0053", "Svalk", PadaAssignment::Nic),
+                ("10.0054", "valk", PadaAssignment::Nic),
+                ("10.0055", "snih", PadaAssignment::Nic),
+                ("10.0056", "sPiw", PadaAssignment::Nic),
+                ("10.0057", "smiw", PadaAssignment::Nic),
+                ("10.0059", "Sliz", PadaAssignment::Nic),
+                ("10.0061", "piC", PadaAssignment::Nic),
+                ("10.0063", "SraR", PadaAssignment::Nic),
+                ("10.0064", "taq", PadaAssignment::Nic),
+                ("10.0065", "Kaq", PadaAssignment::Nic),
+                ("10.0078", "Card", PadaAssignment::Nic),
+                ("10.0079", "pust", PadaAssignment::Nic),
+                ("10.0080", "bust", PadaAssignment::Nic),
+                ("10.0081", "cud", PadaAssignment::Nic),
+                ("10.0082", "nakk", PadaAssignment::Nic),
+                ("10.0083", "Dakk", PadaAssignment::Nic),
+                ("10.0084", "cakk", PadaAssignment::Nic),
+                ("10.0085", "cukk", PadaAssignment::Nic),
+                ("10.0086", "kzal", PadaAssignment::Nic),
+                ("10.0087", "tal", PadaAssignment::Nic),
+                ("10.0088", "tul", PadaAssignment::Nic),
+                ("10.0089", "dul", PadaAssignment::Nic),
+                ("10.0090", "pul", PadaAssignment::Nic),
+                ("10.0091", "cul", PadaAssignment::Nic),
+                ("10.0092", "mUl", PadaAssignment::Nic),
+                ("10.0093", "kal", PadaAssignment::Nic),
+                ("10.0094", "vil", PadaAssignment::Nic),
+                ("10.0095", "bil", PadaAssignment::Nic),
+                ("10.0096", "til", PadaAssignment::Nic),
+                ("10.0097", "cal", PadaAssignment::Nic),
+                ("10.0098", "pAl", PadaAssignment::Nic),
+                ("10.0099", "pal", PadaAssignment::Nic),
+                ("10.0100", "lUz", PadaAssignment::Nic),
+                ("10.0101", "Sulb", PadaAssignment::Nic),
+                ("10.0102", "SUrp", PadaAssignment::Nic),
+                ("10.0103", "cuw", PadaAssignment::Nic),
+                ("10.0104", "muw", PadaAssignment::Nic),
+                ("10.0109", "vraj", PadaAssignment::Nic),
+                ("10.0110", "Sulk", PadaAssignment::Nic),
+                ("10.0115", "Svart", PadaAssignment::Nic),
+                ("10.0116", "svart", PadaAssignment::Nic),
+                ("10.0117", "SvaBr", PadaAssignment::Nic),
+                ("10.0125", "Gaww", PadaAssignment::Nic),
+                ("10.0126", "must", PadaAssignment::Nic),
+                ("10.0127", "Kaww", PadaAssignment::Nic),
+                ("10.0128", "saww", PadaAssignment::Nic),
+                ("10.0129", "sPiww", PadaAssignment::Nic),
+                ("10.0131", "pul", PadaAssignment::Nic),
+                ("10.0132", "pUrR", PadaAssignment::Nic),
+                ("10.0133", "puR", PadaAssignment::Nic),
+                ("10.0134", "puns", PadaAssignment::Nic),
+                ("10.0136", "vyap", PadaAssignment::Nic),
+                ("10.0137", "vyay", PadaAssignment::Nic),
+                ("10.0138", "pUl", PadaAssignment::Nic),
+                ("10.0139", "DUs", PadaAssignment::Nic),
+                ("10.0140", "DUz", PadaAssignment::Nic),
+                ("10.0141", "DUS", PadaAssignment::Nic),
+                ("10.0142", "kIw", PadaAssignment::Nic),
+                ("10.0143", "cUrR", PadaAssignment::Nic),
+                ("10.0144", "pUj", PadaAssignment::Nic),
+                ("10.0145", "ark", PadaAssignment::Nic),
+                ("10.0146", "SuW", PadaAssignment::Nic),
+                ("10.0148", "juq", PadaAssignment::Nic),
+                ("10.0149", "gaj", PadaAssignment::Nic),
+                ("10.0150", "mArj", PadaAssignment::Nic),
+                ("10.0151", "marc", PadaAssignment::Nic),
+                ("10.0154", "tij", PadaAssignment::Nic),
+                ("10.0156", "varD", PadaAssignment::Nic),
+                ("10.0161", "hlap", PadaAssignment::Nic),
+                ("10.0162", "klap", PadaAssignment::Nic),
+                ("10.0163", "hrap", PadaAssignment::Nic),
+                ("10.0165", "brIs", PadaAssignment::Nic),
+                ("10.0167", "il", PadaAssignment::Nic),
+                ("10.0168", "mrakz", PadaAssignment::Nic),
+                ("10.0169", "ast", PadaAssignment::Nic),
+                ("10.0172", "brUs", PadaAssignment::Nic),
+                ("10.0173", "barh", PadaAssignment::Nic),
+                ("10.0176", "bul", PadaAssignment::Nic),
+                ("10.0177", "garj", PadaAssignment::Nic),
+                ("10.0178", "gard", PadaAssignment::Nic),
+                ("10.0179", "garD", PadaAssignment::Nic),
+                ("10.0181", "pUrv", PadaAssignment::Nic),
+                ("10.0183", "Iq", PadaAssignment::Nic),
+                ("10.0186", "parT", PadaAssignment::Nic),
+                ("10.0187", "ruz", PadaAssignment::Nic),
+                ("10.0188", "ruw", PadaAssignment::Nic),
+                ("10.0189", "qip", PadaAssignment::Nic),
+                ("10.0190", "stup", PadaAssignment::Nic),
+                ("10.0191", "stUp", PadaAssignment::Nic),
+                ("10.0237", "carc", PadaAssignment::Nic),
+                ("10.0238", "bukk", PadaAssignment::Nic),
+                ("10.0239", "Sabd", PadaAssignment::Nic),
+                ("10.0240", "kaR", PadaAssignment::Nic),
+                ("10.0242", "sUd", PadaAssignment::Nic),
+                ("10.0244", "paS", PadaAssignment::Nic),
+                ("10.0245", "am", PadaAssignment::Nic),
+                ("10.0246", "caw", PadaAssignment::Nic),
+                ("10.0247", "sPuw", PadaAssignment::Nic),
+                ("10.0248", "Gaw", PadaAssignment::Nic),
+                ("10.0250", "arj", PadaAssignment::Nic),
+                ("10.0252", "krand", PadaAssignment::Nic),
+                ("10.0253", "las", PadaAssignment::Nic),
+                ("10.0256", "mokz", PadaAssignment::Nic),
+                ("10.0257", "arh", PadaAssignment::Nic),
+                ("10.0259", "Baj", PadaAssignment::Nic),
+                ("10.0261", "yat", PadaAssignment::Nic),
+                ("10.0262", "rak", PadaAssignment::Nic),
+                ("10.0263", "lag", PadaAssignment::Nic),
+                ("10.0264", "raG", PadaAssignment::Nic),
+                ("10.0265", "rag", PadaAssignment::Nic),
+                ("10.0268", "mud", PadaAssignment::Nic),
+                ("10.0269", "tras", PadaAssignment::Nic),
+                ("10.0271", "uDras", PadaAssignment::Nic),
+                ("10.0272", "muc", PadaAssignment::Nic),
+                ("10.0273", "vas", PadaAssignment::Nic),
+                ("10.0274", "car", PadaAssignment::Nic),
+                ("10.0276", "cyus", PadaAssignment::Nic),
+                ("10.0397", "raNg", PadaAssignment::Nic),
+                ("10.0414", "Keq", PadaAssignment::Nic),
+                ("10.0438", "kUR", PadaAssignment::Nic),
+                ("10.0457", "kart", PadaAssignment::Nic),
+                ("10.0462", "Cuw", PadaAssignment::Nic),
+                ("10.0470", "karR", PadaAssignment::Nic),
+                ("10.0491", "ruW", PadaAssignment::Nic),
             ]
         );
     }
@@ -5906,7 +7587,7 @@ mod tests {
     /// AFTER the `~` that marks an anunāsika it, so `~\` is an anudātta it and
     /// `~^` a svarita it — whereas a `\` sitting directly on a vowel elsewhere
     /// is the ROOT's own accent and says nothing about pada. Counted off the
-    /// vendored upadeśa: 73 of the 430 curated roots carry a `\` at all, and 52
+    /// vendored upadeśa: 73 of the 585 curated roots carry a `\` at all, and 52
     /// of those carry one on a root vowel — `01.0642 ji\`, `01.1082 smf\` and
     /// `02.0001 a\da~` among them — so conflating the two does not fail
     /// loudly; it silently calls most of the table ātmanepada.
@@ -6196,6 +7877,14 @@ mod tests {
     /// `dhatupatha_numbers_resolve_upstream`.
     const IDENTICAL_UPSTREAM_PAIR: [&str; 2] = ["10.0291", "10.0327"];
 
+    /// The one pair of curated rows whose upadeśas differ but which store the
+    /// same code with the same artha: `zAntva~` (`10.0051`) and `sAntva~`
+    /// (`10.0052`), both *sAmaprayoge*. 6.1.64 dhātvādeḥ ṣaḥ saḥ makes the
+    /// first `sAntv` too. vidyut-prakriya derives both, so both are curated
+    /// (slice 10k), and each is the other's one allowed sibling in
+    /// `dhatupatha_numbers_resolve_upstream`.
+    const CONVERGENT_UPADESHA_PAIR: [&str; 2] = ["10.0051", "10.0052"];
+
     #[test]
     fn dhatupatha_numbers_resolve_upstream() {
         let rows = upstream_rows();
@@ -6249,8 +7938,9 @@ mod tests {
             // (10.0498) beside `10.0257 arha~` (none). The verdict only tells
             // curādi rows apart (the engine keys `OPTIONAL_NIC` by number
             // there alone), so every other gaṇa compares no verdict. The two
-            // rows of `IDENTICAL_UPSTREAM_PAIR` differ in nothing, so each has
-            // the other as its one allowed sibling.
+            // rows of `IDENTICAL_UPSTREAM_PAIR` differ in nothing, and the two
+            // of `CONVERGENT_UPADESHA_PAIR` only in what 6.1.64 levels, so each
+            // has the other as its one allowed sibling.
             let gana_prefix = &d.dhatupatha[..2];
             let verdict = |n: &str, u: &str| {
                 if gana_prefix == "10" {
@@ -6269,7 +7959,9 @@ mod tests {
                         && verdict(n, u) == own_verdict
                 })
                 .count();
-            let allowed = if IDENTICAL_UPSTREAM_PAIR.contains(&d.dhatupatha) {
+            let allowed = if IDENTICAL_UPSTREAM_PAIR.contains(&d.dhatupatha)
+                || CONVERGENT_UPADESHA_PAIR.contains(&d.dhatupatha)
+            {
                 2
             } else {
                 1
@@ -6281,9 +7973,9 @@ mod tests {
                 d.dhatupatha
             );
         }
-        // √śraṇ: `10.0174 SraRu~` and the uncurated `10.0063 SraRa~` share
-        // gaṇa, stored form and artha. Only the optional-ṇic verdict tells
-        // them apart, so `10.0063` stays a distinct row if it is curated.
+        // √śraṇ: `10.0174 SraRu~` and `10.0063 SraRa~` (curated since slice
+        // 10k) share gaṇa, stored form and artha. Only the optional-ṇic
+        // verdict tells them apart, so the two stay distinct rows.
         let row = |n: &str| *rows.iter().find(|(m, _, _)| *m == n).unwrap();
         let (_, sran_a, artha_a) = row("10.0063");
         let (_, sran_u, artha_u) = row("10.0174");
@@ -6301,6 +7993,19 @@ mod tests {
         assert_eq!((u1, a1), ("laGi~", "BAzAyAm"));
         assert_eq!((u2, a2), (u1, a1));
         for n in IDENTICAL_UPSTREAM_PAIR {
+            assert!(dhatus().iter().any(|d| d.dhatupatha == n), "{n}");
+        }
+        // `zAntva~` and `sAntva~`: the upadeśas differ only in their first
+        // sound, the `z` 6.1.64 makes `s`, and the artha is shared, so both
+        // store `sAntv`. Both rows are curated.
+        let (_, z, artha_z) = row(CONVERGENT_UPADESHA_PAIR[0]);
+        let (_, s, artha_s) = row(CONVERGENT_UPADESHA_PAIR[1]);
+        assert_eq!((z, s), ("zAntva~", "sAntva~"));
+        assert_eq!(z.strip_prefix('z'), s.strip_prefix('s'));
+        assert_eq!((artha_z, artha_s), ("sAmaprayoge", "sAmaprayoge"));
+        assert_eq!(stored_form(z), "sAntv");
+        assert_eq!(stored_form(s), "sAntv");
+        for n in CONVERGENT_UPADESHA_PAIR {
             assert!(dhatus().iter().any(|d| d.dhatupatha == n), "{n}");
         }
     }

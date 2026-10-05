@@ -1072,8 +1072,11 @@ fn nas_capadantasya_is_credited_only_on_rudhadi_dhan_jan_and_curadi_roots() {
     // branch of both, and since slice 10h six ādhṛṣīya rows with an `n`
     // before a jhal (`granT` twice, `hins`, `SunD`, `SranT`, `kanW`), on
     // every live branch of both, and since slice 10i the twenty-seven idit
-    // āsvadīya rows (num stored), on every live branch of both.
-    const CURADI: [&str; 100] = [
+    // āsvadīya rows (num stored), on every live branch of both, and since
+    // slice 10k ten plain obligatory-ṇic rows with an `n` before a jhal
+    // (`banD`, `sanb`, `Sanb`, `sAnb`, `lunw`, `lunW`, `sAntv` twice, `puns`,
+    // `krand`), on every live branch.
+    const CURADI: [&str; 110] = [
         "10.0204", "10.0433", "10.0460", "10.0467", "10.0471", "10.0472", "10.0473", "10.0474",
         "10.0193", "10.0194", "10.0198", "10.0199", "10.0227", "10.0002", "10.0003", "10.0004",
         "10.0005", "10.0007", "10.0009", "10.0011", "10.0013", "10.0014", "10.0043", "10.0045",
@@ -1086,7 +1089,8 @@ fn nas_capadantasya_is_credited_only_on_rudhadi_dhan_jan_and_curadi_roots() {
         "10.0385", "10.0285", "10.0286", "10.0287", "10.0289", "10.0290", "10.0291", "10.0292",
         "10.0293", "10.0294", "10.0295", "10.0296", "10.0298", "10.0299", "10.0315", "10.0316",
         "10.0317", "10.0318", "10.0319", "10.0321", "10.0322", "10.0323", "10.0326", "10.0327",
-        "10.0328", "10.0329", "10.0330", "10.0331",
+        "10.0328", "10.0329", "10.0330", "10.0331", "10.0021", "10.0030", "10.0031", "10.0032",
+        "10.0039", "10.0040", "10.0051", "10.0052", "10.0134", "10.0252",
     ];
     let hits = credited("8.3.24");
     for (number, gana) in &hits {
@@ -1103,8 +1107,8 @@ fn nas_capadantasya_is_credited_only_on_rudhadi_dhan_jan_and_curadi_roots() {
     // the five optional-ṇic roots' 78 each (42 ṇic-less parasmaipada, 36
     // ṇic ātmanepada), and slice 10g's fifty-four, slice 10h's six and slice
     // 10i's twenty-seven 120 each (every live branch: 84 parasmaipada, ṇic
-    // and ṇic-less, and 36 ṇic ātmanepada).
-    assert_eq!(curadi.len(), 36 + 7 * 78 + 5 * 78 + 87 * 120);
+    // and ṇic-less, and 36 ṇic ātmanepada), and slice 10k's ten 78 each.
+    assert_eq!(curadi.len(), 36 + 7 * 78 + 5 * 78 + 87 * 120 + 10 * 78);
     for number in CURADI {
         assert!(
             curadi.iter().any(|(n, _)| *n == number),
@@ -1407,7 +1411,9 @@ fn shcutva_off_jan_is_credited_exactly_as_before_3f3() {
     // (acCandayat, acCandat), and slice 10h the three ch-initial ādhṛṣīya
     // roots (`Cfd`, `Cfp`, `Cad`) the same way (acCardayat, acCardat), and
     // slice 10i √vich (`viC`), whose root-internal tuk the sanādi 6.1.73
-    // gives on every branch (vicCayati, vicCAyati).
+    // gives on every branch (vicCayati, vicCAyati), and slice 10k the two
+    // ch-initial plain rows (`Card`, `Cuw`) the adanta way (acCardayat) and
+    // √pich (`piC`) the √vich way (picCayati).
     let hits = credited("8.4.40");
     assert!(
         hits.iter().any(|(n, _)| *n == "03.0025"),
@@ -1418,7 +1424,8 @@ fn shcutva_off_jan_is_credited_exactly_as_before_3f3() {
         assert!(
             [
                 "07.0003", "07.0008", "10.0469", "10.0480", "10.0481", "10.0062", "10.0114",
-                "10.0171", "10.0352", "10.0354", "10.0370", "10.0304"
+                "10.0171", "10.0352", "10.0354", "10.0370", "10.0304", "10.0078", "10.0462",
+                "10.0061"
             ]
             .contains(number),
             "8.4.40 credited on {number}"
@@ -1431,5 +1438,7 @@ fn shcutva_off_jan_is_credited_exactly_as_before_3f3() {
     // 9 parasmaipada ones twice (ṇic and ṇic-less) plus their two 8.4.56 forks,
     // slice 10g's three and slice 10h's three alike. √vich: every live
     // branch, 84 parasmaipada (ṇic and ṇic-less) and 36 ṇic ātmanepada.
-    assert_eq!(curadi, 3 * 19 + 6 * 29 + 120);
+    // Slice 10k's two ch-initial rows count as the adanta ones do, and √pich
+    // every live branch, 42 parasmaipada and 36 ātmanepada.
+    assert_eq!(curadi, 3 * 19 + 6 * 29 + 120 + 2 * 19 + 78);
 }
