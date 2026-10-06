@@ -2666,3 +2666,28 @@ fn the_10l_rules_give_vidyuts_forms() {
         assert_eq!(ids.contains(&"8.2.18"), number == "10.0278", "{number}");
     }
 }
+
+#[test]
+fn picc_keeps_its_root_internal_cc() {
+    // Slice 10m's `10.0175 picca~`, hand-built, laṭ prathama eka in both
+    // padas: vidyut-prakriya's forms. The first `c` stands before a jhal (the
+    // second `c`) but not at a term's end, so 8.2.30 declines; the guru
+    // upadhā (`cc`) leaves 7.3.86 nothing to do.
+    let row = curadi_row("10.0175", "picc", PadaAssignment::Nic);
+    for (pada, form) in [
+        (Pada::Parasmaipada, "piccayati"),
+        (Pada::Atmanepada, "piccayate"),
+    ] {
+        let p = sole(derive(
+            &row,
+            Lakara::Lat,
+            pada,
+            Purusha::Prathama,
+            Vacana::Eka,
+        ));
+        assert_eq!(p.text(), form);
+        let ids: Vec<&str> = p.log.iter().map(|s| s.sutra.as_str()).collect();
+        assert!(!ids.contains(&"8.2.30"), "{form}: {ids:?}");
+        assert!(!ids.contains(&"7.3.86"), "{form}: {ids:?}");
+    }
+}

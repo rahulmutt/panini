@@ -1059,6 +1059,41 @@ fn the_10l_rules_fire_only_on_their_rows() {
 }
 
 #[test]
+fn coh_kuh_is_credited_on_exactly_its_twelve_rows() {
+    // Slice 10m narrowed 8.2.30 to a term-final cu before an affix or āgama,
+    // or pada-final. Goldens ignore traces, so this holds its credits to the
+    // rows it fired on before the narrowing, branch for branch: juhotyādi's
+    // √ṇij and √vij, and rudhādi's ten cu-final roots (30 live branches where
+    // both padas derive, 21 where only parasmaipada does). No curādi row
+    // credits it.
+    let mut got: Vec<(&str, usize)> = Vec::new();
+    for (number, _) in credited("8.2.30") {
+        match got.last_mut() {
+            Some((n, c)) if *n == number => *c += 1,
+            _ => got.push((number, 1)),
+        }
+    }
+    got.sort();
+    assert_eq!(
+        got,
+        [
+            ("03.0012", 30),
+            ("03.0013", 30),
+            ("07.0004", 30),
+            ("07.0005", 30),
+            ("07.0007", 30),
+            ("07.0016", 21),
+            ("07.0017", 30),
+            ("07.0021", 21),
+            ("07.0022", 21),
+            ("07.0023", 21),
+            ("07.0024", 21),
+            ("07.0025", 21),
+        ]
+    );
+}
+
+#[test]
 #[allow(non_snake_case)]
 fn vicCayati_and_vicCAyati_take_tuk_before_3_1_32() {
     // viC P laT P.E.: two live branches, the ṇic one at index 0. Both take
