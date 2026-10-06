@@ -275,7 +275,7 @@ fn a_kusmad_is_credited_on_exactly_the_akusmiya_cells() {
     // cells, one branch each, the six optional-ṇic rows' on their ṇic branch
     // — and nowhere else: every credit's number lies in the positional
     // `AKUSMIYA` range. And 1.3.74 never reaches them: its credits stay on the
-    // 427 `Nic` rows and the seven `NicUbhayapada` rows' ṇic branch, read from
+    // 428 `Nic` rows and the seven `NicUbhayapada` rows' ṇic branch, read from
     // the curated `pada` column (ten before slice 10e, listed literally until
     // then).
     let hits = credited("10.0496");
@@ -288,7 +288,7 @@ fn a_kusmad_is_credited_on_exactly_the_akusmiya_cells() {
         .filter(|d| d.gana == Gana::Curadi && d.pada == PadaAssignment::Nic)
         .map(|d| d.dhatupatha)
         .collect();
-    assert_eq!(nic.len(), 427, "curated 1.3.74 rows");
+    assert_eq!(nic.len(), 428, "curated 1.3.74 rows");
     let nic_ubhayapada: Vec<&str> = dhatus()
         .iter()
         .filter(|d| d.pada == PadaAssignment::NicUbhayapada)
@@ -1065,7 +1065,8 @@ fn coh_kuh_is_credited_on_exactly_its_twelve_rows() {
     // rows it fired on before the narrowing, branch for branch: juhotyādi's
     // √ṇij and √vij, and rudhādi's ten cu-final roots (30 live branches where
     // both padas derive, 21 where only parasmaipada does). No curādi row
-    // credits it.
+    // credits it, `10.0175 picca~` included, whose `cc` is root-internal.
+    assert!(dhatus().iter().any(|d| d.dhatupatha == "10.0175"));
     let mut got: Vec<(&str, usize)> = Vec::new();
     for (number, _) in credited("8.2.30") {
         match got.last_mut() {

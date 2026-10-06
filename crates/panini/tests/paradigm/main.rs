@@ -860,11 +860,15 @@ fn derivation_set_is_exactly_pinned() {
 /// where √cur does; and √dhras, whose ṇic is optional (2570), so its every
 /// parasmaipada cell adds the ṇic-less reading beside the pinned ṇic form.
 /// 576 new cells, 90 new rows. The gaṇa is OPEN at 490 of its 509 rows.
+///
+/// Slice 10m curates √picc, `Nic`, which forks exactly where √cur does, once
+/// 8.2.30 stopped velarising its root-internal `cc`. 72 new cells, 6 new
+/// rows. The gaṇa is OPEN at 491 of its 509 rows.
 /// This test is what keeps the numbers true day to day.
 #[test]
 fn derivation_set_shape_matches_the_audited_numbers() {
     let total_cells = PARADIGM.len() * 9;
-    assert_eq!(total_cells, 38160, "4240 root×lakāra blocks × 9 cells each");
+    assert_eq!(total_cells, 38232, "4248 root×lakāra blocks × 9 cells each");
 
     let mut ones = 0usize;
     let mut twos = 0usize;
@@ -895,10 +899,10 @@ fn derivation_set_shape_matches_the_audited_numbers() {
             }
         }
     }
-    assert_eq!(ones, 29700, "one-form cells");
-    assert_eq!(twos, 6788, "two-form cells");
+    assert_eq!(ones, 29768, "one-form cells");
+    assert_eq!(twos, 6790, "two-form cells");
     assert_eq!(
-        threes, 925,
+        threes, 927,
         "three-form cells — new in slice 3b — √hrī's loṭ prathama and madhyama eka, each by \
          7.1.35/8.4.56; and — new in slice 3c — √dā's and √dhā's, the same way; and — new in \
          slice 3c2 — √gā's, the same way; and — new in slice 3d — the six ṛ-roots', the same way; \
@@ -915,7 +919,7 @@ fn derivation_set_shape_matches_the_audited_numbers() {
          √cyu's and √bhū's two loṭ tātaṅ cells, by 7.1.35/8.4.56, and √ci's every cell that \
          forks on neither (6.1.54 and 2570 beside the ṇic form); and — new in slice 10k — the \
          155 plain obligatory-ṇic rows' two loṭ tātaṅ cells, by 7.1.35/8.4.56; and — new in \
-         slice 10l — seven of its eight rows' the same way"
+         slice 10l — seven of its eight rows' the same way; and — new in slice 10m — √picc's"
     );
     assert_eq!(
         fours, 361,
@@ -979,16 +983,16 @@ fn derivation_set_shape_matches_the_audited_numbers() {
          `cA` with 7.3.36's puk, 7.2.115's vṛddhi) × the same triple"
     );
 
-    assert_eq!(ALTERNATES.len(), 11666, "ALTERNATES row count");
+    assert_eq!(ALTERNATES.len(), 11672, "ALTERNATES row count");
     let key_count = |key: &str| {
         ALTERNATES
             .iter()
             .filter(|(_, _, _, _, _, k)| *k == key)
             .count()
     };
-    assert_eq!(key_count("8.4.56"), 896, "8.4.56-only alternates");
-    assert_eq!(key_count("7.1.35"), 888, "7.1.35-only alternates");
-    assert_eq!(key_count("7.1.35+8.4.56"), 888, "7.1.35+8.4.56 alternates");
+    assert_eq!(key_count("8.4.56"), 898, "8.4.56-only alternates");
+    assert_eq!(key_count("7.1.35"), 890, "7.1.35-only alternates");
+    assert_eq!(key_count("7.1.35+8.4.56"), 890, "7.1.35+8.4.56 alternates");
     assert_eq!(key_count("3.4.111"), 2, "3.4.111 alternates");
     assert_eq!(key_count("6.4.107"), 72, "6.4.107 alternates");
     assert_eq!(key_count("8.4.65"), 145, "8.4.65-only alternates");
@@ -1677,6 +1681,9 @@ fn pada_ambiguous_surfaces_are_exactly_these() {
     // curRa~`'s, which its homograph `10.0143 cUrRa~` already holds (−4);
     // √dhras's ṇic-less branch is parasmaipada only. 28 more, taking the set
     // from 1603 to 1631.
+    // Slice 10m's √picc contributes the same four (`apiccayata`,
+    // `piccayatAm`, `piccayetAm`, `piccayeta`), taking the set from 1631 to
+    // 1635.
     assert_eq!(
         both,
         vec![
@@ -2219,6 +2226,7 @@ fn pada_ambiguous_surfaces_are_exactly_these() {
             "apiRqayata",
             "apiYjayata",
             "apicCayata",
+            "apiccayata",
             "apoRayata",
             "apoTayata",
             "apolayata",
@@ -2965,6 +2973,9 @@ fn pada_ambiguous_surfaces_are_exactly_these() {
             "picCayatAm",
             "picCayetAm",
             "picCayeta",
+            "piccayatAm",
+            "piccayetAm",
+            "piccayeta",
             "poRayatAm",
             "poRayetAm",
             "poRayeta",
@@ -4670,6 +4681,35 @@ fn curadi_analyses_its_10l_forms() {
         "Drasayati",
         "DrAsati",
     ] {
+        let r = engine.check(form);
+        assert!(matches!(r.verdict, Verdict::Invalid), "{form}");
+        assert!(r.analyses.is_empty(), "{form}");
+    }
+}
+
+/// Slice 10m's `check()` witnesses: √picc's laṭ prathama eka in each pada,
+/// each with exactly one analysis (the goldens were grepped first), crediting
+/// ṇic and neither 8.2.30 nor 7.3.86. The form main's whole-word 8.2.30 gave
+/// (*pikcayati*) and a guṇated one derive nothing.
+#[test]
+fn curadi_analyses_its_10m_forms() {
+    let engine = Panini::new();
+    for (form, pada) in [
+        ("piccayati", Pada::Parasmaipada),
+        ("piccayate", Pada::Atmanepada),
+    ] {
+        let r = engine.check(form);
+        assert!(matches!(r.verdict, Verdict::Valid), "{form}");
+        assert_eq!(r.analyses.len(), 1, "{form}");
+        let a = &r.analyses[0];
+        assert_eq!(a.dhatu, "picc", "{form}");
+        assert_eq!(a.pada, pada, "{form}");
+        let ids: Vec<&str> = a.trace.iter().map(|s| s.sutra.as_str()).collect();
+        assert!(ids.contains(&"3.1.25"), "{form}: {ids:?}");
+        assert!(!ids.contains(&"8.2.30"), "{form}: {ids:?}");
+        assert!(!ids.contains(&"7.3.86"), "{form}: {ids:?}");
+    }
+    for form in ["pikcayati", "pikcayate", "peccayati"] {
         let r = engine.check(form);
         assert!(matches!(r.verdict, Verdict::Invalid), "{form}");
         assert!(r.analyses.is_empty(), "{form}");
