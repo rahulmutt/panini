@@ -229,7 +229,7 @@
   target under `crates/panini-lipi/fuzz` legitimately omits it, since it uses
   `#![no_main]` plus the libfuzzer harness macro).
 - Grammar changes are gated by the golden paradigm test
-  (`crates/panini/tests/paradigm/`, 38160 cells, ten gaṇas, nine complete —
+  (`crates/panini/tests/paradigm/`, 38232 cells, ten gaṇas, nine complete —
   tanādi closing at 10/10 in slice 8b (nine of its ten dhātupāṭha rows
   curated in slice 8a; √kṛ, the tenth and last, in 8b), and juhotyādi (3)
   opened in slice 3a at 2 of its 26 rows, at 4 after slice 3b curated √bhī
@@ -240,10 +240,10 @@
   and √viṣ, at 24 after slice 3f curated √kit, √tur, √dhiṣ and √dhan, at 25
   after slice 3f2 curated √bhas, and closing at 26 of 26 in slice 3f3 with √jan,
 and curādi (10) opened in slice 10a at 4 of its 509 rows (√cur, √laḍ, √bhakṣ,
-√bhūṣ), at 8 after slice 10b curated the ākusmīya √cit, √vṛṣ, √mad and √kusm, at 41 after slice 10c curated thirty-three more ākusmīya roots, at 47 after slice 10d curated the jñapādi √jñap, √yam, √cah, √cap, √rah and √bal, at 139 after slice 10e curated ninety-two adanta roots, at 149 after slice 10f curated the ten optional-ṇic rows, at 208 after slice 10g curated fifty-nine more, at 258 after slice 10h curated the fifty ādhṛṣīya rows, at 319 after slice 10i curated the fifty-nine āsvadīya rows, √pṝ and √ghuṣ, at 327 after slice 10j curated the eight ajanta rows √smiṅ, √ci, √ghṛ, √gṛ, √yu, √jñā, √cyu and √bhū, at 482 after slice 10k curated the 155 plain obligatory-ṇic rows, at 490 after slice 10l curated the eight rule-bearing rows √ūrj, √cūrṇ, √aṭṭ, √kṝt, √mlecch, √gūrd, √dhras and √kṛp —
+√bhūṣ), at 8 after slice 10b curated the ākusmīya √cit, √vṛṣ, √mad and √kusm, at 41 after slice 10c curated thirty-three more ākusmīya roots, at 47 after slice 10d curated the jñapādi √jñap, √yam, √cah, √cap, √rah and √bal, at 139 after slice 10e curated ninety-two adanta roots, at 149 after slice 10f curated the ten optional-ṇic rows, at 208 after slice 10g curated fifty-nine more, at 258 after slice 10h curated the fifty ādhṛṣīya rows, at 319 after slice 10i curated the fifty-nine āsvadīya rows, √pṝ and √ghuṣ, at 327 after slice 10j curated the eight ajanta rows √smiṅ, √ci, √ghṛ, √gṛ, √yu, √jñā, √cyu and √bhū, at 482 after slice 10k curated the 155 plain obligatory-ṇic rows, at 490 after slice 10l curated the eight rule-bearing rows √ūrj, √cūrṇ, √aṭṭ, √kṝt, √mlecch, √gūrd, √dhras and √kṛp, at 491 after slice 10m curated √picc, narrowing 8.2.30 to a term-final cu —
   `PARADIGM`
     stays one-form-per-cell: a cell forked by an optional rule keeps its
-    other forms — a second (6788 cells), a third (925 cells), a fourth
+    other forms — a second (6790 cells), a third (927 cells), a fourth
     (361
     cells, rudhādi's √piṣ and — new in slice 7d — √śiṣ loṭ madhyama eka, and
     — new in slice 8a — fifteen more spread across tanādi's four ik-upadhā
@@ -273,7 +273,7 @@ and curādi (10) opened in slice 10a at 4 of its 509 rows (√cur, √laḍ, √
     seven-form cell, or up to a ninth for slice 10f's `pata`, slice 10h's
     √dhū and √prī and slice 10j's √ci loṭ parasmaipada prathama and madhyama
     eka, the eight nine-form cells and the record — in
-    `ALTERNATES` (11666 rows in all, so 38160 + 11666 = 49826 forms total); √bhuj
+    `ALTERNATES` (11672 rows in all, so 38232 + 11672 = 49904 forms total); √bhuj
     joins neither fork record — its forks stack only 7.1.35 and 8.4.56, the
     same two-deep profile as √yuj — but the √bhuj/1.3.66 slice adds two
     trace pins of its own, `bhunkte_trace_credits_1_3_66_not_1_3_72` and
@@ -702,7 +702,8 @@ and curādi (10) opened in slice 10a at 4 of its 509 rows (√cur, √laḍ, √
   430 roots), and that by curādi 10k's (`tools/audit/README.md`'s 2026-10-05 10k
   entry, 37584 cells / 49160 forms / 585 roots), and that by curādi 10l's
   (`tools/audit/README.md`'s 2026-10-06 10l entry, 38160 cells / 49826 forms /
-  593 roots).
+  593 roots), and that by curādi 10m's (`tools/audit/README.md`'s 2026-10-06 10m
+  entry, 38232 cells / 49904 forms / 594 roots).
   Three new `Rule`s are behind it, all root-keyed to √kṛ and all in
   `guna.rs` — 6.4.110 *ata ut sārvadhātuke*, 6.4.108 *nityaṁ karoteḥ* and
   6.4.109 *ye ca* — plus one engine change with no `Rule` of its own:
@@ -754,7 +755,7 @@ and curādi (10) opened in slice 10a at 4 of its 509 rows (√cur, √laḍ, √
   cells across eleven roots (`key_count("6.4.107") == 72`, the same
   test), not 8 — the "8 cells" figure was never re-derived when the gaṇa
   landed. `guna.rs:1233`'s own claim ("1872 goldens move") stays stale
-  only in the ordinary corpus-size sense, not wrong in kind: 38160 goldens
+  only in the ordinary corpus-size sense, not wrong in kind: 38232 goldens
   would move today. Neither comment was touched by tanādi 8a or 8b, consistent
   with every slice since 7c. Rudhādi 7d touched neither comment — its one permitted
   engine-comment edit is the comment above

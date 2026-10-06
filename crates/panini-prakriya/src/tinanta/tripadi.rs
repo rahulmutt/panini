@@ -1122,8 +1122,9 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // before ANY jhal, and `j`/`c` are themselves jhal, so it needs no
     // jhal-initial ending to act — it turns the root's `n` into `M` before
     // this rule ever sees it, and `shcutva_of('M')` is `None`. 8.2.30 coH
-    // kuH is NOT independently sufficient: it turns a word-final or
-    // jhal-followed `j`/`c` into its velar, but its own comment above (and
+    // kuH is NOT independently sufficient: it turns a term-final `j`/`c`
+    // that is pada-final or before a jhal-initial affix into its velar, but
+    // its own comment above (and
     // `coh_kuh_fires_only_word_finally_or_before_a_jhal`'s `Banjanti` case)
     // records that it DECLINES on exactly this shape when the ending is
     // vowel-initial — `Ba`/`nj`/`anti` leaves the `j` untouched, since a

@@ -378,7 +378,8 @@ harness), and the test docs:
   a jhal, or pada-finally. This engine scans the whole word and turns
   root-internal `cc` into `kc` (*pikcayati* → *piccayati*). The rudhādi rows
   depend on 8.2.30: *ric*, *vic*, *bhañj*. Prototype off 10l's HEAD and diff
-  every prior trace before planning.
+  every prior trace before planning. Specified in
+  `2026-10-06-curadi-gana-10m-design.md`.
 - The remaining eighteen curādi rows after 10m: re-scope them by prototype
   first.
 - Upasargas, and with them `10.0368 za\da~` (7.3.78) and 6.1.76 *padāntād

@@ -27,7 +27,7 @@ is ruleless.
 comment states that a blocked prakriyā's `text()` is a partial string — often the
 bare root code — not a surface form.
 
-**It asserts the corpus totals** (593 roots, 38160 cells, 49826 forms) rather than
+**It asserts the corpus totals** (594 roots, 38232 cells, 49904 forms) rather than
 reporting whatever it enumerated. Those totals are corroborated by
 `derivation_set_shape_matches_the_audited_numbers` in
 `crates/panini/tests/paradigm/main.rs`, which each slice raises to the same totals
@@ -108,6 +108,25 @@ PANINI_AUDIT_DUMP=/tmp/audit-table.tsv mise exec rust@1.99.0 -- cargo run --rele
 ```
 
 ## Last recorded result
+
+2026-10-06, curādi 10m slice, vidyut
+`8da2f90bee3ce1c07505fa432fc3729e3f7e02ea`: **zero differences across 38232
+cells / 49904 forms / 594 roots**, with the `entry` negative control verified
+failing (36 √bhū cells).
+
+The verdict covers the whole curādi 10m slice: `10.0175 picca~` (√picc),
+ubhayapadī by 1.3.74, and 8.2.30 *coḥ kuḥ* narrowed, as vidyut-prakriya
+reads it, to a term-final cu before a jhal-initial affix or āgama, or
+pada-final. Blocked branches stay at 6552: √picc's ṇic is obligatory. On the
+throwaway prototype that scoped the slice, main's whole-word 8.2.30 with the
+row kept made 72 cells differ, all √picc's (*pikcayati*). A main-vs-branch
+dump of every prior cell's branches, blocked ones included, with every
+step's before and after text, was byte-identical, all 56378 of them (49826
+live).
+
+Totals: 594 = 593 + 1; 38232 = 38160 + 72 (8 root×pada×lakāra blocks × 9);
+49904 = 49826 + 72 + 6 new `ALTERNATES` rows (11666 → 11672), measured via
+the harness's corpus block, not assumed.
 
 2026-10-06, curādi 10l slice, vidyut
 `8da2f90bee3ce1c07505fa432fc3729e3f7e02ea`: **zero differences across 38160
