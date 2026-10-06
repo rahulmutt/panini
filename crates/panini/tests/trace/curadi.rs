@@ -21,7 +21,8 @@
 //! sūtra is Kaumudī 2567, then 1.3.12. √dhūp's and √vich's ṇic-less branch has
 //! 3.1.28's āya, which 3.4.114 and 3.1.32 treat as they treat ṇic, and
 //! √vich's every branch the sanādi 6.1.73's tuk before 3.1.32, as √pich's
-//! (slice 10k) ṇic branch does.
+//! (slice 10k) ṇic branch does, and √mlecch's the sanādi 6.1.75's (slice
+//! 10l). √kṝt's ṇic branch has 7.1.101 before 3.1.32, and no 7.3.86.
 
 use crate::helpers::{at, cell_trace, credited};
 use panini_data::{

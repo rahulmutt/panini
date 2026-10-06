@@ -247,7 +247,11 @@ harness), and the test docs:
 ## Later slices
 
 - **10l: the nine rule-bearing rows.** The prototype found exactly what each
-  needs. Re-prototype off 10k's HEAD before planning.
+  needs. Re-prototype off 10k's HEAD before planning. (Done:
+  `2026-10-05-curadi-gana-10l-design.md` takes eight of them; `picca~` and
+  the 8.2.30 narrowing went to 10m. Its re-prototype corrected this table:
+  `kFta~` takes 7.1.101 *upadhāyāś ca*, not 7.1.100; `adwa~` also takes
+  8.4.55; and `u~Drasa~` needs the marker reader to see an initial `u~`.)
 
   | fix | rows | ours → vidyut |
   |---|---|---|

@@ -1,13 +1,14 @@
 //! The sanādi stage: ṇic and its folding into the dhātu — 3.1.25, 3.1.28's
 //! āya where no ṇic is taken, ṇic's it-lopa (1.3.9), 3.4.114, 6.4.48,
 //! 6.1.54, 7.2.116, the vārttika 7.3.37.2, 7.3.36, 7.2.115, 6.1.78, 6.4.92,
-//! 7.2.114, 6.1.73, 7.3.86, 3.1.32 — opened by the dhātupāṭha gaṇasūtra
-//! 10.0493, which credits a jñapādi root's mit-tva, then eight vikalpas that
-//! fork a root whose ṇic is optional into its ṇic and ṇic-less branches (the
-//! gaṇasūtras 10.0498 and 10.0499 and the Kaumudī's 2564, 2565, 2570, 2571,
-//! 2573.1, 2573.3), a ninth (2573.2) that forks `pata`'s ṇic branch on its
-//! final `a`, and two more gaṇasūtras, 10.0496 and 10.0497, which settle an
-//! ākusmīya or ā-garvīya root's pada, all before ṇic is added.
+//! 7.2.114, 6.1.73, 6.1.75, 7.1.101, 7.3.86, 3.1.32 — opened by the
+//! dhātupāṭha gaṇasūtra 10.0493, which credits a jñapādi root's mit-tva,
+//! then eight vikalpas that fork a root whose ṇic is optional into its ṇic
+//! and ṇic-less branches (the gaṇasūtras 10.0498 and 10.0499 and the
+//! Kaumudī's 2564, 2565, 2570, 2571, 2573.1, 2573.3), a ninth (2573.2) that
+//! forks `pata`'s ṇic branch on its final `a`, and two more gaṇasūtras,
+//! 10.0496 and 10.0497, which settle an ākusmīya or ā-garvīya root's pada,
+//! all before ṇic is added.
 //!
 //! First in the pipeline, before any lakāra or tiṅ exists. The layout here
 //! is `[AGAMA, ABHYASA, ANGA, ṇic]`, ṇic (or 3.1.28's āya) at `NIC`; 3.1.32
@@ -21,18 +22,20 @@
 //! Every rule self-guards: the eight optional-ṇic vikalpas on the row's
 //! `OPTIONAL_NIC` entry, 2573.2 on `pata`'s, 10.0496 on `Tag::Akusmiya`,
 //! 10.0497 on `Tag::AaGarviya`, 10.0493 on `Tag::Mit`, 3.1.25 on
-//! `Tag::Curadi`, 3.1.28 on `Tag::Aya` with no ṇic taken, 6.1.73 on its own
-//! saṁhitā condition, and the rest on the pratyaya at `NIC`: 3.4.114 and
-//! 3.1.32 on ṇic or āya, 6.4.48, 7.2.114 and 7.3.86 on its being
+//! `Tag::Curadi`, 3.1.28 on `Tag::Aya` with no ṇic taken, 6.1.73 and 6.1.75
+//! on their own saṁhitā condition, and the rest on the pratyaya at `NIC`:
+//! 3.4.114 and 3.1.32 on ṇic or āya, 6.4.48, 7.2.114 and 7.3.86 on its being
 //! ārdhadhātuka, the others on ṇic's ṇit (6.4.48 on an `a`-final aṅga as
 //! well, 6.1.54 on √ci's row (`super::samjna::CISPHUR`), 6.4.92 on
 //! `Tag::Mit`, 7.3.37.2 on √dhū's and √prī's text, 7.3.36 on an `A`-final
 //! aṅga, 7.2.115 on an ac-final one, 6.1.78 on an ec-final one, 7.2.114 on
-//! `Tag::Mrj`, and 7.2.116 and 7.3.86 decline on 6.4.48's `Tag::AtLopa`).
-//! 6.1.73 and 3.1.28 carry no gaṇa guard, only their own conditions (3.1.28
-//! reads the āya rows); on today's corpus the gaṇas 1–9 add nothing and
-//! record nothing, and 6.1.73 fires only on √vich and √pich (slice 10k),
-//! which `the_10i_aya_and_tuk_fire_only_on_their_rows` pins.
+//! `Tag::Mrj`, 7.1.101 on an `F` upadhā, and 7.2.116 and 7.3.86 decline on
+//! 6.4.48's `Tag::AtLopa`). 6.1.73, 6.1.75 and 3.1.28 carry no gaṇa guard,
+//! only their own conditions (3.1.28 reads the āya rows); on today's corpus
+//! the gaṇas 1–9 add nothing and record nothing, 6.1.73 fires only on √vich
+//! and √pich (slice 10k), which `the_10i_aya_and_tuk_fire_only_on_their_rows`
+//! pins, and 6.1.75 only on √mlecch and 7.1.101 only on √kṝt (slice 10l),
+//! which `the_10l_rules_fire_only_on_their_rows` pins.
 
 use crate::prakriya::Prakriya;
 use crate::rule::{Rule, RuleKind};

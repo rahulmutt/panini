@@ -146,7 +146,7 @@ const VIKALPA_RULES: &[&str] = &[
     "6.4.115", "6.4.117", "6.4.116", "6.4.43",
 ];
 
-/// `ALTERNATES` is otherwise 11576 bare strings, and a string can be right for
+/// `ALTERNATES` is otherwise 11666 bare strings, and a string can be right for
 /// the wrong reason — `BavatAt` is a real form whether or not 8.4.56 is what
 /// produced it. This ties each row to the grammar: find the branch that
 /// derives the row's form, intersect its log with the optional-rule set, and
@@ -155,7 +155,7 @@ const VIKALPA_RULES: &[&str] = &[
 /// `VIKALPA_RULES` holds ids, not arms: 7.3.86 is listed once but runs three times,
 /// as the mandatory guṇa-stage laghūpadha guṇa, as the tanādi vikalpa entry and,
 /// since slice 10a, as the sanādi entry before ṇic, so a key
-/// naming 7.3.86 does not by itself mean the rule was optional. 144 of the 151 `7.3.86+8.4.56` keys are the mandatory firing (ten juhotyādi: 3e's laṅ eka cells and 3f's √kit and √dhiṣ ones; 134 curādi: slice 10a's √cur laṅ and vidhiliṅ prathama eka, and slice 10g's √div and √śṛdh, slice 10h's sixteen laghu-ik ādhṛṣīya rows, slice 10i's eleven laghu-ik rows on their ṇic branch and slice 10k's thirty-seven laghu-ik rows, where the firing is the sanādi entry before ṇic; the other seven are the tanādi vikalpa), and so is the 7.3.86 of the one `7.3.86+8.2.75` key (√kit's `acikeH`), of every `7.3.86+7.1.35`/`7.3.86+7.1.35+8.4.56` key (the same curādi roots' loṭ tātaṅ cells — the only keys where 7.3.86 precedes 7.1.35, because the sanādi stage runs first), and of every `2570+…7.3.86…`, `2571+…7.3.86…`, `10.0498+…7.3.86…` and `10.0499+…7.3.86…` key (a ṇic-less root's guṇa).
+/// naming 7.3.86 does not by itself mean the rule was optional. 146 of the 153 `7.3.86+8.4.56` keys are the mandatory firing (ten juhotyādi: 3e's laṅ eka cells and 3f's √kit and √dhiṣ ones; 136 curādi: slice 10a's √cur laṅ and vidhiliṅ prathama eka, and slice 10g's √div and √śṛdh, slice 10h's sixteen laghu-ik ādhṛṣīya rows, slice 10i's eleven laghu-ik rows on their ṇic branch, slice 10k's thirty-seven laghu-ik rows and slice 10l's √kṛp, where the firing is the sanādi entry before ṇic; the other seven are the tanādi vikalpa), and so is the 7.3.86 of the one `7.3.86+8.2.75` key (√kit's `acikeH`), of every `7.3.86+7.1.35`/`7.3.86+7.1.35+8.4.56` key (the same curādi roots' loṭ tātaṅ cells — the only keys where 7.3.86 precedes 7.1.35, because the sanādi stage runs first), and of every `2570+…7.3.86…`, `2571+…7.3.86…`, `10.0498+…7.3.86…` and `10.0499+…7.3.86…` key (a ṇic-less root's guṇa).
 #[test]
 fn every_alternate_names_the_vikalpa_rules_that_produced_it() {
     for (root, lakara, pada, cell, form, key) in ALTERNATES.iter() {
@@ -302,9 +302,9 @@ fn derivation_set_is_exactly_pinned() {
 /// 7.1.35/8.4.65/8.4.56 exactly as kft/ruD/Bid/kzud/tfd's do (a five-form
 /// cell), and its loṭ parasmaipada madhyama eka ties the six-form record
 /// with the same k = 3 against the 2³ bound of eight:
-/// 37584 cells total (4176 root×lakāra blocks × 9), of which 29188 hold exactly one form, 6742 hold two, 911 hold three (√hrī's loṭ prathama and madhyama
+/// 38160 cells total (4240 root×lakāra blocks × 9), of which 29700 hold exactly one form, 6788 hold two, 925 hold three (√hrī's loṭ prathama and madhyama
 /// eka, new in slice 3b, √dā's and √dhā's, new in slice 3c, and √gā's, new in
-/// slice 3c2, and the six ṛ-roots', new in slice 3d, and √ṛ's, new in slice 3d2, and √ṇij's, √vij's and √viṣ's, new in slice 3e, and √kit's, √tur's, √dhiṣ's and √dhan's, new in slice 3f, and √bhas's, new in slice 3f2, and √jan's, new in slice 3f3, and the four curādi roots', new in slice 10a, and the six jñapādi roots', new in slice 10d, and the eighty-three ubhayapadī adanta roots', new in slice 10e, and the 155 plain obligatory-ṇic rows', new in slice 10k, each by
+/// slice 3c2, and the six ṛ-roots', new in slice 3d, and √ṛ's, new in slice 3d2, and √ṇij's, √vij's and √viṣ's, new in slice 3e, and √kit's, √tur's, √dhiṣ's and √dhan's, new in slice 3f, and √bhas's, new in slice 3f2, and √jan's, new in slice 3f3, and the four curādi roots', new in slice 10a, and the six jñapādi roots', new in slice 10d, and the eighty-three ubhayapadī adanta roots', new in slice 10e, and the 155 plain obligatory-ṇic rows', new in slice 10k, and seven of the eight rule-bearing rows', new in slice 10l, each by
 /// 7.1.35/8.4.56, plus √bhas's laṅ madhyama eka, by 8.2.74/8.4.56; slice 10f's
 /// optional-ṇic rows add 114 two-form and 46 three-form cells, and slice 10g's
 /// fifty-nine add 1888 two-form cells, a ṇic and a ṇic-less reading each, and
@@ -313,7 +313,8 @@ fn derivation_set_is_exactly_pinned() {
 /// and √prī's ṇic branch forking again on 7.3.37.2's nuk, and slice 10i's
 /// sixty-one add 1952 two-form cells, a ṇic and a ṇic-less reading each, and
 /// slice 10j's √ghṛ, √jñā, √cyu and √bhū eight two-form and eight three-form
-/// cells as √cur's, and √ci 68 three-form ones), 359 hold four (piṣ's loṭ madhyama eka, the deepest
+/// cells as √cur's, and √ci 68 three-form ones, and slice 10l's √dhras 32
+/// two-form cells, a ṇic and a ṇic-less reading each), 361 hold four (piṣ's loṭ madhyama eka, the deepest
 /// fork added in 7b, Siz's loṭ parasmaipada madhyama eka (slice 7d), and — new in
 /// slice 8a — fifteen more spread across the four ik-upadhā tanādi roots
 /// kziR/fR/tfR/GfR; √kṛ, slice 8b, adds none to this bucket; and — new in slice
@@ -324,7 +325,8 @@ fn derivation_set_is_exactly_pinned() {
 /// 10g — the fifty-nine optional-ṇic rows' laṅ and vidhiliṅ parasmaipada
 /// prathama eka, the same way; and — new in slice 10h — forty-eight of the
 /// fifty ādhṛṣīya rows', the same way; and — new in slice 10i — the
-/// sixty-one āsvadīya, √pṝ and √ghuṣ rows', the same way), and
+/// sixty-one āsvadīya, √pṝ and √ghuṣ rows', the same way; and — new in slice
+/// 10l — √dhras's, the same way), and
 /// — the sharpest branch-count witnesses in
 /// the repo, per `docs/ARCHITECTURE.md` — ten hold five (√kṛt's loṭ
 /// prathama eka, ruD's loṭ parasmaipada prathama eka, Bid's, kzud's and
@@ -333,7 +335,7 @@ fn derivation_set_is_exactly_pinned() {
 /// none to this bucket, neither does √kṛ, slice 8b, and — new in slice
 /// 3b — √bhī's loṭ prathama eka, forking on 7.1.35/6.4.115/8.4.56, and — new in slice 3c2 — √hā's loṭ
 /// prathama eka, forking on 7.1.35/6.4.116/8.4.56) and
-/// 365
+/// 367
 /// hold six (√kṛt's loṭ madhyama eka, `kfndDi`/`kfnDi`'s cell, ruD's loṭ
 /// parasmaipada madhyama eka, `rundDi`/`runDi`/`rundDAd`/`runDAd`/
 /// `rundDAt`/`runDAt`, Bid's, kzud's and tfd's loṭ
@@ -363,7 +365,9 @@ fn derivation_set_is_exactly_pinned() {
 /// parasmaipada prathama eka, three readings × 8.4.56; and — new in slice
 /// 10i — the sixty-one rows' loṭ parasmaipada prathama and madhyama eka,
 /// the same way; and — new in slice 10j — √ci's laṅ and vidhiliṅ parasmaipada
-/// prathama eka, three readings × 8.4.56), one — new in
+/// prathama eka, three readings × 8.4.56; and — new in slice 10l — √dhras's
+/// loṭ parasmaipada prathama and madhyama eka, two readings × the tātaṅ
+/// triple), one — new in
 /// slice 3c2 — holds SEVEN: √hā's loṭ parasmaipada madhyama eka, where 6.4.117
 /// is the first optional rule to bar others (`Rule.bars`), so its three
 /// readings before *hi* are not a 2^k product; and eight hold NINE, the engine's
@@ -375,18 +379,18 @@ fn derivation_set_is_exactly_pinned() {
 /// √ci's (2570's ṇic-less one, 6.1.54's `cA` with puk, and the declined
 /// ṇic branch) × the same triple. No cell holds eight.
 /// `ALTERNATES`
-/// itself has 11576 rows, keyed 882 `8.4.56`, 874 `7.1.35`, 874 `7.1.35+8.4.56`,
+/// itself has 11666 rows, keyed 896 `8.4.56`, 888 `7.1.35`, 888 `7.1.35+8.4.56`,
 /// 2 `3.4.111`, 72 `6.4.107`, 145 `8.4.65`, 8 `8.2.75`, 2 `8.2.74` (√hiṃs's ahinaH and, new in slice 3f2, √bhas's abaBaH), 16
 /// `7.1.35+8.4.65`, 16 `7.1.35+8.4.65+8.4.56`, 270 `7.3.86` (tanādi 8a's
 /// ik-upadhā fork), 8 `7.1.35+7.3.86`, 8 `7.1.35+7.3.86+8.4.56`, 8
-/// `7.3.86+6.4.107`, 151 `7.3.86+8.4.56` (144 of them name the MANDATORY
+/// `7.3.86+6.4.107`, 153 `7.3.86+8.4.56` (146 of them name the MANDATORY
 /// 7.3.86, through the id it shares with the tanādi vikalpa arm: ten juhotyādi, slice 3e's
-/// laṅ prathama and madhyama eka cells and slice 3f's √kit and √dhiṣ ones, whose root guṇa 7.3.86 credits, and 134 curādi, slice 10a's √cur laṅ and vidhiliṅ prathama eka and slice 10g's √div and √śṛdh, slice 10h's sixteen laghu-ik ādhṛṣīya rows', slice 10i's eleven laghu-ik rows' ṇic-branch ones and slice 10k's thirty-seven laghu-ik rows', whose guṇa before ṇic the sanādi 7.3.86 credits; the other seven are the tanādi vikalpa), 1 `7.3.86+8.2.75` (√kit's acikeH, the same mandatory 7.3.86), 23 `6.4.115`, 2 `7.1.35+6.4.115`,
+/// laṅ prathama and madhyama eka cells and slice 3f's √kit and √dhiṣ ones, whose root guṇa 7.3.86 credits, and 136 curādi, slice 10a's √cur laṅ and vidhiliṅ prathama eka and slice 10g's √div and √śṛdh, slice 10h's sixteen laghu-ik ādhṛṣīya rows', slice 10i's eleven laghu-ik rows' ṇic-branch ones, slice 10k's thirty-seven laghu-ik rows' and slice 10l's √kṛp's, whose guṇa before ṇic the sanādi 7.3.86 credits; the other seven are the tanādi vikalpa), 1 `7.3.86+8.2.75` (√kit's acikeH, the same mandatory 7.3.86), 23 `6.4.115`, 2 `7.1.35+6.4.115`,
 /// 2 `7.1.35+6.4.115+8.4.56`, and 1 `6.4.115+8.4.56`, 14 `6.4.116`, 1 `6.4.117`, 2 `7.1.35+6.4.116` and 2
-/// `7.1.35+6.4.116+8.4.56`, 9 `6.4.43` and 1 `6.4.43+8.4.56` (slice 3f3's √jan), 134 `7.3.86+7.1.35` and 134
+/// `7.1.35+6.4.116+8.4.56`, 9 `6.4.43` and 1 `6.4.43+8.4.56` (slice 3f3's √jan), 136 `7.3.86+7.1.35` and 136
 /// `7.3.86+7.1.35+8.4.56` (slice 10a's √cur, its sanādi 7.3.86 ahead of 7.1.35, and slice 10g's √śṛdh and
 /// √div, slice 10h's sixteen laghu-ik ādhṛṣīya rows and slice 10i's eleven laghu-ik rows on their ṇic
-/// branch, and slice 10k's thirty-seven laghu-ik rows), and slice 10f's twenty-one
+/// branch, and slice 10k's thirty-seven laghu-ik rows, and slice 10l's √kṛp), and slice 10f's twenty-one
 /// keys on its five Kaumudī vikalpa ids, at their counts as of slice 10g: 36 `2573.1`, 72 `2573.2`, 72 `2573.3`, 114 apiece
 /// `2564+8.4.56` / `2564+7.1.35` / `2564+7.1.35+8.4.56` (8 from 10f's four idit rows, 106 from 10g's
 /// fifty-three), 6 apiece `2573.3+8.4.56` /
@@ -429,7 +433,12 @@ fn derivation_set_is_exactly_pinned() {
 /// 10 rows apiece into `8.4.56`, `7.1.35` and `7.1.35+8.4.56`. Slice 10k opens
 /// no key: it folds 236 rows apiece into `8.4.56`, `7.1.35` and
 /// `7.1.35+8.4.56` and 74 apiece into `7.3.86+8.4.56`, `7.3.86+7.1.35` and
-/// `7.3.86+7.1.35+8.4.56` (its thirty-seven laghu-ik rows) — √kṛ (slice 8b) adds six more
+/// `7.3.86+7.1.35+8.4.56` (its thirty-seven laghu-ik rows). Slice 10l opens
+/// no key either: it adds 36 to `2570` and 2 apiece to `2570+8.4.56`,
+/// `2570+7.1.35` and `2570+7.1.35+8.4.56` (√dhras's ṇic-less branch), and
+/// folds 14 rows apiece into `8.4.56`, `7.1.35` and `7.1.35+8.4.56` and 2
+/// apiece into `7.3.86+8.4.56`, `7.3.86+7.1.35` and `7.3.86+7.1.35+8.4.56`
+/// (√kṛp, its guṇa before ṇic) — √kṛ (slice 8b) adds six more
 /// rows, all folded into the pre-existing `8.4.56`/`7.1.35`/`7.1.35+8.4.56`
 /// keys above, two apiece: `8.4.56` gains `akarot` (laṅ parasmaipada
 /// prathama eka) and `kuryAt` (vidhiliṅ parasmaipada prathama eka);
@@ -540,7 +549,9 @@ fn derivation_set_is_exactly_pinned() {
 /// negative control verified failing (36 √bhū cells), and curādi 10k's
 /// re-ran it at the same commit over all 37584 cells / 49160 forms / 585
 /// roots with zero differences, its `entry` negative control verified
-/// failing (36 √bhū cells). √tṛh joins none of the fork
+/// failing (36 √bhū cells), and curādi 10l's re-ran it at the same commit
+/// over all 38160 cells / 49826 forms / 593 roots with zero differences, its
+/// `entry` negative control verified failing (36 √bhū cells). √tṛh joins none of the fork
 /// records: its deepest cells hold three forms, because 8.3.13 Qo Qe lopaH
 /// obligatorily elides the ḍh that 8.4.65 forks on for every other
 /// stop-final rudhādi root.
