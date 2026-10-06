@@ -16,14 +16,29 @@ use panini_data::{Lakara, Pada};
 /// the laṅ aṭ, and `super::sanadi`'s, for a root-internal site, taken there
 /// before guṇa. Shared, so the two cannot drift apart.
 pub(crate) fn che_ca(p: &mut Prakriya) -> bool {
+    tuk_before_che(p, is_hrasva, "6.1.73", "Ce ca")
+}
+
+/// 6.1.75 dIrGAt, applied: the first long vowel before a `C` takes tuk
+/// after it (√mlecch: `mleC` → `mletC`). Behind the sanādi stage's entry
+/// only: a laṅ aṭ is short, so an aṅga-stage entry could never fire.
+pub(crate) fn dirghat(p: &mut Prakriya) -> bool {
+    tuk_before_che(p, |c| is_vowel(c) && !is_hrasva(c), "6.1.75", "dIrGAt")
+}
+
+/// The one scan behind 6.1.73 and 6.1.75, as vidyut-prakriya runs the two
+/// sūtras in one (`angasya.rs`, `try_add_tuk_agama`): the first vowel that
+/// passes `vowel`, right before a `C` anywhere in the word, takes tuk after
+/// it.
+fn tuk_before_che(p: &mut Prakriya, vowel: fn(char) -> bool, sutra: &str, name: &str) -> bool {
     let w = word_chars(p);
-    let Some(pos) = (1..w.len()).find(|i| w[*i].2 == 'C' && is_hrasva(w[i - 1].2)) else {
+    let Some(pos) = (1..w.len()).find(|i| w[*i].2 == 'C' && vowel(w[i - 1].2)) else {
         return false;
     };
     let (term, idx, _) = w[pos - 1];
     let before = p.snapshot();
     insert_char(p, term, idx + 1, 't');
-    p.record("6.1.73", "Ce ca", before);
+    p.record(sutra, name, before);
     true
 }
 

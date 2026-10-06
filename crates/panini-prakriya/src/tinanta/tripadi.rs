@@ -1,4 +1,4 @@
-//! Tripādī: 8.2.77 … 8.4.56.
+//! Tripādī: 8.2.18 … 8.4.56.
 //!
 //! Ordered AFTER 3.1.68, so the ending is at `ENDING` (index 4) and śap at
 //! `SHAP` (index 3); `terms[SHAP].text` may be empty (2.4.72). See
@@ -7,9 +7,11 @@
 use crate::prakriya::Prakriya;
 use crate::rule::{Rule, RuleKind};
 use crate::term::Tag;
+use crate::tinanta::samjna::KRP;
 use crate::tinanta::sound::{
     cartva_of, deaspirate_of, is_jhal, is_jhash, is_khar, is_natva_intervener, is_natva_trigger,
     is_savarna, is_shcu, is_shtu, is_vowel, jashtva_of, kutva_of, parasavarna_of, shcutva_of,
+    shtutva_of,
 };
 use crate::tinanta::terms::{ABHYASA, ANGA, ENDING, SHAP, remove_char, set_char, word_chars};
 
@@ -84,6 +86,32 @@ fn is_natva_target(w: &[(usize, usize, char)], i: usize) -> bool {
 }
 
 pub(crate) static TRIPADI: &[Rule] = &[
+    // 8.2.18 kṛpo ro laḥ: √kṛp's `r` becomes `l`, and an `f` an `x`.
+    // 7.3.86's `karp` before ṇic → `kalp` (*kalpayati*). Keyed by row
+    // (`super::samjna::KRP`), as vidyut-prakriya keys it by upadeśa:
+    // `10.0408 kfpa` is another root. It rewrites the whole aṅga, ṇic's `ay`
+    // included, which has no `r`; vidyut rewrites the dhātu term alone.
+    // First in the tripādī, as vidyut runs it ahead of the rest of 8.2.
+    Rule {
+        id: "8.2.18",
+        name: "kfpo ro laH",
+        kind: RuleKind::Vidhi,
+        vikalpa: false,
+        bars: &[],
+        apply: |p| {
+            if !KRP.contains(&p.ctx.dhatupatha) {
+                return false;
+            }
+            let text = p.terms[ANGA].text.replace('f', "x").replace('r', "l");
+            if text == p.terms[ANGA].text {
+                return false;
+            }
+            let before = p.snapshot();
+            p.terms[ANGA].text = text;
+            p.record("8.2.18", "kfpo ro laH", before);
+            true
+        },
+    },
     // 8.2.77 hali ca: a root ending in `r`/`v` with a short ik upadhā
     // lengthens that upadhā before a hal (8.2.76 rvorupadhāyā dīrghaḥ is the
     // anuvṛtti source). div, after guṇa is blocked, reaches this shape:
@@ -145,6 +173,56 @@ pub(crate) static TRIPADI: &[Rule] = &[
             s.push(final_c);
             p.terms[ANGA].text = s;
             p.record("8.2.77", "hali ca", before);
+            true
+        },
+    },
+    // 8.2.78 upadhāyāṃ ca: a dhātu whose upadhā is `r` or `v` before a final
+    // hal lengthens the short ik before that upadhā (8.2.76's dīrghaḥ and
+    // 8.2.77's `r`/`v` by anuvṛtti). `urj` → `Urj` (*ūrjayati*), `curR` →
+    // `cUrR`, `gurd` → `gUrd`, and √kṝt's `kirt` (7.1.101) → `kIrt`.
+    // vidyut-prakriya reads the dhātu term; here ṇic is folded into `ANGA`,
+    // and a ṇijanta aṅga reaches the tripādī as root + `ay` (7.3.84 then
+    // 6.1.78 on ṇic's `i`, in all four lakāras), so the root is the text
+    // before that `ay`. Any other aṅga is the root's own text. In laṅ √ūrj
+    // declines: 6.1.90 has made its `u` part of an `O` (*aurjayat*). 8.2.79
+    // na bhakurchurām needs no carve-out here: `kur` and `Cur` end in their
+    // `r`, which is 8.2.77's shape, not this one's.
+    Rule {
+        id: "8.2.78",
+        name: "upaDAyAM ca",
+        kind: RuleKind::Vidhi,
+        vikalpa: false,
+        bars: &[],
+        apply: |p| {
+            let anga = &p.terms[ANGA];
+            let root = if anga.has(Tag::Nijanta) {
+                anga.text
+                    .strip_suffix("ay")
+                    .expect("a ṇijanta aṅga reaches the tripādī as root + `ay`")
+            } else {
+                anga.text.as_str()
+            };
+            let c: Vec<char> = root.chars().collect();
+            let n = c.len();
+            if n < 3 || !matches!(c[n - 2], 'r' | 'v') || is_vowel(c[n - 1]) {
+                return false;
+            }
+            let long = match c[n - 3] {
+                'i' => 'I',
+                'u' => 'U',
+                'f' => 'F',
+                'x' => 'X',
+                _ => return false,
+            };
+            let text: String = c[..n - 3]
+                .iter()
+                .chain(std::iter::once(&long))
+                .chain(&c[n - 2..])
+                .collect::<String>()
+                + &anga.text[root.len()..];
+            let before = p.snapshot();
+            p.terms[ANGA].text = text;
+            p.record("8.2.78", "upaDAyAM ca", before);
             true
         },
     },
@@ -1007,9 +1085,8 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // trigger-class argument above; do not conflate the two.
     //
     // 8.4.41 next door scans for the same "a stu takes its neighbour's
-    // class" pattern against the ṭu-varga instead of the c-varga, in the
-    // trigger-then-target direction only — this rule's converse arm's
-    // direction.
+    // class" pattern against the ṭu-varga instead of the c-varga, in both
+    // directions since slice 10l, as this rule does since 3f3.
     //
     // BOTH DIRECTIONS since slice 3f3, and the converse arm carries 8.4.44
     // SAt as a guard: a stu that FOLLOWS a `S` is exempt. Until 3f3 the arm
@@ -1119,7 +1196,9 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // pinaz + wi → pinazwi; piMz + tas → piMzwaH; piMz + Di — in the loṭ
     // madhyama eka cell — takes the same D → Q step, and 8.4.53 below
     // carries it the rest of the way to the paradigm's finished piRqQi
-    // (7b Task 6).
+    // (7b Task 6). Since slice 10l it also fires the other way round, on a
+    // stu BEFORE a ṭu: √aṭṭ's `adw` → `aqw`, which 8.4.55 then makes
+    // *aṭṭayati*.
     //
     // SŪTRA ORDER; LOAD-BEARING AS IMPLEMENTED. It sits above 8.4.53 because
     // that is where vidyut-prakriya's data/sutrapatha.tsv places it — but
@@ -1185,7 +1264,10 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // a substitute writing `'g'`) that could drift apart, and did. This
     // rule fuses match and substitute into one `match` expression, so
     // CORRESPONDENCE staying narrow can go stale but cannot go
-    // inconsistent the way 8.2.30 did.
+    // inconsistent the way 8.2.30 did. The stu-before-ṭu arm (slice 10l)
+    // took 8.4.40's route instead: its target is the sound BEFORE the ṭu,
+    // a separate claim, and it reads the full table (`shtutva_of`), with
+    // `shtutva_of_all_arms` pinning the five arms √aṭṭ's `d` does not reach.
     Rule {
         id: "8.4.41",
         name: "zwunA zwuH",
@@ -1195,6 +1277,18 @@ pub(crate) static TRIPADI: &[Rule] = &[
         apply: |p| {
             let w = word_chars(p);
             for i in 1..w.len() {
+                // The sūtra's other order: a stu before a ṭu takes its ṣṭu
+                // (√aṭṭ: `dw` → `qw`). The trigger is the ṭ-varga only, not
+                // `z`: 8.4.43 toḥ ṣi keeps a tu before `z`.
+                if matches!(w[i].2, 'w' | 'W' | 'q' | 'Q' | 'R')
+                    && let Some(sub) = shtutva_of(w[i - 1].2)
+                {
+                    let (term, idx, _) = w[i - 1];
+                    let before = p.snapshot();
+                    set_char(p, term, idx, sub);
+                    p.record("8.4.41", "zwunA zwuH", before);
+                    return true;
+                }
                 if !is_shtu(w[i - 1].2) {
                     continue;
                 }
@@ -1952,6 +2046,136 @@ mod tests {
         };
         assert!(!(rule.apply)(&mut p));
         assert_eq!(p.terms[ANGA].text, "div");
+    }
+
+    #[test]
+    fn krpo_ro_lah_turns_krps_r_to_l_on_its_row_only() {
+        let rule = rules().find(|r| r.id == "8.2.18").unwrap();
+        let krp = |row: &'static str, anga: &str| {
+            let mut p = Prakriya {
+                terms: with_slots(vec![Term::new(anga), Term::new("a"), Term::new("ti")]),
+                ..Default::default()
+            };
+            p.ctx.dhatupatha = row;
+            p
+        };
+        // `karp` (7.3.86's guṇa before ṇic) → `kalp`: *kalpayati*.
+        let mut p = krp("10.0278", "karpay");
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "kalpay");
+        let ids: Vec<&str> = p.log.iter().map(|s| s.sutra.as_str()).collect();
+        assert_eq!(ids, ["8.2.18"]);
+        // The `f` arm: an unguṇated `kfp` → `kxp`.
+        let mut p = krp("10.0278", "kfp");
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "kxp");
+        // `10.0408 kfpa` is another root, and a row with no number is none.
+        for row in ["10.0408", ""] {
+            let mut p = krp(row, "karpay");
+            assert!(!(rule.apply)(&mut p), "{row}");
+            assert_eq!(p.terms[ANGA].text, "karpay");
+            assert!(p.log.is_empty(), "{row}");
+        }
+        // On its row with no `r` or `f` left: nothing to record.
+        let mut p = krp("10.0278", "kalpay");
+        assert!(!(rule.apply)(&mut p));
+        assert!(p.log.is_empty());
+        assert!(!rule.vikalpa);
+    }
+
+    #[test]
+    fn upadhayam_ca_lengthens_the_ik_before_a_roots_r_or_v_upadha() {
+        let rule = rules().find(|r| r.id == "8.2.78").unwrap();
+        let with_anga = |anga: &str, nijanta: bool| {
+            let mut t = Term::new(anga);
+            if nijanta {
+                t.add(Tag::Nijanta);
+            }
+            Prakriya {
+                terms: with_slots(vec![t, Term::new("a"), Term::new("ti")]),
+                ..Default::default()
+            }
+        };
+        // A ṇijanta aṅga is read through ṇic's `ay`: each short ik, before
+        // an `r` or a `v` upadhā.
+        for (anga, want) in [
+            ("urjay", "Urjay"),
+            ("curRay", "cUrRay"),
+            ("gurday", "gUrday"),
+            ("kirtay", "kIrtay"),
+            ("pfrkay", "pFrkay"),
+            ("kxvpay", "kXvpay"),
+            ("divkay", "dIvkay"),
+            // A five-letter root, where the upadhā's index `n - 2` is not
+            // `n / 2`.
+            ("stirpay", "stIrpay"),
+        ] {
+            let mut p = with_anga(anga, true);
+            assert!((rule.apply)(&mut p), "{anga}");
+            assert_eq!(p.terms[ANGA].text, want);
+            let ids: Vec<&str> = p.log.iter().map(|s| s.sutra.as_str()).collect();
+            assert_eq!(ids, ["8.2.78"]);
+        }
+        // Any other aṅga is the root's own text.
+        let mut p = with_anga("urj", false);
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "Urj");
+        // Decline: laṅ's `Orjay` (6.1.90 left no ik), an `a` before the `r`
+        // (arjay), a vowel-final root (uri), a two-letter root (rj), and an
+        // `r` that is the root's last sound (kur, 8.2.77's shape). A
+        // non-ṇijanta `urjay` is read whole and ends in `ay`.
+        for (anga, nijanta) in [
+            ("Orjay", true),
+            ("arjay", true),
+            ("uri", false),
+            ("rjay", true),
+            ("kur", false),
+            ("urjay", false),
+        ] {
+            let mut p = with_anga(anga, nijanta);
+            assert!(!(rule.apply)(&mut p), "{anga}");
+            assert_eq!(p.terms[ANGA].text, anga);
+            assert!(p.log.is_empty(), "{anga}");
+        }
+        assert!(!rule.vikalpa);
+    }
+
+    #[test]
+    fn shtutva_retroflexes_a_stu_before_a_tu_too() {
+        let rule = rules().find(|r| r.id == "8.4.41").unwrap();
+        let word = |anga: &str| Prakriya {
+            terms: with_slots(vec![Term::new(anga), Term::new("a"), Term::new("ti")]),
+            ..Default::default()
+        };
+        // √aṭṭ: `adway` → `aqway` (8.4.55 then makes the `q` a `w`).
+        let mut p = word("adway");
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.text(), "aqwayati");
+        let ids: Vec<&str> = p.log.iter().map(|s| s.sutra.as_str()).collect();
+        assert_eq!(ids, ["8.4.41"]);
+        // Every ṭu after it triggers, and every stu before one takes its ṣṭu.
+        for (anga, want) in [
+            ("adW", "aqW"),
+            ("adq", "aqq"),
+            ("adQ", "aqQ"),
+            ("adR", "aqR"),
+            ("atw", "aww"),
+            ("aTw", "aWw"),
+            ("aDw", "aQw"),
+            ("anw", "aRw"),
+            ("asw", "azw"),
+        ] {
+            let mut p = word(anga);
+            assert!((rule.apply)(&mut p), "{anga}");
+            assert_eq!(p.terms[ANGA].text, want);
+        }
+        // 8.4.43 toḥ ṣi: a tu before `z` stays. A sound between them, or a
+        // non-stu before the ṭu, and nothing happens.
+        for anga in ["adz", "adaw", "akw"] {
+            let mut p = word(anga);
+            assert!(!(rule.apply)(&mut p), "{anga}");
+            assert_eq!(p.terms[ANGA].text, anga);
+        }
     }
 
     #[test]
