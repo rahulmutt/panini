@@ -319,6 +319,23 @@ pub(crate) fn shcutva_of(c: char) -> Option<char> {
     })
 }
 
+/// 8.4.41 ṣṭunā ṣṭuḥ's stu → ṣṭu substitution, by place of articulation:
+/// `s` → `z` and the t-varga → the ṭ-varga. Read by 8.4.41's stu-first arm,
+/// a stu before a ṭu. Only `d` → `q` is reached by a curated row (`10.0037
+/// adwa~`, *aṭṭayati*), so `shtutva_of_all_arms` pins the other five. The
+/// ṣṭu-first arm keeps its own narrow match; see its comment.
+pub(crate) fn shtutva_of(c: char) -> Option<char> {
+    Some(match c {
+        's' => 'z',
+        't' => 'w',
+        'T' => 'W',
+        'd' => 'q',
+        'D' => 'Q',
+        'n' => 'R',
+        _ => return None,
+    })
+}
+
 /// The homorganic nasal of a *yay*. Covers only the stops — yay's
 /// semivowel arm (`y v r l`) is unreached while 8.3.24 fires solely before
 /// a jhal, and jhal excludes semivowels, so no anusvāra this engine
@@ -471,6 +488,27 @@ mod tests {
         // to 8.4.41 rather than to this rule.
         assert_eq!(shcutva_of('k'), None);
         assert_eq!(shcutva_of('z'), None);
+    }
+
+    #[test]
+    fn shtutva_of_all_arms() {
+        // 8.4.41 zwunA zwuH, stu before Swu: pin every arm of the stu -> Swu
+        // table directly. Only `d -> q` is reachable from any golden (√aṭṭ's
+        // `dw`), so without this test a mutant rewriting any of the other
+        // five arms would be invisible to the whole suite.
+        assert_eq!(shtutva_of('s'), Some('z'));
+        assert_eq!(shtutva_of('t'), Some('w'));
+        assert_eq!(shtutva_of('T'), Some('W'));
+        assert_eq!(shtutva_of('d'), Some('q'));
+        assert_eq!(shtutva_of('D'), Some('Q'));
+        assert_eq!(shtutva_of('n'), Some('R'));
+        // Already Swu, so not stu.
+        for c in ['z', 'w', 'W', 'q', 'Q', 'R'] {
+            assert_eq!(shtutva_of(c), None, "{c} is Swu, not stu");
+        }
+        // Not stu at all: a velar, and the palatal sibilant.
+        assert_eq!(shtutva_of('k'), None);
+        assert_eq!(shtutva_of('S'), None);
     }
 
     #[test]

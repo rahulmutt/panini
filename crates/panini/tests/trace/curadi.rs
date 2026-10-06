@@ -21,7 +21,8 @@
 //! sūtra is Kaumudī 2567, then 1.3.12. √dhūp's and √vich's ṇic-less branch has
 //! 3.1.28's āya, which 3.4.114 and 3.1.32 treat as they treat ṇic, and
 //! √vich's every branch the sanādi 6.1.73's tuk before 3.1.32, as √pich's
-//! (slice 10k) ṇic branch does.
+//! (slice 10k) ṇic branch does, and √mlecch's the sanādi 6.1.75's (slice
+//! 10l). √kṝt's ṇic branch has 7.1.101 before 3.1.32, and no 7.3.86.
 
 use crate::helpers::{at, cell_trace, credited};
 use panini_data::{
@@ -274,7 +275,7 @@ fn a_kusmad_is_credited_on_exactly_the_akusmiya_cells() {
     // cells, one branch each, the six optional-ṇic rows' on their ṇic branch
     // — and nowhere else: every credit's number lies in the positional
     // `AKUSMIYA` range. And 1.3.74 never reaches them: its credits stay on the
-    // 419 `Nic` rows and the seven `NicUbhayapada` rows' ṇic branch, read from
+    // 427 `Nic` rows and the seven `NicUbhayapada` rows' ṇic branch, read from
     // the curated `pada` column (ten before slice 10e, listed literally until
     // then).
     let hits = credited("10.0496");
@@ -287,7 +288,7 @@ fn a_kusmad_is_credited_on_exactly_the_akusmiya_cells() {
         .filter(|d| d.gana == Gana::Curadi && d.pada == PadaAssignment::Nic)
         .map(|d| d.dhatupatha)
         .collect();
-    assert_eq!(nic.len(), 419, "curated 1.3.74 rows");
+    assert_eq!(nic.len(), 427, "curated 1.3.74 rows");
     let nic_ubhayapada: Vec<&str> = dhatus()
         .iter()
         .filter(|d| d.pada == PadaAssignment::NicUbhayapada)
@@ -589,7 +590,7 @@ fn the_optional_nic_ids_are_credited_only_on_their_rows() {
     // for a `NicUbhayapada` row's, which 1.3.72 sanctions). 2573.2 fires only
     // on `pata`. Goldens ignore traces, so this is also what holds all nine
     // inert on every root outside `OPTIONAL_NIC`. The 10.0498, 10.0499, 2564
-    // and 2570 rows are the 10f to 10j specs' row tables, listed literally.
+    // and 2570 rows are the 10f to 10l specs' row tables, listed literally.
     for (id, rows) in [
         (
             "10.0498",
@@ -636,7 +637,7 @@ fn the_optional_nic_ids_are_credited_only_on_their_rows() {
             "2570",
             &[
                 "10.0227", "10.0230", "10.0174", "10.0184", "10.0243", "10.0249", "10.0260",
-                "10.0266", "10.0124",
+                "10.0266", "10.0124", "10.0270",
             ][..],
         ),
         ("2565", &["10.0022"][..]),
@@ -1032,6 +1033,29 @@ fn the_10j_rules_fire_only_on_their_rows() {
     assert_eq!(rows_crediting("6.1.54", true), ["10.0124"]);
     assert_eq!(rows_crediting("7.3.36", true), ["10.0124", "10.0258"]);
     assert_eq!(rows_crediting("2567", false), ["10.0058"]);
+}
+
+#[test]
+fn the_10l_rules_fire_only_on_their_rows() {
+    // Goldens ignore traces, so this is what holds slice 10l's rules to their
+    // rows across the corpus, in every stage: 6.1.75 on √mlecch and 7.1.101 on
+    // √kṝt alone; 8.2.18 on √kṛp (`10.0278`) alone, never on the adanta
+    // `10.0408 kfpa`; 8.2.78 on the four roots with a short ik before an `r`
+    // upadhā and a final hal; and 8.4.41 on rudhādi's and juhotyādi's ṣṭu-
+    // first sites as before, plus √aṭṭ, its stu-before-ṭu arm's one site.
+    assert_eq!(rows_crediting("6.1.75", false), ["10.0170"]);
+    assert_eq!(rows_crediting("7.1.101", false), ["10.0155"]);
+    assert_eq!(rows_crediting("8.2.18", false), ["10.0278"]);
+    assert_eq!(
+        rows_crediting("8.2.78", false),
+        ["10.0023", "10.0026", "10.0155", "10.0180"]
+    );
+    assert_eq!(
+        rows_crediting("8.4.41", false),
+        [
+            "03.0014", "03.0023", "07.0014", "07.0015", "07.0018", "10.0037"
+        ]
+    );
 }
 
 #[test]

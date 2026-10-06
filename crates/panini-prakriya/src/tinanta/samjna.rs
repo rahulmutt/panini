@@ -53,6 +53,15 @@ pub(crate) const MRJ: [&str; 1] = ["10.0386"];
 /// `cisphur_is_the_ciy_row_6_1_54_names`. The sanādi 6.1.54 reads it.
 pub(crate) const CISPHUR: [&str; 1] = ["10.0124"];
 
+/// 8.2.18 kṛpo ro laḥ: the dhātupāṭha rows that are the √kṛp the sūtra
+/// names. By number, as `CISPHUR` is: vidyut-prakriya keys the sūtra on the
+/// upadeśas `kfpU~\`, `kfpa~\` and `kfpa~`, and curādi `10.0408 kfpa`
+/// (*daurbalye*), an adanta root, is none of them. `10.0278 kfpa~` is the
+/// one curated; bhvādi `01.0866 kfpU~\` and `01.0875 kfpa~\` join the list
+/// when they are. Pinned to upstream by `krp_is_the_row_8_2_18_names`. The
+/// tripādī 8.2.18 reads it.
+pub(crate) const KRP: [&str; 1] = ["10.0278"];
+
 pub(crate) static SAMJNA: &[Rule] = &[
     // Kaumudī 2567: a ṅit curādi root stays ātmanepadī under ṇic. With ṇic,
     // 1.3.74 ṇicaś ca would govern and 1.3.78 admit parasmaipada too; the
@@ -1003,6 +1012,21 @@ mod tests {
         assert!(dhatus().iter().any(|d| d.dhatupatha == "10.0124"));
         assert_eq!(upstream_upadesha("10.0325"), Some("ci"));
         for (number, upadesha) in [("05.0005", "ci\\Y"), ("06.0121", "sPura~")] {
+            assert_eq!(upstream_upadesha(number), Some(upadesha), "{number}");
+            assert!(!dhatus().iter().any(|d| d.dhatupatha == number), "{number}");
+        }
+    }
+
+    #[test]
+    fn krp_is_the_row_8_2_18_names() {
+        // 8.2.18 kṛpo ro laḥ. vidyut-prakriya keys it on the upadeśas
+        // `kfpU~\`, `kfpa~\` and `kfpa~`. Curādi `10.0408 kfpa` is another
+        // root; the two bhvādi rows are not curated.
+        assert_eq!(KRP, ["10.0278"]);
+        assert_eq!(upstream_upadesha("10.0278"), Some("kfpa~"));
+        assert!(dhatus().iter().any(|d| d.dhatupatha == "10.0278"));
+        assert_eq!(upstream_upadesha("10.0408"), Some("kfpa"));
+        for (number, upadesha) in [("01.0866", "kfpU~\\"), ("01.0875", "kfpa~\\")] {
             assert_eq!(upstream_upadesha(number), Some(upadesha), "{number}");
             assert!(!dhatus().iter().any(|d| d.dhatupatha == number), "{number}");
         }

@@ -1,13 +1,14 @@
 //! The sanādi stage: ṇic and its folding into the dhātu — 3.1.25, 3.1.28's
 //! āya where no ṇic is taken, ṇic's it-lopa (1.3.9), 3.4.114, 6.4.48,
 //! 6.1.54, 7.2.116, the vārttika 7.3.37.2, 7.3.36, 7.2.115, 6.1.78, 6.4.92,
-//! 7.2.114, 6.1.73, 7.3.86, 3.1.32 — opened by the dhātupāṭha gaṇasūtra
-//! 10.0493, which credits a jñapādi root's mit-tva, then eight vikalpas that
-//! fork a root whose ṇic is optional into its ṇic and ṇic-less branches (the
-//! gaṇasūtras 10.0498 and 10.0499 and the Kaumudī's 2564, 2565, 2570, 2571,
-//! 2573.1, 2573.3), a ninth (2573.2) that forks `pata`'s ṇic branch on its
-//! final `a`, and two more gaṇasūtras, 10.0496 and 10.0497, which settle an
-//! ākusmīya or ā-garvīya root's pada, all before ṇic is added.
+//! 7.2.114, 6.1.73, 6.1.75, 7.1.101, 7.3.86, 3.1.32 — opened by the
+//! dhātupāṭha gaṇasūtra 10.0493, which credits a jñapādi root's mit-tva,
+//! then eight vikalpas that fork a root whose ṇic is optional into its ṇic
+//! and ṇic-less branches (the gaṇasūtras 10.0498 and 10.0499 and the
+//! Kaumudī's 2564, 2565, 2570, 2571, 2573.1, 2573.3), a ninth (2573.2) that
+//! forks `pata`'s ṇic branch on its final `a`, and two more gaṇasūtras,
+//! 10.0496 and 10.0497, which settle an ākusmīya or ā-garvīya root's pada,
+//! all before ṇic is added.
 //!
 //! First in the pipeline, before any lakāra or tiṅ exists. The layout here
 //! is `[AGAMA, ABHYASA, ANGA, ṇic]`, ṇic (or 3.1.28's āya) at `NIC`; 3.1.32
@@ -21,23 +22,25 @@
 //! Every rule self-guards: the eight optional-ṇic vikalpas on the row's
 //! `OPTIONAL_NIC` entry, 2573.2 on `pata`'s, 10.0496 on `Tag::Akusmiya`,
 //! 10.0497 on `Tag::AaGarviya`, 10.0493 on `Tag::Mit`, 3.1.25 on
-//! `Tag::Curadi`, 3.1.28 on `Tag::Aya` with no ṇic taken, 6.1.73 on its own
-//! saṁhitā condition, and the rest on the pratyaya at `NIC`: 3.4.114 and
-//! 3.1.32 on ṇic or āya, 6.4.48, 7.2.114 and 7.3.86 on its being
+//! `Tag::Curadi`, 3.1.28 on `Tag::Aya` with no ṇic taken, 6.1.73 and 6.1.75
+//! on their own saṁhitā condition, and the rest on the pratyaya at `NIC`:
+//! 3.4.114 and 3.1.32 on ṇic or āya, 6.4.48, 7.2.114 and 7.3.86 on its being
 //! ārdhadhātuka, the others on ṇic's ṇit (6.4.48 on an `a`-final aṅga as
 //! well, 6.1.54 on √ci's row (`super::samjna::CISPHUR`), 6.4.92 on
 //! `Tag::Mit`, 7.3.37.2 on √dhū's and √prī's text, 7.3.36 on an `A`-final
 //! aṅga, 7.2.115 on an ac-final one, 6.1.78 on an ec-final one, 7.2.114 on
-//! `Tag::Mrj`, and 7.2.116 and 7.3.86 decline on 6.4.48's `Tag::AtLopa`).
-//! 6.1.73 and 3.1.28 carry no gaṇa guard, only their own conditions (3.1.28
-//! reads the āya rows); on today's corpus the gaṇas 1–9 add nothing and
-//! record nothing, and 6.1.73 fires only on √vich and √pich (slice 10k),
-//! which `the_10i_aya_and_tuk_fire_only_on_their_rows` pins.
+//! `Tag::Mrj`, 7.1.101 on an `F` upadhā, and 7.2.116 and 7.3.86 decline on
+//! 6.4.48's `Tag::AtLopa`). 6.1.73, 6.1.75 and 3.1.28 carry no gaṇa guard,
+//! only their own conditions (3.1.28 reads the āya rows); on today's corpus
+//! the gaṇas 1–9 add nothing and record nothing, 6.1.73 fires only on √vich
+//! and √pich (slice 10k), which `the_10i_aya_and_tuk_fire_only_on_their_rows`
+//! pins, and 6.1.75 only on √mlecch and 7.1.101 only on √kṝt (slice 10l),
+//! which `the_10l_rules_fire_only_on_their_rows` pins.
 
 use crate::prakriya::Prakriya;
 use crate::rule::{Rule, RuleKind};
 use crate::term::{Tag, Term};
-use crate::tinanta::anga::che_ca;
+use crate::tinanta::anga::{che_ca, dirghat};
 use crate::tinanta::samjna::CISPHUR;
 use crate::tinanta::sound::{guna_of, hrasva_of, vrddhi_of};
 use crate::tinanta::terms::{ANGA, NIC};
@@ -698,6 +701,50 @@ pub(crate) static SANADI: &[Rule] = &[
         bars: &[],
         apply: che_ca,
     },
+    // 6.1.75 dīrghāt, before ṇic: √mlecch's long `e` takes tuk before its
+    // `C` (`mleC` → `mletC`; 8.4.40 later makes the `t` a `c`, so
+    // *mlecchayati*), where vidyut-prakriya credits it, in the same scan as
+    // 6.1.73 (`super::anga::dirghat`). The sūtra's own condition is its
+    // only guard, as 6.1.73's is. No aṅga-stage entry: a laṅ aṭ is short.
+    Rule {
+        id: "6.1.75",
+        name: "dIrGAt",
+        kind: RuleKind::Vidhi,
+        vikalpa: false,
+        bars: &[],
+        apply: dirghat,
+    },
+    // 7.1.101 upadhāyāś ca, before ṇic: an `F` upadhā becomes `ir`, the `i`
+    // by the sūtra and the `r` by 1.1.51 uraṇ raparaḥ, uncredited as
+    // 7.1.102's `ur` is. √kṝt: `kFt` → `kirt`. Before 7.3.86, where
+    // vidyut-prakriya credits it: the `i` is guru before `rt`, so 7.3.86
+    // finds no laghu ik and the root takes no guṇa, and the tripādī 8.2.78
+    // lengthens the `i` (*kīrtayati*). Guarded on ṇic's ṇit at `NIC`. No other
+    // curated root has an `F` upadhā, so the guṇa stage has no entry.
+    Rule {
+        id: "7.1.101",
+        name: "upaDAyASca",
+        kind: RuleKind::Vidhi,
+        vikalpa: false,
+        bars: &[],
+        apply: |p| {
+            if !p.terms.get(NIC).is_some_and(|t| t.has(Tag::Rit)) {
+                return false;
+            }
+            let mut chars: Vec<char> = p.terms[ANGA].text.chars().collect();
+            let Some(upadha) = chars.len().checked_sub(2) else {
+                return false;
+            };
+            if chars[upadha] != 'F' {
+                return false;
+            }
+            let before = p.snapshot();
+            chars.splice(upadha..=upadha, ['i', 'r']);
+            p.terms[ANGA].text = chars.into_iter().collect();
+            p.record("7.1.101", "upaDAyASca", before);
+            true
+        },
+    },
     // 7.3.86 pugantalaghūpadhasya ca, before ṇic: guṇa of a laghu ik upadhā
     // before an ārdhadhātuka. `cur` → `cor`. A third entry under this id —
     // the guṇa-stage pair (nitya, and tanādi's vikalpa) reads the aṅga
@@ -1237,6 +1284,66 @@ mod tests {
     }
 
     #[test]
+    fn dirghat_gives_mlecch_tuk_after_its_long_vowel() {
+        // √mlecch: tuk after the long `e`, where 6.1.73 (short vowels only)
+        // declines; 8.4.40 later makes the `t` a `c` (*mlecchayati*).
+        let mut p = with_nic("mleC", Some(&[Tag::Rit, Tag::Ardhadhatuka]));
+        assert!(!(rule("6.1.73").apply)(&mut p));
+        assert!((rule("6.1.75").apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "mletC");
+        let ids: Vec<&str> = p.log.iter().map(|s| s.sutra.as_str()).collect();
+        assert_eq!(ids, ["6.1.75"]);
+        // Every long vowel is the sūtra's dīrgha, not only `e`.
+        for v in ['A', 'I', 'U', 'F', 'X', 'e', 'E', 'o', 'O'] {
+            let mut p = with_nic(&format!("m{v}C"), Some(&[Tag::Rit, Tag::Ardhadhatuka]));
+            assert!((rule("6.1.75").apply)(&mut p), "{v}");
+            assert_eq!(p.terms[ANGA].text, format!("m{v}tC"));
+        }
+        // A short vowel before the `C` is 6.1.73's (viC); a consonant (mUrC,
+        // and mletC once the tuk is in), nothing at all (Cid), or no `C`
+        // (cur): decline.
+        for root in ["viC", "mUrC", "mletC", "Cid", "cur"] {
+            let mut p = with_nic(root, Some(&[Tag::Rit, Tag::Ardhadhatuka]));
+            assert!(!(rule("6.1.75").apply)(&mut p), "{root}");
+            assert_eq!(p.terms[ANGA].text, root);
+            assert!(p.log.is_empty(), "{root}");
+        }
+        assert!(!rule("6.1.75").vikalpa);
+    }
+
+    #[test]
+    fn upadhayas_ca_makes_an_f_upadha_ir_before_nic_and_bars_its_guna() {
+        // √kṝt: `kFt` → `kirt`. The `i` is guru before `rt`, so 7.3.86
+        // declines, and the tripādī 8.2.78 lengthens it (*kīrtayati*).
+        let mut p = with_nic("kFt", Some(&[Tag::Rit, Tag::Ardhadhatuka]));
+        assert!((rule("7.1.101").apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "kirt");
+        assert!(!(rule("7.3.86").apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "kirt");
+        let ids: Vec<&str> = p.log.iter().map(|s| s.sutra.as_str()).collect();
+        assert_eq!(ids, ["7.1.101"]);
+        // Without it the long `F` stays, since 7.3.86 reads only a laghu ik:
+        // *kṝtayati*, the form 10k's prototype derived.
+        let mut p = with_nic("kFt", Some(&[Tag::Rit, Tag::Ardhadhatuka]));
+        assert!(!(rule("7.3.86").apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "kFt");
+        // An `F` that is final (pF, 2565's row), a short `f` upadhā (kfp,
+        // 7.3.86's), a one-letter aṅga (F): decline.
+        for root in ["pF", "kfp", "F"] {
+            let mut p = with_nic(root, Some(&[Tag::Rit, Tag::Ardhadhatuka]));
+            assert!(!(rule("7.1.101").apply)(&mut p), "{root}");
+            assert_eq!(p.terms[ANGA].text, root);
+        }
+        // No ṇic, or a pratyaya at `NIC` that is not ṇit.
+        for nic in [None, Some(&[Tag::Ardhadhatuka][..])] {
+            let mut p = with_nic("kFt", nic);
+            assert!(!(rule("7.1.101").apply)(&mut p), "{nic:?}");
+            assert_eq!(p.terms[ANGA].text, "kFt");
+        }
+        assert!(!rule("7.1.101").vikalpa);
+    }
+
+    #[test]
     fn sanadyanta_folds_nic_into_the_dhatu() {
         let mut p = with_nic("cor", Some(&[Tag::Rit, Tag::Ardhadhatuka]));
         assert!((rule("3.1.32").apply)(&mut p));
@@ -1363,6 +1470,8 @@ mod tests {
             ("2570", "10.0230", "div", Tag::Akusmiya),
             // √ci, the one mit row whose ṇic is optional.
             ("2570", "10.0124", "ci", Tag::Nic),
+            // √dhras, udit by its initial `u~`.
+            ("2570", "10.0270", "Dras", Tag::Nic),
             ("2571", "10.0251", "Guz", Tag::Nic),
             ("2573.1", "10.0400", "pata", Tag::Nic),
             ("2573.3", "10.0449", "garva", Tag::AaGarviya),

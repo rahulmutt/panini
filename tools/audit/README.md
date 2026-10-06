@@ -27,7 +27,7 @@ is ruleless.
 comment states that a blocked prakriyā's `text()` is a partial string — often the
 bare root code — not a surface form.
 
-**It asserts the corpus totals** (585 roots, 37584 cells, 49160 forms) rather than
+**It asserts the corpus totals** (593 roots, 38160 cells, 49826 forms) rather than
 reporting whatever it enumerated. Those totals are corroborated by
 `derivation_set_shape_matches_the_audited_numbers` in
 `crates/panini/tests/paradigm/main.rs`, which each slice raises to the same totals
@@ -108,6 +108,28 @@ PANINI_AUDIT_DUMP=/tmp/audit-table.tsv mise exec rust@1.99.0 -- cargo run --rele
 ```
 
 ## Last recorded result
+
+2026-10-06, curādi 10l slice, vidyut
+`8da2f90bee3ce1c07505fa432fc3729e3f7e02ea`: **zero differences across 38160
+cells / 49826 forms / 593 roots**, with the `entry` negative control verified
+failing (36 √bhū cells).
+
+The verdict covers the whole curādi 10l slice: eight rows that bring rules of
+their own, all ubhayapadī by 1.3.74. 8.2.78 *upadhāyāṃ ca* lengthens √ūrj's,
+√cūrṇ's, √gūrd's and √kṝt's ik before the `r` upadhā; 7.1.101 *upadhāyāś
+ca* gives √kṝt its `ir` ahead of guṇa; 8.2.18 *kṛpo ro laḥ* gives √kṛp its
+`l`, keyed by row; 6.1.75 *dīrghāt* gives √mlecch its tuk; 8.4.41's
+stu-before-ṭu arm, then 8.4.55, gives √aṭṭ its `ww`; and √dhras's ṇic is
+optional by Kaumudī 2570, read off its initial `u~`. Blocked branches rose
+from 6516 to 6552, √dhras's 36 ṇic-less ātmanepada cells. On the throwaway
+prototype that scoped the slice, switching each rule off in turn made the
+audit fail: 72 cells for each single-row rule and 270 for 8.2.78. A
+main-vs-branch dump of every prior cell's branches, blocked ones included,
+was byte-identical, all 55676 of them (49160 live).
+
+Totals: 593 = 585 + 8; 38160 = 37584 + 576 (64 root×pada×lakāra blocks ×
+9); 49826 = 49160 + 576 + 90 new `ALTERNATES` rows (11576 → 11666),
+measured via the harness's corpus block, not assumed.
 
 2026-10-05, curādi 10k slice, vidyut
 `8da2f90bee3ce1c07505fa432fc3729e3f7e02ea`: **zero differences across 37584
