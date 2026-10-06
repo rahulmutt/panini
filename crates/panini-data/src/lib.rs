@@ -136,7 +136,8 @@ pub const AA_GARVIYA: RangeInclusive<&str> = "10.0440"..="10.0449";
 /// ādhṛṣīya row (`10.0338`–`10.0388`) and 10.0499 *ā svadaḥ sakarmakāt* for
 /// an āsvadīya one (`10.0279`–`10.0337`), which vidyut-prakriya decides
 /// before any marker, and otherwise the Kaumudī's 2564 for an idit root,
-/// 2565 for `pF`, 2570 for a ñit or udit root, 2571 for `Guzi~r`, 2573.1
+/// 2565 for `pF`, 2570 for a ñit or udit root (udit by a final `u~`, or by
+/// an initial one, as `10.0270 u~Drasa~` is), 2571 for `Guzi~r`, 2573.1
 /// for `pata`, and 2573.3 for the roots that rule names (`mUtra`, `katra`,
 /// `garva`). Keyed by dhātupāṭha number, as
 /// `JNAPADI` is: the engine never
@@ -214,6 +215,7 @@ pub const OPTIONAL_NIC: &[(&str, &str)] = &[
     ("10.0260", "2570"),
     ("10.0266", "2570"),
     ("10.0267", "2564"),
+    ("10.0270", "2570"),
     ("10.0279", "10.0499"),
     ("10.0280", "10.0499"),
     ("10.0281", "10.0499"),
@@ -396,16 +398,16 @@ pub struct Dhatu {
     pub gana: Gana,
     /// Which pada(s) this engine derives for this root. Curated rather than
     /// read from the upadeśa's it-markers — but no longer a *deferral*:
-    /// `curated_pada_agrees_with_upadesha_markers` re-derives 102 of these 585
+    /// `curated_pada_agrees_with_upadesha_markers` re-derives 102 of these 593
     /// verdicts from the vendored upadeśa via 1.3.12 / 1.3.72 / 1.3.78 and
     /// requires them to match; `07.0017`'s (√bhuj's) is 1.3.66's root-keyed
-    /// exception, 419 curādi rows' are 1.3.74's, seven more 1.3.74's with ṇic
+    /// exception, 427 curādi rows' are 1.3.74's, seven more 1.3.74's with ṇic
     /// and 1.3.72's without (`NicUbhayapada`), 45 ākusmīya rows'
     /// the gaṇasūtra 10.0496's, ten ā-garvīya rows' the gaṇasūtra
     /// 10.0497's and `10.0058 zmiN`'s Kaumudī 2567's and 1.3.12's, each
     /// asserted explicitly from both sides, the same way
     /// `dhatupatha_numbers_resolve_upstream` holds `code` to upstream. For
-    /// the 181 curādi rows whose ṇic is optional this is the ṇic branch's
+    /// the 182 curādi rows whose ṇic is optional this is the ṇic branch's
     /// pada; the test also re-derives their ṇic-less branch's from the
     /// upadeśa: 1.3.72's for the seven `NicUbhayapada` rows, 1.3.78's for the
     /// rest.
@@ -417,7 +419,7 @@ pub struct Dhatu {
     /// the honest arrangement; see the deferral in
     /// `docs/superpowers/specs/2026-08-16-pada-audit-design.md`.
     ///
-    /// The test covers the 585 roots curated here, not the dhātupāṭha's 2259.
+    /// The test covers the 593 roots curated here, not the dhātupāṭha's 2259.
     /// It catches a mis-assigned pada on a root a future slice adds; it does
     /// not make the table self-maintaining.
     pub pada: PadaAssignment,
@@ -5829,7 +5831,9 @@ static DHATUS: &[Dhatu] = &[
     },
     Dhatu {
         // 10.0143 `cUrRa~` saNkocane (√cūrṇ). Guru upadhā (the conjunct `rR`),
-        // so unchanged before ṇic. Ubhayapadī by 1.3.74 (*cūrṇayati*). Slice
+        // so unchanged before ṇic. Ubhayapadī by 1.3.74 (*cūrṇayati*).
+        // Homograph of `10.0026 curRa~` (slice 10l), which 8.2.78 lengthens to
+        // the same `cUrR`: every form of that row is also this one's. Slice
         // 10k.
         dhatupatha: "10.0143",
         code: "cUrR",
@@ -6474,6 +6478,95 @@ static DHATUS: &[Dhatu] = &[
         pada: PadaAssignment::Nic,
         artha: "BAzAyAm",
     },
+    Dhatu {
+        // 10.0023 `urja~` balaprARanayoH (√ūrj). Guru upadhā (the conjunct
+        // `rj`), so unchanged before ṇic; the tripādī 8.2.78 upadhāyāṃ ca
+        // lengthens the `u` before the `r` upadhā (*ūrjayati*), but not in
+        // laṅ, where 6.1.90 has merged it into the āṭ (*aurjayat*).
+        // Ubhayapadī by 1.3.74. Slice 10l.
+        dhatupatha: "10.0023",
+        code: "urj",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "balaprARanayoH",
+    },
+    Dhatu {
+        // 10.0026 `curRa~` preraRe (√cūrṇ). Guru upadhā (the conjunct `rR`),
+        // so unchanged before ṇic; 8.2.78 lengthens the `u` (*cūrṇayati*).
+        // Homograph of the ubhayapadī `10.0143 cUrRa~`: every form of this
+        // row is also that row's. Ubhayapadī by 1.3.74. The artha keeps
+        // upstream's trailing space. Slice 10l.
+        dhatupatha: "10.0026",
+        code: "curR",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "preraRe ",
+    },
+    Dhatu {
+        // 10.0037 `adwa~` anAdare (√aṭṭ). Guru upadhā (the conjunct `dw`),
+        // so unchanged before ṇic; 8.4.41 retroflexes the `d` before the
+        // `w`, and 8.4.55 makes it `w` (*aṭṭayati*). Ubhayapadī by 1.3.74.
+        // Slice 10l.
+        dhatupatha: "10.0037",
+        code: "adw",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "anAdare",
+    },
+    Dhatu {
+        // 10.0155 `kFta~` saMSabdane (√kṝt). 7.1.101 upadhāyāś ca makes the
+        // `F` upadhā `ir` before ṇic (kirt-i), guru before `rt`, so 7.3.86
+        // declines; 8.2.78 lengthens the `i` (*kīrtayati*). Ubhayapadī by
+        // 1.3.74. Slice 10l.
+        dhatupatha: "10.0155",
+        code: "kFt",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "saMSabdane",
+    },
+    Dhatu {
+        // 10.0170 `mleCa~` avyaktAyAM vAci (√mlecch). 6.1.75 dīrghāt adds tuk
+        // after the long `e` before ṇic (mletC-i), and 8.4.40 makes it `c`
+        // (*mlecchayati*). Ubhayapadī by 1.3.74. Slice 10l.
+        dhatupatha: "10.0170",
+        code: "mleC",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "avyaktAyAM vAci",
+    },
+    Dhatu {
+        // 10.0180 `gurda~` pUrvaniketane (√gūrd). Guru upadhā (the conjunct
+        // `rd`), so unchanged before ṇic; 8.2.78 lengthens the `u`
+        // (*gūrdayati*). Ubhayapadī by 1.3.74. Slice 10l.
+        dhatupatha: "10.0180",
+        code: "gurd",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "pUrvaniketane",
+    },
+    Dhatu {
+        // 10.0270 `u~Drasa~` uYCe (√dhras). Udit by its initial `u~`, so its
+        // ṇic is optional by Kaumudī 2570 (`OPTIONAL_NIC`). With ṇic, 7.2.116
+        // lengthens the `a` upadhā (*dhrāsayati*), ubhayapadī by 1.3.74;
+        // without, parasmaipadī by 1.3.78 (*dhrasati*). The next row,
+        // `10.0271 uDrasa~`, has no `u~` and takes ṇic. Slice 10l.
+        dhatupatha: "10.0270",
+        code: "Dras",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "uYCe",
+    },
+    Dhatu {
+        // 10.0278 `kfpa~` avakalkane (√kṛp). 7.3.86 guṇates the `f` before
+        // ṇic (karp-i), and the tripādī 8.2.18 kṛpo ro laḥ makes it `kalp`
+        // (*kalpayati*), keyed by row (`KRP`): `10.0408 kfpa` is another
+        // root. Ubhayapadī by 1.3.74. Slice 10l.
+        dhatupatha: "10.0278",
+        code: "kfp",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "avakalkane",
+    },
 ];
 
 pub fn dhatus() -> &'static [Dhatu] {
@@ -6515,7 +6608,7 @@ mod tests {
 
     #[test]
     fn curated_roots_have_expected_ganas_and_padas() {
-        assert_eq!(dhatus().len(), 585);
+        assert_eq!(dhatus().len(), 593);
         let bu = dhatus().iter().find(|d| d.dhatupatha == "01.0001").unwrap();
         assert!(matches!(bu.pada, PadaAssignment::Parasmaipada));
         let labh = dhatus().iter().find(|d| d.dhatupatha == "01.1130").unwrap();
@@ -6806,7 +6899,7 @@ mod tests {
     }
 
     #[test]
-    fn curadi_rows_are_the_four_hundred_eighty_two_curated_roots() {
+    fn curadi_rows_are_the_four_hundred_ninety_curated_roots() {
         // Slice 10a opens gaṇa 10 with four roots that need only ṇic
         // (3.1.25), 3.1.32 and the guṇa/vṛddhi before ṇic: √cur (7.3.86),
         // √laḍ (7.2.116), √bhakṣ and √bhūṣ (neither). None carries a pada
@@ -6839,8 +6932,12 @@ mod tests {
         // ṇic optional by 2570; and √smiṅ, ātmanepadī under ṇic by Kaumudī
         // 2567. Slice 10k adds the 155 plain obligatory-ṇic rows that need
         // nothing new: thirty-seven by 7.3.86, forty by 7.2.116 and
-        // seventy-eight unchanged before ṇic, all ubhayapadī by 1.3.74. The
-        // gaṇa is OPEN at 482 of its 509 dhātupāṭha rows.
+        // seventy-eight unchanged before ṇic, all ubhayapadī by 1.3.74. Slice
+        // 10l adds eight rows that bring rules of their own: √ūrj, √cūrṇ and
+        // √gūrd (8.2.78), √aṭṭ (8.4.41's stu-before-ṭu arm), √kṝt (7.1.101,
+        // then 8.2.78), √mlecch (6.1.75), √dhras (udit by its initial `u~`,
+        // ṇic optional by 2570) and √kṛp (8.2.18), all ubhayapadī by 1.3.74.
+        // The gaṇa is OPEN at 490 of its 509 dhātupāṭha rows.
         let rows: Vec<_> = dhatus()
             .iter()
             .filter(|d| d.gana == Gana::Curadi)
@@ -7331,6 +7428,14 @@ mod tests {
                 ("10.0462", "Cuw", PadaAssignment::Nic),
                 ("10.0470", "karR", PadaAssignment::Nic),
                 ("10.0491", "ruW", PadaAssignment::Nic),
+                ("10.0023", "urj", PadaAssignment::Nic),
+                ("10.0026", "curR", PadaAssignment::Nic),
+                ("10.0037", "adw", PadaAssignment::Nic),
+                ("10.0155", "kFt", PadaAssignment::Nic),
+                ("10.0170", "mleC", PadaAssignment::Nic),
+                ("10.0180", "gurd", PadaAssignment::Nic),
+                ("10.0270", "Dras", PadaAssignment::Nic),
+                ("10.0278", "kfp", PadaAssignment::Nic),
             ]
         );
     }
@@ -7594,7 +7699,7 @@ mod tests {
     /// AFTER the `~` that marks an anunāsika it, so `~\` is an anudātta it and
     /// `~^` a svarita it — whereas a `\` sitting directly on a vowel elsewhere
     /// is the ROOT's own accent and says nothing about pada. Counted off the
-    /// vendored upadeśa: 73 of the 585 curated roots carry a `\` at all, and 52
+    /// vendored upadeśa: 73 of the 593 curated roots carry a `\` at all, and 52
     /// of those carry one on a root vowel — `01.0642 ji\`, `01.1082 smf\` and
     /// `02.0001 a\da~` among them — so conflating the two does not fail
     /// loudly; it silently calls most of the table ātmanepada.
@@ -7726,7 +7831,9 @@ mod tests {
     /// (10.0498, rows `10.0338`–`10.0388`, and 10.0499, rows
     /// `10.0279`–`10.0337`, before any marker), then the upadeśa: 2564 for an
     /// idit root (last marker `i~`), 2565 for an `F`-final one, 2570 for a ñit
-    /// or udit one (last marker `Y` or `u~`), 2571 for `Guzi~r`, 2573.1 for
+    /// or udit one (last marker `Y` or `u~`, or an initial `u~`, which marks
+    /// an udit root as vidyut's it-reading tags any `u~`: `10.0270
+    /// u~Drasa~`), 2571 for `Guzi~r`, 2573.1 for
     /// `pata`, and 2573.3 for the three roots the Kaumudī names there. 2573.3
     /// is a list, not a shape: `Cidra`, `sUtra` and the rest have a conjunct
     /// before their final `a` and take ṇic. vidyut's 2572 (īdit) has no arm:
@@ -7744,7 +7851,7 @@ mod tests {
             Some("2564")
         } else if u.ends_with('F') {
             Some("2565")
-        } else if u.ends_with("u~") || u.ends_with('Y') {
+        } else if u.ends_with("u~") || u.starts_with("u~") || u.ends_with('Y') {
             Some("2570")
         } else if u == "Guzi~r" {
             Some("2571")
@@ -7782,7 +7889,7 @@ mod tests {
                 upadesha(d.dhatupatha)
             );
         }
-        assert_eq!(OPTIONAL_NIC.len(), 181);
+        assert_eq!(OPTIONAL_NIC.len(), 182);
         // `10.0368 za\da~` stays out: the reading above makes it 10.0498's,
         // but vidyut derives it with the upasarga ā, which this engine does
         // not model.

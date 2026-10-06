@@ -1261,12 +1261,20 @@ fn khari_ca_off_bhas_is_credited_exactly_as_before_3f2() {
     // term boundaries, so "it fires only at the junction off √bhas" is held
     // as the count of crediting branches outside √bhas, measured on `main`
     // before the widening: a new word-internal firing on a prior row would
-    // add one. Update it only when a slice adds rows that credit 8.4.55.
-    let off_bhas = credited("8.4.55")
-        .into_iter()
-        .filter(|(number, _)| *number != "03.0019")
+    // add one. Update it only when a slice adds rows that credit 8.4.55. Slice
+    // 10l's √aṭṭ (`10.0037`) credits it on every live branch, 78: 8.4.41's
+    // `q` before the `w`, word-internal.
+    let hits = credited("8.4.55");
+    let off_bhas = hits
+        .iter()
+        .filter(|(number, _)| *number != "03.0019" && *number != "10.0037")
         .count();
     assert_eq!(off_bhas, 455);
+    let att = hits
+        .iter()
+        .filter(|(number, _)| *number == "10.0037")
+        .count();
+    assert_eq!(att, 78);
 }
 
 #[test]
@@ -1413,7 +1421,8 @@ fn shcutva_off_jan_is_credited_exactly_as_before_3f3() {
     // slice 10i √vich (`viC`), whose root-internal tuk the sanādi 6.1.73
     // gives on every branch (vicCayati, vicCAyati), and slice 10k the two
     // ch-initial plain rows (`Card`, `Cuw`) the adanta way (acCardayat) and
-    // √pich (`piC`) the √vich way (picCayati).
+    // √pich (`piC`) the √vich way (picCayati), and slice 10l √mlecch
+    // (`mleC`), whose tuk the sanādi 6.1.75 gives (mlecCayati).
     let hits = credited("8.4.40");
     assert!(
         hits.iter().any(|(n, _)| *n == "03.0025"),
@@ -1425,7 +1434,7 @@ fn shcutva_off_jan_is_credited_exactly_as_before_3f3() {
             [
                 "07.0003", "07.0008", "10.0469", "10.0480", "10.0481", "10.0062", "10.0114",
                 "10.0171", "10.0352", "10.0354", "10.0370", "10.0304", "10.0078", "10.0462",
-                "10.0061"
+                "10.0061", "10.0170"
             ]
             .contains(number),
             "8.4.40 credited on {number}"
@@ -1439,6 +1448,7 @@ fn shcutva_off_jan_is_credited_exactly_as_before_3f3() {
     // slice 10g's three and slice 10h's three alike. √vich: every live
     // branch, 84 parasmaipada (ṇic and ṇic-less) and 36 ṇic ātmanepada.
     // Slice 10k's two ch-initial rows count as the adanta ones do, and √pich
-    // every live branch, 42 parasmaipada and 36 ātmanepada.
-    assert_eq!(curadi, 3 * 19 + 6 * 29 + 120 + 2 * 19 + 78);
+    // every live branch, 42 parasmaipada and 36 ātmanepada; slice 10l's
+    // √mlecch the same 78.
+    assert_eq!(curadi, 3 * 19 + 6 * 29 + 120 + 2 * 19 + 78 + 78);
 }

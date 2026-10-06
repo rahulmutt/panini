@@ -1468,6 +1468,8 @@ mod tests {
             ("2570", "10.0230", "div", Tag::Akusmiya),
             // √ci, the one mit row whose ṇic is optional.
             ("2570", "10.0124", "ci", Tag::Nic),
+            // √dhras, udit by its initial `u~`.
+            ("2570", "10.0270", "Dras", Tag::Nic),
             ("2571", "10.0251", "Guz", Tag::Nic),
             ("2573.1", "10.0400", "pata", Tag::Nic),
             ("2573.3", "10.0449", "garva", Tag::AaGarviya),

@@ -1024,6 +1024,7 @@ mod tests {
         // root; the two bhvādi rows are not curated.
         assert_eq!(KRP, ["10.0278"]);
         assert_eq!(upstream_upadesha("10.0278"), Some("kfpa~"));
+        assert!(dhatus().iter().any(|d| d.dhatupatha == "10.0278"));
         assert_eq!(upstream_upadesha("10.0408"), Some("kfpa"));
         for (number, upadesha) in [("01.0866", "kfpU~\\"), ("01.0875", "kfpa~\\")] {
             assert_eq!(upstream_upadesha(number), Some(upadesha), "{number}");
