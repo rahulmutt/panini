@@ -70,7 +70,7 @@
     2242.64s and `sanadi.rs:60:39` (`!=` → `==`) in 1883.83s (10k's probe:
     4617.70s / 3695.74s; 10j's: 3885.06s / 2740.27s). Under campaign load
     the uncaught phases were 349.19s (`adesha.rs:649:30`) and 341.93s
-    (`tripadi.rs:1399:38`), both MISSED at 11110 (10k's campaign-load phases:
+    (`tripadi.rs:1399:38`), both MISSED at 9240 (10k's campaign-load phases:
     411.94s / 260.17s; 10j's: 298.02s / 250.01s; 10i's: 208.34s / 186.62s;
     10h's: 142.46s / 171.58s; 10g's: 300.16s / 107.56s). **The equivalents do
     not set the cap.** It must also clear the slowest CAUGHT mutant's test

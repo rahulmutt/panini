@@ -7831,9 +7831,9 @@ mod tests {
     /// (10.0498, rows `10.0338`–`10.0388`, and 10.0499, rows
     /// `10.0279`–`10.0337`, before any marker), then the upadeśa: 2564 for an
     /// idit root (last marker `i~`), 2565 for an `F`-final one, 2570 for a ñit
-    /// or udit one (last marker `Y` or `u~`, or an initial `u~`, which marks
-    /// an udit root as vidyut's it-reading tags any `u~`: `10.0270
-    /// u~Drasa~`), 2571 for `Guzi~r`, 2573.1 for
+    /// or udit one (last marker `Y` or `u~`, or an initial `u~`: vidyut's
+    /// it-reading tags a root udit from a `u~` marker anywhere in the
+    /// upadeśa, so `10.0270 u~Drasa~` counts), 2571 for `Guzi~r`, 2573.1 for
     /// `pata`, and 2573.3 for the three roots the Kaumudī names there. 2573.3
     /// is a list, not a shape: `Cidra`, `sUtra` and the rest have a conjunct
     /// before their final `a` and take ṇic. vidyut's 2572 (īdit) has no arm:

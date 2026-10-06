@@ -1077,12 +1077,12 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // are disjoint — 8.4.41's is the ṣṭu class and `C` is not in it; this
     // rule's is the ścu class and no ṣṭu sound is in that — so neither rule
     // ever reads a sound the other one writes. Their TARGET classes are NOT
-    // disjoint: this rule targets `s t T d D n`, 8.4.41 targets `t T D`, so
-    // a `t` with `z` to its left and `C` to its right is applicable to both,
-    // and array order rather than disjointness would decide it. No curated
-    // root presents that shape, so the two rules do not contend on any
-    // reachable input — but that is placement doing the work, not the
-    // trigger-class argument above; do not conflate the two.
+    // disjoint: this rule targets `s t T d D n`; 8.4.41's ṣṭu-first arm
+    // targets `t T D`, its stu-before-ṭu arm `s t T d D n` (`shtutva_of`). A
+    // `t` with `z` left and `C` right is applicable to both, as is a stu
+    // between a ścu and a ṭu; array order would decide it. No curated root
+    // has either shape, so the two rules do not contend on any reachable
+    // input; that is placement, not the trigger-class argument: do not conflate.
     //
     // 8.4.41 next door scans for the same "a stu takes its neighbour's
     // class" pattern against the ṭu-varga instead of the c-varga, in both

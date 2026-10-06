@@ -719,9 +719,8 @@ pub(crate) static SANADI: &[Rule] = &[
     // 7.1.102's `ur` is. √kṝt: `kFt` → `kirt`. Before 7.3.86, where
     // vidyut-prakriya credits it: the `i` is guru before `rt`, so 7.3.86
     // finds no laghu ik and the root takes no guṇa, and the tripādī 8.2.78
-    // lengthens the `i` (*kīrtayati*). Guarded on ṇic's
-    // ṇit at `NIC`. No other curated root has an `F` upadhā, so the guṇa
-    // stage has no entry.
+    // lengthens the `i` (*kīrtayati*). Guarded on ṇic's ṇit at `NIC`. No other
+    // curated root has an `F` upadhā, so the guṇa stage has no entry.
     Rule {
         id: "7.1.101",
         name: "upaDAyASca",
