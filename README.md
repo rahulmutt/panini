@@ -86,8 +86,10 @@ row, behind three new sūtras — 6.4.98 *gamahanajanakhanaghasāṁ lopaḥ*
 (*jajñati*), 6.4.42 *janasanakhanāṁ sañjhaloḥ* (*jajātaḥ*) and the engine's
 twelfth vikalpa, 6.4.43 *ye vibhāṣā* (*jajanyāt* ~ *jajāyāt*) — with 8.4.40
 *stoḥ ścunā ścuḥ* gaining its converse arm, a stu after a ścu, guarded by the
-8.4.44 *śāt* exemption. *curādi* (10) is **open** at 491 of its 509
-dhātupāṭha rows: √cur (`10.0001`, *corayati*), √laḍ (`10.0010`,
+8.4.44 *śāt* exemption. *curādi* (10) is **open** at 491 of its 492
+dhātus (upstream numbers 509 rows, but the last seventeen, `10.0493`–`10.0509`,
+are gaṇasūtras, not dhātus; the one dhātu out is `10.0368 za\da~`, which
+waits for upasargas): √cur (`10.0001`, *corayati*), √laḍ (`10.0010`,
 *lāḍayati*), √bhakṣ (`10.0033`) and √bhūṣ (`10.0255`), curated in slice 10a,
 all ubhayapadī by 1.3.74 *ṇicaś ca*; and four roots of the ākusmīya
 antargaṇa, √cit (`10.0192`, *cetayate*), √vṛṣ (`10.0228`, *varṣayate*), √mad
