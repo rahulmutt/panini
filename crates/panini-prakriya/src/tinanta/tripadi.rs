@@ -1667,11 +1667,11 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // for tfpnoti). Keyed by row (`super::samjna::KSUBHNADI`), as vidyut-
     // prakriya keys it by upadeśa: curādi's `10.0351` and `10.0355` are
     // `tfpa~`, stored `tfp`, too. vidyut also requires śnu after the dhātu:
-    // the next non-empty term after ANGA is a vikaraṇa whose text is exactly
-    // `nu` (śnu after it-lopa) or `no` (the same, guṇated by 7.3.84's second
-    // application before a pit ending, which has run by this stage). Not
-    // `Tag::Svadi` and not `starts_with('n')`: kryādi's śnā (`nA`) will join
-    // by adding `"nA"` here when 9d curates `09.0055 kzuBa~`.
+    // the next non-empty term after ANGA is śnu, read by identity
+    // (`Tag::Snu`, added by 3.1.73), not by text: by the tripādī śnu's text
+    // is `nu`, `no`, `nuv` (6.4.77) or `nav` (guṇa and 6.1.78 before a
+    // vowel-initial pit ending). Kryādi's śnā will get an analogous tag when
+    // 9d curates `09.0055 kzuBa~`.
     //
     // Changes no text: it records and bars 8.4.1 and 8.4.2, as 6.4.117 ā ca
     // hau bars the rules that would change its `A`. Placed just above 8.4.1,
@@ -1689,7 +1689,7 @@ pub(crate) static TRIPADI: &[Rule] = &[
             let Some(next) = p.terms[ANGA + 1..].iter().find(|t| !t.text.is_empty()) else {
                 return false;
             };
-            if !(next.has(Tag::Vikarana) && matches!(next.text.as_str(), "nu" | "no")) {
+            if !next.has(Tag::Snu) {
                 return false;
             }
             let before = p.snapshot();
@@ -3313,10 +3313,11 @@ mod tests {
         let rule = TRIPADI.iter().find(|r| r.id == "8.4.39").unwrap();
         assert!(!rule.vikalpa);
         assert_eq!(rule.bars, ["8.4.1", "8.4.2"]);
-        let trp = |row: &'static str, vikarana: &str, vikarana_tag: Option<Tag>| {
+        let trp = |row: &'static str, vikarana: &str, tagged: bool| {
             let mut v = Term::new(vikarana);
-            if let Some(t) = vikarana_tag {
-                v.add(t);
+            v.add(Tag::Vikarana);
+            if tagged {
+                v.add(Tag::Snu);
             }
             let mut p = Prakriya {
                 terms: with_slots(vec![Term::new("tfp"), v, Term::new("ti")]),
@@ -3326,12 +3327,12 @@ mod tests {
             p
         };
 
-        // √tṛp before śnu (`nu` after it-lopa): recorded, no text changed.
-        // `run_pipeline` then skips the barred 8.4.1 and 8.4.2 on the
-        // branch; `tfpnoti_trace_credits_8_4_39_and_no_natva` in `panini`'s
-        // trace suite pins that effect.
-        for vikarana in ["nu", "no"] {
-            let mut p = trp("05.0028", vikarana, Some(Tag::Vikarana));
+        // √tṛp before śnu, whatever shape the tripādī has given it: `nu`,
+        // `no` (7.3.84), `nuv` (6.4.77) and `nav` (guṇa and 6.1.78). Recorded,
+        // no text changed; `run_pipeline` then skips the barred 8.4.1 and
+        // 8.4.2 on the branch.
+        for vikarana in ["nu", "no", "nuv", "nav"] {
+            let mut p = trp("05.0028", vikarana, true);
             assert!((rule.apply)(&mut p), "{vikarana}");
             assert_eq!(p.text(), format!("tfp{vikarana}ti"));
             let ids: Vec<&str> = p.log.iter().map(|s| s.sutra.as_str()).collect();
@@ -3341,21 +3342,15 @@ mod tests {
         // Another row declines even before śnu: curādi's `tfpa~` rows store
         // the same `tfp`, and a hand-built row has no number.
         for row in ["10.0351", "10.0355", ""] {
-            let mut p = trp(row, "nu", Some(Tag::Vikarana));
+            let mut p = trp(row, "nu", true);
             assert!(!(rule.apply)(&mut p), "{row}");
             assert!(p.log.is_empty(), "{row}");
         }
 
-        // Its row, but the next term is not śnu: another vikaraṇa (śap's
-        // `a`, śnā's `nA`, which kryādi 9d will add), a `nu` that is no
-        // vikaraṇa, and an empty vikaraṇa before an ending that is not `nu`.
-        for (vikarana, tag) in [
-            ("a", Some(Tag::Vikarana)),
-            ("nA", Some(Tag::Vikarana)),
-            ("nu", None),
-            ("", Some(Tag::Vikarana)),
-        ] {
-            let mut p = trp("05.0028", vikarana, tag);
+        // Its row, but the next term is not śnu: an untagged vikaraṇa whose
+        // text is `nu`, śap's `a`, an untagged `nA`, and an empty term.
+        for vikarana in ["nu", "a", "nA", ""] {
+            let mut p = trp("05.0028", vikarana, false);
             assert!(!(rule.apply)(&mut p), "{vikarana}");
             assert!(p.log.is_empty(), "{vikarana}");
         }

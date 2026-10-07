@@ -2779,4 +2779,20 @@ fn dambh_loses_its_nasal_and_trp_keeps_snus_dental_n() {
         assert!(!ids.contains(&"8.4.1"), "{trp_form}: {ids:?}");
         assert!(!ids.contains(&"8.4.2"), "{trp_form}: {ids:?}");
     }
+
+    // 8.4.39 reads śnu by identity, so it holds where 6.4.77 and guṇa reshape
+    // it: the vowel-initial endings give `nuv` and `nav`, and 8.4.2 would
+    // otherwise write ṇ (tfpRuvanti).
+    for (lakara, purusha, vacana, form) in [
+        (Lakara::Lat, Purusha::Prathama, Vacana::Bahu, "tfpnuvanti"),
+        (Lakara::Lot, Purusha::Prathama, Vacana::Bahu, "tfpnuvantu"),
+        (Lakara::Lot, Purusha::Uttama, Vacana::Eka, "tfpnavAni"),
+        (Lakara::Lan, Purusha::Uttama, Vacana::Eka, "atfpnavam"),
+    ] {
+        let p = sole(derive(&trp, lakara, Pada::Parasmaipada, purusha, vacana));
+        assert_eq!(p.text(), form);
+        let ids: Vec<&str> = p.log.iter().map(|s| s.sutra.as_str()).collect();
+        assert!(ids.contains(&"8.4.39"), "{form}: {ids:?}");
+        assert!(!ids.contains(&"8.4.2"), "{form}: {ids:?}");
+    }
 }

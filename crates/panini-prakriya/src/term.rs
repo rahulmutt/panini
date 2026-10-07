@@ -184,6 +184,11 @@ pub enum Tag {
     /// only by 6.4.24 *aniditāṁ hala upadhāyāḥ kṅiti*, in `tinanta::anga`,
     /// which spares an idit root's nasal.
     Idit,
+    /// The vikaraṇa is śnu, added by 3.1.73 *svādibhyaḥ śnuḥ*. An identity
+    /// tag, not a shape one: śnu's text changes by the tripādī (`nu`, `no`,
+    /// `nuv`, `nav`), so a rule that must see it reads the tag. Read by 8.4.39
+    /// *kṣubhnādiṣu ca*; kryādi 9d will add an analogous śnā tag.
+    Snu,
     /// The term at `SHAP` IS one of the four a-final vikaraṇas — śap
     /// (3.1.68), śyan (3.1.69), śa (3.1.77) or śānac (3.1.83) — each
     /// a-final once its own it-lopa runs ("a"/"ya"/"a"/"Ana"). This is an
