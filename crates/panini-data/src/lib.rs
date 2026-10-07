@@ -6950,8 +6950,9 @@ mod tests {
         // then 8.2.78), √mlecch (6.1.75), √dhras (udit by its initial `u~`,
         // ṇic optional by 2570) and √kṛp (8.2.18), all ubhayapadī by 1.3.74.
         // Slice 10m adds √picc, whose root-internal `cc` 8.2.30 no longer
-        // velarises, ubhayapadī by 1.3.74. The gaṇa is OPEN at 491 of its 509
-        // dhātupāṭha rows.
+        // velarises, ubhayapadī by 1.3.74. The gaṇa is OPEN at 491 of its 492
+        // dhātus; the one out is `10.0368 za\da~`, which waits for upasargas
+        // (`curadi_has_492_dhatus_and_only_zad_is_uncurated`).
         let rows: Vec<_> = dhatus()
             .iter()
             .filter(|d| d.gana == Gana::Curadi)
@@ -8137,6 +8138,31 @@ mod tests {
         for n in CONVERGENT_UPADESHA_PAIR {
             assert!(dhatus().iter().any(|d| d.dhatupatha == n), "{n}");
         }
+    }
+
+    #[test]
+    fn curadi_has_492_dhatus_and_only_zad_is_uncurated() {
+        // Upstream numbers curādi's rows 10.0001-10.0509, but the last
+        // seventeen, 10.0493-10.0509, are gaṇasūtras (`-` in the upadeśa
+        // column), not dhātus. The gaṇa's denominator is therefore 492, and
+        // the one dhātu still out is `10.0368 za\da~`, which waits for
+        // upasargas. Curating it, or anything else, must update the counts.
+        let rows: Vec<_> = upstream_rows()
+            .into_iter()
+            .filter(|(n, _, _)| n.starts_with("10."))
+            .collect();
+        let (dhatu_rows, sutra_rows): (Vec<_>, Vec<_>) =
+            rows.iter().partition(|(_, u, _)| *u != "-");
+        assert_eq!(dhatu_rows.len(), 492);
+        let sutras: Vec<&str> = sutra_rows.iter().map(|(n, _, _)| *n).collect();
+        let expected: Vec<String> = (493..=509).map(|i| format!("10.0{i}")).collect();
+        assert_eq!(sutras, expected);
+        let uncurated: Vec<&str> = dhatu_rows
+            .iter()
+            .map(|(n, _, _)| *n)
+            .filter(|n| !dhatus().iter().any(|d| d.dhatupatha == *n))
+            .collect();
+        assert_eq!(uncurated, ["10.0368"]);
     }
 
     #[test]

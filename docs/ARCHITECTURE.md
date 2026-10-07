@@ -138,7 +138,7 @@ tudādi (6), adādi (2), kryādi (9), svādi (5), rudhādi (7) and tanādi (8),
 in slice 8b) — and juhotyādi (3), **complete** at all 26 of its rows (√hu,
 √ki; slice 3a; √bhī, √hrī; slice 3b; √dā, √dhā, √mā, √hā; slice 3c; √hā
 parasmaipada, √gā; slice 3c2; √pṝ, √pṛ, √bhṛ, √ghṛ, √hṛ, √sṛ; slice 3d; √ṛ; slice 3d2; √ṇij, √vij, √viṣ; slice 3e; √kit, √tur, √dhiṣ, √dhan; slice 3f; √bhas; slice 3f2; √jan; slice 3f3) — and curādi (10), **open** at 491 of its
-509 rows (√cur, √laḍ, √bhakṣ, √bhūṣ; slice 10a; √cit, √vṛṣ, √mad, √kusm; slice 10b; thirty-three more ākusmīya roots, slice 10c; √jñap, √yam, √cah, √cap, √rah, √bal, slice 10d; ninety-two adanta roots, slice 10e; the ten optional-ṇic rows, slice 10f; fifty-nine more, slice 10g; fifty ādhṛṣīya rows, slice 10h; the fifty-nine āsvadīya rows, √pṝ and √ghuṣ, slice 10i; √smiṅ, √ci, √ghṛ, √gṛ, √yu, √jñā, √cyu and √bhū, slice 10j; the 155 plain obligatory-ṇic rows, slice 10k; the eight rule-bearing rows, slice 10l; √picc, slice 10m). gaṇa
+492 dhātus, √ṣad (`10.0368`) waiting for upasargas (√cur, √laḍ, √bhakṣ, √bhūṣ; slice 10a; √cit, √vṛṣ, √mad, √kusm; slice 10b; thirty-three more ākusmīya roots, slice 10c; √jñap, √yam, √cah, √cap, √rah, √bal, slice 10d; ninety-two adanta roots, slice 10e; the ten optional-ṇic rows, slice 10f; fifty-nine more, slice 10g; fifty ādhṛṣīya rows, slice 10h; the fifty-nine āsvadīya rows, √pṝ and √ghuṣ, slice 10i; √smiṅ, √ci, √ghṛ, √gṛ, √yu, √jñā, √cyu and √bhū, slice 10j; the 155 plain obligatory-ṇic rows, slice 10k; the eight rule-bearing rows, slice 10l; √picc, slice 10m). gaṇa
 is carried as a tag on the aṅga term (`Tag::Divadi` / `Tag::Tudadi` / `Tag::Adadi` /
 `Tag::Kryadi` / `Tag::Svadi` / `Tag::Rudhadi` / `Tag::Tanadi` /
 `Tag::Juhotyadi` / `Tag::Curadi`, mirroring how

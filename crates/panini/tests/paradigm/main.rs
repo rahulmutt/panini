@@ -780,19 +780,19 @@ fn derivation_set_is_exactly_pinned() {
 /// cells three ways on 7.1.35/8.4.56. √cur's keys carry its mandatory
 /// sanādi 7.3.86 in front, opening `7.3.86+7.1.35` and
 /// `7.3.86+7.1.35+8.4.56`. Twenty-four new rows. The gaṇa is OPEN at 4 of
-/// its 509 rows.
+/// its 492 rows.
 ///
 /// Slice 10b curates four ākusmīya roots, √cit, √vṛṣ, √mad and √kusm
 /// (`10.0192`, `10.0228`, `10.0229`, `10.0236`), ātmanepadī by the
 /// dhātupāṭha gaṇasūtra 10.0496 *ā kusmād ātmanepadinaḥ*. Ātmanepada only,
 /// and the thematic ātmanepada paradigm forks nowhere, so all 144 new cells
-/// hold one form. No new rows. The gaṇa is OPEN at 8 of its 509 rows.
+/// hold one form. No new rows. The gaṇa is OPEN at 8 of its 492 rows.
 ///
 /// Slice 10c curates thirty-three more ākusmīya roots (`10.0195` through
 /// `10.0234`; six take 7.3.86 before ṇic, ten 7.2.116, seventeen neither),
 /// again ātmanepada only and one form per cell: 1188 new cells, no new
 /// rows. `10.0233 mAna~` and `10.0234 mana~` share every form. The gaṇa is
-/// OPEN at 41 of its 509 rows.
+/// OPEN at 41 of its 492 rows.
 ///
 /// Slice 10d curates six of the seven jñapādi roots, √jñap, √yam, √cah,
 /// √cap, √rah and √bal (`10.0118` through `10.0123`), mit by the gaṇasūtra
@@ -801,7 +801,7 @@ fn derivation_set_is_exactly_pinned() {
 /// rule: each root forks only where √bhūṣ does — laṅ and vidhiliṅ
 /// parasmaipada prathama eka on 8.4.56, the two loṭ tātaṅ cells three ways
 /// on 7.1.35/8.4.56 — since neither 7.2.116 nor 6.4.92 is a vikalpa key.
-/// 432 new cells, thirty-six new rows. The gaṇa is OPEN at 47 of its 509
+/// 432 new cells, thirty-six new rows. The gaṇa is OPEN at 47 of its 492
 /// rows.
 ///
 /// Slice 10e curates ninety-two adanta roots (`10.0108 mArga` and `10.0389
@@ -810,7 +810,7 @@ fn derivation_set_is_exactly_pinned() {
 /// upadhā (*kathayati*, *kuhayate*). Eighty-three are ubhayapadī by 1.3.74
 /// and fork exactly where √cur does; the nine ā-garvīya (`10.0440 pada` …
 /// `10.0448 satra`) are ātmanepadī by the gaṇasūtra 10.0497, one form per
-/// cell. 6300 new cells, 498 new rows. The gaṇa is OPEN at 139 of its 509
+/// cell. 6300 new cells, 498 new rows. The gaṇa is OPEN at 139 of its 492
 /// rows.
 ///
 /// Slice 10f curates the ten optional-ṇic rows (Kaumudī 2564, 2570, 2573.1,
@@ -819,14 +819,14 @@ fn derivation_set_is_exactly_pinned() {
 /// `pata`'s ṇic branch forks again on 2573.2. In an ākusmīya or ā-garvīya
 /// root's parasmaipada the ṇic branch blocks, so the pinned form is the
 /// first live branch, the ṇic-less one. 720 new cells, 264 new rows. The
-/// gaṇa is OPEN at 149 of its 509 rows.
+/// gaṇa is OPEN at 149 of its 492 rows.
 ///
 /// Slice 10g curates fifty-nine more optional-ṇic rows: every idit (Kaumudī
 /// 2564) and ñit/udit (2570) curādi row outside the āsvadīya and ādhṛṣīya but
 /// `10.0124 ciY`, all `Nic`. The ṇic branch is live in both padas, so it is
 /// the pinned form; every parasmaipada cell adds the ṇic-less reading
 /// beside it. 4248 new cells, 2832 new rows. The gaṇa is OPEN at 208 of its
-/// 509 rows.
+/// 492 rows.
 ///
 /// Slice 10h curates fifty of the fifty-one ādhṛṣīya rows (the gaṇasūtra
 /// 10.0498 *ā dhṛṣād vā*; `10.0368 za\da~` waits for upasargas), forty-four
@@ -834,14 +834,14 @@ fn derivation_set_is_exactly_pinned() {
 /// parasmaipada cell adds the ṇic-less reading, and so does every
 /// ātmanepada cell of a `NicUbhayapada` row, 1.3.72's. √dhū's and √prī's ṇic
 /// branch forks again on 7.3.37.2's nuk, three readings per cell. 3600 new
-/// cells, 2772 new rows. The gaṇa is OPEN at 258 of its 509 rows.
+/// cells, 2772 new rows. The gaṇa is OPEN at 258 of its 492 rows.
 ///
 /// Slice 10i curates the fifty-nine āsvadīya rows (the gaṇasūtra 10.0499
 /// *ā svadaḥ sakarmakāt*), `10.0022 pF` (Kaumudī 2565) and `10.0251 Guzi~r`
 /// (2571), all `Nic`. The ṇic branch is the pinned form; every parasmaipada
 /// cell adds the ṇic-less reading beside it — for √dhūp and √vich, 3.1.28's
 /// āya stem (*dhūpāyati*, *vicchāyati*). 4392 new cells, 2928 new rows. The
-/// gaṇa is OPEN at 319 of its 509 rows.
+/// gaṇa is OPEN at 319 of its 492 rows.
 ///
 /// Slice 10j curates the eight ajanta rows 7.2.115, 6.1.54 and 7.3.36 reach:
 /// √ghṛ, √jñā, √cyu and √bhū (`Nic`), which fork exactly where √cur does;
@@ -849,14 +849,14 @@ fn derivation_set_is_exactly_pinned() {
 /// one form per cell; and √ci (`NicUbhayapada`), whose every cell holds
 /// three readings: the ṇic branch declined (*cayayati*, the pinned form),
 /// 6.1.54's (*capayati*) and 2570's ṇic-less one (*cayati*), in both padas.
-/// 468 new cells, 186 new rows. The gaṇa is OPEN at 327 of its 509 rows.
+/// 468 new cells, 186 new rows. The gaṇa is OPEN at 327 of its 492 rows.
 ///
 /// Slice 10k curates the 155 plain obligatory-ṇic rows that need nothing new
 /// (thirty-seven take 7.3.86 before ṇic, forty 7.2.116, seventy-eight
 /// neither), all `Nic`, which fork exactly where √cur does: laṅ and vidhiliṅ
 /// parasmaipada prathama eka on 8.4.56, the two loṭ tātaṅ cells three ways on
 /// 7.1.35/8.4.56, the thirty-seven's keys carrying their sanādi 7.3.86 in
-/// front. 11160 new cells, 930 new rows. The gaṇa is OPEN at 482 of its 509
+/// front. 11160 new cells, 930 new rows. The gaṇa is OPEN at 482 of its 492
 /// rows.
 ///
 /// Slice 10l curates eight rows that bring rules of their own: 8.2.78 (√ūrj,
@@ -864,11 +864,11 @@ fn derivation_set_is_exactly_pinned() {
 /// and 8.4.41's stu-before-ṭu arm (√aṭṭ), all `Nic`, which fork exactly
 /// where √cur does; and √dhras, whose ṇic is optional (2570), so its every
 /// parasmaipada cell adds the ṇic-less reading beside the pinned ṇic form.
-/// 576 new cells, 90 new rows. The gaṇa is OPEN at 490 of its 509 rows.
+/// 576 new cells, 90 new rows. The gaṇa is OPEN at 490 of its 492 rows.
 ///
 /// Slice 10m curates √picc, `Nic`, which forks exactly where √cur does, once
 /// 8.2.30 stopped velarising its root-internal `cc`. 72 new cells, 6 new
-/// rows. The gaṇa is OPEN at 491 of its 509 rows.
+/// rows. The gaṇa is OPEN at 491 of its 492 rows.
 /// This test is what keeps the numbers true day to day.
 #[test]
 fn derivation_set_shape_matches_the_audited_numbers() {
