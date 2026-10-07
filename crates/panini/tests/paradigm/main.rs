@@ -4756,6 +4756,83 @@ fn curadi_analyses_its_10m_forms() {
     }
 }
 
+/// Svādi 5b's homographs, derived from the goldens and not typed in. For every
+/// surface of the thirty-two new svādi rows (`PARADIGM` cells and `ALTERNATES`
+/// alike), the readings are every golden block, in any gaṇa, whose cells or
+/// alternates contain it, as `(code, pada)` in `dhatus()` order, ātmanepada
+/// before parasmaipada within a root. `check()` must report exactly those, so a
+/// future row that collides with a 5b form fails here. Covers `05.0033 kzi`
+/// against tanādi `08.0004 kziR` (*kziRoti*) and the ten ñit rows' `…utAm` /
+/// `a…uta` surfaces.
+#[test]
+fn svadi_5b_surfaces_read_exactly_as_the_goldens_say() {
+    use std::collections::{BTreeSet, HashMap};
+    let new_rows: Vec<&str> = dhatus()
+        .iter()
+        .filter(|d| d.gana == panini_data::Gana::Svadi)
+        .map(|d| d.dhatupatha)
+        .filter(|n| {
+            ![
+                "05.0012", "05.0016", "05.0017", "05.0020", "05.0021", "05.0032",
+            ]
+            .contains(n)
+        })
+        .collect();
+    assert_eq!(new_rows.len(), 32);
+    let rank = |p: Pada| u8::from(p != Pada::Atmanepada);
+    let mut owners: HashMap<&str, BTreeSet<(&str, u8)>> = HashMap::new();
+    for (root, _, pada, forms) in PARADIGM.iter() {
+        for f in forms {
+            owners.entry(f).or_default().insert((root, rank(*pada)));
+        }
+    }
+    for (root, _, pada, _, form, _) in ALTERNATES.iter() {
+        owners.entry(form).or_default().insert((root, rank(*pada)));
+    }
+    let surfaces: BTreeSet<&str> = owners
+        .iter()
+        .filter(|(_, o)| o.iter().any(|(n, _)| new_rows.contains(n)))
+        .map(|(f, _)| *f)
+        .collect();
+    assert!(surfaces.len() > 1000, "{}", surfaces.len());
+    let engine = Panini::new();
+    let (mut multi, mut kzi) = (0, 0);
+    for form in surfaces {
+        let mut want: Vec<(usize, u8, &str, Pada)> = owners[form]
+            .iter()
+            .map(|(n, r)| {
+                let i = dhatus().iter().position(|d| d.dhatupatha == *n).unwrap();
+                let pada = if *r == 0 {
+                    Pada::Atmanepada
+                } else {
+                    Pada::Parasmaipada
+                };
+                (i, *r, dhatus()[i].code, pada)
+            })
+            .collect();
+        want.sort_by_key(|w| (w.0, w.1));
+        let want: Vec<(&str, Pada)> = want.iter().map(|w| (w.2, w.3)).collect();
+        assert!(!want.is_empty(), "{form}");
+        let r = engine.check(form);
+        assert!(matches!(r.verdict, Verdict::Valid), "{form}");
+        let mut got: Vec<(&str, Pada)> = r
+            .analyses
+            .iter()
+            .map(|a| (a.dhatu.as_str(), a.pada))
+            .collect();
+        got.dedup();
+        assert_eq!(got, want, "{form}");
+        if want.len() > 1 {
+            multi += 1;
+        }
+        if want.iter().any(|(c, _)| *c == "kziR") && want.iter().any(|(c, _)| *c == "kzi") {
+            kzi += 1;
+        }
+    }
+    assert_eq!(kzi, 44, "kzi/kziR shared surfaces");
+    assert!(multi >= 64, "{multi}");
+}
+
 /// Svādi 5b's `check()` witnesses, every analysis count read off the goldens
 /// first: √dambh's and √tṛp's laṭ prathama eka with their rules credited,
 /// √su's ātmanepada by 1.3.72, and √ṛkṣ's ṇatva across its `i`, one analysis

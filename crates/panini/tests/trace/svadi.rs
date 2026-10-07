@@ -284,8 +284,8 @@ fn anidit_nalopa_and_ksubhnadi_fire_only_on_their_rows() {
     // widen the first.
     for (sutra, row) in [("6.4.24", "05.0026"), ("8.4.39", "05.0028")] {
         let got = credited(sutra);
-        assert!(got.iter().all(|(n, _)| *n == row), "{sutra}: {got:?}");
         assert_eq!(got.len(), 42, "{sutra}");
+        assert!(got.iter().all(|(n, _)| *n == row), "{sutra}: {got:?}");
     }
 }
 
