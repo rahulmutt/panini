@@ -146,7 +146,7 @@ const VIKALPA_RULES: &[&str] = &[
     "6.4.115", "6.4.117", "6.4.116", "6.4.43",
 ];
 
-/// `ALTERNATES` is otherwise 11980 bare strings, and a string can be right for
+/// `ALTERNATES` is otherwise 12112 bare strings, and a string can be right for
 /// the wrong reason — `BavatAt` is a real form whether or not 8.4.56 is what
 /// produced it. This ties each row to the grammar: find the branch that
 /// derives the row's form, intersect its log with the optional-rule set, and
@@ -302,10 +302,11 @@ fn derivation_set_is_exactly_pinned() {
 /// 7.1.35/8.4.65/8.4.56 exactly as kft/ruD/Bid/kzud/tfd's do (a five-form
 /// cell), and its loṭ parasmaipada madhyama eka ties the six-form record
 /// with the same k = 3 against the 2³ bound of eight:
-/// 39744 cells total (4416 root×lakāra blocks × 9), of which 31036 hold exactly one form, 6970 hold two, 991 hold three (√hrī's loṭ prathama and madhyama
+/// 40824 cells total (4536 root×lakāra blocks × 9), of which 32028 hold exactly one form, 7014 hold two, 1035 hold three (√hrī's loṭ prathama and madhyama
 /// eka, new in slice 3b, √dā's and √dhā's, new in slice 3c, and √gā's, new in
 /// slice 3c2, and the six ṛ-roots', new in slice 3d, and √ṛ's, new in slice 3d2, and √ṇij's, √vij's and √viṣ's, new in slice 3e, and √kit's, √tur's, √dhiṣ's and √dhan's, new in slice 3f, and √bhas's, new in slice 3f2, and √jan's, new in slice 3f3, and the four curādi roots', new in slice 10a, and the six jñapādi roots', new in slice 10d, and the eighty-three ubhayapadī adanta roots', new in slice 10e, and the 155 plain obligatory-ṇic rows', new in slice 10k, and seven of the eight rule-bearing rows', new in slice 10l, and √picc's,
-/// new in slice 10m, and svādi's thirty-two rows', new in svādi 5b, each by
+/// new in slice 10m, and svādi's thirty-two rows', new in svādi 5b, and the twenty-two
+/// kryādi rows', new in slice 9c, each by
 /// 7.1.35/8.4.56, plus √bhas's laṅ madhyama eka, by 8.2.74/8.4.56; slice 10f's
 /// optional-ṇic rows add 114 two-form and 46 three-form cells, and slice 10g's
 /// fifty-nine add 1888 two-form cells, a ṇic and a ṇic-less reading each, and
@@ -381,7 +382,7 @@ fn derivation_set_is_exactly_pinned() {
 /// √ci's (2570's ṇic-less one, 6.1.54's `cA` with puk, and the declined
 /// ṇic branch) × the same triple. No cell holds eight.
 /// `ALTERNATES`
-/// itself has 11980 rows, keyed 962 `8.4.56`, 954 `7.1.35`, 954 `7.1.35+8.4.56`,
+/// itself has 12112 rows, keyed 1006 `8.4.56`, 998 `7.1.35`, 998 `7.1.35+8.4.56`,
 /// 2 `3.4.111`, 188 `6.4.107`, 145 `8.4.65`, 8 `8.2.75`, 2 `8.2.74` (√hiṃs's ahinaH and, new in slice 3f2, √bhas's abaBaH), 16
 /// `7.1.35+8.4.65`, 16 `7.1.35+8.4.65+8.4.56`, 270 `7.3.86` (tanādi 8a's
 /// ik-upadhā fork), 8 `7.1.35+7.3.86`, 8 `7.1.35+7.3.86+8.4.56`, 8
@@ -443,7 +444,9 @@ fn derivation_set_is_exactly_pinned() {
 /// (√kṛp, its guṇa before ṇic); slice 10m's √picc opens none and folds 2 rows
 /// apiece into `8.4.56`, `7.1.35` and `7.1.35+8.4.56`; svādi 5b opens none
 /// either and folds 64 rows apiece into `8.4.56`, `7.1.35` and
-/// `7.1.35+8.4.56` and 116 into `6.4.107` — √kṛ (slice 8b) adds six more
+/// `7.1.35+8.4.56` and 116 into `6.4.107`; slice 9c's twenty-two kryādi
+/// rows open none and fold 44 apiece into `8.4.56`, `7.1.35` and
+/// `7.1.35+8.4.56` — √kṛ (slice 8b) adds six more
 /// rows, all folded into the pre-existing `8.4.56`/`7.1.35`/`7.1.35+8.4.56`
 /// keys above, two apiece: `8.4.56` gains `akarot` (laṅ parasmaipada
 /// prathama eka) and `kuryAt` (vidhiliṅ parasmaipada prathama eka);
@@ -561,7 +564,10 @@ fn derivation_set_is_exactly_pinned() {
 /// with zero differences, its `entry` negative control verified failing (36
 /// √bhū cells), and svādi 5b's re-ran it at the same commit over all 39744
 /// cells / 51724 forms / 626 roots with zero differences, its `entry`
-/// negative control verified failing (36 √bhū cells). √tṛh joins none of the fork
+/// negative control verified failing (36 √bhū cells), and kryādi 9c's re-ran it
+/// at the same commit over all 40824 cells / 52936 forms / 648 roots with zero
+/// differences, its `entry` negative control verified failing (36 √bhū cells).
+/// √tṛh joins none of the fork
 /// records: its deepest cells hold three forms, because 8.3.13 Qo Qe lopaH
 /// obligatorily elides the ḍh that 8.4.65 forks on for every other
 /// stop-final rudhādi root.
