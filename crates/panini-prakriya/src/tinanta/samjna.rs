@@ -1015,16 +1015,33 @@ mod tests {
     fn cisphur_is_the_ciy_row_6_1_54_names() {
         // 6.1.54 cisphuror ṇau. vidyut-prakriya keys it on the upadeśas `ciY`
         // and `ci\Y`, and on `sPura~`. Curādi `10.0325 ci` stores as the
-        // same `ci` and is not √ci of 6.1.54; svādi `ci\Y` and tudādi
-        // `sPura~` meet ṇic only in a causative.
+        // same `ci` and is not √ci of 6.1.54. Svādi `05.0005 ci\Y` is that
+        // √ci, curated since svādi 5b, but it meets ṇic only in a causative:
+        // its śnu forms carry no 6.1.54 credit. Tudādi `sPura~` is uncurated.
+        use crate::tinanta::derive;
         assert_eq!(CISPHUR, ["10.0124"]);
         assert_eq!(upstream_upadesha("10.0124"), Some("ciY"));
         assert!(dhatus().iter().any(|d| d.dhatupatha == "10.0124"));
         assert_eq!(upstream_upadesha("10.0325"), Some("ci"));
-        for (number, upadesha) in [("05.0005", "ci\\Y"), ("06.0121", "sPura~")] {
-            assert_eq!(upstream_upadesha(number), Some(upadesha), "{number}");
-            assert!(!dhatus().iter().any(|d| d.dhatupatha == number), "{number}");
+        assert_eq!(upstream_upadesha("05.0005"), Some("ci\\Y"));
+        let ci = dhatus()
+            .iter()
+            .find(|d| d.dhatupatha == "05.0005")
+            .expect("svādi √ci is curated");
+        assert!(!CISPHUR.contains(&ci.dhatupatha));
+        for &pada in ci.padas() {
+            for lakara in [Lakara::Lat, Lakara::Lan, Lakara::Lot, Lakara::VidhiLin] {
+                for purusha in [Purusha::Prathama, Purusha::Madhyama, Purusha::Uttama] {
+                    for vacana in [Vacana::Eka, Vacana::Dvi, Vacana::Bahu] {
+                        for p in derive(ci, lakara, pada, purusha, vacana) {
+                            assert!(!p.log.iter().any(|s| s.sutra == "6.1.54"), "{}", p.text());
+                        }
+                    }
+                }
+            }
         }
+        assert_eq!(upstream_upadesha("06.0121"), Some("sPura~"));
+        assert!(!dhatus().iter().any(|d| d.dhatupatha == "06.0121"));
     }
 
     #[test]
@@ -1049,6 +1066,7 @@ mod tests {
         // same `tfp` and take no śnu; kryādi's `kzuBa~` joins when its row
         // is curated.
         assert_eq!(KSUBHNADI, ["05.0028"]);
+        assert!(dhatus().iter().any(|d| d.dhatupatha == "05.0028"));
         for number in ["05.0028", "06.0028", "10.0351", "10.0355"] {
             assert_eq!(upstream_upadesha(number), Some("tfpa~"), "{number}");
         }

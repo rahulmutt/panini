@@ -425,7 +425,7 @@ pub struct Dhatu {
     pub gana: Gana,
     /// Which pada(s) this engine derives for this root. Curated rather than
     /// read from the upadeśa's it-markers — but no longer a *deferral*:
-    /// `curated_pada_agrees_with_upadesha_markers` re-derives 102 of these 594
+    /// `curated_pada_agrees_with_upadesha_markers` re-derives 134 of these 626
     /// verdicts from the vendored upadeśa via 1.3.12 / 1.3.72 / 1.3.78 and
     /// requires them to match; `07.0017`'s (√bhuj's) is 1.3.66's root-keyed
     /// exception, 428 curādi rows' are 1.3.74's, seven more 1.3.74's with ṇic
@@ -446,7 +446,7 @@ pub struct Dhatu {
     /// the honest arrangement; see the deferral in
     /// `docs/superpowers/specs/2026-08-16-pada-audit-design.md`.
     ///
-    /// The test covers the 594 roots curated here, not the dhātupāṭha's 2259.
+    /// The test covers the 626 roots curated here, not the dhātupāṭha's 2259.
     /// It catches a mis-assigned pada on a root a future slice adds; it does
     /// not make the table self-maintaining.
     pub pada: PadaAssignment,
@@ -785,6 +785,253 @@ static DHATUS: &[Dhatu] = &[
         gana: Gana::Svadi,
         pada: PadaAssignment::Atmanepada,
         artha: "Askandane",
+    },
+    Dhatu {
+        // 05.0001 `zu\Y` aBizave (√su). Stored post-6.1.64, as `stiG` is.
+        // Ubhayapadī by 1.3.72 (the ñ it), as are the nine after it. Svādi 5b.
+        dhatupatha: "05.0001",
+        code: "su",
+        gana: Gana::Svadi,
+        pada: PadaAssignment::Ubhayapada,
+        artha: "aBizave",
+    },
+    Dhatu {
+        // 05.0002 `zi\Y` banDane (√si). Stored post-6.1.64. Svādi 5b.
+        dhatupatha: "05.0002",
+        code: "si",
+        gana: Gana::Svadi,
+        pada: PadaAssignment::Ubhayapada,
+        artha: "banDane",
+    },
+    Dhatu {
+        dhatupatha: "05.0003",
+        code: "Si",
+        gana: Gana::Svadi,
+        pada: PadaAssignment::Ubhayapada,
+        artha: "niSAne",
+    },
+    Dhatu {
+        // 05.0004 `qumi\Y` prakzepaRe (√mi). The initial `qu` is an it by
+        // 1.3.5. Svādi 5b.
+        dhatupatha: "05.0004",
+        code: "mi",
+        gana: Gana::Svadi,
+        pada: PadaAssignment::Ubhayapada,
+        artha: "prakzepaRe",
+    },
+    Dhatu {
+        // 05.0005 `ci\Y` cayane (√ci). 6.1.54 cisphuror ṇau names this root
+        // too, but only before ṇic, which this row never takes: `CISPHUR`
+        // holds curādi's `10.0124` alone. Svādi 5b.
+        dhatupatha: "05.0005",
+        code: "ci",
+        gana: Gana::Svadi,
+        pada: PadaAssignment::Ubhayapada,
+        artha: "cayane",
+    },
+    Dhatu {
+        dhatupatha: "05.0006",
+        code: "stf",
+        gana: Gana::Svadi,
+        pada: PadaAssignment::Ubhayapada,
+        artha: "AcCAdane",
+    },
+    Dhatu {
+        dhatupatha: "05.0007",
+        code: "kf",
+        gana: Gana::Svadi,
+        pada: PadaAssignment::Ubhayapada,
+        artha: "hiMsAyAm",
+    },
+    Dhatu {
+        dhatupatha: "05.0008",
+        code: "vf",
+        gana: Gana::Svadi,
+        pada: PadaAssignment::Ubhayapada,
+        artha: "varaRe",
+    },
+    Dhatu {
+        dhatupatha: "05.0009",
+        code: "Du",
+        gana: Gana::Svadi,
+        pada: PadaAssignment::Ubhayapada,
+        artha: "kampane",
+    },
+    Dhatu {
+        dhatupatha: "05.0010",
+        code: "DU",
+        gana: Gana::Svadi,
+        pada: PadaAssignment::Ubhayapada,
+        artha: "kampane",
+    },
+    Dhatu {
+        // 05.0011 `wudu\` upatApe (√du). The initial `wu` is an it by 1.3.5,
+        // and the `\` is the root vowel's own accent, not an it, so 1.3.78
+        // makes it parasmaipadī, as it does the twenty-one after it. Svādi 5b.
+        dhatupatha: "05.0011",
+        code: "du",
+        gana: Gana::Svadi,
+        pada: PadaAssignment::Parasmaipada,
+        artha: "upatApe",
+    },
+    Dhatu {
+        dhatupatha: "05.0013",
+        code: "pf",
+        gana: Gana::Svadi,
+        pada: PadaAssignment::Parasmaipada,
+        artha: "prItO",
+    },
+    Dhatu {
+        dhatupatha: "05.0014",
+        code: "spf",
+        gana: Gana::Svadi,
+        pada: PadaAssignment::Parasmaipada,
+        artha: "prItipAlanayoH prIticalanayoSca",
+    },
+    Dhatu {
+        dhatupatha: "05.0015",
+        code: "smf",
+        gana: Gana::Svadi,
+        pada: PadaAssignment::Parasmaipada,
+        artha: "prItibalanayoH",
+    },
+    Dhatu {
+        dhatupatha: "05.0018",
+        code: "rAD",
+        gana: Gana::Svadi,
+        pada: PadaAssignment::Parasmaipada,
+        artha: "saMsidDO",
+    },
+    Dhatu {
+        dhatupatha: "05.0019",
+        code: "sAD",
+        gana: Gana::Svadi,
+        pada: PadaAssignment::Parasmaipada,
+        artha: "saMsidDO",
+    },
+    Dhatu {
+        dhatupatha: "05.0022",
+        code: "tik",
+        gana: Gana::Svadi,
+        pada: PadaAssignment::Parasmaipada,
+        artha: "Askandane gatO ca",
+    },
+    Dhatu {
+        dhatupatha: "05.0023",
+        code: "tig",
+        gana: Gana::Svadi,
+        pada: PadaAssignment::Parasmaipada,
+        artha: "Askandane gatO ca",
+    },
+    Dhatu {
+        // 05.0024 `zaGa~` hiMsAyAm (√ṣagh). Stored post-6.1.64. Svādi 5b.
+        dhatupatha: "05.0024",
+        code: "saG",
+        gana: Gana::Svadi,
+        pada: PadaAssignment::Parasmaipada,
+        artha: "hiMsAyAm",
+    },
+    Dhatu {
+        // 05.0025 `YiDfzA~` prAgalBye (√dhṛṣ). The initial `Yi` is an it by
+        // 1.3.5, not the ñ it 1.3.72 reads. Svādi 5b.
+        dhatupatha: "05.0025",
+        code: "Dfz",
+        gana: Gana::Svadi,
+        pada: PadaAssignment::Parasmaipada,
+        artha: "prAgalBye",
+    },
+    Dhatu {
+        // 05.0026 `danBu~` damBane (√dambh). Udit, not idit, so its nasal is
+        // its own, and 6.4.24 aniditAM hala upaDAyAH kNiti elides it before
+        // the ṅit śnu: daBnoti. Svādi 5b.
+        dhatupatha: "05.0026",
+        code: "danB",
+        gana: Gana::Svadi,
+        pada: PadaAssignment::Parasmaipada,
+        artha: "damBane",
+    },
+    Dhatu {
+        dhatupatha: "05.0027",
+        code: "fD",
+        gana: Gana::Svadi,
+        pada: PadaAssignment::Parasmaipada,
+        artha: "vfdDO",
+    },
+    Dhatu {
+        // 05.0028 `tfpa~` prIRane (√tṛp). 8.4.39 kzuBnAdizu ca keeps śnu's
+        // `n` dental: tfpnoti, not *tfpRoti. Keyed by this row
+        // (`KSUBHNADI`): curādi's `10.0351` and `10.0355` are `tfpa~` too.
+        // Svādi 5b.
+        dhatupatha: "05.0028",
+        code: "tfp",
+        gana: Gana::Svadi,
+        pada: PadaAssignment::Parasmaipada,
+        artha: "prIRane",
+    },
+    Dhatu {
+        dhatupatha: "05.0029",
+        code: "ah",
+        gana: Gana::Svadi,
+        pada: PadaAssignment::Parasmaipada,
+        artha: "vyAptO",
+    },
+    Dhatu {
+        dhatupatha: "05.0030",
+        code: "daG",
+        gana: Gana::Svadi,
+        pada: PadaAssignment::Parasmaipada,
+        artha: "GAtane pAlane ca",
+    },
+    Dhatu {
+        dhatupatha: "05.0031",
+        code: "cam",
+        gana: Gana::Svadi,
+        pada: PadaAssignment::Parasmaipada,
+        artha: "BakzaRe",
+    },
+    Dhatu {
+        dhatupatha: "05.0033",
+        code: "kzi",
+        gana: Gana::Svadi,
+        pada: PadaAssignment::Parasmaipada,
+        artha: "hiMsAyAm",
+    },
+    Dhatu {
+        // 05.0034 `ciri` hiMsAyAm. No anubandha: the final `i` is the
+        // root's, as `jiri`'s and `fkzi`'s are below. Svādi 5b.
+        dhatupatha: "05.0034",
+        code: "ciri",
+        gana: Gana::Svadi,
+        pada: PadaAssignment::Parasmaipada,
+        artha: "hiMsAyAm",
+    },
+    Dhatu {
+        dhatupatha: "05.0035",
+        code: "jiri",
+        gana: Gana::Svadi,
+        pada: PadaAssignment::Parasmaipada,
+        artha: "hiMsAyAm",
+    },
+    Dhatu {
+        dhatupatha: "05.0036",
+        code: "dAS",
+        gana: Gana::Svadi,
+        pada: PadaAssignment::Parasmaipada,
+        artha: "hiMsAyAm",
+    },
+    Dhatu {
+        dhatupatha: "05.0037",
+        code: "df",
+        gana: Gana::Svadi,
+        pada: PadaAssignment::Parasmaipada,
+        artha: "hiMsAyAm",
+    },
+    Dhatu {
+        dhatupatha: "05.0038",
+        code: "fkzi",
+        gana: Gana::Svadi,
+        pada: PadaAssignment::Parasmaipada,
+        artha: "hiMsAyAm",
     },
     Dhatu {
         // 07.0010 kftI~ vezwane. rudhādi's √kṛt, distinct from tudādi's
@@ -6647,7 +6894,7 @@ mod tests {
 
     #[test]
     fn curated_roots_have_expected_ganas_and_padas() {
-        assert_eq!(dhatus().len(), 594);
+        assert_eq!(dhatus().len(), 626);
         let bu = dhatus().iter().find(|d| d.dhatupatha == "01.0001").unwrap();
         assert!(matches!(bu.pada, PadaAssignment::Parasmaipada));
         let labh = dhatus().iter().find(|d| d.dhatupatha == "01.1130").unwrap();
@@ -6813,6 +7060,74 @@ mod tests {
         // construction rather than by a hand-applied qualifier, since their
         // numbers come from different gaṇas of the source.
         assert_eq!(svadi.code, kryadi.code);
+    }
+
+    #[test]
+    fn svadi_rows_are_the_thirty_eight_curated_roots() {
+        // Svādi opened with √āp, √śak, √hi and √ri, parasmaipadī, and √aś
+        // (`05.0020`) and √ṣṭigh, ātmanepadī. Svādi 5b curates the other
+        // thirty-two and closes the gaṇa at all 38 of its dhātupāṭha rows:
+        // the ten ñit rows, ubhayapadī by 1.3.72, then twenty-two
+        // parasmaipadī by 1.3.78. Thirty derive on rules already in the
+        // pipeline; √dambh needs 6.4.24 aniditAM hala upaDAyAH kNiti and
+        // √tṛp 8.4.39 kzuBnAdizu ca.
+        let rows: Vec<_> = dhatus()
+            .iter()
+            .filter(|d| d.gana == Gana::Svadi)
+            .map(|d| (d.dhatupatha, d.code, d.pada))
+            .collect();
+        assert_eq!(
+            rows,
+            vec![
+                ("05.0016", "Ap", PadaAssignment::Parasmaipada),
+                ("05.0017", "Sak", PadaAssignment::Parasmaipada),
+                ("05.0012", "hi", PadaAssignment::Parasmaipada),
+                ("05.0032", "ri", PadaAssignment::Parasmaipada),
+                ("05.0020", "aS", PadaAssignment::Atmanepada),
+                ("05.0021", "stiG", PadaAssignment::Atmanepada),
+                ("05.0001", "su", PadaAssignment::Ubhayapada),
+                ("05.0002", "si", PadaAssignment::Ubhayapada),
+                ("05.0003", "Si", PadaAssignment::Ubhayapada),
+                ("05.0004", "mi", PadaAssignment::Ubhayapada),
+                ("05.0005", "ci", PadaAssignment::Ubhayapada),
+                ("05.0006", "stf", PadaAssignment::Ubhayapada),
+                ("05.0007", "kf", PadaAssignment::Ubhayapada),
+                ("05.0008", "vf", PadaAssignment::Ubhayapada),
+                ("05.0009", "Du", PadaAssignment::Ubhayapada),
+                ("05.0010", "DU", PadaAssignment::Ubhayapada),
+                ("05.0011", "du", PadaAssignment::Parasmaipada),
+                ("05.0013", "pf", PadaAssignment::Parasmaipada),
+                ("05.0014", "spf", PadaAssignment::Parasmaipada),
+                ("05.0015", "smf", PadaAssignment::Parasmaipada),
+                ("05.0018", "rAD", PadaAssignment::Parasmaipada),
+                ("05.0019", "sAD", PadaAssignment::Parasmaipada),
+                ("05.0022", "tik", PadaAssignment::Parasmaipada),
+                ("05.0023", "tig", PadaAssignment::Parasmaipada),
+                ("05.0024", "saG", PadaAssignment::Parasmaipada),
+                ("05.0025", "Dfz", PadaAssignment::Parasmaipada),
+                ("05.0026", "danB", PadaAssignment::Parasmaipada),
+                ("05.0027", "fD", PadaAssignment::Parasmaipada),
+                ("05.0028", "tfp", PadaAssignment::Parasmaipada),
+                ("05.0029", "ah", PadaAssignment::Parasmaipada),
+                ("05.0030", "daG", PadaAssignment::Parasmaipada),
+                ("05.0031", "cam", PadaAssignment::Parasmaipada),
+                ("05.0033", "kzi", PadaAssignment::Parasmaipada),
+                ("05.0034", "ciri", PadaAssignment::Parasmaipada),
+                ("05.0035", "jiri", PadaAssignment::Parasmaipada),
+                ("05.0036", "dAS", PadaAssignment::Parasmaipada),
+                ("05.0037", "df", PadaAssignment::Parasmaipada),
+                ("05.0038", "fkzi", PadaAssignment::Parasmaipada),
+            ]
+        );
+        // Complete: every svādi row upstream is curated.
+        let mut ours: Vec<&str> = rows.iter().map(|(n, _, _)| *n).collect();
+        ours.sort_unstable();
+        let upstream: Vec<&str> = upstream_rows()
+            .iter()
+            .map(|(n, _, _)| *n)
+            .filter(|n| n.starts_with("05."))
+            .collect();
+        assert_eq!(ours, upstream);
     }
 
     #[test]
@@ -7742,7 +8057,7 @@ mod tests {
     /// AFTER the `~` that marks an anunāsika it, so `~\` is an anudātta it and
     /// `~^` a svarita it — whereas a `\` sitting directly on a vowel elsewhere
     /// is the ROOT's own accent and says nothing about pada. Counted off the
-    /// vendored upadeśa: 73 of the 594 curated roots carry a `\` at all, and 52
+    /// vendored upadeśa: 90 of the 626 curated roots carry a `\` at all, and 69
     /// of those carry one on a root vowel — `01.0642 ji\`, `01.1082 smf\` and
     /// `02.0001 a\da~` among them — so conflating the two does not fail
     /// loudly; it silently calls most of the table ātmanepada.
