@@ -398,10 +398,10 @@ pub struct Dhatu {
     pub gana: Gana,
     /// Which pada(s) this engine derives for this root. Curated rather than
     /// read from the upadeśa's it-markers — but no longer a *deferral*:
-    /// `curated_pada_agrees_with_upadesha_markers` re-derives 102 of these 593
+    /// `curated_pada_agrees_with_upadesha_markers` re-derives 102 of these 594
     /// verdicts from the vendored upadeśa via 1.3.12 / 1.3.72 / 1.3.78 and
     /// requires them to match; `07.0017`'s (√bhuj's) is 1.3.66's root-keyed
-    /// exception, 427 curādi rows' are 1.3.74's, seven more 1.3.74's with ṇic
+    /// exception, 428 curādi rows' are 1.3.74's, seven more 1.3.74's with ṇic
     /// and 1.3.72's without (`NicUbhayapada`), 45 ākusmīya rows'
     /// the gaṇasūtra 10.0496's, ten ā-garvīya rows' the gaṇasūtra
     /// 10.0497's and `10.0058 zmiN`'s Kaumudī 2567's and 1.3.12's, each
@@ -419,7 +419,7 @@ pub struct Dhatu {
     /// the honest arrangement; see the deferral in
     /// `docs/superpowers/specs/2026-08-16-pada-audit-design.md`.
     ///
-    /// The test covers the 593 roots curated here, not the dhātupāṭha's 2259.
+    /// The test covers the 594 roots curated here, not the dhātupāṭha's 2259.
     /// It catches a mis-assigned pada on a root a future slice adds; it does
     /// not make the table self-maintaining.
     pub pada: PadaAssignment,
@@ -6567,6 +6567,18 @@ static DHATUS: &[Dhatu] = &[
         pada: PadaAssignment::Nic,
         artha: "avakalkane",
     },
+    Dhatu {
+        // 10.0175 `picca~` kuwwane (√picc). Guru upadhā (the conjunct `cc`),
+        // so unchanged before ṇic. 8.2.30 coH kuH declines on the first `c`:
+        // it stands before a jhal, the second `c`, but inside the root, not
+        // at a term's end (*piccayati*, not *pikcayati*). Ubhayapadī by
+        // 1.3.74. Slice 10m.
+        dhatupatha: "10.0175",
+        code: "picc",
+        gana: Gana::Curadi,
+        pada: PadaAssignment::Nic,
+        artha: "kuwwane",
+    },
 ];
 
 pub fn dhatus() -> &'static [Dhatu] {
@@ -6608,7 +6620,7 @@ mod tests {
 
     #[test]
     fn curated_roots_have_expected_ganas_and_padas() {
-        assert_eq!(dhatus().len(), 593);
+        assert_eq!(dhatus().len(), 594);
         let bu = dhatus().iter().find(|d| d.dhatupatha == "01.0001").unwrap();
         assert!(matches!(bu.pada, PadaAssignment::Parasmaipada));
         let labh = dhatus().iter().find(|d| d.dhatupatha == "01.1130").unwrap();
@@ -6899,7 +6911,7 @@ mod tests {
     }
 
     #[test]
-    fn curadi_rows_are_the_four_hundred_ninety_curated_roots() {
+    fn curadi_rows_are_the_four_hundred_ninety_one_curated_roots() {
         // Slice 10a opens gaṇa 10 with four roots that need only ṇic
         // (3.1.25), 3.1.32 and the guṇa/vṛddhi before ṇic: √cur (7.3.86),
         // √laḍ (7.2.116), √bhakṣ and √bhūṣ (neither). None carries a pada
@@ -6937,7 +6949,9 @@ mod tests {
         // √gūrd (8.2.78), √aṭṭ (8.4.41's stu-before-ṭu arm), √kṝt (7.1.101,
         // then 8.2.78), √mlecch (6.1.75), √dhras (udit by its initial `u~`,
         // ṇic optional by 2570) and √kṛp (8.2.18), all ubhayapadī by 1.3.74.
-        // The gaṇa is OPEN at 490 of its 509 dhātupāṭha rows.
+        // Slice 10m adds √picc, whose root-internal `cc` 8.2.30 no longer
+        // velarises, ubhayapadī by 1.3.74. The gaṇa is OPEN at 491 of its 509
+        // dhātupāṭha rows.
         let rows: Vec<_> = dhatus()
             .iter()
             .filter(|d| d.gana == Gana::Curadi)
@@ -7436,6 +7450,7 @@ mod tests {
                 ("10.0180", "gurd", PadaAssignment::Nic),
                 ("10.0270", "Dras", PadaAssignment::Nic),
                 ("10.0278", "kfp", PadaAssignment::Nic),
+                ("10.0175", "picc", PadaAssignment::Nic),
             ]
         );
     }
@@ -7699,7 +7714,7 @@ mod tests {
     /// AFTER the `~` that marks an anunāsika it, so `~\` is an anudātta it and
     /// `~^` a svarita it — whereas a `\` sitting directly on a vowel elsewhere
     /// is the ROOT's own accent and says nothing about pada. Counted off the
-    /// vendored upadeśa: 73 of the 593 curated roots carry a `\` at all, and 52
+    /// vendored upadeśa: 73 of the 594 curated roots carry a `\` at all, and 52
     /// of those carry one on a root vowel — `01.0642 ji\`, `01.1082 smf\` and
     /// `02.0001 a\da~` among them — so conflating the two does not fail
     /// loudly; it silently calls most of the table ātmanepada.

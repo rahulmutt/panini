@@ -86,7 +86,7 @@ row, behind three new sūtras — 6.4.98 *gamahanajanakhanaghasāṁ lopaḥ*
 (*jajñati*), 6.4.42 *janasanakhanāṁ sañjhaloḥ* (*jajātaḥ*) and the engine's
 twelfth vikalpa, 6.4.43 *ye vibhāṣā* (*jajanyāt* ~ *jajāyāt*) — with 8.4.40
 *stoḥ ścunā ścuḥ* gaining its converse arm, a stu after a ścu, guarded by the
-8.4.44 *śāt* exemption. *curādi* (10) is **open** at 490 of its 509
+8.4.44 *śāt* exemption. *curādi* (10) is **open** at 491 of its 509
 dhātupāṭha rows: √cur (`10.0001`, *corayati*), √laḍ (`10.0010`,
 *lāḍayati*), √bhakṣ (`10.0033`) and √bhūṣ (`10.0255`), curated in slice 10a,
 all ubhayapadī by 1.3.74 *ṇicaś ca*; and four roots of the ākusmīya
@@ -160,7 +160,11 @@ makes √kṝt's `F` upadhā `ir` before ṇic, ahead of guṇa (*kīrtayati*);
 adds tuk after √mlecch's long `e` (*mlecchayati*); and 8.4.41 *ṣṭunā ṣṭuḥ*
 now also retroflexes a stu before a ṭu (*aṭṭayati*). √dhras (`10.0270
 u~Drasa~`) is udit by its initial `u~`, so its ṇic is optional
-(*dhrāsayati* beside *dhrasati*).
+(*dhrāsayati* beside *dhrasati*). Slice 10m curated √picc (`10.0175
+picca~`, *piccayati*), ubhayapadī by 1.3.74, once 8.2.30 *coḥ kuḥ* was
+narrowed, as vidyut-prakriya reads it, to a term-final cu before a
+jhal-initial affix or āgama, or pada-final: the whole-word scan before it
+velarised the root-internal `cc` (*pikcayati*).
 Every curādi root takes ṇic (3.1.25) before the vikaraṇa; a new first
 pipeline stage adds it, guṇates or
 lengthens the root before it (7.3.86, 7.2.116 *ata upadhāyāḥ*), and folds it
@@ -189,11 +193,11 @@ rather than falling through to 1.3.72. What 1.3.66 does not model is the
 1.3.72's own precedent,
 since neither engine models sense. *parasmaipada* and *ātmanepada*
 (which padas a root admits is a curated verdict on its table row), over a
-curated 593-root set, in four lakāras: *laṭ* (present), *laṅ* (imperfect), *loṭ*
+curated 594-root set, in four lakāras: *laṭ* (present), *laṅ* (imperfect), *loṭ*
 (imperative), and *vidhiliṅ* (optative). A cell may have more than one valid
 form where an optional (*vikalpa*) sūtra applies — `hinvaH` and `hinuvaH` are
-both correct — and in fact 8460 of the 38160 cells hold more than one form: 6788
-hold two, 925 hold three (`Bavatu`, `BavatAd`, `BavatAt`, and — new in
+both correct — and in fact 8464 of the 38232 cells hold more than one form: 6790
+hold two, 927 hold three (`Bavatu`, `BavatAd`, `BavatAt`, and — new in
 slice 3b — √hrī's loṭ prathama and madhyama eka, and — new in slice 3c —
 √dā's and √dhā's, and — new in slice 3c2 — √gā's, and — new in slice 3d —
 the six ṛ-roots', and — new in slice 3d2 — √ṛ's, and — new in slice 3e —
@@ -202,7 +206,8 @@ and √dhan's, and — new in slice 3f2 — √bhas's, and — new in slice 3f3 
 √jan's, and — new in slice 10a — the four curādi roots', and — new in slice
 10d — the six jñapādi roots', and — new in slice 10e — the eighty-three
 ubhayapadī adanta roots', and — new in slice 10k — the 155 plain
-obligatory-ṇic rows', and — new in slice 10l — seven of its eight rows', each by
+obligatory-ṇic rows', and — new in slice 10l — seven of its eight rows', and —
+new in slice 10m — √picc's, each by
 7.1.35/8.4.56, √bhas's laṅ madhyama eka by 8.2.74/8.4.56; slice 10f's
 optional-ṇic rows add 114 two-form and 46 three-form cells, and slice 10g's
 fifty-nine add 1888 two-form cells, a ṇic and a ṇic-less reading each, and
@@ -286,7 +291,7 @@ replaces its palatal `j` with the velar `g` (which 8.4.55 *khari ca* later
 devoices to `k` before a `t`), and a velar is never savarṇa with the dental
 `t`/`D` that follows, so it never reaches the 8.4.65 branch the dental-final
 roots take. A root may also admit **both**
-padas — 467 roots that admit both padas in the curated set
+padas — 468 roots that admit both padas in the curated set
 (twenty-five ubhayapadī by 1.3.72: √nī, √tud, √rudh, √bhid, √kṣud, √yuj,
 √tṛd, √ric, √vic, √chid, √chṛd, √tan, √san, √kṣaṇ, √kṣiṇ, √ṛṇ, √tṛ, √ghṛ,
 √kṛ, √dā, √dhā, √bhṛ, √ṇij, √vij and √viṣ; √bhuj by 1.3.66; and curādi's √cur,
@@ -295,7 +300,7 @@ eighty-three ubhayapadī adanta roots, slice 10f's `mUtra`, `katra` and
 `pata`, slice 10g's fifty-nine optional-ṇic rows, slice 10h's fifty
 ādhṛṣīya rows (the six svarita or ñit among them by 1.3.72 too, without
 ṇic), slice 10i's sixty-one rows, slice 10j's √ghṛ, √jñā, √cyu, √bhū and
-√ci (by 1.3.72 too, without ṇic), slice 10k's 155 rows and slice 10l's eight by 1.3.74; and slice 10f's six optional-ṇic ākusmīya roots and
+√ci (by 1.3.72 too, without ṇic), slice 10k's 155 rows, slice 10l's eight and slice 10m's √picc by 1.3.74; and slice 10f's six optional-ṇic ākusmīya roots and
 `garva`, ātmanepadī by 10.0496 / 10.0497 with ṇic and parasmaipadī by
 1.3.78 without) derive a full
 parasmaipada and a full ātmanepada paradigm, so a single surface can be
@@ -305,7 +310,7 @@ anudātta marker (1.3.12), and while vidyut-prakriya additionally derives a
 parasmaipada `vanoti` via the gaṇasūtra Kaumudī 2547.2, that is recorded
 here, not modelled, on 1.3.72's own sense-restriction precedent, so this
 engine's √van has no parasmaipada branch to collide against.
-1631 of the pinned (`PARADIGM`) surfaces are pada-ambiguous, each of them a
+1635 of the pinned (`PARADIGM`) surfaces are pada-ambiguous, each of them a
 pinned cell in both padas at once — `rundDAm`, for instance, is √rudh's loṭ
 parasmaipada prathama dvi *and* its loṭ ātmanepada prathama eka, and tanādi's seven ubhayapadī roots
 contribute a new shape: `atanuta` is both √tan's laṅ ātmanepada prathama eka and its laṅ
@@ -338,11 +343,12 @@ rows add 540 more, four each but where an ubhayapadī row curated earlier
 already supplies them (sixteen homographs) or an in-slice pair shares them
 (`pfT` and `parT`, `pul` twice, `pAl` and `pal`, `sAntv` twice); slice
 10l's eight add 28 more, four each but `10.0026 curRa~`'s, which its
-homograph `10.0143 cUrRa~` already supplies. The
+homograph `10.0143 cUrRa~` already supplies; slice 10m's √picc adds four
+more. The
 enumeration is not
 maintained by hand: `pada_ambiguous_surfaces_are_exactly_these` in
 `crates/panini/tests/paradigm/main.rs` walks `PARADIGM` and asserts the whole
-set, all 1631. It is therefore a list of ambiguous **pinned cells**, not of every
+set, all 1635. It is therefore a list of ambiguous **pinned cells**, not of every
 pada-ambiguous surface: since slice 10h's ṇic-less branches are live in both
 padas, some surfaces that only `ALTERNATES` pins (`avadata`) are ambiguous too. An *alternate* form
 can be pada-ambiguous in its own right — √rudh's `runDAm` is the 8.4.65

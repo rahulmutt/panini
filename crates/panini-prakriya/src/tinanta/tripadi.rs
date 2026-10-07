@@ -369,8 +369,9 @@ pub(crate) static TRIPADI: &[Rule] = &[
     },
     // 8.2.30 coH kuH: a cu stop (c C j J) is replaced by its ku counterpart
     // (the nearest velar by 1.1.50 sthāne'ntaratamaḥ, so voicing and
-    // aspiration are preserved) when it is either word-final or immediately
-    // followed by a jhal. Banaj + ti -> Banag + ti (before the jhal `t`,
+    // aspiration are preserved) when it ends a term and either the next
+    // non-empty term is an affix or āgama beginning with a jhal, or nothing
+    // follows it in the pada. Banaj + ti -> Banag + ti (before the jhal `t`,
     // then 8.4.55 khari ca devoices to Banakti); aBanaj -> aBanag
     // word-finally.
     //
@@ -387,32 +388,44 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // The 1.1.50 sthAne'ntaratamaH account above is therefore a description
     // of this code, not only of the sūtra.
     //
-    // Read via `word_chars`, not a term-boundary check: the target `j` sits
-    // at the END of a non-final term (śnam's infix leaves the root's own
-    // tail — the `j` — in `SHAP`, one term short of the actual word end,
-    // e.g. `Ba | naj | ti`), so the jhal that conditions it can be the
-    // FIRST character of the NEXT term rather than anything in the bearing
-    // term itself. `word_chars` already flattens exactly this cross-term
-    // adjacency for the same reason 8.3.24 further down this array reads
-    // it. Word-final falls
-    // out of the same scan for free — there is simply no next entry to test
-    // (`w.get(i + 1)` is `None`) after 8.2.23 has eaten tip/sip's own letter,
-    // leaving `ENDING` empty and the dhātu's `j` as the last entry
-    // `word_chars` reports.
+    // The rule reads TERMS, as vidyut-prakriya's does: the cu must be a
+    // term's LAST sound. Slice 10m narrowed it from a whole-word scan, which
+    // velarised any cu before a jhal and so turned curādi `picc`'s first `c`
+    // (before the second) into `k` (*pikcayati* for *piccayati*). A root-
+    // internal cu is not at a morpheme's end, and the sūtra's jhal is the
+    // initial of what follows the term. The test
+    // `coh_kuh_reads_only_a_terms_final_cu_before_an_affix` pins the case.
     //
-    // The word-final / jhal test lives INSIDE the search, not after it, the
-    // way 8.3.24's and 8.4.58's own searches further down this array do: the
-    // rule finds the first `j` that is genuinely word-final or jhal-followed
-    // rather than the first `j` in the word full stop, so a non-applicable
-    // `j` earlier in the word can never hide a later, applicable one.
-    // No cell in this suite has two cu sounds to distinguish: √ric and √vic
-    // each carry exactly one `c`, no curated root mixes a `c` with a `j`,
-    // √ji, √juṣ and √vij always present theirs before a vowel, and the
-    // weak-stem cells of √bhañj, √yuj, √ric and √vic (`Banjanti`,
-    // `yuYjanti`, `riYcanti`) decline for the same reason.
-    // The scan is therefore deliberately NOT narrowed to √bhañj's known
-    // position: this is hardening against an ordering no witness here
-    // exercises, not a fix for one observed.
+    // The jhal is the first sound of the next NON-EMPTY term: śnam's infix
+    // leaves the root's own tail — the `j` — in `SHAP` (`Ba | naj | ti`), so
+    // the conditioning `t` is `ENDING`'s first sound, and adādi's luk'd śap
+    // leaves an empty `SHAP` between a root and its ending. Pada-final is the
+    // case where no non-empty term follows at all: 8.2.23 has eaten tip/sip's
+    // own letter, leaving `ENDING` empty and the dhātu's `j` last.
+    //
+    // That next term must be an affix or āgama, as vidyut requires. This
+    // engine does not tag terms by kind, but its slots fix it: every term
+    // after `ANGA` is one. The non-affix terms that can follow a term are
+    // `ABHYASA` (after `AGAMA`) and `ANGA`, the dhātu (after `AGAMA` or
+    // `ABHYASA`). The guard `j != ANGA` excludes `ANGA` only: an āgama
+    // ending in a cu before a jhal-initial abhyāsa is unreachable, because
+    // aṭ and āṭ are vowel-final, so the narrower guard matches vidyut on
+    // every reachable word. No abhyāsa or aṭ in the corpus ends in a
+    // consonant (7.4.60 halādiḥ śeṣaḥ), so the guard has one witness, the
+    // hand-built one in `coh_kuh_reads_only_a_terms_final_cu_before_an_affix`
+    // (in the tests module below), and no golden.
+    //
+    // vidyut fires 8.2.30 on EVERY qualifying term; `apply` runs once per
+    // derivation and velarises only the first. The two are equivalent on
+    // the corpus (no word has two qualifying cu-final terms; the audit and
+    // the main-vs-branch trace dump confirm). It is a deliberate
+    // simplification the old scan shared; a future slice that reaches two
+    // such terms must loop.
+    //
+    // The test lives INSIDE the search, not after it, the way 8.3.24's and
+    // 8.4.58's own searches further down this array do: the rule finds the
+    // first term whose final cu qualifies, so a term-final cu earlier in the
+    // word that does not (a vowel follows) never hides a later one that does.
     Rule {
         id: "8.2.30",
         name: "coH kuH",
@@ -420,14 +433,16 @@ pub(crate) static TRIPADI: &[Rule] = &[
         vikalpa: false,
         bars: &[],
         apply: |p| {
-            let w = word_chars(p);
-            let Some(pos) = w.iter().enumerate().position(|(i, (_, _, c))| {
-                kutva_of(*c).is_some() && w.get(i + 1).is_none_or(|(_, _, next)| is_jhal(*next))
-            }) else {
-                return false;
-            };
-            let (term, idx, found) = w[pos];
-            let Some(to) = kutva_of(found) else {
+            let hit = (0..p.terms.len()).find_map(|i| {
+                let to = kutva_of(p.terms[i].text.chars().last()?)?;
+                let next = (i + 1..p.terms.len()).find(|&j| !p.terms[j].text.is_empty());
+                let qualifies = match next {
+                    Some(j) => j != ANGA && p.terms[j].text.chars().next().is_some_and(is_jhal),
+                    None => true,
+                };
+                qualifies.then(|| (i, p.terms[i].text.chars().count() - 1, to))
+            });
+            let Some((term, idx, to)) = hit else {
                 return false;
             };
             let before = p.snapshot();
@@ -438,7 +453,8 @@ pub(crate) static TRIPADI: &[Rule] = &[
     },
     // 8.2.31 ho ḍhaḥ: `h` becomes `Q` (ḍh). The *jhali* and *padasya*
     // conditions come by anuvṛtti from the same place 8.2.30 coH kuH reads
-    // them, so the guard is written the same way — find the first `h` that
+    // them. The guard is the whole-word scan 8.2.30 used until slice 10m
+    // narrowed that rule alone to a term-final cu — find the first `h` that
     // is genuinely word-final or jhal-followed, rather than the first `h`
     // in the word, so a non-applicable `h` earlier can never hide a later
     // applicable one.
@@ -630,7 +646,7 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // root arrived.
     //
     // Read via `word_chars`, not a term-boundary check, for the same reason
-    // 8.2.30/8.4.41 do: śnam's infix leaves √piṣ's own tail — the `z` — at
+    // 8.4.41 does: śnam's infix leaves √piṣ's own tail — the `z` — at
     // the end of a non-final term (SHAP), one term short of the actual word
     // end (pi | naz | si), so the `s` that conditions it is the FIRST
     // character of the NEXT term.
@@ -1117,8 +1133,9 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // before ANY jhal, and `j`/`c` are themselves jhal, so it needs no
     // jhal-initial ending to act — it turns the root's `n` into `M` before
     // this rule ever sees it, and `shcutva_of('M')` is `None`. 8.2.30 coH
-    // kuH is NOT independently sufficient: it turns a word-final or
-    // jhal-followed `j`/`c` into its velar, but its own comment above (and
+    // kuH is NOT independently sufficient: it turns a term-final `j`/`c`
+    // that is pada-final or before a jhal-initial affix or āgama into its
+    // velar, but its own comment above (and
     // `coh_kuh_fires_only_word_finally_or_before_a_jhal`'s `Banjanti` case)
     // records that it DECLINES on exactly this shape when the ending is
     // vowel-initial — `Ba`/`nj`/`anti` leaves the `j` untouched, since a
@@ -2454,9 +2471,9 @@ mod tests {
         }
     }
 
-    /// 8.2.30 velarises a cu sound that is word-final or immediately followed
-    /// by a jhal, and declines otherwise. Both reachable arms are pinned
-    /// here: `j -> g` (√bhañj, √yuj) and `c -> k` (√ric, √vic). The `c` case
+    /// 8.2.30 velarises a term-final cu sound that is pada-final or followed
+    /// by a jhal-initial affix or āgama, and declines otherwise. Both
+    /// reachable arms are pinned here: `j -> g` (√bhañj, √yuj) and `c -> k` (√ric, √vic). The `c` case
     /// is the one that distinguishes a real 1.1.50 substitution from the
     /// literal 'g' this rule used to write -- see `kutva_of`.
     #[test]
@@ -2465,8 +2482,7 @@ mod tests {
 
         // before a jhal: the `j` sits at the end of a non-final term (śnam's
         // infix leaves it in SHAP), and the jhal that conditions it is the
-        // first character of the term after — the cross-term adjacency
-        // `word_chars` exists for.
+        // first character of the term after.
         let mut p = Prakriya {
             terms: with_slots(vec![Term::new("Ba"), Term::new("naj"), Term::new("ti")]),
             ..Default::default()
@@ -2513,6 +2529,63 @@ mod tests {
         };
         assert!(!(rule.apply)(&mut p));
         assert_eq!(p.text(), "Banjanti");
+    }
+
+    /// 8.2.30 reads a term's FINAL sound only, and the term after it must be
+    /// an affix or āgama: the cu has to stand at a morpheme's end. vidyut
+    /// reads terms too, though it fires on every qualifying term and this
+    /// engine on the first only (equivalent on the corpus). Main's
+    /// whole-word scan velarised
+    /// `picc`'s first `c` before the second (*pikcayati*); these pin the
+    /// narrowing, each on a hand-built prakriyā.
+    #[test]
+    fn coh_kuh_reads_only_a_terms_final_cu_before_an_affix() {
+        let rule = rules().find(|r| r.id == "8.2.30").unwrap();
+
+        // a cu inside a term declines even before a jhal: √picc's real
+        // tripādī intermediate, ṇic folded into the aṅga by 3.1.32 and made
+        // `ay` by 6.1.78, then śap.
+        let mut p = Prakriya {
+            terms: with_slots(vec![Term::new("piccay"), Term::new("a"), Term::new("ti")]),
+            ..Default::default()
+        };
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.text(), "piccayati");
+
+        // an earlier term-final cu that does not qualify (a vowel follows)
+        // does not hide a later one that does, and only the later one moves.
+        let mut p = Prakriya {
+            terms: with_slots(vec![Term::new("pac"), Term::new("anaj"), Term::new("ti")]),
+            ..Default::default()
+        };
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.text(), "pacanagti");
+
+        // an empty term is skipped: the jhal that conditions the cu is the
+        // first sound of the next NON-EMPTY term (adādi's luk'd śap).
+        let mut p = Prakriya {
+            terms: with_slots(vec![Term::new("vac"), Term::new(""), Term::new("ti")]),
+            ..Default::default()
+        };
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.text(), "vakti");
+
+        // the dhātu is not an affix: an abhyāsa ending in a cu before an aṅga
+        // beginning with a jhal declines. No abhyāsa in the corpus ends in a
+        // consonant (7.4.60 halādiḥ śeṣaḥ), so this is the guard's only
+        // witness.
+        let mut p = Prakriya {
+            terms: vec![
+                Term::new(""),
+                Term::new("jaj"),
+                Term::new("da"),
+                Term::new("a"),
+                Term::new("ti"),
+            ],
+            ..Default::default()
+        };
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.text(), "jajdaati");
     }
 
     /// 8.2.39 voices any pada-final jhal that `jashtva_of` can resolve — not

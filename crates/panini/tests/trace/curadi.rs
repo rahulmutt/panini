@@ -275,7 +275,7 @@ fn a_kusmad_is_credited_on_exactly_the_akusmiya_cells() {
     // cells, one branch each, the six optional-ṇic rows' on their ṇic branch
     // — and nowhere else: every credit's number lies in the positional
     // `AKUSMIYA` range. And 1.3.74 never reaches them: its credits stay on the
-    // 427 `Nic` rows and the seven `NicUbhayapada` rows' ṇic branch, read from
+    // 428 `Nic` rows and the seven `NicUbhayapada` rows' ṇic branch, read from
     // the curated `pada` column (ten before slice 10e, listed literally until
     // then).
     let hits = credited("10.0496");
@@ -288,7 +288,7 @@ fn a_kusmad_is_credited_on_exactly_the_akusmiya_cells() {
         .filter(|d| d.gana == Gana::Curadi && d.pada == PadaAssignment::Nic)
         .map(|d| d.dhatupatha)
         .collect();
-    assert_eq!(nic.len(), 427, "curated 1.3.74 rows");
+    assert_eq!(nic.len(), 428, "curated 1.3.74 rows");
     let nic_ubhayapada: Vec<&str> = dhatus()
         .iter()
         .filter(|d| d.pada == PadaAssignment::NicUbhayapada)
@@ -1054,6 +1054,43 @@ fn the_10l_rules_fire_only_on_their_rows() {
         rows_crediting("8.4.41", false),
         [
             "03.0014", "03.0023", "07.0014", "07.0015", "07.0018", "10.0037"
+        ]
+    );
+}
+
+#[test]
+fn coh_kuh_is_credited_on_exactly_its_twelve_rows() {
+    // Slice 10m narrowed 8.2.30 to a term-final cu before an affix or āgama,
+    // or pada-final. Goldens ignore traces, so this holds its credits to the
+    // rows it fired on before the narrowing, row for row, by live-branch
+    // count: juhotyādi's √ṇij and √vij, and rudhādi's ten cu-final roots
+    // (30 live branches where both padas derive, 21 where only
+    // parasmaipada does). No curādi row credits it, `10.0175 picca~`
+    // included, whose `cc` is root-internal.
+    assert!(dhatus().iter().any(|d| d.dhatupatha == "10.0175"));
+    let mut got: Vec<(&str, usize)> = Vec::new();
+    for (number, _) in credited("8.2.30") {
+        match got.last_mut() {
+            Some((n, c)) if *n == number => *c += 1,
+            _ => got.push((number, 1)),
+        }
+    }
+    got.sort();
+    assert_eq!(
+        got,
+        [
+            ("03.0012", 30),
+            ("03.0013", 30),
+            ("07.0004", 30),
+            ("07.0005", 30),
+            ("07.0007", 30),
+            ("07.0016", 21),
+            ("07.0017", 30),
+            ("07.0021", 21),
+            ("07.0022", 21),
+            ("07.0023", 21),
+            ("07.0024", 21),
+            ("07.0025", 21),
         ]
     );
 }
