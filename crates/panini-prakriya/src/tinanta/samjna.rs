@@ -62,6 +62,16 @@ pub(crate) const CISPHUR: [&str; 1] = ["10.0124"];
 /// tripādī 8.2.18 reads it.
 pub(crate) const KRP: [&str; 1] = ["10.0278"];
 
+/// 8.4.39 kṣubhnādiṣu ca: the dhātupāṭha rows whose ṇatva the sūtra's
+/// kṣubhnādi blocks. By number, as `KRP` is: vidyut-prakriya keys the sūtra
+/// on the upadeśa `tfpa~` before śnu, and curādi `10.0351` and `10.0355`
+/// (and tudādi `06.0028`) are `tfpa~` too, stored as the same `tfp`, and
+/// take no śnu. `05.0028 tfpa~` (*tṛpnoti*) is the one curated; kryādi
+/// `09.0055 kzuBa~` (*kṣubhnāti*) joins the list when it is. Pinned to
+/// upstream by `ksubhnadi_is_the_row_8_4_39_names`. The tripādī 8.4.39 reads
+/// it.
+pub(crate) const KSUBHNADI: [&str; 1] = ["05.0028"];
+
 pub(crate) static SAMJNA: &[Rule] = &[
     // Kaumudī 2567: a ṅit curādi root stays ātmanepadī under ṇic. With ṇic,
     // 1.3.74 ṇicaś ca would govern and 1.3.78 admit parasmaipada too; the
@@ -1030,6 +1040,20 @@ mod tests {
             assert_eq!(upstream_upadesha(number), Some(upadesha), "{number}");
             assert!(!dhatus().iter().any(|d| d.dhatupatha == number), "{number}");
         }
+    }
+
+    #[test]
+    fn ksubhnadi_is_the_row_8_4_39_names() {
+        // 8.4.39 kṣubhnādiṣu ca. vidyut-prakriya keys its śnu arm on the
+        // upadeśa `tfpa~`. Tudādi's and curādi's two `tfpa~` rows store the
+        // same `tfp` and take no śnu; kryādi's `kzuBa~` joins when its row
+        // is curated.
+        assert_eq!(KSUBHNADI, ["05.0028"]);
+        for number in ["05.0028", "06.0028", "10.0351", "10.0355"] {
+            assert_eq!(upstream_upadesha(number), Some("tfpa~"), "{number}");
+        }
+        assert_eq!(upstream_upadesha("09.0055"), Some("kzuBa~"));
+        assert!(!dhatus().iter().any(|d| d.dhatupatha == "09.0055"));
     }
 
     #[test]

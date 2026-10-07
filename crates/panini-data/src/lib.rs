@@ -121,6 +121,33 @@ pub const JNAPADI: RangeInclusive<&str> = "10.0118"..="10.0124";
 /// `aya_is_exactly_the_curated_rows_3_1_28_names` pins it to upstream.
 pub const AYA: [&str; 2] = ["10.0303", "10.0304"];
 
+/// The curated rows whose upadeśa is idit: it carries the `i~` it-marker,
+/// as `hisi~` and `citi~` do. 7.1.58 *idito num dhātoḥ* gives such a root
+/// its num, and this table stores the root with the num already in
+/// (`07.0019 hins` for `hisi~`), a stated simplification. So a stored code
+/// cannot say whether a nasal is the root's own or 7.1.58's: only the
+/// upadeśa can. 6.4.24 *aniditāṁ hala upadhāyāḥ kṅiti* needs that verdict:
+/// it elides the nasal upadhā of an ANIDIT root before a kit or ṅit affix,
+/// and spares an idit root's. Keyed by dhātupāṭha number, as `AYA` is. The
+/// engine's `derive` tags a listed root `Tag::Idit`, which 6.4.24 reads.
+///
+/// Lists curated rows only: rudhādi's √hiṃs and eighty-six curādi rows.
+/// `idit_matches_upadesha_markers` re-derives the table from the vendored
+/// upadeśa and holds it to exactly the curated rows that carry the marker.
+pub const IDIT: &[&str] = &[
+    "07.0019", "10.0002", "10.0003", "10.0004", "10.0005", "10.0007", "10.0009", "10.0011",
+    "10.0013", "10.0014", "10.0043", "10.0045", "10.0047", "10.0048", "10.0049", "10.0060",
+    "10.0062", "10.0066", "10.0067", "10.0068", "10.0069", "10.0070", "10.0071", "10.0072",
+    "10.0073", "10.0074", "10.0075", "10.0076", "10.0077", "10.0105", "10.0106", "10.0107",
+    "10.0111", "10.0112", "10.0113", "10.0114", "10.0130", "10.0135", "10.0147", "10.0153",
+    "10.0157", "10.0158", "10.0159", "10.0160", "10.0164", "10.0166", "10.0171", "10.0182",
+    "10.0185", "10.0193", "10.0194", "10.0198", "10.0199", "10.0241", "10.0254", "10.0267",
+    "10.0285", "10.0286", "10.0287", "10.0289", "10.0290", "10.0291", "10.0292", "10.0293",
+    "10.0294", "10.0295", "10.0296", "10.0298", "10.0299", "10.0315", "10.0316", "10.0317",
+    "10.0318", "10.0319", "10.0321", "10.0322", "10.0323", "10.0326", "10.0327", "10.0328",
+    "10.0329", "10.0330", "10.0331", "10.0366", "10.0385", "10.0464", "10.0465",
+];
+
 /// The ā-garvīya of curādi: dhātupāṭha rows `10.0440` (`pada`) through
 /// `10.0449` (`garva`), the scope of the gaṇasūtra 10.0497 *ā garvād
 /// ātmanepadinaḥ*. Compared as strings, like `AKUSMIYA`. A curated row is
@@ -7806,6 +7833,21 @@ mod tests {
         code
     }
 
+    /// Whether an upstream upadeśa is idit: its LAST marker is `i~`, accents
+    /// aside (`hisi~`, `citi~`, `aci~^`). A non-final `i~` belongs to another
+    /// marker — irit `i~r` (`ru\Di~^r`, `Guzi~r`) or `cakzi~N`. The one
+    /// reading `stored_form`, `IDIT` (`idit_matches_upadesha_markers`) and
+    /// 2564's arm of `optional_nic_from_upadesha` share.
+    fn is_idit(upadesha: &str) -> bool {
+        without_accents(upadesha).ends_with("i~")
+    }
+
+    /// An upadeśa without its trailing accent marks (`\` and `^`): the one
+    /// trimming `is_idit` and `optional_nic_from_upadesha` both read.
+    fn without_accents(upadesha: &str) -> &str {
+        upadesha.trim_end_matches(['\\', '^'])
+    }
+
     /// The form this repo stores as `Dhatu::code`, derived from an upstream
     /// upadeśa.
     fn stored_form(upadesha: &str) -> String {
@@ -7820,7 +7862,7 @@ mod tests {
         // sibling check below compares a curated row against its uncurated
         // neighbours: `10.0194 dasi~` must store as `dans`, not collide with
         // `10.0195 dasa~`'s `das`.
-        let idit = upadesha.trim_end_matches(['\\', '^']).ends_with("i~");
+        let idit = is_idit(upadesha);
         match s.rfind(|c: char| !is_hal(c)) {
             Some(i) if idit => format!("{}n{}", &s[..=i], &s[i + 1..]),
             _ => s,
@@ -7862,8 +7904,8 @@ mod tests {
         if ("10.0279"..="10.0337").contains(&number) {
             return Some("10.0499");
         }
-        let u = upadesha.trim_end_matches(['\\', '^']);
-        if u.ends_with("i~") {
+        let u = without_accents(upadesha);
+        if is_idit(upadesha) {
             Some("2564")
         } else if u.ends_with('F') {
             Some("2565")
@@ -7878,6 +7920,41 @@ mod tests {
         } else {
             None
         }
+    }
+
+    #[test]
+    fn idit_matches_upadesha_markers() {
+        // Both directions, as `optional_nic_matches_upadesha_markers` holds
+        // its table: every entry's upadeśa is idit and its row curated, and
+        // every curated row whose upadeśa is idit is an entry. Non-circular:
+        // the upadeśa comes from the vendored dhātupāṭha, not from the table.
+        let rows = upstream_rows();
+        let upadesha = |n: &str| rows.iter().find(|(m, _, _)| *m == n).unwrap().1;
+        for n in IDIT {
+            assert!(is_idit(upadesha(n)), "{n} {}", upadesha(n));
+            assert!(
+                dhatus().iter().any(|d| d.dhatupatha == *n),
+                "{n} is not curated"
+            );
+        }
+        for d in dhatus() {
+            assert_eq!(
+                IDIT.contains(&d.dhatupatha),
+                is_idit(upadesha(d.dhatupatha)),
+                "{} {}",
+                d.dhatupatha,
+                upadesha(d.dhatupatha)
+            );
+        }
+        assert!(IDIT.windows(2).all(|w| w[0] < w[1]), "sorted, no repeats");
+        assert_eq!(IDIT.len(), 87);
+        // √hiṃs is the one entry outside curādi: its stored `hins` holds
+        // 7.1.58's num.
+        assert_eq!(upadesha("07.0019"), "hisi~");
+        assert_eq!(IDIT.iter().filter(|n| !n.starts_with("10.")).count(), 1);
+        // The irit `i~r` is not idit, nor is a root's own final `i`.
+        assert!(!is_idit("Guzi~r"));
+        assert!(!is_idit("ciri"));
     }
 
     #[test]

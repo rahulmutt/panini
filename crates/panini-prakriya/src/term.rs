@@ -176,6 +176,14 @@ pub enum Tag {
     /// A saṁjñā verdict, so no step is recorded. Read only by 3.1.28, in
     /// `tinanta::sanadi`, which adds āya where no ṇic was taken.
     Aya,
+    /// The dhātu is idit: its upadeśa carries the `i~` it-marker, so 7.1.58
+    /// *idito num dhātoḥ* gave it its num, which the data layer stores
+    /// already in (`hins`). Set by `tinanta::derive` from the row NUMBER
+    /// (`panini_data::IDIT`), as `Aya` is: a stored code cannot say which
+    /// nasal is 7.1.58's. A saṁjñā verdict, so no step is recorded. Read
+    /// only by 6.4.24 *aniditāṁ hala upadhāyāḥ kṅiti*, in `tinanta::anga`,
+    /// which spares an idit root's nasal.
+    Idit,
     /// The term at `SHAP` IS one of the four a-final vikaraṇas — śap
     /// (3.1.68), śyan (3.1.69), śa (3.1.77) or śānac (3.1.83) — each
     /// a-final once its own it-lopa runs ("a"/"ya"/"a"/"Ana"). This is an

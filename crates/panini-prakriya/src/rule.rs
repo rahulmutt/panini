@@ -47,6 +47,8 @@ pub struct Rule {
     /// 7.3.87 *nābhyastasyāci piti sārvadhātuke* is the second and the first
     /// mandatory one: it changes no text and bars 7.3.86, keeping an abhyasta
     /// aṅga's laghu upadhā before a vowel-initial pit ending (nenijAni).
+    /// 8.4.39 *kṣubhnādiṣu ca* is the third: it changes no text and bars 8.4.1
+    /// and 8.4.2, keeping √tṛp's śnu dental (tfpnoti).
     /// Barring is by id, so barring an id that occurs twice in the pipeline
     /// (7.3.84, 7.3.86, 1.2.4) skips every occurrence on that branch.
     ///
