@@ -234,7 +234,7 @@
   target under `crates/panini-lipi/fuzz` legitimately omits it, since it uses
   `#![no_main]` plus the libfuzzer harness macro).
 - Grammar changes are gated by the golden paradigm test
-  (`crates/panini/tests/paradigm/`, 38232 cells, ten gaṇas, nine complete —
+  (`crates/panini/tests/paradigm/`, 39744 cells, ten gaṇas, nine complete —
   tanādi closing at 10/10 in slice 8b (nine of its ten dhātupāṭha rows
   curated in slice 8a; √kṛ, the tenth and last, in 8b), and juhotyādi (3)
   opened in slice 3a at 2 of its 26 rows, at 4 after slice 3b curated √bhī
@@ -245,10 +245,10 @@
   and √viṣ, at 24 after slice 3f curated √kit, √tur, √dhiṣ and √dhan, at 25
   after slice 3f2 curated √bhas, and closing at 26 of 26 in slice 3f3 with √jan,
 and curādi (10) opened in slice 10a at 4 of its 492 dhātus (√cur, √laḍ, √bhakṣ,
-√bhūṣ), at 8 after slice 10b curated the ākusmīya √cit, √vṛṣ, √mad and √kusm, at 41 after slice 10c curated thirty-three more ākusmīya roots, at 47 after slice 10d curated the jñapādi √jñap, √yam, √cah, √cap, √rah and √bal, at 139 after slice 10e curated ninety-two adanta roots, at 149 after slice 10f curated the ten optional-ṇic rows, at 208 after slice 10g curated fifty-nine more, at 258 after slice 10h curated the fifty ādhṛṣīya rows, at 319 after slice 10i curated the fifty-nine āsvadīya rows, √pṝ and √ghuṣ, at 327 after slice 10j curated the eight ajanta rows √smiṅ, √ci, √ghṛ, √gṛ, √yu, √jñā, √cyu and √bhū, at 482 after slice 10k curated the 155 plain obligatory-ṇic rows, at 490 after slice 10l curated the eight rule-bearing rows √ūrj, √cūrṇ, √aṭṭ, √kṝt, √mlecch, √gūrd, √dhras and √kṛp, at 491 after slice 10m curated √picc, narrowing 8.2.30 to a term-final cu, the one dhātu left being √ṣad (`10.0368`), which waits for upasargas —
+√bhūṣ), at 8 after slice 10b curated the ākusmīya √cit, √vṛṣ, √mad and √kusm, at 41 after slice 10c curated thirty-three more ākusmīya roots, at 47 after slice 10d curated the jñapādi √jñap, √yam, √cah, √cap, √rah and √bal, at 139 after slice 10e curated ninety-two adanta roots, at 149 after slice 10f curated the ten optional-ṇic rows, at 208 after slice 10g curated fifty-nine more, at 258 after slice 10h curated the fifty ādhṛṣīya rows, at 319 after slice 10i curated the fifty-nine āsvadīya rows, √pṝ and √ghuṣ, at 327 after slice 10j curated the eight ajanta rows √smiṅ, √ci, √ghṛ, √gṛ, √yu, √jñā, √cyu and √bhū, at 482 after slice 10k curated the 155 plain obligatory-ṇic rows, at 490 after slice 10l curated the eight rule-bearing rows √ūrj, √cūrṇ, √aṭṭ, √kṝt, √mlecch, √gūrd, √dhras and √kṛp, at 491 after slice 10m curated √picc, narrowing 8.2.30 to a term-final cu, the one dhātu left being √ṣad (`10.0368`), which waits for upasargas, and svādi (5) closing at 38 of 38 in svādi 5b, which curated the thirty-two rows beyond its first six behind 6.4.24 and 8.4.39 —
   `PARADIGM`
     stays one-form-per-cell: a cell forked by an optional rule keeps its
-    other forms — a second (6790 cells), a third (927 cells), a fourth
+    other forms — a second (6970 cells), a third (991 cells), a fourth
     (361
     cells, rudhādi's √piṣ and — new in slice 7d — √śiṣ loṭ madhyama eka, and
     — new in slice 8a — fifteen more spread across tanādi's four ik-upadhā
@@ -278,7 +278,7 @@ and curādi (10) opened in slice 10a at 4 of its 492 dhātus (√cur, √laḍ, 
     seven-form cell, or up to a ninth for slice 10f's `pata`, slice 10h's
     √dhū and √prī and slice 10j's √ci loṭ parasmaipada prathama and madhyama
     eka, the eight nine-form cells and the record — in
-    `ALTERNATES` (11672 rows in all, so 38232 + 11672 = 49904 forms total); √bhuj
+    `ALTERNATES` (11980 rows in all, so 39744 + 11980 = 51724 forms total); √bhuj
     joins neither fork record — its forks stack only 7.1.35 and 8.4.56, the
     same two-deep profile as √yuj — but the √bhuj/1.3.66 slice adds two
     trace pins of its own, `bhunkte_trace_credits_1_3_66_not_1_3_72` and
@@ -319,9 +319,14 @@ and curādi (10) opened in slice 10a at 4 of its 492 dhātus (√cur, √laḍ, 
     so the pada model no longer stands in their way; whether any given one
     needs phonology of its own is a per-root question nobody has asked yet —
     see `docs/superpowers/specs/2026-07-28-kryadi-gana-design.md`; svādi
-    (gaṇa 5) is now **complete** — six roots across all four lakāras: √āp,
-    √śak, √hi and √ri (parasmaipada), √aś (`05.0020`, distinct from kryādi's
-    `09.0059`) and √ṣṭigh (`stiG`) (ātmanepada). Its vikaraṇa is śnu (3.1.73),
+    (gaṇa 5) is **complete** at all 38 of its dhātupāṭha rows — first six
+    roots across all four lakāras: √āp, √śak, √hi and √ri (parasmaipada),
+    √aś (`05.0020`, distinct from kryādi's `09.0059`) and √ṣṭigh (`stiG`)
+    (ātmanepada); then, in svādi 5b, the other thirty-two, ten ubhayapadī by
+    1.3.72 and twenty-two parasmaipadī, behind 6.4.24 *aniditāṁ hala
+    upadhāyāḥ kṅiti* (√dambh's *dabhnoti*; its *aniditām* is `Tag::Idit`,
+    from the data layer's `IDIT`) and 8.4.39 *kṣubhnādiṣu ca* (√tṛp's
+    *tṛpnoti*, keyed by row and reading śnu as `Tag::Snu`). Its vikaraṇa is śnu (3.1.73),
     and it is the first gaṇa where 7.3.84's guṇa lands on the vikaraṇa rather
     than the root: 7.3.84 now applies twice, once with respect to śnu and once
     with respect to the ending (1.4.13 makes the aṅga affix-relative), giving
@@ -479,8 +484,9 @@ and curādi (10) opened in slice 10a at 4 of its 492 dhātus (√cur, √laḍ, 
     savarṇe* for √vid — plus two SLP1 surface collisions, which number
     keying makes moot, rather than needing anything new. (vidyut-prakriya
     credits 6.4.24 *aniditāṁ hala upadhāyāḥ kṅiti* for √und's `unad → und`
-    step; this engine rejects that credit, does not implement 6.4.24 at
-    all, and pins the rejection in `tests/trace/`.) That left √tṛh as the
+    step; this engine rejects that credit — its 6.4.24, landed in svādi 5b,
+    never reaches a rudhādi aṅga, which 3.1.78 leaves vowel-final — and pins
+    the rejection in `tests/trace/`.) That left √tṛh as the
     ninth and only reachable non-ubhayapadī root still out, deferred to
     slice 7e behind three sūtras the engine did not implement: 7.3.92
     *tṛṇaha im* (the *im* augment), 8.2.31 *ho ḍhaḥ* and 8.3.13 *ḍho ḍhe
@@ -708,7 +714,9 @@ and curādi (10) opened in slice 10a at 4 of its 492 dhātus (√cur, √laḍ, 
   entry, 37584 cells / 49160 forms / 585 roots), and that by curādi 10l's
   (`tools/audit/README.md`'s 2026-10-06 10l entry, 38160 cells / 49826 forms /
   593 roots), and that by curādi 10m's (`tools/audit/README.md`'s 2026-10-06 10m
-  entry, 38232 cells / 49904 forms / 594 roots).
+  entry, 38232 cells / 49904 forms / 594 roots), and that by svādi 5b's
+  (`tools/audit/README.md`'s 2026-10-07 svādi 5b entry, 39744 cells / 51724 forms /
+  626 roots).
   Three new `Rule`s are behind it, all root-keyed to √kṛ and all in
   `guna.rs` — 6.4.110 *ata ut sārvadhātuke*, 6.4.108 *nityaṁ karoteḥ* and
   6.4.109 *ye ca* — plus one engine change with no `Rule` of its own:
@@ -755,12 +763,13 @@ and curādi (10) opened in slice 10a at 4 of its 492 dhātus (√cur, √laḍ, 
   claim ("only 8 cells fire it at all") is no longer merely
   corpus-size-stale but flatly wrong: tanādi's bare `u` is asaṁyogapūrva
   for every one of its nine 8a-curated roots (√kṛ, 8b's own root, does not
-  add to this count — 6.4.108 empties its `u` first), so 6.4.107 now fires
+  add to this count — 6.4.108 empties its `u` first), so 6.4.107 fired
   on **72**
-  cells across eleven roots (`key_count("6.4.107") == 72`, the same
-  test), not 8 — the "8 cells" figure was never re-derived when the gaṇa
-  landed. `guna.rs:1233`'s own claim ("1872 goldens move") stays stale
-  only in the ordinary corpus-size sense, not wrong in kind: 38232 goldens
+  cells across eleven roots as of tanādi 8b, and fires on **188** across
+  thirty since svādi 5b's nineteen asaṁyogapūrva roots
+  (`key_count("6.4.107") == 188`, the same test), not 8 — the "8 cells"
+  figure was never re-derived when the gaṇa landed. `guna.rs:1233`'s own claim ("1872 goldens move") stays stale
+  only in the ordinary corpus-size sense, not wrong in kind: 39744 goldens
   would move today. Neither comment was touched by tanādi 8a or 8b, consistent
   with every slice since 7c. Rudhādi 7d touched neither comment — its one permitted
   engine-comment edit is the comment above
@@ -966,12 +975,16 @@ and curādi (10) opened in slice 10a at 4 of its 492 dhātus (√cur, √laḍ, 
   (`hu`, `BI`), safe only because `juhotyadi_rows_are_the_twenty_six_curated_roots`
   asserts those codes stay unique; 7.4.75, 7.4.76, 6.4.116, 6.4.117, 6.4.118, 8.2.38
   and 8.2.40's *adhaḥ* key on numbers, because `03.0008` and `03.0009` share
-  `hA`, and 7.4.77 (`03.0004`, `03.0005`, `03.0017`) follows that precedent. 7.4.75 (`03.0012`–`03.0014`) does too: `vij` is also `06.0009` and `07.0023`. 6.4.100 (`03.0019`, slice 3f2) does too, so a curated √ghas extends its key rather than sharing a text test. 6.4.98 (`03.0025`) and 6.4.42 / 6.4.43 (`JANA_SANA`: `03.0025`, `08.0002`; slice 3f3) do too; the latter key both curated roots their sūtra names, and √san declines on its follower, the vikaraṇa `u`, not on a missing key. 7.4.78 keys
+  `hA`, and 7.4.77 (`03.0004`, `03.0005`, `03.0017`) follows that precedent. 8.4.39 (`KSUBHNADI`: `05.0028`, svādi 5b) does too: curādi's `10.0351` and `10.0355` are also `tfpa~`, stored `tfp`. 7.4.75 (`03.0012`–`03.0014`) does too: `vij` is also `06.0009` and `07.0023`. 6.4.100 (`03.0019`, slice 3f2) does too, so a curated √ghas extends its key rather than sharing a text test. 6.4.98 (`03.0025`) and 6.4.42 / 6.4.43 (`JANA_SANA`: `03.0025`, `08.0002`; slice 3f3) do too; the latter key both curated roots their sūtra names, and √san declines on its follower, the vikaraṇa `u`, not on a missing key. 7.4.78 keys
   on a number for a different reason: the sūtra names no root, the Kaumudī
   applies it to one row (03.0026), and `gA` is also `01.1101 gA\N`. A sūtra
   naming a class of roots becomes a saṁjñā tag decided from the number in `derive` —
   `Tag::Ghu` from `tinanta/samjna.rs`'s `GHU` — pinned to the vendored TSV
-  rather than to a derivation, so its uncurated members are held too.
+  rather than to a derivation, so its uncurated members are held too. A
+  verdict the upadeśa carries but the stored code cannot is decided the same
+  way: 6.4.24's *aniditām* reads `Tag::Idit`, from `panini_data::IDIT`,
+  which `idit_matches_upadesha_markers` holds to the vendored upadeśa in
+  both directions.
 - **An apavāda that must stop other rules on its branch declares it in
   `Rule.bars`; never in the overridden rules' guards, and never by reading
   `p.log`.** `run_pipeline` enforces the bar per branch (a vikalpa's on its
@@ -980,6 +993,11 @@ and curādi (10) opened in slice 10a at 4 of its 492 dhātus (√cur, √laḍ, 
   so without its bars 6.4.116, 6.4.113 and 6.4.112 would each still rewrite
   the `A` it keeps. 7.3.87 is the second and the first mandatory one: it changes
   no text and bars 7.3.86, so 7.3.86's guard carries no abhyasta exception.
+  8.4.39 *kṣubhnādiṣu ca* (svādi 5b) is the third: it changes no text and
+  bars 8.4.1 and 8.4.2, so ṇatva's guards carry no √tṛp exception. Its
+  guard reads the row (`KSUBHNADI`) and śnu by identity, `Tag::Snu` on the
+  next non-empty term after `ANGA`, never by text (the tripādī's śnu text
+  is `nu`, `no`, `nuv` or `nav`).
   7.1.6's read of `p.log` for 7.1.5 is an ENABLING condition,
   not a bar, and stays as it is.
 

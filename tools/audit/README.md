@@ -27,7 +27,7 @@ is ruleless.
 comment states that a blocked prakriyā's `text()` is a partial string — often the
 bare root code — not a surface form.
 
-**It asserts the corpus totals** (594 roots, 38232 cells, 49904 forms) rather than
+**It asserts the corpus totals** (626 roots, 39744 cells, 51724 forms) rather than
 reporting whatever it enumerated. Those totals are corroborated by
 `derivation_set_shape_matches_the_audited_numbers` in
 `crates/panini/tests/paradigm/main.rs`, which each slice raises to the same totals
@@ -108,6 +108,26 @@ PANINI_AUDIT_DUMP=/tmp/audit-table.tsv mise exec rust@1.99.0 -- cargo run --rele
 ```
 
 ## Last recorded result
+
+2026-10-07, svādi 5b slice, vidyut
+`8da2f90bee3ce1c07505fa432fc3729e3f7e02ea`: **zero differences across 39744
+cells / 51724 forms / 626 roots**, with the `entry` negative control verified
+failing (36 √bhū cells).
+
+The verdict covers the whole svādi 5b slice: svādi's other thirty-two rows,
+closing the gaṇa at 38 of 38, ten ubhayapadī by 1.3.72 and twenty-two
+parasmaipadī by 1.3.78; 6.4.24 *aniditāṁ hala upadhāyāḥ kṅiti*, general
+(the next non-empty term after the aṅga ṅit, the root not idit by the
+data layer's `IDIT`), for √dambh; and 8.4.39 *kṣubhnādiṣu ca*, keyed by
+row and reading śnu by `Tag::Snu`, for √tṛp. Blocked branches stay at 6552. With the rows and neither
+rule, 72 cells differed, √dambh's 36 and √tṛp's 36. A base-vs-branch dump
+of every prior cell's branches, blocked ones included, with every step's
+before and after text, was byte-identical, all 56456 of them (49904 live).
+
+Totals: 626 = 594 + 32; 39744 = 38232 + 1512 (168 root×pada×lakāra blocks ×
+9: ten rows × 2 padas × 4 lakāras, twenty-two × 4); 51724 = 49904 + 1512 +
+308 new `ALTERNATES` rows (11672 → 11980), measured via the harness's
+corpus block, not assumed.
 
 2026-10-06, curādi 10m slice, vidyut
 `8da2f90bee3ce1c07505fa432fc3729e3f7e02ea`: **zero differences across 38232
