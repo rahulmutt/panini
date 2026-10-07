@@ -388,7 +388,7 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // The 1.1.50 sthAne'ntaratamaH account above is therefore a description
     // of this code, not only of the sūtra.
     //
-    // The rule reads TERMS, the way vidyut-prakriya's does: the cu must be a
+    // The rule reads TERMS, as vidyut-prakriya's does: the cu must be a
     // term's LAST sound. Slice 10m narrowed it from a whole-word scan, which
     // velarised any cu before a jhal and so turned curādi `picc`'s first `c`
     // (before the second) into `k` (*pikcayati* for *piccayati*). A root-
@@ -405,11 +405,22 @@ pub(crate) static TRIPADI: &[Rule] = &[
     //
     // That next term must be an affix or āgama, as vidyut requires. This
     // engine does not tag terms by kind, but its slots fix it: every term
-    // after `ANGA` is one, and the only other term that can follow is `ANGA`
-    // itself, the dhātu, after `AGAMA` or `ABHYASA`. Hence `j != ANGA`. No
-    // abhyāsa or aṭ in the corpus ends in a consonant (7.4.60 halādiḥ
-    // śeṣaḥ), so the guard has one witness, the hand-built one in the test
-    // above, and no golden.
+    // after `ANGA` is one. The non-affix terms that can follow a term are
+    // `ABHYASA` (after `AGAMA`) and `ANGA`, the dhātu (after `AGAMA` or
+    // `ABHYASA`). The guard `j != ANGA` excludes `ANGA` only: an āgama
+    // ending in a cu before a jhal-initial abhyāsa is unreachable, because
+    // aṭ and āṭ are vowel-final, so the narrower guard matches vidyut on
+    // every reachable word. No abhyāsa or aṭ in the corpus ends in a
+    // consonant (7.4.60 halādiḥ śeṣaḥ), so the guard has one witness, the
+    // hand-built one in `coh_kuh_reads_only_a_terms_final_cu_before_an_affix`
+    // (in the tests module below), and no golden.
+    //
+    // vidyut fires 8.2.30 on EVERY qualifying term; `apply` runs once per
+    // derivation and velarises only the first. The two are equivalent on
+    // the corpus (no word has two qualifying cu-final terms; the audit and
+    // the main-vs-branch trace dump confirm). It is a deliberate
+    // simplification the old scan shared; a future slice that reaches two
+    // such terms must loop.
     //
     // The test lives INSIDE the search, not after it, the way 8.3.24's and
     // 8.4.58's own searches further down this array do: the rule finds the
@@ -1123,8 +1134,8 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // jhal-initial ending to act — it turns the root's `n` into `M` before
     // this rule ever sees it, and `shcutva_of('M')` is `None`. 8.2.30 coH
     // kuH is NOT independently sufficient: it turns a term-final `j`/`c`
-    // that is pada-final or before a jhal-initial affix into its velar, but
-    // its own comment above (and
+    // that is pada-final or before a jhal-initial affix or āgama into its
+    // velar, but its own comment above (and
     // `coh_kuh_fires_only_word_finally_or_before_a_jhal`'s `Banjanti` case)
     // records that it DECLINES on exactly this shape when the ending is
     // vowel-initial — `Ba`/`nj`/`anti` leaves the `j` untouched, since a
@@ -2461,8 +2472,8 @@ mod tests {
     }
 
     /// 8.2.30 velarises a term-final cu sound that is pada-final or followed
-    /// by a jhal-initial affix, and declines otherwise. Both reachable arms are pinned
-    /// here: `j -> g` (√bhañj, √yuj) and `c -> k` (√ric, √vic). The `c` case
+    /// by a jhal-initial affix or āgama, and declines otherwise. Both
+    /// reachable arms are pinned here: `j -> g` (√bhañj, √yuj) and `c -> k` (√ric, √vic). The `c` case
     /// is the one that distinguishes a real 1.1.50 substitution from the
     /// literal 'g' this rule used to write -- see `kutva_of`.
     #[test]
@@ -2522,7 +2533,9 @@ mod tests {
 
     /// 8.2.30 reads a term's FINAL sound only, and the term after it must be
     /// an affix or āgama: the cu has to stand at a morpheme's end. vidyut
-    /// fires it per term the same way. Main's whole-word scan velarised
+    /// reads terms too, though it fires on every qualifying term and this
+    /// engine on the first only (equivalent on the corpus). Main's
+    /// whole-word scan velarised
     /// `picc`'s first `c` before the second (*pikcayati*); these pin the
     /// narrowing, each on a hand-built prakriyā.
     #[test]

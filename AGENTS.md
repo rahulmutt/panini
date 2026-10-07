@@ -67,7 +67,7 @@
     equivalent mutants and the two `skip_nic` mutants (the regexes also match
     two caught `mod.rs` `derive` mutants, 20.13s and 69.13s) ran the full
     suite uncaught in 662.09s (`adesha.rs:649:30`) and 669.64s
-    (`tripadi.rs:1405:38`); both MISSED (10l's probe on a quiet host:
+    (`tripadi.rs:1416:38`); both MISSED (10l's probe on a quiet host:
     242.81s / 242.16s; 10k's, under load 59-85: 450.11s / 459.65s; 10j's:
     315.46s / 309.36s; 10i's: 188.69s / 188.85s; 10h's: 160.99s / 160.28s;
     10g's: 160.20s / 163.19s; 10f's: 59.32s / 58.53s). In the same probe
@@ -75,7 +75,7 @@
     6759.15s and `sanadi.rs:60:39` (`!=` → `==`) in 5547.69s (10l's probe:
     2242.64s / 1883.83s; 10k's: 4617.70s / 3695.74s; 10j's: 3885.06s /
     2740.27s). Under campaign load the uncaught phases were 388.14s
-    (`adesha.rs:649:30`) and 457.45s (`tripadi.rs:1405:38`), both MISSED at
+    (`adesha.rs:649:30`) and 457.45s (`tripadi.rs:1416:38`), both MISSED at
     13520 (10l's campaign-load phases: 349.19s / 341.93s; 10k's: 411.94s /
     260.17s; 10j's: 298.02s / 250.01s; 10i's: 208.34s / 186.62s; 10h's:
     142.46s / 171.58s; 10g's: 300.16s / 107.56s). **The equivalents do not
@@ -126,8 +126,10 @@
     (300.16s in 10g, 142.46s in 10h, 298.02s in 10j, 411.94s in 10k,
     349.19s in 10l, 388.14s in 10m), so the cap is not lowered on one quiet
     measurement. The permanent hang below costs one full cap per campaign
-    (13520s of one `-j 4` slot). Take the campaign-load phase, never the
-    isolated one, and re-measure on a quiet host if one becomes available.
+    (13520s of one `-j 4` slot). Take the larger of the probe's and the
+    campaign's readings (never a quiet single-mutant run), never lower the
+    cap on the quieter one, and re-measure on a quiet host if one becomes
+    available.
     Take the floor by measurement, never by scaling it by cell count or by a
     projected contention multiplier. Re-measure the floor and an uncaught
     `-j 4` run whenever the golden suite grows, and change `mise.toml` and
@@ -164,20 +166,20 @@
     documented equivalents:
     ```
     crates/panini-prakriya/src/tinanta/adesha.rs:649:30: replace + with *
-    crates/panini-prakriya/src/tinanta/tripadi.rs:1405:38: replace - with /
+    crates/panini-prakriya/src/tinanta/tripadi.rs:1416:38: replace - with /
     ```
     `timeout.txt` holds exactly the permanent ṇatva mutant:
     ```
-    crates/panini-prakriya/src/tinanta/tripadi.rs:1718:23: replace -= with /=
+    crates/panini-prakriya/src/tinanta/tripadi.rs:1729:23: replace -= with /=
     ```
     The non-caught set, diffed against 10l's `outcomes.durable.json` on the
     full record (package, file, column, replacement, function, genre,
     outcome), prints `no lines 28 28`, `new: []`, `gone: []`; with span lines
     `lines 55 55`, `new:` three entries that only MOVED and `gone:` the same
     three at 10l's spans: the equivalent `tripadi.rs` `-` → `/` (1399:38 to
-    1405:38, 8.2.30's `apply` and its comment grew six lines above 8.3.13's),
-    the permanent hang (1712:23 to 1718:23, same cause) and 8.4.41's
-    unviable `&&` → `||` (1284:21 to 1290:21, same cause). Every other
+    1416:38, 8.2.30's `apply` and its comment grew seventeen lines above
+    8.3.13's), the permanent hang (1712:23 to 1729:23, same cause) and 8.4.41's
+    unviable `&&` → `||` (1284:21 to 1301:21, same cause). Every other
     non-caught entry sits at an unmoved span.
     Slice 10m adds 4 mutants to `panini-prakriya` (906 to 910 listed; none
     leave and 4 arrive, by name: `delete !`, `!=` → `==`, `-` → `+` and `-` →
@@ -198,7 +200,7 @@
     5329.63s and 4272.82s (10l: 2242.64s / 1883.83s in the probe, 5553.65s /
     3708.11s in the campaign). Under campaign load the two uncaught
     equivalents' test phases were 388.14s (`adesha.rs:649:30`) and 457.45s
-    (`tripadi.rs:1405:38`); the permanent hang's was 13520.03s (the cap).
+    (`tripadi.rs:1416:38`); the permanent hang's was 13520.03s (the cap).
     Caught test phases (867) ran min 0.10s, median 42.42s, p90 171.40s, max
     5329.63s (the `true` mutant; then `==` at 4272.82s). Nothing else caught
     exceeded 540s: the next-slowest are the caught sound-helper match-arm

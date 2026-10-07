@@ -1062,10 +1062,11 @@ fn the_10l_rules_fire_only_on_their_rows() {
 fn coh_kuh_is_credited_on_exactly_its_twelve_rows() {
     // Slice 10m narrowed 8.2.30 to a term-final cu before an affix or āgama,
     // or pada-final. Goldens ignore traces, so this holds its credits to the
-    // rows it fired on before the narrowing, branch for branch: juhotyādi's
-    // √ṇij and √vij, and rudhādi's ten cu-final roots (30 live branches where
-    // both padas derive, 21 where only parasmaipada does). No curādi row
-    // credits it, `10.0175 picca~` included, whose `cc` is root-internal.
+    // rows it fired on before the narrowing, row for row, by live-branch
+    // count: juhotyādi's √ṇij and √vij, and rudhādi's ten cu-final roots
+    // (30 live branches where both padas derive, 21 where only
+    // parasmaipada does). No curādi row credits it, `10.0175 picca~`
+    // included, whose `cc` is root-internal.
     assert!(dhatus().iter().any(|d| d.dhatupatha == "10.0175"));
     let mut got: Vec<(&str, usize)> = Vec::new();
     for (number, _) in credited("8.2.30") {
