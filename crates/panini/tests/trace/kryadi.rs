@@ -131,3 +131,41 @@ fn klishnitat_trace_pins_tatan_above_3_1_83() {
     assert!(t.contains(&"6.4.113".to_string()), "got {t:?}");
     assert!(t.contains(&"8.4.56".to_string()), "got {t:?}");
 }
+
+#[test]
+fn krinati_trace_takes_intervening_natva_on_a_nyit_root() {
+    // krI P laT 3sg: the r, then the root's own I, then SnA's n -> 8.4.2, not
+    // 8.4.1, as for vrIRAti. `qukrI\Y` is Yit, but this is its parasmaipada
+    // cell, so 1.3.78 credits and 1.3.72 does not.
+    let t = trace_for("krIRAti");
+    assert!(t.contains(&"3.1.81".to_string()), "got {t:?}");
+    assert!(t.contains(&"8.4.2".to_string()), "got {t:?}");
+    assert!(!t.contains(&"8.4.1".to_string()), "got {t:?}");
+    assert!(t.contains(&"1.3.78".to_string()), "got {t:?}");
+    assert!(!t.contains(&"1.3.72".to_string()), "got {t:?}");
+}
+
+#[test]
+fn krinite_trace_is_the_ubhayapada_atmanepada_shna_path() {
+    // krI A laT 3sg: 1.3.72 sanctions the atmanepada, te is apit -> Nit
+    // (1.2.4) and consonant-initial -> 6.4.113 gives nI, and 8.4.2 retroflexes
+    // across the root's I.
+    let t = trace_for("krIRIte");
+    assert!(t.contains(&"1.3.72".to_string()), "got {t:?}");
+    assert!(!t.contains(&"1.3.78".to_string()), "got {t:?}");
+    assert!(t.contains(&"6.4.113".to_string()), "got {t:?}");
+    assert!(t.contains(&"8.4.2".to_string()), "got {t:?}");
+}
+
+#[test]
+fn khacnati_trace_takes_the_converse_shcutva() {
+    // Kac P laT 3sg: SnA's n follows the root's c, and 8.4.40's converse arm
+    // (a Scu, then a stu) makes it Y. Before hi, 3.1.83's SAnac leaves no n
+    // after the c, so KacAna takes no 8.4.40.
+    let t = trace_for("KacYAti");
+    assert!(t.contains(&"3.1.81".to_string()), "got {t:?}");
+    assert!(t.contains(&"8.4.40".to_string()), "got {t:?}");
+    let t = trace_for("KacAna");
+    assert!(t.contains(&"3.1.83".to_string()), "got {t:?}");
+    assert!(!t.contains(&"8.4.40".to_string()), "got {t:?}");
+}

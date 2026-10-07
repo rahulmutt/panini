@@ -1422,7 +1422,9 @@ fn shcutva_off_jan_is_credited_exactly_as_before_3f3() {
     // gives on every branch (vicCayati, vicCAyati), and slice 10k the two
     // ch-initial plain rows (`Card`, `Cuw`) the adanta way (acCardayat) and
     // √pich (`piC`) the √vich way (picCayati), and slice 10l √mlecch
-    // (`mleC`), whose tuk the sanādi 6.1.75 gives (mlecCayati).
+    // (`mleC`), whose tuk the sanādi 6.1.75 gives (mlecCayati). Slice 9c
+    // gives the converse arm its second root, kryādi's √khac (`Kac`), whose
+    // `c` makes śnā's `n` a `Y` (KacYAti).
     let hits = credited("8.4.40");
     assert!(
         hits.iter().any(|(n, _)| *n == "03.0025"),
@@ -1434,14 +1436,18 @@ fn shcutva_off_jan_is_credited_exactly_as_before_3f3() {
             [
                 "07.0003", "07.0008", "10.0469", "10.0480", "10.0481", "10.0062", "10.0114",
                 "10.0171", "10.0352", "10.0354", "10.0370", "10.0304", "10.0078", "10.0462",
-                "10.0061", "10.0170"
+                "10.0061", "10.0170", "09.0067"
             ]
             .contains(number),
             "8.4.40 credited on {number}"
         );
     }
     let curadi = off_jan.iter().filter(|(n, _)| n.starts_with("10.")).count();
-    assert_eq!(off_jan.len() - curadi, 54);
+    let khac = off_jan.iter().filter(|(n, _)| *n == "09.0067").count();
+    assert_eq!(off_jan.len() - curadi - khac, 54);
+    // √khac: every live branch, its 36 cells and six forks, but loṭ madhyama
+    // eka's śānac one (KacAna), where no `n` follows the `c`.
+    assert_eq!(khac, 41);
     // Each ch-initial adanta root: laṅ's 18 cells plus its one 8.4.56 fork.
     // Each ch-initial optional-ṇic root: laṅ's 9 ātmanepada cells, and its
     // 9 parasmaipada ones twice (ṇic and ṇic-less) plus their two 8.4.56 forks,

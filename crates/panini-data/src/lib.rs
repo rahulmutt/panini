@@ -430,7 +430,7 @@ pub struct Dhatu {
     pub gana: Gana,
     /// Which pada(s) this engine derives for this root. Curated rather than
     /// read from the upadeśa's it-markers — but no longer a *deferral*:
-    /// `curated_pada_agrees_with_upadesha_markers` re-derives 134 of these 626
+    /// `curated_pada_agrees_with_upadesha_markers` re-derives 156 of these 648
     /// verdicts from the vendored upadeśa via 1.3.12 / 1.3.72 / 1.3.78 and
     /// requires them to match; `07.0017`'s (√bhuj's) is 1.3.66's root-keyed
     /// exception, 428 curādi rows' are 1.3.74's, seven more 1.3.74's with ṇic
@@ -451,7 +451,7 @@ pub struct Dhatu {
     /// the honest arrangement; see the deferral in
     /// `docs/superpowers/specs/2026-08-16-pada-audit-design.md`.
     ///
-    /// The test covers the 626 roots curated here, not the dhātupāṭha's 2259.
+    /// The test covers the 648 roots curated here, not the dhātupāṭha's 2259.
     /// It catches a mis-assigned pada on a root a future slice adds; it does
     /// not make the table self-maintaining.
     pub pada: PadaAssignment,
@@ -740,6 +740,222 @@ static DHATUS: &[Dhatu] = &[
         gana: Gana::Kryadi,
         pada: PadaAssignment::Atmanepada,
         artha: "samBaktO",
+    },
+    Dhatu {
+        // 09.0001 `qukrI\Y` dravyavinimaye (√krī). Ubhayapadī by 1.3.72, the
+        // ñit; the `qu` is a ḍu-it (1.3.5) and the `\` the root vowel's accent.
+        // The `r` reaches śnā's `n` across the root's `I`, so 8.4.2: krIRAti,
+        // krIRIte. Slice 9c.
+        dhatupatha: "09.0001",
+        code: "krI",
+        gana: Gana::Kryadi,
+        pada: PadaAssignment::Ubhayapada,
+        artha: "dravyavinimaye",
+    },
+    Dhatu {
+        // 09.0002 `prI\Y` tarpaRe kAntO ca (√prī). Ubhayapadī by 1.3.72; 8.4.2
+        // as for √krī: prIRAti. Shares code and artha with curādi's `10.0373
+        // prIY`, a distinct row, and no surface form of the two meets. Slice 9c.
+        dhatupatha: "09.0002",
+        code: "prI",
+        gana: Gana::Kryadi,
+        pada: PadaAssignment::Ubhayapada,
+        artha: "tarpaRe kAntO ca",
+    },
+    Dhatu {
+        // 09.0003 `SrI\Y` pAke (√śrī). Ubhayapadī by 1.3.72; 8.4.2 as for √krī:
+        // SrIRAti. Slice 9c.
+        dhatupatha: "09.0003",
+        code: "SrI",
+        gana: Gana::Kryadi,
+        pada: PadaAssignment::Ubhayapada,
+        artha: "pAke",
+    },
+    Dhatu {
+        // 09.0004 `mI\Y` hiMsAyAm (√mī). Ubhayapadī by 1.3.72: mInAti, mInIte.
+        // Shares its code with curādi's `10.0361 mI\`, a distinct row, and no
+        // surface form of the two meets. Slice 9c.
+        dhatupatha: "09.0004",
+        code: "mI",
+        gana: Gana::Kryadi,
+        pada: PadaAssignment::Ubhayapada,
+        artha: "hiMsAyAm",
+    },
+    Dhatu {
+        // 09.0005 `zi\Y` banDane (√ṣi). Stored `si` per 6.1.64 dhātvādeḥ ṣaḥ
+        // saḥ, as `stiG` is. Ubhayapadī by 1.3.72: sinAti, sinIte. Shares
+        // upadeśa, code and artha with svādi's `05.0002`, a distinct row, and
+        // no surface form of the two meets. Slice 9c.
+        dhatupatha: "09.0005",
+        code: "si",
+        gana: Gana::Kryadi,
+        pada: PadaAssignment::Ubhayapada,
+        artha: "banDane",
+    },
+    Dhatu {
+        // 09.0011 `yu\Y` banDane (√yu). Ubhayapadī by 1.3.72: yunAti, yunIte.
+        // Shares its code with the ākusmīya `10.0235 yu`, a distinct row, and
+        // no surface form of the two meets. Slice 9c.
+        dhatupatha: "09.0011",
+        code: "yu",
+        gana: Gana::Kryadi,
+        pada: PadaAssignment::Ubhayapada,
+        artha: "banDane",
+    },
+    Dhatu {
+        // 09.0012 `knUY` Sabde (√knū). Ubhayapadī by 1.3.72: knUnAti, knUnIte.
+        // Slice 9c.
+        dhatupatha: "09.0012",
+        code: "knU",
+        gana: Gana::Kryadi,
+        pada: PadaAssignment::Ubhayapada,
+        artha: "Sabde",
+    },
+    Dhatu {
+        // 09.0013 `drUY` hiMsAyAm (√drū). Ubhayapadī by 1.3.72; 8.4.2 across
+        // the `U`: drURAti, drURIte. Slice 9c.
+        dhatupatha: "09.0013",
+        code: "drU",
+        gana: Gana::Kryadi,
+        pada: PadaAssignment::Ubhayapada,
+        artha: "hiMsAyAm",
+    },
+    Dhatu {
+        // 09.0041 `BrI\` Baye (√bhrī). The `\` is the root vowel's accent, not
+        // an it, so parasmaipadī by 1.3.78. 8.4.2 as for √krī: BrIRAti.
+        // Slice 9c.
+        dhatupatha: "09.0041",
+        code: "BrI",
+        gana: Gana::Kryadi,
+        pada: PadaAssignment::Parasmaipada,
+        artha: "Baye",
+    },
+    Dhatu {
+        // 09.0042 `kzI\z` hiMsAyAm (√kṣīṣ). The final `z` is an it (1.3.3) and
+        // marks no pada, so parasmaipadī by 1.3.78. 8.4.2 as for √krī:
+        // kzIRAti. Slice 9c.
+        dhatupatha: "09.0042",
+        code: "kzI",
+        gana: Gana::Kryadi,
+        pada: PadaAssignment::Parasmaipada,
+        artha: "hiMsAyAm",
+    },
+    Dhatu {
+        // 09.0051 `mfda~` kzode (√mṛd). Parasmaipadī by 1.3.78. The `d` stands
+        // between the `f` and śnā's `n`, so no ṇatva: mfdnAti. Slice 9c.
+        dhatupatha: "09.0051",
+        code: "mfd",
+        gana: Gana::Kryadi,
+        pada: PadaAssignment::Parasmaipada,
+        artha: "kzode",
+    },
+    Dhatu {
+        // 09.0054 `kuza~` nizkarze (√kuṣ). Parasmaipadī by 1.3.78; 8.4.1 on
+        // the adjacent `z`, as for √muṣ: kuzRAti. Slice 9c.
+        dhatupatha: "09.0054",
+        code: "kuz",
+        gana: Gana::Kryadi,
+        pada: PadaAssignment::Parasmaipada,
+        artha: "nizkarze",
+    },
+    Dhatu {
+        // 09.0056 `RaBa~` hiMsAyAm (√ṇabh). Stored `naB`: the `R` → `n` of
+        // 6.1.65 *ṇo naḥ* is the stored-form convention, as for √ṇij.
+        // Parasmaipadī by 1.3.78: naBnAti. Slice 9c.
+        dhatupatha: "09.0056",
+        code: "naB",
+        gana: Gana::Kryadi,
+        pada: PadaAssignment::Parasmaipada,
+        artha: "hiMsAyAm",
+    },
+    Dhatu {
+        // 09.0057 `tuBa~` hiMsAyAm (√tubh). Parasmaipadī by 1.3.78: tuBnAti.
+        // Slice 9c.
+        dhatupatha: "09.0057",
+        code: "tuB",
+        gana: Gana::Kryadi,
+        pada: PadaAssignment::Parasmaipada,
+        artha: "hiMsAyAm",
+    },
+    Dhatu {
+        // 09.0060 `u~Drasa~` uYCe (√dhras). Parasmaipadī by 1.3.78: DrasnAti.
+        // Shares its upadeśa, code and artha with curādi's `10.0270`, whose
+        // udit makes its ṇic optional; kryādi takes no ṇic, and no surface
+        // form of the two meets. Slice 9c.
+        dhatupatha: "09.0060",
+        code: "Dras",
+        gana: Gana::Kryadi,
+        pada: PadaAssignment::Parasmaipada,
+        artha: "uYCe",
+    },
+    Dhatu {
+        // 09.0061 `iza~` ABIkzRye (√iṣ). Parasmaipadī by 1.3.78; 8.4.1 as for
+        // √kuṣ: izRAti. Vowel-initial, so laṅ takes āṭ (6.4.72) and 6.1.90
+        // merges it: EzRAt. Slice 9c.
+        dhatupatha: "09.0061",
+        code: "iz",
+        gana: Gana::Kryadi,
+        pada: PadaAssignment::Parasmaipada,
+        artha: "ABIkzRye",
+    },
+    Dhatu {
+        // 09.0062 `vi\za~` viprayoge (√viṣ). The `\` is the root vowel's
+        // accent, so parasmaipadī by 1.3.78; 8.4.1 as for √kuṣ: vizRAti.
+        // Shares its code with juhotyādi's `03.0014 vi\zx~^`, a distinct row,
+        // and no surface form of the two meets. Slice 9c.
+        dhatupatha: "09.0062",
+        code: "viz",
+        gana: Gana::Kryadi,
+        pada: PadaAssignment::Parasmaipada,
+        artha: "viprayoge",
+    },
+    Dhatu {
+        // 09.0063 `pruza~` snehanasevanapUraRezu (√pruṣ). Parasmaipadī by
+        // 1.3.78; 8.4.1 as for √kuṣ: pruzRAti. Slice 9c.
+        dhatupatha: "09.0063",
+        code: "pruz",
+        gana: Gana::Kryadi,
+        pada: PadaAssignment::Parasmaipada,
+        artha: "snehanasevanapUraRezu",
+    },
+    Dhatu {
+        // 09.0064 `pluza~` snehanasevanapUraRezu (√pluṣ). Parasmaipadī by
+        // 1.3.78; 8.4.1 as for √kuṣ: pluzRAti. Slice 9c.
+        dhatupatha: "09.0064",
+        code: "pluz",
+        gana: Gana::Kryadi,
+        pada: PadaAssignment::Parasmaipada,
+        artha: "snehanasevanapUraRezu",
+    },
+    Dhatu {
+        // 09.0065 `puza~` puzwO (√puṣ). Parasmaipadī by 1.3.78; 8.4.1 as for
+        // √kuṣ: puzRAti. Shares its code with curādi's `10.0280 puza~`, a
+        // distinct row, and no surface form of the two meets. Slice 9c.
+        dhatupatha: "09.0065",
+        code: "puz",
+        gana: Gana::Kryadi,
+        pada: PadaAssignment::Parasmaipada,
+        artha: "puzwO",
+    },
+    Dhatu {
+        // 09.0067 `Kaca~` BUtaprAdurBAve (√khac). Parasmaipadī by 1.3.78.
+        // 8.4.40's converse arm makes śnā's `n` after the `c` a `Y`: KacYAti.
+        // Before `hi`, 3.1.83's śānac leaves no `n` there: KacAna. Slice 9c.
+        dhatupatha: "09.0067",
+        code: "Kac",
+        gana: Gana::Kryadi,
+        pada: PadaAssignment::Parasmaipada,
+        artha: "BUtaprAdurBAve",
+    },
+    Dhatu {
+        // 09.0070 `svF` varaRe (√svṝ). Parasmaipadī by 1.3.78. 7.1.102 makes
+        // the `F` after the labial `v` `ur`, 8.2.77 lengthens its `u` before
+        // the `r`, and 8.4.1 reaches śnā's `n`: svUrRAti. Slice 9c.
+        dhatupatha: "09.0070",
+        code: "svF",
+        gana: Gana::Kryadi,
+        pada: PadaAssignment::Parasmaipada,
+        artha: "varaRe",
     },
     // svādi (gaṇa 5) — vikaraṇa śnu (3.1.73)
     Dhatu {
@@ -6899,7 +7115,7 @@ mod tests {
 
     #[test]
     fn curated_roots_have_expected_ganas_and_padas() {
-        assert_eq!(dhatus().len(), 626);
+        assert_eq!(dhatus().len(), 648);
         let bu = dhatus().iter().find(|d| d.dhatupatha == "01.0001").unwrap();
         assert!(matches!(bu.pada, PadaAssignment::Parasmaipada));
         let labh = dhatus().iter().find(|d| d.dhatupatha == "01.1130").unwrap();
@@ -7253,6 +7469,56 @@ mod tests {
                 ("08.0008", "van", PadaAssignment::Atmanepada),
                 ("08.0009", "man", PadaAssignment::Atmanepada),
                 ("08.0010", "kf", PadaAssignment::Ubhayapada),
+            ]
+        );
+    }
+
+    #[test]
+    fn kryadi_rows_are_the_twenty_eight_curated_roots() {
+        // Slice 9a opened gaṇa 9 with √kliś, √gudh and √aś; slice 9b added
+        // √muṣ, √vrī and √vṛṅ with 8.4.1 / 8.4.2. Slice 9c adds the twenty-two
+        // rows vidyut-prakriya matches cell for cell on the rules already in
+        // the pipeline: the eight ñit rows, ubhayapadī by 1.3.72, and fourteen
+        // parasmaipadī by 1.3.78. Two codes are not the plain it-stripped
+        // upadeśa: `zi\Y` is stored `si` by 6.1.64, and `RaBa~` is stored `naB`
+        // by the 6.1.65 convention √ṇij set. The gaṇa is OPEN at 28 of its 71
+        // dhātupāṭha rows.
+        let rows: Vec<_> = dhatus()
+            .iter()
+            .filter(|d| d.gana == Gana::Kryadi)
+            .map(|d| (d.dhatupatha, d.code, d.pada))
+            .collect();
+        assert_eq!(
+            rows,
+            vec![
+                ("09.0058", "kliS", PadaAssignment::Parasmaipada),
+                ("09.0053", "guD", PadaAssignment::Parasmaipada),
+                ("09.0059", "aS", PadaAssignment::Parasmaipada),
+                ("09.0066", "muz", PadaAssignment::Parasmaipada),
+                ("09.0040", "vrI", PadaAssignment::Parasmaipada),
+                ("09.0045", "vf", PadaAssignment::Atmanepada),
+                ("09.0001", "krI", PadaAssignment::Ubhayapada),
+                ("09.0002", "prI", PadaAssignment::Ubhayapada),
+                ("09.0003", "SrI", PadaAssignment::Ubhayapada),
+                ("09.0004", "mI", PadaAssignment::Ubhayapada),
+                ("09.0005", "si", PadaAssignment::Ubhayapada),
+                ("09.0011", "yu", PadaAssignment::Ubhayapada),
+                ("09.0012", "knU", PadaAssignment::Ubhayapada),
+                ("09.0013", "drU", PadaAssignment::Ubhayapada),
+                ("09.0041", "BrI", PadaAssignment::Parasmaipada),
+                ("09.0042", "kzI", PadaAssignment::Parasmaipada),
+                ("09.0051", "mfd", PadaAssignment::Parasmaipada),
+                ("09.0054", "kuz", PadaAssignment::Parasmaipada),
+                ("09.0056", "naB", PadaAssignment::Parasmaipada),
+                ("09.0057", "tuB", PadaAssignment::Parasmaipada),
+                ("09.0060", "Dras", PadaAssignment::Parasmaipada),
+                ("09.0061", "iz", PadaAssignment::Parasmaipada),
+                ("09.0062", "viz", PadaAssignment::Parasmaipada),
+                ("09.0063", "pruz", PadaAssignment::Parasmaipada),
+                ("09.0064", "pluz", PadaAssignment::Parasmaipada),
+                ("09.0065", "puz", PadaAssignment::Parasmaipada),
+                ("09.0067", "Kac", PadaAssignment::Parasmaipada),
+                ("09.0070", "svF", PadaAssignment::Parasmaipada),
             ]
         );
     }
@@ -8062,7 +8328,7 @@ mod tests {
     /// AFTER the `~` that marks an anunāsika it, so `~\` is an anudātta it and
     /// `~^` a svarita it — whereas a `\` sitting directly on a vowel elsewhere
     /// is the ROOT's own accent and says nothing about pada. Counted off the
-    /// vendored upadeśa: 90 of the 626 curated roots carry a `\` at all, and 69
+    /// vendored upadeśa: 99 of the 648 curated roots carry a `\` at all, and 78
     /// of those carry one on a root vowel — `01.0642 ji\`, `01.1082 smf\` and
     /// `02.0001 a\da~` among them — so conflating the two does not fail
     /// loudly; it silently calls most of the table ātmanepada.
