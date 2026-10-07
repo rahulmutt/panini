@@ -186,11 +186,11 @@
     `/` in `tripadi.rs`; the old `apply`'s `+` → `-`, `+` → `*` and `&&` →
     `||` re-attach by name to the new one's `i + 1` and `&&`), and
     `--in-diff` over its production diff lists seven, all in 8.2.30's new
-    `apply` (`tripadi.rs` 427-432), all CAUGHT in the campaign, none
-    unviable, with their test phases: `427:31` `+` → `-` 39.83s and `+` →
-    `*` 39.91s (`i + 1`); `427:61` `delete !` (the empty-term test) 40.77s;
-    `429:42` `&&` → `||` 41.35s; `429:34` `!=` → `==` (the `j != ANGA` guard)
-    41.36s; `432:71` `-` → `+` 0.45s and `-` → `/` 0.40s (`count() - 1`: an
+    `apply` (`tripadi.rs` 438-443), all CAUGHT in the campaign, none
+    unviable, with their test phases: `438:31` `+` → `-` 39.83s and `+` →
+    `*` 39.91s (`i + 1`); `438:61` `delete !` (the empty-term test) 40.77s;
+    `440:42` `&&` → `||` 41.35s; `440:34` `!=` → `==` (the `j != ANGA` guard)
+    41.36s; `443:71` `-` → `+` 0.45s and `-` → `/` 0.40s (`count() - 1`: an
     out-of-range index panics at once). `--in-diff` over the data crate's
     diff against `6b1ec29` lists none (`-o
     /home/dev/mutants-records/curadi-10m/data`: "No mutants to filter"): the
