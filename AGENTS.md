@@ -49,7 +49,7 @@
     svādi 5b's 15m28.365s / 11m34.391s at 39744 cells (load 94-141, user
     15m14.2s / 15m15.7s, sys 4.8s / 4.4s), the other heavy-load floor, and 10m's
     12m41.146s / 7m42.564s at 38232 cells (load 19.53-109.07, user 14m1.8s /
-    14m8.6s), the other heavy-load floor, and 10k's user 12m50.9s / 12m27.1s
+    14m8.6s), and 10k's user 12m50.9s / 12m27.1s
     under load 63-122 (wall 9m31.852s / 6m9.420s at 37584 cells, load
     `122.08 95.91 75.31` to `63.16 82.28 85.55`). Nor are they comparable
     with 10j's 7m6.732s / 4m29.176s at 26424 cells (load 65-90, user 9m13.3s
@@ -67,7 +67,7 @@
     one. An isolated `-j 4` probe (`-o` to
     `/home/dev/mutants-records/kryadi-9c-probe`, `--timeout 30000`,
     2026-10-08 09:21:21 - 11:13 UTC, load `49.47 60.79 70.76` at launch and
-    `36.72 45.09 52.97` at the end) of the two documented equivalent
+    `36.98 45.00 52.90` at the end) of the two documented equivalent
     mutants and the two `skip_nic` mutants (the regexes also match two
     caught `mod.rs` `derive` mutants, `mod.rs:83` 15.81s and `:84` 71.59s)
     ran the full suite uncaught in 772.14s (`adesha.rs:649:30`) and 829.59s
@@ -138,7 +138,7 @@
     in 10m, 982.79s in svādi 5b, 502.35s in 9c), so the cap is not lowered
     on one quiet measurement. The permanent hang below costs one full cap
     per campaign (17350s of one `-j 4` slot, and 9c's campaign spent its
-    last three and a half hours or so on it alone). Take the larger of the probe's and the
+    last 4h16m on it alone). Take the larger of the probe's and the
     campaign's readings (never a quiet single-mutant run), never lower the
     cap on the quieter one, and re-measure on a quiet host if one becomes
     available.
@@ -170,7 +170,7 @@
     CARGO_MUTANTS_JOBS setsid nohup`, window 2026-10-08 11:13:59 -
     22:14:53 UTC (11h01m; load `36.18 44.70 52.76` at launch and
     `13.76 15.85 15.55` at the end, external and moderate), on the tree at
-    `61aeb4a`. **931 mutants tested: 876 caught, 52 unviable, 2 missed, 1
+    `110e9ad`. **931 mutants tested: 876 caught, 52 unviable, 2 missed, 1
     timeout** (exit code 3, as with any timeout). **panini-prakriya: 919
     mutants, 868 caught, 48 unviable, 2 missed, 1 timeout.**
     **panini-analyze: 12 mutants, 8 caught, 4 unviable, 0 missed, 0
@@ -191,7 +191,7 @@
     outcome), prints `no lines 28 28`, `new: []`, `gone: []`; with span
     lines `lines 55 55`, `new: []`, `gone: []` (every non-caught entry is at
     an unmoved span). Slice 9c adds no mutant: it changes no production
-    code, and `cargo mutants --package panini-prakriya --list` at `61aeb4a`
+    code, and `cargo mutants --package panini-prakriya --list` at `110e9ad`
     is byte-identical to the one at its base `794fddf` (919 lines, `cmp`
     clean; the lists are kept at
     `/home/dev/mutants-records/kryadi-9c/list-{branch,base}.txt`).
@@ -220,7 +220,7 @@
     `/home/dev/mutants-records/kryadi-9c/outcomes.durable.json`; the probe's
     is at
     `/home/dev/mutants-records/kryadi-9c-probe/probe-outcomes.durable.json`.
-    The svādi 5b record it replaces: `git show 61aeb4a:AGENTS.md`.
+    The svādi 5b record it replaces: `git show 794fddf:AGENTS.md`.
     **The per-slice history** of the floor, the cap and every campaign from
     the pada audit through slice 3d, all measured against the Θ(N²) suite,
     was removed in the commit that introduced this paragraph. Read it with

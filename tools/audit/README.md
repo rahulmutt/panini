@@ -124,7 +124,7 @@ and none on these twenty-two. A merge-base-vs-branch dump of every prior cell's
 branches, blocked ones included, with every step's before and after text, was
 byte-identical, all 58276 of them (51724 live).
 
-Totals, against svādi 5b's record above it: 648 = 626 + 22; 40824 = 39744 +
+Totals, against svādi 5b's record below it: 648 = 626 + 22; 40824 = 39744 +
 1080 (120 root×pada×lakāra blocks × 9); 52936 = 51724 + 1080 + 132 new
 `ALTERNATES` rows (11980 → 12112),
 measured via the harness's corpus block, not assumed.

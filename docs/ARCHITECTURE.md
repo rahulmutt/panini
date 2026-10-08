@@ -678,7 +678,7 @@ prathama and madhyama eka across the 574 roots with a parasmaipada column —
 roots never reach this guard, and the 486 roots that admit both
 padas (forty-three ubhayapadī by 1.3.72 — √rudh, √nī, √tud, √bhid, √kṣud,
 √yuj, √tṛd, √ric, √vic, √chid, √chṛd, √tan, √san, √kṣaṇ, √kṣiṇ, √ṛṇ, √tṛ, √ghṛṇ,
-√kṛ, √dā, √dhā, √bhṛ, √ṇij, √vij and √viṣ, and svādi 5b's √su, √si, √śi, √mi, √ci, √stṛ, √kṛ, √vṛ, √dhu and √dhū, and kryādi's √krī, √prī, √śrī, √mī, √ṣi, √yu, √knū and √drū
+√kṛ, √dā, √dhā, √bhṛ, √ṇij, √vij and √viṣ, and svādi 5b's √su, √ṣi, √śi, √mi, √ci, √stṛ, √kṛ, √vṛ, √dhu and √dhū, and kryādi's √krī, √prī, √śrī, √mī, √ṣi, √yu, √knū and √drū
 — √bhuj by 1.3.66, and curādi's √cur,
 √laḍ, √bhakṣ, √bhūṣ, √jñap, √yam, √cah, √cap, √rah, √bal, slice 10e's
 eighty-three ubhayapadī adanta roots, slice 10f's `mUtra`, `katra` and

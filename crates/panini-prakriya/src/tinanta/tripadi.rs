@@ -1115,7 +1115,7 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // ścu-before-stu site SAt does not cover, so the two shipped together.
     // SAt is a guard here, not a rule of its own: a crediting 8.4.44 would
     // move those 118 prior traces for no change of form. Over the whole
-    // corpus the converse arm fires on √jan alone
+    // corpus the converse arm fires on √jan and √khac alone
     // (`shcutva_off_jan_is_credited_exactly_as_before_3f3` in `panini`'s
     // trace suite).
     //
@@ -1165,7 +1165,7 @@ pub(crate) static TRIPADI: &[Rule] = &[
     // `C` is voiceless. 8.4.1 works on Cfnad's
     // adjacent `f` and `n`, which the tuk sits in front of rather than
     // between — so it is not an 8.4.2 intervener question either. The
-    // converse arm's only output, √jan's `Y`, is a nasal: no jhal for 8.4.53,
+    // converse arm's only outputs (√jan's and √khac's `Y`) are nasals: no jhal for 8.4.53,
     // 8.4.55 or 8.4.65, and not the dental `n` 8.4.1 retroflexes.
     //
     // 8.4.65 Jaro Jari savarRe does NOT fork the cell this rule creates,

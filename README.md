@@ -93,7 +93,7 @@ twelfth vikalpa, 6.4.43 *ye vibhāṣā* (*jajanyāt* ~ *jajāyāt*) — with 8.
 8.4.44 *śāt* exemption. *kryādi* (9, śnā) is **open** at 28 of its 71
 dhātus: √kliś, √gudh and √aś (slice 9a); √muṣ, √vrī and √vṛṅ (slice 9b, behind
 8.4.1 / 8.4.2, the engine's first ṇatva); and twenty-two more that slice 9c
-curated on the rules already in the pipeline — the eight ñit rows √krī
+curated on the rules already in the pipeline — eight of its ñit rows √krī
 (*krīṇāti*, *krīṇīte*), √prī, √śrī, √mī, √ṣi (stored `si` by 6.1.64), √yu,
 √knū and √drū, the gaṇa's first ubhayapadī roots, by 1.3.72, and fourteen
 parasmaipadī by 1.3.78: √bhrī, √kṣīṣ, √mṛd, √kuṣ, √ṇabh (stored `naB`),
@@ -311,7 +311,7 @@ roots take. A root may also admit **both**
 padas — 486 roots that admit both padas in the curated set
 (forty-three ubhayapadī by 1.3.72: √nī, √tud, √rudh, √bhid, √kṣud, √yuj,
 √tṛd, √ric, √vic, √chid, √chṛd, √tan, √san, √kṣaṇ, √kṣiṇ, √ṛṇ, √tṛ, √ghṛ,
-√kṛ, √dā, √dhā, √bhṛ, √ṇij, √vij and √viṣ, and svādi 5b's √su, √si, √śi, √mi, √ci, √stṛ, √kṛ, √vṛ, √dhu and √dhū, and kryādi's √krī, √prī, √śrī,
+√kṛ, √dā, √dhā, √bhṛ, √ṇij, √vij and √viṣ, and svādi 5b's √su, √ṣi, √śi, √mi, √ci, √stṛ, √kṛ, √vṛ, √dhu and √dhū, and kryādi's √krī, √prī, √śrī,
 √mī, √ṣi, √yu, √knū and √drū; √bhuj by 1.3.66; and curādi's √cur,
 √laḍ, √bhakṣ, √bhūṣ, √jñap, √yam, √cah, √cap, √rah, √bal, the
 eighty-three ubhayapadī adanta roots, slice 10f's `mUtra`, `katra` and
