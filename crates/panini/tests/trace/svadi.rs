@@ -2,7 +2,7 @@
 //! `crate::helpers`; the module doc governing this suite is in
 //! `main.rs`.
 
-use crate::helpers::trace_for;
+use crate::helpers::{credited, trace_for};
 
 #[test]
 fn apnoti_trace_pins_the_vikarana_guna() {
@@ -220,6 +220,73 @@ fn ahinma_trace_shows_the_optional_lopa_after_the_augment() {
     let r = trace_for("ariRma");
     assert!(r.contains(&"6.4.107".to_string()), "got {r:?}");
     assert!(r.contains(&"8.4.2".to_string()), "ṇatva reaches the fork");
+}
+
+#[test]
+fn dabhnoti_trace_pins_6_4_24_before_the_vikarana_guna() {
+    // danB prathama eka (svādi 5b). śnu is ṅit by 1.2.4's second
+    // application, so 6.4.24 aniditAM hala upaDAyAH kNiti elides the root's
+    // nasal upadhā, and only then does the second 7.3.84 guṇate śnu's `u`:
+    // vidyut-prakriya's order.
+    assert_eq!(
+        trace_for("daBnoti"),
+        vec![
+            "1.3.78", "3.4.78", "1.3.9", "3.1.73", "1.3.9", "1.2.4", "6.4.24", "7.3.84"
+        ]
+    );
+}
+
+#[test]
+fn tfpnoti_trace_credits_8_4_39_and_no_natva() {
+    // tfp prathama eka (svādi 5b). The `f` would reach śnu's `n` across the
+    // pu-varga `p` by 8.4.2 (*tfpRoti*); 8.4.39 kzuBnAdizu ca records and
+    // bars both ṇatva rules, so neither appears.
+    assert_eq!(
+        trace_for("tfpnoti"),
+        vec![
+            "1.3.78", "3.4.78", "1.3.9", "3.1.73", "1.3.9", "1.2.4", "7.3.84", "8.4.39"
+        ]
+    );
+}
+
+#[test]
+fn sunute_trace_is_the_nit_atmanepada_of_1_3_72() {
+    // su prathama eka, ātmanepada (svādi 5b): `zu\Y`'s ñ it makes the root
+    // ubhayapadī, so 1.3.72 svaritaYitaH sanctions the ātmanepada, and the
+    // apit `ta` leaves śnu unguṇated.
+    assert_eq!(
+        trace_for("sunute"),
+        vec![
+            "1.3.72", "3.4.78", "1.2.4", "3.4.79", "3.1.73", "1.3.9", "1.2.4"
+        ]
+    );
+}
+
+#[test]
+fn fkziroti_trace_takes_natva_across_its_i_by_8_4_2() {
+    // fkzi prathama eka (svādi 5b). The trigger `z` and śnu's `n` are not
+    // adjacent — the root's own `i` stands between them — so 8.4.2
+    // awkupvANnumvyavAye'pi is credited, not 8.4.1.
+    assert_eq!(
+        trace_for("fkziRoti"),
+        vec![
+            "1.3.78", "3.4.78", "1.3.9", "3.1.73", "1.3.9", "1.2.4", "7.3.84", "8.4.2"
+        ]
+    );
+}
+
+#[test]
+fn anidit_nalopa_and_ksubhnadi_fire_only_on_their_rows() {
+    // Goldens ignore traces, so this holds svādi 5b's two rules to the rows
+    // they were added for, branch for branch: 6.4.24 on every live branch
+    // of √dambh's, 8.4.39 on every one of √tṛp's (36 cells and 6 alternates
+    // each), and nowhere else in the corpus. Kryādi 9e's ten 6.4.24 rows
+    // widen the first.
+    for (sutra, row) in [("6.4.24", "05.0026"), ("8.4.39", "05.0028")] {
+        let got = credited(sutra);
+        assert_eq!(got.len(), 42, "{sutra}");
+        assert!(got.iter().all(|(n, _)| *n == row), "{sutra}: {got:?}");
+    }
 }
 
 #[test]

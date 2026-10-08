@@ -121,6 +121,38 @@ pub const JNAPADI: RangeInclusive<&str> = "10.0118"..="10.0124";
 /// `aya_is_exactly_the_curated_rows_3_1_28_names` pins it to upstream.
 pub const AYA: [&str; 2] = ["10.0303", "10.0304"];
 
+/// The curated rows whose upadeśa is idit: it carries the `i~` it-marker,
+/// as `hisi~` and `citi~` do. 7.1.58 *idito num dhātoḥ* gives such a root
+/// its num, and this table stores the root with the num already in
+/// (`07.0019 hins` for `hisi~`), a stated simplification. So a stored code
+/// cannot say whether a nasal is the root's own or 7.1.58's: only the
+/// upadeśa can. 6.4.24 *aniditāṁ hala upadhāyāḥ kṅiti* needs that verdict:
+/// it elides the nasal upadhā of an ANIDIT root before a kit or ṅit affix,
+/// and spares an idit root's. (The engine's guard reads only `Tag::Ngit`: kit
+/// affixes are not modelled in the four lakāras, and a slice that brings them,
+/// liṭ or āśīrliṅ, must widen it.) A root is idit when its LAST it-marker is
+/// `i~`; no curated row reaches 6.4.24 with `i~` before a later marker
+/// (`kaki~\N` reads non-idit here, idit in vidyut), and a slice curating such
+/// a row must revisit `is_idit`. Keyed by dhātupāṭha number, as `AYA` is. The
+/// engine's `derive` tags a listed root `Tag::Idit`, which 6.4.24 reads.
+///
+/// Lists curated rows only: rudhādi's √hiṃs and eighty-six curādi rows.
+/// `idit_matches_upadesha_markers` re-derives the table from the vendored
+/// upadeśa and holds it to exactly the curated rows that carry the marker.
+pub const IDIT: &[&str] = &[
+    "07.0019", "10.0002", "10.0003", "10.0004", "10.0005", "10.0007", "10.0009", "10.0011",
+    "10.0013", "10.0014", "10.0043", "10.0045", "10.0047", "10.0048", "10.0049", "10.0060",
+    "10.0062", "10.0066", "10.0067", "10.0068", "10.0069", "10.0070", "10.0071", "10.0072",
+    "10.0073", "10.0074", "10.0075", "10.0076", "10.0077", "10.0105", "10.0106", "10.0107",
+    "10.0111", "10.0112", "10.0113", "10.0114", "10.0130", "10.0135", "10.0147", "10.0153",
+    "10.0157", "10.0158", "10.0159", "10.0160", "10.0164", "10.0166", "10.0171", "10.0182",
+    "10.0185", "10.0193", "10.0194", "10.0198", "10.0199", "10.0241", "10.0254", "10.0267",
+    "10.0285", "10.0286", "10.0287", "10.0289", "10.0290", "10.0291", "10.0292", "10.0293",
+    "10.0294", "10.0295", "10.0296", "10.0298", "10.0299", "10.0315", "10.0316", "10.0317",
+    "10.0318", "10.0319", "10.0321", "10.0322", "10.0323", "10.0326", "10.0327", "10.0328",
+    "10.0329", "10.0330", "10.0331", "10.0366", "10.0385", "10.0464", "10.0465",
+];
+
 /// The ā-garvīya of curādi: dhātupāṭha rows `10.0440` (`pada`) through
 /// `10.0449` (`garva`), the scope of the gaṇasūtra 10.0497 *ā garvād
 /// ātmanepadinaḥ*. Compared as strings, like `AKUSMIYA`. A curated row is
@@ -398,7 +430,7 @@ pub struct Dhatu {
     pub gana: Gana,
     /// Which pada(s) this engine derives for this root. Curated rather than
     /// read from the upadeśa's it-markers — but no longer a *deferral*:
-    /// `curated_pada_agrees_with_upadesha_markers` re-derives 102 of these 594
+    /// `curated_pada_agrees_with_upadesha_markers` re-derives 134 of these 626
     /// verdicts from the vendored upadeśa via 1.3.12 / 1.3.72 / 1.3.78 and
     /// requires them to match; `07.0017`'s (√bhuj's) is 1.3.66's root-keyed
     /// exception, 428 curādi rows' are 1.3.74's, seven more 1.3.74's with ṇic
@@ -419,7 +451,7 @@ pub struct Dhatu {
     /// the honest arrangement; see the deferral in
     /// `docs/superpowers/specs/2026-08-16-pada-audit-design.md`.
     ///
-    /// The test covers the 594 roots curated here, not the dhātupāṭha's 2259.
+    /// The test covers the 626 roots curated here, not the dhātupāṭha's 2259.
     /// It catches a mis-assigned pada on a root a future slice adds; it does
     /// not make the table self-maintaining.
     pub pada: PadaAssignment,
@@ -758,6 +790,253 @@ static DHATUS: &[Dhatu] = &[
         gana: Gana::Svadi,
         pada: PadaAssignment::Atmanepada,
         artha: "Askandane",
+    },
+    Dhatu {
+        // 05.0001 `zu\Y` aBizave (√su). Stored post-6.1.64, as `stiG` is.
+        // Ubhayapadī by 1.3.72 (the ñ it), as are the nine after it. Svādi 5b.
+        dhatupatha: "05.0001",
+        code: "su",
+        gana: Gana::Svadi,
+        pada: PadaAssignment::Ubhayapada,
+        artha: "aBizave",
+    },
+    Dhatu {
+        // 05.0002 `zi\Y` banDane (√si). Stored post-6.1.64. Svādi 5b.
+        dhatupatha: "05.0002",
+        code: "si",
+        gana: Gana::Svadi,
+        pada: PadaAssignment::Ubhayapada,
+        artha: "banDane",
+    },
+    Dhatu {
+        dhatupatha: "05.0003",
+        code: "Si",
+        gana: Gana::Svadi,
+        pada: PadaAssignment::Ubhayapada,
+        artha: "niSAne",
+    },
+    Dhatu {
+        // 05.0004 `qumi\Y` prakzepaRe (√mi). The initial `qu` is an it by
+        // 1.3.5. Svādi 5b.
+        dhatupatha: "05.0004",
+        code: "mi",
+        gana: Gana::Svadi,
+        pada: PadaAssignment::Ubhayapada,
+        artha: "prakzepaRe",
+    },
+    Dhatu {
+        // 05.0005 `ci\Y` cayane (√ci). 6.1.54 cisphuror ṇau names this root
+        // too, but only before ṇic, which this row never takes: `CISPHUR`
+        // holds curādi's `10.0124` alone. Svādi 5b.
+        dhatupatha: "05.0005",
+        code: "ci",
+        gana: Gana::Svadi,
+        pada: PadaAssignment::Ubhayapada,
+        artha: "cayane",
+    },
+    Dhatu {
+        dhatupatha: "05.0006",
+        code: "stf",
+        gana: Gana::Svadi,
+        pada: PadaAssignment::Ubhayapada,
+        artha: "AcCAdane",
+    },
+    Dhatu {
+        dhatupatha: "05.0007",
+        code: "kf",
+        gana: Gana::Svadi,
+        pada: PadaAssignment::Ubhayapada,
+        artha: "hiMsAyAm",
+    },
+    Dhatu {
+        dhatupatha: "05.0008",
+        code: "vf",
+        gana: Gana::Svadi,
+        pada: PadaAssignment::Ubhayapada,
+        artha: "varaRe",
+    },
+    Dhatu {
+        dhatupatha: "05.0009",
+        code: "Du",
+        gana: Gana::Svadi,
+        pada: PadaAssignment::Ubhayapada,
+        artha: "kampane",
+    },
+    Dhatu {
+        dhatupatha: "05.0010",
+        code: "DU",
+        gana: Gana::Svadi,
+        pada: PadaAssignment::Ubhayapada,
+        artha: "kampane",
+    },
+    Dhatu {
+        // 05.0011 `wudu\` upatApe (√du). The initial `wu` is an it by 1.3.5,
+        // and the `\` is the root vowel's own accent, not an it, so 1.3.78
+        // makes it parasmaipadī, as it does the twenty-one after it. Svādi 5b.
+        dhatupatha: "05.0011",
+        code: "du",
+        gana: Gana::Svadi,
+        pada: PadaAssignment::Parasmaipada,
+        artha: "upatApe",
+    },
+    Dhatu {
+        dhatupatha: "05.0013",
+        code: "pf",
+        gana: Gana::Svadi,
+        pada: PadaAssignment::Parasmaipada,
+        artha: "prItO",
+    },
+    Dhatu {
+        dhatupatha: "05.0014",
+        code: "spf",
+        gana: Gana::Svadi,
+        pada: PadaAssignment::Parasmaipada,
+        artha: "prItipAlanayoH prIticalanayoSca",
+    },
+    Dhatu {
+        dhatupatha: "05.0015",
+        code: "smf",
+        gana: Gana::Svadi,
+        pada: PadaAssignment::Parasmaipada,
+        artha: "prItibalanayoH",
+    },
+    Dhatu {
+        dhatupatha: "05.0018",
+        code: "rAD",
+        gana: Gana::Svadi,
+        pada: PadaAssignment::Parasmaipada,
+        artha: "saMsidDO",
+    },
+    Dhatu {
+        dhatupatha: "05.0019",
+        code: "sAD",
+        gana: Gana::Svadi,
+        pada: PadaAssignment::Parasmaipada,
+        artha: "saMsidDO",
+    },
+    Dhatu {
+        dhatupatha: "05.0022",
+        code: "tik",
+        gana: Gana::Svadi,
+        pada: PadaAssignment::Parasmaipada,
+        artha: "Askandane gatO ca",
+    },
+    Dhatu {
+        dhatupatha: "05.0023",
+        code: "tig",
+        gana: Gana::Svadi,
+        pada: PadaAssignment::Parasmaipada,
+        artha: "Askandane gatO ca",
+    },
+    Dhatu {
+        // 05.0024 `zaGa~` hiMsAyAm (√ṣagh). Stored post-6.1.64. Svādi 5b.
+        dhatupatha: "05.0024",
+        code: "saG",
+        gana: Gana::Svadi,
+        pada: PadaAssignment::Parasmaipada,
+        artha: "hiMsAyAm",
+    },
+    Dhatu {
+        // 05.0025 `YiDfzA~` prAgalBye (√dhṛṣ). The initial `Yi` is an it by
+        // 1.3.5, not the ñ it 1.3.72 reads. Svādi 5b.
+        dhatupatha: "05.0025",
+        code: "Dfz",
+        gana: Gana::Svadi,
+        pada: PadaAssignment::Parasmaipada,
+        artha: "prAgalBye",
+    },
+    Dhatu {
+        // 05.0026 `danBu~` damBane (√dambh). Udit, not idit, so its nasal is
+        // its own, and 6.4.24 aniditAM hala upaDAyAH kNiti elides it before
+        // the ṅit śnu: daBnoti. Svādi 5b.
+        dhatupatha: "05.0026",
+        code: "danB",
+        gana: Gana::Svadi,
+        pada: PadaAssignment::Parasmaipada,
+        artha: "damBane",
+    },
+    Dhatu {
+        dhatupatha: "05.0027",
+        code: "fD",
+        gana: Gana::Svadi,
+        pada: PadaAssignment::Parasmaipada,
+        artha: "vfdDO",
+    },
+    Dhatu {
+        // 05.0028 `tfpa~` prIRane (√tṛp). 8.4.39 kzuBnAdizu ca keeps śnu's
+        // `n` dental: tfpnoti, not *tfpRoti. Keyed by this row
+        // (`KSUBHNADI`): curādi's `10.0351` and `10.0355` are `tfpa~` too.
+        // Svādi 5b.
+        dhatupatha: "05.0028",
+        code: "tfp",
+        gana: Gana::Svadi,
+        pada: PadaAssignment::Parasmaipada,
+        artha: "prIRane",
+    },
+    Dhatu {
+        dhatupatha: "05.0029",
+        code: "ah",
+        gana: Gana::Svadi,
+        pada: PadaAssignment::Parasmaipada,
+        artha: "vyAptO",
+    },
+    Dhatu {
+        dhatupatha: "05.0030",
+        code: "daG",
+        gana: Gana::Svadi,
+        pada: PadaAssignment::Parasmaipada,
+        artha: "GAtane pAlane ca",
+    },
+    Dhatu {
+        dhatupatha: "05.0031",
+        code: "cam",
+        gana: Gana::Svadi,
+        pada: PadaAssignment::Parasmaipada,
+        artha: "BakzaRe",
+    },
+    Dhatu {
+        dhatupatha: "05.0033",
+        code: "kzi",
+        gana: Gana::Svadi,
+        pada: PadaAssignment::Parasmaipada,
+        artha: "hiMsAyAm",
+    },
+    Dhatu {
+        // 05.0034 `ciri` hiMsAyAm. No anubandha: the final `i` is the
+        // root's, as `jiri`'s and `fkzi`'s are below. Svādi 5b.
+        dhatupatha: "05.0034",
+        code: "ciri",
+        gana: Gana::Svadi,
+        pada: PadaAssignment::Parasmaipada,
+        artha: "hiMsAyAm",
+    },
+    Dhatu {
+        dhatupatha: "05.0035",
+        code: "jiri",
+        gana: Gana::Svadi,
+        pada: PadaAssignment::Parasmaipada,
+        artha: "hiMsAyAm",
+    },
+    Dhatu {
+        dhatupatha: "05.0036",
+        code: "dAS",
+        gana: Gana::Svadi,
+        pada: PadaAssignment::Parasmaipada,
+        artha: "hiMsAyAm",
+    },
+    Dhatu {
+        dhatupatha: "05.0037",
+        code: "df",
+        gana: Gana::Svadi,
+        pada: PadaAssignment::Parasmaipada,
+        artha: "hiMsAyAm",
+    },
+    Dhatu {
+        dhatupatha: "05.0038",
+        code: "fkzi",
+        gana: Gana::Svadi,
+        pada: PadaAssignment::Parasmaipada,
+        artha: "hiMsAyAm",
     },
     Dhatu {
         // 07.0010 kftI~ vezwane. rudhādi's √kṛt, distinct from tudādi's
@@ -6620,7 +6899,7 @@ mod tests {
 
     #[test]
     fn curated_roots_have_expected_ganas_and_padas() {
-        assert_eq!(dhatus().len(), 594);
+        assert_eq!(dhatus().len(), 626);
         let bu = dhatus().iter().find(|d| d.dhatupatha == "01.0001").unwrap();
         assert!(matches!(bu.pada, PadaAssignment::Parasmaipada));
         let labh = dhatus().iter().find(|d| d.dhatupatha == "01.1130").unwrap();
@@ -6786,6 +7065,74 @@ mod tests {
         // construction rather than by a hand-applied qualifier, since their
         // numbers come from different gaṇas of the source.
         assert_eq!(svadi.code, kryadi.code);
+    }
+
+    #[test]
+    fn svadi_rows_are_the_thirty_eight_curated_roots() {
+        // Svādi opened with √āp, √śak, √hi and √ri, parasmaipadī, and √aś
+        // (`05.0020`) and √ṣṭigh, ātmanepadī. Svādi 5b curates the other
+        // thirty-two and closes the gaṇa at all 38 of its dhātupāṭha rows:
+        // the ten ñit rows, ubhayapadī by 1.3.72, then twenty-two
+        // parasmaipadī by 1.3.78. Thirty derive on rules already in the
+        // pipeline; √dambh needs 6.4.24 aniditAM hala upaDAyAH kNiti and
+        // √tṛp 8.4.39 kzuBnAdizu ca.
+        let rows: Vec<_> = dhatus()
+            .iter()
+            .filter(|d| d.gana == Gana::Svadi)
+            .map(|d| (d.dhatupatha, d.code, d.pada))
+            .collect();
+        assert_eq!(
+            rows,
+            vec![
+                ("05.0016", "Ap", PadaAssignment::Parasmaipada),
+                ("05.0017", "Sak", PadaAssignment::Parasmaipada),
+                ("05.0012", "hi", PadaAssignment::Parasmaipada),
+                ("05.0032", "ri", PadaAssignment::Parasmaipada),
+                ("05.0020", "aS", PadaAssignment::Atmanepada),
+                ("05.0021", "stiG", PadaAssignment::Atmanepada),
+                ("05.0001", "su", PadaAssignment::Ubhayapada),
+                ("05.0002", "si", PadaAssignment::Ubhayapada),
+                ("05.0003", "Si", PadaAssignment::Ubhayapada),
+                ("05.0004", "mi", PadaAssignment::Ubhayapada),
+                ("05.0005", "ci", PadaAssignment::Ubhayapada),
+                ("05.0006", "stf", PadaAssignment::Ubhayapada),
+                ("05.0007", "kf", PadaAssignment::Ubhayapada),
+                ("05.0008", "vf", PadaAssignment::Ubhayapada),
+                ("05.0009", "Du", PadaAssignment::Ubhayapada),
+                ("05.0010", "DU", PadaAssignment::Ubhayapada),
+                ("05.0011", "du", PadaAssignment::Parasmaipada),
+                ("05.0013", "pf", PadaAssignment::Parasmaipada),
+                ("05.0014", "spf", PadaAssignment::Parasmaipada),
+                ("05.0015", "smf", PadaAssignment::Parasmaipada),
+                ("05.0018", "rAD", PadaAssignment::Parasmaipada),
+                ("05.0019", "sAD", PadaAssignment::Parasmaipada),
+                ("05.0022", "tik", PadaAssignment::Parasmaipada),
+                ("05.0023", "tig", PadaAssignment::Parasmaipada),
+                ("05.0024", "saG", PadaAssignment::Parasmaipada),
+                ("05.0025", "Dfz", PadaAssignment::Parasmaipada),
+                ("05.0026", "danB", PadaAssignment::Parasmaipada),
+                ("05.0027", "fD", PadaAssignment::Parasmaipada),
+                ("05.0028", "tfp", PadaAssignment::Parasmaipada),
+                ("05.0029", "ah", PadaAssignment::Parasmaipada),
+                ("05.0030", "daG", PadaAssignment::Parasmaipada),
+                ("05.0031", "cam", PadaAssignment::Parasmaipada),
+                ("05.0033", "kzi", PadaAssignment::Parasmaipada),
+                ("05.0034", "ciri", PadaAssignment::Parasmaipada),
+                ("05.0035", "jiri", PadaAssignment::Parasmaipada),
+                ("05.0036", "dAS", PadaAssignment::Parasmaipada),
+                ("05.0037", "df", PadaAssignment::Parasmaipada),
+                ("05.0038", "fkzi", PadaAssignment::Parasmaipada),
+            ]
+        );
+        // Complete: every svādi row upstream is curated.
+        let mut ours: Vec<&str> = rows.iter().map(|(n, _, _)| *n).collect();
+        ours.sort_unstable();
+        let upstream: Vec<&str> = upstream_rows()
+            .iter()
+            .map(|(n, _, _)| *n)
+            .filter(|n| n.starts_with("05."))
+            .collect();
+        assert_eq!(ours, upstream);
     }
 
     #[test]
@@ -7715,7 +8062,7 @@ mod tests {
     /// AFTER the `~` that marks an anunāsika it, so `~\` is an anudātta it and
     /// `~^` a svarita it — whereas a `\` sitting directly on a vowel elsewhere
     /// is the ROOT's own accent and says nothing about pada. Counted off the
-    /// vendored upadeśa: 73 of the 594 curated roots carry a `\` at all, and 52
+    /// vendored upadeśa: 90 of the 626 curated roots carry a `\` at all, and 69
     /// of those carry one on a root vowel — `01.0642 ji\`, `01.1082 smf\` and
     /// `02.0001 a\da~` among them — so conflating the two does not fail
     /// loudly; it silently calls most of the table ātmanepada.
@@ -7806,6 +8153,21 @@ mod tests {
         code
     }
 
+    /// Whether an upstream upadeśa is idit: its LAST marker is `i~`, accents
+    /// aside (`hisi~`, `citi~`, `aci~^`). A non-final `i~` belongs to another
+    /// marker — irit `i~r` (`ru\Di~^r`, `Guzi~r`) or `cakzi~N`. The one
+    /// reading `stored_form`, `IDIT` (`idit_matches_upadesha_markers`) and
+    /// 2564's arm of `optional_nic_from_upadesha` share.
+    fn is_idit(upadesha: &str) -> bool {
+        without_accents(upadesha).ends_with("i~")
+    }
+
+    /// An upadeśa without its trailing accent marks (`\` and `^`): the one
+    /// trimming `is_idit` and `optional_nic_from_upadesha` both read.
+    fn without_accents(upadesha: &str) -> &str {
+        upadesha.trim_end_matches(['\\', '^'])
+    }
+
     /// The form this repo stores as `Dhatu::code`, derived from an upstream
     /// upadeśa.
     fn stored_form(upadesha: &str) -> String {
@@ -7820,7 +8182,7 @@ mod tests {
         // sibling check below compares a curated row against its uncurated
         // neighbours: `10.0194 dasi~` must store as `dans`, not collide with
         // `10.0195 dasa~`'s `das`.
-        let idit = upadesha.trim_end_matches(['\\', '^']).ends_with("i~");
+        let idit = is_idit(upadesha);
         match s.rfind(|c: char| !is_hal(c)) {
             Some(i) if idit => format!("{}n{}", &s[..=i], &s[i + 1..]),
             _ => s,
@@ -7862,8 +8224,8 @@ mod tests {
         if ("10.0279"..="10.0337").contains(&number) {
             return Some("10.0499");
         }
-        let u = upadesha.trim_end_matches(['\\', '^']);
-        if u.ends_with("i~") {
+        let u = without_accents(upadesha);
+        if is_idit(upadesha) {
             Some("2564")
         } else if u.ends_with('F') {
             Some("2565")
@@ -7878,6 +8240,41 @@ mod tests {
         } else {
             None
         }
+    }
+
+    #[test]
+    fn idit_matches_upadesha_markers() {
+        // Both directions, as `optional_nic_matches_upadesha_markers` holds
+        // its table: every entry's upadeśa is idit and its row curated, and
+        // every curated row whose upadeśa is idit is an entry. Non-circular:
+        // the upadeśa comes from the vendored dhātupāṭha, not from the table.
+        let rows = upstream_rows();
+        let upadesha = |n: &str| rows.iter().find(|(m, _, _)| *m == n).unwrap().1;
+        for n in IDIT {
+            assert!(is_idit(upadesha(n)), "{n} {}", upadesha(n));
+            assert!(
+                dhatus().iter().any(|d| d.dhatupatha == *n),
+                "{n} is not curated"
+            );
+        }
+        for d in dhatus() {
+            assert_eq!(
+                IDIT.contains(&d.dhatupatha),
+                is_idit(upadesha(d.dhatupatha)),
+                "{} {}",
+                d.dhatupatha,
+                upadesha(d.dhatupatha)
+            );
+        }
+        assert!(IDIT.windows(2).all(|w| w[0] < w[1]), "sorted, no repeats");
+        assert_eq!(IDIT.len(), 87);
+        // √hiṃs is the one entry outside curādi: its stored `hins` holds
+        // 7.1.58's num.
+        assert_eq!(upadesha("07.0019"), "hisi~");
+        assert_eq!(IDIT.iter().filter(|n| !n.starts_with("10.")).count(), 1);
+        // The irit `i~r` is not idit, nor is a root's own final `i`.
+        assert!(!is_idit("Guzi~r"));
+        assert!(!is_idit("ciri"));
     }
 
     #[test]

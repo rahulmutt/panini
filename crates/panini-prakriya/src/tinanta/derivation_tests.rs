@@ -216,16 +216,16 @@ fn tinanta_rule_order_is_pinned() {
         "3.1.78", "3.1.79", "3.1.81", "3.1.68", "2.4.72", "2.4.75", "3.4.111", "3.1.83", "1.2.4",
         "6.1.10", "7.4.66", "7.4.60", "7.4.59", "7.4.62", "7.4.75", "7.4.76", "7.4.77", "7.4.78",
         "6.4.78", "6.4.71", "6.4.72", "6.1.73", "7.3.100", "7.1.5", "7.1.6", "7.1.4", "7.1.3",
-        "7.2.79", "7.2.80", "7.2.81", "6.4.23", "7.4.21", "7.3.83", "7.3.87", "7.2.114", "7.3.84",
-        "7.3.86", "7.3.86", "7.3.92", "7.3.84", "7.1.102", "6.4.110", "6.4.108", "6.4.109",
-        "6.4.87", "6.4.82", "6.4.77", "6.1.77", "6.1.78", "7.3.101", "6.4.119", "6.4.118",
-        "6.4.117", "6.4.116", "6.4.113", "6.4.98", "6.4.100", "6.4.112", "6.4.115", "6.4.42",
-        "6.4.43", "6.1.97", "6.1.101", "6.1.101", "6.1.96", "6.4.106", "6.4.107", "6.1.90",
-        "6.1.88", "6.1.97", "6.1.87", "6.1.66", "6.4.105", "6.4.101", "6.4.111", "8.2.18",
-        "8.2.77", "8.2.78", "8.2.23", "8.2.25", "8.2.26", "8.2.30", "8.2.31", "8.2.39", "8.2.40",
-        "8.2.41", "8.2.74", "8.2.75", "8.2.73", "8.3.15", "8.3.24", "8.3.59", "8.4.40", "8.4.41",
-        "8.3.13", "8.4.53", "8.4.54", "8.2.38", "8.4.55", "8.4.1", "8.4.2", "8.4.58", "8.4.65",
-        "8.4.56",
+        "7.2.79", "7.2.80", "7.2.81", "6.4.23", "6.4.24", "7.4.21", "7.3.83", "7.3.87", "7.2.114",
+        "7.3.84", "7.3.86", "7.3.86", "7.3.92", "7.3.84", "7.1.102", "6.4.110", "6.4.108",
+        "6.4.109", "6.4.87", "6.4.82", "6.4.77", "6.1.77", "6.1.78", "7.3.101", "6.4.119",
+        "6.4.118", "6.4.117", "6.4.116", "6.4.113", "6.4.98", "6.4.100", "6.4.112", "6.4.115",
+        "6.4.42", "6.4.43", "6.1.97", "6.1.101", "6.1.101", "6.1.96", "6.4.106", "6.4.107",
+        "6.1.90", "6.1.88", "6.1.97", "6.1.87", "6.1.66", "6.4.105", "6.4.101", "6.4.111",
+        "8.2.18", "8.2.77", "8.2.78", "8.2.23", "8.2.25", "8.2.26", "8.2.30", "8.2.31", "8.2.39",
+        "8.2.40", "8.2.41", "8.2.74", "8.2.75", "8.2.73", "8.3.15", "8.3.24", "8.3.59", "8.4.40",
+        "8.4.41", "8.3.13", "8.4.53", "8.4.54", "8.2.38", "8.4.55", "8.4.39", "8.4.1", "8.4.2",
+        "8.4.58", "8.4.65", "8.4.56",
     ];
     let actual: Vec<&str> = rules().map(|r| r.id).collect();
     assert_eq!(actual, expected);
@@ -282,6 +282,7 @@ fn exactly_the_pinned_bars() {
         ("2573.3", &["3.1.25", "2573.2"][..]),
         ("7.3.87", &["7.3.86"][..]),
         ("6.4.117", &["6.4.116", "6.4.113", "6.4.112"][..]),
+        ("8.4.39", &["8.4.1", "8.4.2"][..]),
     ];
     assert_eq!(actual, expected);
 }
@@ -2689,5 +2690,109 @@ fn picc_keeps_its_root_internal_cc() {
         let ids: Vec<&str> = p.log.iter().map(|s| s.sutra.as_str()).collect();
         assert!(!ids.contains(&"8.2.30"), "{form}: {ids:?}");
         assert!(!ids.contains(&"7.3.86"), "{form}: {ids:?}");
+    }
+}
+
+#[test]
+fn derive_tags_idit_on_the_rows_idit_lists() {
+    // 7.1.58's verdict, by row number (`panini_data::IDIT`), as `Aya` is:
+    // √hiṃs and curādi √cint are idit; √kṛt and √cur are not, nor is svādi
+    // √dambh (hand-built), whose upadeśa `danBu~` is udit.
+    let curated = |number: &str| *dhatus().iter().find(|d| d.dhatupatha == number).unwrap();
+    let dambh = Dhatu {
+        dhatupatha: "05.0026",
+        code: "danB",
+        gana: Gana::Svadi,
+        pada: PadaAssignment::Parasmaipada,
+        artha: "",
+    };
+    for (d, is_idit) in [
+        (curated("07.0019"), true),
+        (curated("10.0002"), true),
+        (curated("07.0010"), false),
+        (curated("10.0001"), false),
+        (dambh, false),
+    ] {
+        let p = derive(
+            &d,
+            Lakara::Lat,
+            d.padas()[0],
+            Purusha::Prathama,
+            Vacana::Eka,
+        )
+        .into_iter()
+        .next()
+        .unwrap();
+        assert_eq!(p.terms[ANGA].has(Tag::Idit), is_idit, "{}", d.dhatupatha);
+    }
+}
+
+/// A svādi row a slice's rules reach, hand-built (svādi 5b's): `derive` reads only
+/// the row number, the code, the gaṇa and the pada assignment.
+fn svadi_row(dhatupatha: &'static str, code: &'static str) -> Dhatu {
+    Dhatu {
+        dhatupatha,
+        code,
+        gana: Gana::Svadi,
+        pada: PadaAssignment::Parasmaipada,
+        artha: "",
+    }
+}
+
+#[test]
+fn dambh_loses_its_nasal_and_trp_keeps_snus_dental_n() {
+    // Svādi 5b's `05.0026 danBu~` and `05.0028 tfpa~`, hand-built, laṭ
+    // prathama eka and dvi: vidyut-prakriya's forms. 6.4.24 elides √dambh's
+    // nasal before the ṅit śnu, once; 8.4.39 keeps √tṛp's śnu dental, so
+    // neither ṇatva rule is credited.
+    let dambh = svadi_row("05.0026", "danB");
+    let trp = svadi_row("05.0028", "tfp");
+    for (vacana, dambh_form, trp_form) in [
+        (Vacana::Eka, "daBnoti", "tfpnoti"),
+        (Vacana::Dvi, "daBnutaH", "tfpnutaH"),
+    ] {
+        let p = sole(derive(
+            &dambh,
+            Lakara::Lat,
+            Pada::Parasmaipada,
+            Purusha::Prathama,
+            vacana,
+        ));
+        assert_eq!(p.text(), dambh_form);
+        let ids: Vec<&str> = p.log.iter().map(|s| s.sutra.as_str()).collect();
+        assert_eq!(
+            ids.iter().filter(|i| **i == "6.4.24").count(),
+            1,
+            "{dambh_form}: {ids:?}"
+        );
+
+        let p = sole(derive(
+            &trp,
+            Lakara::Lat,
+            Pada::Parasmaipada,
+            Purusha::Prathama,
+            vacana,
+        ));
+        assert_eq!(p.text(), trp_form);
+        let ids: Vec<&str> = p.log.iter().map(|s| s.sutra.as_str()).collect();
+        assert!(ids.contains(&"8.4.39"), "{trp_form}: {ids:?}");
+        assert!(!ids.contains(&"8.4.1"), "{trp_form}: {ids:?}");
+        assert!(!ids.contains(&"8.4.2"), "{trp_form}: {ids:?}");
+    }
+
+    // 8.4.39 reads śnu by identity, so it holds where 6.4.77 and guṇa reshape
+    // it: the vowel-initial endings give `nuv` and `nav`, and 8.4.2 would
+    // otherwise write ṇ (tfpRuvanti).
+    for (lakara, purusha, vacana, form) in [
+        (Lakara::Lat, Purusha::Prathama, Vacana::Bahu, "tfpnuvanti"),
+        (Lakara::Lot, Purusha::Prathama, Vacana::Bahu, "tfpnuvantu"),
+        (Lakara::Lot, Purusha::Uttama, Vacana::Eka, "tfpnavAni"),
+        (Lakara::Lan, Purusha::Uttama, Vacana::Eka, "atfpnavam"),
+    ] {
+        let p = sole(derive(&trp, lakara, Pada::Parasmaipada, purusha, vacana));
+        assert_eq!(p.text(), form);
+        let ids: Vec<&str> = p.log.iter().map(|s| s.sutra.as_str()).collect();
+        assert!(ids.contains(&"8.4.39"), "{form}: {ids:?}");
+        assert!(!ids.contains(&"8.4.2"), "{form}: {ids:?}");
     }
 }

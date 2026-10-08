@@ -7,7 +7,7 @@
 use crate::prakriya::Prakriya;
 use crate::rule::{Rule, RuleKind};
 use crate::term::Tag;
-use crate::tinanta::samjna::KRP;
+use crate::tinanta::samjna::{KRP, KSUBHNADI};
 use crate::tinanta::sound::{
     cartva_of, deaspirate_of, is_jhal, is_jhash, is_khar, is_natva_intervener, is_natva_trigger,
     is_savarna, is_shcu, is_shtu, is_vowel, jashtva_of, kutva_of, parasavarna_of, shcutva_of,
@@ -1662,6 +1662,41 @@ pub(crate) static TRIPADI: &[Rule] = &[
             false
         },
     },
+    // 8.4.39 kṣubhnādiṣu ca: no ṇatva in the kṣubhnādi. √tṛp's `f` would
+    // otherwise reach śnu's `n` across the pu-varga `p` by 8.4.2 (*tfpRoti*
+    // for tfpnoti). Keyed by row (`super::samjna::KSUBHNADI`), as vidyut-
+    // prakriya keys it by upadeśa: curādi's `10.0351` and `10.0355` are
+    // `tfpa~`, stored `tfp`, too. vidyut also requires śnu after the dhātu:
+    // the next non-empty term after ANGA is śnu, read by identity
+    // (`Tag::Snu`, added by 3.1.73), not by text: by the tripādī śnu's text
+    // is `nu`, `no`, `nuv` (6.4.77) or `nav` (guṇa and 6.1.78 before a
+    // vowel-initial pit ending). Kryādi's śnā will get an analogous tag when
+    // 9d curates `09.0055 kzuBa~`.
+    //
+    // Changes no text: it records and bars 8.4.1 and 8.4.2, as 6.4.117 ā ca
+    // hau bars the rules that would change its `A`. Placed just above 8.4.1,
+    // the first rule it bars.
+    Rule {
+        id: "8.4.39",
+        name: "kzuBnAdizu ca",
+        kind: RuleKind::Vidhi,
+        vikalpa: false,
+        bars: &["8.4.1", "8.4.2"],
+        apply: |p| {
+            if !KSUBHNADI.contains(&p.ctx.dhatupatha) {
+                return false;
+            }
+            let Some(next) = p.terms[ANGA + 1..].iter().find(|t| !t.text.is_empty()) else {
+                return false;
+            };
+            if !next.has(Tag::Snu) {
+                return false;
+            }
+            let before = p.snapshot();
+            p.record("8.4.39", "kzuBnAdizu ca", before);
+            true
+        },
+    },
     // 8.4.1 raṣābhyāṁ no ṇaḥ samānapade: `n` → `ṇ` when `r`/`ṣ` DIRECTLY
     // precedes it within the same pada. muz + nAti → muzRAti; vf + nIte →
     // vfRIte (the r-vowel triggers it by 1.1.51 uraṇ raparaḥ).
@@ -3269,6 +3304,55 @@ mod tests {
             let mut p = bhas_prakriya(anga, ending);
             assert!(!(rule.apply)(&mut p), "{why}");
             assert!(p.log.is_empty(), "{why}");
+        }
+    }
+
+    #[test]
+    fn ksubhnadi_records_on_its_row_before_snu_only() {
+        // This stage's entry, looked up in its own static.
+        let rule = TRIPADI.iter().find(|r| r.id == "8.4.39").unwrap();
+        assert!(!rule.vikalpa);
+        assert_eq!(rule.bars, ["8.4.1", "8.4.2"]);
+        let trp = |row: &'static str, vikarana: &str, tagged: bool| {
+            let mut v = Term::new(vikarana);
+            v.add(Tag::Vikarana);
+            if tagged {
+                v.add(Tag::Snu);
+            }
+            let mut p = Prakriya {
+                terms: with_slots(vec![Term::new("tfp"), v, Term::new("ti")]),
+                ..Default::default()
+            };
+            p.ctx.dhatupatha = row;
+            p
+        };
+
+        // √tṛp before śnu, whatever shape the tripādī has given it: `nu`,
+        // `no` (7.3.84), `nuv` (6.4.77) and `nav` (guṇa and 6.1.78). Recorded,
+        // no text changed; `run_pipeline` then skips the barred 8.4.1 and
+        // 8.4.2 on the branch.
+        for vikarana in ["nu", "no", "nuv", "nav"] {
+            let mut p = trp("05.0028", vikarana, true);
+            assert!((rule.apply)(&mut p), "{vikarana}");
+            assert_eq!(p.text(), format!("tfp{vikarana}ti"));
+            let ids: Vec<&str> = p.log.iter().map(|s| s.sutra.as_str()).collect();
+            assert_eq!(ids, ["8.4.39"], "{vikarana}");
+        }
+
+        // Another row declines even before śnu: curādi's `tfpa~` rows store
+        // the same `tfp`, and a hand-built row has no number.
+        for row in ["10.0351", "10.0355", ""] {
+            let mut p = trp(row, "nu", true);
+            assert!(!(rule.apply)(&mut p), "{row}");
+            assert!(p.log.is_empty(), "{row}");
+        }
+
+        // Its row, but the next term is not śnu: an untagged vikaraṇa whose
+        // text is `nu`, śap's `a`, an untagged `nA`, and an empty term.
+        for vikarana in ["nu", "a", "nA", ""] {
+            let mut p = trp("05.0028", vikarana, false);
+            assert!(!(rule.apply)(&mut p), "{vikarana}");
+            assert!(p.log.is_empty(), "{vikarana}");
         }
     }
 }

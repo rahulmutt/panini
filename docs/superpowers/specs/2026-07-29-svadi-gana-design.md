@@ -64,7 +64,9 @@ Out of scope, deferred:
   √su (`zu\Y`, sunoti / sunute) and √ci (`ci\Y`), the two roots every grammar
   uses to teach śnu. See "The ātmanepada column". (√dhṛṣ, `YiDfzA~`, is *not*
   among them — its `Y` is the initial *ñi* it-marker of 1.3.5 *ādir ñiṭuḍavaḥ*,
-  not the final ñ that 1.3.72 reads, and it is parasmaipadī.)
+  not the final ñ that 1.3.72 reads, and it is parasmaipadī.) All ten, and
+  the gaṇa's other twenty-two, are curated in svādi 5b
+  (`2026-10-07-svadi-gana-5b-design.md`).
 - **6.4.107 *lopaś cāsyānyatarasyāṁ mvoḥ***, deferred to slice 5b, because it
   is the engine's first genuinely **optional** rule. See "Slice split".
 - **6.1.64 *dhātvādeḥ ṣaḥ saḥ***. √ṣṭigh ships as `stiG` in
@@ -74,7 +76,9 @@ Out of scope, deferred:
   for picking one form per cell, not svādi decisions.
 - The svādi roots needing machinery of their own: √śru (3.1.74 *śruvaḥ śṛ ca*),
   and the ñit roots √stṛ / √kṛ, which additionally want 7.1.100 and the 6.4.10x
-  kṛ-specials. The root set below avoids every one.
+  kṛ-specials. The root set below avoids every one. (Svādi 5b found that
+  √stṛ and √kṛ want neither: vidyut-prakriya agrees with them on data
+  alone.)
 
 ## Slice split
 

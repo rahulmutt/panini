@@ -420,11 +420,11 @@ pub(crate) static ANGA_RULES: &[Rule] = &[
     // cells, leaving `Ba | n | j` — the `n` that survives there is śnam's,
     // not the root's.
     //
-    // This is also why 6.4.24 aniditāṁ hala upadhāyāḥ kṅiti is not needed in
-    // this slice: it governs the PENULTIMATE nasal of roots like √añj and
-    // √tañc (out of scope here), whereas the nasal 6.4.23 removes sits
-    // immediately behind śnam's `na` and is already this rule's by its own
-    // terms.
+    // 6.4.24 aniditāṁ hala upadhāyāḥ kṅiti, just below, elides a nasal too,
+    // but the PENULTIMATE sound of a hal-final ANGA. After 3.1.78's split no
+    // rudhādi ANGA is hal-final — it ends in the root's last vowel, and the
+    // root's nasal sits behind śnam's `na`, in SHAP — so that nasal is this
+    // rule's by its own terms, never 6.4.24's.
     //
     // Ordered before 6.4.111: the trace order is 6.4.23 then 6.4.111, and
     // reversing them elides śnam's `a` first, after which this rule can no
@@ -453,6 +453,63 @@ pub(crate) static ANGA_RULES: &[Rule] = &[
             let head: String = p.terms[SHAP].text.chars().take(2).collect();
             p.terms[SHAP].text = format!("{head}{}", &rest[1..]);
             p.record("6.4.23", "SnAnnalopaH", before);
+            true
+        },
+    },
+    // 6.4.24 aniditāṁ hala upadhāyāḥ kṅiti: an anidit root's nasal upadhā is
+    // elided before a kit or ṅit affix, when the aṅga ends in a hal. danB +
+    // nu → daB + nu, whence daBnoti (√dambh, svādi 5b). The guard reads only
+    // `Tag::Ngit`: kit affixes are not modelled in these four lakāras, and a
+    // slice that brings kit affixes (liṭ, āśīrliṅ) must widen it.
+    //
+    // *kṅiti* reads the NEXT NON-EMPTY TERM after ANGA: the affix the aṅga
+    // stands before. 1.2.4's second application tags an apit sārvadhātuka
+    // vikaraṇa ṅit (śnu, śnā, śyan, śa); where the vikaraṇa is luk'd or
+    // ślu'd, SHAP is empty and the affix is the ending, which 1.2.4's first
+    // application tags. śap is pit and never ṅit, so no bhvādi aṅga meets
+    // this rule. vidyut-prakriya reads the same next non-empty term.
+    //
+    // *aniditām* reads `Tag::Idit` (the data layer's `IDIT`): 7.1.58 idito num
+    // dhātoḥ is stored, not derived, so an idit root's num already sits in
+    // its code (`hins`), and only the upadeśa can say the nasal is 7.1.58's.
+    // No curated idit root reaches this rule with a nasal upadhā before a ṅit
+    // affix — curādi's meet ṇic or śap, and √hiṃs's nasal is 6.4.23's — so
+    // the guard's one witness is the hand-built
+    // `anidit_upadha_nalopa_spares_an_idit_root`.
+    //
+    // No rudhādi aṅga reaches it either (6.4.23's comment above). vidyut
+    // credits this rule on √und's `unad → und`, which is 6.4.23's deletion
+    // here; `unantas_trace_orders_6_4_23_before_6_4_111` in `panini`'s trace
+    // suite keeps that credit out.
+    //
+    // After 6.4.23 and before the guṇa stage's 7.3.84, as vidyut runs it.
+    Rule {
+        id: "6.4.24",
+        name: "aniditAM hala upaDAyAH kNiti",
+        kind: RuleKind::Vidhi,
+        vikalpa: false,
+        bars: &[],
+        apply: |p| {
+            if p.terms[ANGA].has(Tag::Idit) {
+                return false;
+            }
+            let Some(next) = p.terms[ANGA + 1..].iter().find(|t| !t.text.is_empty()) else {
+                return false;
+            };
+            if !next.has(Tag::Ngit) {
+                return false;
+            }
+            let chars: Vec<char> = p.terms[ANGA].text.chars().collect();
+            let [head @ .., 'n', last] = chars.as_slice() else {
+                return false;
+            };
+            if is_vowel(*last) {
+                return false;
+            }
+            let text: String = head.iter().chain([last]).collect();
+            let before = p.snapshot();
+            p.terms[ANGA].text = text;
+            p.record("6.4.24", "aniditAM hala upaDAyAH kNiti", before);
             true
         },
     },
@@ -863,5 +920,97 @@ mod tests {
         };
         assert!((rule.apply)(&mut p));
         assert_eq!(p.text(), "atCid");
+    }
+
+    /// A hand-built aṅga before a vikaraṇa and an ending, the vikaraṇa tagged
+    /// as 1.2.4 leaves it: `Ngit` (śnu, śnā) or `Pit` (śap).
+    fn before_affix(anga: &str, vikarana: &str, tag: Tag, ending: &str) -> Prakriya {
+        let mut v = Term::new(vikarana);
+        v.add(tag);
+        Prakriya {
+            terms: with_slots(vec![Term::new(anga), v, Term::new(ending)]),
+            ..Default::default()
+        }
+    }
+
+    #[test]
+    fn anidit_upadha_nalopa_elides_the_nasal_before_a_ngit_affix() {
+        // This stage's entry, looked up in its own static.
+        let rule = ANGA_RULES.iter().find(|r| r.id == "6.4.24").unwrap();
+        assert!(!rule.vikalpa);
+
+        // √dambh before the ṅit śnu: danB → daB (daBnoti).
+        let mut p = before_affix("danB", "nu", Tag::Ngit, "ti");
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "daB");
+        assert_eq!(p.text(), "daBnuti");
+        let ids: Vec<&str> = p.log.iter().map(|s| s.sutra.as_str()).collect();
+        assert_eq!(ids, ["6.4.24"]);
+
+        // A five-sound aṅga: the elided `n` is the penultimate sound, not a
+        // fixed index (√granth before śnā, kryādi's graTnAti).
+        let mut p = before_affix("granT", "nA", Tag::Ngit, "ti");
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.terms[ANGA].text, "graT");
+
+        // An empty vikaraṇa (luk, ślu) is skipped: the affix is the ending,
+        // which 1.2.4's first application tags ṅit.
+        let mut ending = Term::new("tas");
+        ending.add(Tag::Ngit);
+        let mut p = Prakriya {
+            terms: with_slots(vec![Term::new("danB"), Term::new(""), ending]),
+            ..Default::default()
+        };
+        assert!((rule.apply)(&mut p));
+        assert_eq!(p.text(), "daBtas");
+    }
+
+    #[test]
+    fn anidit_upadha_nalopa_spares_an_idit_root() {
+        // *aniditām*: an idit root's nasal is 7.1.58's num, stored in its code
+        // (`hins`), and stays. No curated idit root meets a ṅit affix with a
+        // nasal upadhā, so this hand-built aṅga is the guard's only witness.
+        let rule = ANGA_RULES.iter().find(|r| r.id == "6.4.24").unwrap();
+        let mut p = before_affix("danB", "nu", Tag::Ngit, "ti");
+        p.terms[ANGA].add(Tag::Idit);
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.text(), "danBnuti");
+        assert!(p.log.is_empty());
+    }
+
+    #[test]
+    fn anidit_upadha_nalopa_reads_only_the_next_affixs_ngit() {
+        let rule = ANGA_RULES.iter().find(|r| r.id == "6.4.24").unwrap();
+        // śap is pit and never ṅit: a bhvādi aṅga keeps its nasal.
+        let mut p = before_affix("danB", "a", Tag::Pit, "ti");
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.text(), "danBati");
+
+        // The affix the aṅga stands before decides, not a later one: a
+        // non-ṅit vikaraṇa before a ṅit ending declines.
+        let mut p = before_affix("danB", "a", Tag::Pit, "tas");
+        p.terms[ENDING].add(Tag::Ngit);
+        assert!(!(rule.apply)(&mut p));
+        assert_eq!(p.text(), "danBatas");
+        assert!(p.log.is_empty());
+    }
+
+    #[test]
+    fn anidit_upadha_nalopa_needs_a_hal_final_anga_with_a_nasal_upadha() {
+        let rule = ANGA_RULES.iter().find(|r| r.id == "6.4.24").unwrap();
+        for (anga, why) in [
+            // A nasal upadhā, but the aṅga ends in a vowel.
+            ("mnA", "vowel-final"),
+            // Hal-final, with no nasal upadhā (√tṛp).
+            ("tfp", "no nasal upadhā"),
+            // A rudhādi ANGA after 3.1.78's split ends in the root's last
+            // vowel; its nasal is in SHAP, 6.4.23's.
+            ("Ba", "rudhādi split"),
+        ] {
+            let mut p = before_affix(anga, "nu", Tag::Ngit, "ti");
+            assert!(!(rule.apply)(&mut p), "{why}");
+            assert_eq!(p.terms[ANGA].text, anga, "{why}");
+            assert!(p.log.is_empty(), "{why}");
+        }
     }
 }

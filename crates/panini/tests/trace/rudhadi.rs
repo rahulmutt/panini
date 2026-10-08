@@ -419,8 +419,9 @@ fn unantas_trace_orders_6_4_23_before_6_4_111() {
     // This is also where vidyut-prakriya credits 6.4.24 aniditAM hala
     // upaDAyAH kNiti for the same unad -> und step. It is the wrong credit
     // -- 6.4.24 deletes a nasal upadhā, and after 6.4.23 has run, unad's
-    // upadhā is `a` -- so this engine does not implement 6.4.24 at all and
-    // must not be "corrected" toward vidyut's history here.
+    // upadhā is `a` -- so this engine's 6.4.24 (svādi 5b), which reads a
+    // hal-final ANGA, never reaches a rudhādi aṅga (3.1.78 leaves it
+    // vowel-final), and must not be "corrected" toward vidyut's history here.
     let (_text, t) = cell_trace(
         "07.0020",
         Lakara::Lat,

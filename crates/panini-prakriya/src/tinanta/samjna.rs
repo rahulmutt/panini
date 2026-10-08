@@ -62,6 +62,16 @@ pub(crate) const CISPHUR: [&str; 1] = ["10.0124"];
 /// tripādī 8.2.18 reads it.
 pub(crate) const KRP: [&str; 1] = ["10.0278"];
 
+/// 8.4.39 kṣubhnādiṣu ca: the dhātupāṭha rows whose ṇatva the sūtra's
+/// kṣubhnādi blocks. By number, as `KRP` is: vidyut-prakriya keys the sūtra
+/// on the upadeśa `tfpa~` before śnu, and curādi `10.0351` and `10.0355`
+/// (and tudādi `06.0028`) are `tfpa~` too, stored as the same `tfp`, and
+/// take no śnu. `05.0028 tfpa~` (*tṛpnoti*) is the one curated; kryādi
+/// `09.0055 kzuBa~` (*kṣubhnāti*) joins the list when it is. Pinned to
+/// upstream by `ksubhnadi_is_the_row_8_4_39_names`. The tripādī 8.4.39 reads
+/// it.
+pub(crate) const KSUBHNADI: [&str; 1] = ["05.0028"];
+
 pub(crate) static SAMJNA: &[Rule] = &[
     // Kaumudī 2567: a ṅit curādi root stays ātmanepadī under ṇic. With ṇic,
     // 1.3.74 ṇicaś ca would govern and 1.3.78 admit parasmaipada too; the
@@ -1005,16 +1015,33 @@ mod tests {
     fn cisphur_is_the_ciy_row_6_1_54_names() {
         // 6.1.54 cisphuror ṇau. vidyut-prakriya keys it on the upadeśas `ciY`
         // and `ci\Y`, and on `sPura~`. Curādi `10.0325 ci` stores as the
-        // same `ci` and is not √ci of 6.1.54; svādi `ci\Y` and tudādi
-        // `sPura~` meet ṇic only in a causative.
+        // same `ci` and is not √ci of 6.1.54. Svādi `05.0005 ci\Y` is that
+        // √ci, curated since svādi 5b, but it meets ṇic only in a causative:
+        // its śnu forms carry no 6.1.54 credit. Tudādi `sPura~` is uncurated.
+        use crate::tinanta::derive;
         assert_eq!(CISPHUR, ["10.0124"]);
         assert_eq!(upstream_upadesha("10.0124"), Some("ciY"));
         assert!(dhatus().iter().any(|d| d.dhatupatha == "10.0124"));
         assert_eq!(upstream_upadesha("10.0325"), Some("ci"));
-        for (number, upadesha) in [("05.0005", "ci\\Y"), ("06.0121", "sPura~")] {
-            assert_eq!(upstream_upadesha(number), Some(upadesha), "{number}");
-            assert!(!dhatus().iter().any(|d| d.dhatupatha == number), "{number}");
+        assert_eq!(upstream_upadesha("05.0005"), Some("ci\\Y"));
+        let ci = dhatus()
+            .iter()
+            .find(|d| d.dhatupatha == "05.0005")
+            .expect("svādi √ci is curated");
+        assert!(!CISPHUR.contains(&ci.dhatupatha));
+        for &pada in ci.padas() {
+            for lakara in [Lakara::Lat, Lakara::Lan, Lakara::Lot, Lakara::VidhiLin] {
+                for purusha in [Purusha::Prathama, Purusha::Madhyama, Purusha::Uttama] {
+                    for vacana in [Vacana::Eka, Vacana::Dvi, Vacana::Bahu] {
+                        for p in derive(ci, lakara, pada, purusha, vacana) {
+                            assert!(!p.log.iter().any(|s| s.sutra == "6.1.54"), "{}", p.text());
+                        }
+                    }
+                }
+            }
         }
+        assert_eq!(upstream_upadesha("06.0121"), Some("sPura~"));
+        assert!(!dhatus().iter().any(|d| d.dhatupatha == "06.0121"));
     }
 
     #[test]
@@ -1030,6 +1057,21 @@ mod tests {
             assert_eq!(upstream_upadesha(number), Some(upadesha), "{number}");
             assert!(!dhatus().iter().any(|d| d.dhatupatha == number), "{number}");
         }
+    }
+
+    #[test]
+    fn ksubhnadi_is_the_row_8_4_39_names() {
+        // 8.4.39 kṣubhnādiṣu ca. vidyut-prakriya keys its śnu arm on the
+        // upadeśa `tfpa~`. Tudādi's and curādi's two `tfpa~` rows store the
+        // same `tfp` and take no śnu; kryādi's `kzuBa~` joins when its row
+        // is curated.
+        assert_eq!(KSUBHNADI, ["05.0028"]);
+        assert!(dhatus().iter().any(|d| d.dhatupatha == "05.0028"));
+        for number in ["05.0028", "06.0028", "10.0351", "10.0355"] {
+            assert_eq!(upstream_upadesha(number), Some("tfpa~"), "{number}");
+        }
+        assert_eq!(upstream_upadesha("09.0055"), Some("kzuBa~"));
+        assert!(!dhatus().iter().any(|d| d.dhatupatha == "09.0055"));
     }
 
     #[test]

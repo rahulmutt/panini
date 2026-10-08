@@ -73,6 +73,7 @@ pub(crate) static VIKARANA: &[Rule] = &[
             let before = p.snapshot();
             let mut s = Term::new("Snu");
             s.add(Tag::Vikarana);
+            s.add(Tag::Snu);
             s.add(Tag::Sarvadhatuka);
             p.terms.insert(SHAP, s);
             p.record("3.1.73", "svAdiByaH SnuH", before);
@@ -587,6 +588,7 @@ mod tests {
         assert!((rule.apply)(&mut p));
         assert_eq!(p.terms[SHAP].text, "nu");
         assert!(p.terms[SHAP].has(Tag::Vikarana));
+        assert!(p.terms[SHAP].has(Tag::Snu));
         assert!(p.terms[SHAP].has(Tag::Sarvadhatuka));
         assert_eq!(p.terms[ENDING].text, "ti");
     }
