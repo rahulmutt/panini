@@ -27,7 +27,7 @@ is ruleless.
 comment states that a blocked prakriyā's `text()` is a partial string — often the
 bare root code — not a surface form.
 
-**It asserts the corpus totals** (626 roots, 39744 cells, 51724 forms) rather than
+**It asserts the corpus totals** (648 roots, 40824 cells, 52936 forms) rather than
 reporting whatever it enumerated. Those totals are corroborated by
 `derivation_set_shape_matches_the_audited_numbers` in
 `crates/panini/tests/paradigm/main.rs`, which each slice raises to the same totals
@@ -108,6 +108,26 @@ PANINI_AUDIT_DUMP=/tmp/audit-table.tsv mise exec rust@1.99.0 -- cargo run --rele
 ```
 
 ## Last recorded result
+
+2026-10-08, kryādi 9c slice, vidyut
+`8da2f90bee3ce1c07505fa432fc3729e3f7e02ea`: **zero differences across 40824
+cells / 52936 forms / 648 roots**, with the `entry` negative control verified
+failing (36 √bhū cells).
+
+The verdict covers the whole kryādi 9c slice: twenty-two rows on the rules
+already in the pipeline, with no engine change — the eight ñit rows,
+ubhayapadī by 1.3.72, and fourteen parasmaipadī by 1.3.78. Blocked branches
+stay at 6552: no kryādi row takes ṇic. The throwaway prototype that scoped the
+slice curated all sixty-five remaining kryādi rows; on data alone it found
+1863 differing cells, every one on the forty-three rows slices 9d and 9e take,
+and none on these twenty-two. A merge-base-vs-branch dump of every prior cell's
+branches, blocked ones included, with every step's before and after text, was
+byte-identical, all 58276 of them (51724 live).
+
+Totals, against svādi 5b's record below it: 648 = 626 + 22; 40824 = 39744 +
+1080 (120 root×pada×lakāra blocks × 9); 52936 = 51724 + 1080 + 132 new
+`ALTERNATES` rows (11980 → 12112),
+measured via the harness's corpus block, not assumed.
 
 2026-10-07, svādi 5b slice, vidyut
 `8da2f90bee3ce1c07505fa432fc3729e3f7e02ea`: **zero differences across 39744
