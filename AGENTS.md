@@ -263,7 +263,7 @@
   and √viṣ, at 24 after slice 3f curated √kit, √tur, √dhiṣ and √dhan, at 25
   after slice 3f2 curated √bhas, and closing at 26 of 26 in slice 3f3 with √jan,
 and curādi (10) opened in slice 10a at 4 of its 492 dhātus (√cur, √laḍ, √bhakṣ,
-√bhūṣ), at 8 after slice 10b curated the ākusmīya √cit, √vṛṣ, √mad and √kusm, at 41 after slice 10c curated thirty-three more ākusmīya roots, at 47 after slice 10d curated the jñapādi √jñap, √yam, √cah, √cap, √rah and √bal, at 139 after slice 10e curated ninety-two adanta roots, at 149 after slice 10f curated the ten optional-ṇic rows, at 208 after slice 10g curated fifty-nine more, at 258 after slice 10h curated the fifty ādhṛṣīya rows, at 319 after slice 10i curated the fifty-nine āsvadīya rows, √pṝ and √ghuṣ, at 327 after slice 10j curated the eight ajanta rows √smiṅ, √ci, √ghṛ, √gṛ, √yu, √jñā, √cyu and √bhū, at 482 after slice 10k curated the 155 plain obligatory-ṇic rows, at 490 after slice 10l curated the eight rule-bearing rows √ūrj, √cūrṇ, √aṭṭ, √kṝt, √mlecch, √gūrd, √dhras and √kṛp, at 491 after slice 10m curated √picc, narrowing 8.2.30 to a term-final cu, the one dhātu left being √ṣad (`10.0368`), which waits for upasargas, and svādi (5) closing at 38 of 38 in svādi 5b, which curated the thirty-two rows beyond its first six behind 6.4.24 and 8.4.39 —
+√bhūṣ), at 8 after slice 10b curated the ākusmīya √cit, √vṛṣ, √mad and √kusm, at 41 after slice 10c curated thirty-three more ākusmīya roots, at 47 after slice 10d curated the jñapādi √jñap, √yam, √cah, √cap, √rah and √bal, at 139 after slice 10e curated ninety-two adanta roots, at 149 after slice 10f curated the ten optional-ṇic rows, at 208 after slice 10g curated fifty-nine more, at 258 after slice 10h curated the fifty ādhṛṣīya rows, at 319 after slice 10i curated the fifty-nine āsvadīya rows, √pṝ and √ghuṣ, at 327 after slice 10j curated the eight ajanta rows √smiṅ, √ci, √ghṛ, √gṛ, √yu, √jñā, √cyu and √bhū, at 482 after slice 10k curated the 155 plain obligatory-ṇic rows, at 490 after slice 10l curated the eight rule-bearing rows √ūrj, √cūrṇ, √aṭṭ, √kṝt, √mlecch, √gūrd, √dhras and √kṛp, at 491 after slice 10m curated √picc, narrowing 8.2.30 to a term-final cu, the one dhātu left being √ṣad (`10.0368`), which waits for upasargas, and svādi (5) closing at 38 of 38 in svādi 5b, which curated the thirty-two rows beyond the six curated in the first svādi slice (√hi, √ri, √āp, √śak, √aś, √ṣṭigh) behind 6.4.24 and 8.4.39 —
   `PARADIGM`
     stays one-form-per-cell: a cell forked by an optional rule keeps its
     other forms — a second (6970 cells), a third (991 cells), a fourth
@@ -1007,11 +1007,12 @@ and curādi (10) opened in slice 10a at 4 of its 492 dhātus (√cur, √laḍ, 
   `Rule.bars`; never in the overridden rules' guards, and never by reading
   `p.log`.** `run_pipeline` enforces the bar per branch (a vikalpa's on its
   applied clone only), and `exactly_the_pinned_bars` requires every barred id
-  to run after its barrer. 6.4.117 *ā ca hau* is the first: it changes no text,
+  to run after its barrer. Eleven rules bar others today (`exactly_the_pinned_bars`
+  lists them: eight optional-ṇic rules, 7.3.87, 6.4.117 and 8.4.39). 6.4.117 *ā ca hau* is one: it changes no text,
   so without its bars 6.4.116, 6.4.113 and 6.4.112 would each still rewrite
-  the `A` it keeps. 7.3.87 is the second and the first mandatory one: it changes
+  the `A` it keeps. 7.3.87 is another, a mandatory one: it changes
   no text and bars 7.3.86, so 7.3.86's guard carries no abhyasta exception.
-  8.4.39 *kṣubhnādiṣu ca* (svādi 5b) is the third: it changes no text and
+  8.4.39 *kṣubhnādiṣu ca* (svādi 5b) is the eleventh pinned barrer: it changes no text and
   bars 8.4.1 and 8.4.2, so ṇatva's guards carry no √tṛp exception. Its
   guard reads the row (`KSUBHNADI`) and śnu by identity, `Tag::Snu` on the
   next non-empty term after `ANGA`, never by text (the tripādī's śnu text

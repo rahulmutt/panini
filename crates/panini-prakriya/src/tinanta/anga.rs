@@ -458,7 +458,9 @@ pub(crate) static ANGA_RULES: &[Rule] = &[
     },
     // 6.4.24 aniditāṁ hala upadhāyāḥ kṅiti: an anidit root's nasal upadhā is
     // elided before a kit or ṅit affix, when the aṅga ends in a hal. danB +
-    // nu → daB + nu, whence daBnoti (√dambh, svādi 5b).
+    // nu → daB + nu, whence daBnoti (√dambh, svādi 5b). The guard reads only
+    // `Tag::Ngit`: kit affixes are not modelled in these four lakāras, and a
+    // slice that brings kit affixes (liṭ, āśīrliṅ) must widen it.
     //
     // *kṅiti* reads the NEXT NON-EMPTY TERM after ANGA: the affix the aṅga
     // stands before. 1.2.4's second application tags an apit sārvadhātuka

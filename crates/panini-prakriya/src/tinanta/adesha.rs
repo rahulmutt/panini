@@ -1757,7 +1757,7 @@ mod tests {
     #[test]
     fn lopa_of_shnu_u_needs_asamyogapurva() {
         // *Asya* is 6.4.106's `u`, asaṁyogapūrva by anuvṛtti. Of these six
-        // (the gaṇa's first), only √hi and √ri qualify; the other four put a
+        // (those curated in the first svādi slice), only √hi and √ri qualify; the other four put a
         // conjunct before śnu's `u`. Both ātmanepadī roots among the six are
         // those four, so their ātmanepada column never forks. Svādi 5b's
         // nineteen further asaṁyogapūrva roots do fork, ten of them in the

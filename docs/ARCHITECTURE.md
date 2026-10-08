@@ -361,7 +361,8 @@ curādi's `10.0351` and `10.0355` are `tfpa~` too, and requiring śnu as the
 next non-empty term after `ANGA`, which it reads by identity (`Tag::Snu`,
 added by 3.1.73), not by text, since the tripādī's śnu text is `nu`, `no`,
 `nuv` or `nav`; it changes no text and bars 8.4.1 and 8.4.2 (*tṛpnoti*),
-the third rule to use `Rule.bars`.
+one of the eleven rules that bar others
+(`exactly_the_pinned_bars` lists them all; eight are the optional-ṇic rules).
 
 tanādi (gaṇa 8) is **complete**, curated at all ten of its dhātupāṭha rows:
 √tan, √san and √kṣaṇ, the three a-upadhā roots (slice 8a), fork exactly
@@ -650,8 +651,8 @@ which pins the whole set by id.
 
 6.4.107 elides the vikaraṇa's `u` before `m` and `v` when that `u` is
 *asaṁyogapūrva*, forking 188 cells across thirty roots: svādi's √hi and √ri
-(and, new in svādi 5b, the nineteen more of its roots whose śnu follows a
-single non-conjunct sound) in laṭ and laṅ uttama dvi/bahu, whose
+(and, new in svādi 5b, the nineteen more of its roots whose aṅga ends in a
+vowel, so that śnu's `u`, preceded only by its own `n`, is asaṁyogapūrva) in laṭ and laṅ uttama dvi/bahu, whose
 `vas`/`mas`/`va`/`ma` are the only m/v-initial endings in scope — `hinvaH ~
 hinuvaH`, `ahinma ~ ahinuma` — and, new in tanādi 8a, all nine 8a-curated
 tanādi roots on the same four cells per pada: every one of them takes the

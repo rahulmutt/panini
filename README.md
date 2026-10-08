@@ -16,8 +16,8 @@ cargo run -p panini-cli -- check 'bhavati' --trace
 Finite verbs (*tiṅanta*), ten gaṇas covered, nine of them fully —
 *bhvādi* (1, vikaraṇa śap), *divādi* (4, śyan), *tudādi* (6, śa), *adādi*
 (2, śap luk'd), *kryādi* (9, śnā), *svādi* (5, śnu), **complete** at all
-38 of its dhātupāṭha rows since svādi 5b curated the thirty-two beyond its
-first six, behind 6.4.24 *aniditāṁ hala upadhāyāḥ kṅiti* (√dambh's
+38 of its dhātupāṭha rows since svādi 5b curated the thirty-two beyond the six
+curated in the first svādi slice (√hi, √ri, √āp, √śak, √aś, √ṣṭigh), behind 6.4.24 *aniditāṁ hala upadhāyāḥ kṅiti* (√dambh's
 *dabhnoti*, its *aniditām* read from the curated `IDIT` rows) and 8.4.39
 *kṣubhnādiṣu ca* (√tṛp's *tṛpnoti*, kept free of ṇatva), and *rudhādi* (7,
 śnam) — plus *tanādi* (8, vikaraṇa the bare *u* of 3.1.79), **complete**

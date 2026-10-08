@@ -128,7 +128,12 @@ pub const AYA: [&str; 2] = ["10.0303", "10.0304"];
 /// cannot say whether a nasal is the root's own or 7.1.58's: only the
 /// upadeśa can. 6.4.24 *aniditāṁ hala upadhāyāḥ kṅiti* needs that verdict:
 /// it elides the nasal upadhā of an ANIDIT root before a kit or ṅit affix,
-/// and spares an idit root's. Keyed by dhātupāṭha number, as `AYA` is. The
+/// and spares an idit root's. (The engine's guard reads only `Tag::Ngit`: kit
+/// affixes are not modelled in the four lakāras, and a slice that brings them,
+/// liṭ or āśīrliṅ, must widen it.) A root is idit when its LAST it-marker is
+/// `i~`; no curated row reaches 6.4.24 with `i~` before a later marker
+/// (`kaki~\N` reads non-idit here, idit in vidyut), and a slice curating such
+/// a row must revisit `is_idit`. Keyed by dhātupāṭha number, as `AYA` is. The
 /// engine's `derive` tags a listed root `Tag::Idit`, which 6.4.24 reads.
 ///
 /// Lists curated rows only: rudhādi's √hiṃs and eighty-six curādi rows.
