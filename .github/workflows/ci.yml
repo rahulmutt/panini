@@ -9,7 +9,7 @@ on:
 
 jobs:
   build-test-lint:
-    name: build + test + lint (rust 1.97, mise-pinned)
+    name: build + test + lint (rust, mise-pinned)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

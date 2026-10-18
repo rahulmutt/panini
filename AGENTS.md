@@ -1,7 +1,7 @@
 # Contributor & agent guide
 
 ## Environment
-- Toolchain is pinned via `mise` (`mise install`) to rust 1.99.0. Do not install
+- Toolchain is pinned via `mise` (`mise install`) to rust 1.99.1. Do not install
   Rust globally.
 - Tasks: `mise run build | test | lint | fmt | fmt-check | mutants | audit`.
 - `mise run test` is the whole suite, including the exhaustive roundtrip:
