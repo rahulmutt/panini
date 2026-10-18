@@ -1,11 +1,8 @@
 {
   "name": "panini",
-  "image": "ghcr.io/rahulmutt/dev:sha-d5f2eae",
+  "image": "ghcr.io/rahulmutt/dev:sha-f881552",
   "workspaceFolder": "/workspace",
   "remoteUser": "dev",
-  "containerEnv": {
-    "INSTALL_DEVENV": "true",
-  },
   "postCreateCommand": "post-create.sh",
   "customizations": {
     "devpod": {
